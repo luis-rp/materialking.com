@@ -1,0 +1,166 @@
+<?php if($this->session->userdata('managedprojectdetails')){?>
+
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/sparkline/jquery.sparkline.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.resize.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+	
+<?php }?>
+<?php $total;$i = 0;
+									    	$gtotal = 0;
+									    	foreach($orderitems as $item)
+									    	{
+									    		$total = number_format($item->quantity * $item->price,2);
+									    		$gtotal+=$total;
+									    		$i++;
+											}
+											$total = number_format($gtotal,2);
+											?>
+<script type="text/javascript">
+            $(document).ready(function() {
+                
+                
+                $(".pid").change(function(event){
+                    <?php if(is_null($order->project)){?>
+                	var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> to "+ $(".pid option:selected").text();
+                	<?php }else{?>
+                	var msj = "Are you sure you wish to re-assign order value";
+                	<?php }?>
+                	$(".form-horizontal").submit(function(obj){
+                		if(!confirm(msj)){return false;}
+                    	});
+						$.ajax("<?php echo base_url()?>admin/costcode/get_cc_by_project",{data:{projectfilter:$(this).val()},dataType:"json",type:"POST",success:function(data,textStatus){
+									$(".ccid").empty();
+							   for(var i=0;i<data.length;i++){
+								   
+									$(".ccid").append('<option value="'+data[i].id+'">'+data[i].code+'</option>');
+								   }
+							   $(".cost-code").show();
+							   }});
+                    });
+            });
+</script>
+<section class="row-fluid">
+	<div class="box">
+		<div class="span12">
+			
+			<h3 class="box-header">Assign Order to Project</h3>
+			<div class="well">
+				<?php if(@$orderitems[0]->accepted == 1){?>
+				<form class="form-horizontal" action="<?php echo base_url()?>admin/order/add_to_project/<?php echo $orderid;?>" method="post" >
+					<div class="control-group">
+						<label for="inputEmail" class="control-label">
+						<strong>Select Project to assign order to</strong>
+						</label>
+						<div class="controls">
+							<select class="pid" name="pid">
+								<option value="0">Select</option>
+								<?php foreach($projects as $p){?>
+								<option value="<?php echo $p->id;?>" <?php if($p->id==$order->project){ echo "selected"; }?>><?php echo $p->title?></option>
+								<?php }?>
+							</select>
+						</div>
+					</div>
+					
+					<div class="control-group cost-code" <?php if(is_null($order->costcode)){ echo "style='display:none'";}?>>
+						<label for="inputEmail" class="control-label">
+						<strong>Select Cost Code</strong>
+						</label>
+						<div class="controls">
+							<select name="ccid" class="ccid" >
+							<?php if(!is_null($order->costcode)){?><option value="<?php echo $order->costcode;?>"><?php echo $order->codeName;?></option><?php }?>
+							</select>
+						</div>
+					</div>
+				
+				<div>
+				<h3 class="box-header">Order Items for Order# <?php echo $order->ordernumber;?></h3>
+						<table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:20%">ORDER #</th>
+                                                <th style="width:30%">DATE</th>
+                                                <th style="width:20%">TYPE</th>
+                                           
+                                            </tr>
+                                        </thead>
+                                        
+										<tbody>
+											<tr>
+												<td><?php echo $order->ordernumber;?></td>
+												<td><?php echo date('m/d/Y',strtotime($order->purchasedate));?></td>
+												<td><?php echo $order->type;?></td>
+											</tr>
+											<tr><td>Total:<td><td  colspan="2">$<?php $i = 0;
+									    	$gtotal = 0;
+									    	foreach($orderitems as $item)
+									    	{
+									    		$total = number_format($item->quantity * $item->price,2);
+									    		$gtotal+=$total;
+									    		$i++;
+											}
+											echo number_format($gtotal,2);
+											?></td></tr>
+											
+										</tbody>
+										</table>
+				</div>
+				<input type="submit" value="Assign">
+				</form>
+				<?php }else{echo 'Order is declined by one of the supplier(s)';}?>
+			</div>
+					
+			<br/>
+			
+			<div>
+				<?php if($orderitems) { ?>
+                                    
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:20%">Item Code</th>
+                                                <th style="width:30%">Quantity</th>
+                                                <th style="width:20%">Price</th>
+                                                <th style="width:10%">Total</th>
+                                                <th style="width:10%">Status</th>
+                                            </tr>
+                                        </thead>
+                                        
+										<tbody>
+							              <?php
+									    	$i = 0;
+									    	$gtotal = 0;
+									    	foreach($orderitems as $item)
+									    	{
+									    		$total = number_format($item->quantity * $item->price,2);
+									    		$gtotal+=$total;
+									    		$i++;
+									      ?>
+                                            <tr>
+                                                <td><?php echo $item->itemdetails->itemname;?></td>
+                                                <td><?php echo $item->quantity;?></td>
+                                                <td>$<?php echo $item->price;?></td>
+                                                <td><?php echo $total;?></td>
+                                                <td><?php echo $item->status;?></td>
+                                            </tr>
+                                          <?php } ?>
+                                            <tr>
+                                                <td colspan="3">Total</td>
+                                                <td colspan="2">$<?php echo number_format($gtotal,2);?></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+            	<?php }else{ ?>
+            	No Purchase Orders.
+            	<?php }?>
+            </div>
+		</div>
+	
+		
+	</div>
+</section>

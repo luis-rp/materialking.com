@@ -1,0 +1,281 @@
+* {
+	_font-family:source-sans-pro;
+	_font-size: 16px;
+	_color:#282828;
+}
+
+.wrapper {
+	position:relative;
+	width:80%;
+	margin:20px auto;
+}
+
+/* Defining the animation */
+
+@-webkit-keyframes progress
+{
+	to {background-position: 30px 0;}
+}
+
+@-moz-keyframes progress
+{
+  to {background-position: 30px 0;}
+}
+
+@keyframes progress
+{
+  to {background-position: 30px 0;}
+}
+
+/* Set the base of our loader */
+
+.barBg {
+	background:#282828;
+	width:100%;
+	height:25px;
+	border:2px solid #282828;
+	border-radius: 20px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	box-shadow: 0px 5px 17px rgba(40, 40, 40, 0.5);
+	margin-bottom:30px;
+}
+
+
+.bar {
+	
+	background: #E9D4B8;
+	height:30px;
+	height: 25px;
+	border-radius: 12px;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 10px;
+}
+
+/* Set the linear gradient tile for the animation and the playback */
+
+.barFill {
+	width: 100%;
+	height: 25px;
+	border-radius: 20px;
+	
+	background-repeat: repeat-x;
+	background-size: 30px 30px;
+	
+}
+
+/* Here's some predefined widths to control the fill. Add these classes to the "bar" div */
+
+.ten {
+	width: 10%; /* Sets the progress to 10% */
+}	
+
+.twenty {
+	width: 20%; /* Sets the progress to 20% */
+}	
+
+.thirty {
+	width: 30%; /* Sets the progress to 30% */
+}	
+
+.forty {
+	width: 40%; /* Sets the progress to 40% */
+}	
+
+.fifty {
+	width: 50%; /* Sets the progress to 50% */
+}
+
+.sixty {
+	width: 60%; /* Sets the progress to 60% */
+}	
+
+.seventy {
+	width: 70%; /* Sets the progress to 70% */
+}	
+
+.eighty {
+	width: 80%; /* Sets the progress to 80% */
+}	
+
+.ninety {
+	width: 90%; /* Sets the progress to 90% */
+}	
+
+.hundred {
+	width: 100%; /* Sets the progress to 100% */
+}	
+
+/* Some colour classes to get you started. Add the colour class to the "bar" div */
+
+.aquaGradient{
+	background: -moz-linear-gradient(top,  #7aff32 0%, #54a6e5 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7aff32), color-stop(100%,#54a6e5));
+	background: -webkit-linear-gradient(top,  #7aff32 0%,#54a6e5 100%);
+	background: -o-linear-gradient(top,  #7aff32 0%,#54a6e5 100%);
+	background: -ms-linear-gradient(top,  #7aff32 0%,#54a6e5 100%);
+	background: linear-gradient(to bottom,  #7aff32 0%,#54a6e5 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7aff32', endColorstr='#54a6e5',GradientType=0 );
+}
+
+.roseGradient {
+	background: #ff3232;
+	background: -moz-linear-gradient(top,  #ff3232 0%, #ed89ff 47%, #ff8989 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff3232), color-stop(47%,#ed89ff), color-stop(100%,#ff8989));
+	background: -webkit-linear-gradient(top,  #ff3232 0%,#ed89ff 47%,#ff8989 100%);
+	background: -o-linear-gradient(top,  #ff3232 0%,#ed89ff 47%,#ff8989 100%);
+	background: -ms-linear-gradient(top,  #ff3232 0%,#ed89ff 47%,#ff8989 100%);
+	background: linear-gradient(to bottom,  #ff3232 0%,#ed89ff 47%,#ff8989 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3232', endColorstr='#ff8989',GradientType=0 );
+}
+
+.madras { /* Credit to Divya Manian via http://lea.verou.me/css3patterns/#madras */
+	
+	
+}
+
+.cornflowerblue {
+	background-color: CornflowerBlue;
+	box-shadow:inset 0px 0px 6px 2px rgba(255,255,255,.3);
+}
+
+.carrot {
+	background: #f2a130;
+	background: -moz-linear-gradient(-45deg,  #f2a130 0%, #e5bd6e 100%);
+	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#f2a130), color-stop(100%,#e5bd6e));
+	background: -webkit-linear-gradient(-45deg,  #f2a130 0%,#e5bd6e 100%);
+	background: -o-linear-gradient(-45deg,  #f2a130 0%,#e5bd6e 100%);
+	background: -ms-linear-gradient(-45deg,  #f2a130 0%,#e5bd6e 100%);
+	background: linear-gradient(135deg,  #f2a130 0%,#e5bd6e 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2a130', endColorstr='#e5bd6e',GradientType=1 );
+
+}
+
+/* Progressbar Timeline */
+#progress {
+    display: table;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    width: 100%;
+}
+#progress:before, #progress:after {
+    content: "";
+    display: table;
+}
+#progress:after {
+    clear: both;
+}
+#progress ul {
+    background-color: #DFE0DD;
+    display: table-row;
+    height: 40px;
+    margin-bottom: 2px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    width: 100%;
+}
+#progress ul.closed {
+    background-color: #000000;
+}
+#progress ul li {
+    display: table-cell;
+    font-size: 14px;
+    height: 40px;
+    line-height: 20px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#progress ul li.complete {
+    background-color: #000000;
+    background-image: url("../images/complete-complete-abd1a8e4b92d76b37e72c10fb1d09463.png");
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    color: white;
+    padding-left: 15px;
+    padding-right: 3px;
+    text-shadow: none;
+}
+#progress ul li.active {
+    background-color: #59DC41;
+    background-image: url("../images/complete-active-79a0c1a6fd9066940a37b3bb0ef66c38.png"), url("../images/active-future-e16f62b13d47b74257e3822cffb3bc02.png");
+    background-position: left center, right center;
+    background-repeat: no-repeat, no-repeat;
+    color: #203F21;
+    padding-left: 15px;
+    padding-right: 10px;
+}
+#progress ul li.late {
+    background-color: #D52415;
+    background-image: url("../images/complete-error-f1de6b85be0c835c3656ee9a448335b7.png"), url("../images/error-future-9d26f76208976fe73c07b7c9e9abd00d.png");
+    background-position: left center, right center;
+    background-repeat: no-repeat, no-repeat;
+    color: white;
+    padding-left: 15px;
+    padding-right: 10px;
+    text-shadow: none;
+}
+#progress ul li.future {
+    background-color: #DFE0DD;
+    background-image: url("../images/future-future-aba74fbb554e72017f403c0a297da39b.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+    color: #9C9A9B;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+#progress ul li:first-child {
+    background-image: none;
+    padding-left: 10px;
+}
+#progress ul li.active:first-child {
+    background-image: url("../images/active-future-e16f62b13d47b74257e3822cffb3bc02.png");
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+#progress ul li:last-child {
+    background-image: none;
+    padding-right: 10px;
+}
+#progress ul li.complete:last-child {
+    background-image: url("../images/complete-complete-abd1a8e4b92d76b37e72c10fb1d09463.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+#progress ul li.active:last-child {
+    background-color: #DFE0DD;
+    background-image: url("../images/complete-future-b7032eb4ae70b96b34830e9449b2c13f.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+    color: #9C9A9B;
+}
+#progress ul li.cancelled {
+    background-color: #DFE0DD;
+    background-image: url("../images/complete-future-b7032eb4ae70b96b34830e9449b2c13f.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+    color: #D52327;
+    padding-left: 25px;
+}
+#progress ul li span {
+    display: block;
+    font-size: 10px;
+    line-height: 12px;
+    width: 100%;
+}

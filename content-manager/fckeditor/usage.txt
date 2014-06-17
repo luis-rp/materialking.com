@@ -1,0 +1,20 @@
+ <?php
+		
+					$registry      = Zend_Registry::get ( 'var' );
+					$absolutePath  = $registry ['absolutePath'];
+					$baseUrl       = $registry ['URL'];
+							
+					include_once($absolutePath."/fckeditor/fckeditor.php");
+					
+					$sBasePath	= $baseUrl."/fckeditor/";
+					$oFCKeditor = new FCKeditor('eventsdescription') ;
+					$oFCKeditor->BasePath =  $sBasePath;
+					$oFCKeditor->Height = '500';
+					$oFCKeditor->Width = '100%';
+					$oFCKeditor->Value = $this->current_events['description'];
+					$oFCKeditor->ToolbarSet = 'New_one';
+					$oFCKeditor->Config['SkinPath'] = $sBasePath . 'editor/skins/office2003/' ;
+					$oFCKeditor->Create() ;
+		
+				
+	          ?>

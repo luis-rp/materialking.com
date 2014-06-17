@@ -1,0 +1,549 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Order extends CI_Controller 
+{
+	public function Order()
+	{
+		parent::__construct ();
+		$this->load->library('session');
+	    if(!$this->session->userdata('id'))
+		{
+			redirect('admin/login/index', 'refresh'); 
+		}
+		$this->load->library ('form_validation');
+		$this->load->library ( array ('table', 'validation', 'session'));
+		$this->load->helper ( 'form', 'url');
+		$this->load->dbforge();
+		$this->load->model('admin/statmodel');
+		$this->load->model('admin/company_model');
+		$this->load->model('admin/settings_model');
+		$this->load->model('admin/quote_model');
+		$data['pendingbids'] = $this->quote_model->getpendingbids();
+		$this->form_validation->set_error_delimiters ('<div class="red">', '</div>');
+		$data ['title'] = "Administrator";
+		$this->load = new My_Loader();
+		$this->load->template ( '../../templates/admin/template', $data);
+	}
+	
+	public function index()
+	{
+		$this->orders();
+	}
+	
+	
+	function orders()
+	{
+		$search = '';
+		$filter = '';
+		if(!@$_POST)
+		{
+			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+			$_POST['searchto'] = date('m/d/Y');
+		}
+		
+		if(@$_POST)
+		{
+			if(@$_POST['searchfrom'] && @$_POST['searchto'])
+			{
+				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+				$todate = date('Y-m-d', strtotime($_POST['searchto']));
+				$search = " AND STR_TO_DATE(purchasedate,'%Y-%m-%d') >= '$fromdate'
+				AND STR_TO_DATE(purchasedate,'%Y-%m-%d') <= '$todate'";
+			}
+			elseif(@$_POST['searchfrom'])
+			{
+				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+				$search = " AND STR_TO_DATE(purchasedate,'%Y-%m-%d') >= '$fromdate'";
+			}
+			elseif(@$_POST['searchto'])
+			{
+				$todate = date('Y-m-d', strtotime($_POST['searchto']));
+				$search = " AND STR_TO_DATE(purchasedate,'%Y-%m-%d') <= '$todate'";
+			}
+			if(@$_POST['ordernumber'])
+			{
+				$filter = " AND o.ordernumber='".$_POST['ordernumber']."'";
+			}
+		}
+		$sql = "SELECT *
+				FROM ".$this->db->dbprefix('order')." o
+				WHERE purchasingadmin=".$this->session->userdata('id')."
+				$search
+				$filter		
+				ORDER BY purchasedate DESC";
+		//echo $sql;
+	/*	$sql = "SELECT *
+				FROM ".$this->db->dbprefix('order')." o,".$this->db->dbprefix('order')." p
+				WHERE o.purchasingadmin=".$this->session->userdata('id')." AND o.project=p.id";*/
+		$orders = $this->db->query($sql)->result();
+		$data['orders'] = array();
+		foreach($orders as $order)
+		{
+			if(!is_null($order->project)){
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('project')." p
+				WHERE id=".$order->project;
+				$project = $this->db->query($sql)->result();
+				$order->prjName = "assigned to ".$project[0]->title;
+			}else{
+				$order->prjName = "Pending Assignment";
+			}
+			
+			if(!is_null($order->costcode)){
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('costcode')." p
+				WHERE id=".$order->costcode;
+				$project = $this->db->query($sql)->result();
+				$order->codeName = $project[0]->code;
+			}else{
+				$order->codeName = "Pending Cost Code Assignment";
+			}
+			$data['orders'][]=$order;
+		}
+		$data['title_orders'] = "Orders";
+		$this->load->view('admin/order/list',$data);
+	}
+	
+	
+	function allorders()//super admin
+	{
+		$sql = "SELECT o.*, SUM(quantity*price) total
+				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+				WHERE od.orderid = o.id
+				GROUP BY o.id
+				ORDER BY purchasedate DESC";
+		$orders = $this->db->query($sql)->result();
+		$data['orders'] = array();
+		foreach($orders as $order)
+		{
+			if($order->purchasingadmin)
+			{
+				$this->db->where('id',$order->purchasingadmin);
+				$order->purchaser = $this->db->get('users')->row();
+			}
+			else
+			{
+				$order->purchaser = new stdClass();
+				$order->purchaser->companyname = 'Guest';
+			}
+			$query = "SELECT c.title company, sum(quantity*price) total 
+					  FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c
+					  WHERE od.company=c.id AND od.orderid='".$order->id."' GROUP BY c.id";
+			$order->details = $this->db->query($query)->result();
+			$data['orders'][]=$order;
+		}
+		//echo '<pre>'; print_r($data['orders']);die;
+		$this->load->view('admin/order/listall',$data);
+	}
+	
+	function details($id)
+	{
+		$this->db->where('id',$id);
+		$order = $this->db->get('order')->row();
+		if(!$order)
+			redirect('order');
+	
+		if($order->purchasingadmin)
+		{
+			$this->db->where('id',$order->purchasingadmin);
+			$order->purchaser = $this->db->get('users')->row();
+		}
+		else
+		{
+			$order->purchaser->companyname = 'Guest';
+		}
+		
+		$this->db->where('orderid',$id);
+		$orderdetails = $this->db->get('orderdetails')->result();
+		
+		$transfers = $this->db->where('orderid',$id)->get('transfer')->result();
+		//print_r($transfers);die;
+		foreach($transfers as $transfer)
+		{
+    	    $config = $this->config->config;
+    		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+    		Stripe::setApiKey($config['STRIPE_API_KEY']);
+            
+            $info = Stripe_Transfer::retrieve($transfer->transferid);
+            $this->db->where('id',$transfer->id)->update('transfer',array('status'=>$info['status']));
+		}
+		//print_r($transfers);die;
+		$sql = "SELECT t.*, c.title companyname FROM 
+			   ".$this->db->dbprefix('transfer')." t, ".$this->db->dbprefix('company')." c
+			   WHERE t.orderid='$id' AND t.company=c.id";
+	    //echo $sql;
+		$transfers = $this->db->query($sql)->result();
+		//print_r($transfers);die;
+		$data['transfers'] = $transfers;
+		//print_r($transfers);
+		
+		if(!is_null($order->project)){
+		$this->db->where('id',$order->project);
+		$prj = $this->db->get('project')->row();
+		$order->prjName = $prj->title;
+		}
+		$data['order'] = $order;
+		
+		if(!is_null($order->costcode)){
+			$this->db->where('id',$order->costcode);
+			$costcodes = $this->db->get('costcode')->result();
+			$data['costcodes'] = $costcodes;
+		}
+		 
+		$data['orderitems'] = array();
+		
+		$companyamounts = array();
+		$companies = array();
+		foreach($orderdetails as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$itemdetails = $this->db->get('companyitem')->row();
+		
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+			
+			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+			
+			$item->itemdetails = $itemdetails;
+			
+			$bankaccount = $this->db->where('company',$item->company)->get('bankaccount')->row();
+			$item->bankaccount = $bankaccount;
+			
+			$data['orderitems'][]=$item;
+			
+			if(!isset($companyamounts[$item->company]))
+			{
+			    $company = $this->db->where('id',$item->company)->get('company')->row();
+			    $companies[]=$company;
+			    $company->amount = $item->quantity * $item->price;
+			    $company->paymentstatus = $item->paymentstatus;
+			    $company->paymenttype = $item->paymenttype;
+			    $company->paymentnote = $item->paymentnote;
+			
+				$bankaccount = $this->db->where('company',$item->company)->get('bankaccount')->row();
+				$item->bankaccount = $bankaccount;
+			
+			    $company->bankaccount = $bankaccount;
+			    
+			    $companyamounts[$item->company] = $company;
+			    $companyamounts[$item->company]->status = $item->status;
+			    $companyamounts[$item->company]->accepted = $item->accepted;
+			}
+			else
+			{
+			    $companyamounts[$item->company]->amount += $item->quantity * $item->price;
+			}
+		}
+		$data['companyamounts'] = $companyamounts;
+		$data['companies'] = $companies;
+		
+		$pa = $order->purchasingadmin;
+	    $messages = $this->db->where('orderid',$id)->order_by('senton')->get('ordermessage')->result();
+	    $data['messages'] = array();
+	    foreach($messages as $msg)
+	    {
+	        if(($msg->fromtype=='users' && $msg->fromid==$pa)||($msg->totype=='users' && $msg->toid==$pa))
+	        {
+	            $from = $this->db->where('id',$msg->fromid)->get($msg->fromtype)->row();
+	            $msg->fromname = $msg->fromtype=='company'?$from->title:@$from->companyname;
+	            $to = $this->db->where('id',$msg->toid)->get($msg->totype)->row();
+    	        $msg->toname = $msg->totype=='company'?$to->title:@$to->companyname;
+	            
+	            $data['messages'][]=$msg;
+	        }
+	    }
+		//echo '<pre>';print_r($companyamounts);die;
+		$this->load->view('admin/order/details',$data);
+	}
+	
+	function status()
+	{
+		$this->db->where('id',$_POST['id']);
+		$this->db->update('order',$_POST);
+		redirect('admin/order/details/'.$_POST['id']);
+	}
+	
+	function pay()
+	{
+	    $amount = $_POST['amount'];
+		unset($_POST['amount']);
+		$this->db->where('orderid',$_POST['orderid']);
+		$this->db->where('company',$_POST['company']);
+		$_POST['status'] = 'Pending';
+		$this->db->update('orderdetails',$_POST);
+		
+		$company = $this->db->where('id',$_POST['company'])->get('company')->row();
+		$orders = $order = $this->db->where('id',$_POST['orderid'])->get('order')->row();
+		
+		$c = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
+		
+		$body = "Dear " . $company->title . ",<br><br>
+		". $c->companyname." send payment for the PO ".$orders->ordernumber.";
+		The following information sent:
+		Payment Type : ".$_POST['paymenttype']."
+		<br/>
+		Payment Amount : ".$amount."
+		<br/>
+		Payment Note : ".$_POST['paymentnote']."
+		<br/>
+		Payment Date: ".date('Y-m-d')."
+		<br><br>";
+		
+		$this->load->library('email');
+		$this->email->from($c->email, $c->companyname);
+		$this->email->to($company->title . ',' . $company->primaryemail);
+		$this->email->subject('Payment made for the order: '.$orders->ordernumber);
+		$this->email->message($body);
+		$this->email->set_mailtype("html");
+		$this->email->send();
+		
+		
+		redirect('admin/order/details/'.$_POST['orderid']);
+		
+	}
+	
+    function paybycc()
+    {
+		ini_set('max_execution_time', 300);
+		$config = (array)$this->settings_model->get_current_settings();
+		$config = array_merge($config, $this->config->config);
+		
+		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+		Stripe::setApiKey($config['STRIPE_API_KEY']);
+		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
+		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $_POST['amount'] * 100, 'currency' => 'usd' ));
+		//echo $charge;
+		$chargeobj = json_decode($charge);
+		if(@$chargeobj->paid)
+		{
+		    $bankaccount = $this->db->where('company',$_POST['company'])->get('bankaccount')->row();
+			$company = $this->db->where('id',$_POST['company'])->get('company')->row();
+			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+			{
+	          $recbankInfo = array(
+	          			'country' =>'US', 
+	          			'routing_number' => $bankaccount->routingnumber, 
+	          			'account_number' => $bankaccount->accountnumber
+	          );
+
+              $recObj = Stripe_Recipient::create(array(
+              "name" => $company->title, 
+              "type" => "individual",
+              "email" => $company->primaryemail,
+              "bank_account" => $recbankInfo)
+              );
+              
+              $obj = json_decode($recObj);
+              $_POST['amount'] = round($_POST['amount'],2);
+              $transferObj = Stripe_Transfer::create(array(
+                  "amount" => $_POST['amount'] * 100, 
+                  "currency" => "usd", 
+                  "recipient" => $obj->id, 
+                  "description" => "Transfer for ".$company->primaryemail )
+              );
+              $tobj = json_decode($transferObj);
+                      
+              $transfer = array();
+              $transfer['orderid'] = $_POST['orderid'];
+              $transfer['purchasingadmin'] = $this->session->userdata('purchasignadmin');
+              $transfer['company'] = $company->id;
+              $transfer['amount'] = $_POST['amount'];
+              $transfer['transferid'] = $tobj->id;
+              $transfer['transferdate'] = date('Y-m-d H:i');
+              $transfer['status'] = '';
+              $this->db->insert('transfer',$transfer);
+                      
+              $this->db->where('orderid', $_POST['orderid'])->where('company', $company->id);
+              $this->db->update('orderdetails', array('status'=>'Pending','paymentstatus'=>'Paid','paymenttype'=>'Credit Card','paymentnote'=>$chargeobj->balance_transaction));
+              
+              
+              $transferbody = "Dear {$company->title},<br/><br/>
+$ {$_POST['amount']} has been transfered to your bank account for order#{$_POST['orderid']}, 
+with the transfer#{$tobj->id}.
+";
+              $settings = (array)$this->settings_model->get_current_settings ();
+    		  
+    	      $this->load->library('email');
+    		
+              $this->email->from($settings['adminemail'], "Administrator");
+            
+              $this->email->to($company->primaryemail); 
+            
+              $this->email->subject('Order details from ezpzp');
+              $this->email->message($transferbody);	
+              $this->email->set_mailtype("html");
+              $this->email->send();
+              
+              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Invoice paid successfully.</div></div>');
+        	}
+		}
+		redirect('admin/order/details/' . $_POST['orderid']);
+    }
+	
+	function add_to_project($id)
+	{
+		$project = $this->session->userdata('managedproject');
+		
+		if(!$project)
+			redirect('admin/dashboard');
+		
+		
+		if($this->input->post('pid') != 0){
+			$this->db->where('id',$id);
+			$this->db->update('order',array('project'=>$this->input->post('pid'),'costcode'=>$this->input->post('ccid')));
+			
+			
+			redirect('admin/order');
+		}else{
+			/*$this->db->select('ordernumber');
+			$this->db->where('id',$id);
+			$q_order = $this->db->get('order')->row();
+			$data['orders'] = $q_order;*/
+			
+			$this->db->where('id',$id);
+			$order = $this->db->get('order')->row();
+			if(!$order)
+				redirect('admin/order');
+			
+			if($order->purchasingadmin)
+			{
+				$this->db->where('id',$order->purchasingadmin);
+				$order->purchaser = $this->db->get('users')->row();
+			}
+			else
+			{
+				$order->purchaser->companyname = 'Guest';
+			}
+			
+			$this->db->where('orderid',$id);
+			$orderdetails = $this->db->get('orderdetails')->result();
+			
+			if(!is_null($order->costcode)){
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('costcode')." p
+				WHERE id=".$order->costcode;
+				$project = $this->db->query($sql)->result();
+				$order->codeName = $project[0]->code;
+			}else{
+				$order->codeName = "Pending Cost Code Assignment";
+			}
+			
+			$data['order'] = $order;
+			$data['orderitems'] = array();
+			
+			foreach($orderdetails as $item)
+			{
+				$this->db->where('itemid',$item->itemid);
+				$this->db->where('type','Supplier');
+    			$itemdetails = $this->db->get('companyitem')->row();
+    		
+    			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+    			
+    			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+    			
+    			$item->itemdetails = $itemdetails;
+					
+				$data['orderitems'][]=$item;
+			}
+				
+			$data['projects']  =  $this->statmodel->getProjects();
+			$data['orderid'] = $id;
+			$this->load->view('admin/order/list_projects',$data);
+		}
+	}
+	
+	function sendemail($id)
+	{
+		$body = $_POST['message'];
+		$order = $this->db->where('id',$id)->get('order')->row();
+		$company = $this->db->where('id',$_POST['company'])->get('company')->row();
+		$orderdetails = $this->db->where('orderid',$id)->where('company',$company->id)->get('orderdetails')->result();
+	    $orderitems = array();
+		foreach($orderdetails as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$itemdetails = $this->db->get('companyitem')->row();
+		
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+			
+			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+			
+			$item->itemdetails = $itemdetails;
+			
+			$orderitems[]=$item;
+		}
+		
+		$body .= "<br><br>Order details:";
+		
+		$body .= '
+			<table class="table table-bordered span12">
+            	<tr>
+            		<th>Item</th>
+            		<th>Price</th>
+            		<th>Quantity</th>
+            		<th>Total</th>
+            	</tr>';
+            	
+                	$gtotal=0; 
+                	foreach ($orderitems as $item)
+                	{
+                	    $total = $item->quantity*$item->quantity;
+                	    $gtotal+=$total;
+                         $body .= '<tr>
+                            		<td>'.$item->itemdetails->itemname.'</td>
+                            		<td>'.$item->price.'</td>
+                            		<td>'.$item->quantity.'</td>
+                            		<td>'.number_format($total,2).'</td>
+                            	</tr>';
+            	    }
+            	 
+            	    $tax = $gtotal*$order->taxpercent/100;
+            	    $totalwithtax = number_format($tax+$gtotal,2);
+            	
+            	$body .= '<tr>
+            		<td colspan="4" align="right">Total</td>
+            		<td>$'.number_format($gtotal,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="4" align="right">Tax</td>
+            		<td>$'. number_format($tax,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="4" align="right">Total</td>
+            		<td>$'. $totalwithtax.'</td>
+            	</tr>
+            	
+            </table>';
+            	
+		$this->load->library('email');
+		
+		$this->email->to($company->primaryemail);
+		$this->email->from($this->session->userdata('email'));
+		
+		$this->email->subject($_POST['subject']);
+		$this->email->message($body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
+		
+		$om = array();
+		$om['orderid'] = $id;
+		$om['fromtype'] = 'users';
+		$om['fromid'] = $order->purchasingadmin;
+		$om['totype'] = 'company';
+		$om['toid'] = $company->id;
+		$om['subject'] = $_POST['subject'];
+		$om['message'] = $_POST['message'];
+		$om['senton'] = date('Y-m-d');
+		
+		$this->db->insert('ordermessage',$om);
+		
+		$message = "Message sent successfully.";
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
+        redirect('admin/order/details/'.$id);
+	}
+
+}
