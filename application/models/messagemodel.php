@@ -41,9 +41,16 @@ class Messagemodel extends Model
 			$this->db->where('id',$not->purchasingadmin);
 			$purchasingadmin = $this->db->get('users')->row();
 			if($not->category=='Order')
-			{
+			{				
 				$not->class='info';
-				$not->message =  "You have received a new order request store with order# $not->ponum";
+				$this->db->where('ordernumber',$not->ponum);
+				$ordertyperesult = $this->db->get('order')->result();
+		
+				if(isset($ordertyperesult[0]->type) && $ordertyperesult[0]->type)
+				$ordertype = $ordertyperesult[0]->type;
+				else 
+				$ordertype = "";
+				$not->message =  "You have received a new order request store with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
 				$this->db->where('orderid',$not->quote);
 				$this->db->where('company',$company->id);
 				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";

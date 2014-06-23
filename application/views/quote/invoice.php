@@ -42,7 +42,7 @@
 			                  </td>
 			                  <td>
 			                  	Payment: <?php echo $invoice->paymentstatus;?>
-			                  	<?php if($invoice->paymentstatus=='Unpaid'){?>
+			                  	<?php if($invoice->paymentstatus=='Unpaid'  || $invoice->status =='Error'){?>
 			                  	<form action="<?php echo site_url('quote/requestpayment');?>" method="post">
 			                  		<input type="hidden" name="invoicenum" value="<?php echo $invoice->invoicenum;?>"/>
 			                  		<input type="submit" value="Request Payment">

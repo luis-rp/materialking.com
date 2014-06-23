@@ -59,6 +59,7 @@ class Register extends CI_Controller
 		$itemid = $this->db->insert_id();
 		$this->sendRegistrationEmail($itemid, $key);
 		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
+		$this->session->set_userdata('companysname', $_POST['companyname']);
 		redirect('admin/register'); 
 	}
 	
@@ -251,7 +252,8 @@ class Register extends CI_Controller
 		Your Login Profile is as follows:<br/>
 		Login User Name : ". $_POST['username'] ." <br/>
 		Login Password :  ". $rawpassword ." <br/>
-		Company Name: ". $_POST['fullname'] ." <br/>
+		Company Name: ". $this->session->userdata('companyname')." <br/>
+		Contact Name: ". $_POST['fullname'] ." <br/>
 		Email Address: ". $coreemail ." <br/> <br/>
 		
 		<a href='$link' target='blank'>$link</a>";

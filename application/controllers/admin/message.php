@@ -82,7 +82,7 @@ class message extends CI_Controller
         
         $this->email->to($c->primaryemail); 
 			        
-		$link = base_url().'home/message/'.$key;
+		$link = base_url().'message/messages/'.$key;
 		
 	    $body = "
     	Dear ".$c->title.",<br><br>
@@ -233,7 +233,7 @@ class message extends CI_Controller
 		$quotewhere = '';
 		$con = '';
 		if($quote)
-			$quotewhere = ' AND m.quote='.$quote;
+			$quotewhere = ' AND m.messagekey='.$quote;
 		
 		if ($this->session->userdata('managedprojectdetails'))
 		{

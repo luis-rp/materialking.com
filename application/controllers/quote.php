@@ -1614,7 +1614,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$this->email->from($company->primaryemail);
 		$this->email->to($pa->email);
-		$subject = 'Shipment made by supplier';
+		$subject = 'Supplier Shipment Status'; 
 		
 		$body = "Supplier {$company->title} has set the status of 
 				Invoice# {$_POST['invoicenum']} to {$_POST['status']} 

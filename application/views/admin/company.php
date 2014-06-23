@@ -38,7 +38,7 @@ $(document).ready(function(){
     <div class="control-group">
 	    <label class="control-label">Username</label>
 	    <div class="controls">
-	      <?php echo $this->validation->username;?>
+	      <input type="text" id="username" name="username" class="span4" value="<?php if(isset($this->validation->username)) echo $this->validation->username; else echo ''; ?>">
 	    </div>
     </div>
     
@@ -46,7 +46,7 @@ $(document).ready(function(){
 	    <label class="control-label">Password</label>
 	    <div class="controls">
 	      <input type="password" id="password" name="password" class="span4">
-	      <?php if($this->session->userdata('usertype_id') == 1){?>Existing password: <?php echo $this->validation->pwd;?>
+	      <?php if($this->session->userdata('usertype_id') == 1){?>Existing password: <?php if(isset($this->validation->pwd)) echo $this->validation->pwd; else echo '';?>
 	      <br/><?php }?>(Enter to change)
 	    </div>
     </div>

@@ -33,7 +33,7 @@ class Message extends CI_Controller
 			redirect('company/login');
 		$quotewhere = '';
 		if($quote)
-			$quotewhere = " AND m.quote=$quote";
+			$quotewhere = " AND m.messagekey=$quote";
 		$pafilter = '';		
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND m.purchasingadmin='".$_POST['searchpurchasingadmin']."'";

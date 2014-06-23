@@ -64,7 +64,7 @@ class Order extends CI_Controller
 			}
 		}
  		
-		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email
+		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted 
 				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
 				WHERE o.id=od.orderid AND od.company=".$company->id." 
 				$search $filter		
@@ -209,7 +209,7 @@ class Order extends CI_Controller
         		$this->email->to($order->email);
         		$subject = 'Payment verified by supplier';
         		
-        		$body = "Payment verified for order# {$order->ordernumber}<br><br>Order details:";
+        		$body = "Payment verified for order# {$order->ordernumber}<br><br>Supplier Address: {$company->address} <br><br>Supplier Phone:  {$company->phone} <br><br>Order details:";
 		
 		        $body .= $this->getorderdetails($order->id);	
 				

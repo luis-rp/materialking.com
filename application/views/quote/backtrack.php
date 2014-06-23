@@ -138,13 +138,13 @@ $(document).ready(function(){
           		<th>Notes</th>
           		<th>Updated</th>      		
           	</tr>
-          	<?php foreach($q->etalog as $l){?>
+          	<?php $i=0; foreach($q->etalog as $l){?>
           	<tr>
-          		<td><?php echo $l->daterequested;?></td>
+          		<td><?php if ($i==0) echo $l->daterequested; else echo "changed from ".$olddate." to ".$l->daterequested; ?></td>
           		<td><?php echo $l->notes;?></td>
-          		<td><?php echo $l->updated;?></td>
+          		<td><?php echo date("m/d/Y", strtotime($l->updated));?></td>
           	</tr>
-          	<?php }?>
+          	<?php $i++; $olddate = $l->daterequested; }?>
           </table>
         </div>
       </div>

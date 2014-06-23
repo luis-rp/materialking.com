@@ -67,7 +67,7 @@ $(document).ready( function() {
                                                 		<?php foreach($order->details as $detail){?>
                                                 		<tr>
                                                 			<td><?php echo $detail->company;?></td>
-                                                			<td><?php echo $detail->total;?></td>
+                                                			<td><?php echo round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
                                                 		</tr>
                                                 		<?php }?>
                                                 	</table>

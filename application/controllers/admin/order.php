@@ -65,11 +65,12 @@ class Order extends CI_Controller
 				$filter = " AND o.ordernumber='".$_POST['ordernumber']."'";
 			}
 		}
-		$sql = "SELECT *
-				FROM ".$this->db->dbprefix('order')." o
+		$sql = "SELECT o.*,od.orderid as odorderid, sum(od.price*od.quantity) as totalprice  
+                FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid 
 				WHERE purchasingadmin=".$this->session->userdata('id')."
 				$search
 				$filter		
+				GROUP BY o.id 
 				ORDER BY purchasedate DESC";
 		//echo $sql;
 	/*	$sql = "SELECT *
@@ -126,9 +127,9 @@ class Order extends CI_Controller
 				$order->purchaser = new stdClass();
 				$order->purchaser->companyname = 'Guest';
 			}
-			$query = "SELECT c.title company, sum(quantity*price) total 
-					  FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c
-					  WHERE od.company=c.id AND od.orderid='".$order->id."' GROUP BY c.id";
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent  
+                      FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o  
+                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id"; 
 			$order->details = $this->db->query($query)->result();
 			$data['orders'][]=$order;
 		}
@@ -443,6 +444,10 @@ with the transfer#{$tobj->id}.
     			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
     			
     			$item->itemdetails = $itemdetails;
+    			
+    		     $this->db->where('id',$item->company); 
+				 $companyname = $this->db->get('company')->row(); 
+				 $item->companyname = $companyname->title; 
 					
 				$data['orderitems'][]=$item;
 			}
@@ -475,10 +480,11 @@ with the transfer#{$tobj->id}.
 			$orderitems[]=$item;
 		}
 		
-		$body .= "<br><br>Order details:";
+		 $body .= "<br><br>Supplier Address: {$company->address} <br><br>Supplier Phone:  {$company->phone} <br><br>Order details:"; 
 		
 		$body .= '
 			<table class="table table-bordered span12">
+				 <tr><td colspan ="4">Type :'.$order->type.'</td></tr> 
             	<tr>
             		<th>Item</th>
             		<th>Price</th>

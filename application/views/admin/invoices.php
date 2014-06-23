@@ -173,6 +173,7 @@ function paycc(ptype,idnumber,amount)
                     			<th>PO#</th>
                     			<th>Invoice#</th>
                     			<th>Received On</th>
+                    			<th>Due Date</th>
                     			<th>Total Cost</th>
                     			<th>Payment</th>
                     			<th>Verification</th>
@@ -185,6 +186,7 @@ function paycc(ptype,idnumber,amount)
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
                     			<td><?php echo $item->receiveddate;?></td>
+                    			<td><?php if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo $item->totalprice;?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;

@@ -100,6 +100,7 @@ $(document).ready(function(){
 			    		<th width="120">Cost Code</th>
 			    		<th>Notes</th>
 			    		<th>Invoice#</th>
+			    		<th>Due Date</th>
 			    	</tr>
 			    	<?php 
 			    		
@@ -123,6 +124,7 @@ $(document).ready(function(){
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
 			    		<td><?php echo $item->invoicenum;?></td>
+			    		<td><?php  if(isset($item->datedue) && $item->datedue!="") { echo date("m/d/Y", strtotime($item->datedue)); } else { echo ""; }  ?></td>
 			    		<?php if(0){?>
 			    		<td>
 			    		<?php if($item->paymentstatus){?>

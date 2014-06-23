@@ -66,7 +66,7 @@ $(document).ready(function(){
             
                 
                 <div class="control-group">
-                <label class="control-label">Content</label>
+                <label class="control-label">Content<br><br><a href="<?php echo site_url('admin/itemcode');?>" class="btn btn-green">Back To Items</a></label>
                 <div class="controls">
                    <textarea id="content" class="span12" rows="15"  name="content" required><?php echo @$article->content; ?></textarea>
                 </div>

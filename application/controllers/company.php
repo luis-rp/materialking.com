@@ -167,7 +167,8 @@ class Company extends CI_Controller {
         Login User Name : ". $c->username ." <br/>
         Login Password :  ". $rawpassword ." <br/>
         Company Name: ". $c->title ." <br/>
-        Email Address: ". $c->primaryemail ." <br/> <br/>";
+        Email Address: ". $c->primaryemail ." <br/>
+        Contact Name: ". $c->contact ." <br/> <br/>";
         
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');

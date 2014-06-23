@@ -91,7 +91,8 @@
                 </div>
             </div>
 
-
+<br>
+<a href="<?php echo site_url('site/item')."/".$item->url;?>" class="btn btn-green" style="background-color:#ACC70A;background-image:linear-gradient(to bottom, #BACF0B, #98BA09);border-color:#7C9710;color:#FFFFFF;text-shadow:0 -1px 0 rgba(0, 0, 0, 0.25);"><< Back To Item</a>
 
 
         </div>

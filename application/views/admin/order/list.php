@@ -60,15 +60,24 @@ $(document).ready(function(){
                                                 <th style="width:10%">Project</th>
                                                 <th style="width:10%">Type</th>
                                                 <th style="width:10%">Txn ID</th>
+                                                <th style="width:10%">Amount</th> 
                                                 <th style="width:10%">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 							              <?php
+							              	$total = 0; 
+                                            $oldorderid = ""; 
 									    	$i = 0;
 									    	foreach($orders as $order)
 									    	{
 									    		$i++;
+									    		if($order->id != $oldorderid){ 
+                                                $total = 0; 
+                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+                                            }else{ 
+                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+                                            } 
 									      ?>
                                             <tr>
                                                 <td><?php echo $order->ordernumber;?></td>
@@ -76,6 +85,7 @@ $(document).ready(function(){
                                                 <td><?php echo $order->prjName;?>, <?php echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
+                                                <td><?php echo "$ ".round($total,2);?></td> 
                                                 <td>
                                                 	<a href="<?php echo site_url('admin/order/details/'.$order->id);?>">
                                                 		<span class="icon icon-search"></span>
@@ -85,7 +95,7 @@ $(document).ready(function(){
                                                 	</a>
                                                 </td>
                                             </tr>
-                                          <?php } ?>
+                                           <?php $oldorderid = $order->id;  } ?>
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
