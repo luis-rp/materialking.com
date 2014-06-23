@@ -84,6 +84,11 @@
          </div>
          
          <div>
+         <?php 
+         if(isset($items)){
+         
+         }
+         ?>
 				<?php if(isset($orders)) { ?>
 				<?php if(isset($title_orders)){?><h3 class="box-header"><?php echo $title_orders; ?></h3><?php } ?>
                 <table id="datatable" class="table table-bordered">

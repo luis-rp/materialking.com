@@ -109,11 +109,11 @@ function setprogress(id)
               <?php foreach($items as $item){?>
               <input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
               <tr>
-              	<td><span class='cost-code'><?php echo $item->code?></span></td>
+              	<td><span class="cost-code"><?php echo $item->code?></span></td>
               	<td><?php echo $item->cost?></td>
               	<td><span class='total-spent'><?php echo $item->totalspent?></span></td>
               	<td id=""><?php echo $item->budget?></td>
-              	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
+              	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display:none;'><?php echo $item->manualprogress?></span><?php echo $item->manualprogressbar?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
               	<td><?php echo $item->actions?></td>
               </tr>
@@ -131,7 +131,7 @@ function setprogress(id)
                $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
                $(".cost-code").each(function(index){ cc.push($( this ).text() );});
           	  for(var index=0;index<prog.length;index++){
-					prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
+					prog[index] = (spent[index] * 100 ) / prog[index];
                 }
               console.log(prog);
           	ser[0] ={"name":"Spent","data":spent};
@@ -172,15 +172,6 @@ function setprogress(id)
 		                    }
 		                }
 		            },
-		            plotOptions: {
-	                       series: {
-	                           borderWidth: 0,
-	                           dataLabels: {
-	                               enabled: true,
-	                               format: '$ {point.y:.1f}'
-	                           }
-	                       }
-	                   },
 		            legend: {
 		                layout: 'vertical',
 		                align: 'right',
