@@ -219,7 +219,7 @@ $(function() {
 			   <tr><td class="span4">Subtotal:</td><td class="span8"><?php echo $awardedtotal;?></td>
                <td class="span4">Total Saved:</td><td class="span8"><?php echo $totalsaved;?></td>
 			   <tr><td>Tax:</td><td><?php echo $awardedtax;?></td>
-			   <tr><td>Total:</td><td><span id="selectedtotal"><?php echo $awardedtotalwithtax;?></span></td>
+			   <tr><td>Total:</td><td><?php echo $awardedtotalwithtax;?></td>
 		   </table>
             
 		   </div>
