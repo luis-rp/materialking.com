@@ -88,27 +88,29 @@
          if(isset($items)){
          ?>
         <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
-         <script type="text/javascript">
+          <script type="text/javascript">
          $(function () {
              var seriesData = new Array();
              var dataData = new Array();
-             <?php foreach($items as $item){?>
-             var dateItem =new Date("<?php echo $item->daterequested?>");
-             var costItem = $item->totalprice;
+             <?php foreach($items as $item){ ?>
+          
+             var dateItem =new Date("<?php echo $item->daterequested;?>");
+             var costItem = "<?php echo $item->totalprice; ?>";
              costItem = parseFloat(costItem.slice(1)); 
-             dataData.push([Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDay()),costItem]);
-             seriesData.push({"name":$item->ponum,"data":dataData});
+             dataData.push({name:"<?php echo $item->ponum;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDay()),y:costItem});
+             
              <?php } ?>
+             seriesData.push({"name":"PO#","data":dataData});
              console.log(seriesData);
-             $('#container').highcharts({
+             $('#container-highchart').highcharts({
                  chart: {
                      type: 'spline'
                  },
                  title: {
-                     text: 'Snow depth at Vikjafjellet, Norway'
+                     text: 'Title'
                  },
                  subtitle: {
-                     text: 'Irregular time data in Highcharts JS'
+                     text: ''
                  },
                  xAxis: {
                      type: 'datetime',
@@ -127,7 +129,7 @@
                      min: 0
                  },
                  tooltip: {
-                     headerFormat: '<b>{series.name}</b><br>',
+               //D      headerFormat: '<b>{series.data}</b><br>',
                      pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
                  },
 
