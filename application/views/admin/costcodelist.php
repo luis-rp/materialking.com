@@ -131,8 +131,8 @@ function setprogress(id)
                $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
                $(".cost-code").each(function(index){ cc.push($( this ).text() );});
           	  for(var index=0;index<prog.length;index++){
-              	  if(spent[index]==0)
-              		prog[index] = parseFloat((spent[index] * 100 ));
+              	  if(prog[index]==0)
+              		prog[index] = parseFloat(spent[index] * 100 );
               	  else
 					prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
                 }
