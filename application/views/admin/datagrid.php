@@ -86,7 +86,56 @@
          <div>
          <?php 
          if(isset($items)){
-         
+         ?>
+        <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
+         <script type="text/javascript">
+         $(function () {
+             var seriesData = new Array();
+             var dataData = new Array();
+             <?php foreach($items as $item){?>
+             var dateItem =new Date("<?php echo $item->daterequested?>");
+             var costItem = $item->totalprice;
+             costItem = parseFloat(costItem.slice(1)); 
+             dataData.push([Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDay()),costItem]);
+             seriesData.push({"name":$item->ponum,"data":dataData});
+             <?php } ?>
+             console.log(seriesData);
+             $('#container').highcharts({
+                 chart: {
+                     type: 'spline'
+                 },
+                 title: {
+                     text: 'Snow depth at Vikjafjellet, Norway'
+                 },
+                 subtitle: {
+                     text: 'Irregular time data in Highcharts JS'
+                 },
+                 xAxis: {
+                     type: 'datetime',
+                     dateTimeLabelFormats: { // don't display the dummy year
+                         month: '%e. %b',
+                         year: '%b'
+                     },
+                     title: {
+                         text: 'Date'
+                     }
+                 },
+                 yAxis: {
+                     title: {
+                         text: 'Amount ($)'
+                     },
+                     min: 0
+                 },
+                 tooltip: {
+                     headerFormat: '<b>{series.name}</b><br>',
+                     pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                 },
+
+                 series: seriesData
+             });
+         });
+         </script>
+         <?php 
          }
          ?>
 				<?php if(isset($orders)) { ?>
