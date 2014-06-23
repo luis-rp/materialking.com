@@ -9,15 +9,52 @@
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 	<script>
 	$(document).ready(function(){
+
 		 var d_pie = [];
 		  <?php $i=0; foreach($costcodesjson as $cj){?>
-		  d_pie[<?php echo $i;?>]= { label: "<?php echo $cj->label;?>", data: <?php echo $cj->data;?> };
+		  d_pie[<?php echo $i;?>]= [ "<?php echo $cj->label;?>",  <?php echo $cj->data;?> ];
 		  <?php $i++;}?>
 
-		 $.plot("#chart_pie", d_pie, $.extend(true, {}, Plugins.getFlotDefaults(), {
+		    $('#chart_pie').highcharts({
+		        chart: {
+		            type: 'pie',
+		            options3d: {
+						enabled: true,
+		                alpha: 45,
+		                beta: 0
+		            }
+		        },
+		        title: {
+		            text: ''
+		        },
+		        tooltip: {
+		            pointFormat: '<b>{point.percentage:.1f}%</b>'
+		        },
+		        plotOptions: {
+		            pie: {
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                depth: 35,
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '{point.name}'
+		                }
+		            }
+		        },
+		        series:  [{
+		            type: 'pie',
+		            name: '',
+		            data: d_pie
+		        }]
+		        
+		    });
+
+	/*	 $.plot("#chart_pie", d_pie, $.extend(true, {}, Plugins.getFlotDefaults(), {
 		  series: {
 		   pie: {
 		    show: true,
@@ -39,7 +76,7 @@
 		   }
 		  }
 		 }));
-
+*/
 		});
 	</script>
 	

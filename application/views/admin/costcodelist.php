@@ -15,6 +15,9 @@
 	
 
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/bootstrap-slider.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/slider.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <?php echo '<script type="text/javascript">var updateprogressurl = "'.site_url('admin/costcode/updateprogress/').'";</script>';?>
 
@@ -106,16 +109,97 @@ function setprogress(id)
               <?php foreach($items as $item){?>
               <input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
               <tr>
-              	<td><?php echo $item->code?></td>
+              	<td><span class='cost-code'><?php echo $item->code?></span></td>
               	<td><?php echo $item->cost?></td>
-              	<td><?php echo $item->totalspent?></td>
+              	<td><span class='total-spent'><?php echo $item->totalspent?></span></td>
               	<td id=""><?php echo $item->budget?></td>
-              	<td id="progress<?php echo $item->id;?>"><?php echo $item->manualprogressbar?></td>
+              	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
               	<td><?php echo $item->actions?></td>
               </tr>
               <?php }?>
             </table>
+            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:60%"></div>
+		   <script type="text/javascript">
+		   $(function () {
+			   var spent = new Array;
+               var prog = new Array;
+               var cc = new Array;
+               var ser = new Array;
+               
+               $(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
+               $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
+               $(".cost-code").each(function(index){ cc.push($( this ).text() );});
+          	  for(var index=0;index<prog.length;index++){
+					prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
+                }
+              console.log(prog);
+          	ser[0] ={"name":"Spent","data":spent};
+     		ser[1] = {"name":"Estimated","data":prog};
+		        $('#container-highchart').highcharts({
+		            chart: {
+		                type: 'bar'
+		            },
+		            title: {
+		                text: 'Estimated Cost To Complete'
+		            },
+		            subtitle: {
+		                text: ''
+		            },
+		            xAxis: {
+		                categories: cc,
+		                title: {
+		                    text: null
+		                }
+		            },
+		            yAxis: {
+		                min: 0,
+		                title: {
+		                    text: '$',
+		                    align: 'high'
+		                },
+		                labels: {
+		                    overflow: 'justify'
+		                }
+		            },
+		            tooltip: {
+		                valueSuffix: ' $'
+		            },
+		            plotOptions: {
+		                bar: {
+		                    dataLabels: {
+		                        enabled: true
+		                    }
+		                }
+		            },
+		            plotOptions: {
+	                       series: {
+	                           borderWidth: 0,
+	                           dataLabels: {
+	                               enabled: true,
+	                               format: '$ {point.y:.1f}'
+	                           }
+	                       }
+	                   },
+		            legend: {
+		                layout: 'vertical',
+		                align: 'right',
+		                verticalAlign: 'top',
+		                x: -40,
+		                y: 100,
+		                floating: true,
+		                borderWidth: 1,
+		                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+		                shadow: true
+		            },
+		            credits: {
+		                enabled: false
+		            },
+		            series: ser
+		        });
+		    });
+		    
+		   </script>
             <?php if(!$items){?>
             No Costcodes Found.
             <?php }?>

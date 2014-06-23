@@ -1,6 +1,8 @@
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
-
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
 <?php 
 	//print_r($bids);die;
 
@@ -217,9 +219,100 @@ $(function() {
 			   <tr><td class="span4">Subtotal:</td><td class="span8"><?php echo $awardedtotal;?></td>
                <td class="span4">Total Saved:</td><td class="span8"><?php echo $totalsaved;?></td>
 			   <tr><td>Tax:</td><td><?php echo $awardedtax;?></td>
-			   <tr><td>Total:</td><td><?php echo $awardedtotalwithtax;?></td>
+			   <tr><td>Total:</td><td><span id="selectedtotal"><?php echo $awardedtotalwithtax;?></span></td>
 		   </table>
-           
+            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
+		   <script type="text/javascript">
+		   Array.prototype.max = function() {
+			   var max = this[0];
+			   var len = this.length;
+			   for (var i = 1; i < len; i++) if (this[i] > max) max = this[i];
+			   return max;
+			   }
+			   Array.prototype.min = function() {
+			   var min = this[0];
+			   var len = this.length;
+			   for (var i = 1; i < len; i++) if (this[i] < min) min = this[i];
+			   return min;
+			   }
+           $(function () {
+               var cat = new Array;
+               var val = new Array;
+               $(".company-name").each(function(index){ cat.push($( this ).text() );});
+               $(".total-value").each(function(index){
+            	   var valuetxt = $( this ).text();
+                   val.push(valuetxt);
+                   });
+				var ser = new Array();
+               for(var index=0;index<cat.length;index++){
+            	   myfloat = parseFloat(val[index]);
+				ser[index] = {"name":cat[index],"data":[myfloat]};
+                   }
+               ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
+				var save = val.max() - val.min();
+				save = save.toFixed(2);
+				var savepo = val.max() - parseFloat($("#selectedtotal").text());
+				savepo = savepo.toFixed(2);
+               $('#container-highchart').highcharts({
+                   chart: {
+                       type: 'column',
+                      
+                   },
+                   title: {
+                       text: 'Comparison'
+                   },
+                   subtitle: {
+                	   text: '*Saving '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$',
+                       useHTML:true,
+                       align: 'right',
+                       x: -50
+                   },
+                   xAxis: {
+                       categories: ["Companies"],
+                       title: {
+                           text: null
+                       }
+                   },
+                   yAxis: {
+                       min: 0,
+                       title: {
+                           text: 'Price(cost)',
+                           align: 'high'
+                       },
+                       labels: {
+                           overflow: 'justify'
+                       }
+                   },
+                   tooltip: {
+                       valueSuffix: ' $'
+                   },
+                   plotOptions: {
+                       series: {
+                           borderWidth: 0,
+                           dataLabels: {
+                               enabled: true,
+                               format: '$ {point.y:.1f}'
+                           }
+                       }
+                   },
+                   legend: {
+                       layout: 'vertical',
+                       align: 'right',
+                       verticalAlign: 'top',
+                       x: 0,
+                       y: 100,
+                       floating: false,
+                       borderWidth: 1,
+                       backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                       shadow: true
+                   },
+                   credits: {
+                       enabled: false
+                   },
+                   series: ser
+               });
+           });
+           </script>
 		   </div>
            
 		   <?php }else{?>
@@ -231,6 +324,98 @@ $(function() {
 			   <tr><td>Total:</td><td><span id="selectedtotal"></span></td>
 			   <tr><td colspan="2"><input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Award"/></td>
 		   </table>
+		   <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
+		   <script type="text/javascript">
+		   Array.prototype.max = function() {
+			   var max = this[0];
+			   var len = this.length;
+			   for (var i = 1; i < len; i++) if (this[i] > max) max = this[i];
+			   return max;
+			   }
+			   Array.prototype.min = function() {
+			   var min = this[0];
+			   var len = this.length;
+			   for (var i = 1; i < len; i++) if (this[i] < min) min = this[i];
+			   return min;
+			   }
+           $(function () {
+               var cat = new Array;
+               var val = new Array;
+               $(".company-name").each(function(index){ cat.push($( this ).text() );});
+               $(".total-value").each(function(index){
+            	   var valuetxt = $( this ).text();
+                   val.push(valuetxt);
+                   });
+				var ser = new Array();
+               for(var index=0;index<cat.length;index++){
+            	   myfloat = parseFloat(val[index]);
+				ser[index] = {"name":cat[index],"data":[myfloat]};
+                   }
+               ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
+				var save = val.max() - val.min();
+				save = save.toFixed(2);
+				var savepo = val.max() - parseFloat($("#selectedtotal").text());
+				savepo = savepo.toFixed(2);
+               $('#container-highchart').highcharts({
+                   chart: {
+                       type: 'column',
+                      
+                   },
+                   title: {
+                       text: 'Comparison'
+                   },
+                   subtitle: {
+                	   text: '*Saving '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$',
+                       useHTML:true,
+                       align: 'right',
+                       x: -50
+                   },
+                   xAxis: {
+                       categories: ["Companies"],
+                       title: {
+                           text: null
+                       }
+                   },
+                   yAxis: {
+                       min: 0,
+                       title: {
+                           text: 'Price(cost)',
+                           align: 'high'
+                       },
+                       labels: {
+                           overflow: 'justify'
+                       }
+                   },
+                   tooltip: {
+                       valueSuffix: ' $'
+                   },
+                   plotOptions: {
+                       series: {
+                           borderWidth: 0,
+                           dataLabels: {
+                               enabled: true,
+                               format: '$ {point.y:.1f}'
+                           }
+                       }
+                   },
+                   legend: {
+                       layout: 'vertical',
+                       align: 'right',
+                       verticalAlign: 'top',
+                       x: 0,
+                       y: 100,
+                       floating: false,
+                       borderWidth: 1,
+                       backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                       shadow: true
+                   },
+                   credits: {
+                       enabled: false
+                   },
+                   series: ser
+               });
+           });
+           </script>
 		   </div>
 		   <?php }?>
 		  <?php 
@@ -242,7 +427,7 @@ $(function() {
 		      <div class="control-group">
 			    <div class="controls"><strong>PO #:<?php echo $quote->ponum; ?>
 			      &nbsp; &nbsp; 
-			      Company:   <?php echo $bid->companyname;?> &nbsp; &nbsp;
+			      Company:   <span class="company-name"><?php echo $bid->companyname;?></span> &nbsp; &nbsp;
 			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp; 
 			      <?php if($bid->quotefile){?>
 			      	<a href="<?php echo site_url('uploads/quotefile/'.$bid->quotefile);?>" target="_blank">View Attachment</a>
@@ -413,7 +598,7 @@ $(function() {
 				    	</tr>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Total: </td>
-				    		<td colspan="7">$ <?php echo $grandtotal;?></td>
+				    		<td colspan="7">$ <span class="total-value"><?php echo $grandtotal;?></span></td>
 				    	</tr>
 				    	<?php if(!$isawarded){?>
 				    	<tr>
