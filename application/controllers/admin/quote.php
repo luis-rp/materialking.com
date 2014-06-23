@@ -831,13 +831,14 @@ class quote extends CI_Controller
 
     function updateitems($qid) 
     {
-        if ($this->session->userdata('usertype_id') == 2 && $item->purchasingadmin != $this->session->userdata('id')) 
-        {
-        	redirect('admin/dashboard', 'refresh');
-        }
+        
         $items = $this->quote_model->getitems($qid);
         $quote = $this->quote_model->get_quotes_by_id($qid);
         //echo '<pre>';print_r($_POST);die;
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id'))
+        {
+        	redirect('admin/dashboard', 'refresh');
+        }
         foreach ($items as $item) 
         {
         	$itemcode = @$_POST['itemcode' . $item->id];
@@ -848,7 +849,7 @@ class quote extends CI_Controller
                 redirect('admin/quote/update/' . $qid);
             }
         }
-        die;
+      //  die;
         foreach ($items as $item) 
         {
             if($quote->potype=='Direct')
