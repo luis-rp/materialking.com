@@ -127,16 +127,16 @@ class costcode extends CI_Controller {
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['projects'] = $this->db->get('project')->result();
         //print_r($data['projects']);die;
-
-        if ($this->session->userdata('usertype_id') > 1) 
-           $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin'); 
-        else 
-            $where = ""; 
-             
-        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";             
-        $taxrate = $this->db->query($cquery)->row(); 
-        $data['taxrate'] = $taxrate->taxrate;        
         
+        if ($this->session->userdata('usertype_id') > 1)
+        $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+        $where = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+        $taxrate = $this->db->query($cquery)->row();
+        $data['taxrate'] = $taxrate->taxrate;
+ 
         $data ['addlink'] = '';
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();
