@@ -111,7 +111,7 @@ function setprogress(id)
               <tr>
               	<td><span class='cost-code'><?php echo $item->code?></span></td>
               	<td><?php echo $item->cost?></td>
-              	<td><span class='total-spent'><?php echo $item->totalspent?></span></td>
+              	<td><?php echo "$ ".round(($item->totalspent + $item->totalspent*($taxrate/100)),2); ?></td>
               	<td id=""><?php echo $item->budget?></td>
               	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>

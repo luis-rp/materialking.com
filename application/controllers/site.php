@@ -758,6 +758,14 @@ class site extends CI_Controller
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             
+            $cquery = "SELECT count(ci.itemid) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instore=1 and ci.instock > 0 and ci.qtyavailable>0 and ci.type='Supplier' group by ci.company";            
+        	$countofitems = $this->db->query($cquery)->row();
+        	//echo "<pre>",print_r($countofitems->countitem); die;
+        	if(isset($countofitems->countitem) && $countofitems->countitem!="")
+        	$item->offercount = $countofitems->countitem;
+            else 
+            $item->offercount = 0;
+            
             $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
             
             //$item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;

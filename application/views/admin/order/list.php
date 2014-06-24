@@ -61,6 +61,7 @@ $(document).ready(function(){
                                                 <th style="width:10%">Type</th>
                                                 <th style="width:10%">Txn ID</th>
                                                 <th style="width:10%">Amount</th> 
+                                                <th style="width:30%">Details</th>
                                                 <th style="width:10%">Actions</th>
                                             </tr>
                                         </thead>
@@ -86,6 +87,20 @@ $(document).ready(function(){
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
                                                 <td><?php echo "$ ".round($total,2);?></td> 
+                                                <td>
+                                                	<table class="table table-bordered datagrid">
+                                                		<tr>
+                                                			<th>Company</th>
+                                                			<th>Total</th>
+                                                		</tr>
+                                                		<?php foreach($order->details as $detail){?>
+                                                		<tr>
+                                                			<td><?php echo $detail->company;?></td>
+                                                			<td><?php echo round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
+                                                		</tr>
+                                                		<?php }?>
+                                                	</table>
+                                                </td>
                                                 <td>
                                                 	<a href="<?php echo site_url('admin/order/details/'.$order->id);?>">
                                                 		<span class="icon icon-search"></span>

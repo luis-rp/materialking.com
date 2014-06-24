@@ -2,7 +2,7 @@
 	 function filtercategory1(id)
 	 {
 	    $("#formcategory").val(id);
-	    //document.forms['categorysearchform'].submit();
+	    document.forms['categorysearchform'].submit();
 	    //setTimeout("doPost()", 10);
 	    return false;
 	 }

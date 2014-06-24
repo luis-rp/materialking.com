@@ -469,9 +469,9 @@
                                         <div class="image span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
+                                                    <img style="padding-top: 5px;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
                                                 <?php } else { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                    <img style="padding-top: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
 
                                             </div>

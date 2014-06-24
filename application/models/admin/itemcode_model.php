@@ -328,7 +328,8 @@ class itemcode_model extends Model {
             'instore' => 1,//$this->input->post('instore'),
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
-            'listinfo' => $this->input->post('listinfo')
+            'listinfo' => $this->input->post('listinfo'),
+            'item_img_alt_text' => $this->input->post('item_img_alt_text')
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"]; 

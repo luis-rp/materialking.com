@@ -456,6 +456,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->wiki = $item->wiki;
         $this->validation->listinfo = $item->listinfo;
         $this->validation->url = $item->url;
+        $this->validation->item_img_alt_text = $item->item_img_alt_text;
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();

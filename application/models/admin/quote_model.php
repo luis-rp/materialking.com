@@ -6,7 +6,7 @@ class quote_model extends Model {
         parent::Model();
     }
 
-    function get_quotes($pid = '') {
+    function get_quotes($path,$pid = '') {
         $sql = "SELECT * FROM " . $this->db->dbprefix('quote') . " WHERE 1=1 ";
         if ($pid)
             $sql .= " AND pid='$pid'";
@@ -26,9 +26,15 @@ class quote_model extends Model {
         if ($this->session->userdata('usertype_id') > 1) {
             $sql .= " AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
         }
-
+	
+        if($path == 'dashboard')
+        {
+        	$sql .= " AND potype='Bid' ";
+        }
+        
         $sql .= " ORDER BY str_to_date(podate,'%m/%d/%Y') DESC";
         $query = $this->db->query($sql);
+  
         if ($query->result()) {
             return $query->result();
         } else {

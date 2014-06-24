@@ -44,7 +44,7 @@ class quote extends CI_Controller
     {
         //echo '<pre>';
         $mp = $this->session->userdata('managedprojectdetails');
-        $quotes = $this->quote_model->get_quotes($mp ? $mp->id : '' );
+        $quotes = $this->quote_model->get_quotes('',$mp ? $mp->id : '' );
         $quotelist = array();
         $added_date = array();
         foreach ($quotes as $quote) {
@@ -100,7 +100,7 @@ class quote extends CI_Controller
         }
         $this->session->set_userdata($temp);
 
-        $quotes = $this->quote_model->get_quotes($pid);
+        $quotes = $this->quote_model->get_quotes('',$pid);
 
         $config ['total_rows'] = $this->quote_model->total_quote();
 

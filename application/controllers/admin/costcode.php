@@ -86,7 +86,7 @@ class costcode extends CI_Controller {
                 $costcode->budgetper = $per;
                 $costcode->cost = "$ " . $costcode->cost;
                 if ($costcode->totalspent != '-') {
-                    $costcode->totalspent = "$ " . $costcode->totalspent;
+                    $costcode->totalspent = $costcode->totalspent;
                     $costcode->actions .= ' ' .
                             anchor('admin/costcode/items/' . $costcode->code, '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
                     ;
@@ -128,6 +128,14 @@ class costcode extends CI_Controller {
         $data['projects'] = $this->db->get('project')->result();
         //print_r($data['projects']);die;
 
+        if ($this->session->userdata('usertype_id') > 1)
+            $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+            $where = "";
+            
+		$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";            
+        $taxrate = $this->db->query($cquery)->row();
+        $data['taxrate'] = $taxrate->taxrate;
         $data ['addlink'] = '';
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();

@@ -246,6 +246,7 @@ $(document).ready(function(){
                             <?php }?>
                             <a href="<?php echo site_url('uploads/item') . '/' . @$this->validation->item_img; ?>" target="_blank">  <?php echo @$this->validation->item_img; ?>
                             </a> 
+                            <label>Alternate Text for Image</label><input type="text" name="item_img_alt_text" id="item_img_alt_text" value="<?php if(isset($this->validation->item_img_alt_text)) echo $this->validation->item_img_alt_text; else echo "";?>" class="span10">
                         </div>
                     </div>
                     <div class="control-group">

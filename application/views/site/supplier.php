@@ -357,7 +357,7 @@ $(document).ready(function() {
                                                 <span class="key"><strong>Quantity Available:</strong></span>
                                                 <span class="value"><?php echo $di->qtyavailable;?></span>
 
-                                                <span class="key"><strong>Time Remaning:</strong></span>
+                                                <span class="key"><strong>Time Remaining:</strong></span>
                                                 <span class="value"><?php echo $remaining;?></span>
                                                 
                                                 <br>

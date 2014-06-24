@@ -42,7 +42,7 @@ class Dashboard extends CI_Controller
 		
 		$data['itemcodes'] = $this->db->get('item')->result();
 		
-		$data['quotes'] = $this->quote_model->get_quotes($mp?$mp->id:'');
+		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
 		$invited = 0;
 		$pending = 0;
 		$awarded = 0;
@@ -125,6 +125,13 @@ class Dashboard extends CI_Controller
 					/**************
 					 * Luis
 					*/
+					if ($this->session->userdata('usertype_id') > 1)
+					$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+					else
+					$where = "";
+
+					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+					$taxrate = $this->db->query($cquery)->row();
 						
 					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, 
@@ -140,6 +147,7 @@ class Dashboard extends CI_Controller
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
 					}
+					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
 					/*********/
 					$c->label = $c->label . ' - $'.$c->data;
 					$costcodesjson[]=$c;

@@ -163,9 +163,9 @@
                                         <div class="image span3">
                                             <div class="content">
                                                 <?php if ($item->item_img) { ?>
-                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt="">
+                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>"  alt="<?php echo $item->item_img_alt_text;?>">
                                                 <?php } else { ?>
-                                                    <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                    <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png"  alt="<?php echo $item->item_img_alt_text;?>">
                                                 <?php } ?>
 
                                             </div>
@@ -197,6 +197,7 @@
                                                 </div>
                                                 <?php if($item->minprice && $item->maxprice){?>
                                                 <div class="price">
+                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>"; ?>
                                                 	$<?php echo $item->minprice; ?> - $<?php echo $item->maxprice; ?> 
                                                 </div>
                                                 <?php }?>
