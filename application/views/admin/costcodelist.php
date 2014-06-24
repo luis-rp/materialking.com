@@ -66,7 +66,7 @@ function setprogress(id)
 
 
 <section class="row-fluid">
-<<<<<<< HEAD
+
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
@@ -112,7 +112,7 @@ function setprogress(id)
               <tr>
               	<td><span class='cost-code'><?php echo $item->code?></span></td>
               	<td><?php echo $item->cost?></td>
-              	<td><span class='total-spent'><?php echo round( ($item->totalspent + $item->totalspent*($taxrate/100)),2 ); ?></span></td>
+              	<td><span class='total-spent'><?php echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100)),2 ); ?></span></td>
               	<td id=""><?php echo $item->budget?></td>
               	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
@@ -211,144 +211,6 @@ function setprogress(id)
 
       </div>
     </div>
-=======
-<h3 class="box-header"><?php echo $heading; ?></h3>
-<div class="box">
-<div class="span12">
-<?php echo $this->session->flashdata('message'); ?>
-<div style="margin-bottom:20px;">
-<div>
-<?php echo $addlink;?>
-<br/><br/>
-<div class="datagrid-header-right">
-<form class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">
-Filter by parent:
-<select name="parentfilter" onchange="this.form.submit()">
-<option value="">View All</option>
-<?php echo $parentcombooptions;?>
-</select>
-Filter by Project:
-<select name="projectfilter" onchange="this.form.submit()">
-<option value="">View All</option>
-<?php foreach($projects as $p){?>
-<option value="<?php echo $p->id;?>" <?php if($p->id==@$_POST['projectfilter']){echo 'SELECTED';}?>>
-<?php echo $p->title;?>
-</option>
-<?php }?>
-</select>
-</form>
-</div>
-</div>
-<table id="datatable" class="table table-bordered datagrid">
-<tr>
-<th width="20%">Code</th>
-<th width="7%">Budget</th>
-<th width="9%">$ Spent</th>
-<th width="25%">Budget % Allocated</th>
-<th>Task Progress % Complete</th>
-<th>Status</th>
-<th width="10%">Actions</th>
-</tr>
-<?php foreach($items as $item){?>
-<input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
-<tr>
-<td><span class='cost-code'><?php echo $item->code?></span></td>
-<td><?php echo $item->cost?></td>
-<td><?php echo "$ ".round(($item->totalspent + $item->totalspent*($taxrate/100)),2); ?></td> 
-<td id=""><?php echo $item->budget?></td>
-<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
-<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
-<td><?php echo $item->actions?></td>
-</tr>
-<?php }?>
-</table>
-<div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:60%"></div>
-<script type="text/javascript">
-$(function () {
-var spent = new Array;
-var prog = new Array;
-var cc = new Array;
-var ser = new Array;
-$(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
-$(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
-$(".cost-code").each(function(index){ cc.push($( this ).text() );});
-for(var index=0;index<prog.length;index++){
-if(prog[index]==0)
-prog[index] = parseFloat(spent[index] * 100 );
-else
-prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
-}
-console.log(prog);
-ser[0] ={"name":"Spent","data":spent};
-ser[1] = {"name":"Estimated","data":prog};
-$('#container-highchart').highcharts({
-chart: {
-type: 'bar'
-},
-title: {
-text: 'Estimated Cost To Complete'
-},
-subtitle: {
-text: ''
-},
-xAxis: {
-categories: cc,
-title: {
-text: null
-}
-},
-yAxis: {
-min: 0,
-title: {
-text: '$',
-align: 'high'
-},
-labels: {
-overflow: 'justify'
-}
-},
-tooltip: {
-valueSuffix: ' $'
-},
-plotOptions: {
-bar: {
-dataLabels: {
-enabled: true
-}
-}
-},
-plotOptions: {
-series: {
-borderWidth: 0,
-dataLabels: {
-enabled: true,
-format: '$ {point.y:.1f}'
-}
-}
-},
-legend: {
-layout: 'vertical',
-align: 'right',
-verticalAlign: 'top',
-x: -40,
-y: 100,
-floating: true,
-borderWidth: 1,
-backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-shadow: true
-},
-credits: {
-enabled: false
-},
-series: ser
-});
-});
-</script>
-<?php if(!$items){?>
-No Costcodes Found.
-<?php }?>
-</div>
 
-</div>
-</div>
+
 </section>
