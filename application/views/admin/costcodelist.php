@@ -120,7 +120,7 @@ function setprogress(id)
               </tr>
               <?php }?>
             </table>
-            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:60%"></div>
+            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
 		   <script type="text/javascript">
 		   $(function () {
 			   var spent = new Array;
