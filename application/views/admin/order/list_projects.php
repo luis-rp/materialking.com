@@ -96,7 +96,7 @@
 												<td><?php echo date('m/d/Y',strtotime($order->purchasedate));?></td>
 												<td><?php echo $order->type;?></td>
 											</tr>
-											<tr><td>Total:<td><td  colspan="2">$<?php $i = 0;
+											<tr><td>SubTotal:<td><td  colspan="2">$<?php $i = 0;
 									    	$gtotal = 0;
 									    	foreach($orderitems as $item)
 									    	{
@@ -107,7 +107,11 @@
 											}
 											echo number_format($gtotal,2);
 											?></td></tr>
-											
+											<tr><td>Tax:<td><td  colspan="2"><?php
+											$taxVal = ($gtotal*$order->taxpercent)/100;
+											$taxVal = number_format($taxVal,2);
+											echo "$ ".$taxVal;?></td></tr>
+											<tr><td>Total:<td><td  colspan="2"><?php echo $taxVal+$gtotal;?></td></tr>
 										</tbody>
 										</table>
 				</div>
