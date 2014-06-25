@@ -21,7 +21,7 @@
 											}
 											$total = number_format($gtotal,2);
 											
-											$tax = numer_format(($gtotal*$order->taxpercent)/100,2);
+											$tax = number_format(($gtotal*$order->taxpercent)/100,2);
 											?>
 <script type="text/javascript">
             $(document).ready(function() {
