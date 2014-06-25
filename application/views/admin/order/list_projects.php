@@ -103,7 +103,7 @@
 									    		$total = number_format($item->quantity * $item->price,2);
 									    		$gtotal+=$total;
 									    		$i++;
-									    		message_log('debug',var_export($item,true));
+									    		log_message('debug',var_export($item,true));
 											}
 											echo number_format($gtotal,2);
 											?></td></tr>
