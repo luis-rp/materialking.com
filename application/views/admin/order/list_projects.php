@@ -20,6 +20,8 @@
 									    		$i++;
 											}
 											$total = number_format($gtotal,2);
+											
+											$tax = numer_format(($gtotal*$order->taxpercent)/100,2);
 											?>
 <script type="text/javascript">
             $(document).ready(function() {
@@ -27,7 +29,7 @@
                 
                 $(".pid").change(function(event){
                     <?php if(is_null($order->project)){?>
-                	var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> to "+ $(".pid option:selected").text();
+                	var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> + $tax <?php echo $tax;?> to "+ $(".pid option:selected").text();
                 	<?php }else{?>
                 	var msj = "Are you sure you wish to re-assign order value";
                 	<?php }?>
@@ -111,7 +113,9 @@
 											$taxVal = ($gtotal*$order->taxpercent)/100;
 											$taxVal = number_format($taxVal,2);
 											echo "$ ".$taxVal;?></td></tr>
-											<tr><td>Total:<td><td  colspan="2"><?php echo "$ ".$taxVal+$gtotal;?></td></tr>
+											<tr><td>Total:<td><td  colspan="2"><?php
+											$taxVal = number_format((($gtotal*$order->taxpercent)/100)+$gtotal,2);
+											echo "$ ".$taxVal+$gtotal;?></td></tr>
 										</tbody>
 										</table>
 				</div>
