@@ -1,26 +1,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 
-<script type="text/javascript" charset="utf-8">
-$(document).ready( function() {
 
-	$('#datatable').dataTable( {
-		"aaSorting": [],
-		"sPaginationType": "full_numbers",
-		"aoColumns": [
-		        		null,
-		        		null,
-		        		null,
-		        		null,
-		        		null,
-		        		{ "bSortable": false}
-		
-			]
-		} );
-	 $('.dataTables_length').hide();
-	 $('#datatable_filter').hide();
-});      
-</script>
 <script type="text/javascript">
 
 $(document).ready(function(){
