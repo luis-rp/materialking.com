@@ -61,7 +61,7 @@
                 ]
     		} );
 
-    	var validChars = "$£€c" + "0123456789" + ".-,'";
+    	var validChars = "$ï¿½ï¿½c" + "0123456789" + ".-,'";
         
         // Init the regex just once for speed - it is "closure locked"
         var str = jQuery.fn.dataTableExt.oApi._fnEscapeRegex( validChars ), re = new RegExp('[^'+str+']');
@@ -260,7 +260,7 @@
                                     <div class="clearfix">
                                         <div class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
-                                                <img id="bigimage" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"  style="border: 4px solid #666;with:250px;height:250px">
+                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
                                     	
                                         </div>
@@ -271,7 +271,7 @@
                                     		<?php foreach($item->images as $img){?>
                                     		<li>
                                     		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>');">
-                                    		<img width="50" height="45" src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'></a>
+                                    		<img width="50" height="45" src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>
                                     		</li>
                                     		<?php }?>
                                     	</ul>

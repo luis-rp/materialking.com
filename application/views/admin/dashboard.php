@@ -150,30 +150,36 @@
 	   			
 	   			<tr>
 	   			<td>4.</td>
+	   			<td>Total Number of Direct Orders</td>
+	   			<td><span class="badge"><?php echo count($directquotes);?></span></td>
+	   			</tr>
+	   			
+	   			<tr>
+	   			<td>5.</td>
 	   			<td>Total Number of Quotes</td>
 	   			<td><span class="badge badge-warning"> <?php echo count($quotes);?></span></td>
 	   			</tr>
 	   			
 	   			<tr>
-	   			<td>5.</td>
+	   			<td>6.</td>
 	   			<td>Total Number of Quotes Requested</td>
 	   			<td><span class="badge badge-warning"><?php echo $invited;?></span></td>
 	   			</tr>
 	   			
 	   			<tr>
-	   			<td>6.</td>
+	   			<td>7.</td>
 	   			<td>Total Number of Quotes Pending</td>
 	   			<td><span class="badge badge-red"><?php echo $pending;?></span></td>
 	   			</tr>
 	   			
 	   			<tr>
-	   			<td>7.</td>
+	   			<td>8.</td>
 	   			<td>Total Number of Awarded Quotes</td>
 	   			<td><span class="badge badge-green"><?php echo $awarded;?></span></td>
 	   			</tr>
 	   			<?php if($this->session->userdata('usertype_id') == 1){?>
 	   			<tr>
-	   			<td>8.</td>
+	   			<td>9.</td>
 	   			<td>Number of Companies:</td>
 	   			<td><span class="badge badge-info"> <?php echo count($companies);?></span></td>
 	   			</tr>

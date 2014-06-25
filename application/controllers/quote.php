@@ -1547,7 +1547,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$invoicenum = $_POST['invoicenum'];
+			
+		if(isset($_POST['invoicenum']) && $_POST['invoicenum']!="")	
+			$invoicenum = $_POST['invoicenum'];
+		else 
+			$invoicenum = "";
+			
 		if(!$invoicenum)
 		{
 			$message = 'Invalid Link.';
@@ -1584,7 +1589,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$invoicenum = $_POST['invoicenum'];
+			
+		if(isset($_POST['invoicenum']) && $_POST['invoicenum']!="")	
+			$invoicenum = $_POST['invoicenum'];
+		else 
+			$invoicenum = "";
+			
 		if(!$invoicenum)
 		{
 			$message = 'Invalid Link.';
@@ -1614,7 +1624,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$this->email->from($company->primaryemail);
 		$this->email->to($pa->email);
-		$subject = 'Supplier Shipment Status'; 
+		
+		if(isset($_POST['status']) && $_POST['status']!="" && $_POST['status']=="Verified")
+		$subject = 'Supplier Verified Payment'; 
+		
+		if(isset($_POST['status']) && $_POST['status']!="" && $_POST['status']=="Error")
+		$subject = 'Supplier Disputes Payment'; 
 		
 		$body = "Supplier {$company->title} has set the status of 
 				Invoice# {$_POST['invoicenum']} to {$_POST['status']} 

@@ -2,6 +2,14 @@
 			<h4>Order #: <?php echo $orderid;?></h4>
 			<br/>
 			<table class="table table-bordered span12">
+			 <tr><td><strong>Supplier Name:</strong></td><td> <?php echo $cart[0]['companydetails']->title;?> </td></tr>
+			 <tr><td><strong>Supplier Address:</strong></td><td> <?php echo $cart[0]['companydetails']->address;?> </td></tr>
+			 <tr><td><strong>Supplier Phone:  </strong></td><td><?php echo $cart[0]['companydetails']->phone;?></td> </tr> 
+			 <tr><td><strong>Type :</strong> </td><td><?php echo $paymentType;?></td> </tr>
+			 <tr><td colspan="5">&nbsp;</td></tr>
+			 </table>
+			  <div class="property-detail">
+			 <table class="table table-bordered" border="1" width="50%">
             	<tr>
             		<th>Item</th>
             		<th>Company</th>
@@ -24,6 +32,7 @@
             		<td><?php echo number_format($total,2);?></td>
             	</tr>
             	<?php }?>
+            	<tr><td colspan="5">&nbsp;</td></tr>
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
             	    $totalwithtax = number_format($tax+$gtotal,2);
@@ -44,3 +53,4 @@
             	</tr>
             	
             </table>
+            </div>

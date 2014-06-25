@@ -112,7 +112,12 @@
 				</div>
 				<input type="submit" value="Assign">
 				</form>
-				<?php }else{echo 'Order is declined by one of the supplier(s)';}?>
+				<?php }	elseif(@$orderitems[0]->accepted == 0){
+					 		echo 'Order status is pending approval by supplier(s) on P.O.  When status is changed, you will receive an email notification. You can <br> return here after your order is processed to review your order, pay your supplier and assign this order to a project and cost code';
+					  } elseif(@$orderitems[0]->accepted == -1){
+					  		echo 'Order is declined by one of the supplier(s)';	
+					  }
+				?>
 			</div>
 					
 			<br/>

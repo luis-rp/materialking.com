@@ -43,6 +43,7 @@ class Dashboard extends CI_Controller
 		$data['itemcodes'] = $this->db->get('item')->result();
 		
 		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
+		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
 		$invited = 0;
 		$pending = 0;
 		$awarded = 0;

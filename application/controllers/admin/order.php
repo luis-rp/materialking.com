@@ -241,7 +241,7 @@ class Order extends CI_Controller
 		}
 		$data['companyamounts'] = $companyamounts;
 		$data['companies'] = $companies;
-		
+		$data['orderid'] = $id;
 		$pa = $order->purchasingadmin;
 	    $messages = $this->db->where('orderid',$id)->order_by('senton')->get('ordermessage')->result();
 	    $data['messages'] = array();
@@ -484,10 +484,10 @@ with the transfer#{$tobj->id}.
 			$orderitems[]=$item;
 		}
 		
-		 $body .= "<br><br>Supplier Address: {$company->address} <br><br>Supplier Phone:  {$company->phone} <br><br>Order details:"; 
+		$body .= "<br><br><strong>Supplier Name:</strong> {$company->title} <br><br><strong>Supplier Address:</strong> {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>"; 
 		
 		$body .= '
-			<table class="table table-bordered span12">
+			<table class="table table-bordered span12" border="1">
 				 <tr><td colspan ="4">Type :'.$order->type.'</td></tr> 
             	<tr>
             		<th>Item</th>
@@ -513,17 +513,17 @@ with the transfer#{$tobj->id}.
             	    $totalwithtax = number_format($tax+$gtotal,2);
             	
             	$body .= '<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="3" align="right">Total</td>
             		<td>$'.number_format($gtotal,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Tax</td>
+            		<td colspan="3" align="right">Tax</td>
             		<td>$'. number_format($tax,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="3" align="right">Total</td>
             		<td>$'. $totalwithtax.'</td>
             	</tr>
             	

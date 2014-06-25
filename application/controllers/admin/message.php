@@ -233,7 +233,7 @@ class message extends CI_Controller
 		$quotewhere = '';
 		$con = '';
 		if($quote)
-			$quotewhere = ' AND m.messagekey='.$quote;
+			$quotewhere = ' AND m.messagekey="'.$quote.'"';
 		
 		if ($this->session->userdata('managedprojectdetails'))
 		{

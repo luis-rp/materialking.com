@@ -41,6 +41,41 @@ class quote_model extends Model {
             return null;
         }
     }
+     function get_Direct_Quotes($path,$pid = '') {
+        $sql = "SELECT * FROM " . $this->db->dbprefix('quote') . " WHERE 1=1 ";
+        if ($pid)
+            $sql .= " AND pid='$pid'";
+        if (@$_POST['potype'] != 'All' && @$_POST['potype']) {
+            $sql .= " AND potype='" . $_POST['potype'] . "'";
+        }
+        if (@$_POST['searchponum']) {
+            $sql .= " AND ponum LIKE '%" . $_POST['searchponum'] . "%'";
+        }
+        if (@$_POST['searchdatefrom']) {
+            $sql .= " AND str_to_date(podate,'%m/%d/%Y') >= str_to_date('" . $_POST['searchdatefrom'] . "','%m/%d/%Y')";
+        }
+        if (@$_POST['searchdateto']) {
+            $sql .= " AND str_to_date(podate,'%m/%d/%Y') <= str_to_date('" . $_POST['searchdateto'] . "','%m/%d/%Y')";
+        }
+
+        if ($this->session->userdata('usertype_id') > 1) {
+            $sql .= " AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
+        }
+	
+        if($path == 'dashboard')
+        {
+        	$sql .= " AND potype='direct' ";
+        }
+        
+        $sql .= " ORDER BY str_to_date(podate,'%m/%d/%Y') DESC";
+        $query = $this->db->query($sql);
+  
+        if ($query->result()) {
+            return $query->result();
+        } else {
+            return null;
+        }
+    }
 
     function getQuoteRank($awardedbid) {
         if (!$awardedbid->items)

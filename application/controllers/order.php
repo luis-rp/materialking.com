@@ -209,7 +209,7 @@ class Order extends CI_Controller
         		$this->email->to($order->email);
         		$subject = 'Payment verified by supplier';
         		
-        		$body = "Payment verified for order# {$order->ordernumber}<br><br>Supplier Address: {$company->address} <br><br>Supplier Phone:  {$company->phone} <br><br>Order details:";
+        		$body = "Payment verified for order# {$order->ordernumber}<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		
 		        $body .= $this->getorderdetails($order->id);	
 				
@@ -406,7 +406,7 @@ class Order extends CI_Controller
 			$orderitems[]=$item;
 		}
 		$body = '
-			<table class="table table-bordered span12">
+			<table class="table table-bordered span12" border="1">
             	<tr>
             		<th>Item</th>
             		<th>Price</th>
@@ -431,17 +431,17 @@ class Order extends CI_Controller
             	    $totalwithtax = number_format($tax+$gtotal,2);
             	
             	$body .= '<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="3" align="right">Total</td>
             		<td>$'.number_format($gtotal,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Tax</td>
+            		<td colspan="3" align="right">Tax</td>
             		<td>$'. number_format($tax,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="3" align="right">Total</td>
             		<td>$'. $totalwithtax.'</td>
             	</tr>
             	

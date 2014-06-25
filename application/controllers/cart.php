@@ -242,13 +242,13 @@ class cart extends CI_Controller
 		{
 			if($this->session->userdata('site_loggedin'))
 			{
-				$pdftopurchasingadmin = $this->orderpdf('',true);
+				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
 				
 				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email);
 			}
 			else 
 			{
-				$pdftopurchasingadmin = $this->orderpdf('',true);
+				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
 				
 				$this->sendEmail($pdftopurchasingadmin, $_POST['email']);
 			}
@@ -258,7 +258,7 @@ class cart extends CI_Controller
 			{
 				if(!isset($companies[$ci['company']]))
 				{
-					$companies[$ci['company']] = $this->orderpdf($ci['company'],true);
+					$companies[$ci['company']] = $this->orderpdf($ci['company'],true,'Credit Card');
 					$this->db->where('id',$ci['company']);
 					$cd = $this->db->get('company')->row();
 					
@@ -413,7 +413,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 		}
 		if($this->session->userdata('site_loggedin'))
 		{
-			$pdftopurchasingadmin = $this->orderpdf('',true);
+			$pdftopurchasingadmin = $this->orderpdf('',true,'Manual');
 			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email);
 		}
 		$companies = array();
@@ -421,7 +421,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 		{
 			if(!isset($companies[$ci['company']]))
 			{
-				$companies[$ci['company']] = $this->orderpdf($ci['company'],true);
+				$companies[$ci['company']] = $this->orderpdf($ci['company'],true,'Manual');
 				
 				$this->db->where('id',$ci['company']);
 				$cd = $this->db->get('company')->row();
@@ -543,7 +543,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 		$this->session->set_userdata($temp);
 	}
 	
-	public function orderpdf($company='',$htmlonly=false)
+	public function orderpdf($company='',$htmlonly=false,$paymentType = '')
 	{
 		$sesscart = $this->session->userdata('pms_site_cart');
 		$orderid = $this->session->userdata('pms_orderid');
