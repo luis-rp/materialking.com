@@ -114,8 +114,8 @@
 											$taxVal = number_format($taxVal,2);
 											echo "$ ".$taxVal;?></td></tr>
 											<tr><td>Total:<td><td  colspan="2"><?php
-											$taxVal = number_format((($gtotal*$order->taxpercent)/100)+$gtotal,2);
-											echo "$ ".$taxVal+$gtotal;?></td></tr>
+											$taxVal = number_format((($gtotal * $order->taxpercent)/100)+$gtotal,2);
+											echo "$ ".$taxVal;?></td></tr>
 										</tbody>
 										</table>
 				</div>
