@@ -21,7 +21,7 @@
 											}
 											$total = number_format($gtotal,2);
 											
-											$tax = number_format(($gtotal*$order->taxpercent)/100,2);
+														$tax = number_format(($order->taxpercent * $total)/100,2);
 											?>
 <script type="text/javascript">
             $(document).ready(function() {
@@ -29,7 +29,7 @@
                 
                 $(".pid").change(function(event){
                     <?php if(is_null($order->project)){?>
-                	var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> + $tax <?php echo $tax;?> to "+ $(".pid option:selected").text();
+                    var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> + $tax <?php echo $tax; ?> to "+ $(".pid option:selected").text();
                 	<?php }else{?>
                 	var msj = "Are you sure you wish to re-assign order value";
                 	<?php }?>
@@ -98,7 +98,7 @@
 												<td><?php echo date('m/d/Y',strtotime($order->purchasedate));?></td>
 												<td><?php echo $order->type;?></td>
 											</tr>
-											<tr><td>SubTotal:<td><td  colspan="2">$<?php $i = 0;
+											<tr><td>SubTotal:</td><td></td><td>$<?php $i = 0;
 									    	$gtotal = 0;
 									    	foreach($orderitems as $item)
 									    	{
@@ -109,13 +109,8 @@
 											}
 											echo number_format($gtotal,2);
 											?></td></tr>
-											<tr><td>Tax:<td><td  colspan="2"><?php
-											$taxVal = ($gtotal*$order->taxpercent)/100;
-											$taxVal = number_format($taxVal,2);
-											echo "$ ".$taxVal;?></td></tr>
-											<tr><td>Total:<td><td  colspan="2"><?php
-											$taxVal = number_format((($gtotal * $order->taxpercent)/100)+$gtotal,2);
-											echo "$ ".$taxVal;?></td></tr>
+											<tr><td>Tax:</td><td></td><td>$<?php echo $tax;?></td></tr>
+											<tr><td>Total:</td><td></td><td>$<?php echo $tax+number_format($gtotal,2);?></td></tr>
 										</tbody>
 										</table>
 				</div>
