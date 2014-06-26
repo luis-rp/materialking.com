@@ -250,7 +250,7 @@ class Order extends CI_Controller
 		$body = "";
 		$order = $this->db->where('id',$id)->get('order')->row();
 		$body .= "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
-		$body .= "<br><br>Order Details:";
+		$body .= "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		
 		$body .= $this->getorderdetails($id);
 		$this->db->where('id',$order->purchasingadmin);
@@ -406,7 +406,7 @@ class Order extends CI_Controller
 			$orderitems[]=$item;
 		}
 		$body = '
-			<table class="table table-bordered span12" border="1">
+			<table class="table table-bordered span12" border="1" width="50%">
             	<tr>
             		<th>Item</th>
             		<th>Price</th>
@@ -421,28 +421,28 @@ class Order extends CI_Controller
                 	    $gtotal+=$total;
                          $body .= '<tr>
                             		<td>'.$item->itemdetails->itemname.'</td>
-                            		<td>'.$item->price.'</td>
-                            		<td>'.$item->quantity.'</td>
-                            		<td>'.number_format($total,2).'</td>
+                            		<td style="text-align:right;">'.$item->price.'</td>
+                            		<td style="text-align:center;">'.$item->quantity.'</td>
+                            		<td style="text-align:right;">'.number_format($total,2).'</td>
                             	</tr>';
             	    }
             	 
             	    $tax = $gtotal * $order->taxpercent / 100;
             	    $totalwithtax = number_format($tax+$gtotal,2);
             	
-            	$body .= '<tr>
+            	$body .= '<tr><td colspan="5">&nbsp;</td> <tr>
             		<td colspan="3" align="right">Total</td>
-            		<td>$'.number_format($gtotal,2).'</td>
+            		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
             	</tr>
             	
             	<tr>
             		<td colspan="3" align="right">Tax</td>
-            		<td>$'. number_format($tax,2).'</td>
+            		<td style="text-align:right;">$'. number_format($tax,2).'</td>
             	</tr>
             	
             	<tr>
             		<td colspan="3" align="right">Total</td>
-            		<td>$'. $totalwithtax.'</td>
+            		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>
             	
             </table>';

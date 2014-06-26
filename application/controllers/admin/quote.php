@@ -2514,17 +2514,33 @@ with the transfer# {$tobj->id}.
     function getitembycode() 
     {
         $code = $_POST['code'];
+        $projectid = $_POST['projectid'];
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
-        
+      
 		$this->db->where('itemid',$item->itemid);
 		$this->db->where('type','Purchasing');
 		$this->db->where('company',$this->session->userdata('purchasingadmin'));
 		$companyitem = $this->db->get('companyitem')->row();
         //print_r($companyitem);
+        
 		if($companyitem)
 		{
-			$item->notes = $companyitem->companynotes;
+			if($companyitem->projectid){
+				$arrproj = explode(",",$companyitem->projectid);
+			
+				if($companyitem->projectid != -1 && in_array($projectid,$arrproj)){
+					$this->db->where('companyitemid',$companyitem->id);
+					$companyprojectitem = $this->db->get('company_projectitem_notes')->row();
+					if($companyprojectitem)
+					$item->notes = $companyprojectitem->companynotes;
+					else
+					$item->notes = $companyitem->companynotes;
+				}else
+				$item->notes = $companyitem->companynotes;
+			}else
+				$item->notes = $companyitem->companynotes;
+			
 			$item->item_img = $companyitem->filename;
 		}
 		

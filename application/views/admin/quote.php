@@ -107,7 +107,7 @@ function invite()
 function fetchItem(codeid)
 {
 	var itemcode = document.getElementById(codeid).value;
-
+	prid = document.getElementById('pid').value;
 	var idid = codeid.replace('itemcode','itemid');
 	var nameid = codeid.replace('itemcode','itemname');
 	var unitid = codeid.replace('itemcode','unit');
@@ -120,7 +120,7 @@ function fetchItem(codeid)
 	//alert(url);
     $.ajax({
       type:"post",
-      data: "code="+encodeURIComponent(itemcode),
+      data: "code="+encodeURIComponent(itemcode)+"&projectid="+prid,
       url: url
     }).done(function(data){
         var obj = $.parseJSON(data);
@@ -281,7 +281,7 @@ function savclose()
 		   <br/>
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
-		   <input type="hidden" name="pid" value="<?php echo $pid;?>"/>
+		   <input type="hidden" name="pid" id="pid" value="<?php echo $pid;?>"/>
 		   <input type="hidden" name="potype" value="<?php echo $this->validation->potype;?>"/>
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <input type="hidden" id="reminders" name="reminders" value=""/>

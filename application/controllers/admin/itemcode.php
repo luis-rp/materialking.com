@@ -1002,13 +1002,34 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     function showeditform()
     {
         $itemid = $_POST['itemid'];
-        $query = "SELECT i.*, ci.companynotes, ci.filename FROM ".$this->db->dbprefix('item')." i LEFT JOIN 
+        $query = "SELECT i.*, ci.companynotes, ci.filename, ci.projectid, ci.id as cid FROM ".$this->db->dbprefix('item')." i LEFT JOIN 
         		 ".$this->db->dbprefix('companyitem')." ci ON ci.itemid=i.id AND ci.type='Purchasing' 
         		 AND ci.company='".$this->session->userdata('purchasingadmin')."' WHERE i.id='$itemid'";
         
         $item = $this->db->query($query)->row();
         //print_r($item);die;
+        
+        if($item->projectid){
+				$arrproj = explode(",",$item->projectid);
+			
+				if($item->projectid != -1){
+					$this->db->where('companyitemid',$item->cid);
+					$companyprojectitem = $this->db->get('company_projectitem_notes')->row();
+					if($companyprojectitem)
+					$item->companynotes = $companyprojectitem->companynotes;
+					else
+					$item->companynotes = $item->companynotes;
+				}else
+				$item->companynotes = $item->companynotes;
+		}
+        
+        
         $data['item'] = $item;
+
+        $query2 = "SELECT title,id FROM ".$this->db->dbprefix('project')." where purchasingadmin =".$this->session->userdata('purchasingadmin');
+        $projectdata = $this->db->query($query2)->result();
+        $data['projectdata'] = $projectdata;
+
         $this->load->template('../../templates/admin/blank');
         $this->load->view('admin/inventory/miniform', $data);
     }
@@ -1035,19 +1056,69 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $where['itemid'] = $itemid;
         $where['type'] = 'Purchasing';
         
+        $i=1;
+        $projectids = "";
+        $iscompnotes = "";
+        foreach($_POST['projectid'] as $projectid){
+        	
+        	if($projectid != -1)
+				$iscompnotes = 1;
+        	       	
+        	if($i<count($_POST['projectid']))
+        	$projectids .= $projectid.",";
+        	else
+        	$projectids .= $projectid;
+        	$i++;
+        }
+        $_POST['projectid'] = $projectids;
+        
         $this->db->where($where);
         $check = $this->db->get('companyitem')->row();
+        //echo "<pre>",print_r($check->id); die;
         //print_r($check);print_r($_POST);die;
+        
+            
         if($check)
         {
+        	 if($iscompnotes==1){
+        	 	$where1 = "";
+        	 	
+        	 	$compnotedat['companynotes'] = $_POST['companynotes'];
+        	 	$where1['companyitemid'] = $check->id;
+        	 	$this->db->where($where1);
+        		$check1 = $this->db->get('company_projectitem_notes')->row();
+        		if($check1){
+        			$this->db->where($where1);
+            		$this->db->update('company_projectitem_notes',$compnotedat);
+        		}else{
+        			
+            		$compnotedat['companyitemid'] = $check->id;
+            		$this->db->insert('company_projectitem_notes',$compnotedat);
+        		}
+        		unset($_POST['companynotes']);
+        	 }
+        	
             $this->db->where($where);
             $this->db->update('companyitem',$_POST);
         }
         else 
         {
-            $_POST['type'] = 'Purchasing';
+        	$_POST['type'] = 'Purchasing';
             $_POST['company'] = $pa;
+            if($iscompnotes==1){
+            	$compnotedat['companynotes'] = $_POST['companynotes'];
+            	unset($_POST['companynotes']);
+            }
             $this->db->insert('companyitem',$_POST);
+            $companyitemlastid = $this->db->insert_id();
+            
+            if($iscompnotes==1){
+        	 	$where1 = "";
+        	 	
+        	 	$compnotedat['companyitemid'] = $companyitemlastid;
+            	$this->db->insert('company_projectitem_notes',$compnotedat);
+        		     		
+        	 }
         }
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item details saved successfully.</div>');
 			

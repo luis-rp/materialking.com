@@ -32,8 +32,15 @@ class Message extends CI_Controller
 		if(!$company)
 			redirect('company/login');
 		$quotewhere = '';
+		
+		
 		if($quote)
-			$quotewhere = " AND m.quote='".$quote."'";
+		{
+			$sql = "SELECT m.quote FROM ".$this->db->dbprefix('message')." m WHERE m.messagekey='".$quote."'";
+			$quoteid = $this->db->query($sql)->result(); 
+			
+			$quotewhere = " AND m.quote='".$quoteid[0]->quote."'";
+		}
 		$pafilter = '';		
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND m.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
@@ -57,6 +64,7 @@ class Message extends CI_Controller
 			$messages[$msg->ponum]['messages'][]=$msg;
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
+			$messages[$msg->ponum]['quote']['messagekey']=$msg->messagekey;
 			
 			$this->db->where('quote',$msg->quoteid);
 			$award = $this->db->get('award')->row();
@@ -133,6 +141,8 @@ class Message extends CI_Controller
 		$ponum = $quote->ponum;
 		$c = $this->companymodel->getcompanybyid ($_POST['company']);
 		
+		$key = md5($c->id.'-'.$quote->id.'-'.date('YmdHisu'));
+		$_POST['messagekey'] = $key;
 		$_POST['senton'] = date('Y-m-d H:i');
 		$this->db->insert('message',$_POST);
 		
@@ -142,17 +152,23 @@ class Message extends CI_Controller
         $this->email->to($settings['adminemail'], "Administrator");
         $this->email->from($c->email, $c->title); 
 			        
+	    $link = base_url().'message/messages/'.$key;
+            
 	    $body = "
-    Dear Administrator,<br><br>
-    You have got a new message from '".$c->title."' regarding PO# '$ponum'.<br><br>
-    '{$_POST['message']}'";
+		    Dear Administrator,<br><br>
+		    You have got a new message from '".$c->title."' regarding PO# '$ponum'.<br><br>
+		    '{$_POST['message']}'
+		    <br><br>
+	  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
+	    	<a href='$link' target='blank'>$link</a>
+    	";
 	    
         $this->email->subject("New Message");
         $this->email->message($body);	
         $this->email->set_mailtype("html");
         $this->email->send();
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Message sent for PO#: '.$ponum.'</div></div></div>');
-		redirect('message/index/'.$quote->id);
+		redirect('message/index/'.$key);
 	}
 	
 	function tago($time)

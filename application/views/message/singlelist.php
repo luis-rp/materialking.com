@@ -50,7 +50,7 @@
 		 				<?php if($po['quote']['status'] == 'Awarded'){?>
 		 				(<?php echo $po['quote']['awarditems'];?> items awarded.)
 		 				<?php }?>
-		 				<a href="<?php echo site_url('message/messages/'.$po['quote']['id']);?>">
+		 				<a href="<?php echo site_url('message/messages/'.$po['quote']['messagekey']);?>">
 		 					EXPAND
 		 				</a>
                     	</h3>
