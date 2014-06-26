@@ -52,6 +52,15 @@ class costcode extends CI_Controller {
         $this->table->set_heading('ID', 'Name', 'Email', 'Actions');
         $i = 0 + $offset;
 
+        if ($this->session->userdata('usertype_id') > 1)
+        $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+        $where = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+        $taxrate = $this->db->query($cquery)->row();
+        $data['taxrate'] = $taxrate->taxrate;
+        
         $count = count($costcodes);
         $items = array();
         if ($count >= 1) {
@@ -65,14 +74,14 @@ class costcode extends CI_Controller {
                     if ($costcode->totalspent / $costcode->cost > 1) 
                     {
                         //$per = '100%';
-                        $per = number_format(($costcode->totalspent / $costcode->cost) * 100, 2) . '%';
+                        $per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
                         $costcode->budget = '<div class="progress progress-red progress-striped active">
 									      <div style="width: 100%;" class="bar">' . $per . '</div>
 									     </div>';
                     } 
                     else 
                     {
-                        $per = number_format(($costcode->totalspent / $costcode->cost) * 100, 2) . '%';
+                        $per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
                         $costcode->budget = '<div class="progress progress-blue progress-striped active">
 									      <div style="width: ' . $per . ';" class="bar">' . $per . '</div>
 									     </div>';
@@ -128,15 +137,6 @@ class costcode extends CI_Controller {
         $data['projects'] = $this->db->get('project')->result();
         //print_r($data['projects']);die;
         
-        if ($this->session->userdata('usertype_id') > 1)
-        $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
-        else
-        $where = "";
-
-        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
-        $taxrate = $this->db->query($cquery)->row();
-        $data['taxrate'] = $taxrate->taxrate;
- 
         $data ['addlink'] = '';
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();
