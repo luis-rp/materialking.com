@@ -114,7 +114,8 @@ class message extends CI_Controller
 		}
 		elseif($return=='messages')
 		{
-			redirect('admin/purchaseuser/messages/'.$filterquote);
+			//redirect('admin/purchaseuser/messages/'.$filterquote);
+			redirect('admin/message/messages/'.$filterquote);
 		}
 		else
 		{
@@ -224,6 +225,38 @@ class message extends CI_Controller
 	
 	function messages($quote='')
 	{
+		$whrMessage = '';
+		$orderBy = '';
+	
+		if(isset($_POST['searchmsg']) && $_POST['searchmsg'] != '')
+		{
+			$whrMessage .= " AND m.message LIKE '%".trim($_POST['searchmsg'])."%'";
+		}
+		
+		if(isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '')
+		{
+			$whrMessage .= " AND q.ponum LIKE '%".trim($_POST['ponumsearch'])."%'";
+		}
+		if(isset($_POST['sortby']) && $_POST['sortby'] != '')
+		{
+			if($_POST['sortby'] == 'date')
+			{
+				$orderBy .= " ORDER BY m.senton ASC" ;
+			}
+			if($_POST['sortby'] == 'ponumber')	
+			{
+				$orderBy .= "  ORDER BY q.ponum ASC" ;
+			}
+			if($_POST['sortby'] == 'company')	
+			{
+				$orderBy .= "  ORDER BY c.title ASC" ;
+			}
+		}
+		else 
+		{
+			$orderBy .= " ORDER BY m.senton ASC" ;
+		}
+		
 		if($this->session->userdata('usertype_id')!=2)
 		{
 			$message = 'You dont have the permission to access the page.';
@@ -244,10 +277,9 @@ class message extends CI_Controller
 		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail FROM 
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q,
 		".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('users')." u
-		WHERE m.quote=q.id AND m.company=c.id AND m.adminid=u.id
+		WHERE m.quote=q.id AND m.company=c.id AND m.adminid=u.id		
+		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con $orderBy";
 		
-		AND m.purchasingadmin='{$this->session->userdata('id')}' $quotewhere $con ORDER BY m.senton DESC";
-		//echo $messagesql;
 		$msgs = $this->db->query($messagesql)->result();
 		$messages = array();
 		foreach($msgs as $msg)
@@ -266,6 +298,9 @@ class message extends CI_Controller
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;
 		$data['filterquote'] = $quote;
+		$data['searchmsg'] = (isset($_POST['searchmsg']) && $_POST['searchmsg'] != '') ? $_POST['searchmsg'] : " ";
+		$data['sortbyoption']  = (isset($_POST['sortby']) && $_POST['sortby'] != '') ? $_POST['sortby'] : " ";
+		$data['ponumsearch']  = (isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '') ? $_POST['ponumsearch'] : " ";
 		$this->load->view ('admin/purchaseuser/messages', $data);
 	}
 	

@@ -394,6 +394,38 @@ class Quotemodel extends Model
 		return $invoices;
 	}
 	
+	function getinvoicesdetailsformail($company,$invoicenumber)
+	{
+		$search='';
+		if($invoicenumber)
+		{
+			$search .= " AND r.invoicenum ='{$invoicenumber}'";
+		}
+		
+		$pafilter = '';		
+		if(@$_POST['searchpurchasingadmin'])
+			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+		$query = "SELECT invoicenum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent
+				   FROM 
+				   ".$this->db->dbprefix('received')." r
+				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
+				   LEFT JOIN  ".$this->db->dbprefix('users')." u ON u.purchasingadmin = r.purchasingadmin
+				   LEFT JOIN  ".$this->db->dbprefix('company')." c ON ai.company = c.id
+				   LEFT JOIN  ".$this->db->dbprefix('item')." i ON i.id = ai.itemid
+				   LEFT JOIN ".$this->db->dbprefix('orderdetails')."  od ON od.itemid = ai.itemid
+				   LEFT JOIN ".$this->db->dbprefix('order')."  o ON o.id = od.orderid
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
+				  GROUP BY invoicenum 
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				  ";
+			
+		$invoicequery = $this->db->query($query);
+		$items = $invoicequery->result();
+		
+		return $items;
+	}
+	
 	function getinvoicebynum($invoicenum, $company)
 	{
 		

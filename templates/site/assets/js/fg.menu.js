@@ -324,11 +324,13 @@ Menu.prototype.drilldown = function(container, options) {
 	breadcrumb.append(crumbDefaultHeader);
 	
 	var checkMenuHeight = function(el){
-		if (el.height() > options.maxHeight) { el.addClass('fg-menu-scroll') };	
+		if (el.height() > options.maxHeight) { // el.addClass('fg-menu-scroll') 
+	};	
 		el.css({ height: options.maxHeight });
 	};
 	
-	var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('auto'); };
+	//var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('auto'); };
+	var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('200'); };
 	
 	this.resetDrilldownMenu = function(){
 		$('.fg-menu-current').removeClass('fg-menu-current');
@@ -366,13 +368,13 @@ Menu.prototype.drilldown = function(container, options) {
 		    		var parentLeft = (parentUl.is('.fg-menu-content')) ? 0 : parseFloat(topList.css('left'));    		
 		    		var nextLeftVal = Math.round(parentLeft - parseFloat(container.width()));
 		    		var footer = $('.fg-menu-footer');
-		    		
+		    		var timer = setTimeout(function () {
 		    		// show next menu   		
 		    		resetChildMenu(parentUl);
 		    		checkMenuHeight(nextList);
 					topList.animate({ left: nextLeftVal }, options.crossSpeed);						
 		    		nextList.show().addClass('fg-menu-current').attr('aria-expanded', 'true');    
-		    		
+		    		}, 700);
 		    		var setPrevMenu = function(backlink){
 		    			var b = backlink;
 		    			var c = $('.fg-menu-current');
@@ -412,6 +414,7 @@ Menu.prototype.drilldown = function(container, options) {
 						$('.fg-menu-current-crumb').removeClass('fg-menu-current-crumb');
 						var crumbText = $(this).find('span:eq(0)').text();
 						var newCrumb = $('<li class="fg-menu-current-crumb"><a href="javascript://" class="fg-menu-crumb">'+crumbText+'</a></li>');	
+						
 						newCrumb
 							.appendTo(breadcrumb)
 							.find('a').click(function(){
@@ -438,7 +441,7 @@ Menu.prototype.drilldown = function(container, options) {
 		// if the link is a leaf node (doesn't open a child menu)
 		else {
 			$(this).click(function(){
-				menu.chooseItem(this);
+				//menu.chooseItem(this);
 				return false;
 			});
 		};

@@ -790,7 +790,22 @@ class site extends CI_Controller
             $this->data['norecords'] = 'No Records found for the search.';
         }
         $this->data['categories'] = $this->itemcode_model->getcategories();
-        $this->data['categoriesoptions'] = $this->items_model->getTreeOptions(@$_POST['category']);
+        
+         if(isset($_POST['category']))
+        $category = $_POST['category'];
+        else 
+        $category = "";
+        
+        $this->data['categoriesoptions'] = $this->items_model->getTreeOptions($category);
+        
+        if($category){
+        	
+        	$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
+
+        	$result1 = $this->db->query($sql1)->result();
+        	if($result1)
+        	$this->data['catname'] = $result1[0]->catname;
+  	    }
         //if (@$_POST['category'])
             //$this->db->where('category', $_POST['category']);
         $this->data['subcategories'] = array();//$this->db->get('subcategory')->result();

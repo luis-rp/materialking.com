@@ -1540,6 +1540,80 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		    die;
 		$_POST['datedue'] = date('Y-m-d', strtotime($_POST['datedue']));
 		$this->db->where('invoicenum',$_POST['invoicenum'])->update('received',$_POST);
+		
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$invs = $this->quotemodel->getinvoicesdetailsformail($company->id,$_POST['invoicenum']);
+		
+		$subject = "Due Date Set For Invoice ".$_POST['invoicenum'];
+		$body = "";
+		$gtotal = 0;
+		foreach ($invs as $invoice)
+		{     		
+			$body .= 'Dear '.$invoice->username.' ,<br><br>';
+			$body .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' to Due on  '.$invoice->DueDate.'<br><br>';
+			$body .= 'Please see order details below :<br>';
+			$body .= '
+					<table class="table table-bordered span12" border="1">
+		            	<tr>
+		            		<th>Invoice</th>
+		            		<th>Received On</th>
+		            		<th>Supplier Name</th>
+		            		<th>Supplier Address</th>
+		            		<th>Supplier Phone</th>
+		            		<th>Order Number</th>
+		            		<th>Item</th>
+		            		<th>Payment Status</th>
+		            		<th>Verification</th>
+		            		<th>Due Date</th>
+		            		<th>Price</th>
+		            	</tr>';
+			
+	        $body .= '<td>'.$invoice->invoicenum.'</td>
+            		<td>'.$invoice->receiveddate.'</td>
+            		<td>'.$invoice->supplierusername.'</td>
+            		<td>'.$invoice->address.'</td>
+            		<td>'.$invoice->phone.'</td>
+            		<td>'.$invoice->ordernumber.'</td>
+            		<td>'.$invoice->itemname.'</td>
+            		<td>'.$invoice->paymentstatus.'</td>
+            		<td>'.$invoice->status.'</td>
+            		<td>'.$invoice->DueDate.'</td>
+            		<td align="right">'.number_format($invoice->price,2).'</td>
+	            	  </tr>';
+	        $total = $invoice->price*$invoice->quantity;
+            $gtotal+=$total;
+	        $tax = $gtotal * $invoice->taxpercent / 100;
+            $totalwithtax = number_format($tax+$gtotal,2);
+            	
+            $body .= '<tr><td colspan="11">&nbsp;</td> <tr>
+            		<td colspan="10" align="right">Total</td>
+            		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="10" align="right">Tax</td>
+            		<td style="text-align:right;">$'. number_format($tax,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="10" align="right">Total</td>
+            		<td style="text-align:right;">$'. $totalwithtax.'</td>
+            	</tr>';
+            $body .= '</table>';   
+	    }            
+		$this->load->library('email');
+		
+		$this->email->to($company->primaryemail);
+		$this->email->from($this->session->userdata('email'));
+		
+		$this->email->subject($subject);
+		$this->email->message($body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
 	}
 	
 	function invoice()

@@ -1,12 +1,16 @@
 <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
 
 <script type="text/javascript">
-<!--
+
 $(document).ready(function(){
 	$('.date').datepicker();
+	
 });
+var datetext = "";
 function changeduedate(invoicenum,datedue)
 { 
+	if(datetext!= datedue) {
+	datetext = datedue;
 	var data = "invoicenum="+invoicenum+"&datedue="+datedue;
 	$.ajax({
         type: "post",
@@ -14,6 +18,8 @@ function changeduedate(invoicenum,datedue)
         url: datedueurl
     }).done(function(data) {
     });
+    
+	}
 }
 function invoice(invoicenum)
 {
@@ -21,7 +27,7 @@ function invoice(invoicenum)
 	$("#invoiceform").submit();
 }
 
-//-->
+
 </script>
 
     <div class="content">  
