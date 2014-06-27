@@ -1541,7 +1541,6 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$_POST['datedue'] = date('Y-m-d', strtotime($_POST['datedue']));
 		$this->db->where('invoicenum',$_POST['invoicenum'])->update('received',$_POST);
 		
-		
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
@@ -1566,6 +1565,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		            		<th>Supplier Phone</th>
 		            		<th>Order Number</th>
 		            		<th>Item</th>
+		            		<th>Quantity</th>
 		            		<th>Payment Status</th>
 		            		<th>Verification</th>
 		            		<th>Due Date</th>
@@ -1579,6 +1579,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td>'.$invoice->phone.'</td>
             		<td>'.$invoice->ordernumber.'</td>
             		<td>'.$invoice->itemname.'</td>
+            		<td>'.$invoice->quantity.'</td>
             		<td>'.$invoice->paymentstatus.'</td>
             		<td>'.$invoice->status.'</td>
             		<td>'.$invoice->DueDate.'</td>
@@ -1589,25 +1590,25 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	        $tax = $gtotal * $invoice->taxpercent / 100;
             $totalwithtax = number_format($tax+$gtotal,2);
             	
-            $body .= '<tr><td colspan="11">&nbsp;</td> <tr>
-            		<td colspan="10" align="right">Total</td>
+            $body .= '<tr><td colspan="12">&nbsp;</td> <tr>
+            		<td colspan="11" align="right">Total</td>
             		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="10" align="right">Tax</td>
+            		<td colspan="11" align="right">Tax</td>
             		<td style="text-align:right;">$'. number_format($tax,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="10" align="right">Total</td>
+            		<td colspan="11" align="right">Total</td>
             		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>';
             $body .= '</table>';   
 	    }            
 		$this->load->library('email');
 		
-		$this->email->to($company->primaryemail);
+		$this->email->to($invs[0]->email);
 		$this->email->from($this->session->userdata('email'));
 		
 		$this->email->subject($subject);

@@ -405,7 +405,7 @@ class Quotemodel extends Model
 		$pafilter = '';		
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
-		$query = "SELECT invoicenum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent
+		$query = "SELECT invoicenum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent,u.email
 				   FROM 
 				   ".$this->db->dbprefix('received')." r
 				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
