@@ -159,9 +159,11 @@
                                             </tr>
                                           <?php } ?>
                                             <tr>
-                                                <td colspan="3">Total</td>
+                                                <td colspan="3">SubTotal</td>
                                                 <td colspan="2">$<?php echo number_format($gtotal,2);?></td>
                                             </tr>
+                                            <tr><td  colspan="3">Tax</td><td colspan="2">$<?php echo $tax;?></td></tr>
+											<tr><td  colspan="3">Total</td><td colspan="2">$<?php echo $tax+number_format($gtotal,2);?></td></tr>
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
