@@ -87,54 +87,132 @@
          <?php 
          if(isset($items)){
          ?>
-        <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
-          <script type="text/javascript">
+         <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
+		
+		<span>Filter chart by month: </span>
+		<div class="select chart-month" data-resize="auto">
+			<button type="button" data-toggle="dropdown" class="btn dropdown-toggle chart-month-trigger">
+			<span class="dropdown-label"></span>
+			<span class="caret"></span>
+			</button>
+			<ul id="chartMonth" class="dropdown-menu" >
+				<li class="chartMonthItem" data-value="1" <?=(date("m")==1?'data-selected="true"':'')?>><a href="#">January</a></li>
+				<li class="chartMonthItem" data-value="2" <?=(date("m")==2?'data-selected="true"':'')?>><a href="#">February</a></li>
+				<li class="chartMonthItem" data-value="3" <?=(date("m")==3?'data-selected="true"':'')?>><a href="#">March</a></li>
+				<li class="chartMonthItem" data-value="4" <?=(date("m")==4?'data-selected="true"':'')?>><a href="#">April</a></li>
+				<li class="chartMonthItem" data-value="5" <?=(date("m")==5?'data-selected="true"':'')?>><a href="#">May</a></li>
+				<li class="chartMonthItem" data-value="6" <?=(date("m")==6?'data-selected="true"':'')?>><a href="#">June</a></li>
+				<li class="chartMonthItem" data-value="7" <?=(date("m")==7?'data-selected="true"':'')?>><a href="#">July</a></li>
+				<li class="chartMonthItem" data-value="8" <?=(date("m")==8?'data-selected="true"':'')?>><a href="#">August</a></li>
+				<li class="chartMonthItem" data-value="9" <?=(date("m")==9?'data-selected="true"':'')?>><a href="#">September</a></li>
+				<li class="chartMonthItem" data-value="10" <?=(date("m")==10?'data-selected="true"':'')?>><a href="#">October</a></li>
+				<li class="chartMonthItem" data-value="11" <?=(date("m")==11?'data-selected="true"':'')?>><a href="#">November</a></li>
+				<li class="chartMonthItem" data-value="12" <?=(date("m")==12?'data-selected="true"':'')?>><a href="#">December</a></li>
+			</ul>
+		</div>
+
+        <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:60%"></div>
+	
+         <script type="text/javascript">
          $(function () {
+		 
+			var month  = new Date().getMonth() + 1;
+			//var month  = 4;
+			Highcharts.theme = {
+				tooltip: {
+					
+				  fontSize: '15px',
+				  style: {
+					 fontSize: '15px'
+				  }
+			   }
+			};
+			Highcharts.setOptions(Highcharts.theme);
              var seriesData = new Array();
              var dataData = new Array();
-             <?php foreach($items as $item){ ?>
-          
-             var dateItem =new Date("<?php echo $item->daterequested;?>");
-             var costItem = "<?php echo $item->totalprice; ?>";
-             costItem = parseFloat(costItem.slice(1)); 
-             dataData.push({name:"<?php echo $item->ponum;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDay()),y:costItem});
-             
-             <?php } ?>
-             seriesData.push({"name":"PO#","data":dataData});
-             console.log(seriesData);
-             $('#container-highchart').highcharts({
-                 chart: {
-                     type: 'spline'
-                 },
-                 title: {
-                     text: 'Title'
-                 },
-                 subtitle: {
-                     text: ''
-                 },
-                 xAxis: {
-                     type: 'datetime',
-                     dateTimeLabelFormats: { // don't display the dummy year
-                         month: '%e. %b',
-                         year: '%b'
-                     },
-                     title: {
-                         text: 'Date'
-                     }
-                 },
-                 yAxis: {
-                     title: {
-                         text: 'Amount ($)'
-                     },
-                     min: 0
-                 },
-                 tooltip: {
-               //D      headerFormat: '<b>{series.data}</b><br>',
-                     pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-                 },
+			 var items = new Array();
+                <?php foreach($items as $item){ ?>
+					var dateItem =new Date("<?php echo $item->daterequested;?>");
+					
+					if(!items['<?=$item->daterequested?>'])
+					{
+						var costItem = "<?php echo $item->totalprice; ?>";
+						costItem = parseFloat(costItem.slice(1)); 
+						items['<?=$item->daterequested?>'] = {name:"<?php echo $item->ponum;?> = <?php echo $item->totalprice;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDate()),y:costItem, date: dateItem};
+					}
+					else
+					{
+						
+						var costItem = "<?php echo $item->totalprice; ?>";
+						costItem = parseFloat(costItem.slice(1)); 
+						items['<?=$item->daterequested?>'].y += costItem;
+						items['<?=$item->daterequested?>'].name += ", <?php echo $item->ponum;?> = <?php echo $item->totalprice;?>";
+					}
+					
+			<?php } ?>
+			function changeMonth()
+			{
+				dataData = new Array();
+				seriesData = new Array();
+				for(var i in items)
+				{
+					if(items[i].date.getMonth() + 1 == month)
+					{
+						dataData.push({ name: items[i].name, x: items[i].x, y: items[i].y});
+					}
+				}
+           
+				seriesData.push({"name":"PO#","data":dataData, marker: {
+					fillColor: 'white',
+					lineWidth: 2,
+					lineColor: Highcharts.getOptions().colors[0]
+				}});
+				 $('#container-highchart').highcharts({
+					 chart: {
+					 
+					 },
+					 title: {
+						 text: 'Title'
+					 },
+					 subtitle: {
+						 text: ''
+					 },
+					 xAxis: {
+						 type: 'datetime',
+						 dateTimeLabelFormats: { // don't display the dummy year
+							 month: '%e. %b',
+							 year: '%b'
+						 },
+						 title: {
+							 text: 'Date'
+						 }
+					 },
+					 yAxis: {
+						 title: {
+							 text: 'Amount ($)'
+						 },
+						 min: 0
+					 },
+					 tooltip: {
+				   //D      headerFormat: '<b>{series.data}</b><br>',
+						 pointFormat: '{point.x:%e. %b}: ${point.y:.2f}'
+					 },
 
-                 series: seriesData
-             });
+					 series: seriesData
+				 });
+				 
+				 //$('.chart-month').find('.dropdown-label').text($('.chartMonthItem[data-value='+month+']').text());
+			}
+			
+			changeMonth();
+			
+			
+			$('.chartMonthItem').click(function () {
+				  month = $(this).attr('data-value');
+				  changeMonth();
+			});
          });
          </script>
          <?php 
