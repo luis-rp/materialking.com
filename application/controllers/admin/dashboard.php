@@ -110,7 +110,7 @@ class Dashboard extends CI_Controller
 		    
 		    $data['networkjoinedcompanies'][] = $nc;
 		}
-		var_export($this->session->userdata('managedprojectdetails'));
+		
 		if($this->session->userdata('managedprojectdetails'))
 		{
 			
