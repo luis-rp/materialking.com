@@ -185,7 +185,7 @@
 					 
 					 },
 					 title: {
-						 text: 'Title'
+						 text: 'Monthly Overview'
 					 },
 					 subtitle: {
 						 text: ''

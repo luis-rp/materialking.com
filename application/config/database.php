@@ -50,7 +50,7 @@ $active_record = TRUE;
 //Jon120758! findsupplyhousecom
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'jon';
-$db['default']['password'] = '8436Blackburn!';
+$db['default']['password'] = 'TNbpCev!696hphe';
 $db['default']['database'] = 'pms';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'pms_';
