@@ -134,20 +134,7 @@
              var dataData = new Array();
 			 var items = new Array();
 			 
-			 	var dateItem =new Date("06/29/2014");
-				if(!items['06/29/2014'])
-				{
-				var costItem = "$ 13.00";
-				costItem = parseFloat(costItem.slice(1));
-				items['06/29/2014'] = {name:"quotewithattach = $ 13.00",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDate()),y:costItem, date: dateItem};
-				}
-				else
-				{
-				var costItem = "$ 13.00";
-				costItem = parseFloat(costItem.slice(1));
-				items['06/29/2014'].y += costItem;
-				items['06/29/2014'].name += ", quotewithattach = $ 13.00";
-				} 
+			 
                 <?php foreach($items as $item){ ?>
 					var dateItem =new Date("<?php echo $item->daterequested;?>");
 					
