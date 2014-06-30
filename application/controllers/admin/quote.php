@@ -2515,7 +2515,7 @@ with the transfer# {$tobj->id}.
     function getitembycode() 
     {
         $code = $_POST['code'];
-        $projectid = $_POST['projectid'];
+        //$projectid = $_POST['projectid'];
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
       
@@ -2527,7 +2527,7 @@ with the transfer# {$tobj->id}.
         
 		if($companyitem)
 		{
-			if($companyitem->projectid){
+			/*if($companyitem->projectid){
 				$arrproj = explode(",",$companyitem->projectid);
 			
 				if($companyitem->projectid != -1 && in_array($projectid,$arrproj)){
@@ -2541,7 +2541,8 @@ with the transfer# {$tobj->id}.
 				$item->notes = $companyitem->companynotes;
 			}else
 				$item->notes = $companyitem->companynotes;
-			
+			*/
+			$item->notes = $companyitem->companynotes;
 			$item->item_img = $companyitem->filename;
 		}
 		
