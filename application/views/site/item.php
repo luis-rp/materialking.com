@@ -12,7 +12,9 @@
 
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/jquery.jqzoom.css" type="text/css">
-
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/data.js"></script>
+<script src="http://code.highcharts.com/modules/drilldown.js"></script>
 <script>
 	$(document).ready(function(){
 		/*$('.jqzoom').jqzoom({
@@ -687,7 +689,90 @@
     </div>
 </div>
 </div>
-
+<div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
+		   <script type="text/javascript">
+		   $(function () {
+			   var dataChart = new Array;
+			   var suppliers =new Array();
+			   var ser = new Array();
+			<?php 
+			if($inventory)
+			foreach ($inventory as $inv)
+			if ($inv->ea)
+			{
+				$price = $inv->ea;
+				?>
+				dataChart.push(parseFloat("<?php echo $price; ?>"));
+				suppliers.push("<?php echo $inv->companydetails->title; ?>");
+				<?php 
+			}
+			?>
+          	ser[0] ={"name":"Spent","data":dataChart};
+    
+		        $('#container-highchart').highcharts({
+		            chart: {
+		                type: 'column'
+		            },
+		            title: {
+		                text: 'Estimated Cost To Complete'
+		            },
+		            subtitle: {
+		                text: ''
+		            },
+		            xAxis: {
+		                categories: suppliers,
+		                title: {
+		                    text: null
+		                }
+		            },
+		            yAxis: {
+		                min: 0,
+		                title: {
+		                    text: '$',
+		                    align: 'high'
+		                },
+		                labels: {
+		                    overflow: 'justify'
+		                }
+		            },
+		            tooltip: {
+		                valueSuffix: ' $'
+		            },
+		            plotOptions: {
+		                bar: {
+		                    dataLabels: {
+		                        enabled: true
+		                    }
+		                }
+		            },
+		            plotOptions: {
+	                       series: {
+	                           borderWidth: 0,
+	                           dataLabels: {
+	                               enabled: true,
+	                               format: '$ {point.y:.1f}'
+	                           }
+	                       }
+	                   },
+		            legend: {
+		                layout: 'vertical',
+		                align: 'right',
+		                verticalAlign: 'top',
+		                x: -40,
+		                y: 100,
+		                floating: true,
+		                borderWidth: 1,
+		                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+		                shadow: true
+		            },
+		            credits: {
+		                enabled: false
+		            },
+		            series: ser
+		        });
+		    });
+		    
+		   </script>
 
         <!-- Modal -->
         <div class="modal hide fade" id="addtoquotemodal">
