@@ -5,9 +5,31 @@
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 
 <!-- <script src="<?php echo base_url();?>templates/admin/js/jqBootstrapValidation.js"></script> -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/fg.menu.js"></script>
 
+<style type="text/css">
+	
+	#menuLog { font-size:1.0em; margin:10px 20px 20px; }
+	.hidden { position:absolute; top:0; left:-9999px; width:1px; height:1px; overflow:hidden; }
+	
+	.fg-button { clear:left; margin:0 4px 40px 0px; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+	a.fg-button { float:left;  }
+	button.fg-button { width:auto; overflow:visible; } /* removes extra button width in IE */
+	
+	.fg-button-icon-left { padding-left: 2.1em; }
+	.fg-button-icon-right { padding-right: 2.1em; }
+	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
+	
+	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
+	.fg-menu-container{z-index:1000;}
+</style>
 <script type="text/javascript">
-<!--
+
 $(document).ready(function(){
 	//$('#intro').wysihtml5();
 	//$('#content').wysihtml5();
@@ -20,10 +42,38 @@ $(document).ready(function(){
 	//$("input,select,textarea").not("[type=submit]").jqBootstrapValidation();
 	$('html, body').animate({scrollTop:$(document).height()}, 'slow');
 	$("#showpricelink").hide();
-        $("#showpricelinkbrow").show();
-        
+    $("#showpricelinkbrow").show();
+    $("#selectCategoryWindow").hide();
+    $("#selectItemWindow").hide();
+    $("#browseItemsFromStore").click(function(){
+    	$('#selectCategoryWindow').dialog({ height: "auto"  });
+        });
+    $("#browseItem").click(function(){
+    	$('#selectItemWindow').dialog({ height: "auto"  });
+    });
        //toggleradius();
+
+	// BUTTONS
+	$('.fg-button').hover(
+		function(){ $(this).removeClass('ui-state-default').addClass('ui-state-focus'); },
+		function(){ $(this).removeClass('ui-state-focus').addClass('ui-state-default'); }
+	);
+	
+	// MENUS    	
+	$('#hierarchy').menu({
+		content: $('#hierarchy').next().html(),
+		crumbDefaultText: ' '
+	});
+	
+	$('#hierarchybreadcrumb').menu({
+		content: $('#hierarchybreadcrumb').next().html(),
+		backLink: false
+	});
 });
+
+
+
+
 
 //datedefault = true;
 //ccdefault = true;
@@ -107,7 +157,7 @@ function invite()
 function fetchItem(codeid)
 {
 	var itemcode = document.getElementById(codeid).value;
-	prid = document.getElementById('pid').value;
+
 	var idid = codeid.replace('itemcode','itemid');
 	var nameid = codeid.replace('itemcode','itemname');
 	var unitid = codeid.replace('itemcode','unit');
@@ -120,7 +170,7 @@ function fetchItem(codeid)
 	//alert(url);
     $.ajax({
       type:"post",
-      data: "code="+encodeURIComponent(itemcode)+"&projectid="+prid,
+      data: "code="+encodeURIComponent(itemcode),
       url: url
     }).done(function(data){
         var obj = $.parseJSON(data);
@@ -210,8 +260,14 @@ function selectcompany(codeid, company, price)
 	$("#"+priceid).val(price);
 }
 
+function viewCategories(){
 
-//-->
+
+		
+	}
+
+
+
 </script>
 
 
@@ -257,6 +313,7 @@ function savclose()
 	var itemcode = document.getElementById('catiditem').value;
    	$("#itemcode").val(itemcode);
     fetchItem('itemcode');
+
 }
 </script>
 
@@ -281,7 +338,7 @@ function savclose()
 		   <br/>
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
-		   <input type="hidden" name="pid" id="pid" value="<?php echo $pid;?>"/>
+		   <input type="hidden" name="pid" value="<?php echo $pid;?>"/>
 		   <input type="hidden" name="potype" value="<?php echo $this->validation->potype;?>"/>
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <input type="hidden" id="reminders" name="reminders" value=""/>
@@ -479,6 +536,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    	</form>
 		    	<?php }?>
 		    	<?php if(!$invited){?>
+		    	
 			  	<form id="newitemform" class="form-horizontal" method="post"
 			  	action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>"> 
 			  	
@@ -487,7 +545,11 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');" onchange="showhideviewprice('');"/>
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid')">View Prices</a></span>
-		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span>
+		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
+		    			<div><span id="showItemsFromStore">
+		    			
+							<a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a>
+							</span></div>
                     </td>
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
@@ -692,3 +754,58 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
         	</div>
 
         </div>
+        
+        
+        <div id="selectCategoryWindow">
+       		 <h2>Item Filter</h2>
+                    
+                    <div>
+                        
+                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                            
+                            <div class="location control-group">
+                            	<?php $this->load->view('site/catmenu.php');?>
+                            </div>
+                        </form>
+                       
+                    </div>
+        </div>
+        <div id="selectItemWindow">
+       		 <h2>Item Filter</h2>
+                    
+                    <div>
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                           <select name="catiditem" id="catiditem"></select>
+                            <div class="location control-group">
+                            	<script>
+								 function filtercategoryitems(id)
+								 {
+									 getcatitem(id);
+								  /*  $("#formcategory").val(id);
+								    document.forms['categorysearchform'].submit();*/
+								    //setTimeout("doPost()", 10);
+								    return false;
+								 }
+							
+								 function doPost()
+								 {
+								    document.forms['categorysearchform'].submit();
+								 }
+								</script>
+								<a tabindex="0" href="#news-items-3" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="hierarchybreadcrumb">
+									<span class="ui-icon ui-icon-triangle-1-s"></span><?php if(isset($catname) && $catname!="") echo $catname; else echo "Select Category"; ?>
+								</a>
+								<div id="news-items-3" class="hidden">
+								    <?php echo @categorymenuitems;?>
+								</div>
+                            </div>
+                       <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button">Save</button></div>
+                       
+                    </div>
+        </div>
+        
