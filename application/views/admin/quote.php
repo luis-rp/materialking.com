@@ -791,8 +791,9 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                             	<script>
 								 function filtercategoryitems(id)
 								 {
+									 $("#formcategory").val(id);
 									 getcatitem(id);
-								  /*  $("#formcategory").val(id);
+								  /* 
 								    document.forms['categorysearchform'].submit();*/
 								    //setTimeout("doPost()", 10);
 								    return false;
