@@ -318,7 +318,7 @@ function savclose()
 	//alert('gdgds');
 	var itemcode = document.getElementById('catiditem').value;
    	$("#itemcode").val(itemcode);
-    fetchItem('itemcode');
+   // fetchItem('itemcode');
     $('#selectItemWindow').dialog('close');
 }
 </script>
