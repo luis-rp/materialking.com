@@ -318,7 +318,7 @@ function savclose()
 	//alert('gdgds');
 	var itemcode = document.getElementById('catiditem').value;
    	$("#itemcode").val(itemcode);
-   // fetchItem('itemcode');
+    fetchItem('itemcode');
     $('#selectItemWindow').dialog('close');
 }
 </script>
@@ -791,7 +791,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                             	<script>
 								 function filtercategoryitems(id)
 								 {
-									 getcatitem(id);
+									// getcatitem(id);
 								  /*  $("#formcategory").val(id);
 								    document.forms['categorysearchform'].submit();*/
 								    //setTimeout("doPost()", 10);
