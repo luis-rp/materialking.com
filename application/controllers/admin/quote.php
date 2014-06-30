@@ -447,7 +447,8 @@ class quote extends CI_Controller
         $data['bids'] = $this->quote_model->getbids($id);
 
         $data ['heading'] = $data['potype'] == "Bid" ? 'Update Quote Item' : 'Update Purchase Order Item';
-        ;
+        $data['categorymenu'] = $this->items_model->getCategoryMenu();
+        $data['categorymenuitems'] = $this->items_model->getCategoryMenuItems();
         $data ['message'] = '';
         $data ['action'] = site_url('admin/quote/updatequote');
         //$this->load->view ('admin/quote', $data);
