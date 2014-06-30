@@ -348,7 +348,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             foreach ($itemcodes as $sub)
             {
-                $str .= '<option value="' . $sub->itemcode . '" ' . $sel . ' >' . $sub->itemcode . '</option>';
+                $str .= '<option value="' . $sub->itemcode . '">' . $sub->itemcode . '</option>';
             }
         }
         else

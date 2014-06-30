@@ -451,7 +451,82 @@
                         </table>
 
                         <?php } ?> 
-                        
+                         <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
+					    <script type="text/javascript">
+					   $(function () {
+						   var dataChart = new Array;
+						   var suppliers =new Array();
+						   var ser = new Array();
+						   var total = 0;
+						<?php 
+						if($inventory)
+						foreach ($inventory as $inv)
+						if ($inv->ea)
+						{
+							$price = $inv->ea;
+							?>
+							ser.push({name:"<?php echo $inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
+							total = total + <?php echo $price;?>;
+							<?php 
+						}
+						?>
+			          var totalSuppliers = <?php echo count($inventory);?>;
+			    
+					        $('#container-highchart').highcharts({
+					            chart: {
+					                type: 'column'
+					            },
+					            title: {
+					                text: 'Current Market Prices'
+					            },
+					            subtitle: {
+					                text: 'Fair Market Price = $ '+parseFloat(total/totalSuppliers).toFixed(2)
+					            },
+					            xAxis: {
+					                categories: ["Suppliers"],
+					                title: {
+					                    text: null
+					                }
+					            },
+					            yAxis: {
+					                min: 0,
+					                title: {
+					                    text: 'Current Price $',
+					                    align: 'high'
+					                },
+					                labels: {
+					                    overflow: 'justify'
+					                }
+					            },
+					            tooltip: {
+					                valueSuffix: ' $'
+					            },
+					            plotOptions: {
+					                bar: {
+					                    dataLabels: {
+					                        enabled: true
+					                    }
+					                }
+					            },
+					            plotOptions: {
+				                       series: {
+				                           borderWidth: 0,
+				                           dataLabels: {
+				                               enabled: true,
+				                               format: '$ {point.y:.1f}'
+				                           }
+				                       }
+				                   },
+					            
+					            credits: {
+					                enabled: false
+					            },
+					            series: ser
+					        });
+					    });
+					    
+					   </script>
+					   
                         <a name="form"></a>
                         <h2>Request Assistance</h2>
                         <?php echo $this->session->flashdata('message'); ?>
@@ -689,80 +764,7 @@
     </div>
 </div>
 </div>
-<div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
-		   <script type="text/javascript">
-		   $(function () {
-			   var dataChart = new Array;
-			   var suppliers =new Array();
-			   var ser = new Array();
-			<?php 
-			if($inventory)
-			foreach ($inventory as $inv)
-			if ($inv->ea)
-			{
-				$price = $inv->ea;
-				?>
-				dataChart.push(parseFloat("<?php echo $price; ?>"));
-				suppliers.push("<?php echo $inv->companydetails->title; ?>");
-				<?php 
-			}
-			?>
-          	ser[0] ={"name":"Spent","data":dataChart};
-    
-		        $('#container-highchart').highcharts({
-		            chart: {
-		                type: 'column'
-		            },
-		            title: {
-		                text: 'Estimated Cost To Complete'
-		            },
-		            subtitle: {
-		                text: ''
-		            },
-		            xAxis: {
-		                categories: suppliers,
-		                title: {
-		                    text: "suppliers"
-		                }
-		            },
-		            yAxis: {
-		                min: 0,
-		                title: {
-		                    text: '$',
-		                    align: 'high'
-		                },
-		                labels: {
-		                    overflow: 'justify'
-		                }
-		            },
-		            tooltip: {
-		                valueSuffix: ' $'
-		            },
-		            plotOptions: {
-		                bar: {
-		                    dataLabels: {
-		                        enabled: true
-		                    }
-		                }
-		            },
-		            plotOptions: {
-	                       series: {
-	                           borderWidth: 0,
-	                           dataLabels: {
-	                               enabled: true,
-	                               format: '$ {point.y:.1f}'
-	                           }
-	                       }
-	                   },
-		            
-		            credits: {
-		                enabled: false
-		            },
-		            series: ser
-		        });
-		    });
-		    
-		   </script>
+	  
 
         <!-- Modal -->
         <div class="modal hide fade" id="addtoquotemodal">
