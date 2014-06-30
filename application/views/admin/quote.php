@@ -60,13 +60,23 @@ $(document).ready(function(){
 	);
 	
 	// MENUS    	
-	$('#hierarchy').menu({
+/*	$('#hierarchy').menu({
 		content: $('#hierarchy').next().html(),
 		crumbDefaultText: ' '
-	});
+	});*/
 	
 	$('#hierarchybreadcrumb').menu({
 		content: $('#hierarchybreadcrumb').next().html(),
+		backLink: false
+	});
+
+	/*$('#hierarchyitem').menu({
+		content: $('#hierarchyitem').next().html(),
+		crumbDefaultText: ' '
+	});
+	*/
+	$('#hierarchybreadcrumbitem').menu({
+		content: $('#hierarchybreadcrumbitem').next().html(),
 		backLink: false
 	});
 });
@@ -260,11 +270,7 @@ function selectcompany(codeid, company, price)
 	$("#"+priceid).val(price);
 }
 
-function viewCategories(){
 
-
-		
-	}
 
 
 
@@ -313,7 +319,7 @@ function savclose()
 	var itemcode = document.getElementById('catiditem').value;
    	$("#itemcode").val(itemcode);
     fetchItem('itemcode');
-
+    $('#selectItemWindow').dialog('close');
 }
 </script>
 
@@ -778,9 +784,9 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                     
                     <div>
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
-                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                           <select name="catiditem" id="catiditem"></select>
+                            <input type="hidden" id="breadcrumbitem" name="breadcrumb"/>
+                            <input type="hidden" id="formcategoryitem" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                          
                             <div class="location control-group">
                             	<script>
 								 function filtercategoryitems(id)
@@ -792,19 +798,18 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 								    return false;
 								 }
 							
-								 function doPost()
-								 {
-								    document.forms['categorysearchform'].submit();
-								 }
+								 
 								</script>
-								<a tabindex="0" href="#news-items-3" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="hierarchybreadcrumb">
+								<a tabindex="0" href="#news-items-3" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="hierarchybreadcrumbitem">
 									<span class="ui-icon ui-icon-triangle-1-s"></span><?php if(isset($catname) && $catname!="") echo $catname; else echo "Select Category"; ?>
 								</a>
 								<div id="news-items-3" class="hidden">
-								    <?php echo @categorymenuitems;?>
+								    <?php echo @$categorymenuitems;?>
 								</div>
                             </div>
-                       <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button">Save</button></div>
+                             <select name="catiditem" id="catiditem" ></select>
+                            
+                       <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>
                        
                     </div>
         </div>
