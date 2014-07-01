@@ -45,11 +45,12 @@ class catcode_model extends Model {
 		return $temp;
 	}
 
-    function SaveCategory() 
+    function SaveCategory($image_name="") 
     {
         $options = array(
             'parent_id' => $this->input->post('parent_id'),
-            'catname' => $this->input->post('catname')
+            'catname' => $this->input->post('catname'),
+            'banner_image'=>$image_name
         );
         $this->db->insert('category', $options);
         return $this->db->insert_id();
@@ -86,18 +87,15 @@ class catcode_model extends Model {
         }
     }
 
-    function updateCategory() {
-        $options = array(
-            'parent_id' => $this->input->post('parent_id'),
-            'catname' => $this->input->post('catname')
-        );
+    function updateCategory($data) {
+        
         $this->db->where('id', $this->input->post('id'));
-        $this->db->update('category', $options);
+        $this->db->update('category', $data);
     }
 
     function remove_category($id) 
     {
-    	$subcategories = $this->getSubCategores($id);
+        $subcategories = $this->getSubCategores($id);
         $this->db->where_in('id', $subcategories);
         $this->db->delete('category');
     }

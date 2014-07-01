@@ -26,24 +26,27 @@
 <script type="text/javascript">
             $(document).ready(function() {
                 
-                
+                $(".form-horizontal").submit(function(obj){
+                                var msj = "Please confirm the assignment of Order #<?php echo $order->ordernumber;?> , To Project Name ("+$('.pid option:selected').text()+") , Cost-Code ("+$('.ccid option:selected').text()+"), Total Value of Order =  <?php echo $total+$tax;?> as one amount inclusive of tax.";
+                		if(!confirm(msj)){return false;}
+                 });
                 $(".pid").change(function(event){
                     <?php if(is_null($order->project)){?>
-                    var msj = "Please confirm the assignment \nOrder <?php echo $order->ordernumber;?>, $total <?php echo $total;?> + $tax <?php echo $tax; ?> to "+ $(".pid option:selected").text();
+                    
                 	<?php }else{?>
                 	var msj = "Are you sure you wish to re-assign order value";
                 	<?php }?>
-                	$(".form-horizontal").submit(function(obj){
-                		if(!confirm(msj)){return false;}
-                    	});
-						$.ajax("<?php echo base_url()?>admin/costcode/get_cc_by_project",{data:{projectfilter:$(this).val()},dataType:"json",type:"POST",success:function(data,textStatus){
-									$(".ccid").empty();
-							   for(var i=0;i<data.length;i++){
-								   
-									$(".ccid").append('<option value="'+data[i].id+'">'+data[i].code+'</option>');
-								   }
-							   $(".cost-code").show();
-							   }});
+                	
+                        $.ajax("<?php echo base_url()?>admin/costcode/get_cc_by_project",{data:{projectfilter:$(this).val()},dataType:"json",type:"POST",success:function(data,textStatus){
+                                                $(".ccid").empty();
+                                   for(var i=0;i<data.length;i++){
+
+                                                $(".ccid").append('<option value="'+data[i].id+'">'+data[i].code+'</option>');
+                                           }
+                                   $(".cost-code").show();
+                                   }
+                               });
+                        
                     });
             });
 </script>

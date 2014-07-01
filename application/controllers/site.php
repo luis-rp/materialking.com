@@ -841,13 +841,26 @@ class site extends CI_Controller
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->load->view('site/items', $this->data);
     }
+    public function getCategoryImage($catID)
+    {
     
+        $cat_data = $this->db->where('id',$catID)->get('category')->result();
+        if($cat_data[0]->banner_image =='' || $cat_data[0]->banner_image =='0')
+        {
+            $cat_dataImage = $this->getCategoryImage($cat_data['0']->parent_id);
+            return $cat_dataImage;
+        }
+        else {
+            return $cat_data[0]->banner_image;
+        }
+    }
     public function item ($url)
     {
         $url = urldecode($url);
         //echo $url;die;
         $this->db->where('url', $url);
         $item = $this->db->get('item')->row();
+     
         if(!$item)
             redirect('site');
             
@@ -855,6 +868,8 @@ class site extends CI_Controller
         $id = $item->id;
         $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->get('itemarticle')->result();
         $item->images = $this->db->where('itemid',$item->id)->get('itemimage')->result();
+        $cat_data = $this->db->where('id',$item->category)->get('category')->result();
+        $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
         $mainimg = new stdClass();
         if($item->item_img) 
         {

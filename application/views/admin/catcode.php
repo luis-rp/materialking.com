@@ -21,8 +21,7 @@
 
             <?php echo $message; ?>
             <?php echo $this->session->flashdata('message'); ?>
-            <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
-
+            <form class="form-horizontal" method="post" action="<?php echo $action; ?>" enctype="multipart/form-data">
                 <br/>
                 <a class="btn btn-green" href="<?php echo site_url('admin/catcode'); ?>">&lt;&lt; Back</a>
                 <br/>
@@ -43,8 +42,24 @@
                         <div class="controls">
                             <select id="parent_id" name="parent_id">
                             	<option value="0">Main Category</option>
-                            	<?php echo $parentoptions;?>
+                                <?php echo $parentoptions; ?>
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Category Banner</label>
+                        <div class="controls">
+                            <input type="file" name="banner_image" id="banner_image"/>
+                            <?php
+                                if(isset($banner_image) && $banner_image != "" && file_exists("./uploads/category-banners/".$banner_image))
+                                {
+                             ?>
+                                    <img src="<?php echo site_url('uploads/category-banners/thumbs/'.$banner_image);?>" alt=""/>
+                                    <input type="hidden" readonly="readonly" name="previous_image" id="previous_image" value="<?php echo $banner_image; ?>" />
+                            <?php
+                                }   
+                            ?>
                         </div>
                     </div>
 

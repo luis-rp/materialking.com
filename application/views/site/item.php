@@ -254,10 +254,14 @@
                     </div>
 
                     <div class="property-detail">
+                        <?php  if(isset($cat_image) && $cat_image!= "" && file_exists("./uploads/category-banners/".$cat_image)) { ?>
+                        <div class="category-image" style="margin: 0px 0px 5px;">
+                            <img src="<?php echo site_url('uploads/category-banners/'.$cat_image);?>" class="cat-image" style="width:830px; height:200px;">
+                        </div>
+                        <?php } ?>
                         <div class="pull-left overview">
                             <div class="row">
                                 <div class="span3" style="text-align: center">
-                                
                                 
                                     <div class="clearfix">
                                         <div class="clearfix">
