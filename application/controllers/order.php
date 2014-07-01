@@ -64,10 +64,11 @@ class Order extends CI_Controller
 			}
 		}
  		
-		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted 
+		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent 
 				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
 				WHERE o.id=od.orderid AND od.company=".$company->id." 
-				$search $filter		
+				$search $filter 
+				GROUP BY od.orderid 		
 				ORDER BY o.purchasedate DESC";
 		$orders = $this->db->query($sql)->result();
 		$data['orders'] = array();
@@ -84,6 +85,9 @@ class Order extends CI_Controller
 				$order->purchaser = new stdClass();
 				$order->purchaser->companyname = 'Guest ('.$order->email.')';
 			}
+						
+			$order->amount = round(($order->amount + ($order->amount*$order->taxpercent/100) ),2);
+			
 			$data['orders'][]=$order;
 		}
 		$data['company'] = $company;
@@ -242,6 +246,8 @@ class Order extends CI_Controller
 			redirect('order/details/'.$id);
 		}
 		$update = array('accepted'=>$status);
+		if($status==1)
+		$update['status'] = 'Accepted';
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$this->db->update('orderdetails',$update);
@@ -253,6 +259,7 @@ class Order extends CI_Controller
 		$body .= "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		
 		$body .= $this->getorderdetails($id);
+		
 		$this->db->where('id',$order->purchasingadmin);
 		$admin = $this->db->get('users')->row();
 		

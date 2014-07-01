@@ -155,7 +155,7 @@ function paycc(ptype,idnumber,amount)
                         <select id="searchpaymentstatus" name="searchpaymentstatus" style="width: 100px;">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
-                            <option value="Requested Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Paid') { echo 'SELECTED'; } ?>>Requested Payment</option>
+                           <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
                             <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
                         </select>
                         &nbsp;&nbsp;

@@ -89,11 +89,15 @@ $(document).ready( function() {
                                                 	<table class="table table-bordered datagrid">
                                                 		<tr>
                                                 			<th>Company</th>
+                                                			<th>Paid Status</th>
+                                                			<th>Order Status</th>
                                                 			<th>Total</th>
                                                 		</tr>
                                                 		<?php foreach($order->details as $detail){?>
                                                 		<tr>
                                                 			<td><?php echo $detail->company;?></td>
+                                                			<td><?php echo $detail->paymentstatus;?></td>
+                                                			<td><?php echo $detail->status;?></td>
                                                 			<td><?php echo round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
                                                 		</tr>
                                                 		<?php }?>

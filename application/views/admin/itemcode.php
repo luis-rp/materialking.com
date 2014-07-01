@@ -165,7 +165,7 @@ $(document).ready(function(){
                             <input type="text" id="url" name="url" class="span10" value="<?php echo $this->validation->url; ?>" required
                              onkeyup="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'');">
                              <br/>(only number, alphabet and dash allowed)
-                            <?php //echo $this->validation->itemcode_error; ?>
+                           <?php if($this->validation->url!="") { ?><a target="_blank" href="<?php echo base_url(); ?>site/item/<?php echo $this->validation->url; ?>">view item</a><?php } ?>
                         </div>
                     </div>
 
