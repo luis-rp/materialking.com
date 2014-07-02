@@ -190,7 +190,7 @@ class message extends CI_Controller
 		  		<dt>".$e." (".count($items)." items):</dt>";
 		  		$body.="
 		  		<dd>
-		  			<table>
+		  			<table cellspacing=5 cellpadding=25 border=1 clsss='table table-bordered col-md-4' style='border-radius: 3px;border-style: solid solid solid solid;border-width: 1px 1px 1px 1px;'>
 		  				<tr><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th></tr>
 		  			";
 		  			foreach($items as $item)
@@ -219,7 +219,7 @@ class message extends CI_Controller
 	        $this->email->send();
 		}
 		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Error notifications sent via email.</div></div>');
-		
+		$this->session->set_userdata(array("messageError"=>$body));
 		die;
 	}
 	

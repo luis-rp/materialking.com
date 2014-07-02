@@ -843,15 +843,23 @@ class site extends CI_Controller
     }
     public function getCategoryImage($catID)
     {
+        if($catID !=0)
+        {
     
         $cat_data = $this->db->where('id',$catID)->get('category')->result();
-        if($cat_data[0]->banner_image =='' || $cat_data[0]->banner_image =='0')
+       
+       if($cat_data['0']->banner_image =='' || $cat_data['0']->banner_image =='0')
         {
             $cat_dataImage = $this->getCategoryImage($cat_data['0']->parent_id);
             return $cat_dataImage;
         }
         else {
-            return $cat_data[0]->banner_image;
+            return $cat_data['0']->banner_image;
+        }
+    }
+        else 
+        {
+        return "";
         }
     }
     public function item ($url)
@@ -1227,7 +1235,8 @@ class site extends CI_Controller
 
         }
         
- 
+        $totalQuote = $this->db->where('itemid',$item->id)->join("pms_quoteitem",'pms_quoteitem.quote = quote.id')->from('quote')->count_all_results();
+        $data['totalQuote'] = $totalQuote;
         //print_r($data['dealfeed']);die;
         /*
         $categories = $this->itemcode_model->getcategories();

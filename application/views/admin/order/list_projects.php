@@ -27,7 +27,7 @@
             $(document).ready(function() {
                 
                 $(".form-horizontal").submit(function(obj){
-                                var msj = "Please confirm the assignment of Order #<?php echo $order->ordernumber;?> , To Project Name ("+$('.pid option:selected').text()+") , Cost-Code ("+$('.ccid option:selected').text()+"), Total Value of Order =  <?php echo $total+$tax;?> as one amount inclusive of tax.";
+                                var msj = "Please confirm the assignment of Order #<?php echo $order->ordernumber;?> , To Project Name ("+$('.pid option:selected').text()+") , Cost-Code ("+$('.ccid option:selected').text()+"), Total Value of Order =  <?php echo $total+$tax;?> ";
                 		if(!confirm(msj)){return false;}
                  });
                 $(".pid").change(function(event){

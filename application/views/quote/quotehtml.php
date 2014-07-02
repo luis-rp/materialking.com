@@ -63,8 +63,18 @@
     		    <tr>
         		<td colspan="6">&nbsp;</td>
         		</tr>
+        	    <tr>
         		
+        		<td>Supplier Quote # </td>
+        		<td colspan="5"><?php echo $bid->quotenum; ?></td>
+                    </tr>
     		    <tr>
+                        
+        		<td>Supplier Expire Date</td>
+        		<td colspan="5"><?php echo $bid->expire_date; ?></td>
+                    </tr>
+    		    <tr>
+                        
         		<td>Quote Total: </td>
         		<td colspan="5"><?php echo $total; ?></td>
         		</tr>

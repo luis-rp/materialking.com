@@ -661,6 +661,20 @@ function acceptall()
                     </table>
                 </div>
             </div>
+            <br/><br/>
+            <div>
+                
+                <?php 
+                if($this->session->userdata("messageError"))
+                {  ?>
+                <hr>
+                      <p>Mail Notification Data Log</p>
+                    <?php 
+                    echo $this->session->userdata("messageError");
+                    $this->session->unset_userdata('messageError');
+                }
+                ?>
+            </div>
             <?php if ($awarded->status == 'complete') {?>
             <div>
             	<h3>Feedbacks</h3>

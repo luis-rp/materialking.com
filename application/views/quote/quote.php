@@ -12,6 +12,7 @@ $(document).ready(function(){
 	$(".source3").select2();
 	$('input[type="checkbox"]').checkbox();
 	$('.date').datepicker();
+        $('.expire_date').datepicker();
 	$('.substituterow').hide();
 });
 
@@ -325,7 +326,7 @@ function viewPricelist(itemcode,itemname,price)
                                           </a>
 							    		</td>
 							    	</tr>
-							    	<?php }?>
+                                                                <?php }?>
 							    	<tr>
 							    		<td>
 											Your Attachment
@@ -337,6 +338,10 @@ function viewPricelist(itemcode,itemname,price)
 											<?php }?>
 							    		</td>
 							    	</tr>
+                                                                <tr>
+                                                                    <td> Expire Date</td>
+                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo date('m/d/Y',  strtotime($expire_date))?>"/></td>
+                                                                </tr>
 							    	<tr>
 							    		<td colspan="11">
 											<input type="button" value="Save Quote" class="btn btn-primary" onclick="$('#draft').val('Yes');$('#olditemform').submit();"/>

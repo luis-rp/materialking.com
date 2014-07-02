@@ -250,6 +250,9 @@
                         	</td>
                     	</tr>
                     </table>
+                    <div class="Quotedetail">
+                        Lifetime Buying Leads Posted on MaterialKing.com (<?php echo (isset($totalQuote))?$totalQuote:"0";?>   time item has been quoted on application ) 
+                    </div>
                     <div class="carousel property">
                     </div>
 

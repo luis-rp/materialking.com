@@ -411,6 +411,7 @@ class Quote extends CI_Controller
 		$bid = $this->db->get('bid')->row();
 	    $data['quotenum'] = $bid?$bid->quotenum:'';
 	    $data['quotefile'] = $bid?$bid->quotefile:'';
+	    $data['expire_date'] = $bid?$bid->expire_date:'';
 	    $data['bid'] = $bid;
 		
 		$items = $draftitems?$draftitems:$quoteitems;
@@ -555,6 +556,7 @@ class Quote extends CI_Controller
 			}
 			
 			$bidarray['quotenum'] = $_POST['quotenum'];
+			$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 		
     		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
     		{
@@ -632,6 +634,7 @@ class Quote extends CI_Controller
 			$bidarray = array('quote'=>$invitation->quote,'company'=>$invitation->company,'submitdate'=>date('Y-m-d'));
 			
 			$bidarray['quotenum'] = $_POST['quotenum'];
+			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
 			$bidarray['draft'] = $_POST['draft'];
 			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;
     		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
@@ -694,6 +697,11 @@ class Quote extends CI_Controller
     	        redirect('quote');
     	    if($bid->company != $company->id)
     	        redirect('quote');
+            if($bid->quotefile !="")
+            {
+                $attachment = "uploads/quotefile/".$bid->quotefile;
+            }
+            
     	    $quote = $this->quotemodel->getquotebyid($bid->quote);
     	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company->id);
     	    
@@ -730,6 +738,9 @@ class Quote extends CI_Controller
     		//echo $body;
            	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$company->title);
             $this->email->message($body);	
+            if(isset($attachment)) { 
+                $this->email->attach($attachment);
+            }
             $this->email->set_mailtype("html");
             $this->email->send();
 		}
