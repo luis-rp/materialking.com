@@ -416,6 +416,17 @@ class Quote extends CI_Controller
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();
 		//echo '<pre>';print_r($items);//die;
+
+		$sqlq = "SELECT itemcheck
+				FROM ".$this->db->dbprefix('invitation')." iv 
+				WHERE company='".$company->id."' AND purchasingadmin='".$quote->purchasingadmin."' AND invitation='".$key."'
+			";
+		$quoteinvite = $this->db->query($sqlq)->row();
+
+		if($quoteinvite){
+			$quoteitemck = $quoteinvite->itemcheck;
+		}else
+			$quoteitemck = 0;
 		
 		foreach($items as $item)
 		{
@@ -430,7 +441,7 @@ class Quote extends CI_Controller
 			
 			$item->orgitem = $orgitem;
 			
-    	    if($bid && $quote->itemchk)
+    	    if($bid && $quoteitemck)
     	    {
     			$this->db->where('itemid',$item->itemid);
     			$this->db->where('type','Purchasing');

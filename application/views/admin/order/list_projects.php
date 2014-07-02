@@ -158,7 +158,7 @@
                                                 <td><?php echo $item->quantity;?></td>
                                                 <td>$<?php echo $item->price;?></td>
                                                 <td><?php echo $total;?></td>
-                                                <td><?php echo $item->status;?></td>
+                                                <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
                                             </tr>
                                           <?php } ?>
                                             <tr>

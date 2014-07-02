@@ -82,7 +82,7 @@ function paycc(ptype,company, amount)
                             <td><?php echo $item->quantity;?></td>
                             <td>$<?php echo $item->price;?></td>
                             <td><?php echo number_format($total,2);?></td>
-                            <td><?php echo $item->status;?></td>
+                            <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
                         </tr>
                       <?php } ?>
                       <?php 
@@ -185,7 +185,7 @@ function paycc(ptype,company, amount)
                             <td><?php echo $item->paymentstatus;?></td>
                             <td><?php echo $item->paymenttype;?></td>
                             <td><?php echo $item->paymentnote;?></td>
-                            <td><?php echo $item->status;?></td>
+                            <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
                             <td> 
                             	<?php if($item->accepted == -1){?>
                             	<font color="#ff0000">Declined</font>

@@ -248,6 +248,8 @@ class Order extends CI_Controller
 		$update = array('accepted'=>$status);
 		if($status==1)
 		$update['status'] = 'Accepted';
+		if($status==-1)
+		$update['status'] = 'Void';
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$this->db->update('orderdetails',$update);

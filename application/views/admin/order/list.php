@@ -97,7 +97,7 @@ $(document).ready( function() {
                                                 		<tr>
                                                 			<td><?php echo $detail->company;?></td>
                                                 			<td><?php echo $detail->paymentstatus;?></td>
-                                                			<td><?php echo $detail->status;?></td>
+                                                			<td><?php if($detail->status=="Void") echo "Declined"; else echo $detail->status;?></td>
                                                 			<td><?php echo round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
                                                 		</tr>
                                                 		<?php }?>

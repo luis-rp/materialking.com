@@ -574,7 +574,8 @@ class quote extends CI_Controller
                         'category' => 'Invitation',
                         'senton' => date('Y-m-d H:i'),
                         'isread' => '0',
-                        'purchasingadmin' => $this->session->userdata('purchasingadmin')
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+                        'itemcheck' => $this->input->post('itemchk')
                     );
                     $this->db->insert('notification', $notification);
                 }
@@ -614,7 +615,7 @@ class quote extends CI_Controller
 
                     $this->db->where('quote', $itemid);
                     $this->db->where('company', $c->id);
-                    $this->db->update('invitation', array('remindedon' => date('Y-m-d')));
+                    $this->db->update('invitation', array('remindedon' => date('Y-m-d'),'itemcheck' => $this->input->post('itemchk')));
 
                     $notification = array(
                         'quote' => $itemid,
