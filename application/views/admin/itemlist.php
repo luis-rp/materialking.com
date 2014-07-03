@@ -49,10 +49,10 @@
                             echo '&nbsp;' . $addcatlink;
                             echo '&nbsp;' . $addsubcatlink; ?>
                             <div class="datagrid-header-right">
-                            	<form method="post" action="<?php echo site_url('admin/itemcode');?>">
-                            		
-                                    Category:
-                                    <select id="searchcategory" name="searchcategory" style="width: 120px;">
+                            	
+                            		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">
+                            		<tr><td  style="border:0px !important;">Category:</td>
+                            		<td  style="border:0px !important;"> <select id="searchcategory" name="searchcategory" style="width: 120px;">
                                         <option value=''>All Categories</option>
                                         <?php 
                                         foreach ($categories as $cat) { ?>
@@ -66,17 +66,27 @@
                                             <?php echo $cat->catname ?>
                                             </option>
                                         <?php } ?>
-                                    </select>
-                                    Item:
-                                    <input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>">
-                                    <button type="search" class="btn"><i class="icon-search"></i></button>
+                                    </select></td>
+                                    <td  style="border:0px !important;"> <button type="search" class="btn"><i class="icon-search"></i></button>
+                                     </td>
+                                    <td  style="border:0px !important;"></td>
+                                    </tr>
                             	</form>
-                            	<?php if(0){?>
-                                <div class="input-append search datagrid-search">
-                                    <input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>">
+                            		</table>
+
+                            		
+                            		
+                            	<table style="border:0px !important;float:left;"><tr><td  style="border:0px !important;">Item:</td>
+                            	<td  style="border:0px !important;"><?php if(1){?>
+                                <div class="input-append search datagrid-search" style="margin-top:0px !important;">
+                                    <input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>" style="height:22px !important;">
                                     <button class="btn"><i class="icon-search"></i></button>
                                 </div>
-                                <?php }?>
+                                <?php }?></td>
+                            	
+                            	</tr></table>
+                            	
+                            	
                             </div>
                         </div>
                         </th>

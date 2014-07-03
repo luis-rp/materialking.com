@@ -13,6 +13,9 @@ $(document).ready( function() {
 		        		null,
 		        		null,
 		        		null,
+		        		null,
+		        		null,
+		        		null,
 		        		null
 		
 			]
@@ -76,6 +79,7 @@ $(document).ready(function(){
                                                 <th style="width:20%">Order#</th>
                                                 <th style="width:30%">Ordered by</th>
                                                 <th style="width:30%">Payment Status</th>
+                                                <th style="width:30%">Order Status</th>
                                                 <th style="width:20%">Ordered On</th>
                                                 <th style="width:30%">Amount</th>
                                                 <th style="width:10%">Type</th>
@@ -95,6 +99,7 @@ $(document).ready(function(){
                                                 <td><?php echo $order->ordernumber;?></td>
                                                 <td><?php echo $order->purchaser->companyname;?></td>
                                                 <td><?php echo $order->paymentstatus;?></td>
+                                                <td><?php if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; ?></td>
                                                 <td><?php echo date("d F Y", strtotime($order->purchasedate));?></td>
                                                 <td><?php echo $order->amount;?></td>
                                                 <td><?php echo $order->type;?></td>

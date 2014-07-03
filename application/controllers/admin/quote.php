@@ -535,7 +535,8 @@ class quote extends CI_Controller
                         'company' => $c->id,
                         'senton' => date('Y-m-d'),
                         'invitation' => $key,
-                        'purchasingadmin' => $this->session->userdata('purchasingadmin')
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+                        'itemcheck' => $this->input->post('itemchk')
                     );
 
                     $this->quote_model->db->insert('invitation', $insertarray);
@@ -574,8 +575,7 @@ class quote extends CI_Controller
                         'category' => 'Invitation',
                         'senton' => date('Y-m-d H:i'),
                         'isread' => '0',
-                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
-                        'itemcheck' => $this->input->post('itemchk')
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin')                        
                     );
                     $this->db->insert('notification', $notification);
                 }
