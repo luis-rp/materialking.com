@@ -861,7 +861,19 @@ class quote_model extends Model {
         }
         return NULL;
     }
+    function get_quotes_error_log($quote)
+    {
+        $this->db->select("quote_errorlog.*,company.*");
+        $this->db->where('quoteid', $quote);
+        $this->db->join("company",'company.id = quote_errorlog.companyid');
+        $query = $this->db->get('quote_errorlog');
+          if ($query->num_rows > 0) {
+            $ret = $query->result();
+            return $ret;
+          }
+          return NULL;
 
+    }
     function checkDuplicatePonum($ponum, $edit_id = 0) 
     {
         $pa = $this->session->userdata('purchasingadmin');

@@ -340,7 +340,7 @@ function viewPricelist(itemcode,itemname,price)
 							    	</tr>
                                                                 <tr>
                                                                     <td> Expire Date</td>
-                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo date('m/d/Y',  strtotime($expire_date))?>"/></td>
+                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):'';?>"/></td>
                                                                 </tr>
 							    	<tr>
 							    		<td colspan="11">

@@ -467,6 +467,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 		$this->removeallcart();
 		$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber;
 		$data['ordernumber'] = $ordernumber;
+		$data['order'] = $oid;
 		$data['status'] = 'Success';
 		$data['cart']=array();
 		foreach($cart as $item)

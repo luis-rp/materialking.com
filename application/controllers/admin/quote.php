@@ -1553,6 +1553,7 @@ class quote extends CI_Controller
 		             ->from('shipment')->join('item','shipment.itemid=item.id')
 		             ->where('quote',$qid)->get()->result();
         
+        $data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote); 
         $data['quote'] = $this->quote_model->get_quotes_by_id($awarded->quote);
         $data['project'] = $this->project_model->get_projects_by_id($data['quote']->pid);
         $data['config'] = (array) $this->settings_model->get_current_settings();

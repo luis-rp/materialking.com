@@ -662,19 +662,6 @@ function acceptall()
                 </div>
             </div>
             <br/><br/>
-            <div>
-                
-                <?php 
-                if($this->session->userdata("messageError"))
-                {  ?>
-                <hr>
-                      <p>Mail Notification Data Log</p>
-                    <?php 
-                    echo $this->session->userdata("messageError");
-                    $this->session->unset_userdata('messageError');
-                }
-                ?>
-            </div>
             <?php if ($awarded->status == 'complete') {?>
             <div>
             	<h3>Feedbacks</h3>
@@ -731,8 +718,45 @@ function acceptall()
             	</div>
             </div>
             <?php }?>
+             <div>
+                <?php 
             
+                if(!empty($errorLog))
+                {
+                    ?>
+                     <hr>
+                      <p>Mail Notification Data Log</p>
+                       <table  class='table table-bordered'>
+                            <tbody>
+                                <tr>
+                                     <th>company</th>
+                                     <th>Error</th>
+                                     <th>Item</th>
+                                     <th>Qty</th>
+                                     <th>Invoice#</th>
+                                     <th>Date</th>
+                                 </tr>
+                        <?php
+                         foreach($errorLog as $error)
+                         { ?>
+                                <tr>
+                                    <td><?php echo $error->title;?></td>
+                                    <td><?php echo $error->error;?></td>
+                                    <td><?php echo $error->itemcode;?></td>
+                                    <td><?php echo $error->quantity;?></td>
+                                    <td><?php echo $error->invoicenum;?></td>
+                                    <td><?php echo $error->date;?></td>
+                                </tr>
+
+
+                        <?php 
+                        }?>
+                       </tbody>
+                 </table>
+                 <?php    }
+                  ?>
         </div>
+    </div>
     </div>
 </section>
 

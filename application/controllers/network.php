@@ -88,6 +88,8 @@ class network extends CI_Controller {
             The following information sent:   
             Account Number: ".$_POST['accountnumber']."
             <br/>
+            Message: ".$_POST['message']."
+            <br/>
             You can login on your dasboard and accept or deny request.
             <br><br>";
             

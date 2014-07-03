@@ -156,6 +156,20 @@ class message extends CI_Controller
 			$companies[$item->company]['quantities'][$errors[$item->id]][]=$quantities[$i];
 			$companies[$item->company]['invoicenums'][$errors[$item->id]][]=$invoicenums[$i];
 			$companies[$item->company]['dates'][$errors[$item->id]][]=$dates[$i];
+                        
+                        $insertArray = array();
+                        $insertArray = array(
+                                "quoteid"=>$quote->id,
+                                "companyid"=>$item->company,
+                                "itemid"=>$item->id,    
+                                "itemcode"=>$item->itemcode,    
+                                "quantity"=>$quantities[$i],    
+                                "invoicenum"=>$invoicenums[$i],    
+                                "date"=>date("Y-m-d",  strtotime($dates[$i])),    
+                                "error"=>$errors[$item->id],    
+                                "created"=>date("Y-m-d"),    
+                                );  
+                        $this->db->insert('pms_quote_errorlog',$insertArray);
 			$i++;
 		}
 		//print_r($companies);die;
@@ -219,7 +233,7 @@ class message extends CI_Controller
 	        $this->email->send();
 		}
 		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Error notifications sent via email.</div></div>');
-		$this->session->set_userdata(array("messageError"=>$body));
+		//$this->session->set_userdata(array("messageError"=>$body));
 		die;
 	}
 	

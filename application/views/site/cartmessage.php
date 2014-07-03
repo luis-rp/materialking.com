@@ -10,6 +10,7 @@ $(document).ready(function() {
         <div class="row">
             <div class="span9">
                 <h1 class="page-header"><?php echo $message;?></h1>
+                <a href="<?php echo base_url().'admin/order/details/'.$order;?>">Order Management</a>
                 
            <div class="property-detail">
                 

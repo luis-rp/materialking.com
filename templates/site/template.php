@@ -417,6 +417,10 @@ if (!$function || $function == 'index')
                             <input type="text" class="required input-block-level" name="accountnumber"/>
                         </div>
                         <div class="modal-body">
+                            <h4>Message</h4>
+                            <textarea type="text" class="required input-block-level" name="message"></textarea>
+                        </div>
+                        <div class="modal-body">
                             <h4>Wish to Apply?</h4>
                             <input type="checkbox" name="wishtoapply" value="1"/>
                         </div>
