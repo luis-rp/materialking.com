@@ -741,7 +741,7 @@ class quote_model extends Model {
         //echo $code;die;
         $code = urldecode($code);
 
-        $sql = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE itemcode = '" . $code . "'";
+        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
         /*
           if($this->session->userdata('usertype_id')>1)
           {
@@ -750,6 +750,7 @@ class quote_model extends Model {
           company='".$this->session->userdata('purchasingadmin')."'";
           }
          */
+      
         //echo $sql;
         $query = $this->db->query($sql);
         if ($query->result()) {

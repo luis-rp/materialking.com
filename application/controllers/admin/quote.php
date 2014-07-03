@@ -2500,6 +2500,7 @@ with the transfer# {$tobj->id}.
 
     function finditemcode() 
     {
+    	  log_message('debug',"texxxxxxxxxto");
         $codes = $this->quote_model->finditemcode($_GET['term']);
         $items = array();
         foreach ($codes as $code) {
@@ -2519,7 +2520,7 @@ with the transfer# {$tobj->id}.
         //$projectid = $_POST['projectid'];
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
-      
+
 		$this->db->where('itemid',$item->itemid);
 		$this->db->where('type','Purchasing');
 		$this->db->where('company',$this->session->userdata('purchasingadmin'));

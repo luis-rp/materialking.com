@@ -97,7 +97,7 @@
 			<span class="dropdown-label"></span>
 			<span class="caret"></span>
 			</button>
-			<ul id="chartMonth" class="dropdown-menu" >
+			<ul id="chartMonth" class="dropdown-menu" style="top:auto" >
 				<li class="chartMonthItem" data-value="1" <?=(date("m")==1?'data-selected="true"':'')?>><a href="#">January</a></li>
 				<li class="chartMonthItem" data-value="2" <?=(date("m")==2?'data-selected="true"':'')?>><a href="#">February</a></li>
 				<li class="chartMonthItem" data-value="3" <?=(date("m")==3?'data-selected="true"':'')?>><a href="#">March</a></li>

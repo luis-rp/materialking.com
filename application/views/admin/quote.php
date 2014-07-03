@@ -64,21 +64,24 @@ $(document).ready(function(){
 		content: $('#hierarchy').next().html(),
 		crumbDefaultText: ' '
 	});*/
-	
+	/*$('#hierarchyitem').menu({
+	content: $('#hierarchyitem').next().html(),
+	crumbDefaultText: ' '
+});
+*/
+
+
 	$('#hierarchybreadcrumb').menu({
 		content: $('#hierarchybreadcrumb').next().html(),
 		backLink: false
 	});
 
-	/*$('#hierarchyitem').menu({
-		content: $('#hierarchyitem').next().html(),
-		crumbDefaultText: ' '
-	});
-	*/
+	
 	$('#hierarchybreadcrumbitem').menu({
 		content: $('#hierarchybreadcrumbitem').next().html(),
 		backLink: false
 	});
+	
 });
 
 
@@ -291,7 +294,7 @@ $(function() {
     
     //autocomplete
     $(".itemcode").autocomplete({
-        source: "<?php echo base_url(); ?>admin/quote/finditemcode",
+        source: "<?php echo base_url(); ?>admin/quote/finditemcode?term=c",
         minLength: 1,
         html: true
     });

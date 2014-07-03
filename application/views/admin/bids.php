@@ -473,8 +473,11 @@ $(function() {
 				    		</td>
 				    		<td>
 				    			<?php if($isawarded){ echo $q->costcode;} else {?>
-				    			<input type="text" id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>" 
-				    				class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')"/>
+				    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')">
+				    			<option value="<?php echo $q->costcode;?>" ><?php echo $q->costcode;?></option>
+				    			</select>
+				    			<!-- <input type="text" id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>" 
+				    				class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')"/>-->
 				    			<?php }?>
 				    		</td>
 				    		<td><?php echo $q->notes;?>&nbsp;</td>
