@@ -64,7 +64,7 @@ class Order extends CI_Controller
 			}
 		}
  		
-		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent 
+		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status  
 				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
 				WHERE o.id=od.orderid AND od.company=".$company->id." 
 				$search $filter 
