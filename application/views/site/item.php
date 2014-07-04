@@ -251,7 +251,7 @@
                     	</tr>
                     </table>
                     <div class="Quotedetail">
-                        Lifetime Buying Leads Posted on MaterialKing.com (<?php echo (isset($totalQuote))?$totalQuote:"0";?>   time item has been quoted on application ) 
+                         <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com 
                     </div>
                     <div class="carousel property">
                     </div>
@@ -328,7 +328,7 @@
                               <tr>
                                   <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?> at $<?php echo $item->featureditem->ea;?></td>
                                   <td>
-                                      <a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>)">
+                                      <a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                   </td>
