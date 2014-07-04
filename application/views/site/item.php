@@ -3,7 +3,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
-
+<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.elevatezoom.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.timepicker.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
@@ -22,6 +22,7 @@
             preloadImages: false,
             alwaysOn:false
         });*/
+		$("#bigimage").elevateZoom();
 	});
 	function setmiles(miles)
 	{
@@ -269,7 +270,7 @@
                                     <div class="clearfix">
                                         <div class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
-                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"  style="border: 4px solid #666;with:250px;height:250px">
+                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>" data-zoom-image="<?php echo site_url('uploads/item/' . $item->images[0]->filename); ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
                                     	
                                         </div>
@@ -670,7 +671,7 @@
                                     		<tr>
                                     			<td>
                                     				<?php if($ri->item_img){?>
-                                    				<img style="width:40px;height:40px" src="<?php echo site_url('uploads/item/'.$ri->item_img);?>"/>
+                                    				<img style="width:65px;height:65px" src="<?php echo site_url('uploads/item/'.$ri->item_img);?>"/>
                                     				<?php } else {?>
                                     				<img style="width:65px;height:65px" src="<?php echo site_url('uploads/item/big.png');?>"/>
                                     				<?php }?>
