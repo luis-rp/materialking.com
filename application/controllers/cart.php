@@ -192,6 +192,12 @@ class cart extends CI_Controller
 			$data['cart'][]=$item;
 		}
 		$data['settings'] = $this->settings_model->get_current_settings();
+		$data['name'] = $_POST['shippingName'];
+		$data['street'] = $_POST['shippingStreet'];
+		$data['city'] = $_POST['shippingCity'];
+		$data['state'] = $_POST['shippingState'];
+		$data['zip'] = $_POST['shippingZip'];
+		$data['country'] = $_POST['shippingCountry'];
 		$this->load->view('site/payment', $data);
 	}
 	
@@ -282,7 +288,7 @@ class cart extends CI_Controller
 			
 			$this->db->insert('order',$order);
 			$oid = $this->db->insert_id();
-			
+			$data['order'] = $ordernumber;
 			$notifications = array();
 			foreach($cart as $ci)
 			{

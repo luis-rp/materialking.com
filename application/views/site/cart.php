@@ -92,19 +92,95 @@ function updatecart(itemid,companyid,quantity)
             		<td colspan="4" align="right">Total</td>
             		<td colspan="2">$<?php echo $totalwithtax;?></td>
             	</tr>
-            	
-            	<tr>
-            		<td colspan="6">
+            </table>	
+            <?php if($canmanualorder){ ?>
+            <form action="<?php echo site_url('cart/manualpayment')?>" method="post">
+            <?php }else{?>
+            <form action="<?php echo site_url('cart/ccpayment')?>" method="post">
+            <?php } ?>
+            	 <table class="table table-bordered">
+            	 	<tr><th colspan="2">Shipping Information</th></tr>
+            	 	<tr><td>
+            	 		<div class="control-group">
+			                <label class="control-label" for="shippingName">
+			                    Name
+			                    <span class="form-required" title="This field is required.">*</span>
+			                </label>
+			                <div class="controls">
+			                    <input type="text" id="shippingName" name="shippingName">
+			                </div>
+			        	  </div>
+            	 		</td><td>
+            	 			 <div class="control-group">
+			                <label class="control-label" for="shippingStreet">
+			                    Street
+			                    <span class="form-required" title="This field is required.">*</span>
+			                </label>
+			                <div class="controls">
+			                    <input type="text" id="shippingStreet" name="shippingStreet">
+			                </div>
+			        	  </div>
+            	 		</td></tr>
+            	 		
+            	 		<tr><td>
+            	 			<div class="control-group">
+			                <label class="control-label" for="shippingCity">
+			                    City
+			                    <span class="form-required" title="This field is required.">*</span>
+			                </label>
+			                <div class="controls">
+			                    <input type="text" id="shippingCity" name="shippingCity">
+			                </div>
+			        	  		</div>
+            	 		</td><td>
+            	 				  <div class="control-group">
+			                <label class="control-label" for="shippingState">
+			                    State
+			                    <span class="form-required" title="This field is required.">*</span>
+			                </label>
+			                <div class="controls">
+			                    <input type="text" id="shippingState" name="shippingState">
+			                </div>
+			        	  </div>
+            	 		</td></tr>
+            	 		<tr><td>
+            	 			  <div class="control-group">
+			                <label class="control-label" for="shippingZip">
+			                    Zip
+			                    <span class="form-required" title="This field is required.">*</span>
+			                </label>
+			                <div class="controls">
+			                    <input type="text" id="shippingZip" name="shippingZip">
+			                </div>
+			        	  </div>
+            	 		</td><td>
+            	 			  <div class="control-group">
+				                <label class="control-label" for="shippingCountry">
+				                    Country
+				                    <span class="form-required" title="This field is required.">*</span>
+				                </label>
+				                <div class="controls">
+				                    <input type="text" id="shippingCountry" name="shippingCountry">
+				                </div>
+				        	  </div>
+            	 		</td></tr>
+            	 </table>
+            	 <?php if($canmanualorder){ ?>
+            	 <input type="submit" class="btn btn-primary arrow-right" value="Process Order">
+            	 <?php } ?>
+            	 <input type="submit" class="btn btn-primary arrow-right" value="Credit Card Payment">
+            	 <!-- 
             			<?php if($canmanualorder){//if($this->session->userdata('site_loggedin')){?>
             			<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/manualpayment')?>">Process Order</a>
             			&nbsp;&nbsp;
             			<?php }?>
-            			<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/ccpayment')?>">Credit Card Payment</a>
-            		</td>
-            	</tr>
-            	
-            </table>
+            			<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/ccpayment')?>">Credit Card Payment</a>-->
+            		
+            	</form>
+            
                 </div>
+                
+                
             </div>
             
             <div class="sidebar span3">

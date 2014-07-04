@@ -166,7 +166,14 @@ $(document).ready(function() {
                     
                 </div>
             </div>
-
+			<div class=shippingInfo">
+				<imput type="hidden" name="name" value="<?php echo $name;?>">
+				<imput type="hidden" name="street" value="<?php echo $street;?>">
+				<imput type="hidden" name="city" value="<?php echo $city;?>">
+				<imput type="hidden" name="state" value="<?php echo $state;?>">
+				<imput type="hidden" name="zip" value="<?php echo $zip;?>">
+				<imput type="hidden" name="country" value="<?php echo $country;?>">
+			</div>
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
             </div>
