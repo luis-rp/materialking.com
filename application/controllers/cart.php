@@ -204,6 +204,7 @@ class cart extends CI_Controller
 	public function ccpost()
 	{
 		ini_set('max_execution_time', 300);
+		include(APPPATH.'libraries/easypost/easypost.php');
 		$data['settings'] = $this->settings_model->get_current_settings();
 		$cart = $this->session->userdata('pms_site_cart');
 		$ordernumber = $this->session->userdata('pms_orderid');
