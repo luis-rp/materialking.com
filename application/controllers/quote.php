@@ -1475,6 +1475,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	    $shipitems = '';
 	    foreach($awardeditems as $ai)
 	    {
+                $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company->id)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                
 	        $quantity = $_POST['quantity'.$ai->id];
 	        $invoicenum = $_POST['invoicenum'.$ai->id];
 	        if( $quantity && $invoicenum && $quantity <= $ai->quantity - $ai->received )
@@ -1492,7 +1498,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            //print_r($arr);
 	            $this->db->insert('shipment',$arr);
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td></tr>";
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$ai->received}</td><td>{$quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
@@ -1507,6 +1513,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			    $insert['quote'] = $_POST['quote'];
 				$insert['filename'] = $nfn;
 				$insert['company'] = $company->id;
+				//$insert['invoicenum'] = $invoicenum;
 				$insert['uploadon'] = date('Y-m-d');
 				
 				$this->db->insert('shippingdoc',$insert);
@@ -1515,7 +1522,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if($shipitems)
 		{
 			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		    $shipitems = "<table><tr><th>Item</th><th>Quantity</th></tr>$shipitems</table>";
+		    $shipitems = "<table><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
     		
@@ -1600,7 +1607,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td>'.$invoice->supplierusername.'</td>
             		<td>'.$invoice->address.'</td>
             		<td>'.$invoice->phone.'</td>
-            		<td>'.$invoice->ordernumber.'</td>
+            		<td>'.$invoice->ponum.'</td>
             		<td>'.$invoice->itemname.'</td>
             		<td>'.$invoice->quantity.'</td>
             		<td>'.$invoice->paymentstatus.'</td>

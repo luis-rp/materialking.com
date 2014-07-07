@@ -171,41 +171,62 @@ tr.still-due td
                     </div>
                 </div>
             </div>
-            
-            
         	<div class="col-md-12">
+                 <div class="grid simple ">
+                    <div class="grid-title no-border">
+                        <h3>Shipping Document</h3>
+                    </div>
+                    <div class="grid-body no-border">
 
-        	<h3>Shipping Document</h3>
 			<input type="hidden" name="quote" value="<?php echo $quote->id;?>">
 			<input type="hidden" name="award" value="<?php echo $award;?>">
 			<input type="hidden" name="purchasingadmin" value="<?php echo $quote->purchasingadmin;?>">
 			<input type="file" name="filename">
 			<br/>
 			<input type="submit" class="btn btn-primary" value="Send Shipment"/>
+                    </div>
+                 </div>
+             </div>   
         		<?php if($shippingdocs){?>
+            <div class="col-md-12">
+                 <div class="grid simple ">
+                    <div class="grid-title no-border">
         		<h4>Existing Documents</h4>
-        		<table class="table col-md-4">
+                    </div>
+                     <div class="grid-body no-border">
+        		<table class="borderless general">
+                                <thead>
         			<tr>
         				<th>Date</th>
         				<th>View</th>
         			</tr>
+                                </thead>
+                                <tbody>
         			<?php foreach($shippingdocs as $sd){?>
         			<tr>
         				<td><?php echo $sd->uploadon;?></td>
         				<td><a href="<?php echo site_url('uploads/shippingdoc/'.$sd->filename);?>" target="_blank">View</a></td>
         			</tr>
         			<?php }?>
+                                </tbody>
         		</table>
         		<?php }?>
         	</div>
-        	
+            </div>
+            </div>
         	</form>
         </div>
         
         <?php if($shipments){?>
         
         <div class="row">
+               <div class="col-md-12">
+    		    <div class="grid simple ">
+                    <div class="grid-title no-border">
         	<h4>Shipments Made For PO# <?php echo $quote->ponum;?> </h4>
+                    </div>
+                    <div class="grid-body no-border">
+        
 			<table class="borderless general">
 				<tr>
 					<th>Ref#</th>
@@ -228,12 +249,20 @@ tr.still-due td
 				<?php }?>
 			</table>
         </div>
-        
+               </div>
+             </div>
+          </div>
         <?php }?>
         
         <?php if($invoices){?>
         <div class="row">
+            <div class="col-md-12">
+    		    <div class="grid simple ">
+                    <div class="grid-title no-border">
         	<h4>Existing Invoices For PO# <?php echo $quote->ponum;?> </h4>
+                    </div>
+                    <div class="grid-body no-border">
+        	
 			<table class="borderless general">
 				<tr>
 					<th>Invoice#</th>
@@ -273,6 +302,9 @@ tr.still-due td
 				</tr>
 				<?php }?>
 			</table>
+        </div>
+                 </div>
+              </div>
         </div>
         
         <?php }?>

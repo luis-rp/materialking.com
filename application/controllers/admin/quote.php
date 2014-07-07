@@ -1521,7 +1521,7 @@ class quote extends CI_Controller
 		$this->db->where('quote',$qid);
 		$this->db->order_by('uploadon','DESC');
 		*/
-		$query = "SELECT s.*, c.title companyname FROM ".$this->db->dbprefix('shippingdoc')." s, 
+		$query = "SELECT s.*,(SELECT invoicenum FROM pms_shipment WHERE quote ='".$qid."' AND company = s.company ) as invoiceNumber, c.title companyname FROM ".$this->db->dbprefix('shippingdoc')." s, 
 				 ".$this->db->dbprefix('company')." c WHERE s.company=c.id AND s.quote='$qid' ORDER BY uploadon DESC";
 	    //echo $query;
 		$docs = $this->db->query($query)->result();
