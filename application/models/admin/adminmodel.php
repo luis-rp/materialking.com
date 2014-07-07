@@ -125,6 +125,7 @@ class adminmodel extends Model
 		//echo "<pre>",print_r($options['location']['name']); die;
 		$options['address'] = $options['location']['name'];
 		$options['fullname'] = $options['name'];
+		$options['usertype_id'] = 3;
 		unset($options['location']);
 		unset($options['gender']);
 		unset($options['birthday']);
