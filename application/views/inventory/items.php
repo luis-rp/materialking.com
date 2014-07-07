@@ -29,6 +29,8 @@
 
 <?php echo '<script>var iteminstockupdateurl="'.site_url('inventory/updateiteminstock').'";</script>'?>
 
+<?php echo '<script>var itemzoomupdateurl="'.site_url('inventory/updateitemzoom').'";</script>'?>
+
 <?php echo '<script>var itemsurl="'.site_url('inventory/itemsjson').'";</script>'?>
 
 <script type="text/javascript" charset="utf-8">
@@ -118,6 +120,21 @@
 				//alert(data);
 		    });
     }
+    
+    function updateItemzoom(itemid,zoom)
+    {
+    	zoom = zoom==true?1:0;
+        var data = "itemid="+itemid+"&zoom="+zoom;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: itemzoomupdateurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
+    
     function updateqtyavailable(itemid,qtyavailable)
     {
         var data = "itemid="+itemid+"&qtyavailable="+qtyavailable;
@@ -288,7 +305,7 @@ function updatedeal(id)
                                                 <th style="width:10%"><font color="#0AA699">Part#</font></th>
                                                 <th style="width:10%"><font color="#0AA699">List Price</font></th>
                                                 <th style="width:10%"><font color="#0AA699">Min. Qty.</font></th>
-                                                <th style="width:5%"><font color="#0AA699">Stock</font></th>
+                                                <th style="width:5%"><font color="#0AA699">Stock/Zoom</font></th>
                                                 <th style="width:5%"><font color="#0AA699">Store/<br/>Featured</font></th>
                                                 <th style="width:5%"><font color="#0AA699">Action</font></th>
                                             </tr>
@@ -351,6 +368,10 @@ function updatedeal(id)
                                                 	<input type="checkbox"
                                                 	<?php echo @$item->companyitem->instock?'checked="CHECKED"':''?>"
                                                 	onchange="updateIteminstock('<?php echo $item->id?>',this.checked);"/>
+                                                	
+                                                	<input type="checkbox"
+                                                	<?php echo @$item->companyitem->zoom?'checked="CHECKED"':''?>"
+                                                	onchange="updateItemzoom('<?php echo $item->id?>',this.checked);" />
                                                 	
                                                 	<input type="text"  style="width: 60px;" placeholder="Stock"
                                                 	value="<?php echo @$item->companyitem->qtyavailable?>"

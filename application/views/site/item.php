@@ -22,7 +22,7 @@
             preloadImages: false,
             alwaysOn:false
         });*/
-		$("#bigimage").elevateZoom();
+		<?php if(isset($item->featureditem->zoom) && $item->featureditem->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 	});
 	function setmiles(miles)
 	{

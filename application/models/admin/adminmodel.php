@@ -119,6 +119,34 @@ class adminmodel extends Model
 		return $id;
 	}	
 	
+	function savefb($request) 
+	{
+		$options = $request;
+		//echo "<pre>",print_r($options['location']['name']); die;
+		$options['address'] = $options['location']['name'];
+		$options['fullname'] = $options['name'];
+		unset($options['location']);
+		unset($options['gender']);
+		unset($options['birthday']);
+		unset($options['name']);
+		$options['password'] = md5($options['password']);
+		if($this->session->userdata('usertype_id') == 2)
+			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+		$options['created_date'] = date ( "Y-m-d h:i:s" );
+		unset($options['_wysihtml5_mode']);
+		if($this->session->userdata('usertype_id') == 2)
+			$options['usertype_id'] = 3;
+		$this->db->insert ( 'users', $options );
+		$id = $this->db->insert_id ();
+		
+		if($options['usertype_id'] == 2)
+		{
+			$this->db->where('id',$id)->update('users',array('purchasingadmin'=>$id));
+		}
+		return $id;
+	}
+	
+	
 	function update() 
 	{
 		$options = $this->input->post();

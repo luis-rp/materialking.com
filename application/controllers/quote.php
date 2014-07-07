@@ -442,7 +442,8 @@ class Quote extends CI_Controller
 			
 			$item->orgitem = $orgitem;
 			
-    	    if($bid && $quoteitemck)
+    	    //if($bid && $quoteitemck)
+    	    if($quoteitemck)
     	    {
     			$this->db->where('itemid',$item->itemid);
     			$this->db->where('type','Purchasing');
