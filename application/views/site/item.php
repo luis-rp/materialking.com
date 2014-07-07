@@ -349,19 +349,19 @@
                             ?>
                             <br/><br/>
                             <table width="90%">
-                            <form method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
                             <tr>
                             <td>View By Manufacturer:</td>
                             <td>
+                                        <form method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
                             	<select id="manufacturer1" onchange="$('#manufacturer').val($('#manufacturer1').val());$('#searchform').submit()">
                             		<option value="">All</option>
                             		<?php foreach($filtermanufacturer as $fimf) if($fimf){?>
                             		<option value="<?php echo $fimf->id;?>" <?php echo $fimf->id==@$_POST['manufacturer']?'SELECTED':'';?>><?php echo $fimf->title;?></option>
                             		<?php }?>
                             	</select>
+                                        </form>
                             </td>
                             </tr>
-                            </form>
                             </table>
                             <?php }?>
                             <div class="pull-right">
@@ -534,10 +534,10 @@
 					    });
 					    
 					   </script>
-					   
+		        <h2>Request Assistance</h2>
                         <a name="form"></a>
-                        <h2>Request Assistance</h2>
                         <?php echo $this->session->flashdata('message'); ?>
+                        
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
         					<table>
@@ -584,19 +584,13 @@
         						</tr>
         					</table>
         				</form>
-                         
-
                     </div>
                 </div>
-
-
                 <div class="sidebar span3">
-                
                     <div class="widget contact">
                         <div class="title">
                             <h2 class="block-title">Search Supplier</h2>
                         </div>
-
                         <div class="content">
                             <form id="searchform" method="post">
                                 <div class="control-group">

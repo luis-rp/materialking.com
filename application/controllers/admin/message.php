@@ -165,7 +165,7 @@ class message extends CI_Controller
                                 "itemcode"=>$item->itemcode,    
                                 "quantity"=>$quantities[$i],    
                                 "invoicenum"=>$invoicenums[$i],    
-                                "date"=>date("Y-m-d",  strtotime($dates[$i])),    
+                                "date"=>(isset($dates[$i]) && $dates[$i]!="")?date("Y-m-d",  strtotime($dates[$i])):"",    
                                 "error"=>$errors[$item->id],    
                                 "created"=>date("Y-m-d"),    
                                 );  

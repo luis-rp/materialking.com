@@ -555,12 +555,14 @@ function acceptall()
         			<tr>
         				<th>Company</th>
         				<th>Date</th>
+        				<th>Reference#</th>
         				<th>View</th>
         			</tr>
         			<?php foreach($shippingdocs as $sd){?>
         			<tr>
         				<td><?php echo $sd->companyname;?></td>
         				<td><?php echo date("m/d/Y", strtotime($sd->uploadon));  ?></td>
+                                        <td><?php echo $sd->invoiceNumber;?></td>
         				<td><a href="<?php echo site_url('uploads/shippingdoc/'.$sd->filename);?>" target="_blank">View</a></td>
         			</tr>
         			<?php }?>
@@ -725,7 +727,7 @@ function acceptall()
                 {
                     ?>
                      <hr>
-                      <p>Mail Notification Data Log</p>
+                      <p>ERROR LOG</p>
                        <table  class='table table-bordered'>
                             <tbody>
                                 <tr>
@@ -745,10 +747,8 @@ function acceptall()
                                     <td><?php echo $error->itemcode;?></td>
                                     <td><?php echo $error->quantity;?></td>
                                     <td><?php echo $error->invoicenum;?></td>
-                                    <td><?php echo $error->date;?></td>
+                                    <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
-
-
                         <?php 
                         }?>
                        </tbody>
@@ -759,7 +759,6 @@ function acceptall()
     </div>
     </div>
 </section>
-
 <div id="completemodel" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
     <input type="hidden" id="selecteditemids" name="itemids">
     <div class="modal-header">
