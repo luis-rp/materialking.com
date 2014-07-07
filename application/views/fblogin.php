@@ -48,7 +48,7 @@
                                         {"name":"username","description":"Username","type":"text"},
                                         {"name":"companyname","description":"Company Name","type":"text"},
                                         {"name":"password"}]'
-                        data-redirect-uri="http://local2.materialking.com/welhome">
+                        data-redirect-uri="<?php echo site_url('welhome');?>">
                      
                 </div>
                  
