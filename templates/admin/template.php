@@ -398,13 +398,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/') ?>">
-                                    <span class="icon-reorder"></span>PURCHASE ITEMS
+                                    <span class="icon-reorder"></span>Store Purchases
                                 </a>
                             </li>
                         <?php } else { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/allorders') ?>">
-                                    <span class="icon-reorder"></span>Store Purchases
+                                    <span class="icon-reorder"></span>PURCHASE REPORT
                                 </a>
                             </li>
                         <?php } ?>
