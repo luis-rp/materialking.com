@@ -1499,7 +1499,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            //print_r($arr);
 	            $this->db->insert('shipment',$arr);
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$ai->received}</td><td>{$quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
@@ -1523,7 +1523,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if($shipitems)
 		{
 			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		    $shipitems = "<table><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
+		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
     		
