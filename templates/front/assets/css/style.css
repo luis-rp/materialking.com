@@ -1208,7 +1208,7 @@ input.nopad
   position: relative;
   margin: 0;
   border: 0px;
-  padding: 11.5px 31px 11.5px 31px;
+  padding: 11.5px 31px 11.5px 11px;
   text-decoration: none;
   font-size: 14px;
   font-weight: normal;

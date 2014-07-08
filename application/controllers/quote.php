@@ -428,7 +428,7 @@ class Quote extends CI_Controller
 			$quoteitemck = $quoteinvite->itemcheck;
 		}else
 			$quoteitemck = 0;
-		
+		$quoteitemck = 1; // Assigned itemcheck value as 1 by default
 		foreach($items as $item)
 		{
 			$this->db->where('itemid',$item->itemid);
@@ -1473,6 +1473,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	        }
 	    }
 	    $shipitems = '';
+            $shippingDocInvouceNum = $_POST['invoicenum'.$awardeditems[0]->id];
 	    foreach($awardeditems as $ai)
 	    {
                 $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
@@ -1498,7 +1499,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            //print_r($arr);
 	            $this->db->insert('shipment',$arr);
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$ai->received}</td><td>{$quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
@@ -1513,7 +1514,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			    $insert['quote'] = $_POST['quote'];
 				$insert['filename'] = $nfn;
 				$insert['company'] = $company->id;
-				//$insert['invoicenum'] = $invoicenum;
+				$insert['invoicenum'] = $shippingDocInvouceNum;
 				$insert['uploadon'] = date('Y-m-d');
 				
 				$this->db->insert('shippingdoc',$insert);
@@ -1522,7 +1523,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if($shipitems)
 		{
 			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		    $shipitems = "<table><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
+		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
     		
@@ -1637,9 +1638,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $body .= '</table>';   
 	    }            
 		$this->load->library('email');
-		
+		$this->email->clear(true);
 		$this->email->to($invs[0]->email);
-		$this->email->from($this->session->userdata('email'));
+		//$this->email->cc('pratiksha@esparkinfo.com');
+		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
 		
 		$this->email->subject($subject);
 		$this->email->message($body);	

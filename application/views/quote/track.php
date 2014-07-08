@@ -94,7 +94,6 @@ tr.still-due td
 		    ?>
 		<div class="row">
 			<form method="post" action="<?php echo site_url('quote/shipitems/'.$quote->id.'/'.$award);?>" enctype="multipart/form-data">
-                            
             <div class="col-md-12">
     			
                 <div class="grid simple ">
@@ -210,10 +209,10 @@ tr.still-due td
         			<?php }?>
                                 </tbody>
         		</table>
-        		<?php }?>
         	</div>
             </div>
             </div>
+            <?php }?>
         	</form>
         </div>
         

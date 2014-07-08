@@ -23,6 +23,7 @@
             alwaysOn:false
         });*/
 		<?php if(isset($item->featureditem->zoom) && $item->featureditem->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
+		$("#contentimage").elevateZoom(); 
 	});
 	function setmiles(miles)
 	{
@@ -32,6 +33,9 @@
 	function changeimage(source)
 	{
 		$("#bigimage").attr('src',source);
+		$("#bigimage").elevateZoom(); 
+        $("#bigimage").attr('data-zoom-image1',source); 
+        $("#bigimage").elevateZoom(); 
 	}
 </script>
 <script type="text/javascript" charset="utf-8">
@@ -270,7 +274,7 @@
                                     <div class="clearfix">
                                         <div class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
-                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>" data-zoom-image="<?php echo site_url('uploads/item/' . $item->images[0]->filename); ?>"  style="border: 4px solid #666;with:250px;height:250px">
+                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>" data-zoom-image1="<?php echo site_url('uploads/item/' . $item->images[0]->filename); ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
                                     	
                                         </div>
@@ -298,7 +302,30 @@
 						
 
                         <div>
-                            <p><?php echo $item->wiki; ?></p>
+                            <?php 
+                            if($item->wiki){
+                            	$patternsrc = '/src="([^"]*)"/';
+                            	preg_match($patternsrc, $item->wiki, $matches);
+                            	if(isset($matches[1]) && $matches[1]!=""){
+                            		$src = $matches[1];
+                            		unset($matches);
+                            	}else
+                            	$src = "";
+
+                            	$patternalt = '/alt="([^"]*)"/';
+                            	preg_match($patternalt, $item->wiki, $matchesalt);
+                            	if(isset($matchesalt[1]) && $matchesalt[1]!=""){
+                            		$alt = $matchesalt[1];
+                            		unset($matchesalt);
+                            	}
+                            	else
+                            	$alt = "";
+                           	
+                       ?> 
+                       <p><?php echo '<img id="contentimage" data-zoom-image3="'.$src.'" src="'.$src.'" alt="'.$alt.'"  '; ?></p> 
+                        <?php } else { ?> 
+                        <p><?php echo $item->wiki;?> </p> 
+                        <?php } ?>
                         </div>
                         
                         <div class="tabbable"> <!-- Only required for left/right tabs -->

@@ -10,7 +10,11 @@ $(document).ready(function() {
         <div class="row">
             <div class="span9">
                 <h1 class="page-header"><?php echo $message;?></h1>
+                <?php 
+                if($this->session->userdata('site_loggedin')){?>
                 <a href="<?php echo base_url().'admin/order/details/'.$order;?>">Order Management</a>
+                <?php }
+                ?>
                 
            <div class="property-detail">
                 

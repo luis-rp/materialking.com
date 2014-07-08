@@ -63,6 +63,71 @@ class Register extends CI_Controller
 		redirect('admin/register'); 
 	}
 	
+	function saveregisterfb()
+	{
+		$CI = & get_instance();
+        $CI->config->load("facebook",TRUE);
+        $config = $CI->config->item('facebook');
+        $this->load->library('facebook', $config);
+		
+        $user = $this->facebook->getUser();
+        if($user) {
+        	try {
+        		$user_info = $this->facebook->api('/me');
+        		// echo '<pre>'.htmlspecialchars(print_r($user_info, true)).'</pre>';
+        		$request = $this->facebook->getSignedRequest();
+				//echo "<pre>",print_r($request['registration']); die;
+				$request2 = $request['registration'];
+				//echo "<pre>",print_r($request2); die;
+				$request2['address'] = $request2['location']['name'];
+				$request2['fullname'] = $request2['name'];
+				unset($request2['location']);
+				unset($request2['gender']);
+				unset($request2['birthday']);
+				unset($request2['name']);
+				
+        	} catch(FacebookApiException $e) {
+        		echo '<pre>'.htmlspecialchars(print_r($e, true)).'</pre>';
+        		$user = null;
+        	}
+        }
+		if(!@$request2)
+			die;
+		$errormessage = '';
+		$regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
+		if(!@$request2['companyname']||!@$request2['email'])
+		{
+			$errormessage = 'Please Fill up all the fields.';
+		}
+		elseif(!preg_match($regex, $request2['email']))
+		{
+			$errormessage = 'Please Enter Valid Email Address.';
+		}
+		else 
+		{
+			$this->db->where('email',$request2['email']);
+			if($this->db->get('users')->num_rows > 0)
+			{
+				$errormessage = "Email '{$request2['email']}' already exists.";
+			}
+		}
+		
+		if($errormessage)
+		{
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$errormessage.'</div></div></div>');
+			redirect('admin/register'); 
+		}
+		
+		$key =  md5(uniqid($request2['companyname']).'-'.date('YmdHisu'));
+		$request2['regkey'] = $key;
+		$this->db->insert('users',$request2);
+		$itemid = $this->db->insert_id();
+		$this->sendRegistrationEmail($itemid, $key);
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
+		$this->session->set_userdata('companysname', $request2['companyname']);
+		redirect('admin/register'); 
+	}
+	
 	function sendRegistrationEmail($id, $key)
 	{
 		$this->db->where('id',$id);
@@ -184,8 +249,15 @@ class Register extends CI_Controller
 		}
 		
 		$this->db->where('username',$_POST['username']);
-		if($this->db->get('users')->num_rows > 0)
+		if($rowcount=$this->db->get('users')->num_rows > 0)
 		{
+			if(@$_POST['hiddenuserid']){
+				
+				$this->db->where('username',$_POST['username']);
+				$usersdata = $this->db->get('users')->row();
+				if($usersdata->id!=$_POST['hiddenuserid'] || $rowcount>1)
+				$errormessage = "Username '{$_POST['username']}' already exists";
+			}else
 			$errormessage = "Username '{$_POST['username']}' already exists";
 		}
 		
@@ -196,6 +268,7 @@ class Register extends CI_Controller
 		}
 		
 		unset($_POST['repassword']);
+		unset($_POST['hiddenuserid']);
 		$_POST['regkey'] = '';
 		
 		$rawpassword = $_POST['password'];

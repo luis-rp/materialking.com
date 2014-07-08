@@ -469,8 +469,8 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                             
 		    </div>
                   
-                  <div align="right" style="padding-right: 20px;padding-bottom:10px;  ">
-                      <b>Include Item Attachments <input type="checkbox" name="attachchkbox"  id="attachchkbox" onchange="xmltype6()" ></b></div>
+                  <!-- <div align="right" style="padding-right: 20px;padding-bottom:10px;  ">
+                      <b>Include Item Attachments <input type="checkbox" name="attachchkbox"  id="attachchkbox" onchange="xmltype6()" ></b></div> -->
 		  <div class="control-group">
 		    <table class="table table-bordered">
 		    	<tr>

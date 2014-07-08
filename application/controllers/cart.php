@@ -464,6 +464,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				
 				
 			}
+                        $data['order'] = $oid;
 		}
 		else
 		{
