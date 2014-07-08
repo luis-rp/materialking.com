@@ -428,7 +428,7 @@ class Quote extends CI_Controller
 			$quoteitemck = $quoteinvite->itemcheck;
 		}else
 			$quoteitemck = 0;
-		
+		$quoteitemck = 1; // Assigned itemcheck value as 1 by default
 		foreach($items as $item)
 		{
 			$this->db->where('itemid',$item->itemid);

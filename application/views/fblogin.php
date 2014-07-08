@@ -48,7 +48,7 @@
                                         {"name":"username","description":"Username","type":"text"},
                                         {"name":"companyname","description":"Company Name","type":"text"},
                                         {"name":"password"}]'
-                        data-redirect-uri="<?php echo site_url('welhome');?>">
+                        data-redirect-uri="<?php echo site_url('admin/register/saveregisterfb');?>">
                      
                 </div>
                  
