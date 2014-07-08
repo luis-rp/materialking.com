@@ -378,7 +378,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
                                 	<a href="<?php echo base_url(); ?>admin/admin/index">
                                 		<i class="icon-user"></i>
-                                		Manage User
+                                		Manage Users
                                 	</a>
                             	</li>
                             
@@ -404,7 +404,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <?php } else { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/allorders') ?>">
-                                    <span class="icon-reorder"></span>PURCHASE REPORT
+                                    <span class="icon-reorder"></span>Store Purchases
                                 </a>
                             </li>
                         <?php } ?>

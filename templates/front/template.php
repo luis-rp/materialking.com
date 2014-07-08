@@ -160,7 +160,7 @@
                       <li class="divider"></li>                
                       <li><a href="<?php echo site_url('company/bankaccount');?>">Bank Account Settings</a></li>
                       <li class="divider"></li>                
-                      <li><a href="<?php echo site_url('company/tier');?>">Tier Pricing</a></li>
+                      <li><a href="<?php echo site_url('company/tier');?>">Tier Pricing & Connections</a></li>
                       <li class="divider"></li>                
                       <li><a href="<?php echo site_url('company/logout');?>"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a></li>
                    </ul>
@@ -191,16 +191,16 @@
 	
     <ul>	
       <li class="start <?php if($menu=='dashboard'){echo 'active';}?>"> <a href="<?php echo site_url('dashboard/index');?>"> <i class="fa fa-dashboard"></i> <span class="title">Dashboard</span> <span class="selected"></span></a> </li>
-	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar"></i><span class="title">Tier Pricing</span> </a> </li>      
+	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar"></i><span class="title">Tier Pricing  & Connections</span> </a> </li>      
 	  <li class="<?php if($menu=='message'){echo 'active';}?>"> <a href="<?php echo site_url('message');?>"> <i class="fa fa-envelope"></i><span class="title">My Messages</span> </a> </li>      
-	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal"></i><span class="title">My Quoations</span></a></li>  
-	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random"></i><span class="title">Back Order</span></a></li>
-	  <li class="<?php if($menu=='order'){echo 'active';}?>"> <a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar"></i><span class="title">Sales Items</span></a></li>
-	  <li class="<?php if($menu=='report'){echo 'active';}?>"> <a href="<?php echo site_url('report');?>"> <i class="fa fa-dollar"></i><span class="title">Report</span></a></li>
-	  <li class="<?php if($menu=='invoices'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar"></i><span class="title">Invoices</span></a></li>
-	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive"></i><span class="title">Inventory &amp; Price</span></a></li>
-	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search"></i><span class="title">View Performance</span></a></li>
-	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male"></i><span class="title">Edit Profile</span></a></li>
+	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal"></i><span class="title">Quotes, P.O's & Tracking</span></a></li>  
+	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random"></i><span class="title">Manage Back Orders</span></a></li>
+	  <li class="<?php if($menu=='order'){echo 'active';}?>"> <a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar"></i><span class="title">Shopping/Store Sales</span></a></li>
+	  <li class="<?php if($menu=='report'){echo 'active';}?>"> <a href="<?php echo site_url('report');?>"> <i class="fa fa-dollar"></i><span class="title">Run Reports</span></a></li>
+	  <li class="<?php if($menu=='invoices'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar"></i><span class="title">Manage Invoices</span></a></li>
+	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive"></i><span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span></a></li>
+	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search"></i><span class="title">Sales Analytics & Performance</span></a></li>
+	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male"></i><span class="title">Profile & Settings</span></a></li>
     </ul>
     
 	<a href="#" class="scrollup">Scroll</a>
