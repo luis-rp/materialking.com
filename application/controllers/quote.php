@@ -1473,6 +1473,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	        }
 	    }
 	    $shipitems = '';
+            $shippingDocInvouceNum = $_POST['invoicenum'.$awardeditems[0]->id];
 	    foreach($awardeditems as $ai)
 	    {
                 $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
@@ -1513,7 +1514,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			    $insert['quote'] = $_POST['quote'];
 				$insert['filename'] = $nfn;
 				$insert['company'] = $company->id;
-				//$insert['invoicenum'] = $invoicenum;
+				$insert['invoicenum'] = $shippingDocInvouceNum;
 				$insert['uploadon'] = date('Y-m-d');
 				
 				$this->db->insert('shippingdoc',$insert);
@@ -1637,9 +1638,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $body .= '</table>';   
 	    }            
 		$this->load->library('email');
-		
+		$this->email->clear(true);
 		$this->email->to($invs[0]->email);
-		$this->email->from($this->session->userdata('email'));
+		//$this->email->cc('pratiksha@esparkinfo.com');
+		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
 		
 		$this->email->subject($subject);
 		$this->email->message($body);	

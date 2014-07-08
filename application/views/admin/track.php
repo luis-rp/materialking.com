@@ -562,7 +562,7 @@ function acceptall()
         			<tr>
         				<td><?php echo $sd->companyname;?></td>
         				<td><?php echo date("m/d/Y", strtotime($sd->uploadon));  ?></td>
-                                        <td><?php echo $sd->invoiceNumber;?></td>
+                                        <td><?php echo $sd->invoicenum;?></td>
         				<td><a href="<?php echo site_url('uploads/shippingdoc/'.$sd->filename);?>" target="_blank">View</a></td>
         			</tr>
         			<?php }?>

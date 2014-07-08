@@ -395,6 +395,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$item['companydetails'] = $this->db->get('company')->row();
 				$data['cart'][]=$item;
 			}
+                        $data['order'] = $oid;
 		}
 		else
 		{
