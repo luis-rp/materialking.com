@@ -239,6 +239,34 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label">Length (in)</label>
+                        <div class="controls">
+                            <input value="" type="text" name="length" id="length" class="span10"   >
+                           <?php echo @$this->validation->length; ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Width (in)</label>
+                        <div class="controls">
+                            <input value="" type="text" name="width" id="width" class="span10"   >
+                            <?php echo @$this->validation->width; ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Height (in)</label>
+                        <div class="controls">
+                            <input value="" type="text" name="height" id="height" class="span10"   >
+                         <?php echo @$this->validation->height; ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Weight (oz)</label>
+                        <div class="controls">
+                            <input value="" type="text" name="weight" id="weight" class="span10"  >
+                           <?php echo @$this->validation->weight; ?>
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">File</label>
                         <div class="controls">
                         	<?php if ($this->session->userdata('usertype_id') == 1) { ?>

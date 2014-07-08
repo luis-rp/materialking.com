@@ -227,6 +227,7 @@ class cart extends CI_Controller
 		foreach($cart as $ci)
 		{
 			$totalprice+= $ci['quantity'] * $ci['price'];
+			
 		}
 		$settings = $this->settings_model->get_current_settings();
 		$totalprice = $totalprice + $totalprice*$settings->taxpercent/100;
@@ -394,6 +395,74 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$this->db->where('id',$item['company']);
 				$item['companydetails'] = $this->db->get('company')->row();
 				$data['cart'][]=$item;
+				
+				///Easy Post
+				$this->db->where('id',$item['company']);
+				$company = $this->db->get('company')->row();
+
+				\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
+				
+				// create addresses
+				$to_address_params = array("name"    => $company->contact,
+						"street1" => $company->address,
+						"street2" => "",
+						"city"    => $company->city,
+						"state"   => $company->state,
+						"zip"     => "");
+				$to_address = \EasyPost\Address::create($to_address_params);
+				
+				$from_address_params = array("name"    => $_POST['name'],
+						"street1" => $_POST['street'],
+						"street2" => "",
+						"city"    => $_POST['city'],
+						"state"   => $_POST['state'],
+						"zip"     => $_POST['zip'],
+						"phone"   => $_POST['phone']);
+				$from_address = \EasyPost\Address::create($from_address_params);
+				
+				
+				// create parcel
+				$parcel_params = array("length"             => 20.2,
+						"width"              => 10.9,
+						"height"             => 5,
+						"predefined_package" => null,
+						"weight"             => 14.8
+				);
+				$parcel = \EasyPost\Parcel::create($parcel_params);
+				
+				
+				// create shipment
+				$shipment_params = array("from_address" => $from_address,
+						"to_address"   => $to_address,
+						"parcel"       => $parcel
+				);
+				$shipment = \EasyPost\Shipment::create($shipment_params);
+				print_r($shipment);
+				
+				// get shipment rates - optional, rates are added to the obj when it's created if addresses and parcel are present
+				if (count($shipment->rates) === 0) {
+					$shipment->get_rates();
+					print_r($shipment);
+				}
+				
+				// retrieve one rate
+				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+				print_r($rate);
+				echo "-------------------<br/>";
+				// create rates the other way
+				$created_rates = \EasyPost\Rate::create($shipment);
+				print_r($created_rates);
+				echo "-------------------<br/>";
+				
+				print_r(\EasyPost\Shipment::retrieve($shipment));
+				
+				 $shipment = \EasyPost\Shipment::retrieve(array('id' => "shp_iUXLz4n0"));
+				
+				$shipment->buy($shipment->rates[1]);
+				
+				echo $shipment->postage_label->label_url;
+				
+				
 			}
 		}
 		else
