@@ -401,7 +401,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$company = $this->db->get('company')->row();
 
 				\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
-				
+		
 				// create addresses
 				$to_address_params = array("name"    => $company->contact,
 						"street1" => $company->address,

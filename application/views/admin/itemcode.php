@@ -265,7 +265,7 @@ $(document).ready(function(){
                             <input value="" type="text" name="weight" id="weight" class="span10"  >
                            <?php echo @$this->validation->weight; ?>
                         </div>
-                    </div>
+                    </div> 
                     <div class="control-group">
                         <label class="control-label">File</label>
                         <div class="controls">

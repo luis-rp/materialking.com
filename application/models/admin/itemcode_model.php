@@ -255,8 +255,7 @@ class itemcode_model extends Model {
     }
 
     function SaveItemcode() {
-
-        $options = array(
+	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
             'description' => $this->input->post('description'),

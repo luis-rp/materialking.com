@@ -674,6 +674,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     function _set_rules ()
     {
+    	
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
         $rules['weight'] = 'required';
