@@ -83,10 +83,20 @@ class network extends CI_Controller {
             $supplier = $this->db->where('id',$_POST['toid'])->get('company')->row();
             $company = $this->db->where('id',$_POST['fromid'])->get('users')->row();
             
+            if($_POST['accountnumber']=="")
+            	$_POST['accountnumber'] = "none";
+            
+            if($_POST['wishtoapply'] ==1)
+            	$wish = "Yes";
+            else
+            	$wish = "No";		
+            	
             $body = "Dear " . $supplier->title . ",<br><br>
-            ". $company->companyname." just send you request to join in the newtork. 
-            The following information sent:   
+            ". $company->companyname." just sent you a request to join in your newtork. 
+            The following information was sent:   
             Account Number: ".$_POST['accountnumber']."
+            <br/>
+            Application Sent: ".$wish."
             <br/>
             Message: ".$_POST['message']."
             <br/>

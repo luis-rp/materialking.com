@@ -378,7 +378,7 @@ function savclose()
 		    
 		    <div class="control-group">
 			    <div class="controlss">
-			      Delivery Date: &nbsp; &nbsp; 
+			      Delivery or Pick-Up Date: &nbsp; &nbsp;
 			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" onchange="defaultdate(this.value);"
 			      	value="<?php echo $this->validation->deliverydate; ?>" data-date-format="mm/dd/yyyy">
 			      <input type="hidden" id="makedefaultdeliverydate" name="makedefaultdeliverydate"/>

@@ -474,10 +474,13 @@ $(function() {
 				    		<td>
 				    			<?php if($isawarded){ echo $q->costcode;} else {?>
 				    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')">
-				    			<option value="<?php echo $q->costcode;?>" ><?php echo $q->costcode;?></option>
-				    			</select>
-				    			<!-- <input type="text" id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>" 
-				    				class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')"/>-->
+				    				<?php foreach($costcodes as $costcode){?>
+			    						<option value="<?php echo $costcode->code;?>" 
+			    						<?php if($q->costcode==$costcode->code){echo 'SELECTED';}?>>
+			    						<?php echo $costcode->code;?>
+			    						</option>
+		    						<?php }?>
+		    					</select>	
 				    			<?php }?>
 				    		</td>
 				    		<td><?php echo $q->notes;?>&nbsp;</td>

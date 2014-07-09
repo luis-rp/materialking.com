@@ -1,9 +1,26 @@
 <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
+<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 
 <script type="text/javascript">
 
 $(document).ready(function(){
 	$('.date').datepicker();
+	
+	$('#datatable').dataTable( {
+		"aaSorting": [],
+		"sPaginationType": "full_numbers",
+		"aoColumns": [
+		        		null,
+		        		null,
+		        		null,
+		        		null,
+		        		null,
+		        		null,
+		        		null		
+			]
+		} );
+	 $('.dataTables_length').hide();
 	
 });
 var datetext = "";
@@ -100,27 +117,27 @@ function invoice(invoicenum)
                                                 <th style="width:20%">PO Number</th>
                                                 <th style="width:80%">Invoices</th>
                                             </tr>
-                                        </thead>
-                                        
-                                        <tbody>
+                                        </thead>                                        
+                                       </table>    
+                                    <table id="datatable" class="table no-more-tables general">
+                                    <thead>
+                                       <tr>
+                  	             			<th style="width:20%">PO Number</th>
+                                   			<th>Invoice#</th>
+                                   			<th>Received On</th>
+                                            <th>Total Cost</th>
+                                            <th>Payment Status</th>
+                                            <th>Verification</th>
+                                            <th>Date Due</th>
+                                         </tr>
+									</thead>	
+									<tbody>                                    
 							              <?php
 									    	foreach($invoices as $ponum=>$invs)
 									    	{
-									      ?>
-                                            <tr>
-                                                <td class="v-align-middle"><?php echo $ponum;?> </td>
-                                                <td class="v-align-middle">
-                                                	<table class="borderless general">
+									      			foreach($invs as $i){?>
                                                 		<tr>
-                                                			<th>Invoice#</th>
-                                                			<th>Received On</th>
-                                                			<th>Total Cost</th>
-                                                			<th>Payment Status</th>
-                                                			<th>Verification</th>
-                                                			<th>Date Due</th>
-                                                		</tr>
-                                                		<?php foreach($invs as $i){?>
-                                                		<tr>
+                                                			<td class="v-align-middle"><?php echo $ponum;?> </td>
                                                 			<td>
                                                 			<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>');">
                                                 			<?php echo $i->invoicenum;?>
@@ -137,10 +154,7 @@ function invoice(invoicenum)
                                                 			</td>
                                                 		</tr>
                                                 		<?php }?>
-                                                	</table>
-                                                </td>
-                                            </tr>
-                                          <?php } ?>
+                                                <?php } ?>
                                         </tbody>
                                     </table>
                             </div>

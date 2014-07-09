@@ -136,6 +136,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Item Code</th>
+                                                 <th style="width:20%">Company</th>
                                                 <th style="width:30%">Quantity</th>
                                                 <th style="width:20%">Price</th>
                                                 <th style="width:10%">Total</th>
@@ -155,6 +156,7 @@
 									      ?>
                                             <tr>
                                                 <td><?php echo $item->itemdetails->itemname;?></td>
+                                                <td><?php echo $item->companyname;?></td>
                                                 <td><?php echo $item->quantity;?></td>
                                                 <td>$<?php echo $item->price;?></td>
                                                 <td><?php echo $total;?></td>

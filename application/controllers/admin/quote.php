@@ -1045,7 +1045,7 @@ class quote extends CI_Controller
         $data['bids'] = $bids;
         $data['minimum'] = $minimum;
         $data['maximum'] = $maximum;
-        
+        $data['costcodes'] = $this->db->where('project',$quote->pid)->get('costcode')->result();
         $data['heading'] = $data['quote']->potype == 'Bid' ? "Bids Placed" : "PO Review";
         if($data['quote']->potype == 'Bid')
             $this->load->view('admin/bids', $data);
