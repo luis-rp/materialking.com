@@ -197,13 +197,15 @@ tr.still-due td
                                 <thead>
         			<tr>
         				<th>Date</th>
+        				<th>REF#</th>
         				<th>View</th>
         			</tr>
                                 </thead>
                                 <tbody>
         			<?php foreach($shippingdocs as $sd){?>
         			<tr>
-        				<td><?php echo $sd->uploadon;?></td>
+                                        <td><?php echo date("m/d/Y",  strtotime($sd->uploadon));?></td>
+                                        <td><?php echo $sd->invoicenum;?></td>
         				<td><a href="<?php echo site_url('uploads/shippingdoc/'.$sd->filename);?>" target="_blank">View</a></td>
         			</tr>
         			<?php }?>

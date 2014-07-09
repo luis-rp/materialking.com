@@ -19,9 +19,9 @@ class supplier_model extends Model {
         $result = $this->db->get('company');
         if($result->num_rows()){
             $row = $result->row();
-            if(!trim($row->logo)){
-                $row->logo = "big.png";
-            }
+//            if(!trim($row->logo)){
+//                $row->logo = "big.png";
+//            }
             $row->joinstatus = '';
             return $row;
         }else{

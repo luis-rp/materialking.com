@@ -141,7 +141,25 @@ $long = $supplier->com_lng;
         });
     }
 </script>
+<script type="text/javascript">
 
+   
+    function PrintElem(elem)
+    {
+        PopupPrint($(elem).html());
+    }
+    function PopupPrint(data) 
+    {
+        var mywindow = window.open('', 'my div', 'height=100,width=100,left=100,top=100');
+        mywindow.document.write('<html><head><title>my div</title>');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write(data);
+        mywindow.document.write('</body></html>');
+        mywindow.print();
+        mywindow.close();
+        return true;
+    }
+</script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jRating.jquery.js"></script>
 
@@ -223,48 +241,65 @@ $(document).ready(function() {
                     <div class="property-detail">
                         <div class="pull-left overview">
                             <div class="row">
-                                <div class="span4">
-                                    <h2>Overview</h2>
-
-                                    <table width="100%">
+                                <div class="span4" id="mydiv">
+                                    <p>
+                                        <?php if($supplier->logo !=""){?>
+                                                <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
+                                                <?php } else {?>
+                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
+                                        <?php } ?>
+                                        <span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>
+                                    </p>
+                                    <br/>
+                                    <table width="100%" style="font-size: 11px;">
                                         <tr>
                                             <td>Join Date:</td>
-                                            <td><?php echo date('m/d/Y',strtotime($supplier->regdate)); ?>&nbsp;</td>
+                                            <td><?php echo date('m/d/Y',strtotime($supplier->regdate)); ?></td>
                                         </tr>
-
                                         <tr>
                                             <td>Location:</td>
-                                            <td><?php echo nl2br($supplier->address); ?>&nbsp;</td>
+                                            <td><?php echo nl2br($supplier->address); ?></td>
                                         </tr>
                                         <tr>
                                             <td>Email:</td>
-                                            <td><?php echo $supplier->primaryemail; ?>&nbsp;</td>
+                                            <td><?php echo $supplier->primaryemail; ?></td>
                                         </tr>
                                         <?php if($supplier->phone){?>
                                         <tr>
                                             <td>Tel:</td>
-                                            <td><?php echo $supplier->phone; ?>&nbsp;</td>
+                                            <td><?php echo $supplier->phone; ?></td>
                                         </tr>
                                         <?php }?>
                                         <?php if($supplier->fax){?>
                                         <tr>
                                             <td>Fax:</td>
-                                            <td><?php echo $supplier->fax; ?>&nbsp;</td>
+                                            <td><?php echo $supplier->fax; ?></td>
                                         </tr>
                                         <?php }?>
                                         <tr>
                                             <td width="27%">Contact Person:</td>
-                                            <td><?php echo $supplier->contact; ?>&nbsp;</td>
+                                            <td><?php echo $supplier->contact; ?></td>
                                         </tr>
                                     </table>
                                 </div>
                             </div>
+                            <br/>
+                              <div class="invoice-button-action-set">
+                                  <p style="float: left;line-height: 17px;">
+                                      <button type="button" class="btn btn-primary" onclick="PrintElem(mydiv)" style="border-radius: 2px;padding: 0 10px;">
+                                        Print
+                                      </button>
+                                </p>
+                                 <div style="float: left;margin-left: 20px;" class="addthis_toolbox addthis_default_style ">
+                                     <a class="addthis_counter addthis_pill_style" addthis:url="<?php echo $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];?>#mydiv" addthis:title=""></a>
                         </div>
+                                <!--<a class="shareEmail" href="" title="Share by Email"><img src="http://png-2.findicons.com/files/icons/573/must_have/48/mail.png"/></a>-->
+                              </div>
 
+                        </div>
                         <div class="row" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
-
                         <div class="content">
                         <p>&nbsp;</p>
                         	<h2>Manufacturers Carried:</h2>
