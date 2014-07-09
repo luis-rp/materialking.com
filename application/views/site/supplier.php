@@ -328,15 +328,13 @@ $(document).ready(function() {
                             <div style="font-size:12px; border:1px solid #CCC; margin-left:-10px; padding-left:0px;margin-bottom:5px;padding-right:0px;" class="property featuredspan">
                                 <div class="image span2">
                                     <div class="content">
-                                        
+                                        <a href="<?php echo site_url("site/item/".$di->url);?>">
                                         <?php if($di->image) {?>
-                                        <img alt="<?php echo urlencode($di->itemname); ?>" src="<?php echo site_url('uploads/item/thumbs/'. $di->image);?>" style="max-height: 120px; padding: 20px;width:120px; height:120px" width="120" height="120">
-                        			<!-- <img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80"> -->
+                        			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
                         			<?php } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
                         		<?php }?>
                         			<br/>
-                        			<a href="<?php echo site_url("site/item/".$di->url);?>" style="margin-left:20px;">
                         			<?php echo $di->itemname?>
                         			</a>
                         			<?php if($di->filename){?>
@@ -348,16 +346,16 @@ $(document).ready(function() {
                                      </div>
                                 </div>
 
-                                <div class="body span6">
+                                <div class="body1 span6">
                                     <div class="title-price row">
-                                        <div class="title span5">
-                                            <h2><?php echo $di->itemname?></h2>
+                                        <div class="title1 span5">
+                                            <h2>nh414s</h2>
                                             <p><?php echo $di->dealnote;?></p>
                                             <div class="area">
                                                 <span class="key"><strong>Quantity Available:</strong></span>
                                                 <span class="value"><?php echo $di->qtyavailable;?></span>
 
-                                                <span class="key"><strong>Time Remaining:</strong></span>
+                                                <span class="key"><strong>Quantity Remaning:</strong></span>
                                                 <span class="value"><?php echo $remaining;?></span>
                                                 
                                                 <br>
@@ -416,9 +414,9 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <div class="body span6">
+                                <div class="body1 span6">
                                     <div class="title-price row">
-                                        <div class="title span5">
+                                        <div class="title1 span5">
                                             <h2><a href="<?php echo site_url('site/item/'.$inv->url);?>"><?php echo $inv->itemcode; ?></a></h2>
                                             <p><?php echo $inv->companynotes; ?></p>
                                            

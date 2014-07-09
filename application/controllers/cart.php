@@ -397,17 +397,19 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$data['cart'][]=$item;
 				
 				///Easy Post
-				$this->db->where('id',$item['company']);
-				$company = $this->db->get('company')->row();
-
+			
+				
+				$this->db->where('id',$item['itemid']);
+				$current_item = $this->db->get('item')->row();
+			
 				\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		
 				// create addresses
-				$to_address_params = array("name"    => $company->contact,
-						"street1" => $company->address,
+				$to_address_params = array("name"    => $item['companydetails']->contact,
+						"street1" => $item['companydetails']->address,
 						"street2" => "",
-						"city"    => $company->city,
-						"state"   => $company->state,
+						"city"    => $item['companydetails']->city,
+						"state"   => $item['companydetails']->state,
 						"zip"     => "");
 				$to_address = \EasyPost\Address::create($to_address_params);
 				
@@ -417,16 +419,16 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 						"city"    => $_POST['city'],
 						"state"   => $_POST['state'],
 						"zip"     => $_POST['zip'],
-						"phone"   => $_POST['phone']);
+						);
 				$from_address = \EasyPost\Address::create($from_address_params);
 				
 				
 				// create parcel
-				$parcel_params = array("length"             => 20.2,
-						"width"              => 10.9,
-						"height"             => 5,
+				$parcel_params = array("length"             => $current_item->length,
+						"width"              => $current_item->width,
+						"height"             => $current_item->height,
 						"predefined_package" => null,
-						"weight"             => 14.8
+						"weight"             => $current_item->weight
 				);
 				$parcel = \EasyPost\Parcel::create($parcel_params);
 				
@@ -437,30 +439,20 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 						"parcel"       => $parcel
 				);
 				$shipment = \EasyPost\Shipment::create($shipment_params);
-				print_r($shipment);
+				
 				
 				// get shipment rates - optional, rates are added to the obj when it's created if addresses and parcel are present
 				if (count($shipment->rates) === 0) {
-					$shipment->get_rates();
-					print_r($shipment);
+					$created_rates = \EasyPost\Rate::create($shipment);
+					//$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+					print_r($created_rates);
 				}
+				/*$shipment = \EasyPost\Shipment::retrieve(array('id' => $shipment->id));
 				
-				// retrieve one rate
-				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
-				print_r($rate);
-				echo "-------------------<br/>";
-				// create rates the other way
-				$created_rates = \EasyPost\Rate::create($shipment);
-				print_r($created_rates);
-				echo "-------------------<br/>";
+			
+				$shipment->buy($shipment->lowest_rate());*/
 				
-				print_r(\EasyPost\Shipment::retrieve($shipment));
-				
-				 $shipment = \EasyPost\Shipment::retrieve(array('id' => "shp_iUXLz4n0"));
-				
-				$shipment->buy($shipment->rates[1]);
-				
-				echo $shipment->postage_label->label_url;
+		//		echo $shipment->postage_label->label_url;
 				
 				
 			}

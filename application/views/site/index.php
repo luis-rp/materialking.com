@@ -243,7 +243,7 @@
                                         <h2><a href="<?php echo site_url('site/supplier/' . $fc->username); ?>"><?php echo $fc->contact; ?></a></h2>
                                     </div>
 
-                                    <div class="location"><?php echo $fc->address; ?><?php //echo $fc->state; ?> </div>
+                                    <div class="location2"><?php echo $fc->address; ?><?php //echo $fc->state; ?> </div>
                                     <div class="area">
 
                                     </div>
@@ -281,7 +281,7 @@
                                             </div>
 
                                             <?php if (isset($rc->city) && isset($rc->state)) { ?>
-                                                <div class="location"><?php echo $rc->city; ?>, <?php echo $rc->state; ?></div>
+                                                <div class="location2"><?php echo $rc->city; ?>, <?php echo $rc->state; ?></div>
                                             <?php } else { ?>
                                                 <div class="location"><?php echo $rc->contact; ?></div>
                                             <?php } ?>
@@ -455,7 +455,7 @@
             if($suppliers_10_miles){
                 ?>
             <div class="row">
-                <div class="span6">
+                <div class="span12">
                     <h1 class="page-header">Suppliers List</h1>
                     <div class="properties-rows">
                         <div class="row">
@@ -469,15 +469,15 @@
                                         <div class="image span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
-                                                    <img style="padding-top: 5px;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
+                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
                                                 <?php } else { ?>
-                                                    <img style="padding-top: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
 
                                             </div>
                                         </div>
 
-                                        <div class="body span6">
+                                        <div class="body_home span6">
                                             <div class="title-price row">
                                                 <div class="title span4">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
@@ -487,7 +487,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="location"><?php echo $supplier->contact; ?></div>
+                                            <div class="location2"><?php echo $supplier->contact; ?></div>
                                             <p><?php echo $supplier->shortdetail; ?></p>
                                             <div class="area">
                                                 <?php //echo $supplier->joinstatus; ?>

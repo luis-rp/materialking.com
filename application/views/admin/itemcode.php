@@ -241,29 +241,29 @@ $(document).ready(function(){
                     <div class="control-group">
                         <label class="control-label">Length (in)</label>
                         <div class="controls">
-                            <input value="" type="text" name="length" id="length" class="span10"   >
-                           <?php echo @$this->validation->length; ?>
+                            <input value="<?php echo $this->validation->length; ?>" type="text" name="length" id="length" class="span10"   >
+                           <?php echo @$this->validation->error_length; ?>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Width (in)</label>
                         <div class="controls">
-                            <input value="" type="text" name="width" id="width" class="span10"   >
-                            <?php echo @$this->validation->width; ?>
+                            <input value="<?php echo $this->validation->width; ?>" type="text" name="width" id="width" class="span10"   >
+                            <?php echo @$this->validation->error_width; ?>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Height (in)</label>
                         <div class="controls">
-                            <input value="" type="text" name="height" id="height" class="span10"   >
-                         <?php echo @$this->validation->height; ?>
+                            <input value="<?php echo $this->validation->height; ?>" type="text" name="height" id="height" class="span10"   >
+                         <?php echo @$this->validation->error_height; ?>
                         </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label">Weight (oz)</label>
                         <div class="controls">
-                            <input value="" type="text" name="weight" id="weight" class="span10"  >
-                           <?php echo @$this->validation->weight; ?>
+                            <input value="<?php echo $this->validation->weight; ?>" type="text" name="weight" id="weight" class="span10"  >
+                           <?php echo @$this->validation->error_weight; ?>
                         </div>
                     </div> 
                     <div class="control-group">

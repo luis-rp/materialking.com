@@ -124,7 +124,7 @@ $(document).ready(function() {
                     <?php echo $company->title; ?> Store
                     </h1>
                     <a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
-                    <br/><br/>
+                    <br/> 
                     
                 	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>
                 	<br/>
@@ -150,9 +150,9 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <div class="body span6">
+                                <div class="body2 span6">
                                     <div class="title-price row">
-                                        <div class="title span4">
+                                        <div class="title2 span4">
                                             <h2><?php echo $item->itemcode; ?></h2>
                                             <p>
                                                 <?php echo $item->companynotes; ?>
@@ -178,7 +178,7 @@ $(document).ready(function() {
                                                 	&nbsp;&nbsp;<a href="<?php echo site_url('uploads/item/'.$item->filename);?>" target="_blank">View Attachment</a>
                                                 <?php }?>
                                             </div>
-                                                <span class="pull-right">
+                                                <span class="pull-right1">
                                                 	<?php echo $item->instock?'Available':'Not Available';?>
                                                 	<br/>
                                                 	Stock: <?php echo $item->qtyavailable;?>
@@ -188,7 +188,7 @@ $(document).ready(function() {
                                         </div>
                                         <div class="price">
                                             $<?php echo $item->ea; ?> 
-                                            <br/><br/>
+                                            <!--<br/><br/>-->
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>)">
                                                 <i class="icon icon-plus"></i>
                                             </a>
