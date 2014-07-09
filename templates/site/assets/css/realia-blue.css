@@ -1578,7 +1578,9 @@ background-color:#333745}
     position:relative;
 	   transition: background-color 0.5s ease;
    -webkit-transition: all 0.7s ease;
-transition: all 0.7s ease;}
+transition: all 0.7s ease;
+min-height: 245px;
+}
 	
 
 .properties-grid .property:hover{  background-color: #FCFCFC; -webkit-box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
@@ -3063,7 +3065,9 @@ box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
     text-shadow:none;
     border:0px;
     padding:7px 15px 7px 15px;
-    font-weight:normal}
+    font-weight:normal;
+    margin-left:30px;
+}
 .btn.btn-primary {
     -webkit-transition:background-color 0.2s ease-in;
     -moz-transition:background-color 0.2s ease-in;
@@ -3496,7 +3500,7 @@ body.header-dark #header-inner .site-email a {
 	
 	.title-price .title1 {
     padding:0;
-    width: auto;
+    width: 380px;
 }
 	.title-price .title2 {
     padding: 5%;

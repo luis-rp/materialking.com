@@ -197,6 +197,7 @@
                                                 </div>
                                                 <?php if($item->minprice && $item->maxprice){?>
                                                 <div class="price">
+                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>"; ?>
                                                 	$<?php echo $item->minprice; ?> - $<?php echo $item->maxprice; ?> 
                                                 </div>
                                                 <?php }?>

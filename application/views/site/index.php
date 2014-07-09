@@ -243,7 +243,7 @@
                                         <h2><a href="<?php echo site_url('site/supplier/' . $fc->username); ?>"><?php echo $fc->contact; ?></a></h2>
                                     </div>
 
-                                    <div class="location2"><?php echo $fc->address; ?><?php //echo $fc->state; ?> </div>
+                                    <div class="location"><?php echo $fc->address; ?><?php //echo $fc->state; ?> </div>
                                     <div class="area">
 
                                     </div>
