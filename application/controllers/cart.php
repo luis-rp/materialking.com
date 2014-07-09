@@ -398,7 +398,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				
 				///Easy Post
 			
-				
+				/*
 				$this->db->where('id',$item['itemid']);
 				$current_item = $this->db->get('item')->row();
 			
@@ -439,20 +439,9 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 						"parcel"       => $parcel
 				);
 				$shipment = \EasyPost\Shipment::create($shipment_params);
+				*/
 				
 				
-				// get shipment rates - optional, rates are added to the obj when it's created if addresses and parcel are present
-				if (count($shipment->rates) === 0) {
-					$created_rates = \EasyPost\Rate::create($shipment);
-					//$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
-					print_r($created_rates);
-				}
-				/*$shipment = \EasyPost\Shipment::retrieve(array('id' => $shipment->id));
-				
-			
-				$shipment->buy($shipment->lowest_rate());*/
-				
-		//		echo $shipment->postage_label->label_url;
 				
 				
 			}
