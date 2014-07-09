@@ -397,8 +397,8 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$data['cart'][]=$item;
 				
 				///Easy Post
-			
-				/*
+			/*
+				
 				$this->db->where('id',$item['itemid']);
 				$current_item = $this->db->get('item')->row();
 			
@@ -439,9 +439,12 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 						"parcel"       => $parcel
 				);
 				$shipment = \EasyPost\Shipment::create($shipment_params);
-				*/
-				
-				
+			
+				$created_rates = \EasyPost\Rate::create($shipment);
+				print_r($created_rates);
+				echo "<br/>-----------<br/>";
+				print_r($shipment);
+				exit;*/
 				
 				
 			}

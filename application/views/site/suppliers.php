@@ -77,9 +77,9 @@
                             foreach ($suppliers as $supplier) {
                                 $i++
                                 ?>
-                                <div class="property span9">
+                                <div class="property span9" style="width:auto">
                                     <div class="row">
-                                        <div class="image span3">
+                                        <div class="image1 span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
                                                     <img style="padding: 20px; vertical-align: middle;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
@@ -90,12 +90,12 @@
                                             </div>
                                         </div>
 
-                                        <div class="body span6">
+                                        <div class="body1 span6">
                                             <div class="title-price row">
-                                                <div class="title span4">
+                                                <div class="title1 span4">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
-                                                <div class="price">
+                                                <div class="price1">
                                                     <?php echo $supplier->city; ?>, <?php echo $supplier->state; ?> 
                                                 </div>
                                             </div>
