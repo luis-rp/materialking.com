@@ -15,7 +15,7 @@ define('DB_SERVER_PASSWORD', '');
 //live
 define('DB_SERVER', 'localhost'); 
 define('DB_SERVER_USERNAME', 'jon');
-define('DB_SERVER_PASSWORD', 'Jon120758!');
+define('DB_SERVER_PASSWORD', 'TNbpCev!696hphe');
 
 
 define('DB_DATABASE', 'pms');	
