@@ -303,7 +303,12 @@ $(function() {
                            borderWidth: 0,
                            dataLabels: {
                                enabled: true,
-                               format: '$ {point.y:.1f}'
+                               useHTML: true,
+                               format: '$ {point.y:.f}',
+                               style: {
+        							fontFamily: 'monospace',
+       								color: "#f00"
+    							}
                            }
                        }
                    },

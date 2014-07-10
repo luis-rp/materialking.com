@@ -154,18 +154,77 @@
 					}
 					
 			<?php } ?>
+			
+			
+			function daysInMonth(month,year) {
+				return new Date(year, month, 0).getDate();
+			}
+			
 			function changeMonth()
-			{
+			{	var today = new Date();
+				var year  = new Date().getFullYear();
+				
+				var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+				//alert(tomorrow);
+				//July
+				//alert(daysInMonth(month,year)); //31
+				
+				var firstdate = new Date(year, month-1,1);				
+				//alert(firstdate);
+				var utcdate;
+				
+				//alert(utcdate);
 				dataData = new Array();
 				seriesData = new Array();
+				//console.log(items);
+				datearr1 = new Array();
+				
+				dataname = new Array();
+				datax = new Array();
+				datay = new Array();
+				datadate = new Array();
+				
+				var k=0;
 				for(var i in items)
 				{
 					if(items[i].date.getMonth() + 1 == month)
-					{
-						dataData.push({ name: items[i].name, x: items[i].x, y: items[i].y, date: items[i].date});
+					{   datearr1[k] = i;
+						//dataData.push({ name: items[i].name, x: items[i].x, y: items[i].y, date: items[i].date});
+						dataname[k] = items[i].name;
+						datax[k] = items[i].x;
+						datay[k] = items[i].y;
+						datadate[k] = items[i].date;						
+						k++;
 					}
 				}
 				
+				//console.log(datearr1);
+				var jdt;
+				var monthdt = "";
+				var r = 0;
+				for(var j=1;j<=daysInMonth(month,year);j++){
+					if(month<10)
+					monthdt = '0'+month;
+					else
+					monthdt = month;
+					if(j<10)
+					jdt = '0'+j;
+					else
+					jdt = j;
+					datefinal = monthdt+"/"+jdt+"/"+year;			
+					
+					if(datearr1.indexOf(datefinal)<= -1){
+						utcdate = Date.UTC(year,month-1,j);
+						dataData.push({ name: '', x: utcdate, y: 0, date: 'Date {firstdate}'});
+						firstdate = new Date(firstdate.getTime() + (24 * 60 * 60 * 1000));
+					}else{
+						dataData.push({ name: dataname[r], x: datax[r], y: datay[r], date: datadate[r]});
+						r++;
+					}
+					jdt = "";
+					monthdt = "";
+				}
+				console.log(dataData);
 				dataData.sort(function(a,b) {
 					if(a.date > b.date)
 						return 1;
@@ -182,7 +241,7 @@
 				}});
 				 $('#container-highchart').highcharts({
 					 chart: {
-					 
+					 	type: 'line'
 					 },
 					 title: {
 						 text: 'Monthly Overview'
@@ -192,6 +251,8 @@
 					 },
 					 xAxis: {
 						 type: 'datetime',
+						 min:Date.UTC(2014, 5, 1),
+        				 max:Date.UTC(2014, 6, 1),	
 						 dateTimeLabelFormats: { // don't display the dummy year
 							 month: '%e. %b',
 							 year: '%b'
