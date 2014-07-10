@@ -545,10 +545,10 @@
 					            },
 					            plotOptions: {
 				                       series: {
-				                           borderWidth: 0,
 				                           dataLabels: {
+				                        	   verticalAlign: "bottom",
 				                               enabled: true,
-				                               format: '$ {point.y:.1f}'
+				                               format: '$ {point.y:.2f}'
 				                           }
 				                       }
 				                   },

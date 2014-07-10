@@ -207,7 +207,7 @@
                                                 </div>
                                                 <?php }?>
                                                 <?php if ($this->session->userdata('site_loggedin')){?>
-                                            		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
+                                            		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
                                                         <i class="icon icon-plus"></i> <br/>Add to RFQ
                                                     </a>
                                                 <?php }?>
