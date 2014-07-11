@@ -440,15 +440,14 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				);
 				$shipment = \EasyPost\Shipment::create($shipment_params);
 			
-			if (count($shipment->rates) === 0) {
-    $shipment->get_rates();
-    print_r($shipment);
-}
-echo "<br/>-----------------------------<br/>";
-$created_rates = \EasyPost\Rate::create($shipment);
-print_r($created_rates);
+				if (count($shipment->rates) === 0) {
+				    $shipment->get_rates();
+				  $created_rates = \EasyPost\Rate::create($shipment);
+				}
+				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+				$shipment = \EasyPost\Shipment::retrieve(array('id' => $shipment->id));
+				$shipment->buy($shipment->rates[1]);
 
-				exit;
 				
 				
 			}
