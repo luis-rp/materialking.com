@@ -150,13 +150,15 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <div class="body2 span6">
+                                <div class="body2 span6 store-item">
                                     <div class="title-price row">
-                                        <div class="title2 span4">
+                                        <div class="title2 span4 ">
                                             <h2><?php echo $item->itemcode; ?></h2>
-                                            <p>
+                                            <?php if(!empty($item->companynotes)){?>
+                                            <div class="company-note">
                                                 <?php echo $item->companynotes; ?>
-                                            </p>
+                                            </div>
+                                            <?php } ?>
                                             <div class="area">
                                                 <span class="key"><strong>Item Name:</strong></span>
                                                 <span class="value"> <?php echo $item->itemname; ?></span>

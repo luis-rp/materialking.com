@@ -103,7 +103,11 @@
                                             <div class="location"><?php echo $supplier->contact; ?></div>
                                             <p><?php echo $supplier->shortdetail; ?></p>
                                             <div class="area">
+                                            <?php if ($this->session->userdata('site_loggedin')){?>
                                                 <?php echo $supplier->joinstatus; ?>
+                                            <?php }else{?>
+                                            <input type="button" value="Join" onclick="$('#createmodal').modal();" class="btn btn-primary arrow-right"/>
+                                            <?php }?>
                                             </div>
                                         </div>
                                     </div>

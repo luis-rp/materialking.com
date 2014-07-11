@@ -747,7 +747,7 @@ class site extends CI_Controller
     
     public function items ()
     {
-        $limit = 6;
+        $limit = 18;
         $this->items_model->set_keyword(false);
         $items = $this->items_model->find_item();
         $this->data['totalcount'] = $items->totalresult;
