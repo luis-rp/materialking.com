@@ -165,18 +165,14 @@
 				var year  = new Date().getFullYear();
 				
 				var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
-				//alert(tomorrow);
-				//July
-				//alert(daysInMonth(month,year)); //31
-				
+							
 				var firstdate = new Date(year, month-1,1);				
-				//alert(firstdate);
+				
 				var utcdate;
 				
-				//alert(utcdate);
+				
 				dataData = new Array();
 				seriesData = new Array();
-				//console.log(items);
 				datearr1 = new Array();
 				
 				dataname = new Array();
@@ -193,46 +189,46 @@
 						dataname[k] = items[i].name;
 						datax[k] = items[i].x;
 						datay[k] = items[i].y;
-						datadate[k] = items[i].date;						
+						datadate[k] = items[i].date;	
 						k++;
 					}
 				}
 				
-				//console.log(datearr1);
 				var jdt;
 				var monthdt = "";
 				var r = 0;
 				for(var j=1;j<=daysInMonth(month,year);j++){
 					if(month<10)
-					monthdt = '0'+month;
+					monthdt = 0+month;
 					else
 					monthdt = month;
 					if(j<10)
-					jdt = '0'+j;
+					jdt = 0+j;
 					else
 					jdt = j;
-					datefinal = monthdt+"/"+jdt+"/"+year;			
+					datefinal = ''+monthdt+"/"+jdt+"/"+year+'';			
 					
-					if(datearr1.indexOf(datefinal)<= -1){
+					if(datearr1.indexOf(datefinal)<= -1){ 
 						utcdate = Date.UTC(year,month-1,j);
-						dataData.push({ name: '', x: utcdate, y: 0, date: 'Date {firstdate}'});
-						firstdate = new Date(firstdate.getTime() + (24 * 60 * 60 * 1000));
+						dataData.push({ name: '', x: utcdate, y: 0, date: 'Date {'+firstdate+'}'});
+						
 					}else{
 						dataData.push({ name: dataname[r], x: datax[r], y: datay[r], date: datadate[r]});
 						r++;
 					}
+					firstdate = new Date(firstdate.getTime() + (24 * 60 * 60 * 1000));
 					jdt = "";
 					monthdt = "";
 				}
 				console.log(dataData);
-				dataData.sort(function(a,b) {
+				/*dataData.sort(function(a,b) {
 					if(a.date > b.date)
 						return 1;
 					else if (a.date == b.date)
 						return 0;
 					else
 						return -1;
-				});
+				});*/
 				
 				seriesData.push({"name":"PO#","data":dataData, marker: {
 					fillColor: 'white',
@@ -251,8 +247,8 @@
 					 },
 					 xAxis: {
 						 type: 'datetime',
-						 min:Date.UTC(2014, 5, 1),
-        				 max:Date.UTC(2014, 6, 1),	
+						 //min:Date.UTC(2014, 5, 1),
+        				 //max:Date.UTC(2014, 6, 1),	
 						 dateTimeLabelFormats: { // don't display the dummy year
 							 month: '%e. %b',
 							 year: '%b'

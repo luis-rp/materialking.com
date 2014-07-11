@@ -8,6 +8,35 @@
             h1 { font-size: 24px; }
             h2 { font-size: 18px; }
         </style>
+        
+        <script>
+    function validate(form) {
+        errors = {};
+        if (form.password.length < 8) {
+        errors.password = "You password must be of 8 characters or more";
+        }
+        if(form.password_confirmation!=form.password) {
+        	errors.password_confirmation = "You passwords dosen't match";
+        }    
+        /*if(getObjectSize(errors)>1){
+        	form.u_0_4.disabled=true;
+        	//alert("hello");
+        }else{
+        	form.u_0_4.disabled=false;
+        }*/
+        return errors;
+     }
+     
+    /* function getObjectSize(obj) {
+     	var size = 0, key; // get the size data
+     	for (key in obj) { // check the okeys in the object
+     		if (obj.hasOwnProperty(key)) size++; // increase the size
+     	}
+     	return size; // return the size of the object
+     }*/
+ 
+</script>
+        
     </head>
     <body>
          
@@ -36,7 +65,7 @@
                 </script>
                  
                 <h1>Registration Using Facebook</h1>
-                 
+                <div style="float: left;color:red" class='fbRegistrationErrorMessage'>Note: Please keep the password of 8 characters or more</div> <br> <br><br> 
                 <div style="float: left; margin-right: 15px;">
                      
                     <div class="fb-registration"
@@ -48,7 +77,7 @@
                                         {"name":"username","description":"Username","type":"text"},
                                         {"name":"companyname","description":"Company Name","type":"text"},
                                         {"name":"password"}]'
-                        data-redirect-uri="<?php echo site_url('admin/register/saveregisterfb');?>">
+                        data-redirect-uri="<?php echo site_url('admin/register/saveregisterfb');?>" onvalidate="validate">
                      
                 </div>
                  

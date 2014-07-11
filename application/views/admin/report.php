@@ -57,7 +57,7 @@ $(document).ready(function(){
 		   		$totalallprice = 0;
 		   		$totalallpaid = 0;
 		   		if(!@$reports) 
-		   			echo 'No records found'; 
+		   			echo 'No Records Found'; 
 		   		else 
 		   			foreach($reports as $report)
 		   			{

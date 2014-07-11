@@ -227,7 +227,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Quick Order <i class=" icon-caret-down"></i></a>
 							<ul class="dropdown-menu">
-								<li><a href="<?php echo site_url('admin/quote/add/' . $this->session->userdata('managedproject'));?>">ADD Quote</a></li>
+								<li><a href="<?php echo site_url('admin/quote/add/' . $this->session->userdata('managedproject'));?>">Add Quote</a></li>
 								<li><a href="<?php echo site_url('admin/quote/add/' . $this->session->userdata('managedproject'));?>/Direct">Add Purchase Order</a></li>
 							</ul>
 						</li>
@@ -382,6 +382,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 	</a>
                             	</li>
                             
+                            	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
+                                	<a href="<?php echo base_url(); ?>admin/event">
+                                		<i class="icon-user"></i>
+                                		Events
+                                	</a>
+                            	</li>
+                            	
                             </ul>
                         </li>
                         

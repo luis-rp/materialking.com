@@ -48,7 +48,7 @@
 		   <br/>
 		   <?php 
 		   	if(!@$backtracks) 
-		   		echo 'No records found'; 
+		   		echo 'No Backorders Found'; 
 		   	else 
 		   		foreach($backtracks as $backtrack)
 		   			if(@$backtrack['items'])

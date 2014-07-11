@@ -130,7 +130,7 @@ class costcode_model extends Model
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
 			WHERE a.quote=q.id AND
-			ai.award=a.id AND ai.costcode='$costcode'";
+			ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT ai.*, q.ponum, a.quote
@@ -138,7 +138,7 @@ class costcode_model extends Model
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				AND ai.award=a.id AND ai.costcode='$costcode'";
+				AND ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
 		}
 		//echo $sql;
 		$query = $this->db->query ($sql);

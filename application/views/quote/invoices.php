@@ -83,6 +83,16 @@ function invoice(invoicenum)
                             </select>
 	                 </td>
 	             
+	                 <td>&nbsp;Payment:</td>
+	             	<td>
+                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width: 140px;">
+                            <option value=''>All</option>
+                            <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
+                           <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
+                            <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
+                        </select>    
+	                </td>
+	                 
 	             <td>&nbsp;Keyword:</td>
 	             <td><input style="width:100px" type="text" name="searchkeyword" value="<?php echo @$_POST['searchkeyword']?>"/></td>
 	             

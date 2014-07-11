@@ -116,7 +116,7 @@ $(document).ready( function() {
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
-            	No Purchase Orders.
+            	No Store Purchases
             	<?php }?>
             </div>
       </div>
