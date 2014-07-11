@@ -7,7 +7,7 @@ class cart extends CI_Controller
 		ini_set("memory_limit","512M");
 		ini_set("max_execution_time", 700);
 	    parent::__construct ();
-	    
+	  
 		$data ['title'] = 'Home';
 		$this->load->dbforge();
 		$this->load->model ('homemodel', '', TRUE);
@@ -16,6 +16,7 @@ class cart extends CI_Controller
 		$data['categorymenu'] = $this->items_model->getCategoryMenu (0) ;
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/site/template', $data);
+		
 	}
 
 	public function index()
@@ -166,6 +167,7 @@ class cart extends CI_Controller
 	
 	public function ccpayment()
 	{
+		include(APPPATH.'libraries/easypost/easypost.php');
 		$cart = $this->session->userdata('pms_site_cart');
 		$ordernumber = $this->session->userdata('pms_orderid');
 		if(!$cart || !$ordernumber)
@@ -174,6 +176,7 @@ class cart extends CI_Controller
 		}
 		
 		$data['cart']=array();
+		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		foreach($cart as $item)
 		{
 			$this->db->where('itemid',$item['itemid']);
@@ -189,7 +192,61 @@ class cart extends CI_Controller
 				
 			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();
+			
+								
+			///Easy Post
+			
+			
+			$this->db->where('id',$item['itemid']);
+			$current_item = $this->db->get('item')->row();
+			// create addresses
+			$to_address_params = array("name"    => $_POST['shippingName'],
+					"street1" => $_POST['shippingStreet'],
+					"street2" => "",
+					"city"    => $_POST['shippingCity'],
+					"state"   => $_POST['shippingState'],
+					"zip"     => $_POST['shippingZip'],
+			);
+			$to_address = \EasyPost\Address::create($to_address_params);
+				
+			$from_address_params = array("name"    => $item['companydetails']->contact,
+					"street1" => $item['companydetails']->address,
+					"street2" => "",
+					"city"    => $item['companydetails']->city,
+					"state"   => $item['companydetails']->state,
+					"zip"	  => $item['companydetails']->zip);
+			
+			$from_address = \EasyPost\Address::create($from_address_params);
+			// create parcel
+			$parcel_params = array(
+					"predefined_package" => null,
+					"weight"             => $current_item->weight
+			);
+			if($current_item->length !=  "0.0"){
+				$parcel_params["length"] = $current_item->length;
+			}
+			if($current_item->width !=  "0.0"){
+				$parcel_params["width"] = $current_item->width;
+			}
+			if($current_item->height !=  "0.0"){
+				$parcel_params["height"] = $current_item->height;
+			}
+			$parcel = \EasyPost\Parcel::create($parcel_params);
+
+			// create shipment
+			$shipment_params = array("from_address" => $from_address,
+					"to_address"   => $to_address,
+					"parcel"       => $parcel
+			);
+			$shipment = \EasyPost\Shipment::create($shipment_params);
+			if (count($shipment->rates) === 0) {
+				$item['rate']  = 'No rates for your address';
+			}else{
+				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+				$item['rate'] = $rate;
+			}
 			$data['cart'][]=$item;
+			
 		}
 		$data['settings'] = $this->settings_model->get_current_settings();
 		$data['name'] = $_POST['shippingName'];
@@ -204,7 +261,7 @@ class cart extends CI_Controller
 	public function ccpost()
 	{
 		ini_set('max_execution_time', 300);
-		include(APPPATH.'libraries/easypost/easypost.php');
+		
 		$data['settings'] = $this->settings_model->get_current_settings();
 		$cart = $this->session->userdata('pms_site_cart');
 		$ordernumber = $this->session->userdata('pms_orderid');
@@ -402,7 +459,6 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				$this->db->where('id',$item['itemid']);
 				$current_item = $this->db->get('item')->row();
 			
-				\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		
 				// create addresses
 				$to_address_params = array("name"    => $item['companydetails']->contact,
