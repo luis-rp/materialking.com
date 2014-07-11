@@ -80,6 +80,7 @@
                </tr>
               </tfoot>
             </table>
+            <?php if(!@$items) echo "No Records Exist"; ?>
            </div>
          </div>
          
