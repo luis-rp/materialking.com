@@ -3542,9 +3542,7 @@ body.header-dark #header-inner .site-email a {
 }
 .properties-rows .property .title-price .price2{  position: absolute;
     right: 11px;bottom: 55px;}
-.store-item{
-	max-height: 490px;
-}
+
 .company-note{
 	height: 150px;
 	overflow: hidden;

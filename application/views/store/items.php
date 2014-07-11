@@ -150,7 +150,7 @@ $(document).ready(function() {
                                     </div>
                                 </div>
 
-                                <div class="body2 span6 store-item">
+                                <div class="body2 span6 ">
                                     <div class="title-price row">
                                         <div class="title2 span4 ">
                                             <h2><?php echo $item->itemcode; ?></h2>

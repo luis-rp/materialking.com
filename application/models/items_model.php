@@ -197,7 +197,7 @@ class items_model extends Model {
     
     public function find_item() 
     {
-        $limit = 6;
+        $limit = 18;
         $return = new stdClass();
 
         if (!isset($_POST['pagenum']))
