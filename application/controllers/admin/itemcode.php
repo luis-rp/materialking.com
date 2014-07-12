@@ -681,7 +681,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
-        $rules['weight'] = 'required';
+        $rules['weight'] = 'trim|required';
         
         //$rules['keyword'] = 'trim|required';
         $rules['url'] = 'trim|required';
@@ -689,7 +689,6 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->set_message('required', '* required');
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
     }
-
 
     function getminpricecompanies() 
     {

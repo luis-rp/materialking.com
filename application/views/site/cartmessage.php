@@ -28,6 +28,7 @@ $(document).ready(function() {
             		<th>Supplier Company</th>
             		<th>Price</th>
             		<th>Quantity</th>
+            		<th>Shipment Rate</th>
             		<th>Total</th>
             	</tr>
             	<?php $gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;?>
@@ -36,6 +37,7 @@ $(document).ready(function() {
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
             		<td><?php echo $item['quantity']?></td>
+            		<?php if(!is_object($item['rate'])){?><td><?php echo $item['rate'];?></td><?php }else{?><td>Carrier:<?php echo $item['rate']->carrier?> +<?php echo $item['rate']->rate?><?php echo $item['rate']->currency?></td><?php }?>
             		<td>$<?php echo number_format($total,2);?></td>
             	</tr>
             	<?php }?>
@@ -45,17 +47,17 @@ $(document).ready(function() {
             	    $totalwithtax = number_format($tax+$gtotal,2);
             	?>
             	<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="5" align="right">Total</td>
             		<td>$<?php echo number_format($gtotal,2);?></td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Tax</td>
+            		<td colspan="5" align="right">Tax</td>
             		<td>$<?php echo number_format($tax,2);?></td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="5" align="right">Total</td>
             		<td>$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>
