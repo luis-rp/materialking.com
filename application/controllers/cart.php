@@ -452,7 +452,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 				
 				$this->db->where('id',$item['company']);
 				$item['companydetails'] = $this->db->get('company')->row();
-				$data['cart'][]=$item;
+				
 				
 				///Easy Post
 					
@@ -507,7 +507,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 					$item['rate'] = $rate;
 					$shipment->buy($rate);
 				}
-				
+				$data['cart'][]=$item;
 				///////////////////////////
 			
 				/*
