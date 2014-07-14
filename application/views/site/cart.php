@@ -2,9 +2,7 @@
 <?php echo '<script>var updatecarturl="'.site_url('cart/updatecartitem').'";</script>'?>
 
 <script>
-$(document).ready(function() {
 
-});
 
 function removefromcart(itemid, companyid)
 {
@@ -93,9 +91,9 @@ function updatecart(itemid,companyid,quantity)
             		<td colspan="2">$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>	
-      
-            <form action="<?php echo site_url('cart/ccpayment')?>" method="post">
-         
+     
+            <form name="formCart" action="" id="formCart"  method="post">
+       
             	 <table class="table table-bordered">
             	 	<tr><th colspan="2">Shipping Information</th></tr>
             	 	<tr><td>
@@ -163,8 +161,23 @@ function updatecart(itemid,companyid,quantity)
 				        	  </div>
             	 		</td></tr>
             	 </table>
-        	    	<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/manualpayment')?>">Process Order</a>
-            	 <input type="submit" class="btn btn-primary arrow-right" value="Credit Card Payment">
+          
+            	 <input type="button" id="submitProcess" class="btn btn-primary arrow-right" value="Process Order">
+            	
+            	 <input type="button" id="submitCC" class="btn btn-primary arrow-right" value="Credit Card Payment">
+            	 <script type="text/javascript">
+            	 $(document).ready(function() {
+            		
+						$("#submitProcess").click(function(){
+								$("#formCart").attr("action","<?php echo site_url('cart/manualpayment')?>");
+								$("#formCart").submit();
+							});
+						$("#submitCC").click(function(){
+							$("#formCart").attr("action","<?php echo site_url('cart/ccpayment')?>");
+							$("#formCart").submit();
+							});
+            	 });
+				</script>
             	 <!-- 
             			<?php if($canmanualorder){//if($this->session->userdata('site_loggedin')){?>
             			<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/manualpayment')?>">Process Order</a>
