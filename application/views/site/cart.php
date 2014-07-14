@@ -93,11 +93,9 @@ function updatecart(itemid,companyid,quantity)
             		<td colspan="2">$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>	
-            <?php if($canmanualorder){ ?>
-            <form action="<?php echo site_url('cart/manualpayment')?>" method="post">
-            <?php }else{?>
+      
             <form action="<?php echo site_url('cart/ccpayment')?>" method="post">
-            <?php } ?>
+         
             	 <table class="table table-bordered">
             	 	<tr><th colspan="2">Shipping Information</th></tr>
             	 	<tr><td>
@@ -165,9 +163,7 @@ function updatecart(itemid,companyid,quantity)
 				        	  </div>
             	 		</td></tr>
             	 </table>
-            	 <?php if($canmanualorder){ ?>
-            	 <input type="submit" class="btn btn-primary arrow-right" value="Process Order">
-            	 <?php } ?>
+        	    	<a class="btn btn-primary arrow-right" href="<?php echo site_url('cart/manualpayment')?>">Process Order</a>
             	 <input type="submit" class="btn btn-primary arrow-right" value="Credit Card Payment">
             	 <!-- 
             			<?php if($canmanualorder){//if($this->session->userdata('site_loggedin')){?>
