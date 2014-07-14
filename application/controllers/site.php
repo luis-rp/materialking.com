@@ -149,7 +149,7 @@ class site extends CI_Controller
                 $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
                  '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
                  '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city . ' ' . $supplier->state . '</span><span class="value">' . '' .
-                 '</span></div>' . $supplier->joinmark . '<div class="link"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div><div class="link"><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></div>';
+                 '</span></div>' . $supplier->joinmark . '<div class="btn btn-primary arrow-right" style="display:inline;"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div><div class="btn btn-primary arrow-right" style="display:inline;"><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></div>';
                 $data['suppliers'][] = $supplier;
             }
         }
