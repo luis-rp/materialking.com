@@ -107,9 +107,7 @@
                                                 <?php echo $supplier->joinstatus; ?>
                                             <?php }else{?>
                                             <input type="button" value="Join" onclick="$('#createmodal').modal();" class="btn btn-primary arrow-right"/>
-                                            <?php }?>
-                                            &nbsp;
-                                            <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div>&nbsp;<div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div>
+                                            <?php }?>&nbsp;<div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div>&nbsp;<div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div>
                                             </div>
                                         </div>
                                     </div>

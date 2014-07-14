@@ -3466,7 +3466,8 @@ body.header-dark #header-inner .site-email a {
     width: 80%;}
   .body{/* width:270px; height:258px*/    height: auto;
     max-height: 400px;
-    min-height: 302px;
+    /*min-height: 302px;*/
+    min-height: 320px;
     width: 270px;}
   
   .properties-rows .property .body p {
@@ -3543,7 +3544,7 @@ body.header-dark #header-inner .site-email a {
     padding-right: 13px;
 }
 .properties-rows .property .title-price .price2{  position: absolute;
-    right: 11px;bottom: 55px;}
+    right: 11px;bottom: 60px;}
 
 .company-note{
 	height: 150px;
