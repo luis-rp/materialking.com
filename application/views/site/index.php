@@ -488,7 +488,7 @@
                                             </div>
 
                                             <div class="location2"><?php echo $supplier->contact; ?></div>
-                                            <p><?php echo $supplier->shortdetail; ?></p>
+                                            <p><div class="link"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><div class="link"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div><?php //echo $supplier->shortdetail; ?></p>
                                             <div class="area">
                                                 <?php //echo $supplier->joinstatus; ?>
                                             </div>
