@@ -317,7 +317,7 @@
 						
 			$SITE_ROOT = $_SERVER['DOCUMENT_ROOT'].'/';
 			
-			$SITE_URL  = 'http://findsupplyhouse.com/';
+			$SITE_URL  = site_url();
 			
 			$PRODUCT_IMAGE_ROOT =  $SITE_ROOT.'uploads/content-manager/';
 			
