@@ -42,6 +42,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
 <?php } ?>
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+        <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <script src="<?php echo base_url(); ?>templates/admin/js/modernizr-jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo.min.js" type="text/javascript"></script>
@@ -76,6 +77,52 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     return false;
                 });
                 $('#tab-users a').tooltip();
+
+                //Responsive-tour
+                var tour = new Tour({
+  		    	  steps: [
+  		    	  {
+  		    	    element: "#step1",
+  		    	    title: "Step 1",
+  		    	    content: "Welcome to your Account!! Before your job gets a whole lot easier, we need to do a few quick things to get you up and running and started off on the right foot"
+  		    	  },
+  		    	  {
+  		    	    element: "#step2",
+  		    	    title: "Step 2",
+  		    	    content: "Quotes, Purchase Orders, Invoice and Items you buy are assigned to a Project and a Cost Code. To get started we will help you add your first Project and Cost Code.",
+  		    	    
+  		    	  },
+  		    	  {
+  			    	    element: "#step3",
+  			    	    title: "Step 3",
+  			    	    content: "Click the Manage tab",
+  			    	  onNext:function(tour){
+  						$("#pages-dropdown").click();
+    	  		    	    }
+  			    	  },
+  			      {
+    			    	    element: "#step4",
+    			    	    title: "Step 4",
+    			    	    content: "Click the Projects tab",
+    			    	    onNext:function(tour){
+    			    	    	$("#pages-dropdown").click();
+    			    	    	window.location = "<?php echo base_url(); ?>admin/project";
+        			    	    }
+    			   },
+    			   {
+			    	    element: "#step5",
+			    	    title: "Step 5",
+			    	    content: "Click the Add Project"
+			   }
+			    	  
+  		    	]});
+                tour.restart();
+  		    	// Initialize the tour
+  		    	tour.init();
+
+  		    	// Start the tour
+  		    	tour.start();
+  		    
             });
         </script>
 
@@ -333,10 +380,10 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         <li class="lp-dropdown">
                             <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
-                            <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown">
+                            <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
                             	
-                            	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?>>
-                                	<a href="<?php echo base_url(); ?>admin/project">
+                            	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">
+                                	<a href="<?php echo base_url(); ?>admin/project" >
                                     	<i class="icon-check"></i>
                                     	Projects
                                 	</a>
@@ -447,12 +494,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
         <section class="container">
             <?php echo $content; ?>
-
+            	
             <footer id="main-footer">
 
                 <a href="#" class="pull-right" id="on-top-link">On Top&nbsp;<i class="icon-chevron-up"></i>
                 </a>
             </footer>
         </section>
+        <!-- <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>-->
     </body>
 </html>

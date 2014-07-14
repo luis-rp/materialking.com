@@ -9,6 +9,8 @@
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+	
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-3d.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
@@ -77,7 +79,8 @@
 		  }
 		 }));
 */
-		});
+
+	});   
 	</script>
 	
 <?php }?>
@@ -85,7 +88,6 @@
 <section class="row-fluid">
 	<div class="box">
 		<div class="span12">
-			
 			<h3 class="box-header">
 				Your Dashboard
 				&nbsp;
@@ -126,7 +128,7 @@
 			</div>
 					
 			<br/>
-			<div class="well span4">
+			<div class="well span4" id="step2">
 				<h3 class="box-header">Statistics</h3>
 				
 				<table class="table table-bordered stat">
@@ -233,7 +235,7 @@
 				<?php } ?>
 	    	</div>
 	    	
-	    	
+	    	<div id="step1">
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
 	    		<h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
@@ -249,6 +251,7 @@
 	    		
 	    	</div>
 			<?php }?>
+			</div>
 		</div>
 	</div>
 </section>
