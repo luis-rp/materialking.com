@@ -3082,6 +3082,9 @@ box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
     background-repeat:no-repeat;
     background-size:8px 11px;
     padding-right:30px}
+.btn.btn-primary.arrow-right a{
+    color: #ffffff;
+}
 @media (-webkit-min-device-pixel-ratio:2), (-moz-min-device-pixel-ratio:2) {
     .btn.btn-primary.arrow-right {
         background-image:url("../img/arrow-right-white@2x.png")}
