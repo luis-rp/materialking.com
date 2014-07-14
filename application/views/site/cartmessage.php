@@ -50,12 +50,12 @@ $(document).ready(function() {
             	    $totalwithtax = number_format($tax+$gtotal+$totalRates,2);
             	?>
             	<tr>
-            		<td colspan="5" align="right">SubTotal</td>
+            		<td colspan="4" align="right">SubTotal</td>
             		<td>$<?php echo number_format($gtotal,2);?></td>
             	</tr>
             	
             	<tr>
-            		<td colspan="5" align="right">Tax</td>
+            		<td colspan="4" align="right">Tax</td>
             		<td>$<?php echo number_format($tax,2);?></td>
             	</tr>
             	<tr>
@@ -63,7 +63,7 @@ $(document).ready(function() {
             		<td>$<?php echo $totalRates;?></td>
             	</tr>
             	<tr>
-            		<td colspan="5" align="right">Total</td>
+            		<td colspan="4" align="right">Total</td>
             		<td>$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>
