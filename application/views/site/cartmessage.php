@@ -28,26 +28,29 @@ $(document).ready(function() {
             		<th>Supplier Company</th>
             		<th>Price</th>
             		<th>Quantity</th>
-            		<th>Shipment Rate</th>
             		<th>Total</th>
             	</tr>
-            	<?php $gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;?>
+            	<?php $gtotal=0;$totalRates=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
+            	if(is_object($item['rate'])){
+            	
+            		$totalRates +=$item['rate']->rate;
+            	}
+            	?>
             	<tr>
             		<td><?php echo $item['itemdetails']->itemname;?></td>
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
             		<td><?php echo $item['quantity']?></td>
-            		<?php if(!is_object($item['rate'])){?><td><?php echo $item['rate'];?></td><?php }else{?><td>Carrier:<?php echo $item['rate']->carrier?> +<?php echo $item['rate']->rate?><?php echo $item['rate']->currency?></td><?php }?>
             		<td>$<?php echo number_format($total,2);?></td>
             	</tr>
             	<?php }?>
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
             	    
-            	    $totalwithtax = number_format($tax+$gtotal,2);
+            	    $totalwithtax = number_format($tax+$gtotal+$totalRates,2);
             	?>
             	<tr>
-            		<td colspan="5" align="right">Total</td>
+            		<td colspan="5" align="right">SubTotal</td>
             		<td>$<?php echo number_format($gtotal,2);?></td>
             	</tr>
             	
@@ -55,7 +58,10 @@ $(document).ready(function() {
             		<td colspan="5" align="right">Tax</td>
             		<td>$<?php echo number_format($tax,2);?></td>
             	</tr>
-            	
+            	<tr>
+            		<td colspan="4" align="right">Shipment rate</td>
+            		<td>$<?php echo $totalRates;?></td>
+            	</tr>
             	<tr>
             		<td colspan="5" align="right">Total</td>
             		<td>$<?php echo $totalwithtax;?></td>

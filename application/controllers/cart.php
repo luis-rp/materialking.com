@@ -574,6 +574,8 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 	
 	public function manualpayment()
 	{
+		include(APPPATH.'libraries/easypost/easypost.php');
+		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		if(!$this->session->userdata('site_loggedin'))
 		{
 			redirect('cart');
@@ -660,6 +662,62 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
 			
 			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();
+			
+			
+			
+			///Easy Post
+				
+				
+			$this->db->where('id',$item['itemid']);
+			$current_item = $this->db->get('item')->row();
+			$this->db->where('id',$item['itemid']);
+			$current_item = $this->db->get('item')->row();
+			// create addresses
+			$to_address_params = array("name"    => $_POST['shippingName'],
+					"street1" => $_POST['shippingStreet'],
+					"street2" => "",
+					"city"    => $_POST['shippingCity'],
+					"state"   => $_POST['shippingState'],
+					"zip"     => $_POST['shippingZip'],
+			);
+			$to_address = \EasyPost\Address::create($to_address_params);
+			
+			$from_address_params = array("name"    => $item['companydetails']->contact,
+					"street1" => $item['companydetails']->address,
+					"street2" => "",
+					"city"    => $item['companydetails']->city,
+					"state"   => $item['companydetails']->state,
+					"zip"	  => $item['companydetails']->zip);
+				
+			$from_address = \EasyPost\Address::create($from_address_params);
+			// create parcel
+			$parcel_params = array(
+					"predefined_package" => null,
+					"weight"             => $current_item->weight
+			);
+			if($current_item->length !=  "0.0"){
+				$parcel_params["length"] = $current_item->length;
+			}
+			if($current_item->width !=  "0.0"){
+				$parcel_params["width"] = $current_item->width;
+			}
+			if($current_item->height !=  "0.0"){
+				$parcel_params["height"] = $current_item->height;
+			}
+			$parcel = \EasyPost\Parcel::create($parcel_params);
+			
+			// create shipment
+			$shipment_params = array("from_address" => $from_address,
+					"to_address"   => $to_address,
+					"parcel"       => $parcel
+			);
+			$shipment = \EasyPost\Shipment::create($shipment_params);
+			if (count($shipment->rates) === 0) {
+				$item['rate']  = 'No rates for your address';
+			}else{
+				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+				$item['rate'] = $rate;
+			}
 			$data['cart'][]=$item;
 		}
 		$this->load->view('site/cartmessage', $data);

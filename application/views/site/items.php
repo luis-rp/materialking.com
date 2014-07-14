@@ -194,6 +194,15 @@
                                                     	<?php }?>
                                                     </div>
                                                     <?php }?>
+                                                    <?php if ($this->session->userdata('site_loggedin')){?>
+                                            		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
+                                                        <i class="icon icon-plus"></i> <br/>Add to RFQ
+                                                    </a>
+                                                <?php }else{?>
+                                               		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="$('#createmodal').modal();">
+                                                        <i class="icon icon-plus"></i> <br/>Add to RFQ
+                                                    </a>
+                                                <?php } ?>
                                                 </div>
                                                 <?php if($item->minprice && $item->maxprice){?>
                                                 <div class="price">
@@ -206,15 +215,7 @@
                                                 <img src="<?php echo base_url(); ?>templates/site/assets/img/specialoffer.png" alt="" width="55" height="55">
                                                 </div>
                                                 <?php }?>
-                                                <?php if ($this->session->userdata('site_loggedin')){?>
-                                            		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
-                                                        <i class="icon icon-plus"></i> <br/>Add to RFQ
-                                                    </a>
-                                                <?php }else{?>
-                                               		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="$('#createmodal').modal();">
-                                                        <i class="icon icon-plus"></i> <br/>Add to RFQ
-                                                    </a>
-                                                <?php } ?>
+                                                
 
                                             </div>
                                         </div>
