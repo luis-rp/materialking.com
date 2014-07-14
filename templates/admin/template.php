@@ -382,7 +382,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 	</a>
                             	</li>
                             
-                            	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
+                            	<li <?php if ($menu == 'event') { ?>class="active"<?php } ?>>
                                 	<a href="<?php echo base_url(); ?>admin/event">
                                 		<i class="icon-user"></i>
                                 		Events

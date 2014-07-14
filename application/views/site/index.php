@@ -483,7 +483,7 @@
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
                                                 <div class="price">
-                                                    <?php echo $supplier->city; ?>, <?php echo $supplier->state; ?> 
+                                                    <?php echo $supplier->address; ?>
                                                 </div>
                                             </div>
 

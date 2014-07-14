@@ -103,7 +103,7 @@ class Admin extends CI_Controller {
 		}
 		$this->_set_fields ();
 		
-		$data ['title'] = 'Add New Admin Users';
+		$data ['title'] = 'Add New Employee Users';
 		$data ['message'] = '';
 		$data ['action'] = site_url ( 'admin/admin/addAdminuser' );
 		$data ['link_back'] = anchor ( 'admin/admin/index/', 'Back To List', array ('class' => 'back' ) );

@@ -413,7 +413,11 @@ class Quote extends CI_Controller
 	    $data['quotefile'] = $bid?$bid->quotefile:'';
 	    $data['expire_date'] = $bid?$bid->expire_date:'';
 	    $data['bid'] = $bid;
-		
+
+	    $sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1"; 
+         $revisionquote = $this->db->query($sqlq)->row(); 
+         $data['revisionno'] = $revisionquote->revisionid; 
+	    
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();
 		//echo '<pre>';print_r($items);//die;
@@ -571,6 +575,14 @@ class Quote extends CI_Controller
     		//echo $bidid.'-'.$quote->id.'<pre>'; print_r($bidarray);die;
 			$this->db->where('id', $bidid);
 			$this->db->update('bid',$bidarray);
+			
+			$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$invitation->purchasingadmin."' order by id desc limit 1"; 
+             $revisionquote = $this->db->query($sqlq)->row(); 
+             if($revisionquote) 
+                 $revisionid = $revisionquote->revisionid+1; 
+             else  
+                 $revisionid = 1; 
+			
 			foreach($draftitems as $item)
 			{
 				$bidid = $item->bid;
@@ -599,6 +611,14 @@ class Quote extends CI_Controller
 				{
 					$this->quotemodel->db->update('biditem',$updatearray);
 					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
+					
+					if($revisionquote){ 
+                         $updatearray['purchasingadmin'] = $invitation->purchasingadmin; 
+                         $updatearray['bid'] = $bidid; 
+                         $updatearray['revisionid'] = $revisionid; 
+                         $this->quotemodel->db->insert('quoterevisions',$updatearray); 
+                          
+                     } 
 				}
 			}
 		}
@@ -684,6 +704,8 @@ class Quote extends CI_Controller
 					//{
 						$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$insertarray['itemid'],$insertarray['itemcode'],$insertarray['itemname'],$insertarray['ea'],$insertarray['substitute']);
 					//}
+					$insertarray['revisionid']=1; 
+                    $this->quotemodel->db->insert('quoterevisions',$insertarray); 
 				}
 			}
 			//echo($bidid.'<br/>');
@@ -778,6 +800,34 @@ class Quote extends CI_Controller
 	   	echo $html;die;
 	}
 	
+	function viewbids($bidid,$revisionid)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+		redirect('company/login');
+		//echo $bidid;die;
+		$bid = $this->db->where('id',$bidid)->get('bid')->row();
+		//print_r($bid);print_r($company);die;
+
+		if(!$bid)
+		redirect('quote');
+		if($bid->company != $company->id)
+		redirect('quote');
+		$quote = $this->quotemodel->getquotebyid($bid->quote);
+		$biditems = $this->quotemodel->getrevisiondraftitems($bid->quote, $company->id,$revisionid);
+
+		$settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+		$taxpercent = $settings->taxpercent;
+
+		ob_start();
+		include $this->config->config['base_dir'].'application/views/quote/quotehtml.php';
+		$html = ob_get_clean();
+
+		header('Content-Description: File Transfer');
+		header('Content-type: application/html');
+		header('Content-Disposition: attachment; filename="quote.html"');
+		echo $html;die;
+	}
 	
 	////////// BACKTRACK
 

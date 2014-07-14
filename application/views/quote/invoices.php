@@ -75,7 +75,7 @@ function invoice(invoicenum)
 	                 
 	                 <td>&nbsp;Company:</td>
 	                 <td>
-                         	<select name="searchpurchasingadmin" class="form-control selectpicker show-tick" >
+                         	<select name="searchpurchasingadmin" class="form-control selectpicker show-tick"  style="width: 140px;">
                             	<option value=''>All</option>
                             	<?php foreach($purchasingadmins as $pa){?>
                             	<option value='<?php echo $pa->id;?>' <?php if(@$_POST['searchpurchasingadmin'] ==$pa->id){echo 'SELECTED';}?>><?php echo $pa->fullname;?></option>

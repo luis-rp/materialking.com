@@ -121,6 +121,17 @@ class Quotemodel extends Model
 		else
 			return array();
 	}
+
+	function getrevisiondraftitems($quote,$company,$rid) 
+    { 
+        $sql = "SELECT bi.* FROM ".$this->db->dbprefix('quoterevisions')." bi, ".$this->db->dbprefix('bid')." b  
+               WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company' AND bi.revisionid=".$rid; 
+        $query = $this->db->query ($sql); 
+        if($query->num_rows>0) 
+            return $query->result(); 
+        else 
+            return array(); 
+    } 	
 	
 	function getquotesubtotal($id)
 	{	

@@ -148,19 +148,20 @@ function viewPricelist(itemcode,itemname,price)
                             </div>
                             <div class="grid-body no-border">
                                    
-								<table class="table no-more-tables general">
+								<table class="no-more-tables general" border="0">
 									<tr>
 										<td>
 										  <strong>
-									      PO#: <?php echo $quote->ponum;?>
-									      <br/>
-									      Due: <?php echo $quote->duedate;?>
-									      <br/>
-									      Company: <?php echo $company->title;?>
+									      PO#: <?php echo $quote->ponum;?></td><td><span style="margin-left:500px;">Revision History</span></td></tr>
+									      <tr><td>
+									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno; ?></span></tr>
+									      <td>Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>
 									      </strong>
-									      <br/><br/>
+									      </td><td><?php  if(isset($revisionno)) { for($i=1;$i<=$revisionno;$i++) { echo $i."."; ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">View Quote</a><br><?php } } ?></td></tr>
+									      <td colspan="2">   
+									      	<br/><br/>
 									      	Please enter your Price EA, Date Available and add any Notes you may <br/>
 											have related to each item. When you are finished, Click the Save Quote <br/>
 											button.<br/><br/>
