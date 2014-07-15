@@ -8,12 +8,12 @@ $(document).ready(function(){
 //-->
 </script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
-<section class="row-fluid" id="step6">
+<section class="row-fluid" >
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span12">
 	
-	<div id="step7"><?php echo $message; ?></div>
+	<?php echo $message; ?>
    <?php echo $this->session->flashdata('message'); ?>
    <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
@@ -56,7 +56,7 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
-     <input name="add" type="submit" class="btn btn-primary" value="Save Project"/>
+     <input name="add" type="submit" class="btn btn-primary" value="Save Project" id="step6"/>
     </div>
     </div>
     

@@ -140,7 +140,7 @@ class costcode extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();
-        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/add">Add Cost Code</a>';
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/add" id="step10">Add Cost Code</a>';
         $this->load->view('admin/costcodelist', $data);
     }
 

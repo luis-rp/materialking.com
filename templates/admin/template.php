@@ -79,7 +79,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
-				/*
+				
                 //Responsive-tour
                 tour = new Tour({
   		    	  steps: [
@@ -98,6 +98,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   			    	    element: "#step3",
   			    	    title: "Step 3",
   			    	    content: "Click the Manage tab",
+  			    	    reflex:true,
   			    		  onNext:function(tour){
   							$("#step3 a").click();
     	  		    	    }
@@ -105,36 +106,46 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   			      {
     			    	    element: "#step4",
     			    	    title: "Step 4",
+    			    	    reflex:true,
     			    	    content: "Click the Projects tab",
-    			    	    onNext:function(tour){
-    			    	    	//$("#pages-dropdown").click();
-    			    	    	//window.location = "<?php echo base_url(); ?>admin/project";
-    			    	    	window.location.replace("<?php echo base_url(); ?>admin/project");
-        			    	}
+    			    	   /* onNext:function(tour){
+    			
+        			    	}*/
     			   },
     			   {
+        			   	path:"/admin/project",
 			    	    element: "#step5",
 			    	    title: "Step 5",
 			    	    content: "Click the Add Project",
-			    	    onNext:function(tour){
+			    	    reflex:true,
+			    	   /* onNext:function(tour){
+				    	   // tour.resume();
 			    	 		//tour.next();
 			    	    //	window.location.replace("<?php echo base_url(); ?>admin/project/add");
 			    	    	//$("#step5").click();
-    			    	    }
+    			    	    }*/
     			   },
     			   {
-    				    	    element: "#step6",
-    				    	    title: "Step 6",
-    				    	    content: "Fill out the form and click Save Project",
-    				    	    onPrev:function(tour){
-    				    	    	window.location = "<?php echo base_url(); ?>admin/project";
+        			   	  path:"/admin/project/add",
+    				      element: "#step6",
+    				      title: "Step 6",
+    				      content: "Fill out the form and click Save Project",
+    				      reflex:true,
+    				     /* onNext:function(tour){
+			    	     	    if($("#title").val()==null)
+				    	     	    return false;
+				    	     	    else
+					    	     	    return true;
+  			    	    }*/
+    				      /*onPrev:function(tour){
+    				    
         				    	    },
     				    	    onNext:function(tour){
     				    	     	    $(".btn").click();
-    	    			    	    }
+    	    			    	    }*/
 			  		 },
 			  		 {
-			  		   
+			  			 path:"/admin/project",
 				    	    element: "#step7",
 				    	    title: "Step 7",
 				    	    content: "Congratulations - You have created your first project. Now lets create a costcode",
@@ -142,37 +153,45 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					 },
 			  		 {
 				  		   
-				    	    element: "#step8",
+				    	    element: "#step3",
 				    	    title: "Step 8",
-				    	    content: "Fill out the form and click Save Project",
+				    	    content: "Click the Manage tab",
+				    	    reflex:true,
+				    		  onNext:function(tour){
+		  							$("#step3 a").click();
+		    	  		    	    }
 
 					 },
 			  		 {
 				  		   
 				    	    element: "#step9",
 				    	    title: "Step 9",
-				    	    content: "Fill out the form and click Save Project",
+				    	    content: "Click the Cost Code option",
+				    	    reflex:true,
+				    	    
 
 					 },
 			  		 {
-				  		   
+				  		    path:"/admin/costcode",
 				    	    element: "#step10",
 				    	    title: "Step 10",
-				    	    content: "Fill out the form and click Save Project",
+				    	    content: "Click Add Cost Code",
+				    	    reflex:true,
 
 					 },
 					 {
-				  		   
+						 path:"/admin/costcode/add",
 				    	    element: "#step11",
 				    	    title: "Step 11",
-				    	    content: "Fill out the form and click Save Project",
+				    	    content: "Fill out the form and click Update Costcode",
+				    	    reflex:true,
 
 					 },
 					 {
 				  		   
 				    	    element: "#step12",
 				    	    title: "Step 12",
-				    	    content: "Fill out the form and click Save Project",
+				    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending",
 
 					 },
 			  		 
@@ -187,20 +206,22 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   		    	tour.start();
 
   		    	
-  		     $("#pages-dropdown","#step3").click(function(){
+  		     $("#pages-dropdown","#step3").click(function(e){
+  	  	
   	  		    	//alert(tour.getCurrentStep());
-  	  		    	if(tour.getCurrentStep()==2){
+  	  		    	 
+  	  		    	if(e.hasOwnProperty('originalEvent') && tour.getCurrentStep()==2){
 						tour.next();
   	  		    	}
   	  		    });
 
-  		    	$("#step5").click(function(){
+  		    /*	$("#step5").click(function(){
   	  		    	//alert(tour.getCurrentStep());
   	  		    	if(tour.getCurrentStep()==4){
 						tour.next();
   	  		    	}
-  	  		    });
-*/
+  	  		    });*/
+
   	  		    
             });
         </script>
@@ -468,7 +489,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 	</a>
                             	</li>
                             	
-                                <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?>>
+                                <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?> id="step9">
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/costcode"><i class="icon-money"></i>&nbsp;&nbsp;Cost Codes</a>
                                 </li>
                                 <?php if ($this->session->userdata('usertype_id') == 1) { ?>

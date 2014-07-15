@@ -5,7 +5,7 @@ $(document).ready(function(){
 });
 //-->
 </script>
-
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
@@ -73,7 +73,7 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
-     <input name="add" type="submit" class="btn btn-primary" value="Update Costcode"/>
+     <input name="add" type="submit" class="btn btn-primary" value="Update Costcode" id="step11"/>
     </div>
     </div>
     
