@@ -5332,3 +5332,8 @@ td.minimum
 	
 	color: green;
 }
+.null span
+{
+	margin-top:45px !important;
+	color:white !important;
+}

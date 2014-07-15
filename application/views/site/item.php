@@ -22,7 +22,7 @@
             preloadImages: false,
             alwaysOn:false
         });*/
-		<?php if(isset($item->featureditem->zoom) && $item->featureditem->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
+		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 		$("#contentimage").elevateZoom(); 
 	});
 	function setmiles(miles)
@@ -33,9 +33,9 @@
 	function changeimage(source)
 	{
 		$("#bigimage").attr('src',source);
-		$("#bigimage").elevateZoom(); 
+		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
         $("#bigimage").attr('data-zoom-image1',source); 
-        $("#bigimage").elevateZoom(); 
+        <?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 	}
 </script>
 <script type="text/javascript" charset="utf-8">

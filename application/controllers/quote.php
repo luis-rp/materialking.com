@@ -413,11 +413,11 @@ class Quote extends CI_Controller
 	    $data['quotefile'] = $bid?$bid->quotefile:'';
 	    $data['expire_date'] = $bid?$bid->expire_date:'';
 	    $data['bid'] = $bid;
-/*
- * Table quoterevisions doesnt exist
-	    $sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1"; 
-         $revisionquote = $this->db->query($sqlq)->row(); 
-         $data['revisionno'] = $revisionquote->revisionid; */
+	    if($bid){
+	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+	    	$revisionquote = $this->db->query($sqlq)->row();
+	    	$data['revisionno'] = $revisionquote->revisionid;
+	    }
 	    
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();

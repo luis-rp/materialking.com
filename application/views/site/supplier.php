@@ -82,7 +82,7 @@ $long = $supplier->com_lng;
             });
 
             var myOptions = {
-                content: '<div class="infobox"><div class="image"><img src="<?php echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo ?>" alt="" width="100"></div><div class="title"><a href=""><?php echo $supplier->title; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $supplier->contact; ?><br/><?php echo $supplier->city; ?> <?php echo $supplier->state; ?></span><span class="value"></span></div><div class="link"><a href="">View more</a></div></div>',
+                content: '<div class="infobox"><div class="image"><img src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; } else echo base_url(); ?>templates/site/assets/img/default/big.png" alt="" width="100"></div><div class="title"><a href=""><?php echo $supplier->title; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $supplier->contact; ?><br/><?php echo $supplier->city; ?> <?php echo $supplier->state; ?></span><span class="value"></span></div><div class="link"><a href="">View more</a></div></div>',
                 disableAutoPan: false,
                 maxWidth: 0,
                 pixelOffset: new google.maps.Size(-146, -190),
@@ -301,8 +301,8 @@ $(document).ready(function() {
                             <p><?php echo $supplier->about; ?></p>
                         </div>
                         <div class="content">
-                        <p>&nbsp;</p>
-                        	<h2>Manufacturers Carried:</h2>
+                        
+                         <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  <h2>Manufacturers Carried:</h2> <?php } ?>
                         	
                             <ul style="float:left; display:inline-block;list-style-type: none; margin:0px; padding:0px;;text-align:center">
             			    <?php 

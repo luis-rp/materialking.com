@@ -453,6 +453,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->external_url = $item->external_url;
         $this->validation->featuredsupplier = $item->featuredsupplier;
         $this->validation->instore = $item->instore;
+        $this->validation->zoom = $item->zoom;
         $this->validation->wiki = $item->wiki;
         $this->validation->listinfo = $item->listinfo;
         $this->validation->url = $item->url;
@@ -670,6 +671,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['subcategory'] = 'subcategory';
         $fields['featuredsupplier'] = 'featuredsupplier';
         $fields['instore'] = 'instore';
+        $fields['zoom'] = 'zoom';
         $fields['wiki'] = 'wiki';
         $fields['url'] = 'url';
         $this->validation->set_fields($fields);

@@ -266,6 +266,15 @@ $(document).ready(function(){
                            <?php echo @$this->validation->error_weight; ?>
                         </div>
                     </div> 
+                    
+                     <div class="control-group">
+                       <label class="control-label"> Zoom Image </label> 
+                        <div class="controls"> 
+                        <input type="checkbox" name="zoom" id="zoom" <?php echo @$this->validation->zoom?'checked="CHECKED"':''?>" />                          
+                           <?php echo @$this->validation->error_zoom; ?>
+                        </div>
+                    	</div> 
+                    
                     <div class="control-group">
                         <label class="control-label">File</label>
                         <div class="controls">

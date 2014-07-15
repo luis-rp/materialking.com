@@ -159,7 +159,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 
-                    				 <?php if(0){?>
+                    				 <?php if(1){?>
                     				 <div class="form-group">
 				                        <label class="form-label">City</label>
 				                        <div class="controls">

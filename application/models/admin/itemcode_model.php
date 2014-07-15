@@ -314,7 +314,11 @@ class itemcode_model extends Model {
 
 // updating cost code 
     function updateItemcode($id) {
-
+    	
+		if(@$this->input->post('zoom') == "on")
+    		$zoom = 1;
+    	else 
+    		$zoom = 0;
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -333,6 +337,7 @@ class itemcode_model extends Model {
         		'weight' => $this->input->post('weight'),
             'featuredsupplier' => $this->input->post('featuredsupplier'),
             'instore' => 1,//$this->input->post('instore'),
+            'zoom' => $zoom,
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
