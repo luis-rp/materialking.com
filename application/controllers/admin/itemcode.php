@@ -674,6 +674,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['zoom'] = 'zoom';
         $fields['wiki'] = 'wiki';
         $fields['url'] = 'url';
+        $fields['length'] = 'length';
+        $fields['width'] = 'width';
+        $fields['height'] = 'height';
+        $fields['weight'] = 'weight';
         $this->validation->set_fields($fields);
     }
 

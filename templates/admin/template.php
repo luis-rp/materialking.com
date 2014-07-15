@@ -63,6 +63,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         </style>
 
         <script type="text/javascript">
+        var tour;
             $(document).ready(function() {
                 $('.myLink').click(function(e) {
                     e.preventDefault();
@@ -78,8 +79,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
+				/*
                 //Responsive-tour
-                /*var tour = new Tour({
+                tour = new Tour({
   		    	  steps: [
   		    	  {
   		    	    element: "#step1",
@@ -96,33 +98,110 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   			    	    element: "#step3",
   			    	    title: "Step 3",
   			    	    content: "Click the Manage tab",
-  			    	  onNext:function(tour){
-  						$("#pages-dropdown").click();
+  			    		  onNext:function(tour){
+  							$("#step3 a").click();
     	  		    	    }
-  			    	  },
+  			      },
   			      {
     			    	    element: "#step4",
     			    	    title: "Step 4",
     			    	    content: "Click the Projects tab",
     			    	    onNext:function(tour){
-    			    	    	$("#pages-dropdown").click();
-    			    	    	window.location = "<?php echo base_url(); ?>admin/project";
-        			    	    }
+    			    	    	//$("#pages-dropdown").click();
+    			    	    	//window.location = "<?php echo base_url(); ?>admin/project";
+    			    	    	window.location.replace("<?php echo base_url(); ?>admin/project");
+        			    	}
     			   },
     			   {
 			    	    element: "#step5",
 			    	    title: "Step 5",
-			    	    content: "Click the Add Project"
-			   }
+			    	    content: "Click the Add Project",
+			    	    onNext:function(tour){
+			    	 		//tour.next();
+			    	    //	window.location.replace("<?php echo base_url(); ?>admin/project/add");
+			    	    	//$("#step5").click();
+    			    	    }
+    			   },
+    			   {
+    				    	    element: "#step6",
+    				    	    title: "Step 6",
+    				    	    content: "Fill out the form and click Save Project",
+    				    	    onPrev:function(tour){
+    				    	    	window.location = "<?php echo base_url(); ?>admin/project";
+        				    	    },
+    				    	    onNext:function(tour){
+    				    	     	    $(".btn").click();
+    	    			    	    }
+			  		 },
+			  		 {
+			  		   
+				    	    element: "#step7",
+				    	    title: "Step 7",
+				    	    content: "Congratulations - You have created your first project. Now lets create a costcode",
+
+					 },
+			  		 {
+				  		   
+				    	    element: "#step8",
+				    	    title: "Step 8",
+				    	    content: "Fill out the form and click Save Project",
+
+					 },
+			  		 {
+				  		   
+				    	    element: "#step9",
+				    	    title: "Step 9",
+				    	    content: "Fill out the form and click Save Project",
+
+					 },
+			  		 {
+				  		   
+				    	    element: "#step10",
+				    	    title: "Step 10",
+				    	    content: "Fill out the form and click Save Project",
+
+					 },
+					 {
+				  		   
+				    	    element: "#step11",
+				    	    title: "Step 11",
+				    	    content: "Fill out the form and click Save Project",
+
+					 },
+					 {
+				  		   
+				    	    element: "#step12",
+				    	    title: "Step 12",
+				    	    content: "Fill out the form and click Save Project",
+
+					 },
+			  		 
 			    	  
-  		    	]});*/
+  		    	]});
                 //tour.restart();
+              // tour.restart();
   		    	// Initialize the tour
-  		    	//tour.init();
+  		    	tour.init();
 
   		    	// Start the tour
-  		    	//tour.start();
-  		    
+  		    	tour.start();
+
+  		    	
+  		     $("#pages-dropdown","#step3").click(function(){
+  	  		    	//alert(tour.getCurrentStep());
+  	  		    	if(tour.getCurrentStep()==2){
+						tour.next();
+  	  		    	}
+  	  		    });
+
+  		    	$("#step5").click(function(){
+  	  		    	//alert(tour.getCurrentStep());
+  	  		    	if(tour.getCurrentStep()==4){
+						tour.next();
+  	  		    	}
+  	  		    });
+*/
+  	  		    
             });
         </script>
 
@@ -378,7 +457,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     
                         <?php if ($this->session->userdata('usertype_id') < 3) { ?>
 
-                        <li class="lp-dropdown">
+                        <li class="lp-dropdown" id="step3">
                             <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                             <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
                             	

@@ -7,13 +7,13 @@ $(document).ready(function(){
 });
 //-->
 </script>
-
-<section class="row-fluid">
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+<section class="row-fluid" id="step6">
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span12">
 	
-	<?php echo $message; ?>
+	<div id="step7"><?php echo $message; ?></div>
    <?php echo $this->session->flashdata('message'); ?>
    <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
