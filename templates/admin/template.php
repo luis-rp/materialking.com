@@ -77,9 +77,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     return false;
                 });
                 $('#tab-users a').tooltip();
-
+				// commented code as call to tour was giving error while fetching graph
                 //Responsive-tour
-                var tour = new Tour({
+                /*var tour = new Tour({
   		    	  steps: [
   		    	  {
   		    	    element: "#step1",
@@ -115,13 +115,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 			    	    content: "Click the Add Project"
 			   }
 			    	  
-  		    	]});
-                tour.restart();
+  		    	]});*/
+                //tour.restart();
   		    	// Initialize the tour
-  		    	tour.init();
+  		    	//tour.init();
 
   		    	// Start the tour
-  		    	tour.start();
+  		    	//tour.start();
   		    
             });
         </script>
