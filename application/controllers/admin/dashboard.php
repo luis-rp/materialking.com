@@ -164,7 +164,7 @@ class Dashboard extends CI_Controller
 			//print_r($costcodesjson);die;
 			$data['costcodesjson'] = $costcodesjson;
 		}
-		
+		$data['viewname'] = 'dashboard';
 		$this->load->view ('admin/dashboard', $data);
 	}
 	

@@ -71,6 +71,7 @@ class project extends CI_Controller
 		$data ['heading'] = 'Project Management';
 		$data ['table'] = $this->table->generate ();
 		$data ['addlink'] = '<a id="step5" class="btn btn-green" href="'.base_url().'admin/project/add">Add Project</a>';
+		$data['viewname'] = 'projects';
 		$this->load->view ('admin/projects', $data);
 	}
 
@@ -80,6 +81,7 @@ class project extends CI_Controller
 		$data ['heading'] = 'Add New Project';
 		$data ['message'] = '';
 		$data ['action'] = site_url ('admin/project/add_project');
+		$data['viewname'] = 'project';
 		$this->load->view ('admin/project', $data);
 	}
 	

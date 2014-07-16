@@ -71,7 +71,7 @@ function setprogress(id)
 	<div class="box">
 	  <div class="span12">
 	
-	   <?php echo $this->session->flashdata('message'); ?>
+	  <div id="step12"><?php echo $this->session->flashdata('message'); ?></div> 
 	    
 		<div style="margin-bottom:20px;">
                 <div>

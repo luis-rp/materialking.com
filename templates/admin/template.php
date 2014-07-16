@@ -79,7 +79,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
-				/*
+				//Boostratp tour only available on these pages :dashboard,projects,project,costcodelist,costcode
+                <?php if(isset($viewname) && ($viewname=="dashboard" || $viewname=="projects" || $viewname=="project" || $viewname=="costcodelist" || $viewname=="costcode" )){ ?>
                 //Responsive-tour
                 tour = new Tour({
   		    	  steps: [
@@ -188,23 +189,17 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   		    	tour.start();
 
   		    	
-  		     $("#pages-dropdown","#step3").click(function(e){
+  		    /* $("#pages-dropdown","#step3").click(function(e){
   	  	
   	  		    	//alert(tour.getCurrentStep());
   	  		    	 
   	  		    	if(e.hasOwnProperty('originalEvent') && tour.getCurrentStep()==2){
 						tour.next();
   	  		    	}
-  	  		    });
+  	  		    });*/
 
-  		    	$("#step5").click(function(){
-  	  		    	//alert(tour.getCurrentStep());
-  	  		    	//if(tour.getCurrentStep()==4){
-					//	tour.next();
-  	  		    	//}
-  	  		    });
-*/
-  	  		    
+
+  	  		    <?php } ?>
             });
         </script>
 

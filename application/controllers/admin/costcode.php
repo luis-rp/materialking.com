@@ -141,6 +141,7 @@ class costcode extends CI_Controller {
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/add" id="step10">Add Cost Code</a>';
+        $data['viewname'] = 'costcodelist';
         $this->load->view('admin/costcodelist', $data);
     }
 
@@ -218,6 +219,7 @@ class costcode extends CI_Controller {
         }
 
         $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
+        $data['viewname'] = 'costcode';
         $this->load->view('admin/costcode', $data);
     }
 
