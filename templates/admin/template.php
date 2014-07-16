@@ -79,7 +79,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
-				
+				/*
                 //Responsive-tour
                 tour = new Tour({
   		    	  steps: [
@@ -108,9 +108,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
     			    	    title: "Step 4",
     			    	    reflex:true,
     			    	    content: "Click the Projects tab",
-    			    	   /* onNext:function(tour){
-    			
-        			    	}*/
+    			    	   
     			   },
     			   {
         			   	path:"/admin/project",
@@ -118,12 +116,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 			    	    title: "Step 5",
 			    	    content: "Click the Add Project",
 			    	    reflex:true,
-			    	   /* onNext:function(tour){
-				    	   // tour.resume();
-			    	 		//tour.next();
-			    	    //	window.location.replace("<?php echo base_url(); ?>admin/project/add");
-			    	    	//$("#step5").click();
-    			    	    }*/
+			    	 
     			   },
     			   {
         			   	  path:"/admin/project/add",
@@ -131,18 +124,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
     				      title: "Step 6",
     				      content: "Fill out the form and click Save Project",
     				      reflex:true,
-    				     /* onNext:function(tour){
-			    	     	    if($("#title").val()==null)
-				    	     	    return false;
-				    	     	    else
-					    	     	    return true;
-  			    	    }*/
-    				      /*onPrev:function(tour){
-    				    
-        				    	    },
-    				    	    onNext:function(tour){
-    				    	     	    $(".btn").click();
-    	    			    	    }*/
+    				   
 			  		 },
 			  		 {
 			  			 path:"/admin/project",
@@ -215,13 +197,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   	  		    	}
   	  		    });
 
-  		    /*	$("#step5").click(function(){
+  		    	$("#step5").click(function(){
   	  		    	//alert(tour.getCurrentStep());
-  	  		    	if(tour.getCurrentStep()==4){
-						tour.next();
-  	  		    	}
-  	  		    });*/
-
+  	  		    	//if(tour.getCurrentStep()==4){
+					//	tour.next();
+  	  		    	//}
+  	  		    });
+*/
   	  		    
             });
         </script>
