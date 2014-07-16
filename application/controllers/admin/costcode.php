@@ -252,7 +252,7 @@ class costcode extends CI_Controller {
             //redirect('admin/costcode/add'); 
         } else {
             $itemid = $this->costcode_model->SaveCostcode();
-            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Cost Code Added Successfully</div></div>');
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox" style="display:inline;" id="step12" >Cost Code Added Successfully</div></div>');
             redirect('admin/costcode');
         }
     }

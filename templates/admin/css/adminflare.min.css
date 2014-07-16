@@ -6397,3 +6397,12 @@ ul.wysihtml5-commands-disabled .dropdown-menu {
 	padding:0;
 	margin:0;
 }
+.popover-title{
+	background: #d85837;
+		color:#fff;
+}
+/*.popover[class*=tour-] .popover-navigation [data-role=prev], .popover[class*=tour-] .popover-navigation [data-role=next], .popover[class*=tour-] .popover-navigation [data-role=end] {
+	color:#fff;
+	background: #d85837;
+
+	}*/

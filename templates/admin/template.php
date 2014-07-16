@@ -125,12 +125,17 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
     				      title: "Step 6",
     				      content: "Fill out the form and click Save Project",
     				      reflex:true,
+    				      onNext: function(tour){
+        				    
+						//	$("#step6").click();
+        				      }
     				   
 			  		 },
 			  		 {
 			  			 path:"/admin/project",
 				    	    element: "#step7",
 				    	    title: "Step 7",
+				    	    prev:-1,
 				    	    content: "Congratulations - You have created your first project. Now lets create a costcode",
 
 					 },
@@ -188,7 +193,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
   		    	// Start the tour
   		    	tour.start();
-
+  		  /*  	$("#step6").click(function(e){
+					if(!$("#title").val()){
+						alert("Please fill out Title Field");
+						return false;
+					}
+  	  		    });*/
   		    	
   		    /* $("#pages-dropdown","#step3").click(function(e){
   	  	

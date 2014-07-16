@@ -236,7 +236,7 @@
 				<?php } ?>
 	    	</div>
 	    	
-	    	<div id="step1">
+	    	
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
 	    		<h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
@@ -252,9 +252,11 @@
 	    		
 	    	</div>
 			<?php }else{?>
+			<div id="step1" class="span4">
 			&nbsp;&nbsp;&nbsp;&nbsp;
-			<?php }?>
 			</div>
+			<?php }?>
+			
 		</div>
 	</div>
 </section>

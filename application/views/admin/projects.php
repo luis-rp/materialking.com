@@ -20,7 +20,7 @@
 	<div class="box">
 	  <div class="span12">
 	
-	  <div id="step7"> <?php echo $this->session->flashdata('message'); ?></div>
+	  <?php echo $this->session->flashdata('message'); ?>
 	    
 	    <div class="datagrid-example">
 		<div style="height:600px;width:100%;margin-bottom:20px;">

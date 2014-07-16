@@ -108,7 +108,7 @@ class project extends CI_Controller
 		else 
 		{
 			$itemid = $this->project_model->SaveProject ();
-			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Project Added Successfully</div></div>');
+			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox" style="display:inline;" id="step7">Project Added Successfully</div></div>');
 			
 			redirect('admin/project'); 
 		}
