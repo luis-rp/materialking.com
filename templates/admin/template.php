@@ -180,8 +180,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 			  		 
 			    	  
   		    	]});
-                //tour.restart();
-              // tour.restart();
+                <?php if(isset($viewname) && $viewname=="dashboard"){?>
+               tour.restart();
+               <?php } ?>
   		    	// Initialize the tour
   		    	tour.init();
 
