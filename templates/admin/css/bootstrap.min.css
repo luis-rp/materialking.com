@@ -5334,6 +5334,8 @@ td.minimum
 }
 .null span
 {
-	margin-top:45px !important;
+	/*margin-top:45px !important;*/
 	color:white !important;
+	/* position: inherit !important;*/
+	 top: 19px !important;
 }

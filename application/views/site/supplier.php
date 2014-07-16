@@ -290,9 +290,9 @@ $(document).ready(function() {
                                         Print
                                       </button>
                                 </p>
-                                 <div style="float: left;margin-left: 20px;" class="addthis_toolbox addthis_default_style ">
-                                     <a class="addthis_counter addthis_pill_style" addthis:url="<?php echo $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];?>#mydiv" addthis:title=""></a>
-                        </div>
+                                 <!-- <div style="float: left;margin-left: 20px;" class="addthis_toolbox addthis_default_style ">
+                                     <a class="addthis_counter addthis_pill_style" addthis:url="<?php // echo $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];?>#mydiv" addthis:title=""></a>
+                        </div>-->
                                 <!--<a class="shareEmail" href="" title="Share by Email"><img src="http://png-2.findicons.com/files/icons/573/must_have/48/mail.png"/></a>-->
                               </div>
 

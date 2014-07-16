@@ -73,6 +73,13 @@
         		<td>Supplier Expire Date</td>
         		<td colspan="5"><?php echo $bid->expire_date; ?></td>
                     </tr>
+                    
+                <tr>
+                        
+        		<td>Supplier Quote Date</td>
+        		<td colspan="5"><?php echo $bid->submitdate; ?></td>
+                    </tr>    
+                    
     		    <tr>
                         
         		<td>Quote Total: </td>

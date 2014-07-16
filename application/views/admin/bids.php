@@ -351,6 +351,9 @@ $(function() {
 				  <?php if($bid->draft=='Yes'){ ?>
 				    <span class="label label-pink">Draft</span>
 				  <?php }?>
+				   <strong>
+				  &nbsp; &nbsp; &nbsp;<?php if(isset($bid->revisionno) && $bid->revisionno>1) echo "Revision ".$bid->revisionno; else echo "Original bid"; ?>
+				   </strong>
 			      <?php 
 			      	if($maxcountitems > count($bid->items))
 			      	{

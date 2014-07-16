@@ -1033,6 +1033,13 @@ class quote extends CI_Controller
                 $minimum['totalprice'] = $totalprice;
             elseif ($minimum['totalprice'] > $totalprice)
                 $minimum['totalprice'] = $totalprice;
+                
+                $revisionquote = $this->quote_model->getrevisionno($bid->id,$quote->purchasingadmin);
+	    	if(isset($revisionquote->revisionid))
+	    		$bid->revisionno = $revisionquote->revisionid;
+	    	else 
+	    		$bid->revisionno = 1;
+                
         }
         //print_r($bids);die;
         //echo '<pre>';print_r(array_sum($maximum));echo '</pre>';//die;

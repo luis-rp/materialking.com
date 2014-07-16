@@ -861,6 +861,14 @@ class quote_model extends Model {
         }
         return NULL;
     }
+    
+    function getrevisionno($bidid, $admin) {
+                
+        	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$admin."' order by id desc limit 1";
+        	$data = $this->db->query($sqlq)->row();
+        	return $data;
+    }
+    
     function get_quotes_error_log($quote)
     {
         $this->db->select("quote_errorlog.*,company.*");
