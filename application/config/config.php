@@ -20,8 +20,8 @@ if(0)
     error_reporting(0);
     ini_set('display_errors', 'Off');
 }
-$config['base_url']	= 'http://materialking.com/';
-$config['base_dir']	= '/home/materialking/public_html/';
+$config['base_url']	= 'http://mk/';
+$config['base_dir']	= '/home/luis/git/materialking.com/';
 
 /*
 |--------------------------------------------------------------------------
@@ -375,3 +375,4 @@ $config['private_key'] = '0vttrTG/sQTO8XfyRFjpBNy3xYwJ/dBKTYENq8Ud';
 $config['associate_tag'] = 'optimaitsolut-20';
 
 $config['STRIPE_API_KEY'] = 'sk_test_2nUP1KkyqVt9PU8LLWp5KvuB';
+
