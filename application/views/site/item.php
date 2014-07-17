@@ -345,7 +345,7 @@
                                         foreach ($tags as $tag){
 										$tag = trim($tag);
 										?>
-                                        <li><a class="tag" href="<?php echo site_url("site/tag/".rawurlencode($tag));?>"><?php echo $tag;?></a></li>
+                                        <li><a class="tag" href="<?php echo site_url("site/tag/".urlencode($tag));?>"><?php echo $tag;?></a></li>
                                         <?php } ?></ul><?php } ?></div>
                                     </p>
                                 </div>

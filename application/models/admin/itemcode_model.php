@@ -255,6 +255,10 @@ class itemcode_model extends Model {
     }
 
     function SaveItemcode() {
+    	$tag = $this->input->post('tags');
+    	$tag = str_replace("\n",",",$tag);
+    	$tag = str_replace("/","~",$tag);
+    	
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -276,7 +280,7 @@ class itemcode_model extends Model {
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
-	        'tags' => str_replace("\n",",",$this->input->post('tags'))
+	        'tags' => $tag
         );
 
         $this->db->insert('item', $options);
@@ -320,6 +324,9 @@ class itemcode_model extends Model {
     		$zoom = 1;
     	else 
     		$zoom = 0;
+		$tag = $this->input->post('tags');
+    	$tag = str_replace("\n",",",$tag);
+    	$tag = str_replace("/","~",$tag);
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -343,7 +350,7 @@ class itemcode_model extends Model {
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
             'item_img_alt_text' => $this->input->post('item_img_alt_text'),
-        	'tags' => str_replace("\n",",",$this->input->post('tags'))
+        	'tags' => $tag
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"]; 

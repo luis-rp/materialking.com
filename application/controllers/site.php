@@ -1251,7 +1251,7 @@ class site extends CI_Controller
         $this->load->view('site/item', $data);
     }
     public function tag($tag){
-    	$tag=rawurldecode($tag);
+    	$tag=urldecode($tag);
     	$limit = 18;
     	$this->items_model->set_keyword(false);
     	$items = $this->items_model->find_item_byTag($tag);
