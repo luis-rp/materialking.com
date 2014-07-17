@@ -146,11 +146,12 @@ class Message extends CI_Controller
 		$_POST['senton'] = date('Y-m-d H:i');
 		$this->db->insert('message',$_POST);
 		
-		$settings = (array)$this->quotemodel->getconfigurations ();
+		//$settings = (array)$this->quotemodel->getconfigurations ();
+		$settings = (array)$this->quotemodel->getpurchaseremail($quote->purchasingadmin);
 	    $this->load->library('email');
 		$this->email->clear(true);
         $this->email->to($settings['adminemail'], "Administrator");
-        $this->email->from($c->email, $c->title); 
+        $this->email->from($c->primaryemail, $c->title); 
 			        
 	    $link = base_url().'message/messages/'.$key;
             

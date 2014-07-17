@@ -186,14 +186,14 @@
                                                         <span class="value"><?php echo $item->unit; ?></span>
 
                                                     </div>
-                                                    <?php if($item->articles){?>
+                                                    <?php /* if($item->articles){?>
                                                     <br/>
                                                     <div class="area">
                                                     	<?php foreach($item->articles as $article){?>
                                                     		<a href="<?php echo site_url('site/article/'.$article->url);?>"><?php echo $article->title?></a><br/>
                                                     	<?php }?>
                                                     </div>
-                                                    <?php }?>
+                                                    <?php } */?>
                                                     <?php if ($this->session->userdata('site_loggedin')){?>
                                             		<a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
                                                         <i class="icon icon-plus"></i> <br/>Add to RFQ

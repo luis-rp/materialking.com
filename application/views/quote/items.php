@@ -49,11 +49,11 @@
 				<a class="pull-right" href="<?php echo site_url('message/messages/'.$quote->id);?>">View Messages</a>
 			</h4>
 			<?php if($itemswon){?>
-				<a href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">PDF</a>
+				<a href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">View P.O as PDF</a>
 			<?php }?>
 			<br/>
 			<?php if($bid){?>
-				<a href="<?php echo site_url('quote/viewbid/'.$bid->id); ?>">View Quote</a>
+				<a href="<?php echo site_url('quote/viewbid/'.$bid->id); ?>">View Bid as HTML</a>
 			<?php }?>
 		</div>		
 	   <div id="container">

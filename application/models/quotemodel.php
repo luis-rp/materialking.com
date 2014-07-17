@@ -14,6 +14,14 @@ class Quotemodel extends Model
 	    return $result [0];
 	}
 	
+	function getpurchaseremail($prchaserid){
+		
+		$this->db->where('purchasingadmin',$prchaserid);
+		$query = $this->db->get ('settings' );
+	    $result = $query->result ();
+	    return $result [0];
+	}
+	
 	function getnewinvitations($company)
 	{
 		$this->db->where('company',$company);
