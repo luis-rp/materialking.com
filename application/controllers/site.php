@@ -1250,6 +1250,102 @@ class site extends CI_Controller
         //echo '<pre>'; print_r($data['relateditems']);die;
         $this->load->view('site/item', $data);
     }
+    public function tag($tag){
+    	$tag=urldecode($tag);
+    	$limit = 18;
+    	$this->items_model->set_keyword(false);
+    	$items = $this->items_model->find_item_byTag($tag);
+    	$this->data['totalcount'] = $items->totalresult;
+    	$this->data['currentpage'] = $_POST['pagenum'] + 1;
+    	$this->data['totalpages'] = ceil($this->data['totalcount'] / $limit);
+    	$this->data['submiturl'] = 'site/items';
+    	$this->data['submitmethod'] = 'POST';
+    	$this->data['pagingfields'] = $_POST;
+    	$this->data['page_title'] = "Items tag \"".$tag."\"";
+    	$this->data['items'] = array();
+    	$items = $items->items;
+    	foreach ($items as $item)
+    	{
+    		$query = "SELECT MIN(ea) minea, MAX(ea) maxea FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
+    		$minmax = $this->db->query($query)->row();
+    		$item->minprice = $minmax->minea;
+    		$item->maxprice = $minmax->maxea;
+    	
+    		$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instore=1 and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";
+    		$countofitems = $this->db->query($cquery)->row();
+    		//echo "<pre>",print_r($countofitems->countitem); die;
+    		if(isset($countofitems->countitem) && $countofitems->countitem!="")
+    			$item->offercount = $countofitems->countitem;
+    		else
+    			$item->offercount = 0;
+    	
+    		$item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
+    	
+    		//$item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;
+    		$item->hasdeal = $this->db
+    		->where('itemid',$item->id)
+    		->where('dealactive','1')
+    		->where('qtyavailable >=','qtyreqd')
+    		->where('qtyavailable >','0')
+    		->where('dealdate >=',date('Y-m-d'))
+    		->get('dealitem')
+    		->result()
+    		?
+    		true
+    		:false
+    		;
+    	
+    		$this->data['items'][] = $item;
+    	}
+    	$this->data['norecords'] = '';
+    	if (! $this->data['items'])
+    	{
+    		$this->data['norecords'] = 'No Records found for the search.';
+    	}
+    	$this->data['categories'] = $this->itemcode_model->getcategories();
+    	
+    	if(isset($_POST['category']))
+    		$category = $_POST['category'];
+    	else
+    		$category = "";
+    	
+    	$this->data['categoriesoptions'] = $this->items_model->getTreeOptions($category);
+    	
+    	if($category){
+    		 
+    		$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
+    	
+    		$result1 = $this->db->query($sql1)->result();
+    		if($result1)
+    			$this->data['catname'] = $result1[0]->catname;
+    	}
+    	//if (@$_POST['category'])
+    	//$this->db->where('category', $_POST['category']);
+    	$this->data['subcategories'] = array();//$this->db->get('subcategory')->result();
+    	$this->data['categorymenu'] = $this->items_model->getCategoryMenu();
+    	$this->data['breadcrumb'] = @$_POST['breadcrumb'];
+    	
+    	$this->data['userquotes'] = array();
+    	$this->data['projects'] = array();
+    	$this->data['costcodes'] = array();
+    	if ($this->session->userdata('site_loggedin'))
+    	{
+    		$pa = $this->session->userdata('site_loggedin')->purchasingadmin;
+    		$userquotes = $this->db->where('purchasingadmin',$pa)->where('potype','Bid')->get('quote')->result();
+    		foreach($userquotes as $uq)
+    		{
+    			if(!$this->db->where('quote',$uq->id)->get('invitation')->row())
+    				$this->data['userquotes'][]=$uq;
+    		}
+    		$this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
+    		$this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
+    	}
+    	
+    	$this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
+    	
+    	//echo '<pre>';print_r($data['categorymenu']);die;
+    	$this->load->view('site/tag', $this->data);
+    }
     public function previtem ($id)
     {
         $sql = "SELECT * FROM " . $this->db->dbprefix('item');

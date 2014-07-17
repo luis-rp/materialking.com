@@ -276,7 +276,7 @@ class itemcode_model extends Model {
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
-	        'tags' => str_replace(" ",",",$this->input->post('tags'))
+	        'tags' => str_replace("\n",",",$this->input->post('tags'))
         );
 
         $this->db->insert('item', $options);
@@ -343,7 +343,7 @@ class itemcode_model extends Model {
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
             'item_img_alt_text' => $this->input->post('item_img_alt_text'),
-        	'tags' => str_replace(" ",",",$this->input->post('tags'))
+        	'tags' => str_replace("\n",",",$this->input->post('tags'))
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"]; 

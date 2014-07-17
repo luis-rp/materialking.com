@@ -237,6 +237,48 @@ class items_model extends Model {
         $return->items = $this->db->query($query)->result();
         return $return;
     }
+    
+    public function find_item_byTag($tag){
+    	$limit = 18;
+    	$return = new stdClass();
+    	
+    	if (!isset($_POST['pagenum']))
+    		$_POST['pagenum'] = 0;
+    	$start = $_POST['pagenum'] * $limit;
+    	
+    	$where = array();
+    	$where[]=" instore='1' ";
+    	if (@$_POST['category'])
+    	{
+    		$slist = $this->getSubCategores($_POST['category']);
+    		$inclause = implode(',', $slist);
+    		$where[]=" category IN ($inclause)";
+    		//$where[] = " category='{$_POST['category']}'";
+    	}
+    	
+    	if ($where)
+    		$where = " WHERE " . implode(' AND ', $where) . " ";
+    	else
+    		$where = '';
+    	
+    	if($this->keyword){
+    		$lookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' or `keyword` like '%$this->keyword%')";
+    		if(trim($where)){
+    			$where .= " AND ".$lookup;
+    		}else{
+    			$where .= " WHERE ".$lookup;
+    		}
+    	}
+    	
+    	$query = "SELECT * FROM " . $this->db->dbprefix('item') . $where."  AND tags like '%$tag%'";
+    	
+    	$return->totalresult = $this->db->query($query)->num_rows();
+    	
+    	$query = "SELECT * FROM " . $this->db->dbprefix('item') . $where ."  AND tags like '%$tag%' LIMIT $start, $limit";
+    	//echo $query;//die;
+    	$return->items = $this->db->query($query)->result();
+    	return $return;
+    }
 
      function save_amazon($args) {
         

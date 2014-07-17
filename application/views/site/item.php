@@ -342,7 +342,9 @@
                                         <strong>Unit:</strong> <?php echo $item->unit; ?>
                                         <div><strong>Tags:</strong><?php if(!empty($item->tags)){?><ul class="tags"><?php 
                                         $tags = explode(",",$item->tags);
-                                        foreach ($tags as $tag){?>
+                                        foreach ($tags as $tag){
+										$tag = trim($tag);
+										?>
                                         <li><a class="tag" href="<?php echo site_url("site/tag/".$tag);?>"><?php echo $tag;?></a></li>
                                         <?php } ?></ul><?php } ?></div>
                                     </p>
