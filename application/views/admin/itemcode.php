@@ -63,7 +63,7 @@ $(document).ready(function(){
             return false;
         });
 
-        
+       // $('#tagsInput').tagsinput();
     });
 
     function showhistory(companyid, itemcode, companyname)
@@ -298,7 +298,12 @@ $(document).ready(function(){
                             <textarea class="span10" rows="10" id="listinfo" name="listinfo" ><?php echo @$this->validation->listinfo; ?></textarea>
                         </div>
                     </div>
-
+					    <div class="control-group">
+                        <label class="control-label">Tags</label>
+                        <div class="controls">
+                            <input type="text" class="span10"  id="tags" name="tags" value="<?php echo @$this->validation->tags; ?>" data-role="tagsinput">
+                        </div>
+                    </div>
                     <?php if ($this->session->userdata('usertype_id') == 1) { ?>
                         <div class="control-group">
                             <label class="control-label">&nbsp;</label>

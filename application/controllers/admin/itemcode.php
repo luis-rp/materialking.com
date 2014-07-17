@@ -462,6 +462,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->width = $item->width;
         $this->validation->height = $item->height;
         $this->validation->weight = $item->weight;
+        $this->validation->tags = $item->tags;
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();

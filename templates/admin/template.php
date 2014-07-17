@@ -44,10 +44,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
+        <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tagsinput.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-tagsinput">
         <script src="<?php echo base_url(); ?>templates/admin/js/modernizr-jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
 
         <style type="text/css">
             #theme_switcher
@@ -179,6 +181,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				  		   
 				    	    element: "#step12",
 				    	    title: "Step 12",
+				    	    prev:-1,
 				    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending",
 
 					 },

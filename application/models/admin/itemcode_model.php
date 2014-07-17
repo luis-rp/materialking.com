@@ -275,7 +275,8 @@ class itemcode_model extends Model {
             'instore' => 1,//$this->input->post('instore'),
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
-            'listinfo' => $this->input->post('listinfo')
+            'listinfo' => $this->input->post('listinfo'),
+	        'tags' => str_replace(" ",",",$this->input->post('tags'))
         );
 
         $this->db->insert('item', $options);
@@ -314,7 +315,7 @@ class itemcode_model extends Model {
 
 // updating cost code 
     function updateItemcode($id) {
-    	
+    	$zoom;
 		if(@$this->input->post('zoom') == "on")
     		$zoom = 1;
     	else 
@@ -337,11 +338,12 @@ class itemcode_model extends Model {
         		'weight' => $this->input->post('weight'),
             'featuredsupplier' => $this->input->post('featuredsupplier'),
             'instore' => 1,//$this->input->post('instore'),
-            'zoom' => $zoom,
+           // 'zoom' => $zoom,
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
-            'item_img_alt_text' => $this->input->post('item_img_alt_text')
+            'item_img_alt_text' => $this->input->post('item_img_alt_text'),
+        	'tags' => str_replace(" ",",",$this->input->post('tags'))
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"]; 
