@@ -1251,7 +1251,7 @@ class site extends CI_Controller
         $this->load->view('site/item', $data);
     }
     public function tag($tag){
-    //	$tag=urldecode($tag);
+    	$tag=rawurldecode($tag);
     	$limit = 18;
     	$this->items_model->set_keyword(false);
     	$items = $this->items_model->find_item_byTag($tag);
@@ -1261,7 +1261,7 @@ class site extends CI_Controller
     	$this->data['submiturl'] = 'site/items';
     	$this->data['submitmethod'] = 'POST';
     	$this->data['pagingfields'] = $_POST;
-    	$this->data['page_title'] = "Items tag \"".$tag."\"";
+    	$this->data['page_title'] = "Items tagged \"".$tag."\"";
     	$this->data['items'] = array();
     	$items = $items->items;
     	foreach ($items as $item)
