@@ -203,14 +203,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					}
   	  		    });*/
   		    	
-  		    /* $("#pages-dropdown","#step3").click(function(e){
+  		     $("#pages-dropdown","#step3").click(function(e){
   	  	
   	  		    	//alert(tour.getCurrentStep());
   	  		    	 
-  	  		    	if(e.hasOwnProperty('originalEvent') && tour.getCurrentStep()==2){
+  	  		    	if(e.hasOwnProperty('originalEvent') && (tour.getCurrentStep()==2 || tour.getCurrentStep()==7)){
 						tour.next();
   	  		    	}
-  	  		    });*/
+  	  		    });
 
 
   	  		    <?php } ?>
