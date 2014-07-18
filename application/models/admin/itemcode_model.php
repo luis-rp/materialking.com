@@ -257,7 +257,7 @@ class itemcode_model extends Model {
     function SaveItemcode() {
     	$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
-    	$tag = str_replace("/","~",$tag);
+    
     	
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
@@ -326,7 +326,6 @@ class itemcode_model extends Model {
     		$zoom = 0;
 		$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
-    	$tag = str_replace("/","~",$tag);
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),

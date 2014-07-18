@@ -1251,6 +1251,8 @@ class site extends CI_Controller
         $this->load->view('site/item', $data);
     }
     public function tag($tag){
+    	$tag = str_replace('%7C', '/', $tag);
+    
     	$tag=urldecode($tag);
     	$limit = 18;
     	$this->items_model->set_keyword(false);
