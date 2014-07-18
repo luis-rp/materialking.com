@@ -280,8 +280,8 @@
                                                 </h3>
                                             </div>
 
-                                            <?php if (isset($rc->city) && isset($rc->state)) { ?>
-                                                <div class="location2"><?php echo $rc->city; ?>, <?php echo $rc->state; ?></div>
+                                            <?php if (isset($rc->address)) { ?>
+                                                <div class="location2"><?php $str=$rc->address; if(isset($str)) { $arr=explode(",",$str); $c=count($arr); $i=1;while($i<$c) { if(($i==1) &&  $arr[$i]!="") { echo $arr[$i].","; } else { echo $arr[$i]; }   $i++; }  }  ?></div>
                                             <?php } else { ?>
                                                 <div class="location"><?php echo $rc->contact; ?></div>
                                             <?php } ?>

@@ -82,7 +82,7 @@ $long = $supplier->com_lng;
             });
 
             var myOptions = {
-                content: '<div class="infobox"><div class="image"><img src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; } else echo base_url(); ?>templates/site/assets/img/default/big.png" alt="" width="100"></div><div class="title"><a href=""><?php echo $supplier->title; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $supplier->contact; ?><br/><?php echo $supplier->city; ?> <?php echo $supplier->state; ?></span><span class="value"></span></div><div class="link"><a href="">Go to Store</a></div></div>',
+                content: '<div class="infobox"><div class="image"><img src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; } else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="" width="100"></div><div class="title"><a href=""><?php echo $supplier->title; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $supplier->contact; ?><br/><?php $str=$supplier->address; if(isset($str)) { $arr=explode(",",$str); $c=count($arr); $i=1;while($i<$c) { if(($i==1) &&  $arr[$i]!="") { echo $arr[$i].","; } else { echo $arr[$i]; }   $i++; }  }  ?></span><span class="value"></span></div><div class="link"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a>Go to Store</a></div></div>',
                 disableAutoPan: false,
                 maxWidth: 0,
                 pixelOffset: new google.maps.Size(-146, -190),

@@ -96,7 +96,7 @@
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
                                                 <div class="price1">
-                                                    <?php echo $supplier->city; ?>, <?php echo $supplier->state; ?> 
+                                                    <?php $str=$supplier->address; if(isset($str)) { $arr=explode(",",$str); $c=count($arr); $i=1;while($i<$c) { if(($i==1) &&  $arr[$i]!="") { echo $arr[$i].","; } else { echo $arr[$i]; }   $i++; }  }  ?>
                                                 </div>
                                             </div>
 
