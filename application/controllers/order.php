@@ -253,6 +253,28 @@ class Order extends CI_Controller
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$this->db->update('orderdetails',$update);
+		
+		$this->db->where('orderid',$id);
+		$orderdetail = $this->db->get('orderdetails')->result();
+		if($orderdetail){
+
+			foreach($orderdetail as $orderone){
+
+				$this->db->where('itemid',$orderone->itemid);
+				$this->db->where('company',$orderone->company);
+				$this->db->where('type', 'Supplier');
+				$companyitem = $this->db->get('companyitem')->row();
+				//echo "<pre>",print_r($companyitem); die;
+				if($companyitem){
+					$bd['qtyavailable'] = $companyitem->qtyavailable-$orderone->quantity;
+					$this->db->where('id',$companyitem->id);
+					$this->db->update('companyitem',$bd);
+				}
+
+			}
+
+		}
+		
 		//echo $id.'-'.$company->id.'-'.$status;die;
 	
 		$body = "";

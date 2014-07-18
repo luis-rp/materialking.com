@@ -282,10 +282,10 @@ function selectcompany(codeid, company, price)
 
 <script type="text/javascript">
 $(function() {
-    <?php if($this->validation->itemchk=='1') { ?>
+    <?php  /*if($this->validation->itemchk=='1') { ?>
             $('#attachchkbox').attr('checked','checked');
-            <?php } ?>
-    xmltype6();
+            <?php }*/ ?>
+    //xmltype6();
     //autocomplete
     $(".costcode").autocomplete({
         source: "<?php echo base_url(); ?>admin/quote/findcostcode",
@@ -312,7 +312,7 @@ function getcatitem(catid){
 	    }).done(function(data){
 
 	        $("#catiditem").html(data);
-
+			savclose();
 	    });
 }
 
@@ -323,6 +323,7 @@ function savclose()
    	$("#itemcode").val(itemcode);
     fetchItem('itemcode');
     $('#selectItemWindow').dialog('close');
+    $('.fg-menu-container').css({display: "none"});
 }
 </script>
 
@@ -813,7 +814,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                             </div>
                              <select name="catiditem" id="catiditem" ></select>
                             
-                       <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>
+                       <!-- <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>-->
                        
                     </div>
         </div>

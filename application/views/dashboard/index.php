@@ -90,6 +90,9 @@ function readnotification(id)
 										<?php if($penreq->accountnumber){;?>
 										<br/>Account Number: <?php echo $penreq->accountnumber;?>
 										<?php }?>
+										<?php if($penreq->message){;?>
+										<br/>Message: <?php echo $penreq->message;?>
+										<?php }?>
 										<?php if($penreq->wishtoapply){?>
 											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>
 										<?php }?>
@@ -129,6 +132,9 @@ function readnotification(id)
 										<?php if($njp->accountnumber){;?>
 										/ Account Number: <?php echo $njp->accountnumber;?>
 										
+										<?php }?>
+										<?php if(isset($njp->message)){;?>
+										<br/>Message: <?php echo $njp->message;?>
 										<?php }?>
 										<?php if($njp->wishtoapply){?>
 											/ <a href="<?php echo site_url('dashboard/creditapplication/'.$njp->purchasingadmin);?>">View Application</a>
