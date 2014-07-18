@@ -294,8 +294,8 @@ class quote extends CI_Controller
             else
                 $ps = 'equal';
             //$ps = 'paid-'.$paidprice. $ps.' avg for 120 days-'. $avgprice;
-            if($awarded)
-                 $ret .= '<tr><td>' . $item->itemcode . '</td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $item->received . '</td><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
+             if($awarded)
+                $ret .= '<tr><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a></td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $item->received . '</td><td>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
         }
         $ret .= '</table>';
         echo $ret;
