@@ -500,6 +500,19 @@ $(document).ready(function() {
                         <a name="map"></a>
                         <p>&nbsp;</p>
                         <h2>Map</h2>
+                        <?php $addressarray = explode(" ",$supplier->address);
+                        		$i=1;
+                        		$addresslink = "";
+                        		foreach($addressarray as $add){
+                        			if(count($addressarray)>$i)
+                        				$addresslink .= $add."+";
+                        			else 
+                        				$addresslink .= $add;
+                        			$i++;	
+                        		}
+                        		 
+                        ?>
+                        <a target="_blank" href="<?php echo 'https://maps.google.com/maps?daddr='.$addresslink; ?>">Driving Directions</a>
                         <div id="property-map"></div>
                         
                         <a name="form"></a>

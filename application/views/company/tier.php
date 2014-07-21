@@ -109,7 +109,7 @@ $(document).ready(function(){
 								<td><?php echo $admin->purchasingfullname;?></td>
 								<td>
 								
-								<table style="border:none" cellpadding="1" border="0">
+								<!-- <table style="border:none" cellpadding="1" border="0">
 								<tr>
 								<td style="border:none">Tier 0:</td>
 								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0'){echo 'checked="CHECKED"';}?>/></td>
@@ -135,7 +135,16 @@ $(document).ready(function(){
 								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier4" <?php if($admin->tier=='tier4'){echo 'checked="CHECKED"';}?>/></td>
 								
 								</tr>
-								</table>
+								</table> -->
+								
+								<select name="tier[<?php echo $admin->purchasingadmin;?>]" required>
+  <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0') {echo 'selected="SELECTED"';}?> >Tier 0</option>
+  <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier1" <?php if($admin->tier=='tier1') {echo 'selected="SELECTED"';}?> >Tier 1</option>
+  <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier2" <?php if($admin->tier=='tier2') {echo 'selected="SELECTED"';}?> >Tier 2</option>
+  <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier3" <?php if($admin->tier=='tier3') {echo 'selected="SELECTED"';}?> >Tier 3</option>
+  <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier4" <?php if($admin->tier=='tier4') {echo 'selected="SELECTED"';}?> >Tier 4</option>
+</select>
+								
 								</td>
 								
 								<td>
