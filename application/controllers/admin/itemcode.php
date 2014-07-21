@@ -87,6 +87,26 @@ class itemcode extends CI_Controller
                 
                 $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
                 
+                $specs="";
+
+                $query = "SELECT companynotes,filename FROM ".$this->db->dbprefix('companyitem')." ci
+        		 WHERE itemid = ".$itemcode->id." AND ci.type='Purchasing' AND ci.company='".$this->session->userdata('purchasingadmin')."'" ;
+
+                $dataspecs = $this->db->query($query)->row();
+
+                if($dataspecs) {
+                	if($dataspecs->filename!="")
+                	$specs = "Yes";
+                	else if($dataspecs->companynotes!="")
+                	$specs = "Yes";
+                	else
+                	$specs = "No";
+                }else {
+                	$specs = "No";
+                }
+                
+                $itemcode->specs = $specs;
+                
                 $items[] = $itemcode;
             }
             

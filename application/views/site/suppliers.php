@@ -96,7 +96,13 @@
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
                                                 <div class="price1">
-                                                    <?php $str=$supplier->address; if(isset($str)) { $arr=explode(",",$str); $c=count($arr); $i=1;while($i<$c) { if(($i==1) &&  $arr[$i]!="") { echo $arr[$i].","; } else { echo $arr[$i]; }   $i++; }  }  ?>
+                                                     <?php
+                                                    $str=$supplier->address;
+                                                    $str1=str_replace(".",",",$str);
+                                                    $arr=explode(",",$str1);
+                                                    $arr1=array_slice($arr,1,2);
+                                                    echo implode(",",$arr1);
+													?>
                                                 </div>
                                             </div>
 

@@ -396,6 +396,10 @@ if (!$function || $function == 'index')
                         <div class="paddingleft">
                          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                           <button type="submit" class="btn btn-primary">Login</button>
+                          <div class="pull-right"><a href="<?php echo site_url('admin/register/forgot');?>" style="text-decoration:none;">Forgot Username/Password</a>&nbsp;|&nbsp;
+                          <a href="<?php echo site_url('admin/register'); ?>" style="text-decoration:none;">Register</a></div>
+                       </div> 
+                          
                        </div>
                     </form>
     </div>
@@ -446,6 +450,9 @@ if (!$function || $function == 'index')
                     <br/>
                     <br/>
                     &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/register')?>">Create Purchasing Account</a>
+                     <br/>
+                    <br/>
+                    &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/login/index')?>">Login</a>
                      <br/>
                     <br/>
                      <br/>

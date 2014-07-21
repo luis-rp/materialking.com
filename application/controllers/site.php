@@ -146,9 +146,17 @@ class site extends CI_Controller
                 {
                     $supplier->logo = 'big.png';
                 }
+                
+                $str=$supplier->address;
+                $str1=str_replace(".",",",$str);
+                $arr=explode(",",$str1);
+                $arr1=array_slice($arr,1,2);
+                $addr=implode(",",$arr1);
+
+                
                 $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
                  '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
-                 '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city . ' ' . $supplier->state . '</span><span class="value">' . '' .
+                 '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $addr . '</span><span class="value">' . '' .
                  '</span></div>' . $supplier->joinmark . '<p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div>';
                 $data['suppliers'][] = $supplier;
             }
@@ -766,7 +774,7 @@ class site extends CI_Controller
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             
-            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instore=1 and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";            
+            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";            
         	$countofitems = $this->db->query($cquery)->row();
         	//echo "<pre>",print_r($countofitems->countitem); die;
         	if(isset($countofitems->countitem) && $countofitems->countitem!="")

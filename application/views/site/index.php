@@ -281,7 +281,13 @@
                                             </div>
 
                                             <?php if (isset($rc->address)) { ?>
-                                                <div class="location2"><?php $str=$rc->address; if(isset($str)) { $arr=explode(",",$str); $c=count($arr); $i=1;while($i<$c) { if(($i==1) &&  $arr[$i]!="") { echo $arr[$i].","; } else { echo $arr[$i]; }   $i++; }  }  ?></div>
+                                              <div class="location2"><?php
+                                                $str=$rc->address;
+                                                $str1=str_replace(".",",",$str);
+                                                $arr=explode(",",$str1);
+                                                $arr1=array_slice($arr,1,2);
+                                                echo implode(",",$arr1);
+     										?></div>
                                             <?php } else { ?>
                                                 <div class="location"><?php echo $rc->contact; ?></div>
                                             <?php } ?>

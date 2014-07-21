@@ -22,6 +22,11 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
+    			property: 'specs',
+    			label: 'Specs',
+    			sortable: true
+    		},
+    		{
     			property: 'unit',
     			label: 'Unit',
     			sortable: true
