@@ -151,7 +151,7 @@ $long = $supplier->com_lng;
     }
     function PopupPrint(data) 
     {
-        var mywindow = window.open('', 'my div', 'height=100,width=100,left=100,top=100');
+        var mywindow = window.open('', 'my div', 'height=500,width=500,left=100,top=100');
         mywindow.document.write('<html><head><title>my div</title>');
         mywindow.document.write('</head><body >');
         mywindow.document.write(data);

@@ -50,12 +50,22 @@ $("#projectiddefault").click(function () {
     					$selectedprojectid[] = '';
     			?>
     			<tr>
-    				<td>Set note as <input type="checkbox" name="projectid[]" id="projectiddefault" value="-1" <?php if(in_array('-1',$selectedprojectid)) echo "checked='checked'";?> />&nbsp;default
-    				<?php foreach($projectdata as $projectname){ ?>
-    					&nbsp;&nbsp;<input type="checkbox" class="projectgroup" name="projectid[]" id="projectid[]" value="<?php echo $projectname->id?>" <?php if(in_array($projectname->id,$selectedprojectid)) echo "checked='checked'";?>  /> <?php echo $projectname->title; ?>
-    				<?php }?>
-    				</td>
+    				<td>Set note as</td>
+    				<td>
+    				<div STYLE=" height: 100px; overflow: auto;">
+    				<table>
+
+    				<tr><td>
+     <input type="checkbox" name="projectid[]" id="projectiddefault" value="-1" <?php if(in_array('-1',$selectedprojectid)) echo "checked='checked'";?> />&nbsp;default
+    				</td></tr>
+
+     <?php foreach($projectdata as $projectname){ ?>
+     <tr>
+    <td><input type="checkbox" class="projectgroup" name="projectid[]" id="projectid[]" value="<?php echo $projectname->id?>" <?php if(in_array($projectname->id,$selectedprojectid)) echo "checked='checked'";?>  /> &nbsp;<?php echo $projectname->title; ?>
+    </td></tr><?php }?></div></table>
+                 </td>
     			</tr>
+
     			<tr>
     				<td></td>
     				<td><input type="submit" value="Save"></td>

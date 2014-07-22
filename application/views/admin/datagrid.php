@@ -203,8 +203,9 @@
 					monthdt = 0+month;
 					else
 					monthdt = month;
-					if(j<10)
-					jdt = 0+j;
+					if(j<10){
+						jdt = '0'+j;					 
+					}
 					else
 					jdt = j;
 					datefinal = ''+monthdt+"/"+jdt+"/"+year+'';			

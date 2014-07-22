@@ -296,6 +296,50 @@ class event extends CI_Controller
 	    $this->db->insert('eventcomment',$_POST);
 	    $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button event="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Comment posted.</div>');
 		redirect ('admin/event/comments/'.$id, 'refresh');
+		
+		$event = $this->db->where('id',$_POST['event'])->get('event')->row();
+	    if(!$event)
+	        return false;
+	    $emails = array();
+	    $users = $this->db->select('users.email')
+	             ->from('eventuser')
+	             ->join('users','users.id=eventuser.user')
+	             ->where('eventuser.event',$_POST['event'])
+	             ->get()
+	             ->result();
+	     foreach($users as $user)
+	     {
+	         $emails[]=$user->email;
+	     }
+	     if(!$emails)
+	         return false;
+	     $to = implode(',',$emails);
+	     
+	     $userdata = $this->db->select('companyname')
+	     					 ->from('users')
+		                     ->where('id',$_POST['user'])
+		                    ->get()->result();
+	     //echo "<pre>",print_r($userdata[0]->companyname); die;		
+			     
+            $body = "Dear User,<br><br>
+		    		 
+		  	You have got a new comment from company ".$userdata[0]->companyname." for event " . $event->title . " :  <br><br>	
+		    Please find the details below:<br/><br/>
+  	        ".$_POST['comment']."<br/><br/>
+  	        Comment Posted on:".$_POST['commentdate']."<br/>
+		    ";
+            //$this->load->model('admin/settings_model');
+            $settings = (array) $this->settings_model->get_current_settings();
+            $this->load->library('email');
+
+            $this->email->from($settings['adminemail'], "Administrator");
+
+            $this->email->to($to);
+            $this->email->subject('New Comment');
+            $this->email->message($body);
+            $this->email->set_mailtype("html");
+            $this->email->send();
+		
 	}
 }
 ?>

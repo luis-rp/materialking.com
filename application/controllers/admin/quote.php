@@ -1253,6 +1253,16 @@ class quote extends CI_Controller
             $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 
             $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);
+            
+             $this->db->where('itemid',$item['itemid']);
+            $this->db->where('company',$bid->company);
+            $this->db->where('type', 'Supplier');
+            $companyitem = $this->db->get('companyitem')->row();
+            if($companyitem){
+            	$bd['qtyavailable'] = $companyitem->qtyavailable-$item['quantity'];
+            	$this->db->where('id',$companyitem->id);
+            	$this->db->update('companyitem',$bd);
+            }
         }
         $this->quote_model->db->where('quote', $bid->quote);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
@@ -1301,6 +1311,16 @@ class quote extends CI_Controller
             $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 
             $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);
+            
+            $this->db->where('itemid',$item['itemid']);
+            $this->db->where('company',$item['company']);
+            $this->db->where('type', 'Supplier');
+            $companyitem = $this->db->get('companyitem')->row();
+            if($companyitem){
+            	$bd['qtyavailable'] = $companyitem->qtyavailable-$item['quantity'];
+            	$this->db->where('id',$companyitem->id);
+            	$this->db->update('companyitem',$bd);
+            }
         }
         $this->quote_model->db->where('quote', $_POST['quote']);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
@@ -2523,11 +2543,10 @@ with the transfer# {$tobj->id}.
         }
         echo json_encode($items);
     }
-
     function getitembycode() 
     {
         $code = $_POST['code'];
-        //$projectid = $_POST['projectid'];
+        $projectid = $_POST['projectid'];
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
 
@@ -2539,7 +2558,7 @@ with the transfer# {$tobj->id}.
         
 		if($companyitem)
 		{
-			/*if($companyitem->projectid){
+			if($companyitem->projectid){
 				$arrproj = explode(",",$companyitem->projectid);
 			
 				if($companyitem->projectid != -1 && in_array($projectid,$arrproj)){
@@ -2553,13 +2572,13 @@ with the transfer# {$tobj->id}.
 				$item->notes = $companyitem->companynotes;
 			}else
 				$item->notes = $companyitem->companynotes;
-			*/
-			$item->notes = $companyitem->companynotes;
+			
+			//$item->notes = $companyitem->companynotes;
 			$item->item_img = $companyitem->filename;
 		}
 		
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
-        echo json_encode($item);
+        echo json_encode($item); // die;
     }
 
     function makedefaultcostcode() {

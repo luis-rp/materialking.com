@@ -107,6 +107,22 @@ class Store extends CI_Controller
         $this->data['categorymenu'] = $this->items_model->getStoreCategoryMenu($company);
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
         //echo '<pre>';print_r($data['categorymenu']);die;
+        
+        if(isset($_POST['category']))
+        $category = $_POST['category'];
+        else
+        $category = "";
+
+
+        if($category){
+
+        	$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
+
+        	$result1 = $this->db->query($sql1)->result();
+        	if($result1)
+        	$this->data['catname'] = $result1[0]->catname;
+        }
+        
         $this->load->view('store/items', $this->data);
 	}
 }
