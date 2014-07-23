@@ -146,17 +146,10 @@ class site extends CI_Controller
                 {
                     $supplier->logo = 'big.png';
                 }
-                
-                $str=$supplier->address;
-                $str1=str_replace(".",",",$str);
-                $arr=explode(",",$str1);
-                $arr1=array_slice($arr,1,2);
-                $addr=implode(",",$arr1);
-
-                
+                          
                 $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
                  '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
-                 '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $addr . '</span><span class="value">' . '' .
+                 '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
                  '</span></div>' . $supplier->joinmark . '<p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div>';
                 $data['suppliers'][] = $supplier;
             }
@@ -890,10 +883,15 @@ class site extends CI_Controller
         if($item->item_img) 
         {
             $mainimg->filename = $item->item_img;
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $imageinfo = finfo_file($finfo, "uploads/item/".$item->item_img);
+            $filetype = explode("/",$imageinfo);
+            $data['filetype'] = $filetype[0];
         }
         else
         {
             $mainimg->filename = 'big.png';
+            $data['filetype'] = "image";
         }
         array_unshift($item->images, $mainimg);
         $data['item'] = $item; 

@@ -280,15 +280,9 @@
                                                 </h3>
                                             </div>
 
-                                            <?php if (isset($rc->address)) { ?>
-                                              <div class="location2"><?php
-                                                $str=$rc->address;
-                                                $str1=str_replace(".",",",$str);
-                                                $arr=explode(",",$str1);
-                                                $arr1=array_slice($arr,1,2);
-                                                echo implode(",",$arr1);
-     										?></div>
-                                            <?php } else { ?>
+                                            <?php if (isset($rc->city) && isset($rc->state)) { ?>
+                                                <div class="location2"><?php echo $rc->city.",&nbsp;".$rc->state; ?></div>
+                                            <?php } else {  ?>
                                                 <div class="location"><?php echo $rc->contact; ?></div>
                                             <?php } ?>
                                             <?php echo $rc->joinstatus; ?>

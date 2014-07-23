@@ -1228,6 +1228,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			if(move_uploaded_file($_FILES['filename']['tmp_name'], "uploads/item/".$nfn))
 			{
 			    $this->_createThumbnail($nfn,'item',200,200);
+			    $this->convertToFlv( "uploads/item/".$nfn, "uploads/item/thumbs/".$nfn );
 			    $insert = array();
 			    $insert['itemid'] = $itemid;
 				$insert['filename'] = $nfn;
@@ -1237,6 +1238,17 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		}
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Image saved successfully.</div>');
 		redirect('admin/itemcode/update/'.$itemid);
+    }
+    
+    function convertToFlv( $input, $output ) {
+    	//echo "Converting $input to $output<br />";
+    	$command = "ffmpeg -v 0 -y -i $input -vframes 1 -ss 5 -vcodec mjpeg -f rawvideo -s 286x160 -aspect 16:9 $output ";
+    	// echo "$command<br />";
+    	if(shell_exec( $command )){
+    		echo "succes";
+    	}else
+    	echo "failed";
+    	echo "Converted<br />";
     }
     
     function deleteimage($id,$itemid)

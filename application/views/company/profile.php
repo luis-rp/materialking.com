@@ -159,7 +159,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 
-                    				 <?php if(0){?>
+                    				 <?php if(1){?>
                     				 <div class="form-group">
 				                        <label class="form-label">City</label>
 				                        <div class="controls">
@@ -175,6 +175,13 @@ function addEmail()
                                         	<option value='<?php echo $st->state_abbr;?>' <?php if($company->state == $st->state_abbr){echo 'SELECTED';}?>><?php echo $st->state_name;?></option>
                                         	<?php }?>
 				                         </select>
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Zip</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="zip" id="zip" value="<?php echo $company->zip;?>">
 				                        </div>
 				                      </div>
 				                      <?php }?>

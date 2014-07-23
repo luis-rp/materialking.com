@@ -95,16 +95,13 @@
                                                 <div class="title1 span4">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
+                                                <?php if (isset($supplier->city) && isset($supplier->state)) { ?>
                                                 <div class="price1">
-                                                     <?php
-                                                    $str=$supplier->address;
-                                                    $str1=str_replace(".",",",$str);
-                                                    $arr=explode(",",$str1);
-                                                    $arr1=array_slice($arr,1,2);
-                                                    echo implode(",",$arr1);
+                                                     <?php echo $supplier->city.",&nbsp;".$supplier->state;
 													?>
                                                 </div>
-                                            </div>
+                                                <?php } ?>
+                                              </div>
 
                                             <div class="location"><?php echo $supplier->contact; ?></div>
                                             <p><?php echo $supplier->shortdetail; ?></p>

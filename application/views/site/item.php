@@ -30,12 +30,48 @@
 		$("#radirange").val(miles);
 		$("#searchform").submit();
 	}
+	
+	function getExtension(filename) {
+		var parts = filename.split('.');
+		return parts[parts.length - 1];
+	}
+
+	function isVideo(filename) {
+		var ext = getExtension(filename);
+		switch (ext.toLowerCase()) {
+			case 'm4v':
+			case 'avi':
+			case 'mpg':
+			case 'mp4':
+			case 'flv':
+			case 'wmv':
+			case 'movie':
+			case 'mpeg':
+			case 'mpe':
+			case 'qt':
+			case 'mov':
+			// etc
+			return true;
+		}
+		return false;
+	}
+	
 	function changeimage(source)
 	{
+		if(isVideo(source)){
+			$('#videolist').css({display: "block"});
+			$('#imagelist').css({display: "none"});
+			params = document.getElementsByTagName('param');
+			console.log(params);
+			params[0].value = source;
+		}else {
+		$('#imagelist').css({display: "block"});
+		$('#videolist').css({display: "none"});
 		$("#bigimage").attr('src',source);
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
         $("#bigimage").attr('data-zoom-image1',source); 
         <?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
+		}
 	}
 </script>
 <script type="text/javascript" charset="utf-8">
@@ -272,11 +308,21 @@
                                 <div class="span3" style="text-align: center">
                                 
                                     <div class="clearfix">
-                                        <div class="clearfix">
+                                        <div id="imagelist" <?php if($filetype=='video') { ?> style="display:none;" <?php } ?> class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
                                                 <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>" data-zoom-image1="<?php echo site_url('uploads/item/' . $item->images[0]->filename); ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
                                     	
+                                        </div>
+                                        <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
+                                        <object width="338" height="300">
+    <param name="src" value="<?php echo site_url('uploads/item/3f79a45474f07b9570829ac40fe30ba9.mp4');?>">
+    <param name="autoplay" value="false">
+    <param name="controller" value="true">
+    <param name="bgcolor" value="#333333">
+    <embed TYPE="application/x-mlayer2" src="./video/video.wmv" autostart="false" loop="false" width="250" height="250" controller="true" bgcolor="#333333">
+    </embed>
+</object>
                                         </div>
                                     	<br/>
                                         
@@ -285,7 +331,7 @@
                                     		<?php foreach($item->images as $img){?>
                                     		<li>
                                     		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>');">
-                                    		<img width="50" height="45" src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>
+                                    		<img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>
                                     		</li>
                                     		<?php }?>
                                     	</ul>

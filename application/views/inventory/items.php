@@ -262,7 +262,10 @@ function updatedeal(id)
                                     	<?php }?>
                                     </select>
                                     </td>
-                                    <td width="30">&nbsp;</td>
+                                    <td>
+                                    &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My Iitems only
+                                    </td>
+                                    <td width="5">&nbsp;</td>
                                     <td>
                                 	<input type="submit" value="Search" class="btn btn-primary"/>
                                 	<?php if(@$_POST['searchitem'] || @$_POST['category'] || @$_POST['manufacturer']){?>

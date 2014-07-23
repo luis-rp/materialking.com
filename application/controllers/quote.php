@@ -801,6 +801,31 @@ class Quote extends CI_Controller
 	   	echo $html;die;
 	}
 	
+	function viewquote($qid)
+	{		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+			    
+	    if(!$qid)
+	        redirect('quote');
+	    
+	    $quote = $this->quotemodel->getquotebyid($qid);
+	    $quoteitems = $this->quotemodel->getquoteitems($qid);
+	    
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+	    $taxpercent = $settings->taxpercent;
+	    
+		ob_start();
+	   	include $this->config->config['base_dir'].'application/views/quote/originalquotehtml.php';
+	   	$html = ob_get_clean();
+	   	
+	   	header('Content-Description: File Transfer');
+        header('Content-type: application/html');
+        header('Content-Disposition: attachment; filename="quote.html"');
+	   	echo $html;die;
+	}
+	
 	function viewbids($bidid,$revisionid)
 	{
 		$company = $this->session->userdata('company');

@@ -41,6 +41,13 @@ class Inventorymodel extends Model
 		    $where .= " AND manufacturer='".$_POST['manufacturer']."' ";
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
 		}
+		
+		if(@$_POST['serachmyitem'])
+		{
+		    $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		    //$this->db->where('manufacturer', $_POST['manufacturer']);
+		}
+		
 		$sql = "SELECT $ti.* FROM $ti 
 				LEFT JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
 		        $where 
@@ -86,6 +93,13 @@ class Inventorymodel extends Model
 		    $where .= " AND manufacturer='".$_POST['manufacturer']."' ";
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
 		}
+		
+		if(@$_POST['serachmyitem'])
+		{
+		    $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		    //$this->db->where('manufacturer', $_POST['manufacturer']);
+		}
+		
 		$sql = "SELECT $ti.* FROM $ti 
 				LEFT JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
 		        $where";
