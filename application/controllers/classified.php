@@ -17,4 +17,11 @@ class classified extends CI_Controller
     	$data['title'] = "Classified area";
     	$this->load->view('classified/index', $data);
     }
+    function ad($id){
+    	 
+    	$this->db->where("id",$id);
+    	$data = $this->db->get("ads")->row();
+    
+    	$this->load->view('classified/ad',$data);
+    }
 }

@@ -14,7 +14,9 @@ class Company extends CI_Controller {
         $this->load->model('quotemodel', '', TRUE);
         $this->load->model('companymodel', '', TRUE);
         $this->load->model('messagemodel', '', TRUE);
+        $this->load->model('admodel', '', TRUE);
         $this->load->model('admin/settings_model');
+        $this->load->library("validation");
         if ($this->session->userdata('company'))
             $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
         $data['newnotifications'] = $this->messagemodel->getnewnotifications();
@@ -787,6 +789,47 @@ class Company extends CI_Controller {
         $this->load->library('image_lib', $config);
         if (!$this->image_lib->resize())
             echo $this->image_lib->display_errors();
+    }
+ 
+    function ads(){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	
+    	$this->db->where("id",$company->id);
+    	$res['ads'] = $this->db->get("ads")->result();
+    	$this->load->view('company/ads', $res);
+    }
+    function addAd(){
+    	$this->load->view('company/addAd');
+    }
+    function saveAd(){
+    	$this->do_upload();
+    	$this->admodel->saveAd();
+    	redirect("company/ads");
+    }
+    function do_upload ()
+    {
+    	$config['upload_path'] = './uploads/ads/';
+    	$config['allowed_types'] = '*';
+    	//$config['max_size']	= '9000';
+    	//	$config['max_width']  = '1024';
+    	//	$config['max_height']  = '768';
+    	$this->load->library('upload', $config);
+    	if (! $this->upload->do_upload())
+    	{
+    		$error = array('error' => $this->upload->display_errors());
+    
+    		//$this->load->view('upload_form', $error);
+    	}
+    	else
+    	{
+    		//var_dump($this->upload->data()); exit;
+    		$error = array('upload_data' => $this->upload->data());
+    		
+    		//$this->load->view('upload_success', $data);
+    	} //var_dump($error); exit;
+    	return $error;
     }
 
 }

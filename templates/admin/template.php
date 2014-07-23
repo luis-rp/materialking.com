@@ -63,7 +63,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
             .status-example { line-height: 0; position:relative; top: 22px }
         </style>
-
+<?php if(!$this->session->userdata('managedprojectdetails')){ ?>
         <script type="text/javascript">
         var tour;
             $(document).ready(function() {
@@ -216,7 +216,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   	  		    <?php } ?>
             });
         </script>
-
+<?php } ?>
         <script>
             var StaticDataSource = function(a)
             {

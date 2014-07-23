@@ -200,6 +200,7 @@
 	  <li class="<?php if($menu=='invoices'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar"></i><span class="title">Manage Invoices</span></a></li>
 	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive"></i><span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span></a></li>
 	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search"></i><span class="title">Sales Analytics & Performance</span></a></li>
+	  <li class="<?php if($menu==''){echo 'active';}?>"> <a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag"></i><span class="title">Classifieds</span></a></li>
 	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male"></i><span class="title">Profile & Settings</span></a></li>
     </ul>
     
