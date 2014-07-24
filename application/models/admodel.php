@@ -17,6 +17,7 @@ class Admodel extends Model {
     	"longitude"=>$this->input->post("longitude"),
     	"image"=>$_FILES["adfile"]["name"],
     	"description"=>$this->input->post("description"),
+    	"published"=>		date('Y-m-d')
     	);
     	$this->db->insert('ads', $newAd);
     }

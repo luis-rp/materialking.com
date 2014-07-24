@@ -71,6 +71,29 @@
                         </div>
                     </div>
                     
+                     <div class="control-group">
+                        <label class="control-label">Category</label>
+                        <div class="controls">
+                            <select id="category" name="category">
+                            	<?php foreach($categories as $cat){?>
+                            	<option value="<?php echo $cat->id;?>" ><?php echo $cat->catname;?></option>
+                            	<?php }?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                      
+                     <div class="control-group">
+                        <label class="control-label">Item</label>
+                        <div class="controls">
+                            <select id="category" name="category">
+                            	<?php foreach($items as $item){?>
+                            	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
+                            	<?php }?>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="control-group">
                         <label class="control-label">Location</label>
                         <div class="controls">

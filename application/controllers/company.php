@@ -16,6 +16,8 @@ class Company extends CI_Controller {
         $this->load->model('messagemodel', '', TRUE);
         $this->load->model('admodel', '', TRUE);
         $this->load->model('admin/settings_model');
+        $this->load->model('admin/catcode_model');
+        $this->load->model('admin/itemcode_model');
         $this->load->library("validation");
         if ($this->session->userdata('company'))
             $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
@@ -801,7 +803,19 @@ class Company extends CI_Controller {
     	$this->load->view('company/ads', $res);
     }
     function addAd(){
-    	$this->load->view('company/addAd');
+     $catcodes = $this->catcode_model->get_categories_tiered();
+     $itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+    	$this->load->view('company/addAd',$data);
     }
     function saveAd(){
     	$this->do_upload();
