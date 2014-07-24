@@ -798,7 +798,7 @@ class Company extends CI_Controller {
     	if (!$company)
     		redirect('company/login');
     	
-    	$this->db->where("id",$company->id);
+    	$this->db->where("user_id",$company->id);
     	$res['ads'] = $this->db->get("ads")->result();
     	$this->load->view('company/ads', $res);
     }
@@ -818,11 +818,11 @@ class Company extends CI_Controller {
     	$this->load->view('company/addAd',$data);
     }
     function saveAd(){
-    	$this->do_upload();
+    log_message('debug',var_export($this->do_upload(),true));
     	$this->admodel->saveAd();
     	redirect("company/ads");
     }
-    function do_upload ()
+    public function do_upload ()
     {
     	$config['upload_path'] = './uploads/ads/';
     	$config['allowed_types'] = '*';
@@ -830,7 +830,7 @@ class Company extends CI_Controller {
     	//	$config['max_width']  = '1024';
     	//	$config['max_height']  = '768';
     	$this->load->library('upload', $config);
-    	if (! $this->upload->do_upload())
+    	if (! $this->upload->do_upload("adfile"))
     	{
     		$error = array('error' => $this->upload->display_errors());
     
@@ -840,10 +840,12 @@ class Company extends CI_Controller {
     	{
     		//var_dump($this->upload->data()); exit;
     		$error = array('upload_data' => $this->upload->data());
-    		
+    		//$this->_createThumbnail($_FILES["adfile"]["name"],'item',200,200);
     		//$this->load->view('upload_success', $data);
     	} //var_dump($error); exit;
     	return $error;
     }
+  
+
 
 }

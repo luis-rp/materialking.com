@@ -350,8 +350,6 @@
 
     </section>
 
-
-
     <section id="categories-homepage">
         
         <div class="container">
@@ -362,16 +360,27 @@
             <div class="full">
 
             	
-            	<div class="category-box span3 first">
+            <!-- Categories -->
+           <?php 
+
+		    		$current = -1;
+							      
+					
+							foreach ($ads as $key=>$value) {
+								
+							
+
+				 ?>
+
+            	<div class="category-box span3 <?php if($current%4 == 0) { echo 'first'; } ?>">
 
             		<div class="category-header">
 
-            			<span class="category-icon">
-		    						    			</span>
+            		
 
-		    			<span class="cat-title"><a href="#"><h4>Uncategorized</h4></a></span>
+		    			<span class="cat-title"><a href="#"><h4><?php echo $key; ?></h4></a></span>
 
-		    			<span class="category-total"><h4>0</h4></span>
+		    			<span class="category-total"><h4></h4></span>
 
             		</div>
 
@@ -379,57 +388,39 @@
 
             			<ul>   
 
-		    				 
+		    				<?php
 
-							
+		    					$currentCat = 0;
+
+								foreach($value as $ad) {
+									$currentCat++;
+							?>
+
+								<li>
+								  	<a href="<?php echo base_url("classified/ad/".$ad['id']);?>" >
+										<?php echo $ad['title'];?>
+									</a>
+								  	<span class="category-counter"></span>
+								</li>
+
+							<?php } ?> 
+
+							<?php if($currentCat > 5) { ?>
+								<!-- 
+		    					<li>
+		    						<a href="#">View all subcategories &rarr;</a>
+		    					</li>-->
+
+		    				<?php } ?>
+
 		    			</ul>
 
             		</div>
 
             	</div>
 
-            	
-            </div>
-
-        </div>
-
-    </section>
-
-    <section id="categories-homepage">
-        
-        <div class="container">
-
-	                    
-            <h3>Browse our  1 Ads from 1 Categories</h3>
-
-            <div class="full">
-
-            	
-            	<div class="category-box span3 first">
-
-            		<div class="category-header">
-
-            			<span class="category-icon">
-		    						    			</span>
-
-		    			<span class="cat-title"><a href="#"><h4>Uncategorized</h4></a></span>
-
-		    			<span class="category-total"><h4>0</h4></span>
-
-            		</div>
-
-            		<div class="category-content">
-
-            			<ul>   
-
-		    				 
-
-							
-		    			</ul>
-
-            		</div>
-
-            	</div>
+            	<?php } ?>
+            <!-- categories end -->
 
             	
             </div>

@@ -38,7 +38,7 @@
 
 		<div class="container">
 
-			<section id="register-login-block-top">
+			<!--  <section id="register-login-block-top">
 				<ul class="ajax-register-links inline">
 										<li class="first">
 						<a href="" class="ctools-use-modal ctools-modal-ctools-ajax-register-style" title="Login">Login</a>
@@ -48,7 +48,7 @@
 					</li>
 								</ul>  
 			</section>
-
+			-->
 			
 
 			<div class="top-social-icons">
@@ -117,7 +117,7 @@
 			</div>
 
 			<section id="new-post" class="block block-crystal-block" style="margin-top: 13px !important">
-										<a href="" class="btn button">Post your Ad!</a>
+										<a href="<?php echo base_url("company/addAd");?>" class="btn button">Post your Ad!</a>
 				</section> <!-- /.block -->
 
 			
@@ -131,23 +131,23 @@
 
 		<div class="container">
 					
-			<div class="full">
-				
-				<div class="span3 first"><form role="search" method="get" class="search-form" action="#">
-				<label>
-					<span class="screen-reader-text">Search for:</span>
-					<input type="search" class="search-field" placeholder="Search …" value="" name="s" title="Search for:">
-				</label>
-				<input type="submit" class="search-submit" value="Search">
-			</form></div></div>		<div class="span3 first">		<h4 class="block-title">Recent Posts</h4><div class="block-content clearfix">		<ul>
-					<li>
-				<a href="#">Hello world!</a>
-						</li>
+		<div class="span3 first">		<h4 class="block-title">Recent Ads</h4><div class="block-content clearfix">
+				<ul>
+
 				</ul>
-		</div></div><div class="span3 first"><h4 class="block-title">Recent Comments</h4><div class="block-content clearfix"><ul id="recentcomments"><li class="recentcomments"><a href="https://wordpress.org/" rel="external nofollow" class="url">Mr WordPress</a> on <a href="#">Hello world!</a></li></ul></div></div><div class="span3 first"><h4 class="block-title">Archives</h4><div class="block-content clearfix">		<ul>
-	<li><a href="#">July 2014</a></li>
-		</ul>
-</div></div><div class="span3 first"><h4 class="block-title">Categories</h4><div class="block-content clearfix">		<ul>
+		</div></div>
+		<div class="span3 first"><h4 class="block-title">Recent Ads</h4>
+			<div class="block-content clearfix">
+			<ul id="recentcomments">
+			</ul>
+			</div></div>
+		<div class="span3 first"><h4 class="block-title">Archives</h4>
+		<div class="block-content clearfix">		<ul>
+			<li><a href="#">July 2014</a></li>
+				</ul>
+		</div>
+		</div>
+	<div class="span3 first"><h4 class="block-title">Categories</h4><div class="block-content clearfix">		<ul>
 	<li class="cat-item cat-item-1"><a href="#" title="View all posts filed under Uncategorized">Uncategorized</a>
 </li>
 		</ul>
@@ -177,7 +177,7 @@
 
 			<div class="site-info">
 				
-								 @ 2014 FlatAds - by <a class="target-blank" href="http://themeforest.net/user/agurghis/portfolio?ref=agurghis" target="_blank">Alex Gurghis</a>
+								 @ 2014 Mtaerialking.com
 								
 			</div><!-- .site-info -->
 

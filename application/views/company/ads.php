@@ -43,7 +43,7 @@ function readnotification(id)
 									    		$i++;
 									      ?>
                                             <tr>
-                                                <td><?php echo $ad->title;?></td>
+                                                <td><a href="<?php echo base_url("classified/ad/".$ad->id);?>"><?php echo $ad->title;?></a></td>
                                                 <td><?php echo $ad->description;?></td>
                                                 <td><?php echo $ad->price;?></td>
                                                 

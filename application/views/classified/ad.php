@@ -250,7 +250,33 @@
 	    		</div>
 
 	    	</div>
+			<!-- Sidebar start -->
+			<div class="span3">
 
+	    		<div class="cat-widget" style="margin-top: 10px;">
+
+		    		<div class="cat-widget-title"><h4>Most Popular</h4></div>
+
+		    		<div class="cat-widget-content">
+		    			<ul>
+		    			<?php foreach($popular as $pop){?> 
+                            <li class="widget-ad-list">
+                            <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$pop['image']);?>">
+						    		<span class="widget-ad-list-content">
+						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("classified/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
+						    			
+										<span class="add-price"><?php echo $pop['price']; ?></span>
+						    		</span>
+								</li>
+						<?php } ?>
+						</ul>
+
+		    		</div>
+
+		    	</div>
+
+	    	</div>
+	    	<!-- sidebar end -->
 	    	
 		
 
