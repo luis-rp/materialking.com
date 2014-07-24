@@ -491,5 +491,25 @@ class Quotemodel extends Model
 		$invoice->items = $itemquery->result();
 		return $invoice;
 	}
+	
+	function getpendinginvoices($company)
+	{
+		
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice  
+				   FROM 
+				   ".$this->db->dbprefix('received')." r,
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id 				 
+				  AND ai.company=$company 
+				  AND r.paymentstatus <> 'Paid'
+				  AND r.datedue <= CURDATE() 
+				  GROUP BY invoicenum
+				  ";
+		//echo $invoicesql;
+		$invoicequery = $this->db->query($invoicesql);
+		$invoice = $invoicequery->result();
+		return $invoice;
+	}
+	
 }
 ?>

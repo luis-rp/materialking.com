@@ -45,7 +45,12 @@ class Dashboard extends CI_Controller
 		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
 			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id;
 		$query = $this->db->query($sql);
+			
 		$data['networkjoinedpurchasers'] = $query->result();
+		
+		$invoices = $this->quotemodel->getpendinginvoices($company->id);
+		//echo "<pre>",print_r($invoices);	die;	
+		$data['invoices'] = $invoices;
 		
 		$this->load->view('dashboard/index',$data);
 	}
@@ -62,6 +67,43 @@ class Dashboard extends CI_Controller
 	{
 		$this->db->where($_POST);
 		$this->db->update('notification',array('isread'=>1));
+	}
+
+		function sendemailalert(){
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$settings = (array)$this->quotemodel->getpurchaseremail($_POST['admin']);	
+		
+		$totalprice = round( (($_POST['price']*$settings['taxrate']/100) + $_POST['price']),2);
+		
+		$duedate = $_POST['datedue'];
+		
+		if($duedate >= date('Y-m-d')){
+			$datestr =  "due on".$duedate;
+		}else 
+			$datestr =  "overdue since ".$duedate;
+		
+		$body = "Dear Administrator ,<br><br>
+			Your Payment of $ ".$totalprice." against invoice '". $_POST['invoice']."' is ".$datestr." , Please Pay immediately.
+			<br/><br/><br/>
+			Thanks
+			<br><br>";
+
+		//echo "<pre>",print_r($_POST); die;
+		$this->load->library('email');
+		$this->email->from( $company->primaryemail, $company->title);
+		$this->email->to($settings['adminemail'], "Administrator");
+		$this->email->subject('Pending Payment.');
+		$this->email->message($body);
+		$this->email->set_mailtype("html");
+		if($this->email->send())
+		echo "success";
+		else 
+		echo "fail";
+		//echo "<pre>",print_r($this->email->send()); die;		
 	}
 	
 	function close($id)

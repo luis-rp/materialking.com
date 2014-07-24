@@ -295,8 +295,8 @@ class event extends CI_Controller
 	{
 	    $this->db->insert('eventcomment',$_POST);
 	    $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button event="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Comment posted.</div>');
-		redirect ('admin/event/comments/'.$id, 'refresh');
-		
+	    
+		// echo "<pre>",print_r($_POST); die;		
 		$event = $this->db->where('id',$_POST['event'])->get('event')->row();
 	    if(!$event)
 	        return false;
@@ -339,6 +339,9 @@ class event extends CI_Controller
             $this->email->message($body);
             $this->email->set_mailtype("html");
             $this->email->send();
+            //echo "<pre>",print_r($this->email); die;
+            
+            redirect ('admin/event/comments/'.$id, 'refresh');
 		
 	}
 }

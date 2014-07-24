@@ -116,7 +116,7 @@
 	{
 		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
 
-		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("quote/items/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
+		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("admin/quote/items/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
 		$("#modalhtm").html(string);
 		$("#addtoquotemodal1").modal();
 

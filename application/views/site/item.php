@@ -316,7 +316,7 @@
                                         </div>
                                         <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
                                         <object width="338" height="300">
-    <param name="src" value="<?php echo site_url('uploads/item/3f79a45474f07b9570829ac40fe30ba9.mp4');?>">
+    <param name="src" value="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>">
     <param name="autoplay" value="false">
     <param name="controller" value="true">
     <param name="bgcolor" value="#333333">

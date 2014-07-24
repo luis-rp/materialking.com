@@ -81,7 +81,7 @@ $(document).ready( function() {
                                             <tr>
                                                 <td><?php echo $order->ordernumber;?></td>
                                                 <td><?php echo date('m/d/Y',strtotime($order->purchasedate)); ?> </td>
-                                                <td><?php echo $order->prjName;?>, <?php echo $order->codeName;?></td>
+                                                <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
                                                 <td><?php echo "$ ".round($total,2);?></td> 

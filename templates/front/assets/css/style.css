@@ -7611,3 +7611,29 @@ ul.my-friends li .profile-pic{
 		margin: -55px 5px 0 0px;
 	}	
 }
+
+
+.sendbutton
+{
+	    background-color: #F35958;
+    color: #FFFFFF;
+    font-size: 11px;
+    padding:3px;
+    border:0px !important;
+}
+
+.extrabox
+{
+padding: 19px 18px 15px 24px;
+
+}
+
+.extrabox .heading
+{
+	font-size:14px !important;
+	color:black;
+}
+.errormsg
+{
+	color:red;
+}

@@ -1,4 +1,5 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
+<?php echo '<script>var emailalerturl="'.site_url('dashboard/sendemailalert').'";</script>'?>
 <script>
 function readnotification(id)
 {
@@ -11,6 +12,22 @@ function readnotification(id)
 	    });
 	return true;
 }
+
+function sendemailalert(invoice,admin,price,datedue, invoiceid){
+	
+	//alert(invoice);
+	$.ajax({
+		type:"post",
+		url: emailalerturl,
+		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue   
+	}).done(function(data){
+		if(data == "success")
+			$('#'+invoiceid).html('Email Alert Sent');
+		else
+			$('#'+invoiceid).html('*Error in sending Email');
+	});
+}
+
 </script>
     <div class="content">  
 		<div class="page-title">	
@@ -58,6 +75,30 @@ function readnotification(id)
 							</a>
 						<?php }?>					
 					</div>
+					
+					<div class="tiles-title extrabox">
+					<div class="heading">SEND PENDING INVOICE ALERTS:</div>
+					<table cellpadding="3">
+					  <tr>
+					  <td>Invoice</td>
+					  <td>Due Date</td>
+					  <td>&nbsp;</td>
+					  <td>&nbsp;</td>
+					  </tr>		
+				<?php foreach($invoices as $invoice) { ?>
+
+					  <tr>
+					  <td><?php echo $invoice->invoicenum; ?></td>
+					  <td><?php echo $invoice->datedue; ?></td>
+					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>');" value="Send Alert" > </td>
+					  <td class="errormsg" id="<?php echo $invoice->id; ?>"></td>
+					  </tr>			  
+					  
+
+				<?php } ?>
+				</table>	
+				</div>
+					
 				</div>					
 			</div>
 		

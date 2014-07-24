@@ -186,6 +186,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 					FROM " . $this->db->dbprefix('project') . " p
 					WHERE id=" . $order->project;
                 $project = $this->db->query($sql)->result();
+                if($project)
                 $order->prjName = "assigned to " . $project[0]->title;
             }
             else

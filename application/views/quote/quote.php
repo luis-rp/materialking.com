@@ -154,14 +154,14 @@ function viewPricelist(itemcode,itemname,price)
 										  <strong>
 									      PO#: <?php echo $quote->ponum;?></td><td><span style="margin-left:500px;">Revision History</span></td></tr>
 									      <tr><td>
-									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno; ?></span></tr>
+									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; ?></span></tr>
 									      <td>Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>
 									      </strong>
 									      </td><td>
-									      <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br>
-									      <?php  if(isset($revisionno)) { for($i=1;$i<=$revisionno;$i++) { echo $i."."; ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">View Quote</a><br><?php } } ?></td></tr>
+									      <!-- <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									      <?php if(isset($bid->id)) {?> <a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">Original</a><br><?php } ?>
+									      <?php  if(isset($revisionno)) { for($i=2;$i<=$revisionno;$i++) { echo ($i-1)."."; ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">View Quote</a><br><?php } } ?></td></tr>
 									      <td colspan="2">   
 									      	<br/><br/>
 									      	Please enter your Price EA, Date Available and add any Notes you may <br/>

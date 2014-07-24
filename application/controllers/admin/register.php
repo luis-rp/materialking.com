@@ -80,6 +80,17 @@ class Register extends CI_Controller
 				$request2 = $request['registration'];
 				//echo "<pre>",print_r($request2); die;
 				$request2['address'] = $request2['location']['name'];
+				
+				if($request2['location']['name']!=""){
+					
+					$addressfields = explode(",",$request2['location']['name']);
+					if(isset($addressfields[0]))
+					$request2['city'] = trim($addressfields[0]);
+					
+					if(isset($addressfields[1]))
+					$request2['state'] = trim($addressfields[1]);
+				}
+				
 				$request2['fullname'] = $request2['name'];
 				unset($request2['location']);
 				unset($request2['gender']);
@@ -239,7 +250,7 @@ class Register extends CI_Controller
 		{
 			$errormessage = 'Invalid Key.';
 		}
-		if(!@$_POST['username']||!@$_POST['password']||!@$_POST['repassword'])
+		if(!@$_POST['username']||!@$_POST['password']||!@$_POST['repassword']||!@$_POST['city'] || !@$_POST['state'])
 		{
 			$errormessage = 'Please Fill up all the fields.';
 		}

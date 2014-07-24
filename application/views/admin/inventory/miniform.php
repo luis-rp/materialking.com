@@ -38,8 +38,9 @@ $("#projectiddefault").click(function () {
     				<td>
     				<input type="file" name="filename"/>
     				<?php if(@$item->filename){?>
-    					<a href="<?php echo site_url('uploads/item/'.$item->filename);?>" target="_blank">View</a>
-    				<?php }?>
+    				<p><?php echo $item->filename;?>&nbsp;&nbsp;
+    					<a href="<?php echo site_url('uploads/item/'.$item->filename);?>" target="_blank">View</a></p>
+    				<?php } ?>
     				</td>
     			</tr>
     			<?php

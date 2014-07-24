@@ -314,7 +314,7 @@
                             <td><?php echo $order->sno;?></td>
                             <td><?php echo $order->ordernumber;?></td>
                             <td><?php echo $order->purchasedate;?></td>
-                            <td><?php echo $order->prjName;?></td>
+                            <td><?php if(isset($order->prjName)) echo $order->prjName;?></td>
                             <td><?php echo $order->type;?></td>
                             <td><?php echo $order->txnid;?></td>
                             <td>
@@ -330,7 +330,9 @@
                     </tbody>
                 </table>
             	<?php }else{ ?>
-            	No Purchase Orders.
+            	<table id="datatable" class="table">
+            	<tr><td>No Purchase Orders.</td></tr>
+            	</table>
             	<?php }?>
             </div>
       </div>
