@@ -31,6 +31,11 @@ class classified extends CI_Controller
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.location a_location,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a WHERE a.id=".$id." AND a.user_id=c.id";
     	$data = $this->db->query($sql)->row_array();
     	$view = $data['a_views']+1;
+    	$images = explode("|",$data["a_image"]);
+    	foreach($images as $image){
+    		$data['images'][]=$image;
+    	}
+    	$data['featured_image'] = $data['images'][0];
     	
     	$sql_rel =  "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
     	$data['related'] = $this->db->query($sql_rel)->result_array();

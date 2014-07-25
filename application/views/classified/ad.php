@@ -30,7 +30,7 @@
 					
 					<ul class="slides">
 						<?php 
-						$images = explode("|",$a_image);
+						
 						foreach ($images as $img){
 
 						?>
@@ -52,7 +52,151 @@
 
 	    	<div class="span9 first">
 
+					<!-- Map here -->
+					<?php if(!empty($a_latitude)) {?>
+						    	<div id="single-page-map">
 
+			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php echo $c_address; ?></span></div>
+
+					<div id="single-page-main-map"></div>
+
+					<script type="text/javascript">
+					var mapDiv,
+						map,
+						infobox;
+					jQuery(document).ready(function($) {
+
+						mapDiv = $("#single-page-main-map");
+						mapDiv.height(400).gmap3({
+							map: {
+								options: {
+									"center": [<?php echo $a_latitude; ?>,<?php echo $a_longitude; ?>]
+									,"zoom": 16
+									,"draggable": true
+									,"mapTypeControl": true
+									,"mapTypeId": google.maps.MapTypeId.ROADMAP
+									,"scrollwheel": false
+									,"panControl": true
+									,"rotateControl": false
+									,"scaleControl": true
+									,"streetViewControl": true
+									,"zoomControl": true
+									
+								}
+							}
+							,marker: {
+								values: [
+
+								<?php
+								   	$iconPath = base_url() .'templates/classified/assets/images/icon-services.png';
+								?>
+
+										 	{
+										 	
+
+												latLng: [<?php echo $a_latitude; ?>,<?php echo $a_longitude; ?>],
+												options: {
+													icon: "<?php echo $iconPath; ?>",
+													shadow: "<?php echo base_url() ?>templates/classified/assets/images/shadow.png",
+												},
+												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+											}	
+									
+								],
+								options:{
+									draggable: false
+								},
+								cluster:{
+					          		radius: 20,
+									// This style will be used for clusters with more than 0 markers
+									0: {
+										content: "<div class='cluster cluster-1'>CLUSTER_COUNT</div>",
+										width: 62,
+										height: 62
+									},
+									// This style will be used for clusters with more than 20 markers
+									20: {
+										content: "<div class='cluster cluster-2'>CLUSTER_COUNT</div>",
+										width: 82,
+										height: 82
+									},
+									// This style will be used for clusters with more than 50 markers
+									50: {
+										content: "<div class='cluster cluster-3'>CLUSTER_COUNT</div>",
+										width: 102,
+										height: 102
+									},
+									events: {
+										click: function(cluster) {
+											map.panTo(cluster.main.getPosition());
+											map.setZoom(map.getZoom() + 2);
+										}
+									}
+					          	},
+								events: {
+									click: function(marker, event, context){
+										map.panTo(marker.getPosition());
+
+										var ibOptions = {
+										    pixelOffset: new google.maps.Size(-125, -88),
+										    alignBottom: true
+										};
+
+										infobox.setOptions(ibOptions)
+
+										infobox.setContent(context.data);
+										infobox.open(map,marker);
+
+										// if map is small
+										var iWidth = 260;
+										var iHeight = 300;
+										if((mapDiv.width() / 2) < iWidth ){
+											var offsetX = iWidth - (mapDiv.width() / 2);
+											map.panBy(offsetX,0);
+										}
+										if((mapDiv.height() / 2) < iHeight ){
+											var offsetY = -(iHeight - (mapDiv.height() / 2));
+											map.panBy(0,offsetY);
+										}
+
+									}
+								}
+							}
+							 		 	});
+
+						map = mapDiv.gmap3("get");
+
+					    infobox = new InfoBox({
+					    	pixelOffset: new google.maps.Size(-50, -65),
+					    	closeBoxURL: '',
+					    	enableEventPropagation: true
+					    });
+					    mapDiv.delegate('.infoBox .close','click',function () {
+					    	infobox.close();
+					    });
+
+					    if (Modernizr.touch){
+					    	map.setOptions({ draggable : false });
+					        var draggableClass = 'inactive';
+					        var draggableTitle = "Activate map";
+					        var draggableButton = $('<div class="draggable-toggle-button '+draggableClass+'">'+draggableTitle+'</div>').appendTo(mapDiv);
+					        draggableButton.click(function () {
+					        	if($(this).hasClass('active')){
+					        		$(this).removeClass('active').addClass('inactive').text("Activate map");
+					        		map.setOptions({ draggable : false });
+					        	} else {
+					        		$(this).removeClass('inactive').addClass('active').text("Deactivate map");
+					        		map.setOptions({ draggable : true });
+					        	}
+					        });
+					    }
+
+					});
+					</script>
+
+				</div>
+				<?php }?>
+					<!-- End Map -->
 
 
 				<table class="ad-detail-half-box">
@@ -208,7 +352,7 @@
 	    			<h2>Related Ads</h2>
 
 	    			<div class="full">
-
+						<?php if(!empty($related)){?>
 	    						<?php $current = -1; foreach($related as $rel){   $current++;?>
 		    						<div class="span2 <?php if($current%4 == 0) { echo 'first'; } ?>">
 		    							
@@ -241,7 +385,9 @@
 
 		    						</div>
 								<?php } ?>
-		    			
+		    			<?php }else{ ?>
+		    			No related Ads
+		    			<?php } ?>
 
 	    			</div>
 

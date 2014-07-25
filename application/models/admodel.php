@@ -12,6 +12,7 @@ class Admodel extends Model {
     		$filedata .= $file['file_name']."|";
     		
     	}
+    	$filedata = trim($filedata, "|");
     	$company = $this->session->userdata('company');
     	$newAd = array(
     	"user_id"=>$company->id,
