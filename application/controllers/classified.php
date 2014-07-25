@@ -18,6 +18,7 @@ class classified extends CI_Controller
     	$data['title'] = "Classified area";
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
+    	$res;
     	foreach($categories as $cat){
     		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id']; 
     		$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
