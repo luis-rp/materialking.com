@@ -6,7 +6,7 @@ class Admodel extends Model {
         parent::Model();
         $this->load->library('session');
     }
-    function saveAd($files){
+    function saveAd($files=""){
     	$filedata = "";
     	foreach($files['upload_data'] as $file){
     		$filedata .= $file['file_name']."|";

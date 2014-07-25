@@ -822,14 +822,14 @@ class Company extends CI_Controller {
     	$this->load->view('company/addAd',$data);
     }
     function saveAd(){
-    	
-	    //log_message('debug',var_export(,true));
     	$res = $this->do_upload();
-    	if(is_array($res)){
+	    log_message('debug',var_export($res,true));
+    	//$res = $this->do_upload();
+    	if(isset($res['error'])){
     	$this->admodel->saveAd($res);
     	}
     	else {
-    		$this->session->set_flashdata('message', $res);
+    		$this->session->set_flashdata('message',$res);
     	}
     	redirect("company/ads");
     }
