@@ -162,7 +162,9 @@
 			}
 			
 			function changeMonth()
-			{	var today = new Date();
+			{	
+				month = ''+month+'';
+				var today = new Date();
 				var year  = new Date().getFullYear();
 				
 				var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));

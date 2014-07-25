@@ -496,9 +496,9 @@ $(document).ready(function() {
                          <?php } ?>
                         <?php }?>
 						<br/>
-                        <a name="map"></a>
-                        <p>&nbsp;</p>
+                        
                         <h2>Map</h2>
+                        <a name="map" id="map">
                         <?php $addressarray = explode(" ",$supplier->address);
                         		$i=1;
                         		$addresslink = "";

@@ -310,9 +310,9 @@ function viewPricelist(itemcode,itemname,price)
 											<input type="text" name="quotenum" value="<?php echo $quotenum?>"/>
 							    		</td>
 							    		<td>
-											<?php if($draft){?>
-											<a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">View Quote</a>
-											<?php }?>
+											<?php // if($draft){?>
+											<!--<a href="<?php // echo site_url('quote/viewbid/'.$bid->id);?>">View Quote</a>-->
+											<?php // }?>
 							    		</td>
 							    		<td colspan="4">
 											
