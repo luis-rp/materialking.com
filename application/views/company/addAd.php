@@ -119,7 +119,7 @@
                     <div class="control-group">
                         <label class="control-label">File</label>
                         <div class="controls">
-                            <input type="file" name="adfile" size="20"  />
+                            <input type="file" name="adfile[]" multiple size="20"  />
                             <a href="<?php echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  
                             </a> 
                         </div>

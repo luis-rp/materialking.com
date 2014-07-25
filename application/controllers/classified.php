@@ -9,6 +9,7 @@ class classified extends CI_Controller
     	ini_set("max_execution_time", 700);
     	parent::__construct();
     	$data['title'] = 'Home';
+    	$this->load->model('homemodel', '', TRUE);
     	$this->load = new My_Loader();
     	$this->load->template('../../templates/classified/template', $data);
     }
@@ -26,7 +27,7 @@ class classified extends CI_Controller
     }
     public function ad($id){
     	 
-    	$sql = "SELECT c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.location a_location,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a WHERE a.id=".$id." AND a.user_id=c.id";
+    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.location a_location,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a WHERE a.id=".$id." AND a.user_id=c.id";
     	$data = $this->db->query($sql)->row_array();
     	$view = $data['a_views']+1;
     	
@@ -40,5 +41,37 @@ class classified extends CI_Controller
     	$this->db->update('ads', array("views"=>$view));
     	
     	$this->load->view('classified/ad',$data);
+    }
+    public function sendrequest($id)
+    {
+    	if(!$_POST)
+    		die;
+    	$body = '';
+    	$settings = (array)$this->homemodel->getconfigurations ();
+    	
+    		$supplier = $this->db->where('id',$id)->get('company')->row();
+    		$to = $supplier->primaryemail;
+    		$body .= 'You have a new request for assistance.';
+   
+    	$body .= ' Details are:<br/><br/>';
+    	$body .= "Name: ".$_POST['contactName']."<br/>";
+    	$body .= "Email: ".$_POST['email']."<br/>";
+    	$body .= "Subject: ".$_POST['subject']."<br/>";
+    
+    	$body .= "Regarding: ".$_POST['comments']."<br/>";
+    
+    	$this->load->library('email');
+    
+    	$this->email->from($settings['adminemail']);
+    	$this->email->to($to);
+    
+    	$this->email->subject('Request for assistance');
+    	$this->email->message($body);
+    	$this->email->set_mailtype("html");
+    	$this->email->send();
+    
+    	$this->session->set_flashdata('message', 'Email was sent.');
+    
+    	redirect('classified/ad/'.$a_id);
     }
 }

@@ -1,4 +1,4 @@
-
+ <?php echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
         
         <div class="container">
@@ -8,7 +8,7 @@
 
         	</div>
 
-        	<div class="span3"> <span class="ad-page-price"><h2><?php  echo $a_price; ?></h2></span> </div>
+        	<div class="span3"> <span class="ad-page-price"><h2>$ <?php  echo $a_price; ?></h2></span> </div>
 
         </div>
 
@@ -20,20 +20,22 @@
 
         	<div class="span12">
 
-        		
+        			<script type='text/javascript'>
+	  				jQuery(function() {
+						jQuery('.flexslider').flexslider();
+					});
+				</script>
 
 				<div class="flexslider">
 					
 					<ul class="slides">
-
-					
-
 						<?php 
-
-						//Attaches here
+						$images = explode("|",$a_image);
+						foreach ($images as $img){
 
 						?>
-
+						<li><img class='flexslider-image' height="560" width="950" src="<?php echo base_url("uploads/ads/".$img); ?>"/></li>
+						<?php } ?>
 					</ul>
 							
 				</div>
@@ -178,7 +180,7 @@
 
 						<div class="contact-ad-owner-arrow"></div>
 
-						<form name="contactForm" action="" id="contact-form" method="post" class="contactform" >
+						<form name="contactForm" action="<?php echo base_url("classified/sendrequest/".$c_id);?>" id="contact-form" method="post" class="contactform" >
 															
 							<input type="text" onfocus="if(this.value=='Name*')this.value='';" onblur="if(this.value=='')this.value='Name*';" name="contactName" id="contactName" value="Name*" class="input-textarea" />
 														 
@@ -190,12 +192,7 @@
 															
 							<br />
 
-							<p style="margin-top: 20px;">Human test. Please input the result of 5+3=?</p>
-
-							<input type="text" onfocus="if(this.value=='')this.value='';" onblur="if(this.value=='')this.value='';" name="humanTest" id="humanTest" value="" class="input-textarea" />
-
-							<br />
-															
+																	
 							<input style="margin-bottom: 0;" name="submitted" type="submit" value="Send Message" class="input-submit"/>	
 														
 						</form>
@@ -219,6 +216,13 @@
 
 		    								<div class="ad-image-related">
 		    										<a href="<?php echo base_url("classified/ad".$rel['id']); ?>">
+		    										<?php 
+		    										$dis_img;
+		    					$image= explode("|",$rel['image']);
+									if(is_array($image))
+										$dis_img = $image[0];
+									else 
+										$dis_img = $image;?>
 		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>";
 
 													</a>
@@ -259,9 +263,16 @@
 
 		    		<div class="cat-widget-content">
 		    			<ul>
-		    			<?php foreach($popular as $pop){?> 
+		    			<?php foreach($popular as $pop){
+		    				$dis_img;
+		    					$image= explode("|",$pop['image']);
+									if(is_array($image))
+										$dis_img = $image[0];
+									else 
+										$dis_img = $image;
+		    					?> 
                             <li class="widget-ad-list">
-                            <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$pop['image']);?>">
+                            <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$dis_img);?>">
 						    		<span class="widget-ad-list-content">
 						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("classified/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
 						    			

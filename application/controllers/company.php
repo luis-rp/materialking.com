@@ -803,6 +803,10 @@ class Company extends CI_Controller {
     	$this->load->view('company/ads', $res);
     }
     function addAd(){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	
      $catcodes = $this->catcode_model->get_categories_tiered();
      $itemcodes = $this->itemcode_model->get_itemcodes();
         $categories = array();
@@ -818,19 +822,29 @@ class Company extends CI_Controller {
     	$this->load->view('company/addAd',$data);
     }
     function saveAd(){
-    log_message('debug',var_export($this->do_upload(),true));
-    	$this->admodel->saveAd();
+    	
+	    //log_message('debug',var_export(,true));
+    	$res = $this->do_upload();
+    	if(is_array($res)){
+    	$this->admodel->saveAd($res);
+    	}
+    	else {
+    		$this->session->set_flashdata('message', $res);
+    	}
     	redirect("company/ads");
     }
     public function do_upload ()
     {
+    $this->load->library('upload');
+
+    	
     	$config['upload_path'] = './uploads/ads/';
     	$config['allowed_types'] = '*';
     	//$config['max_size']	= '9000';
     	//	$config['max_width']  = '1024';
     	//	$config['max_height']  = '768';
-    	$this->load->library('upload', $config);
-    	if (! $this->upload->do_upload("adfile"))
+    	$this->upload->initialize($config);
+    	if (! $this->upload->do_multi_upload("adfile"))
     	{
     		$error = array('error' => $this->upload->display_errors());
     
@@ -839,7 +853,7 @@ class Company extends CI_Controller {
     	else
     	{
     		//var_dump($this->upload->data()); exit;
-    		$error = array('upload_data' => $this->upload->data());
+    		$error = array('upload_data' => $this->upload->get_multi_upload_data());
     		//$this->_createThumbnail($_FILES["adfile"]["name"],'item',200,200);
     		//$this->load->view('upload_success', $data);
     	} //var_dump($error); exit;

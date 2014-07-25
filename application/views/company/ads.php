@@ -1,4 +1,5 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
+ <?php echo $this->session->flashdata('message'); ?>
 <script>
 function readnotification(id)
 {
