@@ -826,7 +826,7 @@ class Company extends CI_Controller {
 	    log_message('debug',var_export($res,true));
     	//$res = $this->do_upload();
     	if(isset($res['error'])){
-    		$this->session->set_flashdata('message',$res);
+    		$this->session->set_flashdata('message',$res['error']);
     	
     	}
     	else {
