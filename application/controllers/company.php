@@ -826,10 +826,11 @@ class Company extends CI_Controller {
 	    log_message('debug',var_export($res,true));
     	//$res = $this->do_upload();
     	if(isset($res['error'])){
-    	$this->admodel->saveAd($res);
+    		$this->session->set_flashdata('message',$res);
+    	
     	}
     	else {
-    		$this->session->set_flashdata('message',$res);
+    		$this->admodel->saveAd($res);
     	}
     	redirect("company/ads");
     }
