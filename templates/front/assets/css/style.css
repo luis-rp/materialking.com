@@ -7637,3 +7637,60 @@ padding: 19px 18px 15px 24px;
 {
 	color:red;
 }
+
+#map-container {
+	float: left;
+	width: 575px;
+}
+
+#map-canvas {
+	display: block;
+	width: 575px;
+	height: 370px;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+#upload-ad #map-container input#address {
+	width: 561px;
+	background: #f8f8ed none no-repeat;
+	border: 1px solid #e1e1e1;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	font-size: 12px;
+	font-weight: normal;
+	font-family: "Armata","Helvetica Neue",Arial,Helvetica,Geneva,sans-serif;
+	vertical-align: baseline;
+
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	padding: 10px 6px;
+
+	margin-bottom: 10px;
+
+	float: left;
+}
+
+.ui-autocomplete {
+    background-color: white;
+    width: 300px;
+    border: 1px solid #cfcfcf;
+    list-style-type: none;
+    padding-left: 0px;
+    padding: 10px 0;
+}
+
+.ui-autocomplete li {
+	padding: 5px 10px;
+}
+.ui-widget-content {
+	border: none;
+	background: #e7e7e7;
+	color: #333;
+
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}

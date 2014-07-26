@@ -18,7 +18,7 @@ class Admodel extends Model {
     	"user_id"=>$company->id,
     	"title"=>$this->input->post("title"),
     	"price"=>$this->input->post("price"),
-    	"location"=>$this->input->post("location"),
+    	"address"=>$this->input->post("address"),
     	"latitude"=>$this->input->post("latitude"),
     	"longitude"=>$this->input->post("longitude"),
     	"image"=>$filedata,

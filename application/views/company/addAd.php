@@ -1,7 +1,9 @@
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/admin/js/adminflare.min.js">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
-<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
-<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/admin/css/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/classified/assets/css/custom.css">
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/jquery.js"></script>
+                <script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
 
 <style>
 .dataTables_filter
@@ -16,7 +18,7 @@
 
     $(document).ready(function() {        
         
-        $('#description').wysihtml5();
+      //  $('#description').wysihtml5();
         
         //$('#description').wysihtml5();
         //$('#details').wysihtml5();
@@ -48,7 +50,7 @@
                 <?php echo $this->session->flashdata('message'); ?>
                 <a class="btn btn-green" href="<?php echo site_url('company/ads'); ?>">&lt;&lt; Back</a>
                 <br/>
-                <form class="form-horizontal" method="post" action="<?php echo base_url("company/saveAd"); ?>" enctype="multipart/form-data">
+                <form class="" method="post" action="<?php echo base_url("company/saveAd"); ?>" enctype="multipart/form-data">
                 <div  style="width:48%; float:left;">
          
                     <br/>
@@ -94,12 +96,136 @@
                         </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label class="control-label">Location</label>
-                        <div class="controls">
-                            <input type="text" id="location" name="location" class="span10" value="">
+                   
+                     <div id="map-container">
+                        <label class="">Address</label>
+                        <div class="">
+                            <input type="text" id="address" name="address" class="span10" value="">
+                            <p class="help-block">Start typing an address and select from the dropdown.</p>
+
+						    <div id="map-canvas"></div>
+
+						    <script type="text/javascript">
+
+								jQuery(document).ready(function($) {
+
+									var geocoder;
+									var map;
+									var marker;
+
+									var geocoder = new google.maps.Geocoder();
+
+									function geocodePosition(pos) {
+									  geocoder.geocode({
+									    latLng: pos
+									  }, function(responses) {
+									    if (responses && responses.length > 0) {
+									      updateMarkerAddress(responses[0].formatted_address);
+									    } else {
+									      updateMarkerAddress('Cannot determine address at this location.');
+									    }
+									  });
+									}
+
+									function updateMarkerPosition(latLng) {
+									  jQuery('#latitude').val(latLng.lat());
+									  jQuery('#longitude').val(latLng.lng());
+									}
+
+									function updateMarkerAddress(str) {
+									  jQuery('#address').val(str);
+									}
+
+									function initialize() {
+
+									  var latlng = new google.maps.LatLng(0, 0);
+									  var mapOptions = {
+									    zoom: 2,
+									    center: latlng
+									  }
+
+									  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+									  geocoder = new google.maps.Geocoder();
+
+									  marker = new google.maps.Marker({
+									  	position: latlng,
+									    map: map,
+									    draggable: true
+									  });
+
+									  // Add dragging event listeners.
+									  google.maps.event.addListener(marker, 'dragstart', function() {
+									    updateMarkerAddress('Dragging...');
+									  });
+									  
+									  google.maps.event.addListener(marker, 'drag', function() {
+									    updateMarkerPosition(marker.getPosition());
+									  });
+									  
+									  google.maps.event.addListener(marker, 'dragend', function() {
+									    geocodePosition(marker.getPosition());
+									  });
+
+									}
+
+									google.maps.event.addDomListener(window, 'load', initialize);
+
+									jQuery(document).ready(function() { 
+									         
+									  initialize();
+									          
+									  jQuery(function() {
+									    jQuery("#address").autocomplete({
+									      //This bit uses the geocoder to fetch address values
+									      source: function(request, response) {
+									        geocoder.geocode( {'address': request.term }, function(results, status) {
+									          response(jQuery.map(results, function(item) {
+									            return {
+									              label:  item.formatted_address,
+									              value: item.formatted_address,
+									              latitude: item.geometry.location.lat(),
+									              longitude: item.geometry.location.lng()
+									            }
+									          }));
+									        })
+									      },
+									      //This bit is executed upon selection of an address
+									      select: function(event, ui) {
+									        jQuery("#latitude").val(ui.item.latitude);
+									        jQuery("#longitude").val(ui.item.longitude);
+
+									        var location = new google.maps.LatLng(ui.item.latitude, ui.item.longitude);
+
+									        marker.setPosition(location);
+									        map.setZoom(16);
+									        map.setCenter(location);
+
+									      }
+									    });
+									  });
+									  
+									  //Add listener to marker for reverse geocoding
+									  google.maps.event.addListener(marker, 'drag', function() {
+									    geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+									      if (status == google.maps.GeocoderStatus.OK) {
+									        if (results[0]) {
+									          jQuery('#address').val(results[0].formatted_address);
+									          jQuery('#latitude').val(marker.getPosition().lat());
+									          jQuery('#longitude').val(marker.getPosition().lng());
+									        }
+									      }
+									    });
+									  });
+									  
+									});
+
+								});
+
+						    </script>
                         </div>
-                    </div>
+                        </div>
+                   
                     
                     <div class="control-group">
                         <label class="control-label">Latitude</label>
