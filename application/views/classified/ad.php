@@ -254,7 +254,7 @@
 							
 
 							<span class="ad-detail-info">Location <span class="ad-detail">
-						    	<?php echo $a_location; ?></span>
+						    	<?php echo $a_address; ?></span>
 							</span>
 
 							
