@@ -30,12 +30,12 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                 $ret .= "<li><a href='javascript:void(0)'>" . $item->catname."</a>";
+                 $ret .= "<li><a href='javascript:void(0)' ondblclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
                 $ret .= $this->getCategoryMenu($item->id); // here is the recursion
             }
             else
             {
-                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+                $ret .= "<li><a href='javascript:void(0)' ondblclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
             $ret .= "</li>";

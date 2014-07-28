@@ -1222,6 +1222,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     //images
     function saveimage($itemid)
     {
+    	error_reporting(0);
 		if(is_uploaded_file($_FILES['filename']['tmp_name']))
 		{
 			$ext = end(explode('.', $_FILES['filename']['name']));

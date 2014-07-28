@@ -38,7 +38,7 @@ class Message extends CI_Controller
 		{
 			$sql = "SELECT m.quote FROM ".$this->db->dbprefix('message')." m WHERE m.messagekey='".$quote."'";
 			$quoteid = $this->db->query($sql)->result(); 
-			
+			if($quoteid)
 			$quotewhere = " AND m.quote='".$quoteid[0]->quote."'";
 		}
 		$pafilter = '';		

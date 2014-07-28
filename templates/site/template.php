@@ -57,7 +57,7 @@ if (!$function || $function == 'index')
         
         <?php echo '<script>var loginurl = "' . site_url('network/login/users') . '";</script>' ?>
         <?php echo '<script>var joinurl = "' . site_url('network/join') . '";</script>' ?>
-        
+        <script type="text/javascript" src="<?php echo base_url(); ?>/jwplayer-6.9/jwplayer.js"></script>
         
         <script>
             function loginformsubmit()

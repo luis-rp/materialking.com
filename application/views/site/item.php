@@ -10,6 +10,21 @@
 
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery.timepicker.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 
+<style type="text/css">
+
+ .videocontent {
+	width:80%;
+	max-width: 640px;
+	margin: 0 auto;
+}
+ 
+ object {
+position:absolute;
+top:0px;
+left:0px;}
+
+
+</style>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/jquery.jqzoom.css" type="text/css">
 <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -22,6 +37,11 @@
             preloadImages: false,
             alwaysOn:false
         });*/
+		
+		jwplayer("myvideo5").setup({
+        	file: "<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"               
+    });
+    
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 		$("#contentimage").elevateZoom(); 
 	});
@@ -61,9 +81,14 @@
 		if(isVideo(source)){
 			$('#videolist').css({display: "block"});
 			$('#imagelist').css({display: "none"});
-			params = document.getElementsByTagName('param');
+			/*params = document.getElementsByTagName('param');
 			console.log(params);
-			params[0].value = source;
+			params[0].value = source;*/
+			
+			jwplayer("myvideo5").setup({
+        	file: source               
+    });
+    
 		}else {
 		$('#imagelist').css({display: "block"});
 		$('#videolist').css({display: "none"});
@@ -315,14 +340,15 @@
                                     	
                                         </div>
                                         <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
-                                        <object width="338" height="300">
+                                        <!-- <object width="338" height="300">
     <param name="src" value="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>">
     <param name="autoplay" value="false">
     <param name="controller" value="true">
     <param name="bgcolor" value="#333333">
     <embed TYPE="application/x-mlayer2" src="./video/video.wmv" autostart="false" loop="false" width="250" height="250" controller="true" bgcolor="#333333">
     </embed>
-</object>
+</object> -->
+                                        <div width="338" height="300" id="myvideo5"></div>     
                                         </div>
                                     	<br/>
                                         
@@ -452,7 +478,11 @@
                                     <i class="icon icon-plus"></i> <br/>Add to RFQ
                                 </a>
                             	<br/><br/>
-                            <?php }?>
+                            <?php }else{?>
+                            <a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="$('#createmodal').modal();">
+                            <i class="icon icon-plus"></i> <br/>Add to RFQ
+                            </a>
+                            <?php } ?>
                                 <a href="<?php echo site_url('company/register'); ?>">
                                     Have one to sell? Start selling now!
                                 </a>
