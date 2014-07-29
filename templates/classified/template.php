@@ -43,7 +43,7 @@
 <link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
 <![endif]-->
 <link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap.css?ver=2.3.2' type='text/css' media='all' />
-<!--  <link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />-->
+<link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
 <link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
 <link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
 <link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/custom.css?ver=1' type='text/css' media='all' />
@@ -57,6 +57,7 @@
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/jquery-migrate.min.js?ver=1.2.1'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.min.js'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.infobox.js'></script>
+
 <script type='text/javascript'>
 /* <![CDATA[ */
 var userSettings = {"url":"\/","uid":"1","time":"1406253140"};

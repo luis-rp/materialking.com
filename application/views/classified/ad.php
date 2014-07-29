@@ -314,8 +314,17 @@
 	    			
 
 	    		</div>
+	    		<?php if(!empty($a_tags)){?>
+				<div class="ads-tags">
 
-		
+					<i class="fa fa-tag"></i><span><?php 
+					$tags = explode(",",$a_tags);
+					foreach($tags as $tag){ $tag = trim($tag);?>
+						<a href="<?php echo site_url("site/tag/".str_replace('%2F', '|', urlencode($tag)));?>" rel="tag"><?php echo $tag;?></a>						
+					<?php  } ?></span>
+
+				</div>
+				<?php } ?>
 <div class="full">
 
 					<h2>Contact Owner</h2>

@@ -1,5 +1,5 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
- <?php echo $this->session->flashdata('message'); ?>
+
 <script>
 function readnotification(id)
 {
@@ -14,6 +14,7 @@ function readnotification(id)
 }
 </script>
     <div class="content">  
+     <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
 			<h3>Dashboard </h3>	<a class="btn btn-primary btn-xs btn-mini" href="<?php echo base_url("company/addAd");?>">Add Ad</a>	
 		</div>

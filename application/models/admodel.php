@@ -12,6 +12,9 @@ class Admodel extends Model {
     		$filedata .= $file['file_name']."|";
     		
     	}
+    	$tag = $this->input->post('tags');
+    	$tag = str_replace("\n",",",$tag);
+    	
     	$filedata = trim($filedata, "|");
     	$company = $this->session->userdata('company');
     	$newAd = array(
@@ -23,7 +26,8 @@ class Admodel extends Model {
     	"longitude"=>$this->input->post("longitude"),
     	"image"=>$filedata,
     	"description"=>$this->input->post("description"),
-    	"published"=>		date('Y-m-d')
+    	"published"=>		date('Y-m-d'),
+    	"tags" => $tag
     	);
     	$this->db->insert('ads', $newAd);
     }

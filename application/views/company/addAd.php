@@ -1,10 +1,11 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/admin/css/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/classified/assets/css/custom.css">
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/jquery.js"></script>
+        
                 <script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
-
+<script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
+        
+                
 <style>
 .dataTables_filter
 {
@@ -18,7 +19,7 @@
 
     $(document).ready(function() {        
         
-      //  $('#description').wysihtml5();
+   //     $('#description').wysihtml5();
         
         //$('#description').wysihtml5();
         //$('#details').wysihtml5();
@@ -254,6 +255,12 @@
                         <label class="control-label">Description</label>
                         <div class="controls">
                             <textarea class="span10" rows="10" id="description" name="description" ></textarea>
+                        </div>
+                    </div>
+                       <div class="control-group">
+                        <label class="control-label">Tags</label>
+                        <div class="controls">
+                             <input type="text" id="tags" name="tags" class="span10" value=""  data-role="tagsinput">
                         </div>
                     </div>
                  
