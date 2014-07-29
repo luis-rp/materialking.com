@@ -148,6 +148,7 @@ class costcode extends CI_Controller {
     function items($costcode) {
         $costcode = urldecode($costcode);
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
+        $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode);
 
         $count = count($costcodeitems);
         $items = array();
@@ -163,8 +164,21 @@ class costcode extends CI_Controller {
                 ;
                 $items[] = $row;
             }
+            
+            foreach ($costcodeitems2 as $row2) {
+                $awarded = $this->quote_model->getawardedbid($row2->quote);
+                $row2->ea = "$ " . $row2->ea;
+                $row2->totalprice = "$ " . $row2->totalprice;
+                $row->itemname = htmlentities($row2->itemname);
+                $row2->status = strtoupper($awarded->status);
+                $row2->actions = //$row->status=='COMPLETE'?'':
+                        anchor('admin/quote/track/' . $row2->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
+                ;
+                $items2[] = $row2;
+            }
 
             $data['items'] = $items;
+            $data['items2'] = $items2;
         } else {
             $this->data['message'] = 'No Items';
         }

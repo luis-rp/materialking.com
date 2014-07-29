@@ -80,13 +80,13 @@
                </tr>
               </tfoot>
             </table>
-            <?php if(!@$items) echo "No Records Exist"; ?>
+            <?php if(!@$items2) echo "No Records Exist"; ?>
            </div>
          </div>
          
          <div>
           <?php 
-         if(isset($items)){
+         if(isset($items2)){
          ?>
          <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/data.js"></script>
@@ -136,25 +136,26 @@
 			 var items = new Array();
 			 
 			 
-                <?php foreach($items as $item){ ?>
+               <?php $j=0; foreach($items2 as $item){ ?>
 					var dateItem =new Date("<?php echo $item->daterequested;?>");
 					
-					if(!items['<?=$item->daterequested?>'])
+					if(!items['<?=$j?>'])
 					{
 						var costItem = "<?php echo $item->totalprice; ?>";
 						costItem = parseFloat(costItem.slice(1)); 
-						items['<?=$item->daterequested?>'] = {name:"<?php echo $item->ponum;?> = <?php echo $item->totalprice;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDate()),y:costItem, date: dateItem};
+						items['<?=$j?>'] = {name:"<?php echo $item->ponum;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDate()),y:costItem, date: dateItem, datereq:'<?=$item->daterequested?>' };
 					}
 					else
 					{
 						
 						var costItem = "<?php echo $item->totalprice; ?>";
 						costItem = parseFloat(costItem.slice(1)); 
-						items['<?=$item->daterequested?>'].y += costItem;
-						items['<?=$item->daterequested?>'].name += ", <?php echo $item->ponum;?> = <?php echo $item->totalprice;?>";
+						items['<?=$j?>'].y += costItem;
+						items['<?=$j?>'].name += ", <?php echo $item->ponum;?>";
+						items['<?=$j?>'].datereq += '<?=$item->daterequested?>';
 					}
 					
-			<?php } ?>
+			<?php $j++; } ?>
 			
 			
 			function daysInMonth(month,year) {
@@ -183,11 +184,21 @@
 				datay = new Array();
 				datadate = new Array();
 				
+				items.sort(function(a,b) {
+					if(a.date > b.date)
+						return 1;
+					else if (a.date == b.date)
+						return 0;
+					else
+						return -1;
+				});
+				
 				var k=0;
 				for(var i in items)
 				{
 					if(items[i].date.getMonth() + 1 == month)
-					{   datearr1[k] = i;
+					{   datearr1[k] = items[i].datereq;
+						console.log(items[i].datereq);
 						//dataData.push({ name: items[i].name, x: items[i].x, y: items[i].y, date: items[i].date});
 						dataname[k] = items[i].name;
 						datax[k] = items[i].x;
@@ -202,7 +213,7 @@
 				var r = 0;
 				for(var j=1;j<=daysInMonth(month,year);j++){
 					if(month<10)
-					monthdt = 0+month;
+					monthdt = '0'+month;
 					else
 					monthdt = month;
 					if(j<10){

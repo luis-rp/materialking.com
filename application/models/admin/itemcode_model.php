@@ -187,6 +187,41 @@ class itemcode_model extends Model {
         }
         return NULL;
     }
+    
+    function getpoitems2($itemid)
+    {
+    	$projectwhere = '';
+    	$mp = $this->session->userdata('managedprojectdetails');
+    	if($mp)
+    	$projectwhere = " AND q.pid='".$mp->id."'";
+    	$sql = "SELECT sum(ai.totalprice) as totalprice, ai.company, ai.ea, ai.daterequested as daterequested, c.title companyname, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote
+			   	FROM
+				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a, 
+				" . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('company') . " c
+				WHERE
+				ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' AND
+				ai.award=a.id AND a.quote=q.id AND ai.company=c.id AND ai.itemid='$itemid'
+				$projectwhere
+        		group by ai.daterequested 
+				ORDER BY ai.daterequested DESC
+				
+				";
+    	//echo $sql;
+    	$query = $this->db->query($sql);
+    	if ($query->num_rows > 0) {
+    		$result = $query->result();
+    		$ret = array();
+    		foreach ($result as $item) {
+    			$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+    			$this->db->where('company', $item->company);
+    			if ($this->db->get('network')->result()) {
+    				$ret[] = $item;
+    			}
+    		}
+    		return $ret;
+    	}
+    	return NULL;
+    }
 
     function getminimumprices($itemid) 
     {

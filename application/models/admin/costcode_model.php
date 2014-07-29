@@ -159,6 +159,43 @@ class costcode_model extends Model
 		*/
 	}
 	
+		function getcostcodeitems2($costcode)
+	{
+		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote 
+			FROM
+			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
+			 ".$this->db->dbprefix('quote')." q
+			WHERE a.quote=q.id AND
+			ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
+		if($this->session->userdata('usertype_id')>1)
+		{
+			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote 
+				FROM
+				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
+				 ".$this->db->dbprefix('quote')." q
+				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				AND ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
+		}
+		//echo $sql;
+		$query = $this->db->query ($sql);
+		if ($query->result ()) {
+			return $query->result ();
+		} else {
+			return null;
+		}
+		/*
+		$this->db->where('costcode',$costcode);
+		$query = $this->db->get('quoteitem');
+		if($query->num_rows>0)
+		{
+			$ret = $query->result();
+	        return $ret;
+		}
+		return NULL;
+		*/
+	}
+	
+	
 	function SaveCostcode()
 	{
 		$options = array(

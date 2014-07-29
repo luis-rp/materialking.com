@@ -145,9 +145,11 @@ class itemcode extends CI_Controller
         if (! $item)
             die();
         $poitems = $this->itemcode_model->getpoitems($item->id);
+        $poitems2 = $this->itemcode_model->getpoitems2($item->id);
         //echo '<pre>';print_r($poitems);die;
         $count = count($poitems);
         $items = array();
+        $items2 = array();
         if ($count >= 1)
         {
             foreach ($poitems as $row)
@@ -164,6 +166,22 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $items[] = $row;
             }
             $data['items'] = $items;
+            
+            foreach ($poitems2 as $row2)
+            {
+                $awarded = $this->quote_model->getawardedbid($row2->quote);
+                $row2->awardedon = date("m/d/Y", strtotime($row2->awardedon));
+                $row2->ea = "$ " . $row2->ea;
+                $row2->totalprice = "$ " . $row2->totalprice;
+                $row2->status = strtoupper($awarded->status);
+                $row2->actions = //$row->status=='COMPLETE'?'':
+anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
+                //anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
+                
+                $items2[] = $row2;
+            }
+            $data['items2'] = $items2;
+            
         }
         else
         {

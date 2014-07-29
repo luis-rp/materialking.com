@@ -1492,6 +1492,12 @@ or edit your quote.</div></div></div>');
 		
 		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
 		
+		$messagesql = "SELECT * FROM ".$this->db->dbprefix('message')." WHERE quote='{$quoteid}'";
+		$message = $this->db->query($messagesql)->row();		
+		if($message){
+			$data['messagekey'] = $message->messagekey;
+		}
+		
 		$this->load->view('quote/track',$data);
 	}
 	/* is merged with shipitems function

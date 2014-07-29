@@ -80,7 +80,7 @@ tr.still-due td
 			| Quote Ref# <?php echo $bid->quotenum;?> 
 			<?php }?>
 			</h3>
-			<a class="pull-right" href="<?php echo site_url('message/messages/'.$quote->id);?>">View Messages</a><br>
+			<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a><br>
 			<a class="pull-right" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
 			
 		</div>	
