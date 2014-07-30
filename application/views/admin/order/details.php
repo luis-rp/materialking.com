@@ -333,7 +333,7 @@ Send Message:
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
-            	No Purchase Orders.
+            	Order Not Assigned To Cost Code
             	<?php }?>
             </div>
  
