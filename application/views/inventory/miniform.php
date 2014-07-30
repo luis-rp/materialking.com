@@ -1,3 +1,5 @@
+<script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
+
 <script type="text/javascript">
 CKEDITOR.replace( 'companynotes', {
 	toolbar: [

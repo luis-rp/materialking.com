@@ -263,7 +263,7 @@ class quote_model extends Model {
               $invoices = $invoicequery->result();
              */
             $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
-            				   r.status, r.paymentstatus, r.paymenttype, r.refnum,
+            				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,  
             				   ROUND(SUM(ai.ea * r.quantity),2) totalprice
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,

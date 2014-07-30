@@ -55,6 +55,14 @@ class Inventory extends CI_Controller
 		$this->load->view('inventory/items',$data);
 	}
 	
+	public function Inventory2(){
+
+		ini_set("memory_limit","512M");
+		ini_set("max_execution_time", 700);
+
+		$this->load->view('inventory/itempoup');
+	}
+	
 	public function updateitemcode()
 	{
 		$company = $this->session->userdata('company');
@@ -376,12 +384,12 @@ class Inventory extends CI_Controller
 		    redirect('quote/invitation/'.$invitation);
 	}
 	
-    function showeditform()
+    function showeditform($itemid)
     {
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-        $itemid = $_POST['itemid'];
+        //$itemid = $_POST['itemid'];
         
         $query = "SELECT i.*, ci.companynotes, ci.filename, ci.image FROM ".$this->db->dbprefix('item')." i LEFT JOIN 
         		 ".$this->db->dbprefix('companyitem')." ci ON ci.itemid=i.id AND ci.type='Supplier' 
@@ -446,15 +454,15 @@ class Inventory extends CI_Controller
         }
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item details saved successfully.</div>');
 			
-        redirect('inventory');
+        redirect('inventory/Inventory2');
     }
 	
-    function showdealform()
+    function showdealform($itemid)
     {
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-        $itemid = $_POST['itemid'];
+        //$itemid = $_POST['itemid'];
         
         $query = "SELECT * FROM ".$this->db->dbprefix('dealitem')." 
         		  WHERE company='".$company->id."' AND itemid='$itemid'";
@@ -527,7 +535,7 @@ class Inventory extends CI_Controller
         }
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item details saved successfully.</div>');
 			
-        redirect('inventory');
+        redirect('inventory/Inventory2');
     }
     
     function _createThumbnail($fileName, $foldername="", $width=81, $height=80)

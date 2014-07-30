@@ -583,6 +583,7 @@ function acceptall()
                                 <th>Total Cost</th>
                                 <th>Tax</th>
                                 <th>Payment</th>
+                                <th>DUE DATE</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -592,6 +593,7 @@ function acceptall()
                                     <td><?php echo $invoice->totalprice; ?></td>
                                     <td><?php echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td>
                                     <td><?php echo $invoice->paymentstatus; ?></td>
+                                    <td><?php echo date("m/d/Y", strtotime($invoice->datedue)); ?></td>
                                     <td><?php echo $invoice->status; ?></td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="showInvoice('<?php echo $invoice->invoicenum; ?>');">

@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
- 
+ <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?> 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 		$('#datatable').dataTable( {
@@ -36,13 +36,31 @@
 				]
 			} );
 	 $('.dataTables_length').hide();
+	 $('.daterequested').datepicker();	 
 	})
 	function invoice(invoicenum)
 	{
 		$("#invoicenum").val(invoicenum);
 		$("#invoiceform").submit();
 	}
-                       
+
+	var datetext = "";
+	function changeduedate(invoicenum,datedue)
+	{
+		if(datetext!= datedue) {
+			datetext = datedue;
+			var data = "invoicenum="+invoicenum+"&datedue="+datedue;
+			$.ajax({
+				type: "post",
+				data: data,
+				url: datedueurl
+			}).done(function(data) {
+			});
+
+		}
+	}
+	
+	
 </script>
 
 
@@ -80,7 +98,10 @@ tr.still-due td
 			| Quote Ref# <?php echo $bid->quotenum;?> 
 			<?php }?>
 			</h3>
-			<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a><br>
+			<?php if(isset($messagekey)){ ?>
+			<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
+			<?php } ?>
+			<br>
 			<a class="pull-right" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
 			
 		</div>	
@@ -272,6 +293,7 @@ tr.still-due td
 					<th>Received On</th>
 					<th>Total Cost</th>
 					<th>Payment Status</th>
+					<th>Due Date</th>
 				</tr>
 				<?php 
 				    foreach($invoices as $i)
@@ -301,6 +323,7 @@ tr.still-due td
 	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
 	                  	<?php }?>
 					</td>
+					<td><input type="text" class="span daterequested highlight" name="daterequested" value="<?php echo date('m/d/Y',strtotime($i->datedue));?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
 				</tr>
 				<?php }?>
 			</table>

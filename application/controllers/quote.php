@@ -1142,6 +1142,13 @@ or edit your quote.</div></div></div>');
 		$data['award'] = $award;
 		
 		$data['company'] = $company;
+		
+		$messagesql = "SELECT * FROM ".$this->db->dbprefix('message')." WHERE quote='{$quoteid}'";
+		$message = $this->db->query($messagesql)->row();		
+		if($message){
+			$data['messagekey'] = $message->messagekey;
+		}
+		
 		$this->load->view('quote/items',$data);
 	}
 	

@@ -46,7 +46,9 @@
 				<?php if($award && $itemswon && @$award->id){?>
 				<a href="<?php echo site_url('quote/track/'.$quote->id.'/'.$award->id);?>">Track</a>
 				<?php }?>
-				<a class="pull-right" href="<?php echo site_url('message/messages/'.$quote->id);?>">View Messages</a>
+				<?php if(isset($messagekey)){ ?>
+				<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
+				<?php } ?>
 			</h4>
 			<?php if($itemswon){?>
 				<a href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">View P.O as PDF</a>

@@ -425,7 +425,7 @@ class cart extends CI_Controller
                       $this->db->insert('transfer',$insert);
                       
                       $transferbody = "Dear {$company->title},<br/><br/>
-$ {$amount} has been transfered to your bank account for order#{$oid}, with the transfer#{$tobj->id}.
+$ {$amount} has been transfered to your bank account for order#{$ordernumber}, with the transfer#{$tobj->id}.
 ";
                       //echo $company->primaryemail.'<br>';
                       //echo $transferbody;
@@ -876,7 +876,7 @@ $ {$amount} has been transfered to your bank account for order#{$oid}, with the 
         
         $this->email->to($email); 
         
-        $this->email->subject('Order details from ezpzp');
+        $this->email->subject('Payment Details from ezpzp');
         $this->email->message($html);	
         $this->email->set_mailtype("html");
         $this->email->send();

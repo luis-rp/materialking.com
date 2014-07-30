@@ -363,9 +363,14 @@ class Order extends CI_Controller
               $this->db->where('orderid', $_POST['orderid'])->where('company', $company->id);
               $this->db->update('orderdetails', array('status'=>'Pending','paymentstatus'=>'Paid','paymenttype'=>'Credit Card','paymentnote'=>$chargeobj->balance_transaction));
               
+              $ordernumberobj = $this->db->where('id',$_POST['orderid'])->get('order')->row();
+              if(isset($ordernumberobj->ordernumber))
+              $ordernumber = $ordernumberobj->ordernumber;
+              else 
+              $ordernumber = $_POST['orderid'];
               
               $transferbody = "Dear {$company->title},<br/><br/>
-$ {$_POST['amount']} has been transfered to your bank account for order#{$_POST['orderid']}, 
+$ {$_POST['amount']} has been transfered to your bank account for order#{$ordernumber}, 
 with the transfer#{$tobj->id}.
 ";
               $settings = (array)$this->settings_model->get_current_settings ();
@@ -529,6 +534,8 @@ with the transfer#{$tobj->id}.
             	</tr>
             	
             </table>';
+            	
+            	$body .='<br/><br/><p>order#'.$order->ordernumber.'<br/><a href="'.base_url().'/order/details/'.$order->id.'" >Manage Order</a>';	
             	
 		$this->load->library('email');
 		

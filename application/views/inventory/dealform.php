@@ -3,17 +3,7 @@ $(document).ready(function(){
    $('#dealdate').datepicker();
 });
 </script>
-
-<script type="text/javascript">
-CKEDITOR.replace('dealnote', {
-	toolbar: [
-		{ name: 'document', items: [ 'Source', '-', 'NewPage', 'Preview', '-', 'Templates' ] },
-		[ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
-		'/',
-		{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Link', 'Unlink', 'Anchor','Font','FontSize', 'Image','Table','HorizontalRule'] }
-	]
-});
-</script>
+<script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
 
     	<form method="post" action="<?php echo site_url('inventory/savedeal');?>" enctype="multipart/form-data">
     		<input type="hidden" id="edititemid" name="itemid" value="<?php echo $item->itemid;?>"/>
@@ -93,3 +83,14 @@ CKEDITOR.replace('dealnote', {
     			</tr>
     		</table>
     	</form>
+    	
+    	<script type="text/javascript">
+    	CKEDITOR.replace('dealnote', {
+    		toolbar: [
+    		{ name: 'document', items: [ 'Source', '-', 'NewPage', 'Preview', '-', 'Templates' ] },
+    		[ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ],
+    		'/',
+    		{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Link', 'Unlink', 'Anchor','Font','FontSize', 'Image','Table','HorizontalRule'] }
+    		]
+    	});
+</script>

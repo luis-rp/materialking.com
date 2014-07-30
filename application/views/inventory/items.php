@@ -177,28 +177,34 @@
 function updateitem(id)
 {	
 	var d = "itemid="+id;
-	
-    $.ajax({
+	formurl = formurl+"/"+id;
+    /*$.ajax({
         type: "post",
         url: formurl,
         data: d
     }).done(function(data) {
         $("#editbody").html(data);
         $("#editmodal").modal();
-    });
+    });*/
+    window.open(formurl,null,
+"height=500,width=500,status=yes,toolbar=no,menubar=no,location=no");
 }
 function updatedeal(id)
 {
 	var d = "itemid="+id;
-	
-    $.ajax({
+	dealurl = dealurl+"/"+id;
+    /*$.ajax({
         type: "post",
         url: dealurl,
         data: d
     }).done(function(data) {
         $("#editbody").html(data);
         $("#editmodal").modal();
-    });
+    });*/
+    
+    window.open(dealurl,null,
+"height=500,width=500,status=yes,toolbar=no,menubar=no,location=no");
+
 }
 </script>
 
@@ -261,8 +267,7 @@ function updatedeal(id)
                                     	<option value="<?php echo $mf->id;?>" <?php if(@$_POST['manufacturer']==$mf->id){echo 'selected';}?>><?php echo $mf->title;?></option>
                                     	<?php }?>
                                     </select>
-                                    </td>
-                                    <td>
+                                    </td><td>
                                     &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My Iitems only
                                     </td>
                                     <td width="5">&nbsp;</td>
