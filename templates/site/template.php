@@ -10,6 +10,8 @@ if (!$function || $function == 'index')
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
+    	<link type="text/css" href="<?php echo base_url(); ?>cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
+		<script type="text/javascript" src="<?php echo base_url(); ?>cometchat/cometchatjs.php" charset="utf-8"></script>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="EZPZP">
