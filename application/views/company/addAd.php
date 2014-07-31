@@ -12,26 +12,24 @@
 
  <script type="text/javascript">// <![CDATA[
  $(document).ready(function(){
-	 $('#category').change(function(){ //any select change on the dropdown with id country trigger this code
-	 $("#items > option").remove(); //first of all clear select items
-	 var category_id = $('#category').val(); // here we are taking country id of the selected one.
+	 $('#category').change(function(){ 
+	 $("#items > option").remove();
+	 var category_id = $('#category').val();
 	 $.ajax({
 	 type: "POST",
-	 url: "<?php echo site_url('company/get_items'); ?>/"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 url: "<?php echo site_url('company/get_items'); ?>/"+category_id, 
 	 
-	 success: function(items) //we're calling the response json array 'cities'
+	 success: function(items)
 	 {
-	 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+	 $.each(items,function(id,myItems)
 	 {
-		 var opt = $('<option />'); // here we're creating a new select option with for each city
+		 var opt = $('<option />');
 		 opt.val(id);
 		 opt.text(myItems);
-		 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+		 $('#items').append(opt);
 	 });
 	 }
-	 
 	 });
-	 
 	 });
  });
  // ]]>
