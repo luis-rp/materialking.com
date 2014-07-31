@@ -15,7 +15,6 @@ class classified extends CI_Controller
     }
     
     public function index(){
-			echo 'I am here 2'; die;
     	$data['title'] = "Classified area";
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
