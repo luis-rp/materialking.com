@@ -17,7 +17,7 @@
 	 var country_id = $('#category').val(); // here we are taking country id of the selected one.
 	 $.ajax({
 	 type: "POST",
-	 url: "http://materialking.com/classified/get_items/"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 url: "<?php echo site_url('company/get_items/'); ?>"+category_id, //here we are calling our user controller and get_cities method with the country_id
 	 
 	 success: function(items) //we're calling the response json array 'cities'
 	 {
