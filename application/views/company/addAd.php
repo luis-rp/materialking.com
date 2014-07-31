@@ -1,10 +1,7 @@
-
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/admin/css/jquery-ui.css">
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
-        
-                <script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
+<script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
 <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-        
                 
 <style>
 .dataTables_filter
@@ -13,6 +10,32 @@
 }
 </style>
 
+ <script type="text/javascript">// <![CDATA[
+ $(document).ready(function(){
+	 $('#category').change(function(){ //any select change on the dropdown with id country trigger this code
+	 $("#items > option").remove(); //first of all clear select items
+	 var country_id = $('#category').val(); // here we are taking country id of the selected one.
+	 $.ajax({
+	 type: "POST",
+	 url: "http://materialking.com/classified/get_items/"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 
+	 success: function(items) //we're calling the response json array 'cities'
+	 {
+	 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+	 {
+		 var opt = $('<option />'); // here we're creating a new select option with for each city
+		 opt.val(id);
+		 opt.text(myItems);
+		 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+	 });
+	 }
+	 
+	 });
+	 
+	 });
+ });
+ // ]]>
+</script>
 
 
 <script type="text/javascript">
@@ -89,7 +112,7 @@
                      <div class="control-group">
                         <label class="control-label">Item</label>
                         <div class="controls">
-                            <select id="category" name="category">
+                            <select id="items" name="items">
                             	<?php foreach($items as $item){?>
                             	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
                             	<?php }?>

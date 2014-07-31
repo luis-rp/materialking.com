@@ -304,5 +304,28 @@ class items_model extends Model {
             return false;
         }
     }
+	
+	
+	// Get Items
+	function get_items($categoryId = null){
+		 $this->db->select('id, itemname');
+		 
+		 if($categoryId != NULL){
+			 $this->db->where('category', $categoryId);
+		 }
+		 
+		 $query = $this->db->get('pms_items');
+		 
+		 $items = array();
+		 
+		 if($query->result()){
+			 foreach ($query->result() as $item) {
+				$items[$item->id] = $item->itemname;
+			 }
+			 return $items;
+		 }else{
+		 	return FALSE;
+		 }
+	}
     
 }
