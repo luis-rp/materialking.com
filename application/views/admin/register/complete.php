@@ -24,8 +24,8 @@
 					<input type="password" name="repassword" placeholder="Confirm Password" id="repassword" value="<?php if(isset($user->password) && $user->password!="") echo $user->password;?>" tabindex="3" style="margin-top:3px;" required>
 					<input type="text" name="city" placeholder="City" id="city" value="<?php if(isset($user->city) && $user->city!="") echo $user->city;?>" tabindex="4" required><br/>
 					<input type="text" name="state" placeholder="State" id="state" value="<?php if(isset($user->state) && $user->state!="") echo $user->state;?>" tabindex="5" required><br/>
-					<!--<input type="text" name="zip" placeholder="Zip" id="zip" value="<?php if(isset($user->zip) && $user->zip!="") echo $user->zip;?>" tabindex="1" required>-->
-					<textarea name="address" placeholder="Complete Address, Include City/State/Zip" id="address" required rows="4" style="margin-top:3px; width: 96%"><?php if(isset($user->address) && $user->address!="") echo $user->address;?></textarea>
+					<input type="text" name="zip" placeholder="Zip" id="zip" value="<?php if(isset($user->zip) && $user->zip!="") echo $user->zip;?>" tabindex="1" required>
+					<textarea name="street" placeholder="Street Address" id="street" required rows="4" style="margin-top:3px; width: 96%"><?php if(isset($user->street) && $user->street!="") echo $user->street;?></textarea>
 				</div>
 					<input type="hidden" name="hiddenuserid" id="hiddenuserid" value="<?php if(isset($user->id) && $user->id!="") echo $user->id; ?>"/> 
 				<button type="submit" class="btn btn-primary btn-block" tabindex="4">Continue</button>

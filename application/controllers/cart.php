@@ -309,14 +309,14 @@ class cart extends CI_Controller
 			if($this->session->userdata('site_loggedin'))
 			{
 				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
-				
-				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email);
+				$subject = "Order Details from ezpzp";
+				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email, $subject);
 			}
 			else 
 			{
 				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
-				
-				$this->sendEmail($pdftopurchasingadmin, $_POST['email']);
+				$subject = "Order Details from ezpzp";
+				$this->sendEmail($pdftopurchasingadmin, $_POST['email'], $subject);
 			}
 			$companies = array();
 			$companiesamount = array();
@@ -329,7 +329,8 @@ class cart extends CI_Controller
 					$cd = $this->db->get('company')->row();
 					
 					//echo $ci['company'].$cd->primaryemail.'>'.$companies[$ci['company']].'<br/>';
-					$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $cd->title);
+					$subject = "Order Details from ezpzp";
+					$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject, $cd->title);
 				}
 				if(!isset($companiesamount[$ci['company']]))
 				    $companiesamount[$ci['company']] = 0;
@@ -429,7 +430,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 ";
                       //echo $company->primaryemail.'<br>';
                       //echo $transferbody;
-                      $this->sendEmail($transferbody,$company->primaryemail, $company->title);
+                      $subject = "Payment Details from ezpzp";
+                      $this->sendEmail($transferbody,$company->primaryemail, $subject, $company->title);
 			    }
 			}
 			
@@ -591,7 +593,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		if($this->session->userdata('site_loggedin'))
 		{
 			$pdftopurchasingadmin = $this->orderpdf('',true,'Manual');
-			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email);
+			$subject = "Order Details from ezpzp";
+			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email,$subject);
 		}
 		$companies = array();
 		foreach($cart as $ci)
@@ -603,7 +606,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$this->db->where('id',$ci['company']);
 				$cd = $this->db->get('company')->row();
 				
-				$this->sendEmail($companies[$ci['company']],$cd->primaryemail);
+				$subject = "Order Details from ezpzp";
+				$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject);
 				
 			}
 		}
@@ -863,7 +867,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		return $pdfname;
 	}
 	
-	function sendEmail($html,$email,$name='',$attachment='')
+	function sendEmail($html,$email,$subject,$name='',$attachment='')
 	{
 		if($this->session->userdata('site_loggedin'))
 			$settings = (array)$this->settings_model->get_setting_by_admin ($this->session->userdata('site_loggedin')->id);
@@ -876,7 +880,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
         
         $this->email->to($email); 
         
-        $this->email->subject('Payment Details from ezpzp');
+        $this->email->subject($subject);
         $this->email->message($html);	
         $this->email->set_mailtype("html");
         $this->email->send();

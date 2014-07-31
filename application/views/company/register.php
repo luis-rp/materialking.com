@@ -32,12 +32,11 @@
                       </div>
                       
                       <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">Complete Address, Include City/State/Zip *</label>
-                       <input name="address" id="address" type="text"  class="form-control" required>
-                      
+                       <label class="form-label text-success semi-bold general">street Address*</label>
+                       <input name="street" id="street" type="text"  class="form-control" required>
                       </div>
                       
-                      <?php if(0){?>
+                      <?php if(1){?>
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">City</label>
                        <input name="city" id="city" type="text" class="form-control">
@@ -51,6 +50,12 @@
                         	<?php }?>
                          </select>
                       </div>
+                      
+                       <div class="col-md-6 col-sm-6">
+                       <label class="form-label text-success semi-bold general">Zip</label>
+                       <input name="zip" id="zip" type="text" class="form-control">
+                      </div>
+                      
                       <?php }?>
                       
                        <div class="col-md-6 col-sm-6">

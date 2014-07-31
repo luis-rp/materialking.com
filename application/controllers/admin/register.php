@@ -79,7 +79,7 @@ class Register extends CI_Controller
 				//echo "<pre>",print_r($request['registration']); die;
 				$request2 = $request['registration'];
 				//echo "<pre>",print_r($request2); die;
-				$request2['address'] = $request2['location']['name'];
+				//$request2['address'] = $request2['location']['name'];
 				
 				if($request2['location']['name']!=""){
 					
@@ -239,6 +239,26 @@ class Register extends CI_Controller
 		if(!@$_POST['regkey'])
 			die('Wrong access');
 		$errormessage = '';
+		
+			$completeaddress="";
+            if($_POST['street'])
+            {
+            	$completeaddress.=$_POST['street'].",";
+            }
+            if($_POST['city'])
+            {
+            	$completeaddress.=$_POST['city'].",";
+            }
+            if($_POST['state'])
+            {
+            	$completeaddress.=$_POST['state'].",";
+            }
+            if($_POST['zip'])
+            {
+            	$completeaddress.=$_POST['zip'];
+            }
+
+        $_POST['address'] = $completeaddress;
 		
 		$regkey = $_POST['regkey'];
 		$this->db->where('regkey',$regkey);

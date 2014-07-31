@@ -168,7 +168,7 @@ $(document).ready(function(){
 			    	</tr>
 			    	<?php 
 			    		}
-			    		
+			    		$totalallquantity += $totalquantity;
 		   			    $totalremaining = $totalprice - $totalpaid;
 		   			
     		   			echo '<script>$("#totalquantity'.$i.'").html("'.$totalquantity.'");</script>';

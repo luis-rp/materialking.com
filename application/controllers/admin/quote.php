@@ -2546,6 +2546,7 @@ with the transfer# {$tobj->id}.
     function getitembycode() 
     {
         $code = $_POST['code'];
+        if(isset($projectid))
         $projectid = $_POST['projectid'];
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);

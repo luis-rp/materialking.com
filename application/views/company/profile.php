@@ -187,9 +187,9 @@ function addEmail()
 				                      <?php }?>
 				                      
 				                      <div class="form-group">
-				                        <label class="form-label">Complete Address, Include City/State/Zip *</label>
+				                        <label class="form-label">Street Address *</label>
 				                        <div class="controls">
-				                          <textarea rows="2"  class="form-control" name="address"><?php echo $company->address;?></textarea>
+				                          <textarea rows="2"  class="form-control" name="street"><?php echo $company->street;?></textarea>
 				                        	
 				                        </div>
 				                      </div>

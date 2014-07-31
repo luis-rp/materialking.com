@@ -260,11 +260,18 @@ $(function() {
             	   myfloat = parseFloat(val[index]);
 				ser[index] = {"name":cat[index],"data":[myfloat]};
                    }
-               ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
-				var save = val.max() - val.min();
-				save = save.toFixed(2);
-				var savepo = val.max() - parseFloat($("#selectedtotal").text());
-				savepo = savepo.toFixed(2);
+               
+                   if(cat.length>1) {
+                   	ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
+
+                   	var save = val.max() - val.min();
+                   	save = save.toFixed(2);
+                   	var savepo = val.max() - parseFloat($("#selectedtotal").text());
+                   	savepo = savepo.toFixed(2);
+                   	var textsubtitle = '*Saving '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   }else
+                   var textsubtitle = "";
+               
                $('#container-highchart').highcharts({
                    chart: {
                        type: 'column',
@@ -274,7 +281,7 @@ $(function() {
                        text: 'Comparison'
                    },
                    subtitle: {
-                	   text: '*Saving '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$',
+                	   text: textsubtitle,
                        useHTML:true,
                        align: 'right',
                        x: -50

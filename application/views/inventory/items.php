@@ -187,7 +187,7 @@ function updateitem(id)
         $("#editmodal").modal();
     });*/
     window.open(formurl,null,
-"height=500,width=500,status=yes,toolbar=no,menubar=no,location=no");
+"height=700,width=700,status=yes,toolbar=no,menubar=no,location=no");
 }
 function updatedeal(id)
 {
@@ -203,7 +203,7 @@ function updatedeal(id)
     });*/
     
     window.open(dealurl,null,
-"height=500,width=500,status=yes,toolbar=no,menubar=no,location=no");
+"height=700,width=700,status=yes,toolbar=no,menubar=no,location=no");
 
 }
 </script>
