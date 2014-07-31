@@ -28,7 +28,7 @@ define('DB_PORT',			$db['port']								 );
 define('DB_USERNAME',			$db['default']['username']				 );
 define('DB_PASSWORD',			$db['default']['password']				 );
 define('DB_NAME',			$db['default']['database'] 				 );
-define('TABLE_PREFIX',			""										 );
+define('TABLE_PREFIX',			"pms_"										 );
 define('DB_USERTABLE',			"users"								     );
 define('DB_USERTABLE_USERID',		"id"								     );
 define('DB_USERTABLE_NAME',		"username"								 );
