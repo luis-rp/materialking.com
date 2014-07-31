@@ -14,10 +14,10 @@
  $(document).ready(function(){
 	 $('#category').change(function(){ //any select change on the dropdown with id country trigger this code
 	 $("#items > option").remove(); //first of all clear select items
-	 var country_id = $('#category').val(); // here we are taking country id of the selected one.
+	 var category_id = $('#category').val(); // here we are taking country id of the selected one.
 	 $.ajax({
 	 type: "POST",
-	 url: "<?php echo site_url('company/get_items/'); ?>"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 url: "<?php echo site_url('company/get_items'); ?>/"+category_id, //here we are calling our user controller and get_cities method with the country_id
 	 
 	 success: function(items) //we're calling the response json array 'cities'
 	 {
@@ -38,22 +38,7 @@
 </script>
 
 
-<script type="text/javascript">
 
-    $(document).ready(function() {        
-        
-   //     $('#description').wysihtml5();
-        
-        //$('#description').wysihtml5();
-        //$('#details').wysihtml5();
-
-
-       // $('#tagsInput').tagsinput();
-    });
-
-
-
-</script>
 
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>

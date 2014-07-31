@@ -314,7 +314,7 @@ class items_model extends Model {
 			 $this->db->where('category', $categoryId);
 		 }
 		 
-		 $query = $this->db->get('pms_items');
+		 $query = $this->db->get('pms_item');
 		 
 		 $items = array();
 		 
