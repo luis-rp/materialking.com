@@ -903,7 +903,7 @@ class Company extends CI_Controller {
     }
   
   	// List Items of the selected Categories
-  	 function get_items($categoryId){
+  	 function getitems($categoryId){
 		 echo "here"; exit;
 		 //$this->load->model('item_model');
 		 header('Content-Type: application/x-json; charset=utf-8');

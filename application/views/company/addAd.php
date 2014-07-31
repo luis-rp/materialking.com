@@ -17,7 +17,7 @@
 	 var category_id = $('#category').val();
 	 $.ajax({
 	 type: "POST",
-	 url: "<?php echo site_url('company/get_items'); ?>/"+category_id, 
+	 url: "<?php echo site_url('company/getitems'); ?>/"+category_id, 
 	 
 	 success: function(items)
 	 {
