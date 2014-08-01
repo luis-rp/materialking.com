@@ -95,19 +95,20 @@ $(document).ready(function(){
 									    	{
 									    		$i++;
 									      ?>
-                                            <tr>
-                                                <td><?php echo $order->ordernumber;?></td>
-                                                <td><?php echo $order->purchaser->companyname;?></td>
-                                                <td><?php echo $order->paymentstatus;?></td>
-                                                <td><?php if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; ?></td>
-                                                <td><?php echo date("d F Y", strtotime($order->purchasedate));?></td>
-                                                <td><?php echo $order->amount;?></td>
-                                                <td><?php echo $order->type;?></td>
-                                                <td><?php echo $order->txnid;?></td>
-                                                <td>
+                                           <tr>
+                                                <td><?php if(isset($order->ordernumber)) echo $order->ordernumber;?></td>
+                                                <td><?php if(isset($order->purchaser->companyname)) echo $order->purchaser->companyname;?></td>
+                                                <td><?php if(isset($order->paymentstatus)) echo $order->paymentstatus;?></td>
+                                                <td><?php if(isset($order->status)) { if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; } ?></td>
+                                                <td><?php if(isset($order->purchasedate)) echo date("d F Y", strtotime($order->purchasedate));?></td>
+                                                <td><?php if(isset($order->amount)) echo $order->amount;?></td>
+                                                <td><?php if(isset($order->type)) echo $order->type;?></td>
+                                                <td><?php if(isset($order->txnid)) echo $order->txnid;?></td>
+                                                <td><?php if(isset($order->id)) { ?>
                                                 	<a href="<?php echo site_url('order/details/'.$order->id);?>">
                                                 		<span class="icon icon-search">Details</span>
                                                 	</a>
+                                                	<?php } ?>
                                                 </td>
                                             </tr>
                                           <?php } ?>

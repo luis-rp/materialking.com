@@ -185,7 +185,7 @@
                                         <div class="body span6">
                                             <div class="title-price row">
                                                 <div class="title span4">
-                                                    <h2><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                                    <h2 style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
                                                     <p>
                                                         <?php echo $item->notes; ?>
                                                     </p>

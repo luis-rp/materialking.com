@@ -1,10 +1,7 @@
-
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/admin/css/jquery-ui.css">
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
-        
-                <script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
+<script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js?ver=2013-07-18'></script>
 <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-        
                 
 <style>
 .dataTables_filter
@@ -13,24 +10,33 @@
 }
 </style>
 
-
-
-<script type="text/javascript">
-
-    $(document).ready(function() {        
-        
-   //     $('#description').wysihtml5();
-        
-        //$('#description').wysihtml5();
-        //$('#details').wysihtml5();
-
-
-       // $('#tagsInput').tagsinput();
-    });
-
-
-
+ <script type="text/javascript">// <![CDATA[
+ $(document).ready(function(){
+	 $('#category').change(function(){ 
+	 $("#items > option").remove();
+	 var category_id = $('#category').val();
+	 $.ajax({
+	 type: "POST",
+	 url: "<?php echo site_url('company/getitems'); ?>/"+category_id, 
+	 
+	 success: function(items)
+	 {
+	 $.each(items,function(id,myItems)
+	 {
+		 var opt = $('<option />');
+		 opt.val(id);
+		 opt.text(myItems);
+		 $('#items').append(opt);
+	 });
+	 }
+	 });
+	 });
+ });
+ // ]]>
 </script>
+
+
+
 
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
@@ -89,7 +95,7 @@
                      <div class="control-group">
                         <label class="control-label">Item</label>
                         <div class="controls">
-                            <select id="category" name="category">
+                            <select id="items" name="items">
                             	<?php foreach($items as $item){?>
                             	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
                             	<?php }?>
