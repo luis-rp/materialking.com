@@ -58,8 +58,8 @@ function getUserID() {
 	}
 	if (!empty($_COOKIE['ci_session'])) {
 		$uid = unserialize($_COOKIE['ci_session']);
-		if(!empty($uid['userid'])){
-			$userid = $uid['userid'];
+		if(!empty($uid['id'])){
+			$userid = $uid['id'];
 		}
 	}
 	
