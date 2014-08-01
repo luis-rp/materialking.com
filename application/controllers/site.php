@@ -880,13 +880,16 @@ class site extends CI_Controller
         $cat_data = $this->db->where('id',$item->category)->get('category')->result();
         $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
         $mainimg = new stdClass();
-        if($item->item_img) 
+        if($item->item_img)
         {
             $mainimg->filename = $item->item_img;
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $imageinfo = finfo_file($finfo, "uploads/item/".$item->item_img);
-            $filetype = explode("/",$imageinfo);
-            $data['filetype'] = $filetype[0];
+            if(file_exists("./uploads/item/".$item->item_img)){
+            	$imageinfo = finfo_file($finfo, "uploads/item/".$item->item_img);
+            	$filetype = explode("/",$imageinfo);
+            	$data['filetype'] = $filetype[0];
+            }else
+            $data['filetype'] = "image";
         }
         else
         {

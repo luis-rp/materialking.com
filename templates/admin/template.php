@@ -249,6 +249,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                         return true
                                     }
                                 }
+                                if (l.hasOwnProperty('catname')) {
+                                    if (~l['catname'].toString().toLowerCase().indexOf(b.search.toLowerCase())) {
+                                        return true
+                                    }
+                                }
                                 return false
                             })
                         }

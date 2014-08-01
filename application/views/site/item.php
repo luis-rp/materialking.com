@@ -418,7 +418,7 @@ left:0px;}
 										$tag = trim($tag);
 										
 										?>
-                                        <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '|', urlencode($tag)));?>"><?php echo $tag;?></a></li>
+                                        <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode($tag)));?>"><?php echo $tag;?></a></li>
                                         <?php } ?></ul><?php } ?></div>
                                     </p>
                                 </div>

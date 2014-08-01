@@ -215,7 +215,7 @@ class catcode extends CI_Controller {
         $this->validation->catname = $cat[0]->catname;
         $this->validation->parent_id = $cat[0]->parent_id;
         
-      //  $data['banner_image'] = $cat[0]->banner_image;
+        $data['banner_image'] = $cat[0]->banner_image;
         
         $data ['heading'] = 'Update Category';
         $data ['message'] = '';

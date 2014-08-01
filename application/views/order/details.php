@@ -7,12 +7,12 @@ $(document).ready( function() {
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
-			<h3>Order items for order# <?php echo $order->ordernumber?></h3>
-			<?php if($order->txnid){?>
+			<h3>Order items for order# <?php if(isset($order->ordernumber)) echo $order->ordernumber?></h3>
+			<?php if(isset($order->txnid)) {?>
 			<h3>Transaction ID: <?php echo $order->txnid?></h3>
 			<?php }?>
-			<h3>Buyer Email: <?php echo $order->email?></h3>
-			<h3>Buyer Company: <?php echo $order->purchaser->companyname?></h3>
+			<h3>Buyer Email: <?php if(isset($order->email)) echo $order->email?></h3>
+			<h3>Buyer Company: <?php  if(isset($order->purchaser->companyname)) echo $order->purchaser->companyname?></h3>
 		</div>		
 	   <div id="container">
 		<?php 
