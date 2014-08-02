@@ -1,5 +1,6 @@
-
-
+<style>
+.views-exposed-widget{ float:left;}
+</style>
 <section id="big-map">
 
 		<div id="flatads-main-map"></div>
@@ -201,14 +202,57 @@
 
 			<div class="container">
 
-				<div class="advanced-search-widget-content">
+				<div class="advanced-search-widget-content" style="float:left; width:100%;">
 
-					<div class="advanced-search-title">
+					<!--<div class="advanced-search-title">
 
 						Search around my position
 
-					</div>
+					</div>-->
+                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="get" action="http://alexgurghis.com/themes/flatads">
+                    
+                    <div class="views-exposed-widget views-widget-filter-search_api_views_fulltext" id="edit-search-api-views-fulltext-wrapper">
+					        <div class="views-widget">
+					          	<div class="control-group form-type-textfield form-item-search-api-views-fulltext form-item">
+									<div class="controls"> 
+										<input type="text" class="form-text" maxlength="128" size="30" value="" name="s" id="edit-search-api-views-fulltext" placeholder="Enter keyword...">
+									</div>
+								</div>
+						    </div>
+						</div>
+                        
+                        <div class="views-exposed-widget views-widget-filter-field_ad_location" id="edit-ad-location-wrapper">
+						   	<div class="views-widget">
+						        <div class="control-group form-type-select form-item-ad-location form-item">
+									<div class="controls"> 
+										
+                                        <select id="category" name="category">
+                            	<?php foreach($categories as $cat){?>
+                            	<option value="<?php echo $cat->id;?>" ><?php echo $cat->catname;?></option>
+                            	<?php }?>
+                            </select>
+									</div>
+								</div>
+						    </div>
+						</div>
 
+
+                        <div class="views-exposed-widget views-widget-filter-field_category" id="edit-field-category-wrapper">
+                                                    <div class="views-widget">
+                                                        <div class="control-group form-type-select form-item-field-category form-item">
+                                                            <div class="controls"> 
+                                                                <select id="items" name="items">
+                            	<?php foreach($items as $item){?>
+                            	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
+                            	<?php }?>
+                            </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                                
 					<div class="advanced-search-slider">
 
 						<div class="geo-location-button">
@@ -220,12 +264,13 @@
 						<div id="advance-search-slider" class="value-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false">
 							<a class="ui-slider-handle ui-state-default ui-corner-all" href="#">
 								<span class="range-pin">
-									<input type="text" name="geo-radius" id="geo-radius" value="100" data-default-value="100">
+									<input type="text" name="geo-radius" id="geo-radius" value="500" data-default-value="1000">
 								</span>
 							</a>
 						</div>
 
 					</div>
+                    </form>
 
 				</div>
 
@@ -391,9 +436,45 @@
 
     </section>
 
-    <script>
+    
+ <script type="text/javascript">
+$.noConflict();
+ </script>   
+ <script>
 		// perform JavaScript after the document is scriptable.
-		jQuery(function() {
-			jQuery("ul.tabs").tabs("> .pane", {effect: 'fade', fadeIn: 200});
-		});
-	</script>
+		jQuery(document).ready(function() {
+		//	jQuery("ul.tabs").tabs("> .pane", {effect: 'fade', fadeIn: 200});
+		
+		
+	 jQuery('#category').change(function(){ //any select change on the dropdown with id country trigger this code
+	 jQuery("#items > option").remove(); //first of all clear select items
+	 var category_id = jQuery('#category').val(); // here we are taking country id of the selected one.
+	 jQuery.ajax({
+	 type: "POST",
+	 url: "<?php echo site_url('classified/get_items'); ?>/"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 
+	 success: function(items) //we're calling the response json array 'cities'
+	 {
+	 jQuery.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+	 {
+		 var opt = jQuery('<option />'); // here we're creating a new select option with for each city
+		 opt.val(id);
+		 opt.text(myItems);
+		 jQuery('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+	 });
+	 }
+	 
+	 });
+	 
+	 });
+ });
+ // ]]>
+</script>
+
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/chosen.jquery.min.js'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/jquery.isotope.min.js'></script>
+<script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/modernizr.touch.js'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/jquery.ui.touch-punch.min.js'></script>
+
+
