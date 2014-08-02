@@ -80,4 +80,19 @@ class classified extends CI_Controller
     
     	redirect('classified/ad/'.$a_id);
     }
+	
+			// List Items of the selected Categories
+  	 function get_items($categoryId){
+
+		// $this->load->model('items_model');
+		 header('Content-Type: application/x-json; charset=utf-8');
+		 echo(json_encode($this->items_model->get_items($categoryId)));
+	}
+	
+	function search(){
+		
+		echo "==>> This is that!!"; exit;	
+		
+		
+	}
 }
