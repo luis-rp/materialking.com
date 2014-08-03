@@ -27,6 +27,7 @@ class Company extends CI_Controller {
     }
 
     public function index() {
+		
         $this->login();
     }
 
@@ -864,11 +865,11 @@ class Company extends CI_Controller {
     }
   
   	// List Items of the selected Categories
-  	 function getitems($categoryId){
-		 echo "here"; exit;
-		 //$this->load->model('item_model');
+  	 function get_items($categoryId){
+
+		// $this->load->model('items_model');
 		 header('Content-Type: application/x-json; charset=utf-8');
-		 echo(json_encode($this->item_model->get_items($categoryId)));
+		 echo(json_encode($this->items_model->get_items($categoryId)));
 	}
 
 

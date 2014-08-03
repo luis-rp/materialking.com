@@ -10,11 +10,15 @@ class classified extends CI_Controller
     	parent::__construct();
     	$data['title'] = 'Home';
     	$this->load->model('homemodel', '', TRUE);
+		 $this->load->model('admin/catcode_model');
+        $this->load->model('admin/itemcode_model');
+		
     	$this->load = new My_Loader();
     	$this->load->template('../../templates/classified/template', $data);
     }
     
     public function index(){
+		//echo "===="; exit;
     	$data['title'] = "Classified area";
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
@@ -24,6 +28,22 @@ class classified extends CI_Controller
     		$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
     	}
     	$data['ads'] = $res;
+		
+		/*====*/
+		$catcodes = $this->catcode_model->get_categories_tiered();
+     $itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+		
+		/*===============*/
     	$this->load->view('classified/index', $data);
     }
     public function ad($id){
@@ -81,7 +101,7 @@ class classified extends CI_Controller
     	redirect('classified/ad/'.$a_id);
     }
 	
-			// List Items of the selected Categories
+		// List Items of the selected Categories
   	 function get_items($categoryId){
 
 		// $this->load->model('items_model');
