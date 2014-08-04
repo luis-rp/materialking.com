@@ -37,11 +37,7 @@ left:0px;}
             preloadImages: false,
             alwaysOn:false
         });*/
-		
-		jwplayer("myvideo5").setup({
-        	file: "<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"               
-    });
-    
+		    
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 		$("#contentimage").elevateZoom(); 
 	});
