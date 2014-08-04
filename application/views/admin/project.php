@@ -15,12 +15,12 @@ $(document).ready(function(){
 	
 	<?php echo $message; ?>
    <?php echo $this->session->flashdata('message'); ?>
-   <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
+   <form class="form-horizontal" id="form-add-prj" method="post" action="<?php echo $action; ?>"> 
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
     <br/>
     
     <div class="control-group">
-	    <label class="control-label">Project Name</label>
+	    <label class="control-label">Project Name *</label>
 	    <div class="controls">
 	      <input type="text" id="title" name="title" class="span4" value="<?php echo $this->validation->title; ?>">
 	      <?php echo $this->validation->title_error;?>
@@ -44,15 +44,15 @@ $(document).ready(function(){
     </div>
     
     <div class="control-group">
-	    <label class="control-label">Start Date</label>
+	    <label class="control-label">Start Date *</label>
 	    <div class="controls">
 	      <input type="text" id="startdate" name="startdate" class="span3" 
 	      data-date-format="mm/dd/yyyy"
-	      value="<?php if($this->validation->startdate) echo date("m/d/Y", strtotime($this->validation->startdate)); ?>">
+	      value="<?php if($this->validation->startdate){ echo date("m/d/Y", strtotime($this->validation->startdate)); }else{ echo date("m/d/Y");} ?>">
 	      <?php echo $this->validation->startdate_error;?>
 	    </div>
     </div>
-    
+    <div>*Please be sure to fill out the Project Information and click Save*</div>
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">

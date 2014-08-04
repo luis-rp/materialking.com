@@ -44,7 +44,7 @@ $(document).ready(function(){
     </div>
     
     <div class="control-group">
-    <label class="control-label">Cost Code:</label>
+    <label class="control-label">Cost Code *:</label>
     <div class="controls">
       <input type="text" id="code" name="code" class="span3" value="<?php echo $this->validation->code; ?>">
       <?php echo $this->validation->code_error;?>
@@ -52,7 +52,7 @@ $(document).ready(function(){
     </div>
     
     <div class="control-group">
-    <label class="control-label">Budget:</label>
+    <label class="control-label">Budget *:</label>
     <div class="controls">
       $ &nbsp;<input type="text" id="cost" name="cost" class="span2" 
       onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"

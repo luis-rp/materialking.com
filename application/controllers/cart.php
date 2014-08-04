@@ -674,8 +674,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				
 			$this->db->where('id',$item['itemid']);
 			$current_item = $this->db->get('item')->row();
-			$this->db->where('id',$item['itemid']);
-			$current_item = $this->db->get('item')->row();
+			
 			// create addresses
 			$to_address_params = array("name"    => $_POST['shippingName'],
 					"street1" => $_POST['shippingStreet'],
@@ -721,6 +720,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			}else{
 				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
 				$item['rate'] = $rate;
+				$shipment->buy($rate);
 			}
 			$data['cart'][]=$item;
 		}

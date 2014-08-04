@@ -50,6 +50,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
+        
 
         <style type="text/css">
             #theme_switcher
@@ -82,8 +83,15 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
 				//Boostratp tour only available on these pages :dashboard,projects,project,costcodelist,costcode
-                <?php if(isset($viewname) && ($viewname=="dashboard" || $viewname=="projects" || $viewname=="project" || $viewname=="costcodelist" || $viewname=="costcode" )){ ?>
-                //Responsive-tour
+				<?php 
+				//if(isset($viewname) && ($viewname=="dashboard" || $viewname=="projects" || $viewname=="project" || $viewname=="costcodelist" || $viewname=="costcode" )){
+				/*if($this->session->userdata('usertype_id') == 3){ 
+				
+				}else{
+               
+                	if($this->session->userdata('tour') == "unfinished"){*/
+                ?>
+					var field;
                 tour = new Tour({
   		    	  steps: [
   		    	  {
@@ -128,8 +136,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
     				      content: "Fill out the form and click Save Project",
     				      reflex:true,
     				      onNext: function(tour){
-        				    
-						//	$("#step6").click();
+        				  
+    				    	  $("#form-add-prj").submit();
         				      }
     				   
 			  		 },
@@ -137,7 +145,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 			  			 path:"/admin/project",
 				    	    element: "#step7",
 				    	    title: "Step 7",
-				    	    prev:-1,
+				    	    next:-1,
 				    	    content: "Congratulations - You have created your first project. Now lets create a costcode",
 
 					 },
@@ -147,6 +155,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				    	    title: "Step 8",
 				    	    content: "Click the Manage tab",
 				    	    reflex:true,
+				    	    prev:-1,
 				    		  onNext:function(tour){
 		  							$("#step3 a").click();
 		    	  		    	    }
@@ -167,6 +176,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				    	    title: "Step 10",
 				    	    content: "Click Add Cost Code",
 				    	    reflex:true,
+				    	    
 
 					 },
 					 {
@@ -175,6 +185,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				    	    title: "Step 11",
 				    	    content: "Fill out the form and click Update Costcode",
 				    	    reflex:true,
+				    	    next:-1,
 
 					 },
 					 {
@@ -187,7 +198,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					 },
 			  		 
 			    	  
-  		    	]});
+  		    	],
+				onEnd:function(tour){
+						$.ajax({
+							url:"<?php echo base_url("/admin/admin/finish_user_tour");?>",
+							});
+					}
+  		    	});
                 <?php if(isset($viewname) && $viewname=="dashboard"){?>
                tour.restart();
                <?php } ?>
@@ -203,17 +220,19 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					}
   	  		    });*/
   		    	
-  		     $("#pages-dropdown","#step3").click(function(e){
+  		  /*   $("#pages-dropdown","#step3").click(function(e){
   	  	
   	  		    	//alert(tour.getCurrentStep());
   	  		    	 
   	  		    	if(e.hasOwnProperty('originalEvent') && (tour.getCurrentStep()==2 || tour.getCurrentStep()==7)){
 						tour.next();
   	  		    	}
-  	  		    });
+  	  		    });*/
 
 
-  	  		    <?php } ?>
+  	  		    <?php //} 
+				//	} 
+               ?>
             });
         </script>
 <?php } ?>

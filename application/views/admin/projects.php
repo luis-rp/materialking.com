@@ -1,4 +1,10 @@
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+         <script type="text/javascript">
+       
+            $(document).ready(function() {
+            //    tour.goTo(6);
+            });
+            </script>
 <?php if(isset($jsfile)) include $this->config->config['base_dir'].'templates/admin/gridfeed/'.$jsfile;?>
 
 	<style type="text/css">
