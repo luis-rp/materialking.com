@@ -47,6 +47,8 @@ class network extends CI_Controller {
             }
             $temp = array();
             $temp['site_loggedin'] = $row;
+            $temp['site_loggedin']->comet_user_id = $row->id;
+            $temp['site_loggedin']->comet_user_email = $row->email;
             $this->session->set_userdata($temp);
             
             $this->session->set_userdata($row);
