@@ -883,12 +883,6 @@ class site extends CI_Controller
         if($item->item_img)
         {
             $mainimg->filename = $item->item_img;
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            if(file_exists("./uploads/item/".$item->item_img)){
-            	$imageinfo = finfo_file($finfo, "uploads/item/".$item->item_img);
-            	$filetype = explode("/",$imageinfo);
-            	$data['filetype'] = $filetype[0];
-            }else
             $data['filetype'] = "image";
         }
         else
@@ -1262,6 +1256,7 @@ class site extends CI_Controller
     public function tag($tag){
     	$tag = str_replace('%7C', '/', $tag);
     
+    	$tag=urldecode($tag);
     	$tag=urldecode($tag);
     	$limit = 18;
     	$this->items_model->set_keyword(false);

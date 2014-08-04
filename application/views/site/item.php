@@ -76,18 +76,15 @@ left:0px;}
 		return false;
 	}
 	
-	function changeimage(source)
+	function changeimage(source, srctype)
 	{
-		if(isVideo(source)){
+		if(srctype == 'video'){
 			$('#videolist').css({display: "block"});
 			$('#imagelist').css({display: "none"});
-			/*params = document.getElementsByTagName('param');
-			console.log(params);
-			params[0].value = source;*/
 			
-			jwplayer("myvideo5").setup({
-        	file: source               
-    });
+			embedded = document.getElementsByTagName('embed');
+			console.log(embedded);
+			embedded[0].src = "http://www.youtube.com/v/"+source;
     
 		}else {
 		$('#imagelist').css({display: "block"});
@@ -340,15 +337,7 @@ left:0px;}
                                     	
                                         </div>
                                         <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
-                                        <!-- <object width="338" height="300">
-    <param name="src" value="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>">
-    <param name="autoplay" value="false">
-    <param name="controller" value="true">
-    <param name="bgcolor" value="#333333">
-    <embed TYPE="application/x-mlayer2" src="./video/video.wmv" autostart="false" loop="false" width="250" height="250" controller="true" bgcolor="#333333">
-    </embed>
-</object> -->
-                                        <div width="338" height="300" id="myvideo5"></div>     
+                                        <embed width="260" height="280" src="" type="application/x-shockwave-flash">     
                                         </div>
                                     	<br/>
                                         
@@ -356,8 +345,11 @@ left:0px;}
                                     	<ul id="thumblist" class="clearfix" >
                                     		<?php foreach($item->images as $img){?>
                                     		<li>
-                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>');">
-                                    		<img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>
+                                    		<?php if (isset($img->is_video) && $img->is_video ==1 ) { ?>
+                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo $img->filename ?>', 'video');">                             <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/videologo.jpg') ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>         		
+                                    		<?php } else { ?>
+                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>', 'image');"> <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>       <?php } ?> 
+                                    		
                                     		</li>
                                     		<?php }?>
                                     	</ul>

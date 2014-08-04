@@ -454,7 +454,7 @@ if (!$function || $function == 'index')
                     &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/register')?>">Create Purchasing Account</a>
                      <br/>
                     <br/>
-                    &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/login/index')?>">Login</a>
+                    &nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="$('#loginmodal').modal('show'); $('#createmodal').modal('hide');">Login</a>
                      <br/>
                     <br/>
                      <br/>

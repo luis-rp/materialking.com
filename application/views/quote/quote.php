@@ -16,6 +16,19 @@ $(document).ready(function(){
 	$('.substituterow').hide();
 });
 
+function setExpDate(interval){
+    
+    var today = new Date();
+    var expDate = today;
+    expDate.setDate(today.getDate() + interval);
+    
+    var dd = expDate.getDate();
+    var mm = expDate.getMonth()+1; //January is 0!
+    var yyyy = expDate.getFullYear();
+    if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var newexpDate = mm+'/'+dd+'/'+yyyy;
+    $('.expire_date').val(newexpDate);    
+}
+
 function calculatetotalprice(id)
 {
 	var quantityid = 'quantity'+id;
@@ -293,7 +306,7 @@ function viewPricelist(itemcode,itemname,price)
 							    			<?php if($q->willcall){
 							    			    echo '<br/>For Pickup/Will Call';
 							    			}?>
-							    			<input type="text" class="date highlight nopad input-sm" name="s_daterequested<?php echo $q->id;?>" data-date-format="mm/dd/yyyy" onchange="$('#costcode<?php echo $q->id;?>').focus();"/>
+							    			<input style="width:100px;" type="text" class="date highlight nopad input-sm" name="s_daterequested<?php echo $q->id;?>" data-date-format="mm/dd/yyyy" onchange="$('#costcode<?php echo $q->id;?>').focus();"/>
 							    			
 							    			<input type="hidden" name="s_willcall<?php echo $q->id?>" value="<?php echo $q->willcall;?>"/>
 							    		</td>
@@ -343,7 +356,7 @@ function viewPricelist(itemcode,itemname,price)
 							    	</tr>
                                                                 <tr>
                                                                     <td> Expire Date</td>
-                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):'';?>"/></td>
+                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):'';?>"/>&nbsp; &nbsp; &nbsp; <a href="javascript:void(0)" onclick="setExpDate(30);">+30days</a>, <a href="javascript:void(0)" onclick="setExpDate(60);">+60Days</a>, <a href="javascript:void(0)" onclick="setExpDate(90);">+90Days</a></td>
                                                                 </tr>
 							    	<tr>
 							    		<td colspan="11">

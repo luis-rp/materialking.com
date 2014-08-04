@@ -542,7 +542,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['articles'] = $this->db->get('itemarticle')->result();
         
         $this->db->where('itemid',$id);
-        $data['images'] = $this->db->get('itemimage')->result();
+        $data['images'] = $this->db->where('is_video',0)->get('itemimage')->result();
+        $data['videos'] = $this->db->where('is_video',1)->get('itemimage')->result();
         
         
         $relateditems = $this->db->select('r.relateditem')->where('item',$id)->from('relateditem r')->join('item i','r.item=i.id')->get()->result();
@@ -1248,7 +1249,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			if(move_uploaded_file($_FILES['filename']['tmp_name'], "uploads/item/".$nfn))
 			{
 			    $this->_createThumbnail($nfn,'item',200,200);
-			    $this->convertToFlv( "uploads/item/".$nfn, "uploads/item/thumbs/".$nfn );
+			    //$this->convertToFlv( "uploads/item/".$nfn, "uploads/item/thumbs/".$nfn );
 			    $insert = array();
 			    $insert['itemid'] = $itemid;
 				$insert['filename'] = $nfn;
@@ -1257,6 +1258,20 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			}
 		}
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Image saved successfully.</div>');
+		redirect('admin/itemcode/update/'.$itemid);
+    }
+    
+    function savevideoid($itemid){
+    	if(isset($_POST['videoid']) && $_POST['videoid']!=""){
+    		$videoid = $_POST['videoid'];
+    		$insert = array();
+    		$insert['itemid'] = $itemid;
+    		$insert['filename'] = $videoid;
+    		$insert['is_video'] = 1;
+    		$this->db->insert('itemimage',$insert);
+    	}
+    	
+    	 $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Video ID saved successfully.</div>');
 		redirect('admin/itemcode/update/'.$itemid);
     }
     

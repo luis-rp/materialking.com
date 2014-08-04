@@ -70,6 +70,14 @@ class Quote extends CI_Controller
     		
 			$awarded = $this->quotemodel->checkbidcomplete($inv->quote);
 			$inv->awardedtothis = false;
+			
+			if($bid){
+				$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
+				$revisionquote = $this->db->query($sqlq)->row();
+				if($revisionquote)
+				$inv->daterequested = $revisionquote->daterequested;
+			}
+			
 			if($awarded)
 			{
 				$complete = true;
@@ -614,6 +622,7 @@ class Quote extends CI_Controller
 					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
 					
 					if($revisionquote){ 
+						 $updatearray['daterequested'] = date('m/d/Y');	
                          $updatearray['purchasingadmin'] = $invitation->purchasingadmin; 
                          $updatearray['bid'] = $bidid; 
                          $updatearray['revisionid'] = $revisionid; 

@@ -37,6 +37,7 @@
             		<th>Price</th>
             		<th>Unit</th>
             		<th>Notes</th>
+            		<th>Ext. Price</th>
         		</tr>
         		<?php 
         		$total = 0;
@@ -44,6 +45,7 @@
         		{
         		    $total += $bi->quantity * $bi->ea;
         		?>
+        		<?php $extprice=$bi->quantity * $bi->ea;?>
     		    <tr>
         		<td><?php echo $bi->itemcode; ?></td>
         		<td><?php echo $bi->itemname; ?></td>
@@ -51,6 +53,7 @@
         		<td><?php echo $bi->ea; ?></td>
         		<td><?php echo $bi->unit; ?></td>
         		<td><?php echo $bi->notes; ?></td>
+        		<td><?php echo $extprice; ?></td>
         		</tr>
         		<?php 
         		}
@@ -61,39 +64,39 @@
         		?>
         		
     		    <tr>
-        		<td colspan="6">&nbsp;</td>
+        		<td colspan="7">&nbsp;</td>
         		</tr>
         	    <tr>
         		
         		<td>Supplier Quote # </td>
-        		<td colspan="5"><?php echo $bid->quotenum; ?></td>
+        		<td colspan="7"><?php echo $bid->quotenum; ?></td>
                     </tr>
     		    <tr>
                         
         		<td>Supplier Expire Date</td>
-        		<td colspan="5"><?php echo $bid->expire_date; ?></td>
+        		<td colspan="7"><?php echo $bid->expire_date; ?></td>
                     </tr>
                     
                 <tr>
                         
         		<td>Supplier Quote Date</td>
-        		<td colspan="5"><?php echo $bid->submitdate; ?></td>
+        		<td colspan="7"><?php echo $bid->submitdate; ?></td>
                     </tr>    
                     
     		    <tr>
                         
         		<td>Quote Total: </td>
-        		<td colspan="5"><?php echo $total; ?></td>
+        		<td colspan="7"><?php echo $total; ?></td>
         		</tr>
         		
     		    <tr>
         		<td>Tax: </td>
-        		<td colspan="5"><?php echo $tax; ?></td>
+        		<td colspan="7"><?php echo $tax; ?></td>
         		</tr>
         		
     		    <tr>
         		<td>Total: </td>
-        		<td colspan="5"><?php echo $alltotal; ?></td>
+        		<td colspan="7"><?php echo $alltotal; ?></td>
         		</tr>
         		
 			</table>

@@ -416,6 +416,12 @@ $(document).ready(function(){
                         <form method="post" class="form form-inline" action="<?php echo site_url('admin/itemcode/saveimage/'.$this->validation->id);?>" enctype="multipart/form-data">
                         	<input type="file" name="filename"/><input type="submit" value="Add" class="btn btn-primary"/>
                         </form>
+                        <h3>Videos:</h3>
+                        <form method="post" class="form form-inline" action="<?php echo site_url('admin/itemcode/savevideoid/'.$this->validation->id);?>" enctype="multipart/form-data">
+                        	Video ID: <input type="text" name="videoid"/>&nbsp;&nbsp;&nbsp;
+                        	<input type="submit" value="Add" class="btn btn-primary"/>
+                        </form>
+                        
 						<?php if(@$images){?>
 							<br/><br/>
                             <table class="table table-bordered span12">
@@ -434,6 +440,24 @@ $(document).ready(function(){
 							</table>
 						<?php }?>
 			
+						<?php if(@$videos){?>
+							<br/><br/>
+                            <table class="table table-bordered span12">
+                                <tr>
+                                    <th>Video ID</th>
+                                    <th>Delete</th>
+                                </tr>
+								<?php foreach($videos as $video){?>
+                                <tr>
+                                    <td width="95%"><?php if(isset($video->filename)) echo $video->filename;?></td>
+                                    <td>
+                                        <a href="<?php echo site_url('admin/itemcode/deleteimage/'.$video->id.'/'.$this->validation->id);?>" onclick="return confirm('Are you sure to delete this video id?');"><i class="icon icon-trash"></i></a>
+                                    </td>
+                                </tr>
+								<?php }?>
+							</table>
+						<?php }?>
+						
             			<h3>Related Items:</h3>
             			<form method="post" action="<?php echo site_url('admin/itemcode/saverelateditem/'.$this->validation->id);?>">
                         	
