@@ -369,5 +369,12 @@ $link";
 		$this->validation->set_message ( 'isset', '* required' );
 		$this->validation->set_error_delimiters ( '<div class="error">', '</div>' );
 	}
+	
+	function finish_user_tour(){
+			$id = 	$this->session->userdata ( 'id' );
+			$this->db->where('id',$id);
+			$this->db->update('users',array('tour'=>'finished'));
+			
+	}
 }
 ?>

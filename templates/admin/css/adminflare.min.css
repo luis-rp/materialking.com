@@ -6401,6 +6401,9 @@ ul.wysihtml5-commands-disabled .dropdown-menu {
 	background: #d85837;
 		color:#fff;
 }
+.datepicker-dropdown{
+	z-index:2000!important;
+}
 /*.popover[class*=tour-] .popover-navigation [data-role=prev], .popover[class*=tour-] .popover-navigation [data-role=next], .popover[class*=tour-] .popover-navigation [data-role=end] {
 	color:#fff;
 	background: #d85837;
