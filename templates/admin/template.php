@@ -85,11 +85,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				//Boostratp tour only available on these pages :dashboard,projects,project,costcodelist,costcode
 				<?php 
 				//if(isset($viewname) && ($viewname=="dashboard" || $viewname=="projects" || $viewname=="project" || $viewname=="costcodelist" || $viewname=="costcode" )){
-				/*if($this->session->userdata('usertype_id') == 3){ 
+				/*if($this->session->userdata('usertype_id') != 3){ 
 				
 				}else{
-               
-                	if($this->session->userdata('tour') == "unfinished"){*/
+               */
+                	if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
                 ?>
 					var field;
                 tour = new Tour({
@@ -230,7 +230,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   	  		    });*/
 
 
-  	  		    <?php //} 
+  	  		    <?php } 
 				//	} 
                ?>
             });
