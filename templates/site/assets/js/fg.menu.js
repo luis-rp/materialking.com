@@ -63,7 +63,7 @@ function Menu(caller, options){
 		crumbDefaultText: 'Choose an option:',
 		backLink: true, // in the ipod-style menu: instead of breadcrumbs, show only a 'back' link
 		backLinkText: 'Back',
-		flyOut: false, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
+		flyOut: true, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
 		flyOutOnState: 'ui-state-default',
 		nextMenuLink: 'ui-icon-triangle-1-e', // class to style the link (specifically, a span within the link) used in the multi-level menu to show the next level
 		topLinkText: 'All',

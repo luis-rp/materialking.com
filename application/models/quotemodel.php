@@ -511,5 +511,12 @@ class Quotemodel extends Model
 		return $invoice;
 	}
 	
+	function setalertdate($alertarray){
+		
+		$this->db->where('id',$alertarray['id']);
+		$returnresult = $this->db->update('received',array('alertsentdate'=>$alertarray['alertsentdate']));
+		return $returnresult;
+	}
+	
 }
 ?>

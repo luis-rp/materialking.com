@@ -106,6 +106,20 @@ class Dashboard extends CI_Controller
 		//echo "<pre>",print_r($this->email->send()); die;		
 	}
 	
+	function alertsentdate(){
+		
+		$alertdatearray = array();
+		$alertdatearray['alertsentdate'] = date('Y-m-d');
+		$alertdatearray['id'] = $_POST['invoiceid'];
+		$alertdata = $this->quotemodel->setalertdate($alertdatearray);
+		if($alertdata==1){
+		$return = "Alert Sent ".date('m/d/Y');
+		echo $return;
+		}else
+		echo "*Error in sending Alert";
+		die;
+	}
+	
 	function close($id)
 	{
 		$company = $this->session->userdata('company');

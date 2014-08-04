@@ -1,5 +1,6 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <?php echo '<script>var emailalerturl="'.site_url('dashboard/sendemailalert').'";</script>'?>
+<?php echo '<script>var alertsentdateurl="'.site_url('dashboard/alertsentdate').'";</script>'?>
 <script>
 function readnotification(id)
 {
@@ -19,13 +20,26 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 	$.ajax({
 		type:"post",
 		url: emailalerturl,
-		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue   
+		async:false,
+		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid    
 	}).done(function(data){
 		if(data == "success")
 			$('#'+invoiceid).html('Email Alert Sent');
 		else
 			$('#'+invoiceid).html('*Error in sending Email');
 	});
+	
+	$.ajax({
+		type:"post",
+		url: alertsentdateurl,
+		async:false,
+		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid   
+	}).done(function(data){
+		
+		$('#'+invoiceid).html(data);
+		
+	});
+	
 }
 
 </script>
@@ -77,7 +91,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 					</div>
 					
 					<div class="tiles-title extrabox">
-					<div class="heading">SEND PENDING INVOICE ALERTS:</div>
+					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>
 					<table cellpadding="3">
 					  <tr>
 					  <td>Invoice</td>
