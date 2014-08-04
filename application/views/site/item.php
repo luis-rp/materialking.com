@@ -37,11 +37,7 @@ left:0px;}
             preloadImages: false,
             alwaysOn:false
         });*/
-		
-		jwplayer("myvideo5").setup({
-        	file: "<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>"               
-    });
-    
+		    
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
 		$("#contentimage").elevateZoom(); 
 	});
@@ -410,7 +406,7 @@ left:0px;}
 										$tag = trim($tag);
 										
 										?>
-                                        <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode($tag)));?>"><?php echo $tag;?></a></li>
+                                         <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
                                         <?php } ?></ul><?php } ?></div>
                                     </p>
                                 </div>
