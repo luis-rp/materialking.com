@@ -65,7 +65,7 @@ $(document).ready(function(){
 									      <br/><br/>
 									      	Please update us on the estimated delivery dates for the following still due items.<br/><br/>
 											Thank You,<br/>
-											<strong><?php echo $pa->companyname?></strong>
+											<strong><?php if(isset($pa->companyname)) echo $pa->companyname?></strong>
 									     	<br/><br/>
 									     </td>
 									 </tr>
