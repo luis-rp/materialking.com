@@ -461,6 +461,9 @@ if (!$function || $function == 'index')
                 </div>
             </div>
         </div>
+        
+<link type="text/css" href="<?php echo base_url("/cometchat/cometchatcss.php");?>" rel="stylesheet" charset="utf-8">
+<script type="text/javascript" src="<?php echo base_url("/cometchat/cometchatcss.php");?>" charset="utf-8"></script>
     </body>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

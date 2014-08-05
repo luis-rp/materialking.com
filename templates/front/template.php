@@ -217,6 +217,9 @@
 </div>
 </div>
 
+        
+<link type="text/css" href="<?php echo base_url("/cometchat/cometchatcss.php");?>" rel="stylesheet" charset="utf-8">
+<script type="text/javascript" src="<?php echo base_url("/cometchat/cometchatcss.php");?>" charset="utf-8"></script>
 
 </body>
 </html>
