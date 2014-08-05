@@ -53,6 +53,11 @@
 		 				<a href="<?php echo site_url('message/messages/'.$po['quote']['messagekey']);?>">
 		 					EXPAND
 		 				</a>
+		 				
+		 				<?php if($po['quote']['complete'] == 'Yes'){?>
+		 				<a style="color:red;" href="<?php echo site_url('message/archivemessage/'.$po['quote']['id']);?>"> Archive </a>
+		 				<?php }?>
+		 				
                     	</h3>
                 </div>
           <ul class="cbp_tmtimeline">

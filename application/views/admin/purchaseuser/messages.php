@@ -55,7 +55,7 @@ function clearFilters()
 				foreach ($messages as $po)
 				{
 			?>
-			<h4>PO#:<?php echo $po['quote']['ponum'];?></h4>
+			<h4>PO#:<?php echo $po['quote']['ponum'];?> &nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/'.$po['quote']['id'];?>">View Bids Page</a> - &nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/track/'.$po['quote']['id'] ;?>">View Tracking Page</a>   </h4>
 			<div class="box widget-chat">
 			<?php 
 				foreach($po['messages'] as $msg)

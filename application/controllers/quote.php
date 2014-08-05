@@ -569,7 +569,21 @@ class Quote extends CI_Controller
 				die;
 			}
 			
-			$bidarray['quotenum'] = $_POST['quotenum'];
+			$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$invitation->purchasingadmin."' order by id desc limit 1";
+			$revisionquote = $this->db->query($sqlq)->row();
+			if($revisionquote)
+			$revisionid = $revisionquote->revisionid+1;
+			else
+			$revisionid = 1;
+			
+			if($revisionid > 1){			
+				$quotearr = explode(".",$_POST['quotenum']);	
+				$number = sprintf('%03d',$quotearr[1]+1);
+				$bidarray['quotenum'] = $quotearr[0].".".$number;
+			}
+			else 
+				$bidarray['quotenum'] = $_POST['quotenum'].".000";
+			
 			$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 		
     		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
@@ -584,14 +598,7 @@ class Quote extends CI_Controller
     		//echo $bidid.'-'.$quote->id.'<pre>'; print_r($bidarray);die;
 			$this->db->where('id', $bidid);
 			$this->db->update('bid',$bidarray);
-			
-			$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$invitation->purchasingadmin."' order by id desc limit 1"; 
-             $revisionquote = $this->db->query($sqlq)->row(); 
-             if($revisionquote) 
-                 $revisionid = $revisionquote->revisionid+1; 
-             else  
-                 $revisionid = 1; 
-			
+						
 			foreach($draftitems as $item)
 			{
 				$bidid = $item->bid;
@@ -664,7 +671,7 @@ class Quote extends CI_Controller
 			}
 			$bidarray = array('quote'=>$invitation->quote,'company'=>$invitation->company,'submitdate'=>date('Y-m-d'));
 			
-			$bidarray['quotenum'] = $_POST['quotenum'];
+			$bidarray['quotenum'] = $_POST['quotenum'].".000";
 			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
 			$bidarray['draft'] = $_POST['draft'];
 			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;
@@ -949,9 +956,10 @@ class Quote extends CI_Controller
 		{
 			if($q->company == $company->id)
 			{
+				$etacount = count($q->etalog);
         		$emailitems.= '<tr>';
         		$emailitems.= '<td>'.$q->itemname.'</td>';
-        		$emailitems.= '<td>'.$_POST['daterequested'.$q->id].'</td>';
+        		$emailitems.= '<td>changed from '.$q->etalog[$etacount-1]->daterequested.' to '.$_POST['daterequested'.$q->id].'</td>';
         		$emailitems.= '<td>'.$_POST['notes'.$q->id].'</td>';
         		$emailitems.= '</tr>';
         		

@@ -81,7 +81,7 @@ left:0px;}
 			embedded = document.getElementsByTagName('embed');
 			console.log(embedded);
 			embedded[0].src = "http://www.youtube.com/v/"+source;
-    
+    		document.getElementById('loading').style.display = 'none';
 		}else {
 		$('#imagelist').css({display: "block"});
 		$('#videolist').css({display: "none"});
@@ -334,6 +334,9 @@ left:0px;}
                                         </div>
                                         <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
                                         <embed width="260" height="280" src="" type="application/x-shockwave-flash">     
+                                        <div id="loading" style="float:left; width:100%; height:100%; text-align:center;">
+        									<span style="background-color:Yellow; font-size:xx-large">Please Wait while loading</span>
+   										</div>
                                         </div>
                                     	<br/>
                                         
