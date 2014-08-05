@@ -52,7 +52,7 @@ $(document).ready(function(){
 	      <?php echo $this->validation->startdate_error;?>
 	    </div>
     </div>
-    <div>*Please be sure to fill out the Project Information and click Save*</div>
+    <div style="margin-bottom: 50px;">*Please be sure to fill out the Project Information and click Save*</div>
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">

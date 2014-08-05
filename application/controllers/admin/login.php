@@ -58,7 +58,7 @@ class Login extends CI_Controller {
         	  		'purchasingadmin'  => $row->purchasingadmin,
                     'logged_in'  => TRUE,
         	  		'logintype'=>'users',
-        	  		'user_type'=>$row->usertype_id,
+        	  		'usertype_id'=>$row->usertype_id,
         	  		'tour'=>$row->tour
                 );
             $data = array_merge($data, (array)$row);
