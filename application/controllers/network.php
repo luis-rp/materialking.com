@@ -52,6 +52,10 @@ class network extends CI_Controller {
             $this->session->set_userdata($temp);
             
             $this->session->set_userdata($row);
+          
+            $data_tour = array('usertype_id'=>$row->usertype_id,
+            'tour'=>$row->tour);
+            $this->session->set_userdata($data_tour);
             
             die('Success');
         } else {
