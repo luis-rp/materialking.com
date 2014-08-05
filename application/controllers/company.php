@@ -215,13 +215,10 @@ class Company extends CI_Controller {
         if ($check) {
             $data['company'] = $check;
             $data['logintype'] = 'company';
-<<<<<<< HEAD
-             $data['userid']=55;
-			
-=======
+
             $temp['comet_user_id'] = $check->id;
             $temp['comet_user_email'] = $check->primaryemail;
->>>>>>> 391147db97902a3868e16552b960598831fa22a8
+
             $this->session->set_userdata($data);
             redirect('dashboard');
         } else {
