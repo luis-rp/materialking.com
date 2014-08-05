@@ -68,8 +68,8 @@ function getUserID() {
 }
 
 function chatLogin($userName,$userPass) {
-	session_start();
-	$userid = $_SESSION['id'];
+
+	$userid =0;
 	if (filter_var($userName, FILTER_VALIDATE_EMAIL)) {
 		$sql = ("SELECT * FROM ".TABLE_PREFIX.DB_USERTABLE." WHERE Email ='".$userName."'"); 
 	} else {
