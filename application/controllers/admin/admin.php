@@ -374,6 +374,8 @@ $link";
 			$id = 	$this->session->userdata ( 'id' );
 			$this->db->where('id',$id);
 			$this->db->update('users',array('tour'=>'finished'));
+			$this->session->set_userdata('tour','finished');
+			
 			
 	}
 }
