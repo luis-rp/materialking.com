@@ -42,26 +42,6 @@ class Company extends CI_Controller {
     public function saveregister() {
         if (!@$_POST)
             die;
-        	$completeaddress="";
-            if($_POST['street'])
-            {
-            	$completeaddress.=$_POST['street'].",";
-            }
-            if($_POST['city'])
-            {
-            	$completeaddress.=$_POST['city'].",";
-            }
-            if($_POST['state'])
-            {
-            	$completeaddress.=$_POST['state'].",";
-            }
-            if($_POST['zip'])
-            {
-            	$completeaddress.=$_POST['zip'];
-            }
-
-        $_POST['address'] = $completeaddress;    
-            
         $errormessage = '';
 
         if (!@$_POST['title'] || !@$_POST['primaryemail']) {
@@ -231,12 +211,17 @@ class Company extends CI_Controller {
         $_POST['password'] = md5($_POST['password']);
         $this->db->where($_POST);
         $check = $this->db->get('company')->row();
-
+//echo "<pre>";print_r($check);exit;
         if ($check) {
             $data['company'] = $check;
             $data['logintype'] = 'company';
+<<<<<<< HEAD
+             $data['userid']=55;
+			
+=======
             $temp['comet_user_id'] = $check->id;
             $temp['comet_user_email'] = $check->primaryemail;
+>>>>>>> 391147db97902a3868e16552b960598831fa22a8
             $this->session->set_userdata($data);
             redirect('dashboard');
         } else {
@@ -348,35 +333,14 @@ class Company extends CI_Controller {
             }
         }
 
-        	$completeaddress="";
-            if($_POST['street'])
-            {
-            	$completeaddress.=$_POST['street'].",";
-            }
-            if($_POST['city'])
-            {
-            	$completeaddress.=$_POST['city'].",";
-            }
-            if($_POST['state'])
-            {
-            	$completeaddress.=$_POST['state'].",";
-            }
-            if($_POST['zip'])
-            {
-            	$completeaddress.=$_POST['zip'];
-            }
-
-        $_POST['address'] = $completeaddress;
-
-        
         unset($_POST['_wysihtml5_mode']);
         $this->db->where('id', $company->id);
         $this->db->update('company', $_POST);
         
         
-        if($this->input->post('street'))
+        if($this->input->post('address'))
         {
-            $geoloc = get_geo_from_address($this->input->post('street'));
+            $geoloc = get_geo_from_address($this->input->post('address'));
             if($geoloc && @$geoloc->lat && @$geoloc->long)
             {
                 $update_supplier = array();
