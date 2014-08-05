@@ -1,8 +1,8 @@
-<script type="text/javascript" charset="utf-8">
-$(document).ready(function(){
-   $('#dealdate').datepicker();
-});
-</script>
+<link href="<?php echo base_url();?>templates/front/assets/plugins/bootstrap-datepicker/css/datepicker.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo base_url();?>templates/front/assets/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo base_url();?>templates/front/assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
 
     	<form method="post" action="<?php echo site_url('inventory/savedeal');?>" enctype="multipart/form-data">
@@ -21,7 +21,7 @@ $(document).ready(function(){
     				<td>Deal Price</td>
     				<td><input type="text" name="dealprice" value="<?php echo @$item->dealprice;?>"/></td>
     				<td>Date Ending</td>
-    				<td><input style="width:100px" type="text" id="dealdate" name="dealdate" value="<?php if(@$item->dealdate) echo date("m/d/Y", strtotime($item->dealdate));?>" data-date-format="mm/dd/yyyy"/></td>
+    				<td><input style="width:100px" type="text" id="dealdate" class="date" name="dealdate" value="<?php if(@$item->dealdate) echo date("m/d/Y", strtotime($item->dealdate));?>" data-date-format="mm/dd/yyyy"/></td>
     				
     				</td>
     				</tr>
@@ -93,4 +93,16 @@ $(document).ready(function(){
     		{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Link', 'Unlink', 'Anchor','Font','FontSize', 'Image','Table','HorizontalRule'] }
     		]
     	});
+</script>
+
+
+
+<script src="<?php echo base_url();?>templates/front/assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script> 
+<script src="<?php echo base_url();?>templates/front/assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script> 
+<script src="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/js/bootstrap.min.js" type="text/javascript"></script> 
+<script src="<?php echo base_url();?>templates/front/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>  
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function(){
+   $('.date').datepicker();
+});
 </script>

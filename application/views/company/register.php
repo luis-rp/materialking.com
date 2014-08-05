@@ -32,19 +32,19 @@
                       </div>
                       
                       <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">street Address*</label>
+                       <label class="form-label text-success semi-bold general">Street Address*</label>
                        <input name="street" id="street" type="text"  class="form-control" required>
                       </div>
                       
                       <?php if(1){?>
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">City</label>
-                       <input name="city" id="city" type="text" class="form-control">
+                       <input name="city" id="city" type="text" class="form-control" required>
                       </div>
                       
                       <div class="col-md-6 col-sm-6">
                        	 <label class="form-label text-success semi-bold general">State</label>
-                         <select name="state" id="state">
+                         <select name="state" id="state" required>
 	                        <?php foreach($states as $st){?>
                         	<option value='<?php echo $st->state_abbr;?>'><?php echo $st->state_name;?></option>
                         	<?php }?>
@@ -53,7 +53,7 @@
                       
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">Zip</label>
-                       <input name="zip" id="zip" type="text" class="form-control">
+                       <input name="zip" id="zip" type="text" class="form-control" required>
                       </div>
                       
                       <?php }?>

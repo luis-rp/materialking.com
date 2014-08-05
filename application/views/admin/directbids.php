@@ -74,7 +74,8 @@ $(document).ready(function(){
 });
 </script>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?></h3>
+	<h3 class="box-header"><?php echo @$heading; ?> &nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a>
+			&nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url('admin/message/messages/'.$quote->id);?>">View Messages</a></h3>
 	<div class="box">
 		<div class="span12">
 		   <a class="btn btn-green" href="<?php echo site_url('admin/quote/index/'.$quote->pid);?>">&lt;&lt; Back</a>

@@ -384,13 +384,13 @@ $(document).ready(function() {
                                 <div class="body1 span6">
                                     <div class="title-price row">
                                         <div class="title1 span5">
-                                            <h2>nh414s</h2>
+                                            <h2><a href="<?php echo site_url('site/item/'.$di->url);?>"><?php echo $di->itemcode;?></a>  </h2>
                                             <p><?php echo $di->dealnote;?></p>
                                             <div class="area">
                                                 <span class="key"><strong>Quantity Available:</strong></span>
                                                 <span class="value"><?php echo $di->qtyavailable;?></span>
 
-                                                <span class="key"><strong>Quantity Remaning:</strong></span>
+                                                <span class="key"><strong>Time Remaning:</strong></span>
                                                 <span class="value"><?php echo $remaining;?></span>
                                                 
                                                 <br>

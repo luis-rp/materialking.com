@@ -44,10 +44,10 @@ class Message extends CI_Controller
 		$pafilter = '';		
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND m.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
-		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, u.email adminemail, c.email companyemail FROM 
-		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q,
+		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, u.email adminemail, c.email companyemail, b.complete FROM 
+		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('company')." c
-		WHERE m.quote=q.id AND m.company=c.id AND m.adminid=u.id AND 
+		WHERE m.quote=q.id AND q.id = b.quote AND m.company=c.id AND m.adminid=u.id AND 
 		m.company='{$company->id}' $quotewhere $pafilter ORDER BY m.senton DESC";
 		
 		$msgs = $this->db->query($messagesql)->result();
@@ -65,7 +65,7 @@ class Message extends CI_Controller
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
 			$messages[$msg->ponum]['quote']['messagekey']=$msg->messagekey;
-			
+			$messages[$msg->ponum]['quote']['complete']=$msg->complete;			
 			$this->db->where('quote',$msg->quoteid);
 			$award = $this->db->get('award')->row();
 			if($award)
@@ -101,6 +101,24 @@ class Message extends CI_Controller
 			$this->load->view('message/singlelist',$data);
 	}
 
+	function archivemessage($qid){
+
+		$company = $this->session->userdata('company');
+		if(!$company)
+		redirect('company/login');
+
+		$messagesql = "INSERT INTO ".$this->db->dbprefix('message_archive')." select * from ".$this->db->dbprefix('message')." WHERE quote='{$qid}'";
+		$returnval = $this->db->query($messagesql);
+		if($returnval) {
+			$messagesql2 = "DELETE FROM ".$this->db->dbprefix('message')." WHERE quote='{$qid}'";
+			$returnval2 = $this->db->query($messagesql2);
+		}
+
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Message Archived Successfully</div></div></div>');
+		redirect('message');
+	}
+	
+	
 	function viewmessage($id)
 	{
 		$company = $this->session->userdata('company');
@@ -161,8 +179,7 @@ class Message extends CI_Controller
 		    '{$_POST['message']}'
 		    <br><br>
 	  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
-	    	<a href='$link' target='blank'>$link</a>
-    	";
+	    	<a href='$link' target='blank'>$link</a>";
 	    
         $this->email->subject("New Message");
         $this->email->message($body);	
