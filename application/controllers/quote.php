@@ -424,6 +424,7 @@ class Quote extends CI_Controller
 	    if($bid){
 	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
 	    	$revisionquote = $this->db->query($sqlq)->row();
+	    	if($revisionquote)
 	    	$data['revisionno'] = $revisionquote->revisionid;
 	    }
 	    
@@ -577,15 +578,22 @@ class Quote extends CI_Controller
 			$revisionid = 1;
 			
 			if($revisionid > 1){			
-				$quotearr = explode(".",$_POST['quotenum']);	
-				$number = sprintf('%03d',$quotearr[1]+1);
-				$bidarray['quotenum'] = $quotearr[0].".".$number;
+				if(isset($_POST['quotenum'])){
+					$quotearr = explode(".",$_POST['quotenum']);
+					if(count($quotearr)>1){
+					$number = sprintf('%03d',$quotearr[1]+1);
+					$bidarray['quotenum'] = $quotearr[0].".".$number;
+					}else {
+						$bidarray['quotenum'] = "";
+					}
+				}else
+					$bidarray['quotenum'] = "";
 			}
 			else 
 				$bidarray['quotenum'] = $_POST['quotenum'].".000";
-			
-			$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 		
+				$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
+				
     		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
     		{
     			$ext = end(explode('.', $_FILES['quotefile']['name']));
@@ -957,9 +965,19 @@ class Quote extends CI_Controller
 			if($q->company == $company->id)
 			{
 				$etacount = count($q->etalog);
+				if(isset($q->etalog[$etacount-1]->daterequested) && $q->etalog[$etacount-1]->daterequested!="")
+				$reqdate = $q->etalog[$etacount-1]->daterequested;
+				else 
+				$reqdate = "";
+				
+				if(isset($_POST['daterequested'.$q->id]))
+				$postdate = $_POST['daterequested'.$q->id];
+				else 
+				$postdate = "";
+				
         		$emailitems.= '<tr>';
         		$emailitems.= '<td>'.$q->itemname.'</td>';
-        		$emailitems.= '<td>changed from '.$q->etalog[$etacount-1]->daterequested.' to '.$_POST['daterequested'.$q->id].'</td>';
+        		$emailitems.= '<td>changed from '.$reqdate.' to '.$postdate.'</td>';
         		$emailitems.= '<td>'.$_POST['notes'.$q->id].'</td>';
         		$emailitems.= '</tr>';
         		
