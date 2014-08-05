@@ -66,7 +66,7 @@ class Login extends CI_Controller {
         	
             $temp['site_loggedin'] = $row;
             $this->session->set_userdata($temp);
-             
+            $this->session->set_userdata(array("userid"=>$row->id));
              // Update the status of users on tbl_users table
             $last_logged_date = date('Y-m-d H:i:s');
 			$login = array ('last_logged_date' => $last_logged_date);
