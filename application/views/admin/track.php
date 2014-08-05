@@ -418,7 +418,7 @@ function acceptall()
             if (@$shipments)
             {
             ?>
-            Shipments:
+            <h4>Shipments:</h4>
             <?php 
                 $canacceptall = false;
                 $shipitemids = array();
@@ -471,7 +471,7 @@ function acceptall()
                 foreach ($messages as $c)
                     if (@$c['messages']) {
                         ?>
-                        Messages for <?php echo $c['companydetails']->title ?> regarding PO# <?php echo $quote->ponum; ?>:
+                        <h4>Messages for <?php echo $c['companydetails']->title ?> regarding PO# <?php echo $quote->ponum; ?>:</h4>
                         <table class="table table-bordered" >
                             <tr>
                                 <th>From</th>
@@ -638,7 +638,7 @@ function acceptall()
                 </ul>
             </section>
             <div>
-                <h3>Time Line</h3>
+                <h4>Time Line</h4>
                 <div>
                     <table width="100%">
                         <tr><td style="border-right:2px black solid;" width="10%">
@@ -729,7 +729,7 @@ function acceptall()
                 {
                     ?>
                      <hr>
-                      <p>ERROR LOG</p>
+                      <h4>ERROR LOG</h4>
                        <table  class='table table-bordered'>
                             <tbody>
                                 <tr>

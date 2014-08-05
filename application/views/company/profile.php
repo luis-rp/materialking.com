@@ -163,14 +163,14 @@ function addEmail()
                     				 <div class="form-group">
 				                        <label class="form-label">City</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="city" id="city" value="<?php echo $company->city;?>">
+				                          <input type="text" class="form-control" name="city" id="city" value="<?php echo $company->city;?>" required>
 				                        </div>
 				                      </div>
 				                      
 				                      <div class="form-group">
 				                        <label class="form-label">State:</label>
 				                        <div class="controls">
-				                         <select name="state" id="state">
+				                         <select name="state" id="state" required>
     				                        <?php foreach($states as $st){?>
                                         	<option value='<?php echo $st->state_abbr;?>' <?php if($company->state == $st->state_abbr){echo 'SELECTED';}?>><?php echo $st->state_name;?></option>
                                         	<?php }?>
@@ -181,7 +181,7 @@ function addEmail()
 				                      <div class="form-group">
 				                        <label class="form-label">Zip</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="zip" id="zip" value="<?php echo $company->zip;?>">
+				                          <input type="text" class="form-control" name="zip" id="zip" value="<?php echo $company->zip;?>" required>
 				                        </div>
 				                      </div>
 				                      <?php }?>
@@ -189,7 +189,7 @@ function addEmail()
 				                      <div class="form-group">
 				                        <label class="form-label">Street Address *</label>
 				                        <div class="controls">
-				                          <textarea rows="2"  class="form-control" name="street"><?php echo $company->street;?></textarea>
+				                          <textarea rows="2"  class="form-control" name="street" required><?php echo $company->street;?></textarea>
 				                        	
 				                        </div>
 				                      </div>

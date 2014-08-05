@@ -534,6 +534,7 @@ class site extends CI_Controller
                 $di->itemname = @$cmpitem->itemname?$cmpitem->itemname:$orgitem->itemname;
                 $di->url = $orgitem->url;
                 $di->image = $orgitem->item_img;
+                $di->itemcode = $cmpitem->itemcode;
                 if($di->memberonly)
                 {
                     if($this->session->userdata('site_loggedin'))
@@ -673,7 +674,7 @@ class site extends CI_Controller
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             
-            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";
+            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
             $countofitems = $this->db->query($cquery)->row();
             //echo "<pre>",print_r($countofitems->countitem); die;
             if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -767,7 +768,7 @@ class site extends CI_Controller
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             
-            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";            
+            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";            
         	$countofitems = $this->db->query($cquery)->row();
         	//echo "<pre>",print_r($countofitems->countitem); die;
         	if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -1277,7 +1278,7 @@ class site extends CI_Controller
     		$item->minprice = $minmax->minea;
     		$item->maxprice = $minmax->maxea;
     	
-    		$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.instock > 0 and ci.type='Supplier' group by ci.itemid";
+    		$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
     		$countofitems = $this->db->query($cquery)->row();
     		//echo "<pre>",print_r($countofitems->countitem); die;
     		if(isset($countofitems->countitem) && $countofitems->countitem!="")
