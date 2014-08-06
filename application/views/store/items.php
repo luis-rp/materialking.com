@@ -228,6 +228,11 @@ $(document).ready(function() {
                        
                     </div>
                     <?php }?>
+                    
+                    <div style="clear:both;"></div>
+                     <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
+               		 </div>
+               		 
                 </div>
                 
                 <div class="sidebar span3">

@@ -105,6 +105,7 @@ class company extends CI_Controller {
         $data ['message'] = '';
         $data ['action'] = site_url('admin/company/add_company');
         $data['types'] = $this->db->get('type')->result();
+        $data['states'] = $this->db->get('state')->result();
         $this->load->view('admin/company', $data);
     }
 
@@ -118,6 +119,7 @@ class company extends CI_Controller {
         if ($this->validation->run() == FALSE) {
             $data ['message'] = $this->validation->error_string;
             $data['types'] = $this->db->get('type')->result();
+            $data['states'] = $this->db->get('state')->result();
             $this->load->view('admin/company', $data);
         } else {
             $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
@@ -140,6 +142,10 @@ class company extends CI_Controller {
         $this->validation->email = $item->email;
         $this->validation->contact = $item->contact;
         $this->validation->address = $item->address;
+        $this->validation->street = $item->street;
+        $this->validation->state = $item->state;
+        $this->validation->city = $item->city;
+        $this->validation->zip = $item->zip;
         $this->validation->pwd = $item->pwd;
         $types = $this->db->get('type')->result();
         $data['types'] = array();
@@ -156,6 +162,7 @@ class company extends CI_Controller {
         $data ['heading'] = 'Update Company Item';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/company/updatecompany');
+        $data['states'] = $this->db->get('state')->result();
         $this->load->view('admin/company', $data);
     }
 
@@ -183,6 +190,7 @@ class company extends CI_Controller {
                 }
                 $data['types'][] = $type;
             }
+            $data['states'] = $this->db->get('state')->result();
             $this->load->view('admin/company', $data);
         } else {
             $this->company_model->updateCompany($itemid);
@@ -203,6 +211,10 @@ class company extends CI_Controller {
         $fields ['email'] = 'email';
         $fields ['contact'] = 'contact';
         $fields ['address'] = 'address';
+        $fields ['street'] = 'street';
+        $fields ['city'] = 'city';
+        $fields ['state'] = 'state';
+        $fields ['zip'] = 'zip';
         $fields ['password'] = 'password';
         $fields ['primaryemail'] = 'primaryemail';
         $this->validation->set_fields($fields);
@@ -211,6 +223,8 @@ class company extends CI_Controller {
     function _set_rules() {
         $rules ['title'] = 'trim|required';
         $rules ['primaryemail'] = 'trim|required';
+        $rules ['password']='trim|md5';
+        $rules ['zip']='trim|integer|is_natural|required';
         $rules ['contact'] = 'trim|required';
 
         $this->validation->set_rules($rules);

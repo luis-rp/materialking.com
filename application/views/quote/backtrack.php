@@ -27,6 +27,13 @@ $(document).ready(function(){
         	$("#timelineid").css("width",'<?php echo $per;?>');
         <?php } ?>
 });
+
+function clearnotes(noteid){
+	
+	$('#'+noteid).val("");
+	
+}
+
 </script>
 
     <div class="content"> 
@@ -94,7 +101,7 @@ $(document).ready(function(){
 							    		<td><?php echo $q->unit;?></td>
 							    		<td>$<?php echo $q->ea;?></td>
 							    		<td>$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
-							    		<td><input type="text" class="span daterequested highlight" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" /></td>
+							    		<td><input type="text" class="span daterequested highlight" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="clearnotes('notes<?php echo $q->id;?>');" /></td>
 							    		<td><textarea style="width: 175px" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>
 							    		<td>
 							    		<?php if($q->etalog){?>

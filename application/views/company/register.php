@@ -38,12 +38,12 @@
                       
                       <?php if(1){?>
                        <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">City</label>
+                       <label class="form-label text-success semi-bold general">City*</label>
                        <input name="city" id="city" type="text" class="form-control" required>
                       </div>
                       
                       <div class="col-md-6 col-sm-6">
-                       	 <label class="form-label text-success semi-bold general">State</label>
+                       	 <label class="form-label text-success semi-bold general">State*</label>
                          <select name="state" id="state" required>
 	                        <?php foreach($states as $st){?>
                         	<option value='<?php echo $st->state_abbr;?>'><?php echo $st->state_name;?></option>
@@ -52,15 +52,15 @@
                       </div>
                       
                        <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">Zip</label>
+                       <label class="form-label text-success semi-bold general">Zip*</label>
                        <input name="zip" id="zip" type="text" class="form-control" required>
                       </div>
                       
                       <?php }?>
                       
                        <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">Phone</label>
-                       <input name="phone" id="phone" type="text" class="form-control">
+                       <label class="form-label text-success semi-bold general">Phone*</label>
+                       <input name="phone" id="phone" type="text" class="form-control" required>
                       </div>
                       
                        <div class="col-md-6 col-sm-6">

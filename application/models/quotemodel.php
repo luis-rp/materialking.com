@@ -495,7 +495,7 @@ class Quotemodel extends Model
 	function getpendinginvoices($company)
 	{
 		
-		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice  
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate     
 				   FROM 
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai

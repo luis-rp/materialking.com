@@ -742,6 +742,7 @@ class site extends CI_Controller
         }
         
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
+        $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);        
         $this->data['currentcategory'] = $currentcategory;
         $this->load->view('site/items', $this->data);
     }

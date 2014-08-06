@@ -916,24 +916,26 @@ class Quote extends CI_Controller
 		
 		$awardeditems = $this->quotemodel->getawardeditems($award->id,$company->id);
 		$data['awardeditems'] = array();
-		foreach($awardeditems as $item)
-		{
-			$this->db->where('itemid',$item->itemid);
-			$this->db->where('type','Supplier');
-			$this->db->where('company',$company->id);
-			$companyitem = $this->db->get('companyitem')->row();
-			if($companyitem)
+		if($awardeditems){
+			foreach($awardeditems as $item)
 			{
-				$item->itemcode = $companyitem->itemcode;
-				$item->itemname = $companyitem->itemname;
+				$this->db->where('itemid',$item->itemid);
+				$this->db->where('type','Supplier');
+				$this->db->where('company',$company->id);
+				$companyitem = $this->db->get('companyitem')->row();
+				if($companyitem)
+				{
+					$item->itemcode = $companyitem->itemcode;
+					$item->itemname = $companyitem->itemname;
+				}
+
+				$item->etalog = $this->db->where('company',$company->id)
+				->where('quote',$quote->id)
+				->where('itemid',$item->itemid)
+				->get('etalog')->result();
+
+				$data['awardeditems'][] = $item;
 			}
-			
-			$item->etalog = $this->db->where('company',$company->id)
-                			->where('quote',$quote->id)
-                			->where('itemid',$item->itemid)
-                			->get('etalog')->result();
-			
-			$data['awardeditems'][] = $item;
 		}
 		//echo '<pre>';print_r($backtrack);die;
 		$data['backtrack'] = $backtrack;
@@ -975,10 +977,15 @@ class Quote extends CI_Controller
 				else 
 				$postdate = "";
 				
+				if(isset($_POST['notes'.$q->id]))
+				$postnote = $_POST['notes'.$q->id];
+				else 
+				$postnote = "";
+				
         		$emailitems.= '<tr>';
         		$emailitems.= '<td>'.$q->itemname.'</td>';
         		$emailitems.= '<td>changed from '.$reqdate.' to '.$postdate.'</td>';
-        		$emailitems.= '<td>'.$_POST['notes'.$q->id].'</td>';
+        		$emailitems.= '<td>'.$postnote.'</td>';
         		$emailitems.= '</tr>';
         		
 				$updatearray = array(

@@ -288,10 +288,10 @@ class message extends CI_Controller
 		}
 		
 		
-		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail FROM 
-		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q,
+		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail, b.complete FROM 
+		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('users')." u
-		WHERE m.quote=q.id AND m.company=c.id AND m.adminid=u.id		
+		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c.id AND m.adminid=u.id		
 		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con $orderBy";
 		
 		$msgs = $this->db->query($messagesql)->result();
@@ -308,6 +308,7 @@ class message extends CI_Controller
 			$messages[$msg->ponum]['messages'][]=$msg;
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
+			$messages[$msg->ponum]['quote']['complete']=$msg->complete;
 		}
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;
@@ -316,6 +317,26 @@ class message extends CI_Controller
 		$data['sortbyoption']  = (isset($_POST['sortby']) && $_POST['sortby'] != '') ? $_POST['sortby'] : " ";
 		$data['ponumsearch']  = (isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '') ? $_POST['ponumsearch'] : " ";
 		$this->load->view ('admin/purchaseuser/messages', $data);
+	}
+	
+	function archivemessage($qid){
+
+		if($this->session->userdata('usertype_id')!=2)
+		{
+			$message = 'You dont have the permission to access the page.';
+			$this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$message.'</div></div>');
+			redirect('admin/dashboard'); 
+		}
+
+		$messagesql = "INSERT INTO ".$this->db->dbprefix('message_archive')." select * from ".$this->db->dbprefix('message')." WHERE quote='{$qid}'";
+		$returnval = $this->db->query($messagesql);
+		if($returnval) {
+			$messagesql2 = "DELETE FROM ".$this->db->dbprefix('message')." WHERE quote='{$qid}'";
+			$returnval2 = $this->db->query($messagesql2);
+		}
+
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Message Archived Successfully</div></div></div>');
+		redirect('admin/message/messages');
 	}
 	
 	function tago($time)

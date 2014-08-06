@@ -78,9 +78,7 @@ left:0px;}
 			$('#videolist').css({display: "block"});
 			$('#imagelist').css({display: "none"});
 			
-			embedded = document.getElementsByTagName('embed');
-			console.log(embedded);
-			embedded[0].src = "http://www.youtube.com/v/"+source;
+			$('embed').replaceWith($('embed').clone().attr('src','http://www.youtube.com/v/'+source));
     		document.getElementById('loading').style.display = 'none';
 		}else {
 		$('#imagelist').css({display: "block"});

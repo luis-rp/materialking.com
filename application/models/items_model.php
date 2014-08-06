@@ -103,12 +103,12 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                $ret .= "<li><a href='javascript:void(0)'>" . $item->catname."</a>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
                 $ret .= $this->getStoreCategoryMenu($supplier,$item->id); // here is the recursion
             }
             else
             {
-                $ret .= "<li><a href='javascript:void(0)' onclick='filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
             }
             $ret .= "</li>";
         }
@@ -158,6 +158,28 @@ class items_model extends Model {
         }
         
         //$ret = array_reverse($ret);
+        return $ret;
+    }
+    
+    function getsubcategorynames($parentid=0) 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',$parentid);
+        $menus = $this->db->get('category')->result();
+        $ret = "";
+        foreach ($menus as $item) 
+        {
+            $subcategories = $this->getSubCategores($item->id,true);
+            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            
+            if(!$hasitems)
+                continue;
+               $ret .= '<ul><li onclick="filtercategory('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+           
+            
+        }
+        $ret .= "</ul>";
         return $ret;
     }
     

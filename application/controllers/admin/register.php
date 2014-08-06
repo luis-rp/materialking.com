@@ -184,7 +184,11 @@ class Register extends CI_Controller
         }
 
         $user = $check->row();
+        if(isset($user->regkey))
         $key = $user->regkey;
+        else
+        $key = "";
+                
         if(!$key)
         {
             $errormessage = "Account already activated.";
@@ -263,6 +267,11 @@ class Register extends CI_Controller
 		$regkey = $_POST['regkey'];
 		$this->db->where('regkey',$regkey);
 		$u = $this->db->get('users')->row();
+		
+		if(!preg_match("/^([0-9]{5})(-[0-9]{4})?$/i",$_POST['zip']))
+		{
+			$errormessage="Please Enter valid(5 or 5-4) combination of Zip Code";
+		}
 		
 		$coreemail = $u->email;
 		

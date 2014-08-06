@@ -68,6 +68,26 @@ class company_model extends Model {
 
     function SaveCompany() 
     {
+    	$completeaddress="";
+    	if($_POST['street'])
+    	{
+    		$completeaddress.=$_POST['street'].",";
+    	}
+    	if($_POST['city'])
+    	{
+    		$completeaddress.=$_POST['city'].",";
+    	}
+    	if($_POST['state'])
+    	{
+    		$completeaddress.=$_POST['state'].",";
+    	}
+    	if($_POST['zip'])
+    	{
+    		$completeaddress.=$_POST['zip'];
+    	}
+
+    	$_POST['address'] = $completeaddress;
+    	
         $address = ($this->input->post('address'));
         if($address)
             $geoloc = $this->getLatLong($address);
@@ -100,6 +120,26 @@ class company_model extends Model {
     {
         //
         //$address = ($this->input->post('address')) ? $this->input->post('address') : $this->input->post('contact');
+        $completeaddress="";
+        if($_POST['street'])
+        {
+        	$completeaddress.=$_POST['street'].",";
+        }
+        if($_POST['city'])
+        {
+        	$completeaddress.=$_POST['city'].",";
+        }
+        if($_POST['state'])
+        {
+        	$completeaddress.=$_POST['state'].",";
+        }
+        if($_POST['zip'])
+        {
+        	$completeaddress.=$_POST['zip'];
+        }
+
+        $_POST['address'] = $completeaddress;
+        
         $options = $this->input->post();
         $address = ($this->input->post('address'));
         if($address)

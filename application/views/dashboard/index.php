@@ -105,7 +105,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 					  <td><?php echo $invoice->invoicenum; ?></td>
 					  <td><?php echo $invoice->datedue; ?></td>
 					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>');" value="Send Alert" > </td>
-					  <td class="errormsg" id="<?php echo $invoice->id; ?>"></td>
+					  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
 					  </tr>			  
 					  
 

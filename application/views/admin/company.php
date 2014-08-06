@@ -67,14 +67,37 @@ $(document).ready(function(){
 	    </div>
     </div>
     
-    <div class="control-group">
-	    <label class="control-label">Complete Address, Include City/State/Zip</label>
+   <div class="control-group">
+	    <label class="control-label">Street Address*</label>
 	    <div class="controls">
-	      <textarea id="address" class="span5" rows="6" name="address" ><?php echo $this->validation->address; ?></textarea>
+	      <textarea id="street" class="span5" rows="6" name="street" required><?php echo $this->validation->street; ?></textarea>
 	      <?php echo $this->validation->address_error;?>
 	    </div>
     </div>
     
+    <div class="control-group">
+	    <label class="control-label">City*</label>
+	    <div class="controls">
+<input type="text" id="city" name="city" class="span4" value="<?php if(isset($this->validation->city)) echo $this->validation->city; else echo ''; ?>" required>
+	    </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" >State*</label>
+           <select name="state" id="state" required  style="margin-left: 19px;">
+	            <?php foreach($states as $st){?>
+     <option value='<?php echo $st->state_abbr;?>'><?php echo $st->state_name; ?></option>
+                 <?php }?>
+           </select>
+     </div>    
+    
+    <div class="control-group">
+	    <label class="control-label">Zip*</label>
+	    <div class="controls">
+	<input type="text" id="zip" name="zip" class="span4" value="<?php if(isset($this->validation->zip)) echo $this->validation->zip; else echo ''; ?>" required>
+	    </div>
+    </div>     
+     
     <div class="control-group">
 	    <label class="control-label">Type:</label>
 	    <div class="controls">

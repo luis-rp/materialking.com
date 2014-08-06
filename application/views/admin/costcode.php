@@ -34,7 +34,7 @@ $(document).ready(function(){
     <div class="controls">
       <select id="project" name="project">
       	<?php foreach($projects as $p){?>
-      	<option value="<?php echo $p->id;?>" <?php if($p->id==$this->validation->project){echo 'SELECTED';}?>>
+      	<option value="<?php echo $p->id;?>" <?php if(isset($parents[0]->project)) { if($p->id==$parents[0]->project){echo 'SELECTED';} } ?>>
       		<?php echo $p->title;?>
       	</option>
       	<?php }?>
