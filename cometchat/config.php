@@ -152,7 +152,7 @@ define('ADMIN_PASS','cometchat');
 
 /* SETTINGS START */
 
-$hideOffline = '1';			// Hide offline users in Whos Online list?
+$hideOffline = '0';			// Hide offline users in Who's Online list?
 $autoPopupChatbox = '1';			// Auto-open chatbox when a new message arrives
 $messageBeep = '1';			// Beep on arrival of message from new user?
 $beepOnAllMessages = '1';			// Beep on arrival of all messages?
@@ -176,10 +176,10 @@ $startOffline = '0';			// Load bar in offline mode for all first time users?
 $fixFlash = '0';			// Set to yes, if Adobe Flash animations/ads are appearing on top of the bar (experimental)
 $lightboxWindows = '1';			// Set to yes, if you want to use the lightbox style popups
 $sleekScroller = '1';			// Set to yes, if you want to use the new sleek scroller
-$desktopNotifications = '1';			// If yes, desktop notifications will be enabled for Google Chrome
-$windowTitleNotify = '1';               //If yes, notify new incoming messages by changing the browser title
-$floodControl = '0';                    //If set to 0, Users will be allowed to spam in chat (milliseconds)
-$windowFavicon = '1';			// If yes, Update favicon with number of messages (Works on Chrome, Firefox, Opera)
+$desktopNotifications = '1';			// If yes, Google desktop notifications will be enabled for Google Chrome
+$windowTitleNotify = '1';			// If yes, notify new incoming messages by changing the browser title
+$floodControl = '0';			// Chat spam control in milliseconds (Disabled if set to 0)
+$windowFavicon = '1';			// If yes, Update favicon with number of messages (Supported on Chrome, Firefox, Opera)
 
 
 /* SETTINGS END */
