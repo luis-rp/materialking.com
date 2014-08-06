@@ -840,7 +840,7 @@ class site extends CI_Controller
         }
         
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
-        
+        $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);        
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->load->view('site/items', $this->data);
     }
