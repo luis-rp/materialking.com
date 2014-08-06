@@ -253,7 +253,11 @@
 	    	</div>
 			<?php }else{?>
 			<div id="step1" class="span4">
+			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
+			<?php }else{?>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="<?php echo base_url("/admin/admin/restart_tour");?>">Restart Tour</a>
+			<?php }?>
 			</div>
 			<?php }?>
 			

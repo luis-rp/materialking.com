@@ -68,6 +68,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script type="text/javascript">
         var tour;
             $(document).ready(function() {
+
+             
                 $('.myLink').click(function(e) {
                     e.preventDefault();
                     $("#searchfrm").attr("action", this.href);
@@ -232,9 +234,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   	  		    });
 
 
-  	  		    <?php } 
+  	  		    <?php } ?>
+  	  		    
+  	  		   
 				//	} 
-               ?>
+              
             });
         </script>
 <?php } ?>

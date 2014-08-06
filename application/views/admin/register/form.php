@@ -35,8 +35,8 @@
 				</div>
 				<button type="submit" class="btn btn-primary btn-block" tabindex="4">Register</button>
 				<button type="button" id="fbloginbtn" class="btn-block" style="background-color:#3B5998;line-height:26px;margin-top:15px;color:#FFFFFF;" tabindex="4" onclick="callfbregister();">Register Using Facebook</button>
-				<a class="btn btn-primary" href="<?php echo site_url('admin/login');?>">Back To Login</a>
-				<a class="btn btn-primary" href="<?php echo site_url('admin/register/forgot');?>">Forgot Password?</a>
+				<a class="btn btn-primary" style="display:block;" href="<?php echo site_url('admin/login');?>">Back To Login</a>
+				<a class="btn btn-primary" style="display:block;" href="<?php echo site_url('admin/register/forgot');?>">Forgot Password?</a>
 				
 			</fieldset>
 		<?php echo form_close(); ?>

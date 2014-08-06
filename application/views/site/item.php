@@ -559,15 +559,17 @@ left:0px;}
                         </table>
 
                         <?php } ?> 
+                        <?php if(count($inventory)!=0){?>
                          <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
 					    <script type="text/javascript">
+					    
 					   $(function () {
 						   var dataChart = new Array;
 						   var suppliers =new Array();
 						   var ser = new Array();
 						   var total = 0;
 						<?php 
-						if($inventory)
+						
 						foreach ($inventory as $inv)
 						if ($inv->ea)
 						{
@@ -632,7 +634,7 @@ left:0px;}
 					            series: ser
 					        });
 					    });
-					    
+					    <?php } ?>
 					   </script>
 		        <h2>Request Assistance</h2>
                         <a name="form"></a>

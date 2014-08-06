@@ -378,5 +378,12 @@ $link";
 			
 			
 	}
+	function restart_tour(){
+		$id = 	$this->session->userdata ( 'id' );
+		$this->db->where('id',$id);
+		$this->db->update('users',array('tour'=>'unfinished'));
+		$this->session->set_userdata('tour','unfinished');
+		redirect("admin");
+	}
 }
 ?>

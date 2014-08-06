@@ -27,6 +27,7 @@
 				<a class="btn btn-primary btn-block" href="<?php echo site_url('admin/register/forgot');?>">Forgot Username/Password</a>
 				
 				<a class="btn btn-primary btn-block" href="<?php echo site_url('admin/register');?>">Register Now</a>
+				<a class="btn btn-primary btn-block" href="<?php echo site_url('site/items');?>">Go to Store</a>
 			</fieldset>
 		<?php echo form_close(); ?>
 		
