@@ -729,7 +729,7 @@ function acceptall()
                 {
                     ?>
                      <hr>
-                      <h4>ERROR LOG</h4>
+                      <h4>Error Log</h4>
                        <table  class='table table-bordered'>
                             <tbody>
                                 <tr>

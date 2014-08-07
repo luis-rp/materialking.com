@@ -83,7 +83,9 @@
 
 	});   
 	</script>
-	 <script type="text/javascript">
+	
+<?php }?>
+ <script type="text/javascript">
 	 $(document).ready(function(){
  tour4 = new Tour({
 	  steps: [
@@ -118,7 +120,6 @@
 		 tour4.end();
 			}
  </script>
-<?php }?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
