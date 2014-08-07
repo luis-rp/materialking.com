@@ -29,11 +29,17 @@
 		start();
 	});
  });
+	$('#canceltour').live('click',endTour);
  function start(){
 	 
 		// Start the tour
 			tour5.start();
 		 }
+ function endTour(){
+	 
+	 $("#tourcontrols").remove();
+	 tour5.end();
+		}
  </script>
 	<style type="text/css">
 		.box { padding-bottom: 0; }
@@ -51,7 +57,7 @@
 	<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="close" id="canceltour"></span></div>
+<span class="closeX" id="canceltour"></span></div>
 <section class="row-fluid">
 	<h3 class="box-header"  style="display:inline" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">

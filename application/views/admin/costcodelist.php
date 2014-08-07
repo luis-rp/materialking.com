@@ -77,7 +77,7 @@ $(document).ready(function(){
 				tour6.init();
 				start();
 			});
-		
+		$('#canceltour').live('click',endTour);
 });
 function setprogress(id)
 {
@@ -88,11 +88,16 @@ function start(){
 	// Start the tour
 		tour6.start();
 	 }
+function endTour(){
+	 
+	 $("#tourcontrols").remove();
+	 tour6.end();
+		}
 </script>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="close" id="canceltour"></span></div>
+<span class="closeX" id="canceltour"></span></div>
 
 <section class="row-fluid">
 
