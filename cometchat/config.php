@@ -42,12 +42,11 @@ $trayicon = array();
 
 /* ICONS START */
 
-$trayicon[] = array('home','Home','/','','','','','','');
+$trayicon[] = array('home','Home','/','','','','','','1');
 $trayicon[] = array('chatrooms','Chatrooms','modules/chatrooms/index.php','_popup','600','300','','1','1');
-$trayicon[] = array('announcements','Announcements','modules/announcements/index.php','_popup','280','300','','1','');
-$trayicon[] = array('games','Single Player Games','modules/games/index.php','_popup','465','300','','1','');
-$trayicon[] = array('share','Share This Page','modules/share/index.php','_popup','350','50','','1','');
-$trayicon[] = array('scrolltotop','Scroll To Top','javascript:jqcc.cometchat.scrollToTop();','','','','','','');
+$trayicon[] = array('announcements','Announcements','modules/announcements/index.php','_popup','280','300','','1','1');
+$trayicon[] = array('share','Share This Page','modules/share/index.php','_popup','350','50','','1','1');
+$trayicon[] = array('scrolltotop','Scroll To Top','javascript:jqcc.cometchat.scrollToTop();','','','','','','1');
 
 /* ICONS END */
 
@@ -55,7 +54,7 @@ $trayicon[] = array('scrolltotop','Scroll To Top','javascript:jqcc.cometchat.scr
 
 /* PLUGINS START */
 
-$plugins = array('smilies','clearconversation','chattime','games');
+$plugins = array('smilies','clearconversation','chattime','broadcast','avchat','chathistory','handwrite','filetransfer','writeboard','transliterate','whiteboard','save','screenshare','block');
 
 /* PLUGINS END */
 
@@ -63,7 +62,7 @@ $plugins = array('smilies','clearconversation','chattime','games');
 
 /* EXTENSIONS START */
 
-$extensions = array('mobileapp');
+$extensions = array('mobileapp','jabber','mobilewebapp');
 
 /* EXTENSIONS END */
 
@@ -152,7 +151,7 @@ define('ADMIN_PASS','cometchat');
 
 /* SETTINGS START */
 
-$hideOffline = '0';			// Hide offline users in Who's Online list?
+$hideOffline = '1';			// Hide offline users in Who's Online list?
 $autoPopupChatbox = '1';			// Auto-open chatbox when a new message arrives
 $messageBeep = '1';			// Beep on arrival of message from new user?
 $beepOnAllMessages = '1';			// Beep on arrival of all messages?
