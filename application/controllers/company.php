@@ -216,8 +216,8 @@ class Company extends CI_Controller {
             $data['company'] = $check;
             $data['logintype'] = 'company';
 
-            $temp['comet_user_id'] = $check->id;
-            $temp['comet_user_email'] = $check->primaryemail;
+            $data['comet_user_id'] = $check->id;
+            $data['comet_user_email'] = $check->primaryemail;
 
             $this->session->set_userdata($data);
             redirect('dashboard');
