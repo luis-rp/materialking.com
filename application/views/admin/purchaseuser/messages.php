@@ -22,9 +22,29 @@ function clearFilters()
 }
 
 </script>
+<script type="text/javascript">
+$(document).ready(function(){
+ tour10 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Messages"
+	  },
+	 
+   	  
+	]
+	});
 
+	// Initialize the tour
+	tour10.init();
+
+	// Start the tour
+	tour10.start();
+});
+ </script>
 <section class="row-fluid">
-	<h3 class="box-header">Messages</h3>
+	<h3 class="box-header" style="display:inline;" id="step1">Messages</h3>
 	<?php echo $this->session->flashdata('message'); ?>
 	<div class="box">
 	  <div class="span12">

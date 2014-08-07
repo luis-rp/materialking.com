@@ -1,4 +1,4 @@
-  <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+
 <?php if($this->session->userdata('managedprojectdetails')){?>
 
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
@@ -83,13 +83,33 @@
 
 	});   
 	</script>
-	
+	 <script type="text/javascript">
+	 $(document).ready(function(){
+ tour4 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Dashboard"
+	  },
+	 
+   	  
+	]
+	});
+
+	// Initialize the tour
+	tour4.init();
+
+	// Start the tour
+	tour4.start();
+	 });
+ </script>
 <?php }?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
 	<div class="box">
 		<div class="span12">
-			<h3 class="box-header">
+			<h3 class="box-header" style="display:inline" id="step1">
 				Your Dashboard
 				&nbsp;
 				

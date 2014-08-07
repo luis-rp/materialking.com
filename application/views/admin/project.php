@@ -7,6 +7,7 @@ $(document).ready(function(){
 });
 //-->
 </script>
+
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <section class="row-fluid" >
 	<h3 class="box-header"><?php echo $heading; ?></h3>

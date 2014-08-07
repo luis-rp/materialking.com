@@ -50,7 +50,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-        
+          <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 
         <style type="text/css">
             #theme_switcher
@@ -67,6 +67,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 <?php if(!$this->session->userdata('managedprojectdetails')){ ?>
         <script type="text/javascript">
         var tour;
+        var helpTour;
             $(document).ready(function() {
 
              
@@ -233,6 +234,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
   	  		    	}
   	  		    });
 
+  	  		
 
   	  		    <?php } ?>
   	  		    
@@ -376,6 +378,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
             }
         </script>	
+ 
     </head>
 
     <body>

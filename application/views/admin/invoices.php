@@ -1,4 +1,24 @@
+ <script type="text/javascript">
+ $(document).ready(function(){
+ tour3 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Invoices"
+	  },
+	 
+   	  
+	]
+	});
 
+	// Initialize the tour
+	tour3.init();
+
+	// Start the tour
+	tour3.start();
+ });
+ </script>
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -106,7 +126,7 @@ function paycc(ptype,idnumber,amount)
 </script>
 
 <section class="row-fluid">
-    <h3 class="box-header"><?php echo $heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no title" ?></h3>
+    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no title" ?></h3>
     <div class="box">
         <div class="span12">
             <div id="message_div">

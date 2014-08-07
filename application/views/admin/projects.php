@@ -6,7 +6,27 @@
             });
             </script>
 <?php if(isset($jsfile)) include $this->config->config['base_dir'].'templates/admin/gridfeed/'.$jsfile;?>
+ <script type="text/javascript">
+ $(document).ready(function(){
+ tour5 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Project Managment"
+	  },
+	 
+   	  
+	]
+	});
 
+	// Initialize the tour
+	tour5.init();
+
+	// Start the tour
+	tour5.start();
+ });
+ </script>
 	<style type="text/css">
 		.box { padding-bottom: 0; }
 		.box > p { margin-bottom: 20px; }
@@ -22,7 +42,7 @@
 	</style>
 	
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo $heading; ?></h3>
+	<h3 class="box-header"  style="display:inline" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
 	

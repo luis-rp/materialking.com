@@ -13,10 +13,54 @@
 		
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
-	
-	
+	<?php if($jsfile=="costcodeitemjs.php"){?>
+	 <script type="text/javascript">
+	 $(document).ready(function(){
+ tour7 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Items For Costode"
+	  },
+	 
+   	  
+	]
+	});
+
+	// Initialize the tour
+	tour7.init();
+
+	// Start the tour
+	tour7.start();
+	 });
+ </script>
+	<?php }?>
+	<?php if($jsfile=="itemcodeitemjs.php"){?>
+	 <script type="text/javascript">
+	 $(document).ready(function(){
+ tour9 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for PO Items For Item"
+	  },
+	 
+   	  
+	]
+	});
+
+	// Initialize the tour
+	tour9.init();
+
+	// Start the tour
+	tour9.start();
+	 });
+ </script>
+	<?php }?>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo $heading; ?></h3>
+	<h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
 	

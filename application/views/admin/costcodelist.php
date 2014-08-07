@@ -56,6 +56,24 @@ $(document).ready(function(){
 		}
 		return false;
 	});
+
+	 tour6= new Tour({
+		  steps: [
+		  {
+		    element: "#step1",
+		    title: "Step 1",
+		    content: "Welcome to the on-page tour for Cost Code managment"
+		  },
+		 
+	   	  
+		]
+		});
+	 	tour6.restart();
+		// Initialize the tour
+		tour6.init();
+
+		// Start the tour
+		tour6.start();
 		
 });
 function setprogress(id)
@@ -67,7 +85,7 @@ function setprogress(id)
 
 <section class="row-fluid">
 
-	<h3 class="box-header"><?php echo $heading; ?></h3>
+	<h3 class="box-header" style="display:inline" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
 	

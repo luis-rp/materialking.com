@@ -1,4 +1,24 @@
-<?php //echo '<pre>';print_r($backtracks);die; ?>
+ <script type="text/javascript">
+ $(document).ready(function(){
+ tour2 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Backorder Items"
+	  },
+	 
+   	  
+	]
+	});
+
+	// Initialize the tour
+	tour2.init();
+
+	// Start the tour
+	tour2.start();
+ });
+ </script>
 <?php 
     $quotes = array();
     if(@$backtracks)
@@ -7,7 +27,7 @@
             $quotes[] = $backtrack['quote']->ponum;
 ?>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?></h3>
+	<h3 class="box-header" style="display:inline" id="step1"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?></h3>
 	<div class="box">
 		<div class="span12">
 		    <?php echo $this->session->flashdata('message'); ?>

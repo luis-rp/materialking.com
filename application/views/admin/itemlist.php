@@ -15,7 +15,27 @@
         });
 	}
 </script>
+	 <script type="text/javascript">
+	 $(document).ready(function(){
+ tour8 = new Tour({
+	  steps: [
+	  {
+	    element: "#step1",
+	    title: "Step 1",
+	    content: "Welcome to the on-page tour for Item Code Managment"
+	  },
+	 
+   	  
+	]
+	});
 
+	// Initialize the tour
+	tour8.init();
+
+	// Start the tour
+	tour8.start();
+	 });
+ </script>
 <style type="text/css">
     .box { padding-bottom: 0; }
     .box > p { margin-bottom: 20px; }
@@ -32,7 +52,7 @@
 
 
 <section class="row-fluid">
-    <h3 class="box-header"><?php echo $heading; ?></h3>
+    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>
     <div class="box">
         <div class="span12">
 
