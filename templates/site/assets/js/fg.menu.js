@@ -13,7 +13,7 @@ Dual licensed under the MIT (filamentgroup.com/examples/mit-license.txt) and GPL
 
 var allUIMenus = [];
 
-$.fn.menu = function(options){
+$.fn.menu2 = function(options){
 	var caller = this;
 	var options = options;
 	var m = new Menu(caller, options);	
@@ -63,7 +63,7 @@ function Menu(caller, options){
 		crumbDefaultText: 'Choose an option:',
 		backLink: true, // in the ipod-style menu: instead of breadcrumbs, show only a 'back' link
 		backLinkText: 'Back',
-		flyOut: true, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
+		flyOut: false, // multi-level menus are ipod-style by default; this parameter overrides to make a flyout instead
 		flyOutOnState: 'ui-state-default',
 		nextMenuLink: 'ui-icon-triangle-1-e', // class to style the link (specifically, a span within the link) used in the multi-level menu to show the next level
 		topLinkText: 'All',
@@ -269,7 +269,7 @@ Menu.prototype.flyout = function(container, options) {
 				clearTimeout(hideTimer);
 				var subList = $(this).next();
 				if (!fitVertical(subList, $(this).offset().top)) { subList.css({ top: 'auto', bottom: 0 }); };
-				if (!fitHorizontal(subList, $(this).offset().left + 300)) { subList.css({ left: 'auto', right: linkWidth, 'z-index': 999 }); };
+				if (!fitHorizontal(subList, $(this).offset().left + 100)) { subList.css({ left: 'auto', right: linkWidth, 'z-index': 999 }); };
 				showTimer = setTimeout(function(){
 					subList.addClass('ui-widget-content').show(options.showSpeed).attr('aria-expanded', 'true');	
 				}, 300);	
@@ -324,13 +324,11 @@ Menu.prototype.drilldown = function(container, options) {
 	breadcrumb.append(crumbDefaultHeader);
 	
 	var checkMenuHeight = function(el){
-		if (el.height() > options.maxHeight) { // el.addClass('fg-menu-scroll') 
-	};	
+		if (el.height() > options.maxHeight) { el.addClass('fg-menu-scroll') };	
 		el.css({ height: options.maxHeight });
 	};
 	
-	//var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('auto'); };
-	var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('200'); };
+	var resetChildMenu = function(el){ el.removeClass('fg-menu-scroll').removeClass('fg-menu-current').height('auto'); };
 	
 	this.resetDrilldownMenu = function(){
 		$('.fg-menu-current').removeClass('fg-menu-current');
@@ -368,13 +366,13 @@ Menu.prototype.drilldown = function(container, options) {
 		    		var parentLeft = (parentUl.is('.fg-menu-content')) ? 0 : parseFloat(topList.css('left'));    		
 		    		var nextLeftVal = Math.round(parentLeft - parseFloat(container.width()));
 		    		var footer = $('.fg-menu-footer');
-		    		var timer = setTimeout(function () {
+		    		
 		    		// show next menu   		
 		    		resetChildMenu(parentUl);
 		    		checkMenuHeight(nextList);
 					topList.animate({ left: nextLeftVal }, options.crossSpeed);						
 		    		nextList.show().addClass('fg-menu-current').attr('aria-expanded', 'true');    
-		    		}, 700);
+		    		
 		    		var setPrevMenu = function(backlink){
 		    			var b = backlink;
 		    			var c = $('.fg-menu-current');
@@ -414,7 +412,6 @@ Menu.prototype.drilldown = function(container, options) {
 						$('.fg-menu-current-crumb').removeClass('fg-menu-current-crumb');
 						var crumbText = $(this).find('span:eq(0)').text();
 						var newCrumb = $('<li class="fg-menu-current-crumb"><a href="javascript://" class="fg-menu-crumb">'+crumbText+'</a></li>');	
-						
 						newCrumb
 							.appendTo(breadcrumb)
 							.find('a').click(function(){
@@ -441,7 +438,7 @@ Menu.prototype.drilldown = function(container, options) {
 		// if the link is a leaf node (doesn't open a child menu)
 		else {
 			$(this).click(function(){
-				//menu.chooseItem(this);
+				menu.chooseItem(this);
 				return false;
 			});
 		};

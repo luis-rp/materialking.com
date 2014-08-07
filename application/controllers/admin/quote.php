@@ -2145,6 +2145,7 @@ class quote extends CI_Controller
         $data['awarded'] = $awarded;
         $data['shipments'] = $shipments;
         $data['heading'] = "TRACK Items";
+        $data['adquoteid'] = $qid;
         $this->load->view('admin/track', $data);
     }
     

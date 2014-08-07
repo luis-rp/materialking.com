@@ -69,13 +69,12 @@ $(document).ready(function(){
 */
 
 
-	$('#hierarchybreadcrumb').menu({
+	$('#hierarchybreadcrumb').menu2({
 		content: $('#hierarchybreadcrumb').next().html(),
 		backLink: false
 	});
-
 	
-	$('#hierarchybreadcrumbitem').menu({
+	$('#hierarchybreadcrumbitem').menu2({
 		content: $('#hierarchybreadcrumbitem').next().html(),
 		backLink: false
 	});
@@ -817,6 +816,4 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                     </div>
         </div>
         
-        
-        
-        
+   

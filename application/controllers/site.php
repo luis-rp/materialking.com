@@ -134,11 +134,19 @@ class site extends CI_Controller
                 if ($this->session->userdata('site_loggedin'))
                 {
                     $currentpa = $this->session->userdata('site_loggedin')->id;
+                    
+                    $this->db->where('fromid', $currentpa);
+                    $this->db->where('toid', $supplier->id);
+                    $this->db->where('fromtype', 'users');
+                    $this->db->where('totype', 'company');
+                    if ($this->db->get('joinrequest')->result())
+                    	$supplier->joinmark ='<div class="star"><div class="content">Already sent Request</div></div>';
+                    	
                     $this->db->where('purchasingadmin', $currentpa);
                     $this->db->where('company', $supplier->id);
                     if ($this->db->get('network')->result())
                     {
-                        $supplier->joinmark = '<div class="star"><div class="content">Joined</div></div>';
+                        $supplier->joinmark = '<div class="star"><div class="content">Already in Network</div></div>';
                     }
                 }
                 $latlongs[] = "[$supplier->com_lat, $supplier->com_lng]";
@@ -150,7 +158,7 @@ class site extends CI_Controller
                 $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
                  '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
                  '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
-                 '</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
+                 '</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="javascript:void(0);">'.$supplier->joinmark.'</a></div></p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
                 $data['suppliers'][] = $supplier;
             }
         }

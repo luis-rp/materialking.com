@@ -406,25 +406,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					</ul>
 					<?php } ?>
 					
-                    <div class="input-append"  style="float: right;padding-right: 20px;">
-                        <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
-                            <input type="text"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
-                            <input type="hidden" id="searchponum" name="searchponum" value="<?php echo @$_POST['globalsearch'] ?>"/>
-                            <input type="hidden" id="searchitemname" name="searchitemname" value="<?php echo @$_POST['globalsearch'] ?>"/>
-                            <input type="hidden" id="searchinvoicenum" name="searchinvoicenum" value="<?php echo @$_POST['globalsearch'] ?>"/>
-                            <div class="btn-group">
-                                <button class="btn dropdown-toggle btn btn-primary" data-toggle="dropdown">Action<span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <?php if (@$mp->id) { ?>
-                                    <li><a class="myLink" onclick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/index/<?php echo $mp->id; ?>">PO NUM</a></li>
-                                    <?php } ?>
-                                    <li><a class="myLink" onclick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/invoices">Invoice</a></li>
-                                    <li><a class="myLink" onclick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/itemcode">Item</a></li>
-                                </ul>
-                            </div>
-                        </form>
-
-                    </div>
+                    
 
                     <div style="float: right;padding-top:0px;padding-right:10px;">
                         <ul class="messages">
@@ -486,6 +468,26 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 							</ul>
 						</li>
                         </ul>
+                    </div>
+                    
+                    <div class="input-append"  style="float: right;padding-right: 20px;">
+                        <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
+                            <input type="text" style="width:150px;"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
+                            <input type="hidden" id="searchponum" name="searchponum" value="<?php echo @$_POST['globalsearch'] ?>"/>
+                            <input type="hidden" id="searchitemname" name="searchitemname" value="<?php echo @$_POST['globalsearch'] ?>"/>
+                            <input type="hidden" id="searchinvoicenum" name="searchinvoicenum" value="<?php echo @$_POST['globalsearch'] ?>"/>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle btn btn-primary" data-toggle="dropdown">Action<span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <?php if (@$mp->id) { ?>
+                                    <li><a class="myLink" onclick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/index/<?php echo $mp->id; ?>">P.O. #</a></li>
+                                    <?php } ?>
+                                    <li><a class="myLink" onclick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/invoices">Invoice</a></li>
+                                    <li><a class="myLink" onclick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/itemcode">Item</a></li>
+                                </ul>
+                            </div>
+                        </form>
+
                     </div>
 
                     <div class="dropdown" style="float: left">

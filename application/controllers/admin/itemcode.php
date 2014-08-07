@@ -134,6 +134,7 @@ class itemcode extends CI_Controller
             	
                 $itemcode->ea = "$ " . $itemcode->ea;
                 $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
+                
                 $itemcode->actions = anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
                 'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>', 
                 array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));
