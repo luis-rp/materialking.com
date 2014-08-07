@@ -130,10 +130,16 @@ class Quotemodel extends Model
 			return array();
 	}
 
-	function getrevisiondraftitems($quote,$company,$rid) 
+	function getrevisiondraftitems($quote,$company,$rid="") 
     { 
+    	$where = "";
+    	
+    	if(isset($rid) && $rid!=""){
+    		$where = "AND bi.revisionid=".$rid;
+    	}
+    	
         $sql = "SELECT bi.* FROM ".$this->db->dbprefix('quoterevisions')." bi, ".$this->db->dbprefix('bid')." b  
-               WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company' AND bi.revisionid=".$rid; 
+               WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company' {$where} order by bi.revisionid desc" ; 
         $query = $this->db->query ($sql); 
         if($query->num_rows>0) 
             return $query->result(); 

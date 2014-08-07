@@ -62,9 +62,10 @@
                 </div>
           <ul class="cbp_tmtimeline">
           
-          <?php
+         <?php $replieddate = "";
 		    	foreach($po['messages'] as $msg)
-		    	{
+		    	{ 
+		    		if(strpos($msg->from, '(Admin)')){
 		    ?>
             <li>
               <time class="cbp_tmtime" datetime="2013-04-10 18:30">
@@ -84,9 +85,8 @@
                     <li>
                         <?php if(strpos($msg->from, '(Admin)')){?>
     		    		<a class="btn btn-danger btn-sm btn-small" href="<?php echo site_url('message/viewmessage/'.$msg->id);?>">
-    		    			<i class="fa fa-comments"></i> Reply
-    		    		</a>
-		    		    <?php }?>
+    		    		<i class="fa fa-comments"></i> Reply </a> <?php if($replieddate!="") echo "&nbsp; Replied &nbsp;".$replieddate; ?>
+    		    		<?php }?>
     		    		<?php if($msg->user_attachment){?>
     		    		
     		    		<a class="btn btn-danger btn-sm btn-small" target="_blank" href="<?php echo site_url('uploads/messages/'.$msg->user_attachment);?>">Download Attachment</a>
@@ -99,7 +99,9 @@
               </div>
             </li>
            
-            <?php break;} ?>
+            <?php break; }
+		    		if(strpos($msg->to, '(Admin)')){ $replieddate = $msg->showdate; }
+		    	 } ?>
            
           </ul>
         </div>

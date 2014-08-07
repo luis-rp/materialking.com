@@ -162,6 +162,8 @@ class company extends CI_Controller {
         $data ['heading'] = 'Update Company Item';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/company/updatecompany');
+        $query = $this->db->get_where('company', array('id' => $id));
+        $data['company'] = $query->result();
         $data['states'] = $this->db->get('state')->result();
         $this->load->view('admin/company', $data);
     }
@@ -190,6 +192,8 @@ class company extends CI_Controller {
                 }
                 $data['types'][] = $type;
             }
+            $query = $this->db->get_where('company', array('id' => $id));
+            $data['company'] = $query->result();
             $data['states'] = $this->db->get('state')->result();
             $this->load->view('admin/company', $data);
         } else {

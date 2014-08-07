@@ -147,7 +147,7 @@
 						</label>
 						<div class="controls">
 							<select name="pid" onchange="this.form.submit();">
-								<option value="0">Select</option>
+								<option value="0">Select Company Dashboard</option>
 								<?php foreach($projects as $p){?>
 								<option value="<?php echo $p->id;?>" <?php if(@$mp->id==$p->id){echo 'SELECTED';}?>>
 								    <?php echo $p->title?>
@@ -291,15 +291,176 @@
 	    		
 	    	</div>
 			<?php }else{?>
-			<div id="step1" class="span4">
+			<div id="step1" class="span4" style="width:338px !important;">
 			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php }else{?>
 				&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="<?php echo base_url("/admin/admin/restart_tour");?>">Restart Tour</a>
+				
+			<div class="well span4" style=" margin-top:15px; width:100%;" >
+					<h3 class=" box-header">Activity Feed</h3>
+					<h5>Recent Messages</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($msgs)) { ?>
+					  <tr>
+					  <td>Message</td>
+					  <td>From</td>							  
+					  <td>Sent On</td>
+					  </tr>		
+				<?php foreach($msgs as $msg) { if(strpos($msg->to, '(Admin)') > 0) { ?>
+
+					  <tr>
+					  <td><?php echo $msg->message; ?></td>
+					  <td><?php echo $msg->from; ?></td>	
+					  <td><?php $datetime = strtotime($msg->senton); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } } ?>
+				<?php } else { ?>
+				<tr><td>No Events Found</td></tr>
+				<?php } ?>
+				</table>	
+				</div>	
+		</div>
+		<div id="step1" class="span4">	
+				
+				<div class="well span4" style="width:100% !important;" >
+					<h3 class=" box-header">Overdue Invoices & Payment Requests</h3>
+					<h5>Invoices with Past Due Date</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($invoices)) { ?>
+					  <tr>
+					  <td>Invoice</td>
+					  <td>Due Date</td>							    
+					  </tr>		
+				<?php foreach($invoices as $invoice) { ?>
+
+					  <tr>
+					  <td><?php echo $invoice->invoicenum; ?></td>
+					  <td><?php echo $invoice->datedue; ?></td>						 		  
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Invoices Found</td></tr>
+				<?php } ?>
+				</table>	
+				<div class="tiles-title extrabox" >
+					
+					<h5>Orders Requested Payment By Supplier</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($invoicespay)) { ?>
+					  <tr>
+					  <td>Invoice</td>
+					  <td>Due Date</td>				
+					  <td>Payment Alert Date</td>				  
+					  </tr>		
+				<?php foreach($invoicespay as $invoice) { ?>
+
+					  <tr>
+					  <td><?php echo $invoice->invoicenum; ?></td>
+					  <td><?php echo $invoice->datedue; ?></td>	
+					   <td><?php echo $invoice->alertsentdate; ?></td>  						  
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Orders Found</td></tr>
+				<?php } ?>
+				</table>	
+				</div>
+				</div>
+				
+				
+				<div style="clear:both;"></div>
+				
+				
+				<div class="well span4" style="width:100% !important; margin-left:0px; " >
+					<h3 class=" box-header">Overdue Backorders</h3>
+					<h5>Backorders with Past Due Date</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($backorders)) { ?>
+					  <tr>
+					  <td>Invoice</td>
+					  <td>Due Date</td>							  
+					  </tr>		
+				<?php foreach($backorders as $invoice) { ?>
+
+					  <tr>
+					  <td><?php echo $invoice['quote']->ponum; ?></td>
+					  <td><?php echo $invoice['quote']->duedate; ?></td>						    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Orders Found</td></tr>
+				<?php } ?>
+				</table>	
+				</div>
+				
+				
+				
+				
+				
+				
+							
+				
+				
 			<?php }?>
 			</div>
 			<?php }?>
 			
 		</div>
+		<div style="clear:both;"></div>
+	<div  id="step1" class="well span4">
+		<div class="tiles-title extrabox"  style="float:left;">
+					<h3 class=" box-header">PO Calendar</h3>
+					
+					<!-- <table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($events)) { ?>
+					  <tr>
+					  <td>Event</td>
+					  <td>Event Date</td>							  
+					  </tr>		
+				<?php foreach($events as $event) { ?>
+
+					  <tr>
+					  <td><?php echo $event->title; ?></td>
+					  <td><?php echo $event->evtdate; ?></td>						    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Events Found</td></tr>
+				<?php } ?>
+				</table> -->	
+				</div>
+		</div>	
+		
+		<div  id="step1" class="well span4">
+		<div class="tiles-title extrabox"  style="float:left;">
+					<h3 class=" box-header">Upcoming Events</h3>
+					
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($events)) { ?>
+					  <tr>
+					  <td>Event</td>
+					  <td>Event Date</td>							  
+					  </tr>		
+				<?php foreach($events as $event) { ?>
+
+					  <tr>
+					  <td><?php echo $event->title; ?></td>
+					  <td><?php echo $event->evtdate; ?></td>						    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Events Found</td></tr>
+				<?php } ?>
+				</table>	
+				</div>
+		</div>	
+		
 	</div>
 </section>

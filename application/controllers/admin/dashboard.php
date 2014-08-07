@@ -164,6 +164,43 @@ class Dashboard extends CI_Controller
 			//print_r($costcodesjson);die;
 			$data['costcodesjson'] = $costcodesjson;
 		}
+		
+		$invoices = $this->quote_model->getpendinginvoices($this->session->userdata('purchasingadmin'));
+		$invoicespay = $this->quote_model->getpaymentrequestedorders($this->session->userdata('purchasingadmin'));
+		
+		$bcks = $this->quote_model->getBacktracks($this->session->userdata('purchasingadmin'));
+		$backtracks = array();
+		foreach($bcks as $bck)
+		{
+			$backtracks[]=$bck;
+		}
+		
+		$events = $this->quote_model->get_items();
+		
+		$sql = "SELECT last_logged_date FROM ".$this->db->dbprefix('users')." WHERE purchasingadmin ='".$this->session->userdata('purchasingadmin')."' and usertype_id = '".$this->session->userdata('usertype_id')."'";
+		$resultid = $this->db->query($sql)->result(); 
+		$whereres = "";
+		if(@$resultid){
+			$whereres = "and m.senton > '".$resultid[0]->last_logged_date."'";
+		}else 
+			$whereres = "";
+		
+		$messagesql = "SELECT m.* FROM 
+		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereres} ";
+		
+		$msgs = $this->db->query($messagesql)->result();		
+		
+		if($invoices)
+		$data['invoices'] = $invoices;
+		if($invoicespay)
+		$data['invoicespay'] = $invoicespay;
+		if($backtracks)
+		$data['backorders'] = $backtracks;
+		if($events)
+		$data['events'] = $events;
+		if($msgs)
+		$data['msgs'] = $msgs;		
+		
 		$data['viewname'] = 'dashboard';
 		$this->load->view ('admin/dashboard', $data);
 	}

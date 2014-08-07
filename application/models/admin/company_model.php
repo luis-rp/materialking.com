@@ -92,6 +92,9 @@ class company_model extends Model {
         if($address)
             $geoloc = $this->getLatLong($address);
         
+        $_POST['password'] = md5($_POST['password']);
+        $_POST['pwd'] = $_POST['password'];   
+            
         $options = $this->input->post();
         $address = ($this->input->post('address'));
         if($address)

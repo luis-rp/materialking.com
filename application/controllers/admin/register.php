@@ -163,60 +163,63 @@ class Register extends CI_Controller
     
     
     ////////////////////////
-    function resend() 
+    function resend()
     {
-        $this->load->view('admin/register/resend');
+    	$this->load->view('admin/register/resend');
     }
 
-    function sendkeyagain() 
+    function sendkeyagain()
     {
-        if (!@$_POST)
-            die('Wrong access');
-        $errormessage = '';
-        if (!@$_POST['email']) {
-            $errormessage = 'Please Provide Email';
-        } else {
-            $this->db->where('email', $_POST['email']);
-            $check = $this->db->get('users');
-            if ($check->num_rows == 0) {
-                $errormessage = "Invalid email";
-            }
-        }
+    	if (!@$_POST)
+    	die('Wrong access');
+    	$errormessage = '';
+    	if(!@$_POST['email'])
+    	{
+    		$errormessage = 'Please Provide Email';
+    	}
+    	else
+    	{
+    		$this->db->where('email', $_POST['email']);
+    		$check = $this->db->get('users');
+    		if ($check->num_rows == 0)
+    		{
+    			$errormessage = "Invalid email";
+    		}
+    	}
+    	$user = $this->db->get('users')->row();
+    	if(isset($user->regkey))
+    	$key = $user->regkey;
+    	else
+    	$key = "";
 
-        $user = $check->row();
-        if(isset($user->regkey))
-        $key = $user->regkey;
-        else
-        $key = "";
-                
-        if(!$key)
-        {
-            $errormessage = "Account already activated.";
-        }
-        
-        if ($errormessage) {
-            $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
-            redirect('admin/register/resend');
-        }
-		
-		$link = site_url('admin/register/complete/'.$key);
-	    $body = "Dear ".$user->companyname.",<br><br> 
+    	if(!$key)
+    	{
+    		$errormessage = "Account already activated.";
+    	}
+
+    	if ($errormessage) {
+    		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
+    		redirect('admin/register/resend');
+    	}
+
+    	$link = site_url('admin/register/complete/'.$key);
+    	$body = "Dear ".$user->companyname.",<br><br>
 	  	Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-	    
-	    $settings = (array)$this->settings_model->get_setting_by_id (1);
-	    $this->load->library('email');
-        $this->email->from($settings['adminemail'], "Administrator");
-        
-        $this->email->to($user->fullname . ',' . $user->email); 
-        
-        $this->email->subject('Activate your account.');
-        $this->email->message($body);
-        $this->email->set_mailtype("html");
-        $this->email->send();
 
-        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Activation link sent to your email successfully.</div></div></div>');
-        redirect('admin/register/resend');
+    	$settings = (array)$this->settings_model->get_setting_by_id (1);
+    	$this->load->library('email');
+    	$this->email->from($settings['adminemail'], "Administrator");
+
+    	$this->email->to($user->fullname . ',' . $user->email);
+
+    	$this->email->subject('Activate your account.');
+    	$this->email->message($body);
+    	$this->email->set_mailtype("html");
+    	$this->email->send();
+
+    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Activation link sent to your email successfully.</div></div></div>');
+    	redirect('admin/register/resend');
     }
     //////////////////////////////////
 

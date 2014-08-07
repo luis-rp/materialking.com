@@ -974,6 +974,127 @@ class quote_model extends Model {
         }
         return $itemcode;
     }
+    
+    
+    function getpendinginvoices($purchaser)
+	{
+		
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate   
+				   FROM 
+				   ".$this->db->dbprefix('received')." r,
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id 				 
+				  AND ai.purchasingadmin=$purchaser 
+				  AND r.paymentstatus <> 'Paid'
+				  AND r.datedue < CURDATE() 
+				  GROUP BY invoicenum
+				  ";
+		//echo $invoicesql;
+		$invoicequery = $this->db->query($invoicesql);
+		$invoice = $invoicequery->result();
+		return $invoice;
+	}
+	
+	
+	function getpaymentrequestedorders($purchaser)
+	{
+		
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate   
+				   FROM 
+				   ".$this->db->dbprefix('received')." r,
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id 				 
+				  AND ai.purchasingadmin=$purchaser 
+				  AND r.paymentstatus <> 'Paid'
+				  AND r.alertsentdate IS NOT NULL   
+				  GROUP BY invoicenum
+				  ";
+		//echo $invoicesql;
+		$invoicequery = $this->db->query($invoicesql);
+		$invoice = $invoicequery->result();
+		return $invoice;
+	}
+	
+	function getBacktracks($purchaser)
+	{
+		if(@$purchaser)
+			$this->db->where('purchasingadmin',$purchaser);
+			$this->db->where('duedate < CURDATE()');
+			$this->db->order_by("podate", "asc");
+			$quotes = $this->db->get('quote')->result();
+		
+		$count = count ($quotes);
+		$items = array();
+		if ($count >= 1) 
+		{
+			foreach ($quotes as $quote) 
+			{
+				$this->db->where('quote',$quote->id);
+				$awarded = $this->db->get('award')->row();
+				if($awarded)
+				{
+					$this->db->where('award',$awarded->id);
+					$awardeditems = $this->db->get('awarditem')->result();
+					if($awardeditems && $this->checkReceivedPartially($awarded->id))
+					{
+						foreach($awardeditems as $item)
+						{
+							if($item->received < $item->quantity)
+							{
+								$items[$quote->ponum]['quote'] = $quote;
+								$item->ponum = $quote->ponum;
+								$item->duequantity = $item->quantity - $item->received;
+								if(!isset($items[$quote->ponum]['items']))
+									$items[$quote->ponum]['items'] = array();
+								$items[$quote->ponum]['items'][]=$item;
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		return $items;
+	}
+	
+	
+	function get_items() {
+        
+        $sql = "SELECT * FROM " . $this->db->dbprefix('event') . "
+        	WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' and evtdate <= CURDATE() ";
+
+        $query = $this->db->query($sql);
+        if ($query->result()) {
+            $result = $query->result();
+            $ret = array();
+            foreach ($result as $item) {
+                $ret[] = $item;
+            }
+            //print_r($ret);die;
+            return $ret;
+        } else {
+            return null;
+        }
+    }
+	
+	
+	function checkReceivedPartially($awardid)
+	{
+		$sql ="SELECT *
+		FROM
+		".$this->db->dbprefix('awarditem')." WHERE award='$awardid'";
+		
+		$ret = array();
+		$query = $this->db->query ($sql);
+		if ($query->result ()) 
+		{
+			foreach($query->result () as $item)
+				if($item->received)
+					return true;
+			
+		}
+		return false;
+	}
 
     // End
 }

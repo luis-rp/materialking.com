@@ -752,6 +752,11 @@ class Quote extends CI_Controller
             
     	    $quote = $this->quotemodel->getquotebyid($bid->quote);
     	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company->id);
+    	    $biditems2 = $this->quotemodel->getrevisiondraftitems($bid->quote, $company->id,$revisionid);
+    	    
+    	    if(@$biditems2){
+    	    	$bid->submitdate = $biditems2[0]->daterequested;
+    	    }
     	    
     	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
     	    $taxpercent = $settings->taxpercent;
@@ -865,7 +870,9 @@ class Quote extends CI_Controller
 		redirect('quote');
 		$quote = $this->quotemodel->getquotebyid($bid->quote);
 		$biditems = $this->quotemodel->getrevisiondraftitems($bid->quote, $company->id,$revisionid);
-
+		if(@$biditems){
+			$bid->submitdate = $biditems[0]->daterequested;
+		}
 		$settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
 		$taxpercent = $settings->taxpercent;
 

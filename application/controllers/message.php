@@ -48,7 +48,7 @@ class Message extends CI_Controller
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('company')." c
 		WHERE m.quote=q.id AND q.id = b.quote AND m.company=c.id AND m.adminid=u.id AND 
-		m.company='{$company->id}' $quotewhere $pafilter ORDER BY m.senton DESC";
+		m.company='{$company->id}' $quotewhere $pafilter ORDER BY m.id DESC";
 		
 		$msgs = $this->db->query($messagesql)->result();
 		$messages = array();

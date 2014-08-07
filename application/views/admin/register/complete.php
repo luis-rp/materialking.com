@@ -3,7 +3,16 @@
 			<img src="<?php echo base_url(); ?>/templates/admin/images/applogo.png" alt="EZPZP">
 			<span>&nbsp;</span>
 		</a>
-		
+<script type="text/javascript">
+
+    function IsValidZip(zip) {
+        var isValid = /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
+        if (!isValid){
+       alert('Invalid Zip Format Please Enter XXXXX or XXXXX-XXXX Format');
+      document.getElementById("zip").value = "";
+    }
+    }
+</script>		
 		<div id="login_error">
 		<?php echo $this->session->flashdata('message'); ?>
 		</div>
@@ -25,7 +34,8 @@
 					<input type="password" name="repassword" placeholder="Confirm Password" id="repassword" value="<?php if(isset($user->password) && $user->password!="") echo $user->password;?>" tabindex="3" style="margin-top:3px;" required>
 					<input type="text" name="city" placeholder="City" id="city" value="<?php if(isset($user->city) && $user->city!="") echo $user->city;?>" tabindex="4" required><br/>
 					<input type="text" name="state" placeholder="State" id="state" value="<?php if(isset($user->state) && $user->state!="") echo $user->state;?>" tabindex="5" required><br/>
-					<input type="text" name="zip" placeholder="Zip" id="zip" value="<?php if(isset($user->zip) && $user->zip!="") echo $user->zip;?>" tabindex="1" required>
+					<input type="text" name="zip" placeholder="Zip" id="zip" value="<?php if(isset($user->zip) && $user->zip!="") echo $user->zip;?>" tabindex="1"
+					onchange="IsValidZip(this.form.zip.value)" required>
 					 <textarea name="street" placeholder="Street Address" id="street" required rows="4" style="margin-top:3px; width: 96%" required><?php if(isset($user->street) && $user->street!="") echo $user->street;?></textarea>
 				</div>
 					<input type="hidden" name="hiddenuserid" id="hiddenuserid" value="<?php if(isset($user->id) && $user->id!="") echo $user->id; ?>"/> 
