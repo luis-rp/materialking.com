@@ -22,6 +22,176 @@ class Dashboard extends CI_Controller
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
 	
+	function export()
+	{
+	
+		$id = $this->session->userdata('id');
+		if(!$id)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		$mp = $this->session->userdata('managedprojectdetails');
+		$data['projects']  = $this->statmodel->getProjects();
+		$data['companies'] = $this->db->get('company')->result();
+		if($this->session->userdata('usertype_id')>1)
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+		if($mp)
+			$this->db->where('project',$mp->id);
+		$data['costcodes'] = $this->db->get('costcode')->result();
+	
+		$data['itemcodes'] = $this->db->get('item')->result();
+	
+		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
+		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
+		$invited = 0;
+		$pending = 0;
+		$awarded = 0;
+		if($data['quotes'])
+		foreach($data['quotes'] as $quote)
+		{
+			if($this->quote_model->getinvited($quote->id))
+				$invited++;
+			if($this->quote_model->getpendingbids($quote->id))
+				$pending++;
+			if($this->quote_model->getawardedbid($quote->id))
+				$awarded++;
+		}
+	
+		$data['invited'] = $invited;
+		$data['pending'] = $pending;
+		$data['awarded'] = $awarded;
+			
+		$data['networkjoinedcompanies'] = array();
+		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		$query = $this->db->query($sql);
+		$netcomps = $query->result();
+		$settings = $this->settings_model->get_current_settings();
+		 
+		foreach($netcomps as $nc)
+		{
+			$pa = $this->session->userdata('purchasingadmin');
+			$this->db->where('purchasingadmin',$pa);
+			$this->db->where('company',$nc->id);
+			$tier = $this->db->get('purchasingtier')->row();
+			if($tier)
+			{
+				$nc->credit = $tier->creditlimit;
+				$nc->totalcredit = $tier->totalcredit;
+			}
+			else
+			{
+				$nc->credit = '';
+				$nc->totalcredit = '';
+			}
+			$query = "SELECT
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
+							AND ai.purchasingadmin='$pa'";
+			//echo $query.'<br>';
+			$nc->due = $this->db->query($query)->row()->totalunpaid;
+			$nc->due = round($nc->due,2);
+			//echo $nc->due.' - ';
+			$query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+	                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+	                AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
+			$manualdue = $this->db->query($query)->row()->orderdue;
+			$manualdue = round($manualdue,2);
+			//echo $manualdue.' <br/> ';
+			$nc->due += $manualdue;
+	
+			$data['networkjoinedcompanies'][] = $nc;
+		}
+	
+		if($this->session->userdata('managedprojectdetails'))
+		{
+				
+			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
+            	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
+            	GROUP by label";
+			$codes = $this->db->query($query)->result();
+			$costcodesjson = array();
+			foreach($codes as $c)
+			{
+				if($c->data)
+				{
+					/**************
+					 * Luis
+					*/
+					if ($this->session->userdata('usertype_id') > 1)
+						$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+					else
+						$where = "";
+	
+					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+					$taxrate = $this->db->query($cquery)->row();
+	
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
+							".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.code =  '".$c->label."'
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+					$queryOrder = $this->db->query($sqlOrders);
+					if($queryOrder->result()){
+							
+							
+						$totalOrder = $queryOrder->row();
+						$c->data += $totalOrder->sumT;
+					}
+					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					/*********/
+					$c->label = $c->label . ' - $'.$c->data;
+					$costcodesjson[]=$c;
+				}
+			}
+	
+			$data['costcodesjson'] = $costcodesjson;
+		}
+	
+	
+		//===============================================================================
+	
+		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' , 'Number of Companies');
+			
+	
+		$companies = '';
+		if($this->session->userdata('usertype_id') == 1)
+		{
+			//$companies = count($data['companies']);
+		}
+	
+		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded'] ,$companies );
+	
+	
+		//--------------------------
+	
+		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
+		{
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+	
+			$header[] = array('Company' , 'Credit Limit' , 'Credit Remaining' , 'Amount Due' , '' , '' , '' , '' , '');
+	
+			foreach($data['networkjoinedcompanies'] as $njc)
+			{
+				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' , '');
+			}
+		}
+			
+		createXls('Statistics', $header);
+		die();
+	
+		//===============================================================================
+	
+	}
+	
 	function index() 
 	{
 		//echo '<pre>';print_r($data);die;

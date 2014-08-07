@@ -49,7 +49,8 @@ function invoice(invoicenum)
 
     <div class="content">  
     	 <?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title">	
+		<div class="page-title">
+		 <a href="<?php echo site_url('quote/invoices_export'); ?>" class="btn btn-green">Export</a><br />	
 			<h3>Invoices</h3>		
 		</div>
 	

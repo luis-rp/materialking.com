@@ -273,6 +273,7 @@
     					Browse Suppliers
     				</a>
 				<?php } ?>
+				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>
 	    	</div>
 	    	
 	    	

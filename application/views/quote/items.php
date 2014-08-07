@@ -37,7 +37,8 @@
 </style> 
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title">	
+		<div class="page-title">
+		 <a href="<?php echo site_url('quote/items_export/'.$quoteid); ?>" class="btn btn-green">Export</a><br />		
 			<h3>PO Performance : <?php echo $quote->ponum;?> </h3>
 			<h4>
 				<font color="green">Items Won : <?php echo $itemswon;?></font>

@@ -20,6 +20,7 @@ class itemcode extends CI_Controller
         $this->load->dbforge();
         $this->load->library('form_validation');
         $this->load->library(array('table', 'validation', 'session'));
+
         $this->load->helper('form', 'url');
         $this->load->model('admin/itemcode_model');
         $this->load->model('admin/quote_model');
@@ -32,7 +33,68 @@ class itemcode extends CI_Controller
         $this->load->template('../../templates/admin/template', $data);
     }
 
-
+    function export()
+    {
+    	$itemcodes = $this->itemcode_model->get_itemcodes();
+    	$count = count($itemcodes);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($itemcodes as $itemcode)
+    		{
+    			if($itemcode->awardedon)
+    				$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
+    			 
+    			$itemcode->ea = "$ " . $itemcode->ea;
+    			$itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
+    			 
+    			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
+    
+    			$items[] = $itemcode;
+    		}
+    
+    		$data['items'] = $items;
+    		$data['jsfile'] = 'itemcodejs.php';
+    	}
+    	else
+    	{
+    		$this->data['message'] = 'No Records';
+    	}
+    	$data['addlink'] = '';
+    	$data['heading'] = 'Item Code Management';
+    	$data['table'] = $this->table->generate();
+    	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
+    	$data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
+    	$data['addsubcatlink'] = false;
+    
+    	//uksort($array, 'strcasecmp');
+    
+    	$data['categories'] = $this->itemcode_model->getcategories(); ;
+    
+    	if ($this->session->userdata('usertype_id') == 2)
+    	{
+    		$data['addlink'] = '';
+    		$data['addcatlink'] = '';
+    		$data['addsubcatlink'] = '';
+    	}
+    	//===============================================================================
+    		
+    	$header[] = array('ID','Code','Item Name','Unit','Total purchased amount','Last awarded date','');
+    		
+    	foreach($items  as  $enq_row)
+    	{
+    
+    		$item_price = '';
+    		if($enq_row->totalpurchase > 0)
+    		{
+    			$item_price = "$ ".$enq_row->totalpurchase;
+    		}
+    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , formatPriceNew($item_price)  , $enq_row->awardedon);
+    	}
+    	createXls('itemcode',$header);
+    	die();
+    
+    }
     //	function do_upload()
     //	{
     //		$config['upload_path'] = './uploads/';
@@ -139,7 +201,7 @@ class itemcode extends CI_Controller
     
     
 
-    function poitems ($id)
+   /* function poitems ($id)
     {
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
         if (! $item)
@@ -220,8 +282,164 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['heading'] = "PO items for '$item->itemcode'";
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
         $this->load->view('admin/datagrid', $data);
-    }
+    }*/
 
+    function poitems ($id)
+    {
+    	$item = $this->itemcode_model->get_itemcodes_by_id($id);
+    	if (! $item)
+    		die();
+    	$poitems = $this->itemcode_model->getpoitems($item->id);
+    	//echo '<pre>';print_r($poitems);die;
+    	$count = count($poitems);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($poitems as $row)
+    		{
+    			$awarded = $this->quote_model->getawardedbid($row->quote);
+    			$row->awardedon = date("m/d/Y", strtotime($row->awardedon));
+    			$row->ea = "$ " . $row->ea;
+    			$row->totalprice = "$ " . $row->totalprice;
+    			$row->status = strtoupper($awarded->status);
+    			$row->actions = //$row->status=='COMPLETE'?'':
+    			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
+    			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
+    
+    			$items[] = $row;
+    		}
+    		$data['items'] = $items;
+    	}
+    	else
+    	{
+    		$this->data['message'] = 'No Items';
+    	}
+    	$sqlOrders = "SELECT * FROM " . $this->db->dbprefix('order') . " o,
+        			 " . $this->db->dbprefix('orderdetails') . " od
+        			 WHERE o.id=od.orderid
+        			 AND o.purchasingadmin='" . $this->session->userdata('purchasingadmin')."'
+        			 AND od.itemid=" . $id . " GROUP BY od.orderid";
+    	$resOrders = $this->db->query($sqlOrders)->result();
+    	$i = 0;
+    	foreach ($resOrders as $order)
+    	{
+    		$i++;
+    		$order->sno = $i;
+    		if (! is_null($order->project))
+    		{
+    			$sql = "SELECT *
+					FROM " . $this->db->dbprefix('project') . " p
+					WHERE id=" . $order->project;
+    			$project = $this->db->query($sql)->result();
+    			$order->prjName = "assigned to " . $project[0]->title;
+    		}
+    		else
+    		{
+    			$order->prjName = "Pending Assignment";
+    		}
+    		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
+    		$data['orders'][] = $order;
+    	}
+    	$data['title_orders'] = "Orders with the current Item";
+    	$data['jsfile'] = 'itemcodeitemjs.php';
+    	$data['addlink'] = '';
+    	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a>";
+    	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
+    	 
+    	$this->load->view('admin/datagrid', $data);
+    }
+    
+    function poitems_export ($id)
+    {
+    	$item = $this->itemcode_model->get_itemcodes_by_id($id);
+    	if (! $item)
+    		die();
+    	$poitems = $this->itemcode_model->getpoitems($item->id);
+    	//echo '<pre>';print_r($poitems);die;
+    	$count = count($poitems);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($poitems as $row)
+    		{
+    			$awarded = $this->quote_model->getawardedbid($row->quote);
+    			$row->awardedon = date("m/d/Y", strtotime($row->awardedon));
+    			$row->ea = "$ " . $row->ea;
+    			$row->totalprice = "$ " . $row->totalprice;
+    			$row->status = strtoupper($awarded->status);
+    			$row->actions = //$row->status=='COMPLETE'?'':
+    			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
+    			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
+    
+    			$items[] = $row;
+    		}
+    		$data['items'] = $items;
+    	}
+    	else
+    	{
+    		$this->data['message'] = 'No Items';
+    	}
+    	$sqlOrders = "SELECT * FROM " . $this->db->dbprefix('order') . " o,
+        			 " . $this->db->dbprefix('orderdetails') . " od
+        			 WHERE o.id=od.orderid
+        			 AND o.purchasingadmin='" . $this->session->userdata('purchasingadmin')."'
+        			 AND od.itemid=" . $id . " GROUP BY od.orderid";
+    	$resOrders = $this->db->query($sqlOrders)->result();
+    	$i = 0;
+    	foreach ($resOrders as $order)
+    	{
+    		$i++;
+    		$order->sno = $i;
+    		if (! is_null($order->project))
+    		{
+    			$sql = "SELECT *
+					FROM " . $this->db->dbprefix('project') . " p
+					WHERE id=" . $order->project;
+    			$project = $this->db->query($sql)->result();
+    			$order->prjName = "assigned to " . $project[0]->title;
+    		}
+    		else
+    		{
+    			$order->prjName = "Pending Assignment";
+    		}
+    		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
+    		$data['orders'][] = $order;
+    	}
+    	$data['title_orders'] = "Orders with the current Item";
+    	$data['jsfile'] = 'itemcodeitemjs.php';
+    	$data['addlink'] = '';
+    	$data['heading'] = "PO items for '$item->itemcode'";
+    	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
+    
+    	 
+    	//  $this->load->view('admin/datagrid', $data);
+    
+    	//-----------------------------------------------------------
+    
+    
+    	//===============================================================================
+    		
+    	$header[] = array('PO#','Company','Date','Price EA','Quantity','Total price','');
+    
+    
+    	if(isset($data['items']))
+    	{
+    		$items = $data['items'];
+    
+    			
+    		foreach($items as $item)
+    		{
+    			$header[] = array($item->ponum,$item->companyname,$item->daterequested ,formatPriceNew($item->totalprice),$item->quantity,formatPriceNew($item->totalprice),'');
+    		}
+    
+    	}
+    	createXls('poitems_export',$header);
+    
+    	die();
+    
+    
+    
+    }
 
     function companyprices ($id)
     {

@@ -39,6 +39,7 @@
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
+			 <a href="<?php echo site_url('quote/performanceexport'); ?>" class="btn btn-green">Export</a><br />
 			<h3>Performance By Item</h3>		
 		</div>		
 	   <div id="container">

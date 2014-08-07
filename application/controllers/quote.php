@@ -26,6 +26,88 @@ class Quote extends CI_Controller
 		$this->invitations();
 	}
 	
+
+	function performanceexport()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		$query = "SELECT itemid, itemcode, count(bi.id) as bidcount
+				  FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b
+					  WHERE bi.bid=b.id AND b.company={$company->id}
+					  GROUP BY itemid HAVING itemid
+					  ";
+					  $data['items'] = array();
+					  $items = $this->db->query($query)->result();
+					  foreach($items as $item)
+					  {
+			$query = "SELECT count(id) as awardcount
+					  FROM ".$this->db->dbprefix('awarditem')."
+					  		WHERE company={$company->id} AND itemid='".$item->itemid."'
+					  		";
+					  			
+					  		$item->awardcount = $this->db->query($query)->row()->awardcount;
+					  		$item->performance = round(($item->awardcount/$item->bidcount) * 100,2);
+					  		$data['items'][]= $item;
+	}
+		
+	//=========================================================================================
+	$header[] = array('Itemcode' , 'Bids','Awards' , 'Win Rate(%)');
+	
+	foreach($data['items'] as $item)
+					  {
+					  $header[] = array($item->itemcode , $item->bidcount,$item->awardcount , $item->performance);
+	}
+	createXls('performance', $header);
+	die();
+	//===============================================================================
+	
+	}
+	
+	
+	function invoices_export ()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+	
+		$invs = $this->quotemodel->getinvoices($company->id);
+		$invoices = array();
+		foreach($invs as $i)
+		{
+			$invoices[$i->quote->ponum][]=$i;
+		}
+	
+		$data['invoices'] = $invoices;
+		$this->db->select($this->db->dbprefix('users.').'*');
+		$this->db->where('usertype_id',2);
+		$this->db->from('users')->join('network',"users.id=network.purchasingadmin")->where('network.company',$company->id);
+		$data['purchasingadmins'] = $this->db->get()->result();
+	
+		//=========================================================================================
+	
+		$header[] = array('PO Number' , 'Invoice#','Received On' , 'Total Cost' , 'Payment Status' , 'Verification' , 'Date Due');
+			
+		foreach($invoices as $ponum=>$invs)
+		{
+			foreach($invs as $i)
+			{
+				$due_date = '';
+				if($i->datedue)
+				{
+					$due_date =  date("m/d/Y", strtotime($i->datedue));
+				}
+				$header[] = array($ponum , $i->invoicenum,$i->receiveddate , '$ '.formatPriceNew($i->totalprice) , $i->paymentstatus , $i->status , $due_date);
+			}
+		}
+		createXls('Invoice', $header);
+		die();
+	
+		//===============================================================================
+	
+	}
+	
+	
 	function invitations()
 	{
 		$company = $this->session->userdata('company');
@@ -1947,6 +2029,80 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		    redirect('quote/invoices');
 		    //$this->invoice();
 		}
+	}
+	
+	function items_export($quoteid)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+	
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		$bid = $this->db->where('quote',$quoteid)->where('company',$company->id)->get('bid')->row();
+		$award = $this->quotemodel->getawardedbid($quoteid);
+		if($award)
+		{
+			$this->db->where('award',$award->id);
+			$this->db->order_by('company');
+			$allawardeditems = $this->db->get('awarditem')->result();
+		}
+		$itemswon = 0;
+		$itemslost = 0;
+		$data['awarditems'] = array();
+		foreach($allawardeditems as $ai)
+		{
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+				if($companyitem->itemcode)
+					$ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+					$ai->itemname = $companyitem->itemname;
+			}
+			$data['allawardeditems'][] = $ai;
+			if($ai->company == $company->id)
+				$itemswon++;
+			else
+				$itemslost++;
+		}
+		//print_r($allawardeditems);die;
+		$data['itemswon'] = $itemswon;
+		$data['itemslost'] = $itemslost;
+		$data['quote'] = $quote;
+		$data['bid'] = $bid;
+		$data['award'] = $award;
+		$data['company'] = $company;
+	
+		//$this->load->view('quote/items',$data);
+	
+		$quote = $data['quote'];
+	
+		//=========================================================================================
+	
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('PO Performance :' , $quote->ponum,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('Items Won :' , $itemswon,'' , '' , '' , '', '');
+		$header[] = array('Items Lost :' , $itemslost,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+	
+		$header[] = array('Item Code' , 'Item Name','QTY.' , 'Unit', 'Price' , 'Total' , 'Requested');
+			
+		$i = 0;
+		foreach($allawardeditems as $ai)
+		{
+			$i++;
+			$header[] = array($ai->itemcode , $ai->itemname,$ai->quantity , $ai->unit , '$ '. formatPriceNew($ai->ea) , '$ '.formatPriceNew(round($ai->quantity * $ai->ea,2)),$ai->daterequested);
+		}
+		createXls('Quote_items_'.$quoteid, $header);
+		die();
+	
+		//===============================================================================
+	
 	}
 	
 	function performance()

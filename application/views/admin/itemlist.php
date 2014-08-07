@@ -85,6 +85,7 @@
                             <?php echo $addlink;
                             echo '&nbsp;' . $addcatlink;
                             echo '&nbsp;' . $addsubcatlink; ?>
+                            <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>
                             <div class="datagrid-header-right">
                             	
                             		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">

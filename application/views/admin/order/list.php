@@ -28,6 +28,7 @@ $(document).ready( function() {
 </script>
 <section class="row-fluid">
 	<h3 class="box-header">My Purchased Items</h3>
+		<a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a>
 	<div class="box">
 	  <div class="span12">
 	

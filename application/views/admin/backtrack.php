@@ -51,6 +51,7 @@
 <section class="row-fluid">
 	<h3 class="box-header" style="display:inline" id="step1"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?></h3>
 	<div class="box">
+	<div class="span12"><a id="step10" href="<?php echo site_url('admin/backtrack/export')?>" class="btn btn-green">Export</a>
 		<div class="span12">
 		    <?php echo $this->session->flashdata('message'); ?>
 		   <br/>

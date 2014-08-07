@@ -249,6 +249,7 @@ function acceptall()
     <div class="box">
         <div class="span12">
             <a class="btn btn-green" href="javascript:void(0)" onclick="history.back();">&lt;&lt; Back</a>
+            &nbsp;&nbsp;<a href="<?php echo site_url('admin/quote/trackexport').'/'.$adquoteid; ?>" class="btn btn-green">Export</a>
             <br/> <br/>
             <?php echo $this->session->flashdata('message'); ?>
             <?php echo @$message; ?>

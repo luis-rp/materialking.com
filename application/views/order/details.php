@@ -7,6 +7,7 @@ $(document).ready( function() {
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
+		 <a href="<?php echo site_url('order/export_order/'.$order->id); ?>" class="btn btn-green">Export</a><br />
 			<h3>Order items for order# <?php if(isset($order->ordernumber)) echo $order->ordernumber?></h3>
 			<?php if(isset($order->txnid)) {?>
 			<h3>Transaction ID: <?php echo $order->txnid?></h3>

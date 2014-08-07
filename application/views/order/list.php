@@ -32,7 +32,7 @@ $(document).ready(function(){
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
-			<h3>Orders</h3>
+			<h3>Orders&nbsp;&nbsp;&nbsp;&nbsp;<a  href="<?php echo site_url('order/export')?>" class="btn btn-primary">Export</a></h3>
 		</div>		
 	   <div id="container">
 		<?php 

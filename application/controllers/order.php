@@ -25,6 +25,80 @@ class Order extends CI_Controller
 		$this->orders();
 	}
 	
+	function export()
+	{
+		$company = $this->session->userdata('company');
+		$search = '';
+		$filter = '';
+			
+		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status
+				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+				WHERE o.id=od.orderid AND od.company=".$company->id."
+					$search $filter
+					GROUP BY od.orderid
+					ORDER BY o.purchasedate DESC";
+					$orders = $this->db->query($sql)->result();
+					$data['orders'] = array();
+					foreach($orders as $order)
+					{
+						log_message('debug',$sql);
+						if($order->purchasingadmin)
+						{
+							$this->db->where('id',$order->purchasingadmin);
+							$order->purchaser = $this->db->get('users')->row();
+						}
+						else
+						{
+							$order->purchaser = new stdClass();
+							$order->purchaser->companyname = 'Guest ('.$order->email.')';
+						}
+	
+						$order->amount = round(($order->amount + ($order->amount*$order->taxpercent/100) ),2);
+							
+						$data['orders'][]=$order;
+					}
+					$data['company'] = $company;
+					$query = "SELECT u.* FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
+        		  WHERE u.id=n.purchasingadmin AND n.company='".$company->id."'";
+					//$query = "SELECT u.* FROM ".$this->db->dbprefix('users')." u WHERE usertype_id=2 AND username IS NOT NULL";
+					$data['purchasingadmins'] = $this->db->query($query)->result();
+					$this->load->view('order/list',$data);
+	
+					//=========================================================================================
+	
+					$header[] = array('Order#' , 'Ordered by','Payment Status' , 'Order Status' , 'Ordered On' , 'Amount' , 'Type' , 'Txn Id' );
+						
+					foreach($data['orders'] as $order)
+					{
+						$order_status = '';
+						if($order->status =="Void")
+							$order_status =  "Declined";
+						elseif($order->status =="Accepted")
+						$order_status =  "Approved";
+						else
+							$order_status = $order->status;
+	
+	
+						$order_date =  date("d F Y", strtotime($order->purchasedate));
+	
+						$header[] = array($order->ordernumber,  $order->purchaser->companyname ,  $order->paymentstatus , $order_status ,$order_date ,'$ '.formatPriceNew($order->amount) ,$order->type ,$order->txnid );
+					}
+	
+	
+					createXls('order', $header);
+					die();
+	
+					//===============================================================================
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	}
 	
 	function orders()
 	{
@@ -230,7 +304,133 @@ class Order extends CI_Controller
 		//echo $id.'-'.$company->id.'-'.$status;die;
 		redirect('order/details/'.$id);
 	}
+	function export_order($id)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+			
+		$this->db->where('id',$id);
+		$order = $this->db->get('order')->row();
+		if(!$order)
+			redirect('order');
 	
+		if($order->purchasingadmin)
+		{
+			$this->db->where('id',$order->purchasingadmin);
+			$order->purchaser = $this->db->get('users')->row();
+			//print_r($order->purchaser);die;
+		}
+		else
+		{
+			$order->purchaser = new stdClass();
+			$order->purchaser->companyname = 'Guest';
+		}
+	
+		$this->db->where('orderid',$id);
+		$this->db->where('company',$company->id);
+		$orderdetails = $this->db->get('orderdetails')->result();
+		//echo '<pre>';print_r($orderdetails);die;
+		$data['order'] = $order;
+		$data['orderitems'] = array();
+		//echo '<pre>';print_r($order);die;
+		foreach($orderdetails as $item)
+		{
+			if($item->company == $company->id)
+			{
+				$this->db->where('itemid',$item->itemid);
+				$this->db->where('type','Supplier');
+				$itemdetails = $this->db->get('companyitem')->row();
+					
+				$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+				 
+				$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+				 
+				$item->itemdetails = $itemdetails;
+	
+				$data['orderitems'][]=$item;
+			}
+		}
+		if(!$data['orderitems'])
+			redirect('order');
+		$messages = $this->db->where('orderid',$id)->order_by('senton')->get('ordermessage')->result();
+		$data['messages'] = array();
+		foreach($messages as $msg)
+		{
+			if(($msg->fromtype=='company' && $msg->fromid==$company->id)||($msg->totype=='company' && $msg->toid==$company->id))
+			{
+				if($msg->fromtype == 'guest')
+				{
+					$msg->fromname = $order->email;
+				}
+				else
+				{
+					$from = $this->db->where('id',$msg->fromid)->get($msg->fromtype)->row();
+					$msg->fromname = $msg->fromtype=='company'?$from->title:@$from->companyname;
+				}
+				if($msg->totype == 'guest')
+				{
+					$msg->toname = $order->email;
+				}
+				else
+				{
+					$to = $this->db->where('id',$msg->toid)->get($msg->totype)->row();
+					$msg->toname = $msg->totype=='company'?$to->title:@$to->companyname;
+				}
+				 
+				$data['messages'][]=$msg;
+			}
+		}
+		//$this->load->view('order/details',$data);
+	
+	
+	
+		//=========================================================================================
+	
+		$order = $data['order'];
+	
+		$header[] = array('Order#' , 'Transaction ID' ,'Buyer Email','Buyer Company' , 'Item' , 'Quantity' , 'Price' , 'Total' );
+	
+		$trans_id = '';
+	
+		if($order->txnid)
+		{
+			$trans_id = $order->txnid;
+		}
+	
+	
+	
+		$header[] = array($order->ordernumber, $trans_id , $order->email ,  $order->purchaser->companyname , '' ,'' ,'' ,''  );
+	
+		$header[] = array('' ,'' , '','' , '' , '' , '' , '' );
+	
+		$header[] = array('' ,'' , '','' , '' , '' , '' , '' );
+	
+		$orderitems = $data['orderitems'];
+		$i = 0;
+		$gtotal = 0;
+		foreach($orderitems as $item)
+		{
+			$i++;
+			$total = $item->quantity * $item->price;
+			$gtotal += $total;
+			$header[] = array('' ,'' , '','' , $item->itemdetails->itemname ,$item->quantity , '$ '.formatPriceNew($item->price) , '$ '.formatPriceNew(number_format($total,2)) );
+		}
+		 
+		$taxpercent   = $order->taxpercent;
+		$tax          = $gtotal*$taxpercent/100;
+		$totalwithtax = $tax+$gtotal;
+	
+		$header[] = array('' ,'','' , '' , '' , '' , 'Tax' , '$ '.formatPriceNew($tax));
+		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.formatPriceNew($gtotal));
+		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.formatPriceNew($totalwithtax));
+	
+		createXls('order_detail_'.$id, $header);
+		die();
+	
+		//===============================================================================
+	
+	}
 	function accept($id,$status)
 	{
 		$company = $this->session->userdata('company');

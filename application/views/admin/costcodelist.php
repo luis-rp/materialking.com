@@ -110,6 +110,7 @@ function endTour(){
 		<div style="margin-bottom:20px;">
                 <div>
                 	<?php echo $addlink;?>
+                	<a href="<?php echo site_url('admin/costcode/costcodeexport').'/'.@$_POST['projectfilter']; ?>" class="btn btn-green">Export</a>
                 	<br/><br/>
 	                <div class="datagrid-header-right">
 						<form class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">

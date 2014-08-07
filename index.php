@@ -1,5 +1,5 @@
 <?php
-
+require_once 'xls_functions.php';
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
