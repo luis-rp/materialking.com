@@ -12,12 +12,20 @@
 	]
 	});
 
-	// Initialize the tour
-	tour3.init();
-
-	// Start the tour
-	tour3.start();
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour3.restart();
+			// Initialize the tour
+			tour3.init();
+			start();
+		});
  });
+ function start(){
+	 
+		// Start the tour
+			tour3.start();
+		 }
  </script>
 <script type="text/javascript">
 
@@ -124,7 +132,10 @@ function paycc(ptype,idnumber,amount)
 	$("#paymodal").modal();
 }
 </script>
-
+<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 <section class="row-fluid">
     <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no title" ?></h3>
     <div class="box">

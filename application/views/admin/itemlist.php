@@ -29,12 +29,21 @@
 	]
 	});
 
-	// Initialize the tour
-	tour8.init();
-
-	// Start the tour
-	tour8.start();
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour8.restart();
+			// Initialize the tour
+			tour8.init();
+			start();
+		});
 	 });
+
+	 function start(){
+		 
+			// Start the tour
+				tour8.start();
+			 }
  </script>
 <style type="text/css">
     .box { padding-bottom: 0; }
@@ -49,7 +58,10 @@
 
     .adminflare > div { margin-bottom: 20px; }
 </style>
-
+<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 
 <section class="row-fluid">
     <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>

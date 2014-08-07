@@ -28,12 +28,21 @@
 	]
 	});
 
-	// Initialize the tour
-	tour7.init();
-
-	// Start the tour
-	tour7.start();
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour7.restart();
+			// Initialize the tour
+			tour7.init();
+			start7();
+		});
+	
 	 });
+	 function start7(){
+		 
+			// Start the tour
+				tour7.start();
+			 }
  </script>
 	<?php }?>
 	<?php if($jsfile=="itemcodeitemjs.php"){?>
@@ -51,14 +60,26 @@
 	]
 	});
 
-	// Initialize the tour
-	tour9.init();
-
-	// Start the tour
-	tour9.start();
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour9.restart();
+			// Initialize the tour
+			tour9.init();
+			start9();
+		});
 	 });
+	 function start9(){
+		 
+			// Start the tour
+				tour9.start();
+			 }
  </script>
 	<?php }?>
+	<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 <section class="row-fluid">
 	<h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">

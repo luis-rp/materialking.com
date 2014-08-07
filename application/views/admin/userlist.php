@@ -11,16 +11,32 @@
    	  
 	]
 	});
+	
+	
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour1.restart();
+			// Initialize the tour
+			tour1.init();
+			start();
+		});
 
-	// Initialize the tour
-	tour1.init();
 
-	// Start the tour
-	tour1.start();
+	
  });
+ function start(){
+	 
+	// Start the tour
+		tour1.start();
+	 }
  </script>
 <?php echo $this->session->flashdata('message'); ?>
 
+<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 <section class="row-fluid">
 	<h3 class="box-header" style="display:inline;" id="step1">
 	    <?php echo $heading;?> 

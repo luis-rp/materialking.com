@@ -97,14 +97,26 @@
 	]
 	});
 
-	// Initialize the tour
-	tour4.init();
-
-	// Start the tour
-	tour4.start();
+	$("#activatetour").click(function(e){
+		  e.preventDefault();
+			$("#tourcontrols").remove();
+			tour4.restart();
+			// Initialize the tour
+			tour4.init();
+			start();
+		});
 	 });
+	 function start(){
+		 
+			// Start the tour
+				tour4.start();
+			 }
  </script>
 <?php }?>
+<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
 	<div class="box">

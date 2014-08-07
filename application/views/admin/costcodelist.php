@@ -68,20 +68,31 @@ $(document).ready(function(){
 	   	  
 		]
 		});
-	 	tour6.restart();
-		// Initialize the tour
-		tour6.init();
 
-		// Start the tour
-		tour6.start();
+		$("#activatetour").click(function(e){
+			  e.preventDefault();
+				$("#tourcontrols").remove();
+				tour6.restart();
+				// Initialize the tour
+				tour6.init();
+				start();
+			});
 		
 });
 function setprogress(id)
 {
 	
 }
+function start(){
+	 
+	// Start the tour
+		tour6.start();
+	 }
 </script>
-
+<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
+<p>First time here?</p>
+<span class="button" id="activatetour">Start the tour</span>
+<span class="close" id="canceltour"></span></div>
 
 <section class="row-fluid">
 
