@@ -229,23 +229,15 @@ if (!$function || $function == 'index')
                                             echo 'class="current"';
                                         }
                                         ?>><a href="<?php echo base_url('site/suppliers'); ?>">Suppliers</a></li>
-                                        <li <?php
-                                        if ($function == 'about') {
-                                            echo 'class="current"';
-                                        }
-                                        ?>><a href="<?php echo base_url('site/about'); ?>">About US</a></li>
+                                 
                                         <li <?php
                                             if ($function == 'items') {
                                                 echo 'class="current"';
                                             }
                                         ?>>
-                                        <a href="<?php echo base_url('site/items'); ?>">SHOP</a>
+                                        <a href="<?php echo base_url('site/items'); ?>">Shop</a>
                                         </li>
-                                        <li <?php
-                                            if ($function == 'contact') {
-                                                echo 'class="current"';
-                                            }
-                                        ?>><a href="<?php echo base_url('site/contact'); ?>">Contact Us</a></li>
+                                        
                                     </ul>
 
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
