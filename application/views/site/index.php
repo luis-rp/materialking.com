@@ -490,7 +490,7 @@
                                             <div class="location2"><?php echo $supplier->contact; ?></div>
                                             <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><br/><br/>
                                             <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div>
-                                            <?php echo $supplier->joinstatus;?>
+                                            <div class="btn btn-primary arrow-right"><a href="javascript:void(0);"><?php echo $supplier->joinstatus;?></a></div>
                                             <?php //echo $supplier->shortdetail; ?>
                                             <div class="area">
                                                 <?php //echo $supplier->joinstatus; ?>

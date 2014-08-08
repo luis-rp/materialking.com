@@ -133,7 +133,7 @@ class site extends CI_Controller
                 $supplier->joinmark = '';
                 if ($this->session->userdata('site_loggedin'))
                 {
-                	$supplier->joinmark = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
+                	$supplier->joinmark = '<input type="button" value="Join" onclick="joinnetwork(\'' . $supplier->id . '\')" class="btn btn-primary arrow-right"/>';
                     $currentpa = $this->session->userdata('site_loggedin')->id;
                     
                     $this->db->where('fromid', $currentpa);
