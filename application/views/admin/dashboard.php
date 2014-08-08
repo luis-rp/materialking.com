@@ -85,6 +85,47 @@
 	</script>
 	
 <?php }?>
+
+<link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
+<script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.custom.min.js'></script>
+<script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
+<script>
+
+	$(document).ready(function() {
+	
+		$('#calendar').fullCalendar({
+			editable: false,
+			events: "<?php echo base_url(); ?>admin/quote/jsonlist",
+			
+			eventDrop: function(event, delta) {
+				alert(event.title + ' was moved ' + delta + ' days\n' +
+					'(should probably update your database)');
+			},
+			
+			loading: function(bool) {
+				if (bool) $('#loading').show();
+				else $('#loading').hide();
+			}
+			
+		});
+		
+	});
+
+</script>
+
+<style>
+	#loading {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		}
+
+	#calendar {
+		width: 100%;
+		}
+
+</style>
+
  <script type="text/javascript">
 	 $(document).ready(function(){
  tour4 = new Tour({
@@ -318,9 +359,139 @@
 
 				<?php } } ?>
 				<?php } else { ?>
-				<tr><td>No Events Found</td></tr>
+				<tr><td>No Messages Found</td></tr>
+				<?php } ?>
+				</table>					
+				
+				<h5>Recent Quotes Sent</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($quotes)) { ?>
+					  <tr>
+					  <td>Quote</td>
+					  <td>Sent On</td>
+					  </tr>		
+				<?php foreach($quotes as $quote) {?>
+
+					  <tr>
+					  <td><?php echo $quote->ponum; ?></td>					 
+					  <td><?php $datetime = strtotime($quote->podate); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Quotes Found</td></tr>
 				<?php } ?>
 				</table>	
+				
+				
+				<h5>Recent Quotes Awarded</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($awardquotes)) { ?>
+					  <tr>
+					  <td>Quote</td>
+					  <td>Awarded On</td>
+					  </tr>		
+				<?php foreach($awardquotes as $awardquote) { ?>
+
+					  <tr>
+					  <td><?php echo $awardquote->ponum; ?></td>					 
+					  <td><?php $datetime = strtotime($awardquote->awardedon); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Awarded Quotes Found</td></tr>
+				<?php } ?>
+				</table>
+				
+				
+				<h5>Recent Cost Codes Created</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($costcodes)) { ?>
+					  <tr>
+					  <td>CostCode</td>
+					  <td>Project</td>
+					  <td>Creation Date</td>
+					  </tr>		
+				<?php foreach($costcodes as $costcode) { ?>
+
+					  <tr>
+					  <td><?php echo $costcode->code; ?></td>		
+					  <td><?php echo $costcode->title; ?></td>				 
+					  <td><?php $datetime = strtotime($costcode->creation_date); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Cost Codes Created</td></tr>
+				<?php } ?>
+				</table>
+				
+				
+				<h5>Recent Projects Created</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($costcodes)) { ?>
+					  <tr>
+					  <td>Project</td>
+					  <td>Creation Date</td>
+					  </tr>		
+				<?php foreach($projects as $project) { ?>
+
+					  <tr>					  
+					  <td><?php echo $project->title; ?></td>				 
+					  <td><?php $datetime = strtotime($project->creation_date); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Projects Created</td></tr>
+				<?php } ?>
+				</table>
+				
+				
+				
+				<h5>Recent Users Created</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($costcodes)) { ?>
+					  <tr>
+					  <td>User</td>
+					  <td>Creation Date</td>
+					  </tr>		
+				<?php foreach($users as $user) { ?>
+
+					  <tr>					  
+					  <td><?php echo $user->companyname; ?></td>				 
+					  <td><?php $datetime = strtotime($user->regdate); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Users Created</td></tr>
+				<?php } ?>
+				</table>
+				
+				
+				<h5>Recent Network Connections</h5>
+					<table cellpadding="3" class="table table-bordered stat">
+					<?php if(isset($networks)) { ?>
+					  <tr>
+					  <td>Company</td>
+					  <td>Accepted On</td>
+					  </tr>		
+				<?php foreach($networks as $network) { ?>
+
+					  <tr>					  
+					  <td><?php echo $network->title; ?></td>				 
+					  <td><?php $datetime = strtotime($network->acceptedon); echo date("M d, Y H:i A", $datetime);?></td>							    
+					  </tr>			  			  
+
+				<?php } ?>
+				<?php } else { ?>
+				<tr><td>No Recent Networks Created</td></tr>
+				<?php } ?>
+				</table>
+				
+				
 				</div>	
 		</div>
 		<div id="step1" class="span4">	
@@ -407,39 +578,30 @@
 							
 				
 				
-			<?php }?>
+			<?php // }?>
 			</div>
-			<?php }?>
+			<?php // }?>
 			
 		</div>
 		<div style="clear:both;"></div>
 	<div  id="step1" class="well span4">
 		<div class="tiles-title extrabox"  style="float:left;">
 					<h3 class=" box-header">PO Calendar</h3>
-					
-					<!-- <table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($events)) { ?>
-					  <tr>
-					  <td>Event</td>
-					  <td>Event Date</td>							  
-					  </tr>		
-				<?php foreach($events as $event) { ?>
+		<section class="row-fluid">
+			<div class="box">
+				<div class="span12">
+	
+					<div id='loading' style='display:none'>Loading...</div>
+					<div id='calendar'></div>
 
-					  <tr>
-					  <td><?php echo $event->title; ?></td>
-					  <td><?php echo $event->evtdate; ?></td>						    
-					  </tr>			  			  
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Events Found</td></tr>
-				<?php } ?>
-				</table> -->	
 				</div>
-		</div>	
+    		</div>
+		</section>
+		 </div>
+	 </div>	
 		
 		<div  id="step1" class="well span4">
-		<div class="tiles-title extrabox"  style="float:left;">
+		<div class="tiles-title extrabox"  style="float:left;margin-left: 40px;">
 					<h3 class=" box-header">Upcoming Events</h3>
 					
 					<table cellpadding="3" class="table table-bordered stat">
@@ -461,7 +623,9 @@
 				<?php } ?>
 				</table>	
 				</div>
-		</div>	
+		<?php }?>
+			</div>
+			<?php }?>	
 		
 	</div>
 </section>

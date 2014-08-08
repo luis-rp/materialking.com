@@ -1061,7 +1061,7 @@ class quote_model extends Model {
 	function get_items() {
         
         $sql = "SELECT * FROM " . $this->db->dbprefix('event') . "
-        	WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' and evtdate <= CURDATE() ";
+        	WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' and evtdate >= CURDATE() ";
 
         $query = $this->db->query($sql);
         if ($query->result()) {

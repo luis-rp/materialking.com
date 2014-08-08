@@ -352,14 +352,75 @@ class Dashboard extends CI_Controller
 		$whereres = "";
 		if(@$resultid){
 			$whereres = "and m.senton > '".$resultid[0]->last_logged_date."'";
-		}else 
+			$purchaserloggeddate = $resultid[0]->last_logged_date;
+		}else {
 			$whereres = "";
+			$purchaserloggeddate = "";
+		}
 		
 		$messagesql = "SELECT m.* FROM 
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereres} ";
 		
 		$msgs = $this->db->query($messagesql)->result();		
 		
+		
+		$wherequote = "";
+		$wherequote = "and STR_TO_DATE(q.podate,'%m/%d/%Y') between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+					
+		$quotesql = "SELECT q.* FROM 
+		".$this->db->dbprefix('quote')." q WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherequote} ";
+		
+		$quotes = $this->db->query($quotesql)->result();
+		
+		
+		$whereawardquote = "";
+		$whereawardquote = "and a.awardedon between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+					
+		$awarquotesql = "SELECT q.*,a.awardedon FROM 
+		".$this->db->dbprefix('quote')." q join ".$this->db->dbprefix('award')." a on q.id = a.quote and q.purchasingadmin = a.purchasingadmin WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereawardquote} ";
+		
+		$awardquotes = $this->db->query($awarquotesql)->result();
+				
+		
+		
+		$wherecostcode = "";
+		$wherecostcode = "and c.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+					
+		$costcodesql = "SELECT c.*, p.title FROM 
+		".$this->db->dbprefix('costcode')." c left join ".$this->db->dbprefix('project')." p on c.project = p.id  WHERE c.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherecostcode} ";
+		
+		$costcodes = $this->db->query($costcodesql)->result();
+		
+		
+		
+		$whereproject = "";
+		$whereproject = "and p.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+					
+		$projectsql = "SELECT p.title, p.creation_date FROM 
+		".$this->db->dbprefix('project')." p WHERE p.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereproject} ";
+		
+		$projects = $this->db->query($projectsql)->result();
+		
+		
+		$whereusers = "";
+		$whereusers = "and regdate between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+					
+		$userssql = "SELECT companyname, regdate FROM 
+		".$this->db->dbprefix('users')." u WHERE 1=1 {$whereusers} ";
+		
+		$users = $this->db->query($userssql)->result();
+		
+		
+		
+		$wherenetwork = "";
+		$wherenetwork = "and n.acceptedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
+					
+		$networksql = "SELECT n.*, c.title FROM 
+		".$this->db->dbprefix('network')." n left join ".$this->db->dbprefix('company')." c on n.company = c.id  WHERE n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherenetwork} ";
+		
+		$networks = $this->db->query($networksql)->result();
+		
+				
 		if($invoices)
 		$data['invoices'] = $invoices;
 		if($invoicespay)
@@ -370,7 +431,19 @@ class Dashboard extends CI_Controller
 		$data['events'] = $events;
 		if($msgs)
 		$data['msgs'] = $msgs;		
-		
+		if($quotes)
+		$data['quotes'] = $quotes;
+		if($awardquotes)
+		$data['awardquotes'] = $awardquotes;
+		if($costcodes)
+		$data['costcodes'] = $costcodes;
+		if($projects)
+		$data['projects'] = $projects;
+		if($users)
+		$data['users'] = $users;
+		if($networks)
+		$data['networks'] = $networks;
+		//echo "<pre>",print_r($networks); die;
 		$data['viewname'] = 'dashboard';
 		$this->load->view ('admin/dashboard', $data);
 	}

@@ -45,7 +45,8 @@ class project_model extends Model
 			'title'=>$this->input->post('title'),
 			'description'=>$this->input->post('description'),
 			'address'=>$this->input->post('address'),
-			'startdate'=>$this->input->post('startdate')
+			'startdate'=>$this->input->post('startdate'),
+			'creation_date' => date('Y-m-d')
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('project', $options);

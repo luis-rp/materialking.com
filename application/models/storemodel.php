@@ -24,7 +24,20 @@ class Storemodel extends Model
         $where []= "ci.instore='1'";
         if (@$_POST['category'])
         {
-            $where []= "category='".$_POST['category']."'";
+        	$this->db->where('parent_id',$_POST['category']);
+        	$menus = $this->db->get('category')->result();
+        	$str= "";
+        	foreach ($menus as $item)
+        	{
+        		$subcategories = $this->getSubCategores($item->id,true);
+				if($subcategories) {
+        			
+					$str .= implode(',', $subcategories);
+					$str = $str.",";
+				}
+        	}
+        	$str = substr($str,0,strlen($str)-1);
+            $where []= "category in (".$str.")";
         }
         if ($manufacturer)
         {
@@ -45,6 +58,36 @@ class Storemodel extends Model
         $return->items = $this->db->query($query)->result();
         return $return;
     }
+    
+    
+    function getSubCategores($catid,$includetop=true) 
+    {
+        $ret = array();
+        if($includetop)
+            $ret[]=$catid;
+        $sub = $this->getallsubcategories($catid);
+        $ret = array_merge($ret,$sub);
+        return $ret;
+    }
+    
+    
+    function getallsubcategories($parent)
+    {
+        $this->db->where('parent_id',$parent);
+        $sub = $this->db->get('category')->result();
+        $ret = array();
+        foreach($sub as $s)
+        {
+            $ret[]=$s->id;
+        }
+        foreach($ret as $r)
+        {
+            $rs = $this->getallsubcategories($r);
+            $ret = array_merge($ret,$rs);
+        }
+        return $ret;
+    }  
+    
 }
 
 ?>

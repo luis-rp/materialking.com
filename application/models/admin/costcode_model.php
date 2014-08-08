@@ -203,7 +203,8 @@ class costcode_model extends Model
 			'cost'=>$this->input->post('cost'),
 			'cdetail'=>$this->input->post('cdetail'),
 			'parent'=>$this->input->post('parent'),
-			'project'=>$this->input->post('project')
+			'project'=>$this->input->post('project'),
+			'creation_date' => date('Y-m-d')
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('costcode', $options);
