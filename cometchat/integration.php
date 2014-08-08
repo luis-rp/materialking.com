@@ -40,7 +40,7 @@ define('DB_AVATARFIELD',		" ".TABLE_PREFIX.DB_USERTABLE.".avatar " );
 /* FUNCTIONS */
 
 function getUserID() {
-	//print_r($_SESSION);print_r($_REQUEST);print_r($_COOKIE); die;
+	print_r($_SESSION);print_r($_REQUEST);print_r($_COOKIE); die;
 	$userid = 0;
 	if (!empty($_SESSION['basedata']) && $_SESSION['basedata'] != 'null') {
 		$_REQUEST['basedata'] = $_SESSION['basedata'];

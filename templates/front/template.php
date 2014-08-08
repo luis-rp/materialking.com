@@ -27,6 +27,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+ <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/jquery.js"></script>
 <link type="text/css" href="<?php echo base_url(); ?>cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
 		<script type="text/javascript" src="<?php echo base_url(); ?>cometchat/cometchatjs.php" charset="utf-8"></script>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
