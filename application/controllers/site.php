@@ -124,12 +124,12 @@ class site extends CI_Controller
     				$output = json_decode($geocode);
     				if(@$output->results[0]->geometry->location->lat && @$output->results[0]->geometry->location->lng)
     				{
-    				/*	$lat = $output->results[0]->geometry->location->lat;
+    					$lat = $output->results[0]->geometry->location->lat;
     					$long = $output->results[0]->geometry->location->lng;
     					$supplier->com_lat = $lat;
     					$supplier->com_lng = $long;
     					$this->db->where('id', $supplier->id);
-    					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));*/
+    					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));
     				}
     			}
     			$supplier->joinmark = '';
@@ -156,7 +156,7 @@ class site extends CI_Controller
     			{
     				$supplier->logo = 'big.png';
     			}
-    	
+    			log_message('debug',"lat:".$supplier->com_lat.":lng:".$supplier->com_lng);
     			$popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
     			'" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
     			'</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
