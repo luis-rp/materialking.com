@@ -1272,7 +1272,7 @@ or edit your quote.</div></div></div>');
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
 		$data['award'] = $award;
-		$data['quoteid'] = $quoteid
+		$data['quoteid'] = $quoteid;
 		
 		$data['company'] = $company;
 		
