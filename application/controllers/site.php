@@ -29,182 +29,182 @@ class site extends CI_Controller
     
     public function index ()
     {
-        $details = get_my_address();
-        $center = $details->loc;
-        //$center = "56, 38";
-        //var_dump($details);die;
-        $data['my_location'] = get_my_location($details);
-        
-        $geo_coords = explode(",", $center);
-        $search = new stdClass();
-        $search->distance = 100000;
-        $search->current_lat = $geo_coords[0];
-        $search->current_lon = $geo_coords[1];
-        $search->earths_radius = 6371;
-        $data['norecords'] = '';
-        $use_supplier_position = false;
-        $this->homemodel->set_search_criteria($search);
-        
-        $location = $this->input->post('location');
-        
-        //$lat = $this->input->post('lat');
-        //$lng = $this->input->post('lng');
-        if ($location)
-        {
-            $return = get_geo_from_address($location);
-            if($return)
-            {
-                $center = "{$return->lat}, {$return->long}";
-                $search->current_lat = $return->lat;
-                $search->current_lon = $return->long;
-                $this->homemodel->set_search_criteria($search);
-            }
-        }
-        
-        
-        $suppliers_near_me = $this->homemodel->get_nearest_suppliers();
-        $data['suppliers_10_miles'] = false;
-        $nearest_10 = false;
-        if (! $suppliers_near_me)
-        {
-            $suppliers_near_me = $this->homemodel->get_nearest_suppliers($ignore_location = true);
-            $data['norecords'] = "Found " . $suppliers_near_me->totalresult . "  suppliers";
-        }
-        else
-        {
-            $data['norecords'] = "Found " . $suppliers_near_me->totalresult . " nearest suppliers";
-            //            $this->homemodel->set_distance(10);
-            //            $nearest_10 = $this->homemodel->get_nearest_suppliers();
-            $this->homemodel->set_distance(20);
-            $nearest_10 = $suppliers_near_me;
-            if ($nearest_10)
-            {
-                $nearest_10 = $nearest_10->suppliers;
-                foreach ($nearest_10 as $supplier)
-                {
-                    $supplier->joinstatus = '';
-                    if ($this->session->userdata('site_loggedin'))
-                    {
-                        $supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
-                        $currentpa = $this->session->userdata('site_loggedin')->id;
-                        $this->db->where('purchasingadmin', $currentpa);
-                        $this->db->where('company', $supplier->id);
-                        if ($this->db->get('network')->result())
-                            $supplier->joinstatus = '<div class="btn btn-primary arrow-right"><a href="javascript:void(0);">Already in Network</a></div>';
-                        $this->db->where('fromid', $currentpa);
-                        $this->db->where('toid', $supplier->id);
-                        $this->db->where('fromtype', 'users');
-                        $this->db->where('totype', 'company');
-                        if ($this->db->get('joinrequest')->result())
-                            $supplier->joinstatus = '<div class="btn btn-primary arrow-right"><a href="javascript:void(0);">Already sent request</a></div>';
-                    }
-                    $data['suppliers_10_miles'][] = $supplier;
-                }
-            }
-        }
-        //get suppliers on the map
-        if (! $suppliers = $nearest_10)
-        {
-            $suppliers = $this->homemodel->getSuppliers();
-        }
-        
-        $data['suppliers'] = array();
-        $latlongs = array();
-        $popups = array();
-        if ($suppliers)
-        {
-            foreach ($suppliers as $supplier)
-            {
-                if (! $supplier->com_lat || ! $supplier->com_lng)
-                {
-                    $geocode = file_get_contents(
-                    "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $supplier->address)) . "&sensor=false");
-                    $output = json_decode($geocode);
-					if(@$output->results[0]->geometry->location->lat && @$output->results[0]->geometry->location->lng)
-					{
-						$lat = $output->results[0]->geometry->location->lat;
-						$long = $output->results[0]->geometry->location->lng;
-						$supplier->com_lat = $lat;
-						$supplier->com_lng = $long;
-						$this->db->where('id', $supplier->id);
-						$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));
-					}
-                }
-                $supplier->joinmark = '';
-                if ($this->session->userdata('site_loggedin'))
-                {
-                	$supplier->joinmark = '<input type="button" value="Join" onclick="joinnetwork(\'' . $supplier->id . '\')" class="btn btn-primary arrow-right"/>';
-                    $currentpa = $this->session->userdata('site_loggedin')->id;
-                    
-                    $this->db->where('fromid', $currentpa);
-                    $this->db->where('toid', $supplier->id);
-                    $this->db->where('fromtype', 'users');
-                    $this->db->where('totype', 'company');
-                    if ($this->db->get('joinrequest')->result())
-                    	$supplier->joinmark ='<div class="star"><div class="content">Already sent Request</div></div>';
-                    	
-                    $this->db->where('purchasingadmin', $currentpa);
-                    $this->db->where('company', $supplier->id);
-                    if ($this->db->get('network')->result())
-                    {
-                        $supplier->joinmark = '<div class="star"><div class="content">Already in Network</div></div>';
-                    }
-                }
-                $latlongs[] = "[$supplier->com_lat, $supplier->com_lng]";
-                if (! $supplier->logo)
-                {
-                    $supplier->logo = 'big.png';
-                }
-                          
-                $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
-                 '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
-                 '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
-                 '</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
-                $data['suppliers'][] = $supplier;
-            }
-        }
-        //var_dump($popups);die;
-        $my_coords = "$search->current_lat, $search->current_lon";
-        $data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
-        $data['mapcenter'] = $center;
-        $data['popups'] = $popups;
-        $data['my_coords'] = $my_coords;
-        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
-        $data['citystates'] = $this->db->query($sql)->result();
-        $data['states'] = $this->db->get('state')->result();
-        $data['types'] = $this->db->get('type')->result();
-        $featured = $this->homemodel->get_featured_suppliers();
-        $data['featured'] = array();
-        foreach ($featured as $fet)
-        {
-            $fet->joinstatus = '';
-            if ($this->session->userdata('site_loggedin'))
-            {
-                $currentpa = $this->session->userdata('site_loggedin')->id;
-                $this->db->where('purchasingadmin', $currentpa);
-                $this->db->where('company', $fet->id);
-                if ($this->db->get('network')->result())
-                    $fet->joinstatus = '<div class="star"><div class="content">&nbsp;</div></div>';
-            }
-            $data['featured'][] = $fet;
-        }
-        $recents = $this->homemodel->get_recent_suppliers();
-        $recents = $this->db->where('username !=','')->order_by('regdate','DESC')->limit(3)->get('company')->result();
-        $data['recentcompanies'] = array();
-        foreach ($recents as $recent)
-        {
-            $recent->joinstatus = '';
-            if ($this->session->userdata('site_loggedin'))
-            {
-                $currentpa = $this->session->userdata('site_loggedin')->id;
-                $this->db->where('purchasingadmin', $currentpa);
-                $this->db->where('company', $recent->id);
-                if ($this->db->get('network')->result())
-                    $recent->joinstatus = '<div class="star"><div class="content">&nbsp;</div></div>';
-            }
-            $data['recentcompanies'][] = $recent;
-        }
-        $this->load->view('site/index', $data);
+
+    	$details = get_my_address();
+    	$center = $details->loc;
+    	//$center = "56, 38";
+    	//var_dump($details);die;
+    	$data['my_location'] = get_my_location($details);
+    	
+    	$geo_coords = explode(",", $center);
+    	$search = new stdClass();
+    	$search->distance = 100000;
+    	$search->current_lat = $geo_coords[0];
+    	$search->current_lon = $geo_coords[1];
+    	$search->earths_radius = 6371;
+    	$data['norecords'] = '';
+    	$use_supplier_position = false;
+    	$this->homemodel->set_search_criteria($search);
+    	
+    	$location = $this->input->post('location');
+    	
+    	//$lat = $this->input->post('lat');
+    	//$lng = $this->input->post('lng');
+    	if ($location)
+    	{
+    		$return = get_geo_from_address($location);
+    		if($return)
+    		{
+    			$center = "{$return->lat}, {$return->long}";
+    			$search->current_lat = $return->lat;
+    			$search->current_lon = $return->long;
+    			$this->homemodel->set_search_criteria($search);
+    		}
+    	}
+    	
+    	
+    	$suppliers_near_me = $this->homemodel->get_nearest_suppliers();
+    	$data['suppliers_10_miles'] = false;
+    	$nearest_10 = false;
+    	if (! $suppliers_near_me)
+    	{
+    		$suppliers_near_me = $this->homemodel->get_nearest_suppliers($ignore_location = true);
+    		$data['norecords'] = "Found " . $suppliers_near_me->totalresult . "  suppliers";
+    	}
+    	else
+    	{
+    		$data['norecords'] = "Found " . $suppliers_near_me->totalresult . " nearest suppliers";
+    		//            $this->homemodel->set_distance(10);
+    		//            $nearest_10 = $this->homemodel->get_nearest_suppliers();
+    		$this->homemodel->set_distance(20);
+    		$nearest_10 = $suppliers_near_me;
+    		if ($nearest_10)
+    		{
+    			$nearest_10 = $nearest_10->suppliers;
+    			foreach ($nearest_10 as $supplier)
+    			{
+    				$supplier->joinstatus = '';
+    				if ($this->session->userdata('site_loggedin'))
+    				{
+    					$supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
+    					$currentpa = $this->session->userdata('site_loggedin')->id;
+    					$this->db->where('purchasingadmin', $currentpa);
+    					$this->db->where('company', $supplier->id);
+    					if ($this->db->get('network')->result())
+    						$supplier->joinstatus = 'Already in Network';
+    					$this->db->where('fromid', $currentpa);
+    					$this->db->where('toid', $supplier->id);
+    					$this->db->where('fromtype', 'users');
+    					$this->db->where('totype', 'company');
+    					if ($this->db->get('joinrequest')->result())
+    						$supplier->joinstatus = 'Already sent request';
+    				}
+    				$data['suppliers_10_miles'][] = $supplier;
+    			}
+    		}
+    	}
+    	//get suppliers on the map
+    	if (! $suppliers = $nearest_10)
+    	{
+    		$suppliers = $this->homemodel->getSuppliers();
+    	}
+    	
+    	$data['suppliers'] = array();
+    	$latlongs = array();
+    	$popups = array();
+    	if ($suppliers)
+    	{
+    		foreach ($suppliers as $supplier)
+    		{
+    			if (! $supplier->com_lat || ! $supplier->com_lng)
+    			{
+    				$geocode = file_get_contents(
+    						"http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $supplier->address)) . "&sensor=false");
+    				$output = json_decode($geocode);
+    				if(@$output->results[0]->geometry->location->lat && @$output->results[0]->geometry->location->lng)
+    				{
+    					$lat = $output->results[0]->geometry->location->lat;
+    					$long = $output->results[0]->geometry->location->lng;
+    					$supplier->com_lat = $lat;
+    					$supplier->com_lng = $long;
+    					$this->db->where('id', $supplier->id);
+    					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));
+    				}
+    			}
+    			$supplier->joinmark = '';
+    			if ($this->session->userdata('site_loggedin'))
+    			{
+    				$currentpa = $this->session->userdata('site_loggedin')->id;
+    	
+    				$this->db->where('fromid', $currentpa);
+    				$this->db->where('toid', $supplier->id);
+    				$this->db->where('fromtype', 'users');
+    				$this->db->where('totype', 'company');
+    				if ($this->db->get('joinrequest')->result())
+    					$supplier->joinmark ='<div class="star"><div class="content">Already sent Request</div></div>';
+    				 
+    				$this->db->where('purchasingadmin', $currentpa);
+    				$this->db->where('company', $supplier->id);
+    				if ($this->db->get('network')->result())
+    				{
+    					$supplier->joinmark = '<div class="star"><div class="content">Already in Network</div></div>';
+    				}
+    			}
+    			$latlongs[] = "[$supplier->com_lat, $supplier->com_lng]";
+    			if (! $supplier->logo)
+    			{
+    				$supplier->logo = 'big.png';
+    			}
+    	
+    			$popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
+    			'" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
+    			'</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
+    			'</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="javascript:void(0);">'.$supplier->joinmark.'</a></div></p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
+    			$data['suppliers'][] = $supplier;
+    		}
+    	}
+    	//var_dump($popups);die;
+    	$my_coords = "$search->current_lat, $search->current_lon";
+    	$data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
+    	$data['mapcenter'] = $center;
+    	$data['popups'] = $popups;
+    	$data['my_coords'] = $my_coords;
+    	$sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
+    	$data['citystates'] = $this->db->query($sql)->result();
+    	$data['states'] = $this->db->get('state')->result();
+    	$data['types'] = $this->db->get('type')->result();
+    	$featured = $this->homemodel->get_featured_suppliers();
+    	$data['featured'] = array();
+    	foreach ($featured as $fet)
+    	{
+    		$fet->joinstatus = '';
+    		if ($this->session->userdata('site_loggedin'))
+    		{
+    			$currentpa = $this->session->userdata('site_loggedin')->id;
+    			$this->db->where('purchasingadmin', $currentpa);
+    			$this->db->where('company', $fet->id);
+    			if ($this->db->get('network')->result())
+    				$fet->joinstatus = '<div class="star"><div class="content">&nbsp;</div></div>';
+    		}
+    		$data['featured'][] = $fet;
+    	}
+    	$recents = $this->homemodel->get_recent_suppliers();
+    	$recents = $this->db->where('username !=','')->order_by('regdate','DESC')->limit(3)->get('company')->result();
+    	$data['recentcompanies'] = array();
+    	foreach ($recents as $recent)
+    	{
+    		$recent->joinstatus = '';
+    		if ($this->session->userdata('site_loggedin'))
+    		{
+    			$currentpa = $this->session->userdata('site_loggedin')->id;
+    			$this->db->where('purchasingadmin', $currentpa);
+    			$this->db->where('company', $recent->id);
+    			if ($this->db->get('network')->result())
+    				$recent->joinstatus = '<div class="star"><div class="content">&nbsp;</div></div>';
+    		}
+    		$data['recentcompanies'][] = $recent;
+    	}
+    	$this->load->view('site/index', $data);
     }
     
     public function search_supplier ($keyword)
