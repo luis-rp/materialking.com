@@ -86,6 +86,7 @@
 	
 <?php }?>
 
+
 <link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
 <script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.custom.min.js'></script>
 <script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
@@ -365,12 +366,12 @@
 				
 				<h5>Recent Quotes Sent</h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($quotes)) { ?>
+					<?php if(isset($newquotes)) { ?>
 					  <tr>
 					  <td>Quote</td>
 					  <td>Sent On</td>
 					  </tr>		
-				<?php foreach($quotes as $quote) {?>
+				<?php foreach($newquotes as $quote) {?>
 
 					  <tr>
 					  <td><?php echo $quote->ponum; ?></td>					 
@@ -407,13 +408,13 @@
 				
 				<h5>Recent Cost Codes Created</h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($costcodes)) { ?>
+					<?php if(isset($newcostcodes)) { ?>
 					  <tr>
 					  <td>CostCode</td>
 					  <td>Project</td>
 					  <td>Creation Date</td>
 					  </tr>		
-				<?php foreach($costcodes as $costcode) { ?>
+				<?php  foreach($newcostcodes as $costcode) { ?>
 
 					  <tr>
 					  <td><?php echo $costcode->code; ?></td>		
@@ -430,12 +431,12 @@
 				
 				<h5>Recent Projects Created</h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($costcodes)) { ?>
+					<?php if(isset($newprojects)) { ?>
 					  <tr>
 					  <td>Project</td>
 					  <td>Creation Date</td>
 					  </tr>		
-				<?php foreach($projects as $project) { ?>
+				<?php foreach($newprojects as $project) { ?>
 
 					  <tr>					  
 					  <td><?php echo $project->title; ?></td>				 

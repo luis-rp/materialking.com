@@ -370,7 +370,7 @@ class Dashboard extends CI_Controller
 		$quotesql = "SELECT q.* FROM 
 		".$this->db->dbprefix('quote')." q WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherequote} ";
 		
-		$quotes = $this->db->query($quotesql)->result();
+		$newquotes = $this->db->query($quotesql)->result();
 		
 		
 		$whereawardquote = "";
@@ -384,12 +384,12 @@ class Dashboard extends CI_Controller
 		
 		
 		$wherecostcode = "";
-		$wherecostcode = "and c.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+		$wherecostcode .= "and c.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
 					
 		$costcodesql = "SELECT c.*, p.title FROM 
 		".$this->db->dbprefix('costcode')." c left join ".$this->db->dbprefix('project')." p on c.project = p.id  WHERE c.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherecostcode} ";
 		
-		$costcodes = $this->db->query($costcodesql)->result();
+		$newcostcodes = $this->db->query($costcodesql)->result();
 		
 		
 		
@@ -399,7 +399,7 @@ class Dashboard extends CI_Controller
 		$projectsql = "SELECT p.title, p.creation_date FROM 
 		".$this->db->dbprefix('project')." p WHERE p.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereproject} ";
 		
-		$projects = $this->db->query($projectsql)->result();
+		$newprojects = $this->db->query($projectsql)->result();
 		
 		
 		$whereusers = "";
@@ -417,10 +417,9 @@ class Dashboard extends CI_Controller
 					
 		$networksql = "SELECT n.*, c.title FROM 
 		".$this->db->dbprefix('network')." n left join ".$this->db->dbprefix('company')." c on n.company = c.id  WHERE n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$wherenetwork} ";
+	
+		$networks = $this->db->query($networksql)->result();		
 		
-		$networks = $this->db->query($networksql)->result();
-		
-				
 		if($invoices)
 		$data['invoices'] = $invoices;
 		if($invoicespay)
@@ -432,19 +431,20 @@ class Dashboard extends CI_Controller
 		if($msgs)
 		$data['msgs'] = $msgs;		
 		if($quotes)
-		$data['quotes'] = $quotes;
+		$data['newquotes'] = $newquotes;
 		if($awardquotes)
 		$data['awardquotes'] = $awardquotes;
 		if($costcodes)
-		$data['costcodes'] = $costcodes;
+		$data['newcostcodes'] = $newcostcodes;
 		if($projects)
-		$data['projects'] = $projects;
+		$data['newprojects'] = $newprojects;
 		if($users)
 		$data['users'] = $users;
 		if($networks)
 		$data['networks'] = $networks;
-		//echo "<pre>",print_r($networks); die;
+		
 		$data['viewname'] = 'dashboard';
+		
 		$this->load->view ('admin/dashboard', $data);
 	}
 	
