@@ -135,7 +135,7 @@ class site extends CI_Controller
     			if ($this->session->userdata('site_loggedin'))
     			{
     				$currentpa = $this->session->userdata('site_loggedin')->id;
-    	
+    				$supplier->joinmark = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
     				$this->db->where('fromid', $currentpa);
     				$this->db->where('toid', $supplier->id);
     				$this->db->where('fromtype', 'users');
@@ -159,7 +159,7 @@ class site extends CI_Controller
     			$popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
     			'" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
     			'</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
-    			'</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="javascript:void(0);">'.$supplier->joinmark.'</a></div></p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
+    			'</span></div><div style="align:left;overflow:hidden;"><p>' . $supplier->joinmark . '</p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
     			$data['suppliers'][] = $supplier;
     		}
     	}
