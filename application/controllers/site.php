@@ -124,12 +124,12 @@ class site extends CI_Controller
     				$output = json_decode($geocode);
     				if(@$output->results[0]->geometry->location->lat && @$output->results[0]->geometry->location->lng)
     				{
-    					$lat = $output->results[0]->geometry->location->lat;
+    				/*	$lat = $output->results[0]->geometry->location->lat;
     					$long = $output->results[0]->geometry->location->lng;
     					$supplier->com_lat = $lat;
     					$supplier->com_lng = $long;
     					$this->db->where('id', $supplier->id);
-    					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));
+    					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));*/
     				}
     			}
     			$supplier->joinmark = '';
