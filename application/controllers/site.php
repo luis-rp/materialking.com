@@ -90,13 +90,13 @@ class site extends CI_Controller
                         $this->db->where('purchasingadmin', $currentpa);
                         $this->db->where('company', $supplier->id);
                         if ($this->db->get('network')->result())
-                            $supplier->joinstatus = 'Already in Network';
+                            $supplier->joinstatus = '<div class="btn btn-primary arrow-right"><a href="javascript:void(0);">Already in Network</a></div>';
                         $this->db->where('fromid', $currentpa);
                         $this->db->where('toid', $supplier->id);
                         $this->db->where('fromtype', 'users');
                         $this->db->where('totype', 'company');
                         if ($this->db->get('joinrequest')->result())
-                            $supplier->joinstatus = 'Already sent request';
+                            $supplier->joinstatus = '<div class="btn btn-primary arrow-right"><a href="javascript:void(0);">Already sent request</a></div>';
                     }
                     $data['suppliers_10_miles'][] = $supplier;
                 }
@@ -159,7 +159,7 @@ class site extends CI_Controller
                 $popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
                  '" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
                  '</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.',&nbsp;'.$supplier->state . '</span><span class="value">' . '' .
-                 '</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="javascript:void(0);">'.$supplier->joinmark.'</a></div></p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
+                 '</span></div>' . $supplier->joinmark . '<div style="align:left;overflow:hidden;"><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
                 $data['suppliers'][] = $supplier;
             }
         }
