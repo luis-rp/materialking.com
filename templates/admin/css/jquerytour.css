@@ -120,7 +120,7 @@
 }
 .tourcontrols{
 	position:fixed;
-	top:45px;
+	bottom:45px;
 	right:-300px;
 	width:270px;
 	background:#000;

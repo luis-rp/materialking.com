@@ -30,119 +30,120 @@ class Order extends CI_Controller
 		$this->orders();
 	}
 	
-	function orders_export()
+function orders_export()
 	{
 		$search = '';
 		$filter = '';
-	
+		
 		if(!@$_POST)
 		{
 			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
 			$_POST['searchto'] = date('m/d/Y');
 		}
-	
-	
-		$sql = "SELECT o.*,od.orderid as odorderid, sum(od.price*od.quantity) as totalprice
-                FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid
+		
+		
+		$sql = "SELECT o.*,od.orderid as odorderid, sum(od.price*od.quantity) as totalprice  
+                FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid 
 				WHERE purchasingadmin=".$this->session->userdata('id')."
-					$search
-					$filter
-					GROUP BY o.id
-					ORDER BY purchasedate DESC";
-						
-					$orders = $this->db->query($sql)->result();
-					$data['orders'] = array();
-					foreach($orders as $order)
-						{
-						if(!is_null($order->project)){
-						$sql = "SELECT *
-						FROM ".$this->db->dbprefix('project')." p
-								WHERE id=".$order->project;
-								$project = $this->db->query($sql)->result();
-								$order->prjName = "assigned to ".$project[0]->title;
-						}else{
-				$order->prjName = "Pending Assignment";
-					}
-						
-					if(!is_null($order->costcode)){
+				$search
+				$filter		
+				GROUP BY o.id 
+				ORDER BY purchasedate DESC";
+			
+		$orders = $this->db->query($sql)->result();
+		$data['orders'] = array();
+		foreach($orders as $order)
+		{
+			if(!is_null($order->project)){
 				$sql = "SELECT *
-							FROM ".$this->db->dbprefix('costcode')." p
-							WHERE id=".$order->costcode;
-							$project = $this->db->query($sql)->result();
-							$order->codeName = $project[0]->code;
+				FROM ".$this->db->dbprefix('project')." p
+				WHERE id=".$order->project;
+				$project = $this->db->query($sql)->result();
+				$order->prjName = "assigned to ".$project[0]->title;
+			}else{
+				$order->prjName = "Pending Assignment";
+			}
+			
+			if(!is_null($order->costcode)){
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('costcode')." p
+				WHERE id=".$order->costcode;
+				$project = $this->db->query($sql)->result();
+				$order->codeName = $project[0]->code;
 			}else{
 				$order->codeName = "Pending Cost Code Assignment";
-					}
-					$data['orders'][]=$order;
-			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus
-				FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o
-                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id";
-					$order->details = $this->db->query($query)->result();
-					}
-					$data['title_orders'] = "Orders";
+			}
+			$data['orders'][]=$order;
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus    
+                      FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o   
+                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id";  
+            $order->details = $this->db->query($query)->result(); 
+		}
+		$data['title_orders'] = "Orders";
+		
+		
+		//$this->load->view('admin/order/list',$data);
+			
+		//=========================================================================================
+		
+		
+		$header[] = array('Order#' , 'Ordered On','Project' , 'Type' , 'Txn ID' , 'Amount' , 'Company','Paid Status','Order Status','Total');				
+			
+		$total = 0; 
+        $oldorderid = ""; 
+		$i = 0;	
+			
+				
+		foreach($data['orders'] as $order)
+		{
+			$i++;
+			if($order->id != $oldorderid){ 
+			$total = 0; 
+			$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+			}else{ 
+				$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+			} 
 	
-	
-					//$this->load->view('admin/order/list',$data);
-						
-					//=========================================================================================
-	
-	
-					$header[] = array('Order#' , 'Ordered On','Project' , 'Type' , 'Txn ID' , 'Amount' , 'Company','Paid Status','Order Status','Total');
-						
-					$total = 0;
-					$oldorderid = "";
-					$i = 0;
-						
-	
-					foreach($data['orders'] as $order)
-					{
-						$i++;
-						if($order->id != $oldorderid){
-							$total = 0;
-							$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100;
-						}else{
-							$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100;
-						}
-	
-						$code_name = $order->prjName.','.$order->codeName;
-							
-							
-						//---------------------
-						$icounter              = 1;
-							
-						$detail_company        = '';
-						$detail_paymentstatus  = '';
-						$detail_status         = '';
-						$detail_total          = '';
-							
-							
-						foreach($order->details as $detail)
-						{
-							if($icounter == 1)
-							{
-								$detail_company        = $detail->company;
-								$detail_paymentstatus  = $detail->paymentstatus;
-								if($detail->status == "Void")
-									$detail_status =  "Declined";
-								else
-									$detail_status =  $detail->status;
-									
-								$detail_total   = round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2)	;
-							}
-							$icounter++;
-						}
-							
-						$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)) , $code_name , $order->type , $order->txnid , "$ ".round($total,2).chr(160) , $detail_company, $detail_paymentstatus, $detail_status, "$ ".$detail_total);
-	
-						$oldorderid = $order->id;
-					}
-	
-					createXls('orders', $header);
-					die();
-	
-					//===============================================================================
-	
+			$code_name = $order->prjName.','.$order->codeName;
+			
+			
+			//---------------------
+			$icounter              = 1;
+			
+			$detail_company        = '';
+			$detail_paymentstatus  = '';
+			$detail_status         = '';
+			$detail_total          = '';
+			
+			
+			foreach($order->details as $detail)
+			{
+				if($icounter == 1)
+				{
+					$detail_company        = $detail->company;
+					$detail_paymentstatus  = $detail->paymentstatus;
+					if($detail->status == "Void") 
+						$detail_status =  "Declined"; 
+					else
+						$detail_status =  $detail->status;
+					
+					$detail_total   = round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2)	;
+				}
+				$icounter++; 		
+			}
+			
+			$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)) , $code_name , $order->type , $order->txnid , "$ ".round($total,2).chr(160) , $detail_company, $detail_paymentstatus, $detail_status, "$ ".$detail_total);	
+		
+			$oldorderid = $order->id;
+		}
+				
+		createXls('orders', $header);  			
+		die();	
+		
+		//===============================================================================
+				
 	}
+	
 	function orders()
 	{
 		$search = '';
