@@ -112,7 +112,7 @@ class site extends CI_Controller
     	$data['suppliers'] = array();
     	$latlongs = array();
     	$popups = array();
-    	log_message('debug',var_export($suppliers));
+    	//log_message('debug',var_export($suppliers));
     	if ($suppliers)
     	{
     		foreach ($suppliers as $supplier)
