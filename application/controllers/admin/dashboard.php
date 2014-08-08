@@ -406,11 +406,10 @@ class Dashboard extends CI_Controller
 		$whereusers = "and regdate between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
 					
 		$userssql = "SELECT companyname, regdate FROM 
-		".$this->db->dbprefix('users')." u WHERE 1=1 {$whereusers} ";
+		".$this->db->dbprefix('users')." u WHERE 1=1 and u.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereusers} ";
 		
 		$users = $this->db->query($userssql)->result();
-		
-		
+			
 		
 		$wherenetwork = "";
 		$wherenetwork = "and n.acceptedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
@@ -430,13 +429,13 @@ class Dashboard extends CI_Controller
 		$data['events'] = $events;
 		if($msgs)
 		$data['msgs'] = $msgs;		
-		if($quotes)
+		if($newquotes)
 		$data['newquotes'] = $newquotes;
 		if($awardquotes)
 		$data['awardquotes'] = $awardquotes;
-		if($costcodes)
+		if($newcostcodes)
 		$data['newcostcodes'] = $newcostcodes;
-		if($projects)
+		if($newprojects)
 		$data['newprojects'] = $newprojects;
 		if($users)
 		$data['users'] = $users;

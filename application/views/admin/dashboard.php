@@ -453,7 +453,7 @@
 				
 				<h5>Recent Users Created</h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($costcodes)) { ?>
+					<?php if(isset($users)) { ?>
 					  <tr>
 					  <td>User</td>
 					  <td>Creation Date</td>
