@@ -609,6 +609,7 @@ class Quote extends CI_Controller
 	
 	public function placebid()
 	{
+		$revisionid;
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
@@ -1271,6 +1272,7 @@ or edit your quote.</div></div></div>');
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
 		$data['award'] = $award;
+		$data['quoteid'] = $quoteid
 		
 		$data['company'] = $company;
 		
