@@ -380,7 +380,7 @@
          }
          ?>
 				<?php if(isset($orders)) { ?>
-				<?php if(isset($title_orders)){?><h3 class="box-header"><?php echo $title_orders; ?></h3><?php } ?>
+				<?php if(isset($heading)){?><h3 class="box-header"><?php echo $heading; ?></h3><?php } ?>
                 <table id="datatable" class="table table-bordered">
                     <thead>
                         <tr>

@@ -119,7 +119,17 @@ class itemcode extends CI_Controller
     //		}
     //	}
     
-    
+    function delete_multiple(){
+    	
+    	$myArray = $_POST['items'];
+    	foreach($myArray as $myValue){
+    		$sql="";
+    		$sql = "DELETE i,a,ai FROM ". $this->db->dbprefix('awarditem')." ai INNER JOIN ".$this->db->dbprefix('award')." a ON  ai.award=a.id INNER JOIN ".$this->db->dbprefix('item')." i ON  i.id=ai.itemid ";
+    		$sql .= "WHERE i.id=".$myValue;
+    		log_message('debug',$sql);
+    		 $this->db->query($sql);
+    	}
+    }
     function index ()
     {
         $itemcodes = $this->itemcode_model->get_itemcodes();
@@ -135,7 +145,8 @@ class itemcode extends CI_Controller
                 $itemcode->ea = "$ " . $itemcode->ea;
                 $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
                 
-                $itemcode->actions = anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
+                $itemcode->actions = "<input type='checkbox' name='del_group' class='del_group' value='".$itemcode->id."' />";
+                $itemcode->actions .= anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
                 'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>', 
                 array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));
                 if ($this->session->userdata('usertype_id') == 2)

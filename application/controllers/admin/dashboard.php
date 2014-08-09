@@ -556,6 +556,8 @@ class Dashboard extends CI_Controller
 		}
 		else
 		{
+			$this->session->unset_userdata("managedproject");
+			$this->session->unset_userdata("managedprojectdetails");
 			redirect('admin/dashboard');
 		}
 	}

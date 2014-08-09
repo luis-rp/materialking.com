@@ -37,8 +37,31 @@
 			tour8.init();
 			start();
 		});
+
+	$('#btndel').click(function(e){
+		if(confirm('Are You Sure?')){
+				var checkd = $('.del_group:checked')	;	
+				var itemdToSend = new Array();	
+				for( i = 0; i < checkd.length; i++){
+					itemdToSend[i] = checkd[i].value;
+					}
+				//console.log(itemdToSend);
+				$.ajax({
+					url:"/admin/itemcode/delete_multiple",
+					data:{items:itemdToSend},
+					type:'POST'
+					});
+				}
+			
+		 });
+	 
+		$('#canceltour').click(function(e){
+			endTour();
+			});
+		
 	 });
-		$('#canceltour').live('click',endTour);
+
+	 
 	 function start(){
 		 
 			// Start the tour
@@ -86,6 +109,7 @@
                             echo '&nbsp;' . $addcatlink;
                             echo '&nbsp;' . $addsubcatlink; ?>
                             <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>
+                            <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button>
                             <div class="datagrid-header-right">
                             	
                             		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">
@@ -130,6 +154,7 @@
                         </th>
                         </tr>
                         </thead>
+                       
                         <tfoot>
                             <tr>
                                 <th>

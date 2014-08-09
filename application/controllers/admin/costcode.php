@@ -378,7 +378,7 @@ class costcode extends CI_Controller {
 		/****************/
         $data['jsfile'] = 'costcodeitemjs.php';
         $data ['addlink'] = '';
-        $data ['heading'] = "Items with costcode '$costcode'";
+        $data ['heading'] = "Store Orders with Costcode '$costcode'";
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a>';
         $this->load->view('admin/datagrid', $data);
     }

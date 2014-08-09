@@ -38,7 +38,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <title>EZPZP Purchasing User Administration</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-
+  
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo-init.min.js" type="text/javascript"></script>
 <?php if ($_SERVER['SERVER_NAME'] != 'localhost' || 0) { ?>
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
