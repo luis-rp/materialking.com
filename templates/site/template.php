@@ -10,6 +10,13 @@ if (!$function || $function == 'index')
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+$(function(){
+$('.fadein img:gt(0)').hide();
+setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().end().appendTo('.fadein');}, 3000);
+});
+</script>
     	<link type="text/css" href="<?php echo base_url(); ?>cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
 		<script type="text/javascript" src="<?php echo base_url(); ?>cometchat/cometchatjs.php" charset="utf-8"></script>
         <meta charset="UTF-8"/>
@@ -196,9 +203,22 @@ if (!$function || $function == 'index')
                                                 </div>
                                                 
                                                  <span class="span7" style="padding-top:2px">
-                                                <script type="text/javascript">
-		show_banners('top');
-	</script>
+                                               <!-- <script type="text/javascript">
+													show_banners('top');
+												</script>-->
+												<?php  try { ?>
+                                                 <a target="_self" href="http://www.materialking.com">
+                                                 <div style="width:600px;height:90px; overflow:hidden;" class="fadein">
+                                                      <?php foreach ($banner as $item){ ?>
+                                                        <img src="<?php echo base_url();?>uploads/banners/<?php echo $item->banner;?>"
+                                                            alt="<?php echo $item->banner;?>" style="height:90px; width:600px;">
+                                                      <?php } ?>
+                                                 </div>
+                                                 </a>
+                                                 <?php }
+                                                 catch(Exception $e) {
+	                                             echo 'No images found for this slideshow.<br />';
+                                                 }?>
                                                  </span>
                                                  <?php if (!$this->session->userdata('site_loggedin')) { ?>
                                                 <a class="btn btn-primary btn-large list-your-property arrow-right" href="javascript:void(0);" onclick="$('#createmodal').modal();">Create Account</a>

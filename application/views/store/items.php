@@ -88,9 +88,9 @@ $(document).ready(function() {
 
 <script>
 
-    function addtocart(itemid, companyid, price)
+    function addtocart(itemid, companyid, price,minqty)
     {
-        var qty = prompt("Please enter the quantity you want to buy","1");
+        var qty = prompt("Please enter the quantity you want to buy",minqty);
         if(isNaN(parseInt(qty)))
         {
             return false;
@@ -191,7 +191,7 @@ $(document).ready(function() {
                                         <div class="price">
                                             $<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>)">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>)">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         </div>

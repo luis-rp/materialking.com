@@ -4,6 +4,12 @@
 $(document).ready(function(){
 	$('.datefield').datepicker();
 });
+
+function submitForm(val)
+{
+	$("#invoicenum").val(val);
+  	document.forms['invoiceform'].submit()
+}
 </script>
 
     <div class="content">  
@@ -14,7 +20,7 @@ $(document).ready(function(){
 		</div>
 	
 	   <div id="container">
-	   		<div class="combofixed">
+	   		<div class="combofixed" style="width:100%">
 		   
     		   <form class="form-inline" action="<?php echo site_url('report')?>" method="post">
                     From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
@@ -22,7 +28,7 @@ $(document).ready(function(){
                     To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
                     &nbsp;&nbsp;
                     Company:
-    				<select id="purchasingadmin" name="purchasingadmin">
+    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 140px;">
     					<option value=''>All Companies</option>
     					<?php foreach($purchasingadmins as $company){?>
     						<option value="<?php echo $company->id?>"
@@ -33,6 +39,14 @@ $(document).ready(function(){
     					<?php }?>
     				</select>
                     &nbsp;&nbsp;
+                    Sort By:
+                    <select id="sortByFilter" name="sortByFilter" class="form-control selectpicker show-tick" style="width: 140px;">
+                    	<option value=''>Select </option>
+                    	<option value='project' <?php if(@$_POST['sortByFilter']=='project'){echo 'SELECTED';}?>>Project</option>
+                    	<option value='paymentstatus' <?php if(@$_POST['sortByFilter']=='paymentstatus'){echo 'SELECTED';}?>>Payment Status</option>
+                    	<option value='verificationstatus' <?php if(@$_POST['sortByFilter']=='verificationstatus'){echo 'SELECTED';}?>>Verification Status</option>
+                    </select>
+                    
                     <input type="submit" value="Filter" class="btn btn-primary"/>
                     <a href="<?php echo site_url('report');?>">
                     	<input type="button" value="Show All" class="btn btn-primary"/>
@@ -111,6 +125,7 @@ $(document).ready(function(){
 			    <table class="table no-more-tables general">
 			    	<tr>
 			    		<th width="120">Company</th>
+			    		<th width="120">Project</th>
 			    		<th width="75">PO#</th>
 			    		<th width="120">Item Code</th>
 			    		<th width="200">Item Name</th>
@@ -145,7 +160,9 @@ $(document).ready(function(){
 			    	?>
 			    	<tr>
 			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->ponum;?></td>
+			    		<td><?php echo $item->title;?></td>
+			    		<td><a href="<?php echo site_url('quote/track/'.$item->quote.'/'.$item->award);?>"><?php echo $item->ponum;?></a>
+			    		</td>
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
@@ -155,7 +172,12 @@ $(document).ready(function(){
 			    		<td><?php echo $item->paymentstatus;?></td>
 			    		<td><?php echo $item->status;?></td>
 			    		<td><?php echo $item->notes;?></td>
-			    		<td><?php echo $item->invoicenum;?></td>
+			    		<td>
+			    		<form id="invoiceform" name="invoiceform" action="<?php echo site_url('quote/invoice');?>" method="post">
+			    		<input type="hidden" name="invoicenum" id="invoicenum" value="<?php echo $item->invoicenum;?>">
+			    		<a href="javascript: submitForm('<?php echo $item->invoicenum;?>');"><?php echo $item->invoicenum;?></a>
+			    		</form>
+			    		</td>
 			    		<?php if(0){?>
 			    		<td>
 			    		<?php if($item->paymentstatus){?>

@@ -11,10 +11,12 @@ class site extends CI_Controller
         $data['title'] = 'Home';
         $this->load->dbforge();
         $this->load->model('homemodel', '', TRUE);
+        $this->load->model('admin/banner_model', '', TRUE);
         $this->load->model('admin/itemcode_model', '', TRUE);
         $this->load->model('admin/catcode_model', '', TRUE);
         $this->load->model('admin/quote_model', '', TRUE);
 		$this->load->model ('items_model', '', TRUE);
+		$data['banner']=$this->banner_model->display();
 		$data['categorymenu'] = $this->items_model->getCategoryMenu (0) ;
         $this->load = new My_Loader();
         $this->load->template('../../templates/site/template', $data);

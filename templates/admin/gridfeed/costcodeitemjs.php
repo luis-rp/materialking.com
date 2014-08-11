@@ -36,6 +36,11 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
+    			property: 'received',
+    			label: 'Qty Received',
+    			sortable: true
+    		},
+    		{
     			property: 'ea',
     			label: 'Price EA',
     			sortable: true
@@ -52,7 +57,7 @@ $(document).ready(function () {
     		},
     		{
     			property: 'status',
-    			label: 'Status',
+    			label: 'P.O. Status',
     			sortable: true
     		},
     		{

@@ -161,7 +161,7 @@ class costcode_model extends Model
 	
 		function getcostcodeitems2($costcode)
 	{
-		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote 
+		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  received 
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
@@ -169,7 +169,7 @@ class costcode_model extends Model
 			ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote 
+			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  received
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q

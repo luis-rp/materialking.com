@@ -335,7 +335,7 @@ function savclose()
 </style>
 
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo $heading;?>  &nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/';?>">View Bids</a> - &nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/message/messages/';?>">View Messages</a> </h3>
+	<h3 class="box-header"><?php echo $heading;?>  &nbsp;&nbsp;<!--<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/';?>">View Bids</a> - &nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/message/messages/';?>">View Messages</a>--> </h3>
 	<div class="box">
 		<div class="span12">
 		   <?php echo $this->session->flashdata('message'); ?>

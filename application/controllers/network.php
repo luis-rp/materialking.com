@@ -13,6 +13,9 @@ class network extends CI_Controller {
         $data ['title'] = 'Home';
         $this->load->dbforge();
         $this->load->model('homemodel', '', TRUE);
+        $this->load->model('admin/banner_model', '', TRUE);
+		$this->load->model ('storemodel', '', TRUE);
+		$data['banner']=$this->banner_model->display();
         $this->load = new My_Loader();
         $this->load->template('../../templates/site/template', $data);
     }

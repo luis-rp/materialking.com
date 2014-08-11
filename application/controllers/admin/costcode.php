@@ -343,6 +343,7 @@ class costcode extends CI_Controller {
                 $row2->totalprice = "$ " . $row2->totalprice;
                 $row->itemname = htmlentities($row2->itemname);
                 $row2->status = strtoupper($awarded->status);
+                $row2->received = $row2->received;
                 $row2->actions = //$row->status=='COMPLETE'?'':
                         anchor('admin/quote/track/' . $row2->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;

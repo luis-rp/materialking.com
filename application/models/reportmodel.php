@@ -12,6 +12,9 @@ class reportmodel extends Model
 		$company = $this->session->userdata('company');
  		$search = '';
  		$filter = '';
+ 		$orderBy = '';
+ 		$projectSortBy = '';
+ 		
  		if(!@$_POST)
  		{
  			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
@@ -40,6 +43,22 @@ class reportmodel extends Model
  			{
  				$filter = " AND q.purchasingadmin='".$_POST['purchasingadmin']."' ";
  			}
+ 			if(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='paymentstatus')
+ 			{
+ 				$orderBy = " ORDER BY r.PaymentStatus ";
+ 			}
+ 			elseif(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='verificationstatus')
+ 			{
+ 				$orderBy = " ORDER BY r.Status ";
+ 			}
+ 			else 
+ 			{
+ 				$orderBy = " ORDER BY receiveddate DESC ";
+ 			}
+ 			if(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='project')
+ 			{
+ 				$projectSortBy = " ORDER BY p.title ";
+ 			}
  		}
  		//print_r($_POST);die;
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
@@ -55,7 +74,7 @@ class reportmodel extends Model
 					  $filter
 					  GROUP BY receiveddate
 					  $search
-					  ORDER BY receiveddate DESC
+					  $orderBy
 					  ";
 		//echo $datesql;
 		$datequery = $this->db->query($datesql);
@@ -67,22 +86,25 @@ class reportmodel extends Model
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, u.companyname, q.ponum, a.awardedon, q.purchasingadmin,
 						s.taxrate taxpercent,
-						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
+						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,p.title,q.id as quote,ai.award  
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('award')." a,
 					  ".$this->db->dbprefix('quote')." q,
 					  ".$this->db->dbprefix('settings')." s,
-					  ".$this->db->dbprefix('users')." u
+					  ".$this->db->dbprefix('users')." u,
+					  ".$this->db->dbprefix('project')." p
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company='".$company->id."' AND
 					  ai.award=a.id AND
 					  a.quote=q.id AND
 					  u.id=q.purchasingadmin AND
 					  s.purchasingadmin=q.purchasingadmin AND
+					  p.id=q.pid AND
 					  r.receiveddate='{$sepdate->receiveddate}'
 					  $filter
+					  $projectSortBy
 					  ";
 			//echo $itemsql.'<br>';
 			$itemquery = $this->db->query($itemsql);

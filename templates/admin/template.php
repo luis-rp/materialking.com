@@ -10,6 +10,8 @@ if ($menu == 'quote' && $function == 'invoices') {
 
 //print_r($pendingbids);die;
 $pendingquotes = array();
+if(isset($pendingbids))
+{
 foreach ($pendingbids as $pending) {
     if (!isset($pendingquotes[$pending->quote])) {
         $pendingquotes[$pending->quote] = array();
@@ -19,6 +21,7 @@ foreach ($pendingbids as $pending) {
     } else {
         $pendingquotes[$pending->quote]['count'] ++;
     }
+}
 }
 if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_array($function, array('calendar', 'jsonlist'))) {
     redirect('admin/dashboard', 'refresh');
@@ -537,6 +540,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </li>
                                 <li <?php if ($menu == 'type') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>
+                                </li>
+                                <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
                                 </li>
                                 <?php } else { ?>
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>

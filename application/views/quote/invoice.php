@@ -126,30 +126,30 @@
 							      <tr>
 							        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></td>
 							      </tr>
-							      <tr>
+							     <tr>
 							        <td width="33%" valign="top">Contact</td>
 							        <td width="7%" valign="top">&nbsp;</td>
-							        <td width="60%" valign="top"><?php echo $purchasingadmin->fullname;?></td>
+							        <td width="60%" valign="top"><?php if(isset($purchasingadmin->fullname)) echo $purchasingadmin->fullname; else echo '';?></td>
 							      </tr>
 							      <tr>
 							        <td valign="top">Company</td>
 							        <td valign="top">&nbsp;</td>
-							        <td valign="top"><?php echo $purchasingadmin->companyname;?></td>
+							        <td valign="top"><?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?></td>
 							      </tr>
 							      <tr>
 							        <td valign="top">Address</td>
 							        <td valign="top">&nbsp;</td>
-							        <td valign="top"><?php echo $purchasingadmin->address;?></td>
+							        <td valign="top"><?php if(isset($purchasingadmin->address)) echo $purchasingadmin->address; else echo '';?></td>
 							      </tr>
 							      <tr>
 							        <td valign="top">Phone</td>
 							        <td valign="top">&nbsp;</td>
-							        <td valign="top"><?php echo $purchasingadmin->phone;?></td>
+							        <td valign="top"><?php if(isset($purchasingadmin->phone)) echo $purchasingadmin->phone; else echo '';?></td>
 							      </tr>
 							      <tr>
 							        <td valign="top">Fax</td>
 							        <td valign="top">&nbsp;</td>
-							        <td valign="top"><?php echo $purchasingadmin->fax;?></td>
+							        <td valign="top"><?php if(isset($purchasingadmin->fax)) echo $purchasingadmin->fax; else echo '';?></td>
 							      </tr>
 							    </table>
 							    <br/>
