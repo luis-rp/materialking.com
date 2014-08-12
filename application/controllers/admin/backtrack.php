@@ -66,7 +66,13 @@ class backtrack extends CI_Controller
 						            $checkitemname = false;
 						        }
 						    }
-						    
+						    $company = $this->session->userdata('company');
+					        if($company){
+						    $item->etalog = $this->db->where('company',$company->id)
+                            			->where('quote',$quote->id)
+                            			->where('itemid',$item->itemid)
+                            			->get('etalog')->result();
+					        }
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{
 								$item->companyname = @$item->companydetails->title;

@@ -29,6 +29,24 @@ class report extends CI_Controller
 		if(!$company)
 			redirect('company/login');
 		$uri_segment = 4;
+		$filter = '';		
+		if(@$_POST['purchasingadmin'])
+		{
+			$filter = " AND i.purchasingadmin='".$_POST['purchasingadmin']."'";
+			$this->db->where('purchasingadmin',$_POST['purchasingadmin']);
+			$projects = $this->db->get('project')->result();
+			
+			$data['projects'] = array();
+			foreach($projects as $project)
+			{
+				$sql = "SELECT * FROM ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b
+					WHERE b.quote=q.id AND q.pid=".$project->id;
+				if($this->db->query($sql)->result())
+				{
+					$data['projects'][]=$project;
+				}
+			}
+		}
 		$offset = $this->uri->segment ($uri_segment);
 		$reports = $this->reportmodel->get_reports ();
 		

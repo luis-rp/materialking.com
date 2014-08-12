@@ -81,7 +81,7 @@ class Order extends CI_Controller
 	
 						$order_date =  date("d F Y", strtotime($order->purchasedate));
 	
-						$header[] = array($order->ordernumber,  $order->purchaser->companyname ,  $order->paymentstatus , $order_status ,$order_date ,'$ '.formatPriceNew($order->amount) ,$order->type ,$order->txnid );
+						$header[] = array(isset($order->ordernumber) ? $order->ordernumber :'',  isset($order->purchaser->companyname) ? $order->purchaser->companyname : '' ,  isset($order->paymentstatus) ? $order->paymentstatus : '' , $order_status ,isset($order_date) ? $order_date : '' ,'$ '.formatPriceNew($order->amount) ,$order->type ,$order->txnid );
 					}
 	
 	

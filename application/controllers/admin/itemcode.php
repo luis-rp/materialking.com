@@ -343,7 +343,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 					FROM " . $this->db->dbprefix('project') . " p
 					WHERE id=" . $order->project;
     			$project = $this->db->query($sql)->result();
-    			$order->prjName = "assigned to " . $project[0]->title;
+    			if(isset($project) && !(empty($project)))
+    			{
+    				$order->prjName = "assigned to " . $project[0]->title;
+    			}
     		}
     		else
     		{
@@ -1070,7 +1073,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     {
         $company = $_POST['companyid'];
         $itemid = $_POST['itemid'];
-        $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted'
+        $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode
 			   	FROM
 				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a, 
 				" . $this->db->dbprefix('quote') . " q
@@ -1079,7 +1082,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				AND a.company='$company' AND ai.itemid='$itemid'
 				AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
-        $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded'
+        $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode
 			   	FROM
 				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a, 
 				" . $this->db->dbprefix('quote') . " q
@@ -1089,7 +1092,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         $sql = $sql1 . " UNION " . $sql2;
-        //echo $sql;
+       
+        $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
+        $itemqry = $this->db->query($itemnamesql);
+        $itemnameResult = $itemqry->result_array();
         $query = $this->db->query($sql);
         if ($query->num_rows > 0)
         {
@@ -1107,6 +1113,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 			";
             //die($sqlavg);
+            $itemname = 'Itemcode :'.isset($itemnameResult[0]['itemcode']) ? $itemnameResult[0]['itemcode'] : '' ;
             $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
             $companyavgpricefordays = number_format($companyavgpricefordays, 2);
             if ($companyavgpricefordays > $avgforpricedays)
@@ -1141,7 +1148,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                  '</td></tr>';
             }
             $ret .= '</table>';
-            echo $ret;
+            echo $ret.'*#*#$'.$itemname;
         }
         die();
     }
@@ -1274,7 +1281,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $trend = 'NO DATA';
         }
         $data['itempricetrend'] = $trend;
-        $data['heading'] = 'Item Code Detail';
+        $data['heading'] = 'Item Code Detail for '.$item->itemcode;
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/updateitemcode');
         $this->load->template('../../templates/admin/blank', $data);

@@ -88,7 +88,7 @@ class site extends CI_Controller
     				$supplier->joinstatus = '';
     				if ($this->session->userdata('site_loggedin'))
     				{
-    					$supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
+    					$supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary"/>';
     					$currentpa = $this->session->userdata('site_loggedin')->id;
     					$this->db->where('purchasingadmin', $currentpa);
     					$this->db->where('company', $supplier->id);

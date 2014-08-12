@@ -46,6 +46,7 @@ $(document).ready(function(){
 	  			<td><?php echo $event->contactphone;?></td>
 	  		</tr>
 	  	</table>
+	  	<a href="<?php echo site_url('admin/event/update/'.$event->id);?>"><input type="button" value="Edit" class="btn btn-primary"/></a>
 	  </div>
 	  <div class="span6">
 			<h4>Comments</h4>

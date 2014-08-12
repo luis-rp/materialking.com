@@ -68,6 +68,9 @@ class Dashboard extends CI_Controller
 		$query = $this->db->query($sql);
 		$netcomps = $query->result();
 		$settings = $this->settings_model->get_current_settings();
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+
 		 
 		foreach($netcomps as $nc)
 		{
@@ -241,6 +244,8 @@ class Dashboard extends CI_Controller
 		$query = $this->db->query($sql);
 		$netcomps = $query->result();
 	    $settings = $this->settings_model->get_current_settings();
+	    $id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
 	    
 		foreach($netcomps as $nc)
 		{
@@ -441,6 +446,7 @@ class Dashboard extends CI_Controller
 		$data['users'] = $users;
 		if($networks)
 		$data['networks'] = $networks;
+		$data['settingtour']=$setting[0]->tour;
 		
 		$data['viewname'] = 'dashboard';
 		

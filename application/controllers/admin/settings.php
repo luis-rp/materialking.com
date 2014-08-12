@@ -28,6 +28,7 @@ class Settings extends CI_Controller
 		$this->validation->adminemail = $data->adminemail;
 		$this->validation->pricedays = $data->pricedays;
 		$this->validation->pricepercent = $data->pricepercent;
+		$this->validation->tour = $data->tour;
 		$var ['action'] = site_url ('admin/settings/update');
 		$this->load->view ('admin/settings', $var);
 	}
@@ -39,6 +40,7 @@ class Settings extends CI_Controller
 		$fields ['adminemail']= 'adminemail';
 		$fields ['pricedays'] = 'pricedays';
 		$fields ['pricepercent']= 'pricepercent';
+		$fields ['tour']= 'tour';
 		$this->validation->set_fields ($fields);
 	}
 	
@@ -58,6 +60,10 @@ class Settings extends CI_Controller
 		$data ['heading'] = 'Update Settings';
 		$this->_set_fields ();
 		$this->_set_rules ();
+		if(isset($_POST['tour']))
+		{
+			$_POST['tour']=1;
+		}
 		$id = $this->input->post ('id');
 		if ($this->validation->run () == FALSE) 
 		{

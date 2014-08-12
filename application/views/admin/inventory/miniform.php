@@ -51,7 +51,7 @@ $("#projectiddefault").click(function () {
     					$selectedprojectid[] = '';
     			?>
     			<tr>
-    				<td>Set note as</td>
+    				<td>Set note & Attachement as</td>
     				<td>
     				<div STYLE=" height: 100px; overflow: auto;">
     				<table>

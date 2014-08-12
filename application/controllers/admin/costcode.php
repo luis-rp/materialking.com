@@ -343,7 +343,7 @@ class costcode extends CI_Controller {
                 $row2->totalprice = "$ " . $row2->totalprice;
                 $row->itemname = htmlentities($row2->itemname);
                 $row2->status = strtoupper($awarded->status);
-                $row2->received = $row2->received;
+                 //$row2->newreceived = $row2->newreceived;
                 $row2->actions = //$row->status=='COMPLETE'?'':
                         anchor('admin/quote/track/' . $row2->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;
@@ -379,7 +379,7 @@ class costcode extends CI_Controller {
 		/****************/
         $data['jsfile'] = 'costcodeitemjs.php';
         $data ['addlink'] = '';
-        $data ['heading'] = "Store Orders with Costcode '$costcode'";
+        $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a>';
         $this->load->view('admin/datagrid', $data);
     }

@@ -43,22 +43,18 @@ class reportmodel extends Model
  			{
  				$filter = " AND q.purchasingadmin='".$_POST['purchasingadmin']."' ";
  			}
- 			if(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='paymentstatus')
+ 			if(@$_POST['searchproject'] && @$_POST['searchproject'])
  			{
- 				$orderBy = " ORDER BY r.PaymentStatus ";
+ 				$filter .= " AND p.id='".$_POST['searchproject']."' ";
  			}
- 			elseif(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='verificationstatus')
+ 			if(@$_POST['searchpaymentstatus'] && @$_POST['searchpaymentstatus'])
  			{
- 				$orderBy = " ORDER BY r.Status ";
+ 				$filter .= " AND r.paymentstatus='".$_POST['searchpaymentstatus']."' ";
  			}
- 			else 
+ 			if(@$_POST['verificationstatus'] && @$_POST['verificationstatus'])
  			{
- 				$orderBy = " ORDER BY receiveddate DESC ";
- 			}
- 			if(@$_POST['sortByFilter'] && @$_POST['sortByFilter']=='project')
- 			{
- 				$projectSortBy = " ORDER BY p.title ";
- 			}
+ 				$filter .= " AND r.status='".$_POST['verificationstatus']."' ";
+ 			} 
  		}
  		//print_r($_POST);die;
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
@@ -68,13 +64,15 @@ class reportmodel extends Model
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
 					   ".$this->db->dbprefix('award')." a,
-					   ".$this->db->dbprefix('quote')." q
+					   ".$this->db->dbprefix('quote')." q,
+					   ".$this->db->dbprefix('project')." p
 					  WHERE r.awarditem=ai.id AND ai.company='".$company->id."'
-					  AND ai.award=a.id AND a.quote=q.id 
+					  AND ai.award=a.id AND a.quote=q.id AND
+					  p.purchasingadmin=q.purchasingadmin 
 					  $filter
 					  GROUP BY receiveddate
 					  $search
-					  $orderBy
+					  ORDER BY receiveddate DESC
 					  ";
 		//echo $datesql;
 		$datequery = $this->db->query($datesql);
@@ -101,12 +99,11 @@ class reportmodel extends Model
 					  a.quote=q.id AND
 					  u.id=q.purchasingadmin AND
 					  s.purchasingadmin=q.purchasingadmin AND
-					  p.id=q.pid AND
+					  p.purchasingadmin=q.purchasingadmin AND
 					  r.receiveddate='{$sepdate->receiveddate}'
 					  $filter
-					  $projectSortBy
 					  ";
-			//echo $itemsql.'<br>';
+			
 			$itemquery = $this->db->query($itemsql);
 			$items = $itemquery->result();
 			$sepdate->items = $items;
@@ -118,14 +115,16 @@ class reportmodel extends Model
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
 					   ".$this->db->dbprefix('award')." a,
-					   ".$this->db->dbprefix('quote')." q
+					   ".$this->db->dbprefix('quote')." q,
+					   ".$this->db->dbprefix('project')." p
 					  WHERE r.awarditem=ai.id AND ai.company='".$company->id."'
 					  AND ai.award=a.id AND a.quote=q.id 
+					  AND p.purchasingadmin=q.purchasingadmin 
 					  AND r.paymentstatus='Paid'
 					  AND r.receiveddate='{$sepdate->receiveddate}'
 					  $filter
 					  ";
- 		    //echo $datepaidsql.'<br/>';
+ 		    
  		    $sepdate->totalpaid = @$this->db->query($datepaidsql)->row()->totalpaid;
 			
 			$dates[]=$sepdate;
