@@ -219,8 +219,8 @@ class quote extends CI_Controller
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '">Add Quote</a>&nbsp;';
         $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>';
-        
-        if(isset($this->session->flashdata('message')) && $this->session->flashdata('message')!=""){
+        $mess= $this->session->flashdata('message');
+        if(isset($mess) && $this->session->flashdata('message')!=""){
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');
         }
         
