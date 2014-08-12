@@ -12,8 +12,10 @@
             type:"post",
             url: serviceurl,
             data: "companyid="+companyid+"&itemid="+encodeURIComponent(itemid)
-        }).done(function(data){
-            $("#pricehistory").html(data);
+        }).done(function(data){        
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory").html(arr[0]);
+            $("#itemcode").html(arr[1]);
             $("#historycompanyname").html(companyname);
             $("#historymodal").modal();
         });
@@ -134,6 +136,7 @@
 <div id="historymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 
     <div class="modal-header">
+    	<h4><span id='itemcode'></span></h4>
         <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
         <h4>Price History - <span id="historycompanyname"></span></h4>
     </div>

@@ -66,7 +66,7 @@
 						<option value="<?php echo $company->id?>"
 							<?php if(@$_POST['searchcompany']==$company->id){echo 'SELECTED';}?>
 							>
-							<?php echo $company->title?>
+							<?php if(isset($company->title) && $company->title!="") echo $company->title?>
 						</option>
 					<?php }?>
 				</select>
@@ -93,7 +93,7 @@
 		   	if(!@$backtracks) 
 		   		echo 'No Backorders Found'; 
 		   	else 
-		   		foreach($backtracks as $backtrack)
+		   		foreach($backtracks as $backtrack){
 		   			if(@$backtrack['items'])
 		   			{
 		   				
@@ -138,8 +138,9 @@
 			    		<th width="60">Due Qty.</th>
 			    		<th width="50">Unit</th>
 			    		<th width="75">ETA</th>
-			    		<th width="190">Cost Code</th>
-			    		<th>Notes</th>
+			    		<th width="90">Cost Code</th>
+			    		<th width="90">Notes</th>
+			    		<th width="90">History</th>
 			    	</tr>
 			    	<?php 
 			    		
@@ -155,6 +156,10 @@
 			    		<td><?php echo $item->daterequested;?></td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
+			    		<?php if($item->etalog){?><td><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $item->id?>').modal();">
+							    				<i class="icon icon-search"></i>View
+							    			</a></td>
+						<?php } ?>	    
 			    	</tr>
 			    	<?php }?>
 		      </table>
@@ -245,4 +250,40 @@
 	    	<?php }?>
 	    </div>
     </div>
+    
+<?php // echo "<pre>",print_r($backtrack['quote']); die;  
+    if(isset($backtrack['items']) && count($backtrack['items'])>0) { foreach($backtrack['items'] as $q) { //if($q->etalog) {?>  
+  <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>ETA Update History
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          </h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+          	<tr>
+          		<th>Date</th>
+          		<th>Notes</th>
+          		<th>Updated</th>      		
+          	</tr>
+          	<?php $i=0; foreach($q->etalog as $l){?>
+          	<tr>
+          		<td><?php if ($i==0) echo $l->daterequested; else echo "changed from ".$olddate." to ".$l->daterequested; ?></td>
+          		<td><?php echo $l->notes;?></td>
+          		<td><?php echo date("m/d/Y", strtotime($l->updated));?></td>
+          	</tr>
+          	<?php $i++; $olddate = $l->daterequested; }?>
+          </table>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+<?php //} 
+} }
+
+		   		}?>
 </section>

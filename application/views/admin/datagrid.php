@@ -380,9 +380,10 @@
          }
          ?>
 				<?php if(isset($orders)) { ?>
-				<?php if(isset($heading)){?><h3 class="box-header"><?php echo $heading; ?></h3><?php } ?>
+				
                 <table id="datatable" class="table table-bordered">
                     <thead>
+                    	<tr><td colspan="8"><?php if(isset($heading)){?><h3 class="box-header"><?php echo $heading; ?></h3><?php } ?></td></tr>
                         <tr>
                             <th style="width:5%">S.No.</th>
                             <th style="width:15%">Order#</th>

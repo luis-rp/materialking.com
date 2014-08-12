@@ -162,10 +162,12 @@
 		 tour4.end();
 			}
  </script>
+ 
+<?php if($settingtour) { ?> 
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="closeX" id="canceltour"></span></div>
+<span class="closeX" id="canceltour"></span></div><?php } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
 	<div class="box">
@@ -338,7 +340,9 @@
 			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php }else{?>
+				<?php if($settingtour) { ?>
 				&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="<?php echo base_url("/admin/admin/restart_tour");?>">Restart Tour</a>
+			<?php } ?>
 				
 			<div class="well span4" style=" margin-top:15px; width:100%;" >
 					<h3 class=" box-header">Activity Feed</h3>

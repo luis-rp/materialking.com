@@ -109,7 +109,7 @@
                             echo '&nbsp;' . $addcatlink;
                             echo '&nbsp;' . $addsubcatlink; ?>
                             <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>
-                            <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button>
+                            <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
                             	
                             		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">
@@ -212,7 +212,7 @@
 
     <div class="modal-header">
         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-        <h4>Edit Item</h4>
+        <h4>Edit Item Specification</h4>
     </div>
     <div class="modal-body" id="editbody">
     </div>
