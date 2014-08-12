@@ -36,7 +36,7 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
-    			property: 'received',
+    			property: 'newreceived',
     			label: 'Qty Received',
     			sortable: true
     		},

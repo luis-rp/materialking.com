@@ -88,24 +88,35 @@ $(document).ready(function() {
 
 <script>
 
-    function addtocart(itemid, companyid, price,minqty)
-    {
-        var qty = prompt("Please enter the quantity you want to buy",minqty);
-        if(isNaN(parseInt(qty)))
-        {
-            return false;
-        }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty;
-        //alert(data); return false;
-        $.ajax({
-            type: "post",
-            data: data,
-            url: addtocarturl
-        }).done(function(data) {
-            alert(data);
-            window.location = window.location;
-        });
-    }
+function addtocart(itemid, companyid, price,minqty)
+{
+	var min=minqty;
+	var qty = prompt("Please enter the quantity you want to buy",minqty);
+
+	if(qty < min)
+	{
+		alert("Please Enter "+min+" or more value.");
+		return false;
+	}
+
+
+	if(isNaN(parseInt(qty)))
+	{
+		alert("Please Enter Numeric value.");
+		return false;
+	}
+
+	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty;
+	//alert(data); return false;
+	$.ajax({
+		type: "post",
+		data: data,
+		url: addtocarturl
+	}).done(function(data) {
+		alert(data);
+		window.location = window.location;
+	});
+}
 </script>
 
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
@@ -118,6 +129,8 @@ $(document).ready(function() {
             <div class="row">
                 <div class="span9">
                     <h1 class="page-header">
+                    <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
+                    else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="<?php echo $supplier->logo; ?>">&nbsp;
                     Welcome
                     <?php if($this->session->userdata('site_loggedin')){echo $this->session->userdata('site_loggedin')->companyname;}else{echo 'Guest';}?>,
                     to

@@ -38,6 +38,12 @@ class settings_model extends Model
 		return NULL;
 	}
 
+	function getalldata($id)
+	{
+		$query=$this->db->get_where('settings', array('purchasingadmin' => $id));
+		return $query->result();
+	}
+	
  	function get_current_settings()
  	{	
  	    $pa = $this->session->userdata('purchasingadmin');
@@ -71,7 +77,8 @@ class settings_model extends Model
 			'taxrate'=>$this->input->post('taxrate'),
           	'adminemail'=>$this->input->post('adminemail'),
           	'pricedays'=>$this->input->post('pricedays'),
-          	'pricepercent'=>$this->input->post('pricepercent')
+          	'pricepercent'=>$this->input->post('pricepercent'),
+          	'tour'=>$this->input->post('tour')
 		);
 		
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));

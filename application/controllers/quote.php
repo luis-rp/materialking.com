@@ -502,13 +502,21 @@ class Quote extends CI_Controller
 	    $data['quotenum'] = $bid?$bid->quotenum:'';
 	    $data['quotefile'] = $bid?$bid->quotefile:'';
 	    $data['expire_date'] = $bid?$bid->expire_date:'';
-	    $data['bid'] = $bid;
-	    if($bid){
+	     if($bid){
 	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
 	    	$revisionquote = $this->db->query($sqlq)->row();
 	    	if($revisionquote)
 	    	$data['revisionno'] = $revisionquote->revisionid;
+	    	
+	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$revisiondate = $this->db->query($sqlq)->result();
+	    	foreach($revisiondate as $revisedate){	    		
+	    		$revisionsid = $revisedate->revisionid;
+	    		$bid->$revisionsid = $revisedate->daterequested;
+	    	}
+	    	
 	    }
+	   	$data['bid'] = $bid; 
 	    
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();

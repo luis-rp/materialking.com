@@ -26,9 +26,9 @@ function submitForm(val)
                     From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
                     &nbsp;&nbsp;
                     To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
-                    &nbsp;&nbsp;
+                   &nbsp;&nbsp;
                     Company:
-    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 140px;">
+    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 140px;" onchange="this.form.submit()"> 
     					<option value=''>All Companies</option>
     					<?php foreach($purchasingadmins as $company){?>
     						<option value="<?php echo $company->id?>"
@@ -38,15 +38,36 @@ function submitForm(val)
     						</option>
     					<?php }?>
     				</select>
-                    &nbsp;&nbsp;
-                    Sort By:
-                    <select id="sortByFilter" name="sortByFilter" class="form-control selectpicker show-tick" style="width: 140px;">
-                    	<option value=''>Select </option>
-                    	<option value='project' <?php if(@$_POST['sortByFilter']=='project'){echo 'SELECTED';}?>>Project</option>
-                    	<option value='paymentstatus' <?php if(@$_POST['sortByFilter']=='paymentstatus'){echo 'SELECTED';}?>>Payment Status</option>
-                    	<option value='verificationstatus' <?php if(@$_POST['sortByFilter']=='verificationstatus'){echo 'SELECTED';}?>>Verification Status</option>
-                    </select>
-                    
+                  
+                     <?php if(@$_POST['purchasingadmin']){?>
+                      <div class="form-group">
+                        Select Project
+                        <span>
+                         	<select name="searchproject" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                            	<option value=''>All</option>
+                            	<?php foreach($projects as $p){?>
+                            	<option value='<?php echo $p->id;?>' <?php if(@$_POST['searchproject'] ==$p->id){echo 'SELECTED';}?>><?php echo $p->title;?></option>
+                            	<?php }?>
+                            </select>
+                        </span>
+                      </div>
+                      <?php }?>
+                  &nbsp;&nbsp;
+                  Payment Status:
+                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                            <option value=''>All</option>
+                            <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
+                           <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
+                            <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
+                        </select>  
+                 &nbsp;&nbsp;  
+	            Verification Status:
+				<select name="verificationstatus" id="verificationstatus" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                            	<option value=''>All</option>
+                            	<option value='Pending' <?php if(@$_POST['verificationstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
+                            	<option value='Verified' <?php if(@$_POST['verificationstatus'] =='Verified'){echo 'SELECTED';}?>>Verified</option>
+                            	<option value='Error' <?php if(@$_POST['verificationstatus'] =='Error'){echo 'SELECTED';}?>>Error</option>
+	            </select> 
                     <input type="submit" value="Filter" class="btn btn-primary"/>
                     <a href="<?php echo site_url('report');?>">
                     	<input type="button" value="Show All" class="btn btn-primary"/>

@@ -125,7 +125,7 @@ class costcode_model extends Model
 	
 	function getcostcodeitems($costcode)
 	{
-		$sql ="SELECT ai.*, q.ponum, a.quote
+		$sql ="SELECT ai.*, q.ponum, a.quote,IFNULL(ai.received,0) as  newreceived
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
@@ -133,7 +133,7 @@ class costcode_model extends Model
 			ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT ai.*, q.ponum, a.quote
+			$sql ="SELECT ai.*, q.ponum, a.quote,IFNULL(ai.received,0) as  newreceived
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q
@@ -161,7 +161,7 @@ class costcode_model extends Model
 	
 		function getcostcodeitems2($costcode)
 	{
-		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  received 
+		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
@@ -169,7 +169,7 @@ class costcode_model extends Model
 			ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  received
+			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q

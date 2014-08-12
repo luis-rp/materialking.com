@@ -60,7 +60,7 @@ class event extends CI_Controller
             }
             else 
             {
-                $obj['url'] = site_url('admin/event/update/'.$event->id);
+                $obj['url'] = site_url('admin/event/comments/'.$event->id);
                 $eventlist[] = $obj;
             }
         }

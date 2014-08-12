@@ -105,9 +105,9 @@ tr.still-due td
 			<a class="pull-right" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
 			
 		</div>	
-			Order Date: <?php echo $quote->podate;?> 
+			Order Date: <?php if(isset($quote->podate)) echo $quote->podate; else echo '';?> 
 			<br/>
-			Company: <?php echo $purchasingadmin->companyname;?> 
+			Company: <?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?> 
 			<br/>	<br/>	
 	   <div id="container">
 		<?php 
