@@ -466,8 +466,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 							&nbsp;
 							<?php echo $this->session->userdata('fullname'); ?> <i class=" icon-caret-down"></i></a>
 							<ul class="dropdown-menu">
-								 <li><a href="<?php echo base_url(); ?>admin/admin/changepwd"><span class="icon-key"></span> &nbsp; Change Password</a></li>
-                                    <li><a href="<?php echo base_url(); ?>admin/admin/profile"><span class="icon-edit"></span> &nbsp; Edit Profile</a></li>
+								 <li><a href="<?php echo base_url(); ?>admin/admin/changepwd"><span class="icon-key1"></span> &nbsp; Change Password</a></li>
+                                    <li><a href="<?php echo base_url(); ?>admin/admin/profile"><span class="icon-edit1"></span> &nbsp; Edit Profile</a></li>
                                     <li class="divider"></li>
                                     <li><a href="<?php echo base_url(); ?>admin/login/logout"><span class="icon-off"></span> &nbsp; Logout</a>
                                     </li>
@@ -505,7 +505,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
         <div style="clear: both"></div>
         <nav id="left-panel" >
-            <div id="left-panel-content" style="padding-top: 20px;">
+            <div id="left-panel-content" style="padding-top: 0px;">
                 <ul>
                     <li <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a></li>
                     

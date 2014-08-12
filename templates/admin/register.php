@@ -170,16 +170,16 @@
 		}
 
 		.signin-container input:nth-child(1) {
-			-webkit-border-radius: 3px 3px 0 0;
+	/*		-webkit-border-radius: 3px 3px 0 0;
 			-moz-border-radius: 3px 3px 0 0;
-			border-radius: 3px 3px 0 0;
+			border-radius: 3px 3px 0 0;*/
 		}
 
 		.signin-container input:nth-child(2) {
-			border: none;
+/*			border: none;
 			-webkit-border-radius: 0 0 3px 3px;
 			-moz-border-radius: 0 0 3px 3px;
-			border-radius: 0 0 3px 3px;
+			border-radius: 0 0 3px 3px;*/
 		}
 
 		.signin-container input:focus {
