@@ -446,6 +446,9 @@ class Dashboard extends CI_Controller
 		$data['users'] = $users;
 		if($networks)
 		$data['networks'] = $networks;
+		if(empty($setting))
+		$data['settingtour']=$setting;
+		else
 		$data['settingtour']=$setting[0]->tour;
 		
 		$data['viewname'] = 'dashboard';
