@@ -16,6 +16,7 @@ class project extends CI_Controller
 		$this->load->helper ( 'form', 'url');
 		$this->load->model('admin/project_model');
 		$this->load->model('admin/quote_model');
+		$this->load->model('admin/settings_model');
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->form_validation->set_error_delimiters ('<div class="red">', '</div>');
 		$data ['title'] = "Administrator";

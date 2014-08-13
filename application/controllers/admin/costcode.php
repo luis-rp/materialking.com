@@ -18,6 +18,7 @@ class costcode extends CI_Controller {
         $this->load->helper('form', 'url');
 
         $this->load->dbforge();
+        $this->load->model('admin/settings_model');
         $this->load->model('admin/costcode_model');
         $this->load->model('admin/quote_model');
         $this->load->model('admin/order_model');
