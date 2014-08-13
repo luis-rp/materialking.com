@@ -47,7 +47,7 @@ class Message extends CI_Controller
 		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, u.email adminemail, c.email companyemail, b.complete FROM 
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('company')." c
-		WHERE m.quote=q.id AND q.id = b.quote AND m.company=c.id AND m.adminid=u.id AND 
+		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c.id AND m.adminid=u.id AND 
 		m.company='{$company->id}' $quotewhere $pafilter ORDER BY m.id DESC";
 		
 		$msgs = $this->db->query($messagesql)->result();

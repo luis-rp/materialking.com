@@ -51,6 +51,22 @@ class Dashboard extends CI_Controller
 		$invoices = $this->quotemodel->getpendinginvoices($company->id);
 		//echo "<pre>",print_r($invoices);	die;	
 		$data['invoices'] = $invoices;
+		$errorLogSql = "SELECT qe.*,q.ponum,ai.award
+						FROM ".$this->db->dbprefix('quote_errorlog')." qe 
+						JOIN ".$this->db->dbprefix('quote')." q ON q.id = qe.quoteid
+						JOIN ".$this->db->dbprefix('award')." a ON a.quote = qe.quoteid
+						JOIN ".$this->db->dbprefix('awarditem')." ai ON a.id = ai.award
+						WHERE qe.companyid=".$company->id;
+		
+		$logQry = $this->db->query($errorLogSql);
+		$logDetails = $logQry->result_array();
+		
+		foreach ($logDetails as $key=>$val)
+		{			
+			$tago[] = $this->messagemodel->tago(strtotime($val['created'])); 			
+		}
+		$data['logDetails'] = $logDetails;
+		$data['tago'] = $tago;
 		
 		$this->load->view('dashboard/index',$data);
 	}

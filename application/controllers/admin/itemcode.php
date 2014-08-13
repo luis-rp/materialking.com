@@ -208,6 +208,11 @@ class itemcode extends CI_Controller
             $data['addcatlink'] = '';
             $data['addsubcatlink'] = '';
         }
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/itemlist', $data);
     }
     
@@ -361,6 +366,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a>";
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
     	 
+    	$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+    	
     	$this->load->view('admin/datagrid', $data);
     }
     
@@ -491,6 +500,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['addlink'] = '';
         $data['heading'] = "Company prices for '$item->itemcode'";
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/datagrid', $data);
     }
 

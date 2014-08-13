@@ -27,6 +27,7 @@ class Storemodel extends Model
         	$this->db->where('parent_id',$_POST['category']);
         	$menus = $this->db->get('category')->result();
         	$str= "";
+        	if($menus) {
         	foreach ($menus as $item)
         	{
         		$subcategories = $this->getSubCategores($item->id,true);
@@ -38,6 +39,9 @@ class Storemodel extends Model
         	}
         	$str = substr($str,0,strlen($str)-1);
             $where []= "category in (".$str.")";
+        	}else {
+        		$where []= "category = {$_POST['category']}";
+        	}
         }
         if ($manufacturer)
         {
@@ -87,6 +91,28 @@ class Storemodel extends Model
         }
         return $ret;
     }  
+    
+    function getsubcategorynames($parentid=0) 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',$parentid);
+        $menus = $this->db->get('category')->result();
+        $ret = "";
+        foreach ($menus as $item) 
+        {
+            $subcategories = $this->getSubCategores($item->id,true);
+            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            
+            if(!$hasitems)
+                continue;
+               $ret .= '<ul><li onclick="filtercategorystore('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+           
+            
+        }
+        $ret .= "</ul>";
+        return $ret;
+    }    
     
 }
 

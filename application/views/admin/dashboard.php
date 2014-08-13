@@ -109,6 +109,22 @@
 			}
 			
 		});
+
+		
+		$('#calendarevent').fullCalendar({
+			editable: false,
+			events: "<?php echo base_url(); ?>admin/event/jsonlist",
+
+			eventDrop: function(event, delta) {
+				//alert(event.title + ' was moved ' + delta + ' days\n' + '(should probably update your database)');
+			},
+
+			loading: function(bool) {
+				if (bool) $('#loadingevent').show();
+				else $('#loadingevent').hide();
+			}
+
+		});
 		
 	});
 
@@ -125,6 +141,16 @@
 		width: 100%;
 		}
 
+	#loadingevent {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+	}
+
+	#calendarevent {
+		width: 100%;
+		}
+	
 </style>
 
  <script type="text/javascript">
@@ -163,11 +189,10 @@
 			}
  </script>
  
-<?php if($settingtour) { ?> 
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="closeX" id="canceltour"></span></div><?php } ?>
+<span class="closeX" id="canceltour"></span></div>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
 <h3 class="box-header" style="display:inline" id="step1">
@@ -192,7 +217,7 @@
 						</label>
 						<div class="controls">
 							<select name="pid" onchange="this.form.submit();">
-								<option value="0">Select Company Dashboard</option>
+								<option value="0">Company Dashboard</option>
 								<?php foreach($projects as $p){?>
 								<option value="<?php echo $p->id;?>" <?php if(@$mp->id==$p->id){echo 'SELECTED';}?>>
 								    <?php echo $p->title?>
@@ -628,6 +653,20 @@
 				<tr><td>No Events Found</td></tr>
 				<?php } ?>
 				</table>	
+				
+				<section class="row-fluid">
+					<h3 class="box-header">Event Calendar</h3>
+
+					<div class="box">
+    					<div class="span12">
+
+    						<div id='loadingevent' style='display:none'>Loading...</div>
+    						<div id='calendarevent'></div>
+
+    					</div>
+    				</div>
+				</section>
+				
 				</div>
 		<?php }?>
 			</div>

@@ -124,6 +124,13 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                 $("#searchcategory").val(id);
                 $("#categoryform").submit();
             }
+            
+            function filtercategorystore(id)
+            {
+                $("#searchbreadcrumbcategory").val(id);                
+                $("#categorysearchform2").submit();
+            }
+            
         </script>
         <?php if ($this->session->userdata('navigator_lat') && $this->session->userdata('navigator_lng')) {
             

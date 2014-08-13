@@ -16,6 +16,7 @@ class project extends CI_Controller
 		$this->load->helper ( 'form', 'url');
 		$this->load->model('admin/project_model');
 		$this->load->model('admin/quote_model');
+		$this->load->model('admin/settings_model');
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->form_validation->set_error_delimiters ('<div class="red">', '</div>');
 		$data ['title'] = "Administrator";
@@ -72,6 +73,11 @@ class project extends CI_Controller
 		$data ['table'] = $this->table->generate ();
 		$data ['addlink'] = '<a id="step5" class="btn btn-green" href="'.base_url().'admin/project/add">Add Project</a>';
 		$data['viewname'] = 'projects';
+		
+		$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+		
 		$this->load->view ('admin/projects', $data);
 	}
 

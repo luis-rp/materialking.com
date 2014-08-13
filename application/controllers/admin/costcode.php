@@ -18,6 +18,7 @@ class costcode extends CI_Controller {
         $this->load->helper('form', 'url');
 
         $this->load->dbforge();
+        $this->load->model('admin/settings_model');
         $this->load->model('admin/costcode_model');
         $this->load->model('admin/quote_model');
         $this->load->model('admin/order_model');
@@ -258,6 +259,11 @@ class costcode extends CI_Controller {
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/add" id="step10">Add Cost Code</a>';
         $data['viewname'] = 'costcodelist';
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/costcodelist', $data);
     }
     function export($costcode)
@@ -381,6 +387,11 @@ class costcode extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a>';
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/datagrid', $data);
     }
 

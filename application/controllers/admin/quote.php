@@ -200,6 +200,14 @@ class quote extends CI_Controller
                             ' <a href="javascript: void(0)" onclick="quotepermission(' . $quote->id . ',\'' . $quoteponum . '\')"><span class="icon-2x icon-key"></span></a>';
                     ;
                 }
+                if (@$_POST['searchcompany']) {
+                	$invited = $this->quote_model->getInvited($quote->id);
+
+                	if(!in_array($_POST['searchcompany'],$invited)){
+                		continue;
+                	}
+
+                }
                 if (@$_POST['postatus']) {
                     if ($quote->status == $_POST['postatus']) {
                         $items[] = $quote;
@@ -213,7 +221,7 @@ class quote extends CI_Controller
         } else {
             $this->data['message'] = 'No Records';
         }
-        //$data['companies'] = $this->db->get('company')->result();
+        $data['companies'] = $this->db->get('company')->result();
         $data ['addlink'] = '';
         $data ['heading'] = "Quote &amp; Purchase Order Management - " . $this->session->userdata('managedprojectdetails')->title;
         $data ['table'] = $this->table->generate();
@@ -300,7 +308,13 @@ class quote extends CI_Controller
                 $ps = 'equal';
             //$ps = 'paid-'.$paidprice. $ps.' avg for 120 days-'. $avgprice;
              if($awarded)
-                $ret .= '<tr><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a></td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $item->received . '</td><td>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
+             {
+             	if($item->received == '')
+             		$received = 0;
+             	else 
+             		$received = $item->received;	
+                $ret .= '<tr><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a></td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $received. '</td><td>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
+             } 
         }
         $ret .= '</table>';
         echo $ret;
@@ -1729,6 +1743,11 @@ class quote extends CI_Controller
         $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
         		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
         $data['companies'] = $this->db->query($query)->result();
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/invoices', $data);
     }
 

@@ -51,13 +51,13 @@ $("#projectiddefault").click(function () {
     					$selectedprojectid[] = '';
     			?>
     			<tr>
-    				<td>Set note & Attachement as</td>
+    				<td>Set Note & Attachement as</td>
     				<td>
     				<div STYLE=" height: 100px; overflow: auto;">
     				<table>
 
     				<tr><td>
-     <input type="checkbox" name="projectid[]" id="projectiddefault" value="-1" <?php if(in_array('-1',$selectedprojectid)) echo "checked='checked'";?> />&nbsp;default
+     <input type="checkbox" name="projectid[]" id="projectiddefault" value="-1" <?php if(in_array('-1',$selectedprojectid)) echo "checked='checked'";?> />&nbsp;Default
     				</td></tr>
 
      <?php foreach($projectdata as $projectname){ ?>

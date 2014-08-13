@@ -72,6 +72,11 @@ class Admin extends CI_Controller {
 		$data ['addlink'] = '<a class="btn btn-green" href="add">Add New User</a>';
 		$data ['heading'] = 'User Overview';
 		$data ['table'] = $this->table->generate ();
+		
+		$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+		
 		$this->load->view ( 'admin/userlist', $data );
 	}
 	
