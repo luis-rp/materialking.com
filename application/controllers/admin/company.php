@@ -69,6 +69,11 @@ class company extends CI_Controller {
         $data ['heading'] = 'Company Management';
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company/add">Add Company</a>';
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/datagrid', $data);
     }
 
@@ -96,6 +101,11 @@ class company extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = "PO items";
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company">&lt;&lt; Back</a>';
+        
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+        
         $this->load->view('admin/datagrid', $data);
     }
 

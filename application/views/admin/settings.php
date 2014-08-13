@@ -39,7 +39,7 @@
     </div>
     
      <div class="control-group">
-    <label class="control-label">Tick Checkbox to Enable Tour</label>
+    <label class="control-label">Enable Tour</label>
     <div class="controls">
      <?php  $is_checked = ($this->validation->tour) ? $this->validation->tour : $this->input->post('tour');
                 $tour = array('id' => 'tour','checked' => ($is_checked == '1') ? true : false,'name' => 'tour','value' => $is_checked,);?>

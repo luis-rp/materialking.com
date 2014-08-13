@@ -86,10 +86,11 @@
 
     .adminflare > div { margin-bottom: 20px; }
 </style>
+ <?php if($settingtour) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="closeX" id="canceltour"></span></div>
+<span class="closex" id="canceltour"></span></div><?php } ?>
 
 <section class="row-fluid">
     <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>

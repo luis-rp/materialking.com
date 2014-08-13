@@ -23,6 +23,8 @@ class Store extends CI_Controller
 	
 	public function items($username, $manufacturer='')
 	{
+		if(isset($_POST['searchbreadcrumbcategory']))
+		$_POST['category'] = $_POST['searchbreadcrumbcategory'];
 	    $username = urldecode($username);
 	    $company = $this->db->where('username',$username)->get('company')->row()->id;
         $limit = 10;
@@ -109,7 +111,7 @@ class Store extends CI_Controller
         $this->data['categorymenu'] = $this->items_model->getStoreCategoryMenu($company);
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
         //echo '<pre>';print_r($data['categorymenu']);die;
-        $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']); 
+        $this->data['breadcrumb2'] = $this->storemodel->getsubcategorynames(@$_POST['category']);
         if(isset($_POST['category']))
         $category = $_POST['category'];
         else

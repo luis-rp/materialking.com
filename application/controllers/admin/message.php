@@ -168,6 +168,7 @@ class message extends CI_Controller
                                 "date"=>(isset($dates[$i]) && $dates[$i]!="")?date("Y-m-d",  strtotime($dates[$i])):"",    
                                 "error"=>$errors[$item->id],    
                                 "created"=>date("Y-m-d"),    
+                                "comments"=> $_POST['comments']
                                 );  
                         $this->db->insert('pms_quote_errorlog',$insertArray);
 			$i++;
@@ -205,7 +206,7 @@ class message extends CI_Controller
 		  		$body.="
 		  		<dd>
 		  			<table cellspacing=5 cellpadding=25 border=1 clsss='table table-bordered col-md-4' style='border-radius: 3px;border-style: solid solid solid solid;border-width: 1px 1px 1px 1px;'>
-		  				<tr><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th></tr>
+		  				<tr><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th><th>Comment</th></tr>
 		  			";
 		  			foreach($items as $item)
 		  			{
@@ -215,6 +216,7 @@ class message extends CI_Controller
 	  						<td>".$company['quantities'][$e][$i]."</td>
 	  						<td>".$company['invoicenums'][$e][$i]."</td>
 	  						<td>".$company['dates'][$e][$i]."</td>
+	  						<td>".$_POST['comments']."</td>
 	  					</tr>
 	  					";
 		  			}

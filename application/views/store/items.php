@@ -239,6 +239,11 @@ function addtocart(itemid, companyid, price,minqty)
                             </div>
                         </form>
 
+                        <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
+                    	<input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
+                    	
+                    </form>
+                        
                     </div>
                     <?php }?>
                     <div style="clear:both;"></div>

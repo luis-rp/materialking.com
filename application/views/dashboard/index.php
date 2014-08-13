@@ -52,7 +52,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 	    
 		<div class="row">
 		
-			<div class="col-md-6 col-sm-6">
+			<div class="col-md-6 col-sm-6" style="height:500px;overflow:auto;">
 				<div class="tiles white">
 					  <div class="tiles-body">
 						<div class="controller">								
@@ -90,6 +90,41 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 						<?php }?>					
 					</div>
 					
+					<div class="tiles-body">
+						<div class="controller">
+							<a class="reload" href="javascript:;"></a>
+							<a class="remove" href="javascript:;"></a>
+						</div>
+						<div class="tiles-title">
+							ERROR Log
+						</div>
+					  <br>
+						<?php if(!$logDetails){?>
+							<span class="label label-important">No New Error log</span>
+						<?php }?>
+						<?php foreach($logDetails as $key=>$errorLog){ ?>
+					
+						<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('dashboard/close/'.$errorLog->id);?>">X</a>
+						  </div>
+
+							<a href="<?php echo site_url('quote/track/'.$errorLog['quoteid'].'/'.$errorLog['award']);?>" onclick="return readnotification('<?php echo $errorLog['id']?>');">
+							<div class="notification-messages " onclick="return readnotification('<?php echo $errorLog['id']?>');">
+								<div class="user-profile">
+									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/alert.png">
+								</div>
+								<div class="message-wrapper">
+									<div class="heading">
+										For the PO# <?php echo $errorLog['ponum'];?>   &nbsp;&nbsp; Error :  <?php echo $errorLog['error'];?> 
+									</div>
+									<div class="description">
+									    Error Comments:	<?php echo $errorLog['comments'];?> / <?php echo $tago[$key];?>
+									</div>
+								</div>
+							</div>
+							</a>
+						<?php }?>
+					</div>
 					<div class="tiles-title extrabox">
 					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>
 					<table cellpadding="3">

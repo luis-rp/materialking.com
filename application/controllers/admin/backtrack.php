@@ -66,9 +66,9 @@ class backtrack extends CI_Controller
 						            $checkitemname = false;
 						        }
 						    }
-						    $company = $this->session->userdata('company');
-					        if($company){
-						    $item->etalog = $this->db->where('company',$company->id)
+						    
+					        if($item->company){
+						    $item->etalog = $this->db->where('company',$item->company)
                             			->where('quote',$quote->id)
                             			->where('itemid',$item->itemid)
                             			->get('etalog')->result();
@@ -135,6 +135,11 @@ class backtrack extends CI_Controller
         $data['quotes'] = $quotes;
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Backorder Items';
+		
+		$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		$data['settingtour']=$setting[0]->tour;  
+		
 		$this->load->view ('admin/backtrack', $data);
 	}
 	

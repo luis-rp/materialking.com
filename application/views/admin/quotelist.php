@@ -130,7 +130,7 @@ function quotepermission(quote, ponum)
                
                 <form class="form-inline" style="padding-top: 10px; padding-bottom:2px;" action="<?php echo site_url('admin/quote/index/'.$pid)?>" method="post">
                 	
-                	 <?php echo $addlink;?>
+                	 <?php echo $addlink;?><br/></br>
                 	 
                 	Type: <select name="potype" style="width: 70px;">
                 		<option value="All" <?php if(@$_POST['potype']=='All'){echo 'SELECTED';}?>>All</option>
@@ -152,7 +152,19 @@ function quotepermission(quote, ponum)
                 		<option value="NO INVITATIONS" <?php if(@$_POST['postatus']=='NO INVITATIONS'){echo 'SELECTED';}?>>NO INVITATIONS</option>
                 	</select>
                 	&nbsp;&nbsp;
-                	Name: <input type="text" style="width: 170px;" name="searchponum" value="<?php echo @$_POST['searchponum']?>"/>
+                	Name: <input type="text" style="width: 120px;" name="searchponum" value="<?php echo @$_POST['searchponum']?>"/>
+                	&nbsp;&nbsp;
+                    Company:
+				    <select id="searchcompany" name="searchcompany" style="width: 150px;">
+					 <option value=''>All Companies</option>
+					  <?php if(count($companies)>0) { foreach($companies as $company){?>
+						<option value="<?php echo $company->id?>"
+							<?php if(@$_POST['searchcompany']==$company->id){echo 'SELECTED';}?>
+							>
+							<?php if(isset($company->title) && $company->title!="") echo $company->title?>
+						</option>
+					 <?php } }?>
+				    </select>     
                 	&nbsp;&nbsp;
                 	<input type="submit" value="Filter" class="btn btn-primary"/>
                 </form>

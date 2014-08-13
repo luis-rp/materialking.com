@@ -90,22 +90,28 @@ $per .='%';
         <?php } ?>
     });
 
-    function defaultinvoicenum(qid)
+    function defaultinvoicenum(qid,cnt)
     {
-        if (confirm('Do you want to make this invoice # default for this session?'))
-        {
-            $("#makedefaultinvoicenum").val('1');
-            $(".invoicenum").val($("#invoicenum" + qid).val());
-        }
+    	if(cnt > 1)
+    	{
+	        if (confirm('Do you want to make this invoice # default for this session?'))
+	        {
+	            $("#makedefaultinvoicenum").val('1');
+	            $(".invoicenum").val($("#invoicenum" + qid).val());
+	        }
+    	}    
     }
 
-    function defaultreceiveddate(qid)
+    function defaultreceiveddate(qid,cnt)
     {
-        if (confirm('Do you want to make this date default for this session?'))
-        {
-            $("#makedefaultreceiveddate").val('1');
-            $(".receiveddate").val($("#receiveddate" + qid).val());
-        }
+    	if(cnt > 1)
+    	{
+	        if (confirm('Do you want to make this date default for this session?'))
+	        {
+	            $("#makedefaultreceiveddate").val('1');
+	            $(".receiveddate").val($("#receiveddate" + qid).val());
+	        }
+    	}    
     }
 
     function selectbycompany()
@@ -170,7 +176,7 @@ $per .='%';
         if (selected.length > 0)
         {
             var errors = selected.join(',');
-			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',');
+			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();
 			
             $.ajax({
                 type: "post",
@@ -182,6 +188,19 @@ $per .='%';
         }
     }
 
+    
+    function showErrorModal()
+	{
+		$('#commentmodal').modal();
+		$('#commentwrapper').html('Loading...');		
+	}
+	function getCommentdata()
+	{
+		var comments = $("#commentdata").val();
+		$("#comments").val(comments);
+		errorselected();
+	}
+	
     function showInvoice(invoicenum)
     {
         $("#invoicenum").val(invoicenum);
@@ -331,7 +350,7 @@ function acceptall()
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
-                        <?php $alltotal = 0; foreach ($awarded->items as $q) { ?>
+                        <?php $alltotal = 0;$cnt = count($awarded->items); foreach ($awarded->items as $q) { ?>
                         <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
@@ -352,18 +371,20 @@ function acceptall()
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty" 
-                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/></td>
+                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
+                                    	<input type="hidden" name="comments" id="comments" value=""/>
+                                    </td>
                                     <td>
                                         <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>" 
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"'; 
-                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\');"'; ?> 
+                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?> 
                                                value="<?php //if($this->session->userdata('defaultinvoicenum')) echo $this->session->userdata('defaultinvoicenum'); ?>"  
                                                onchange="defaultinvoicenum('<?php echo $q->id; ?>');"/>
                                     </td>
                                     <td>
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" '; 
-                                               else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\');"'; ?>
+                                               else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
                                                value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>" 
                                                data-date-format="mm/dd/yyyy"/>
                                     </td>
@@ -390,7 +411,7 @@ function acceptall()
                                 <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
                                 <td colspan="2">&nbsp;</td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete"></td>
-                                <td><input type="button" class="btn btn-primary btn-small" onclick="errorselected();" value="Error"></td>
+                                <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
                         </form>
                     <?php } ?>
@@ -784,4 +805,14 @@ function acceptall()
             </tr>        	
         </table>
     </div>
+</div>
+<div id="commentmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+    	<h3>Comment: <span id="permissionponum"></span></h3>
+	</div>
+	<div class="modal-body" id="commmentwrapper">
+		<textarea style="width:516px;" rows="5" id="commentdata" name="commentdata"></textarea>
+		<input type="button" value="Save" class="btn btn-primary" onclick="getCommentdata()"/>
+	</div>
 </div>
