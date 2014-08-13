@@ -51,10 +51,10 @@
             });
 </script>
 <section class="row-fluid">
+			<h3 class="box-header">Assign Order to Project</h3>
 	<div class="box">
 		<div class="span12">
 			<a href="<?php echo site_url('admin/order/add_to_project_export').'/'.$orderid; ?>" class="btn btn-green">Export</a>
-			<h3 class="box-header">Assign Order to Project</h3>
 			<div class="well">
 				<?php if(@$orderitems[0]->accepted == 1){?>
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/order/add_to_project/<?php echo $orderid;?>" method="post" >
@@ -85,7 +85,8 @@
 				
 				<div>
 				<h3 class="box-header">Order Items for Order# <?php echo $order->ordernumber;?></h3>
-						<table class="table">
+				</div>
+                <table class="table">
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">ORDER #</th>
@@ -116,7 +117,6 @@
 											<tr><td>Total:</td><td></td><td>$<?php echo $tax+number_format($gtotal,2);?></td></tr>
 										</tbody>
 										</table>
-				</div>
 				<input type="submit" value="Assign">
 				</form>
 				<?php }	elseif(@$orderitems[0]->accepted == 0){

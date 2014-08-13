@@ -42,11 +42,12 @@ function paycc(ptype,company, amount)
 <section class="row-fluid">
 	<table>
 	<tr>
-	<td><h3 class="box-header">Order items for order# <?php echo $order->ordernumber?> <?php if(!is_null($order->project)){ echo "Order assigned to ".$order->prjName;}?></h3></td>
-	<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<!--	<td></td>
+	<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>-->
 	<td><?php if(@$orderitems[0]->accepted == 0){ echo "<b>Awaiting P.O. Approval from Supplier. Once Supplier(s) Accept your Order, You will receive <br> an E-mail Notification. You can return here after your order is Processed to Pay for your <br> order, and Assign the Order cost to a Project and Cost Code<b>"; } ?></td>
 	</tr>
 	</table>
+    <h3 class="box-header">Order items for order# <?php echo $order->ordernumber?> <?php if(!is_null($order->project)){ echo "Order assigned to ".$order->prjName;}?></h3>
 	<div class="box">
 	  <div class="span12">
 	

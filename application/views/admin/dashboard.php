@@ -170,9 +170,7 @@
 <span class="closeX" id="canceltour"></span></div><?php } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
-	<div class="box">
-		<div class="span12">
-			<h3 class="box-header" style="display:inline" id="step1">
+<h3 class="box-header" style="display:inline" id="step1">
 				Your Dashboard
 				&nbsp;
 				
@@ -182,6 +180,9 @@
 				<a class="btn btn-primary pull-right" href="<?php echo site_url('admin/dashboard/application');?>"><strong>Your Credit Application</strong></a>
 				<?php } ?>
 			</h3>
+	<div class="box">
+		<div class="span12">
+			
 			<br/>
 			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post">
@@ -213,7 +214,7 @@
 					
 			<br/>
 			<div class="well span4" id="step2">
-				<h3 class="box-header">Statistics</h3>
+				<h3 class="box-header" style=" width:95.5%">Statistics</h3>
 				
 				<table class="table table-bordered stat">
 	   			<tr>

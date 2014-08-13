@@ -2014,6 +2014,9 @@ ul.icons li [class^="icon-"],ul.icons li [class*=" icon-"] {
 	content:"\f03a"
 }*/
 
+.btn-group .icon-list {
+	 background-image: url("../images/icon1.png"); background-repeat:no-repeat; background-position: center; width:15px; height:15px;}
+ 
 .icon-list{
  background-image: url("../images/incovice.png"); background-repeat:no-repeat; background-position: center; width:30px; height:30px;}
  

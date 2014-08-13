@@ -356,7 +356,7 @@ a,input,button {
     display: block;
     background-color: #fff;
     border: 1px solid #d6d6d6;
-    margin: 0 0 20px 0;
+    margin: 8px 0 20px;
 /*    padding: 20px;*/
     -webkit-border-radius: 0px 0px 10px 10px;
     -moz-border-radius: 0px 0px 10px 10px;
@@ -385,7 +385,7 @@ a,input,button {
     padding: 0!important;
 }
 
-h3.box-header { margin:0px; background:#2A2A2A; font-size:18px; color:#FFF; border-radius: 10px 10px 0px 0px; padding:10px;}
+h3.box-header { margin:0px; background:#2A2A2A; font-size:18px; color:#FFF; border-radius: 10px 10px 0px 0px; padding:10px; float:left; width:98.5%}
 .box-header {
     font-family: "itcs", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #888;
@@ -6440,7 +6440,7 @@ table {
 	line-height: 24px;
 	margin: 0px auto;
 	text-align: left;
-	width: 800px;
+	width: 100%;
 }	
 
 th {
@@ -6511,6 +6511,7 @@ tr:last-of-type td {
 
 tr:last-of-type td:first-child {
 /*	box-shadow: inset 1px -1px 0 #fff;*/
+ border-right: medium none !important;
 }	
 
 tr:last-of-type td:last-child {
@@ -6569,6 +6570,7 @@ tbody:hover tr:hover td {
 .box #step10{ margin:0px 15px 0px;}
  .box .form-inline{ padding:15px;}
  .box .span12{ padding:1%; width:100%; margin:0px;}
+  .box .span15{ padding:1%; width:100%; margin:0px;}
  
  #step2{ background:none !important; border: none !important; margin:0px !important 
  }
