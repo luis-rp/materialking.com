@@ -239,7 +239,7 @@
 					
 			<br/>
 			<div class="well span4" id="step2">
-				<h3 class="box-header" style=" width:95.5%">Statistics</h3>
+				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
 				
 				<table class="table table-bordered stat">
 	   			<tr>
@@ -300,7 +300,7 @@
 
 				
 				<?php if($this->session->userdata('usertype_id') == 2){?>
-	    		<h3 class="box-header">Companies in Your Network</h3>
+	    		<h3 class="box-header" style="width:94.5%">Companies in Your Network</h3>
 	    		<?php if(!$networkjoinedcompanies){?>
 					<span class="label label-important">No companies have joined your network.</span>
 				<?php }else{?>
@@ -349,7 +349,7 @@
 	    	
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
-	    		<h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
+	    		<h3 class="box-header" style="width:94.5%">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
 	    		<?php if(@$costcodesjson){?>
 	    		<div id="chart_pie" style="height: 420px;"></div>
 	    		<?php } else {?>
@@ -362,7 +362,7 @@
 	    		
 	    	</div>
 			<?php }else{?>
-			<div id="step1" class="span4" style="width:338px !important;">
+			<div id="step1" class="span8" style="margin-left:1%;">
 			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php }else{?>
@@ -371,7 +371,7 @@
 			<?php } ?>
 				
 			<div class="well span4" style=" margin-top:15px; width:100%;" >
-					<h3 class=" box-header">Activity Feed</h3>
+					<h3 class=" box-header" >Activity Feed</h3>
 					<h5>Recent Messages</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($msgs)) { ?>
@@ -525,10 +525,11 @@
 				
 				</div>	
 		</div>
-		<div id="step1" class="span4">	
+		<div id="step1" class="span12">	
 				
-				<div class="well span4" style="width:100% !important;" >
-					<h3 class=" box-header">Overdue Invoices & Payment Requests</h3>
+				<!--<div class="well span4" style="width:100% !important;" >-->
+                <div class="well span3" >
+					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>
 					<h5>Invoices with Past Due Date</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($invoices)) { ?>
@@ -575,11 +576,12 @@
 				</div>
 				
 				
-				<div style="clear:both;"></div>
+			<!--	<div style="clear:both;"></div>-->
 				
 				
-				<div class="well span4" style="width:100% !important; margin-left:0px; " >
-					<h3 class=" box-header">Overdue Backorders</h3>
+	<!--			<div class="well span4" style="width:100% !important; margin-left:0px; " >-->
+    			<div class="well span3"  >
+					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
 					<h5>Backorders with Past Due Date</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($backorders)) { ?>
@@ -605,17 +607,7 @@
 				
 				
 				
-				
-							
-				
-				
-			<?php // }?>
-			</div>
-			<?php // }?>
-			
-		</div>
-		<div style="clear:both;"></div>
-	<div  id="step1" class="well span4">
+					<div  id="step1" class="well span3">
 		<div class="tiles-title extrabox"  style="float:left; width:100%">
 					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
 		<section class="row-fluid">
@@ -631,7 +623,7 @@
 		 </div>
 	 </div>	
 		
-		<div  id="step1" class="well span4">
+		<div  id="step1" class="well span3">
 		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
 					<h3 class=" box-header" style="width:94.5%">Upcoming Events</h3>
 					
@@ -671,6 +663,16 @@
 		<?php }?>
 			</div>
 			<?php }?>	
+							
+				
+				
+			<?php // }?>
+			</div>
+			<?php // }?>
+			
+		</div>
+		<div style="clear:both;"></div>
+
 		
 	</div>
 </section>

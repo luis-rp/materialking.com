@@ -110,7 +110,7 @@
 						}
 						//print_r($combocompanies);die;
 		   ?>
-		   
+		   <h3 class="box-header">
 			  <div>
 			  	
 			  		<span class="poheading">PO#: <?php echo $backtrack['quote']->ponum;?></span>
@@ -130,6 +130,7 @@
  			       	</form>
 				  </div>
 			  </div>
+              </h3>
 			 
 			    <table class="table table-bordered">
 			    	<tr>
