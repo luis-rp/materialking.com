@@ -13,7 +13,15 @@
                     <?php if($invoice->datedue){?>
                     DUE DATE: <font color=#FF0000""> <?php  echo date("m/d/Y", strtotime( $invoice->datedue)); ?></font>
                     <br/>
-                    <font color=#FF0000""> <?php echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue'; ?></font>
+                    <font color=#FF0000""> <?php if($invoice->status == "Verified" && $invoice->paymentstatus == "Paid" && isset($invoice->items[0]->paymentdate)) {  
+                    // echo "<pre>",print_r($invoice);
+                    	if(strtotime($invoice->items[0]->paymentdate) < strtotime($invoice->datedue))
+                    	echo "PAID EARLY";
+                    	elseif (strtotime($invoice->items[0]->paymentdate) == strtotime($invoice->datedue))
+                    	echo "PAID ON TIME";
+                    	elseif (strtotime($invoice->items[0]->paymentdate) > strtotime($invoice->datedue))
+                    	echo "PAID LATE";
+                    } else { echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue'; } ?></font>
                 	<?php }?>
                 </h4>
             </div>

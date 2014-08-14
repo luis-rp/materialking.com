@@ -7,8 +7,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Invoices"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
@@ -23,12 +23,12 @@
 	$('#canceltour').live('click',endTour);
  });
  function start(){
-	 
+
 		// Start the tour
 			tour3.start();
 		 }
  function endTour(){
-	 
+
 	 $("#tourcontrols").remove();
 	 tour3.end();
 		}
@@ -56,20 +56,20 @@
             $('#message_div').html(data);
         });
     }
-    
-    function update_invoice_payment_status(idnumber) 
+
+    function update_invoice_payment_status(idnumber)
     {
         var invoice_payment_status_value = $('#invoice_payment_' + idnumber + " option:selected").val();
         var invoice_payment_type_value = $('#invoice_paymenttype_' + idnumber + " option:selected").val();
         var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
         var invoice_number = $('#invoicenumber_' + idnumber).html();
-        
+
         var refnum_value = $('#refnum_' + idnumber + "").val();
         if(invoice_payment_type_value == 'Credit Card')
 			return false;
 		if(invoice_payment_type_value=='')
 			return false;
-            
+
         var url = "<?php echo base_url("admin/quote/update_invoice_payment_status");?>";
         //alert(invoice_payment_status_value);
         $.ajax({
@@ -99,9 +99,9 @@
 
 <script src="<?php echo base_url(); ?>templates/site/assets/js/creditcard.js"></script>
 
-<script> 
+<script>
 	function validatecc()
-	{		  
+	{
 	  cn = $("#card").val();
 	  ct =  $("#creditcardtypes").val();
 	  //alert(cn+'-'+ct);return false;
@@ -110,13 +110,13 @@
 		return false;
 	  }
 
-	  cvc = $("#cvc").val();	  	  
+	  cvc = $("#cvc").val();
 	  if(cvc.length != 3 || isNaN(cvc))
 	  {
 		  alert('Wrong cvc code');
 		  return false;
 	  }
-		
+
 	  return true;
 	}
 </script>
@@ -131,14 +131,14 @@ function paycc(ptype,idnumber,amount)
 	}
 	$('#invoice_paymenttype_' + idnumber + " option:first-child").attr("selected", true);
 	var invoicenumber = $('#invoicenumber_' + idnumber).html();
-	
+
 	$("#ccpayinvoicenumber").val(invoicenumber);
 	$("#ccpayinvoiceamount").val(amount);
 	$("#ccpayamountshow").html(amount);
 	$("#paymodal").modal();
 }
 </script>
- <?php if($settingtour) { ?>
+ <?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -157,10 +157,10 @@ function paycc(ptype,idnumber,amount)
                         <input type="hidden" id="invoicenum" name="invoicenum"/>
                     </form>
                     <form class="form-inline" action="<?php echo site_url('admin/quote/invoices') ?>" method="post">
-                        
+
                         Invoice#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>
                             &nbsp;&nbsp;
-                        
+
                         From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom'] ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto'] ?>" class="datefield" style="width: 70px;"/>
@@ -245,7 +245,7 @@ function paycc(ptype,idnumber,amount)
                     				<?php if($item->paymentstatus=='Requested Payment'){?>
                     				<br/>
                     				<i class="icon-lightbulb">
-                    				Payment Requested by 
+                    				Payment Requested by
                     				<?php echo $item->companydetails->title;?>
                     				on <?php echo $item->refnum;?>
                     				</i>
@@ -262,9 +262,9 @@ function paycc(ptype,idnumber,amount)
         </div>
     </div>
 </section>
-        
+
 <div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-	
+
     <div class="modal-header">
     	<h3>
     	Pay by credit card
@@ -273,10 +273,10 @@ function paycc(ptype,idnumber,amount)
 	</div>
 	<div class="modal-body" id="quoteitems">
         <form method="post" action="<?php echo site_url('admin/quote/payinvoicebycc/');?>" onsubmit="return validatecc();">
-			
+
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
 	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
-	        
+
             <div class="control-group">
                 <label class="control-label" for="card">
                    Total Amount to pay
@@ -285,7 +285,7 @@ function paycc(ptype,idnumber,amount)
                    $<span id="ccpayamountshow"></span>
                 </div>
             </div>
-            
+
             <div class="control-group">
                 <label class="control-label" for="card">
                    Credit Card Number
@@ -301,14 +301,14 @@ function paycc(ptype,idnumber,amount)
                     <span class="form-required" title="This field is required.">*</span>
                 </label>
                 <div class="controls">
-                    
+
 		            <select id="creditcardtypes" name="creditcardtypes">
 			            <option value="visa">Visa</option>
 			            <option value="mastercard">Master Card</option>
 			            <option value="amex">American Express</option>
 			            <option value="dinersclub">Diners club</option>
 			            <option value="discover">Discover</option>
-		            </select> 
+		            </select>
                 </div>
             </div>
 
@@ -328,19 +328,19 @@ function paycc(ptype,idnumber,amount)
                 </label>
 
                 <div class="controls">
-                	
+
                     <select id="month" name="month" style="width: 95px;">
                     	<?php for($i=1; $i<13; $i++){?>
 	                    <option value="<?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?>"><?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?></option>
 	                    <?php }?>
                     </select>
-                    
+
                     <select id="year" name="year" style="width: 125px;">
                     	<?php for($i = date('Y'); $i < date('Y')+10; $i++){?>
 	                    <option value="<?php echo $i;?>"><?php echo $i;?></option>
 	                    <?php }?>
                     </select>
-                    
+
                 </div>
             </div>
 
@@ -349,5 +349,5 @@ function paycc(ptype,idnumber,amount)
             </div>
         </form>
 	</div>
-    
+
 </div>

@@ -43,7 +43,7 @@
         if(@$backtrack['items'])
             $quotes[] = $backtrack['quote']->ponum;
 ?>
-<?php if($settingtour) { ?>
+<?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -157,10 +157,10 @@
 			    		<td><?php echo $item->daterequested;?></td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
-			    		<?php if($item->etalog){?><td><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $item->id?>').modal();">
+			    		<td>&nbsp;<?php if($item->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $item->id?>').modal();">
 							    				<i class="icon icon-search"></i>View
-							    			</a></td>
-						<?php } ?>	    
+							    			</a>
+						<?php } ?></td>	    			
 			    	</tr>
 			    	<?php }?>
 		      </table>
@@ -251,8 +251,7 @@
 	    	<?php }?>
 	    </div>
     </div>
-    
-<?php // echo "<pre>",print_r($backtrack['quote']); die;  
+    <?php // echo "<pre>",print_r($backtrack['quote']); die;  
     if(isset($backtrack['items']) && count($backtrack['items'])>0) { foreach($backtrack['items'] as $q) { //if($q->etalog) {?>  
   <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
     <div class="modal-dialog">

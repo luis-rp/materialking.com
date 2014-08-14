@@ -1,6 +1,6 @@
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
          <script type="text/javascript">
-       
+
             $(document).ready(function() {
             //    tour.goTo(6);
             });
@@ -15,8 +15,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Project Managment"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
@@ -31,12 +31,12 @@
  });
 	$('#canceltour').live('click',endTour);
  function start(){
-	 
+
 		// Start the tour
 			tour5.start();
 		 }
  function endTour(){
-	 
+
 	 $("#tourcontrols").remove();
 	 tour5.end();
 		}
@@ -51,10 +51,10 @@
 			list-style: none;
 			margin-right: 20px;
 		}
-		
+
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
- <?php if($settingtour) { ?>
+ <?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -63,9 +63,9 @@
 	<h3 class="box-header"  style="display:inline" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
-	
+
 	  <?php echo $this->session->flashdata('message'); ?>
-	    
+
 	    <div class="datagrid-example">
 		<div style="height:600px;width:100%;margin-bottom:20px;">
             <table id="MyGrid" class="table table-bordered datagrid">
@@ -78,7 +78,7 @@
                 </th>
                </tr>
               </thead>
-              
+
               <?php if ($counts){?>
               <tfoot>
                <tr>
@@ -110,7 +110,7 @@
                     <div class="grid-pager">
                         <button type="button" class="btn grid-prevpage"><i class="icon-chevron-left"></i></button>
                         <span>Page</span>
-                         
+
                         <div class="input-append dropdown combobox">
                         <input class="span1" type="text">
                         <?php if(0){?>

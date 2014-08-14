@@ -3,7 +3,7 @@
 
 <script>
 	function updateitem(id)
-	{	
+	{
 		var d = "itemid="+id;
         $.ajax({
             type: "post",
@@ -24,8 +24,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Item Code Managment"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
@@ -40,8 +40,8 @@
 
 	$('#btndel').click(function(e){
 		if(confirm('Are You Sure?')){
-				var checkd = $('.del_group:checked')	;	
-				var itemdToSend = new Array();	
+				var checkd = $('.del_group:checked')	;
+				var itemdToSend = new Array();
 				for( i = 0; i < checkd.length; i++){
 					itemdToSend[i] = checkd[i].value;
 					}
@@ -52,23 +52,23 @@
 					type:'POST'
 					});
 				}
-			
+
 		 });
-	 
+
 		$('#canceltour').click(function(e){
 			endTour();
 			});
-		
+
 	 });
 
-	 
+
 	 function start(){
-		 
+
 			// Start the tour
 				tour8.start();
 			 }
 	 function endTour(){
-		 
+
 		 $("#tourcontrols").remove();
 		 tour8.end();
 			}
@@ -86,7 +86,7 @@
 
     .adminflare > div { margin-bottom: 20px; }
 </style>
- <?php if($settingtour) { ?>
+ <?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -112,12 +112,12 @@
                             <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>
                             <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
-                            	
+
                             		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">
                             		<tr><td  style="border:0px !important;">Category:</td>
                             		<td  style="border:0px !important;"> <select id="searchcategory" name="searchcategory" style="width: 120px;">
                                         <option value=''>All Categories</option>
-                                        <?php 
+                                        <?php
                                         foreach ($categories as $cat) { ?>
                                             <option value="<?php echo $cat->id ?>"
                                             <?php
@@ -137,8 +137,8 @@
                             	</form>
                             		</table>
 
-                            		
-                            		
+
+
                             	<table style="border:0px !important;float:left;"><tr><td  style="border:0px !important;">Item:</td>
                             	<td  style="border:0px !important;"><?php if(1){?>
                                 <div class="input-append search datagrid-search" style="margin-top:0px !important;">
@@ -146,16 +146,16 @@
                                     <button class="btn"><i class="icon-search"></i></button>
                                 </div>
                                 <?php }?></td>
-                            	
+
                             	</tr></table>
-                            	
-                            	
+
+
                             </div>
                         </div>
                         </th>
                         </tr>
                         </thead>
-                       
+
                         <tfoot>
                             <tr>
                                 <th>

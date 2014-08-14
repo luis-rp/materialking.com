@@ -38,8 +38,8 @@ left:0px;}
             alwaysOn:false
         });*/
 		    
-		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
-		$("#contentimage").elevateZoom(); 
+		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); $("#contentimage").elevateZoom();  <?php } ?>
+		 
 	});
 	function setmiles(miles)
 	{
@@ -362,8 +362,8 @@ left:0px;}
                         <br/>
 						
 
-                        <div>
-                            <?php 
+                       <div>
+                            <?php $newStr = '';
                             if($item->wiki){
                             	$patternsrc = '/src="([^"]*)"/';
                             	preg_match($patternsrc, $item->wiki, $matches);
@@ -382,12 +382,15 @@ left:0px;}
                             	else
                             	$alt = "";
                            	
+                           $newWiki = $item->wiki;
+                           $newStr = str_replace($src,'',$newWiki);
                        ?> 
-                       <p><?php echo '<img id="contentimage" data-zoom-image3="'.$src.'" src="'.$src.'" alt="'.$alt.'"  '; ?></p> 
+                       <p><?php echo $newStr.'<img id="contentimage" data-zoom-image3="'.$src.'" src="'.$src.'" alt="'.$alt.'" >'; ?></p> 
                         <?php } else { ?> 
                         <p><?php echo $item->wiki;?> </p> 
                         <?php } ?>
                         </div>
+
                         
                         <div class="tabbable"> <!-- Only required for left/right tabs -->
                             <ul class="nav nav-tabs">

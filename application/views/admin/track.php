@@ -156,7 +156,7 @@ $per .='%';
     }
 
     function errorselected()
-    {
+    {    	
         var selected = new Array();
         var quantities = new Array();
         var invoicenums = new Array();
@@ -175,19 +175,18 @@ $per .='%';
         });
         if (selected.length > 0)
         {
-            var errors = selected.join(',');
-			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();
-			
+            var errors = selected.join(',');          
+			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();			
+
             $.ajax({
                 type: "post",
                 data: d,
                 url: senderrorurl
-            }).done(function(data) {//alert(data);
-                window.location = window.location;
+            }).done(function(data) { //alert(data);
+               window.location = window.location;
             });
         }
     }
-
     
     function showErrorModal()
 	{
@@ -200,7 +199,7 @@ $per .='%';
 		$("#comments").val(comments);
 		errorselected();
 	}
-	
+
     function showInvoice(invoicenum)
     {
         $("#invoicenum").val(invoicenum);
@@ -223,7 +222,6 @@ $per .='%';
 		}
 		return true;
 	}
-	
 	
 </script>
 <?php echo '<script type="text/javascript">var accepturl = "' . site_url('admin/quote/acceptshipment') . '";</script>'; ?>
@@ -337,6 +335,7 @@ function acceptall()
                         <th>Cost Code</th>
                         <th>Notes</th>
                         <th>Still Due</th>
+                        <th>History</th>
                         <?php if ($awarded->status == 'incomplete') { ?>
                         <th>Received Qty.</th>
                         <th>Invoice #</th>
@@ -350,7 +349,7 @@ function acceptall()
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
-                        <?php $alltotal = 0;$cnt = count($awarded->items); foreach ($awarded->items as $q) { ?>
+                        <?php $alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) { ?>
                         <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
@@ -369,6 +368,10 @@ function acceptall()
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
+                                <td>&nbsp;<?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
+							    				<i class="icon"></i>View
+							    			</a>
+						<?php } ?></td>	 
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty" 
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
@@ -816,3 +819,38 @@ function acceptall()
 		<input type="button" value="Save" class="btn btn-primary" onclick="getCommentdata()"/>
 	</div>
 </div>
+
+
+    <?php // echo "<pre>",print_r($backtrack['quote']); die;  
+    if(isset($awarded->items) && count($awarded->items)>0) { foreach($awarded->items as $q) { //if($q->etalog) {?>  
+  <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>ETA Update History
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          </h3>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered">
+          	<tr>
+          		<th>Date</th>
+          		<th>Notes</th>
+          		<th>Updated</th>      		
+          	</tr>
+          	<?php $i=0; foreach($q->etalog as $l){?>
+          	<tr>
+          		<td><?php if ($i==0) echo $l->daterequested; else echo "changed from ".$olddate." to ".$l->daterequested; ?></td>
+          		<td><?php echo $l->notes;?></td>
+          		<td><?php echo date("m/d/Y", strtotime($l->updated));?></td>
+          	</tr>
+          	<?php $i++; $olddate = $l->daterequested; }?>
+          </table>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+<?php //} 
+} }

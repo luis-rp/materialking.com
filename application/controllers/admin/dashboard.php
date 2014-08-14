@@ -349,9 +349,7 @@ class Dashboard extends CI_Controller
 		{
 			$backtracks[]=$bck;
 		}
-		
-		$events = $this->quote_model->get_items();
-		
+			
 		$sql = "SELECT last_logged_date FROM ".$this->db->dbprefix('users')." WHERE purchasingadmin ='".$this->session->userdata('purchasingadmin')."' and usertype_id = '".$this->session->userdata('usertype_id')."'";
 		$resultid = $this->db->query($sql)->result(); 
 		$whereres = "";
@@ -429,9 +427,7 @@ class Dashboard extends CI_Controller
 		if($invoicespay)
 		$data['invoicespay'] = $invoicespay;
 		if($backtracks)
-		$data['backorders'] = $backtracks;
-		if($events)
-		$data['events'] = $events;
+		$data['backorders'] = $backtracks;		
 		if($msgs)
 		$data['msgs'] = $msgs;		
 		if($newquotes)

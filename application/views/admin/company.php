@@ -30,13 +30,13 @@ $(document).ready(function(){
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span12">
-	
+
 	<?php echo $message; ?>
 
-   <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
+   <form class="form-horizontal" method="post" action="<?php echo $action; ?>">
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
     <br/>
-    
+
     <div class="control-group">
     <label class="control-label">Company Name*</label>
     <div class="controls">
@@ -44,7 +44,7 @@ $(document).ready(function(){
       <?php echo $this->validation->title_error;?>
     </div>
     </div>
-    
+
     <div class="control-group">
     <label class="control-label">Primary Email*</label>
     <div class="controls">
@@ -52,14 +52,14 @@ $(document).ready(function(){
       <?php echo $this->validation->primaryemail_error;?>
     </div>
     </div>
-    
+
     <div class="control-group">
 	    <label class="control-label">Username*</label>
 	    <div class="controls">
 	      <input type="text" id="username" name="username" class="span4" value="<?php if(isset($this->validation->username)) echo $this->validation->username; else echo ''; ?>" required>
 	    </div>
     </div>
-    
+
     <div class="control-group">
 	    <label class="control-label">Password</label>
 	    <div class="controls">
@@ -84,7 +84,7 @@ $(document).ready(function(){
 	      <?php echo $this->validation->contact_error;?>
 	    </div>
     </div>
-    
+
    <div class="control-group">
 	    <label class="control-label">Street Address*</label>
 	    <div class="controls">
@@ -92,7 +92,7 @@ $(document).ready(function(){
 	      <?php echo $this->validation->address_error;?>
 	    </div>
     </div>
-    
+
     <div class="control-group">
 	    <label class="control-label">City*</label>
 	    <div class="controls">
@@ -103,20 +103,20 @@ $(document).ready(function(){
     <div class="control-group">
         <label class="control-label" >State*</label>
            <select name="state" id="state" required  style="margin-left: 19px;">
-             <?php if($company) { foreach ($company as $com) { $fetchstate=$com->state;}?>
+             <?php   foreach ($company as $com) { $fetchstate=$com->state;}?>
 	            <?php foreach($states as $st){?>
                   <option value='<?php echo $st->state_abbr;?>' <?php if($fetchstate == $st->state_abbr){echo 'SELECTED';}?>><?php echo $st->state_name;?></option>
-                <?php } } ?>
+                <?php  } ?>
            </select>
-     </div>   
-    
+     </div>
+
     <div class="control-group">
 	    <label class="control-label">Zip*</label>
 	    <div class="controls">
 	<input type="text" id="zip" name="zip" class="span4" value="<?php if(isset($this->validation->zip)) echo $this->validation->zip; else echo ''; ?>" onchange="IsValidZip(this.form.zip.value)" required>
 	    </div>
-    </div>     
-     
+    </div>
+
     <div class="control-group">
 	    <label class="control-label">Type:</label>
 	    <div class="controls">
@@ -144,16 +144,16 @@ $(document).ready(function(){
 	      </table>
 	    </div>
     </div>
-    
+
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
      <input type="submit" class="btn btn-primary" value="Update Company List"/>
     </div>
     </div>
-    
+
   </form>
-    
+
     </div>
     </div>
 </section>

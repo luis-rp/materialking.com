@@ -53,7 +53,8 @@ html .fc,
 .fc-header-title h2 {
 	margin-top: 0;
 	white-space: nowrap;
-	 font-family: "itcs", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "itcs", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 16px;
 	}
 	
 .fc .fc-header-space {

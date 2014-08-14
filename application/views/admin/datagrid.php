@@ -10,7 +10,7 @@
 			list-style: none;
 			margin-right: 20px;
 		}
-		
+
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
 	<?php if($jsfile=="costcodeitemjs.php"){?>
@@ -23,8 +23,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Items For Costode"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
@@ -36,16 +36,16 @@
 			tour7.init();
 			start7();
 		});
-	
+
 	 });
 		$('#canceltour').live('click',endTour7);
 	 function start7(){
-		 
+
 			// Start the tour
 				tour7.start();
 			 }
 	 function endTour7(){
-		 
+
 		 $("#tourcontrols").remove();
 		 tour7.end();
 			}
@@ -61,8 +61,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for PO Items For Item"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
@@ -77,19 +77,19 @@
 	 });
 		$('#canceltour').live('click',endTour9);
 	 function start9(){
-		 
+
 			// Start the tour
 				tour9.start();
 			 }
 	 function endTour9(){
-		 
+
 		 $("#tourcontrols").remove();
 		 tour9.end();
 			}
-	 
+
  </script>
 	<?php }?>
- <?php if($settingtour) { ?>
+<?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -98,9 +98,9 @@
 	<h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>
 	<div class="box">
 	  <div class="span12">
-	
+
 	   <?php echo $this->session->flashdata('message'); ?>
-	    
+
 	    <div class="datagrid-example">
 		<div style="height:600px;width:100%;margin-bottom:20px;">
             <table id="MyGrid" class="table table-bordered datagrid">
@@ -143,7 +143,7 @@
                     <div class="grid-pager">
                         <button type="button" class="btn grid-prevpage"><i class="icon-chevron-left"></i></button>
                         <span>Page</span>
-                         
+
                         <div class="input-append dropdown combobox">
                         <input class="span1" type="text">
                         <?php if(0){?>
@@ -162,15 +162,15 @@
             <?php if(!@$items2) echo "No Records Exist"; ?>
            </div>
          </div>
-         
+
          <div>
-          <?php 
+          <?php
          if(isset($items2)){
          ?>
          <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/data.js"></script>
 <script src="http://code.highcharts.com/modules/drilldown.js"></script>
-		
+
 		<span>Filter chart by month: </span>
 		<div class="select chart-month" data-resize="auto">
 			<button type="button" data-toggle="dropdown" class="btn dropdown-toggle chart-month-trigger">
@@ -194,15 +194,15 @@
 		</div>
 
         <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:60%"></div>
-	
+
          <script type="text/javascript">
          $(function () {
-		 
+
 			var month  = new Date().getMonth() + 1;
 			//var month  = 4;
 			Highcharts.theme = {
 				tooltip: {
-					
+
 				  fontSize: '15px',
 				  style: {
 					 fontSize: '15px'
@@ -213,56 +213,56 @@
              var seriesData = new Array();
              var dataData = new Array();
 			 var items = new Array();
-			 
-			 
+
+
                <?php $j=0; foreach($items2 as $item){ ?>
 					var dateItem =new Date("<?php echo $item->daterequested;?>");
-					
+
 					if(!items['<?=$j?>'])
 					{
 						var costItem = "<?php echo $item->totalprice; ?>";
-						costItem = parseFloat(costItem.slice(1)); 
+						costItem = parseFloat(costItem.slice(1));
 						items['<?=$j?>'] = {name:"<?php echo $item->ponum;?>",x:Date.UTC(dateItem.getFullYear(),dateItem.getMonth(),dateItem.getDate()),y:costItem, date: dateItem, datereq:'<?=$item->daterequested?>' };
 					}
 					else
 					{
-						
+
 						var costItem = "<?php echo $item->totalprice; ?>";
-						costItem = parseFloat(costItem.slice(1)); 
+						costItem = parseFloat(costItem.slice(1));
 						items['<?=$j?>'].y += costItem;
 						items['<?=$j?>'].name += ", <?php echo $item->ponum;?>";
 						items['<?=$j?>'].datereq += '<?=$item->daterequested?>';
 					}
-					
+
 			<?php $j++; } ?>
-			
-			
+
+
 			function daysInMonth(month,year) {
 				return new Date(year, month, 0).getDate();
 			}
-			
+
 			function changeMonth()
-			{	
+			{
 				month = ''+month+'';
 				var today = new Date();
 				var year  = new Date().getFullYear();
-				
+
 				var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
-							
-				var firstdate = new Date(year, month-1,1);				
-				
+
+				var firstdate = new Date(year, month-1,1);
+
 				var utcdate;
-				
-				
+
+
 				dataData = new Array();
 				seriesData = new Array();
 				datearr1 = new Array();
-				
+
 				dataname = new Array();
 				datax = new Array();
 				datay = new Array();
 				datadate = new Array();
-				
+
 				items.sort(function(a,b) {
 					if(a.date > b.date)
 						return 1;
@@ -271,7 +271,7 @@
 					else
 						return -1;
 				});
-				
+
 				var k=0;
 				for(var i in items)
 				{
@@ -282,11 +282,11 @@
 						dataname[k] = items[i].name;
 						datax[k] = items[i].x;
 						datay[k] = items[i].y;
-						datadate[k] = items[i].date;	
+						datadate[k] = items[i].date;
 						k++;
 					}
 				}
-				
+
 				var jdt;
 				var monthdt = "";
 				var r = 0;
@@ -296,16 +296,16 @@
 					else
 					monthdt = month;
 					if(j<10){
-						jdt = '0'+j;					 
+						jdt = '0'+j;
 					}
 					else
 					jdt = j;
-					datefinal = ''+monthdt+"/"+jdt+"/"+year+'';			
-					
-					if(datearr1.indexOf(datefinal)<= -1){ 
+					datefinal = ''+monthdt+"/"+jdt+"/"+year+'';
+
+					if(datearr1.indexOf(datefinal)<= -1){
 						utcdate = Date.UTC(year,month-1,j);
 						dataData.push({ name: '', x: utcdate, y: 0, date: 'Date {'+firstdate+'}'});
-						
+
 					}else{
 						dataData.push({ name: dataname[r], x: datax[r], y: datay[r], date: datadate[r]});
 						r++;
@@ -323,7 +323,7 @@
 					else
 						return -1;
 				});*/
-				
+
 				seriesData.push({"name":"PO#","data":dataData, marker: {
 					fillColor: 'white',
 					lineWidth: 2,
@@ -342,7 +342,7 @@
 					 xAxis: {
 						 type: 'datetime',
 						 //min:Date.UTC(2014, 5, 1),
-        				 //max:Date.UTC(2014, 6, 1),	
+        				 //max:Date.UTC(2014, 6, 1),
 						 dateTimeLabelFormats: { // don't display the dummy year
 							 month: '%e. %b',
 							 year: '%b'
@@ -364,27 +364,27 @@
 
 					 series: seriesData
 				 });
-				 
+
 				 //$('.chart-month').find('.dropdown-label').text($('.chartMonthItem[data-value='+month+']').text());
 			}
-			
+
 			changeMonth();
-			
-			
+
+
 			$('.chartMonthItem').click(function () {
 				  month = $(this).attr('data-value');
 				  changeMonth();
 			});
          });
          </script>
-         <?php 
+         <?php
          }
          ?>
 				<?php if(isset($orders)) { ?>
-				
+
                 <table id="datatable" class="table table-bordered">
                     <thead>
-                    	<tr><td colspan="8"><?php if(isset($heading)){?><h3 class="box-header"><?php echo $heading; ?></h3><?php } ?></td></tr>
+                    	<tr><td colspan="8"><?php if(isset($bottomheading)){?><h3 class="box-header"><?php echo $bottomheading; ?></h3><?php } ?></td></tr>
                         <tr>
                             <th style="width:5%">S.No.</th>
                             <th style="width:15%">Order#</th>

@@ -766,6 +766,8 @@ h3.box-header { margin:0px; background:#2A2A2A; font-size:18px; color:#FFF; bord
     position: fixed;
     z-index: 9999;
     display: none;
+    top:111px !important;
+ 	left: 126px !important;
 }
 
 .lp-dropdown-wrapper.open,.lp-dropdown-wrapper .lp-dropdown-menu {
@@ -6458,7 +6460,7 @@ th {
 }
 
 th:after {
-	background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+	/*background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));*/
 	content: '';
 	display: block;
 	height: 25%;
@@ -6534,7 +6536,6 @@ tbody:hover tr:hover td {
  	text-shadow: 0 1px 0 #fff;
 	background:none; 
 }
-
 /*.table {
     border-collapse: collapse;
     font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;

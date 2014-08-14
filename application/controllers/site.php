@@ -88,7 +88,7 @@ class site extends CI_Controller
     				$supplier->joinstatus = '';
     				if ($this->session->userdata('site_loggedin'))
     				{
-    					$supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary"/>';
+    					$supplier->joinstatus = '<a onclick="joinnetwork(' . $supplier->id . ')" />Join</a>';
     					$currentpa = $this->session->userdata('site_loggedin')->id;
     					$this->db->where('purchasingadmin', $currentpa);
     					$this->db->where('company', $supplier->id);
@@ -138,7 +138,7 @@ class site extends CI_Controller
     			if ($this->session->userdata('site_loggedin'))
     			{
     				$currentpa = $this->session->userdata('site_loggedin')->id;
-    				$supplier->joinmark = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
+    				$supplier->joinmark = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')" /> Join </a>';
     				$this->db->where('fromid', $currentpa);
     				$this->db->where('toid', $supplier->id);
     				$this->db->where('fromtype', 'users');
@@ -314,7 +314,7 @@ class site extends CI_Controller
             $supplier->joinstatus = '';
             if ($this->session->userdata('site_loggedin'))
             {
-                $supplier->joinstatus = '<input type="button" value="Join" onclick="joinnetwork(' . $supplier->id . ')" class="btn btn-primary arrow-right"/>';
+                $supplier->joinstatus = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')"/>Join</a>';
                 $currentpa = $this->session->userdata('site_loggedin')->id;
                 $this->db->where('fromid', $currentpa);
                 $this->db->where('toid', $supplier->id);
