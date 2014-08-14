@@ -1,3 +1,4 @@
+ 
 <?php
 
 class quote extends CI_Controller 
@@ -2414,7 +2415,7 @@ with the transfer# {$tobj->id}.
 				    <td width="33%" align="left" valign="top">
 				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></td>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
 				        </tr>
 				      <tr>
 				        <td width="33%" valign="top">Project Title</td>
@@ -2432,7 +2433,7 @@ with the transfer# {$tobj->id}.
 				    <td width="65%" align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></td>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
 			          </tr>
 				      <tr>
 				        <td width="33%" valign="top">PO#</td>
@@ -2857,7 +2858,7 @@ with the transfer# {$tobj->id}.
 				    <td width="33%" align="left" valign="top">
 				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></td>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
 				        </tr>
 				      <tr>
 				        <td width="33%" valign="top">Project Title</td>
@@ -2875,7 +2876,7 @@ with the transfer# {$tobj->id}.
 				    <td width="65%" align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></td>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
 			          </tr>
 				      <tr>
 				        <td width="33%" valign="top">PO#</td>

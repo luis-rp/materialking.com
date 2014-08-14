@@ -102,7 +102,8 @@ function endTour(){
 
 <section class="row-fluid">
 
-	<h3 class="box-header" style="display:inline" id="step1"><?php echo $heading; ?></h3>
+	<h3 class="box-header" style="display:inline" id="step1"><?php echo $heading; ?>  <?php echo $addlink;?>
+                	<a href="<?php echo site_url('admin/costcode/costcodeexport').'/'.@$_POST['projectfilter']; ?>" class="btn btn-green">Export</a></h3>
 	<div class="box">
 	  <div class="span12">
 	
@@ -110,8 +111,7 @@ function endTour(){
 	    
 		<div style="margin-bottom:20px;">
                 <div>
-                	<?php echo $addlink;?>
-                	<a href="<?php echo site_url('admin/costcode/costcodeexport').'/'.@$_POST['projectfilter']; ?>" class="btn btn-green">Export</a>
+                	
                 	<br/><br/>
 	                <div class="datagrid-header-right">
 						<form class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">

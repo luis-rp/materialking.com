@@ -616,8 +616,8 @@
 		</div>
 		<div style="clear:both;"></div>
 	<div  id="step1" class="well span4">
-		<div class="tiles-title extrabox"  style="float:left;">
-					<h3 class=" box-header">PO Calendar</h3>
+		<div class="tiles-title extrabox"  style="float:left; width:100%">
+					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
 		<section class="row-fluid">
 			<div class="box">
 				<div class="span12">
@@ -632,8 +632,8 @@
 	 </div>	
 		
 		<div  id="step1" class="well span4">
-		<div class="tiles-title extrabox"  style="float:left;margin-left: 40px;">
-					<h3 class=" box-header">Upcoming Events</h3>
+		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
+					<h3 class=" box-header" style="width:94.5%">Upcoming Events</h3>
 					
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($events)) { ?>
@@ -655,7 +655,7 @@
 				</table>	
 				
 				<section class="row-fluid">
-					<h3 class="box-header">Event Calendar</h3>
+					<h3 class="box-header" style="width:94.5%">Event Calendar</h3>
 
 					<div class="box">
     					<div class="span12">
