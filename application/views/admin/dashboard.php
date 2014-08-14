@@ -634,7 +634,7 @@
 
 		<div  id="step1" class="well span3">
 		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
-					<h3 class=" box-header" style="width:94.5%">Upcoming Events</h3>
+		
 
 					
 				<section class="row-fluid">
