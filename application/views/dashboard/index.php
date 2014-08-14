@@ -15,63 +15,63 @@ function readnotification(id)
 }
 
 function sendemailalert(invoice,admin,price,datedue, invoiceid){
-	
+
 	//alert(invoice);
 	$.ajax({
 		type:"post",
 		url: emailalerturl,
 		async:false,
-		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid    
+		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid
 	}).done(function(data){
 		if(data == "success")
 			$('#'+invoiceid).html('Email Alert Sent');
 		else
 			$('#'+invoiceid).html('*Error in sending Email');
 	});
-	
+
 	$.ajax({
 		type:"post",
 		url: alertsentdateurl,
 		async:false,
-		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid   
+		data: "invoice="+invoice+"&admin="+admin+"&price="+price+"&datedue="+datedue+"&invoiceid="+invoiceid
 	}).done(function(data){
-		
+
 		$('#'+invoiceid).html(data);
-		
+
 	});
-	
+
 }
 
 </script>
-    <div class="content">  
-		<div class="page-title">	
-			<h3>Dashboard </h3>		
+    <div class="content">
+		<div class="page-title">
+			<h3>Dashboard </h3>
 		</div>
-		
+
 	   <div id="container">
-	    
+
 		<div class="row">
-		
+
 			<div class="col-md-6 col-sm-6" style="height:500px;overflow:auto;">
 				<div class="tiles white">
 					  <div class="tiles-body">
-						<div class="controller">								
+						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
-							<a class="remove" href="javascript:;"></a>									
+							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
 							NOTIFICATIONS
-						</div>							
+						</div>
 					  <br>
 						<?php if(!$newnotifications){?>
 							<span class="label label-important">No New Notifications</span>
 						<?php }?>
 						<?php foreach($newnotifications as $newnote){?>
-						
+
 						<div class="date pull-right">
 								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
 						  </div>
-						  
+
 							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 								<div class="user-profile">
@@ -87,9 +87,9 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 								</div>
 							</div>
 							</a>
-						<?php }?>					
+						<?php }?>
 					</div>
-					
+
 					<div class="tiles-body">
 						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
@@ -105,7 +105,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 						<?php foreach($logDetails as $key=>$errorLog){ ?>
 					
 						<div class="date pull-right">
-								<a class="remove" href="<?php echo site_url('dashboard/close/'.$errorLog->id);?>">X</a>
+								<a class="remove" href="<?php if(isset($errorLog->id)) echo site_url('dashboard/close/'.$errorLog->id); else echo '';?>">X</a>
 						  </div>
 
 							<a href="<?php echo site_url('quote/track/'.$errorLog['quoteid'].'/'.$errorLog['award']);?>" onclick="return readnotification('<?php echo $errorLog['id']?>');">
@@ -133,7 +133,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 					  <td>Due Date</td>
 					  <td>&nbsp;</td>
 					  <td>&nbsp;</td>
-					  </tr>		
+					  </tr>
 				<?php foreach($invoices as $invoice) { ?>
 
 					  <tr>
@@ -141,34 +141,34 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 					  <td><?php echo $invoice->datedue; ?></td>
 					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>');" value="Send Alert" > </td>
 					  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
-					  </tr>			  
-					  
+					  </tr>
+
 
 				<?php } ?>
-				</table>	
+				</table>
 				</div>
-					
-				</div>					
+
+				</div>
 			</div>
-		
+
 			<div class="col-md-6 col-sm-6">
-			
+
 				<div class="tiles white">
 					  <div class="tiles-body">
-						<div class="controller">								
+						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
-							<a class="remove" href="javascript:;"></a>									
+							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
 							PENDING REQUESTS
-						</div>							
+						</div>
 					  <br>
 						<?php if(!$newrequests){?>
 							<span class="label label-important">No Pending Requests</span>
 						<?php }
 							else
 							foreach($newrequests as $penreq){?>
-							
+
 							<div class="notification-messages">
 								<div class="user-profile">
 									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png">
@@ -186,7 +186,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 										<?php if($penreq->wishtoapply){?>
 											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>
 										<?php }?>
-										
+
 									</div>
 									<div class="description">
 										<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('dashboard/acceptreq/'.$penreq->id);?>">Accept</a>
@@ -194,26 +194,26 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 										<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('dashboard/rejectreq/'.$penreq->id);?>">Reject</a>
 									</div>
 								</div>
-								
+
 							</div>
 							</a>
-							
-						<?php }?>					
+
+						<?php }?>
 					</div>
 				</div>
-			
+
 				<div class="tiles white">
 					  <div class="tiles-body">
 						<div class="tiles-title">
 							PURCHASING COMPANIES IN YOUR NETWORK
-						</div>							
+						</div>
 					  <br>
 						<?php if(!$networkjoinedpurchasers){?>
 							<span class="label label-important">You have no purchasing companies in your network</span>
 						<?php }
 							else
 							foreach($networkjoinedpurchasers as $njp){?>
-							
+
 							<div class="notification-messages">
 								<div class="message-wrapper">
 									<div class="heading">
@@ -221,7 +221,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 										<br/><a href="<?php echo site_url('company/tier');?>">Manage Connection</a>
 										<?php if($njp->accountnumber){;?>
 										/ Account Number: <?php echo $njp->accountnumber;?>
-										
+
 										<?php }?>
 										<?php if(isset($njp->message)){;?>
 										<br/>Message: <?php echo $njp->message;?>
@@ -233,12 +233,11 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 									</div>
 								</div>
 							</div>
-						<?php }?>					
+						<?php }?>
 					</div>
-				</div>	
+				</div>
 			</div>
 		</div>
-		
+
 	</div>
 </div>
-		

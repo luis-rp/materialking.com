@@ -379,7 +379,7 @@ class itemcode_model extends Model {
         		'weight' => $this->input->post('weight'),
             'featuredsupplier' => $this->input->post('featuredsupplier'),
             'instore' => 1,//$this->input->post('instore'),
-           // 'zoom' => $zoom,
+            'zoom' => $zoom,
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),

@@ -40,7 +40,7 @@ $(document).ready(function(){
 				   $("#progresslabel"+id).html(v+'%');
 				   var b = $("#budget"+id).val().replace('%','');
 				   $("#progress"+id +" .tooltip-inner").text(v);
-				   
+
 				   if(b<=v)
 					   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/ok.gif');?>'/>");
 				   else
@@ -64,8 +64,8 @@ $(document).ready(function(){
 		    title: "Step 1",
 		    content: "Welcome to the on-page tour for Cost Code managment"
 		  },
-		 
-	   	  
+
+
 		]
 		});
 
@@ -81,20 +81,20 @@ $(document).ready(function(){
 });
 function setprogress(id)
 {
-	
+
 }
 function start(){
-	 
+
 	// Start the tour
 		tour6.start();
 	 }
 function endTour(){
-	 
+
 	 $("#tourcontrols").remove();
 	 tour6.end();
 		}
 </script>
- <?php if($settingtour) { ?>
+  <?php if(isset($settingtour)) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -106,21 +106,21 @@ function endTour(){
                 	<a href="<?php echo site_url('admin/costcode/costcodeexport').'/'.@$_POST['projectfilter']; ?>" class="btn btn-green">Export</a></h3>
 	<div class="box">
 	  <div class="span12">
-	
+
 	  <?php echo $this->session->flashdata('message'); ?>
-	    
+
 		<div style="margin-bottom:20px;">
                 <div>
                 	
                 	<br/><br/>
 	                <div class="datagrid-header-right">
 						<form class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">
-							Filter by parent: 
+							Filter by parent:
 							<select name="parentfilter" onchange="this.form.submit()">
 								<option value="">View All</option>
 								<?php echo $parentcombooptions;?>
 							</select>
-							Filter by Project: 
+							Filter by Project:
 							<select name="projectfilter" onchange="this.form.submit()">
 								<option value="">View All</option>
 								<?php foreach($projects as $p){?>
@@ -132,7 +132,7 @@ function endTour(){
 						</form>
 					</div>
                 </div>
-            
+
             <table id="datatable" class="table table-bordered datagrid">
               <tr>
               	<th width="20%">Code</th>
@@ -163,7 +163,7 @@ function endTour(){
                var prog = new Array;
                var cc = new Array;
                var ser = new Array;
-               
+
                $(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
                $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
                $(".cost-code").each(function(index){ cc.push($( this ).text() );});
@@ -238,7 +238,7 @@ function endTour(){
 		            series: ser
 		        });
 		    });
-		    
+
 		   </script>
             <?php if(!$items){?>
             No Costcodes Found.

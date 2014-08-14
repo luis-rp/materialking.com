@@ -44,15 +44,15 @@ class itemcode extends CI_Controller
     		{
     			if($itemcode->awardedon)
     				$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
-    			 
+
     			$itemcode->ea = "$ " . $itemcode->ea;
     			$itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
-    			 
+
     			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
-    
+
     			$items[] = $itemcode;
     		}
-    
+
     		$data['items'] = $items;
     		$data['jsfile'] = 'itemcodejs.php';
     	}
@@ -66,11 +66,11 @@ class itemcode extends CI_Controller
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
     	$data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
     	$data['addsubcatlink'] = false;
-    
+
     	//uksort($array, 'strcasecmp');
-    
+
     	$data['categories'] = $this->itemcode_model->getcategories(); ;
-    
+
     	if ($this->session->userdata('usertype_id') == 2)
     	{
     		$data['addlink'] = '';
@@ -78,12 +78,12 @@ class itemcode extends CI_Controller
     		$data['addsubcatlink'] = '';
     	}
     	//===============================================================================
-    		
+
     	$header[] = array('ID','Code','Item Name','Unit','Total purchased amount','Last awarded date','');
-    		
+
     	foreach($items  as  $enq_row)
     	{
-    
+
     		$item_price = '';
     		if($enq_row->totalpurchase > 0)
     		{
@@ -93,7 +93,7 @@ class itemcode extends CI_Controller
     	}
     	createXls('itemcode',$header);
     	die();
-    
+
     }
     //	function do_upload()
     //	{
@@ -118,9 +118,9 @@ class itemcode extends CI_Controller
     //			$this->load->view('upload_success', $data);
     //		}
     //	}
-    
+
     function delete_multiple(){
-    	
+
     	$myArray = $_POST['items'];
     	foreach($myArray as $myValue){
     		$sql="";
@@ -141,13 +141,13 @@ class itemcode extends CI_Controller
             {
             	if($itemcode->awardedon)
             	$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
-            	
+
                 $itemcode->ea = "$ " . $itemcode->ea;
                 $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
-                
+
                 $itemcode->actions = "<input type='checkbox' name='del_group' class='del_group' value='".$itemcode->id."' />";
                 $itemcode->actions .= anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
-                'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>', 
+                'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>',
                 array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));
                 if ($this->session->userdata('usertype_id') == 2)
                 {
@@ -158,9 +158,9 @@ class itemcode extends CI_Controller
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/poitems/' . $itemcode->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view'));
                 if ($itemcode->minprices)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
-                
+
                 $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
-                
+
                 $specs="";
 
                 $query = "SELECT companynotes,filename FROM ".$this->db->dbprefix('companyitem')." ci
@@ -178,12 +178,12 @@ class itemcode extends CI_Controller
                 }else {
                 	$specs = "No";
                 }
-                
+
                 $itemcode->specs = $specs;
-                
+
                 $items[] = $itemcode;
             }
-            
+
             $data['items'] = $items;
             $data['jsfile'] = 'itemcodejs.php';
         }
@@ -197,26 +197,28 @@ class itemcode extends CI_Controller
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
         $data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
         $data['addsubcatlink'] = false;
-        
+
         //uksort($array, 'strcasecmp');
-        
+
         $data['categories'] = $this->itemcode_model->getcategories(); ;
-        		
+
         if ($this->session->userdata('usertype_id') == 2)
         {
             $data['addlink'] = '';
             $data['addcatlink'] = '';
             $data['addsubcatlink'] = '';
         }
-        
+
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
-        
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
         $this->load->view('admin/itemlist', $data);
     }
-    
-    
+
+
 
    /* function poitems ($id)
     {
@@ -241,11 +243,11 @@ class itemcode extends CI_Controller
                 $row->actions = //$row->status=='COMPLETE'?'':
 anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
                 //anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
-                
+
                 $items[] = $row;
             }
             $data['items'] = $items;
-            
+
             foreach ($poitems2 as $row2)
             {
                 $awarded = $this->quote_model->getawardedbid($row2->quote);
@@ -256,18 +258,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $row2->actions = //$row->status=='COMPLETE'?'':
 anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
                 //anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
-                
+
                 $items2[] = $row2;
             }
             $data['items2'] = $items2;
-            
+
         }
         else
         {
             $this->data['message'] = 'No Items';
         }
-        $sqlOrders = "SELECT * FROM " . $this->db->dbprefix('order') . " o, 
-        			 " . $this->db->dbprefix('orderdetails') . " od 
+        $sqlOrders = "SELECT * FROM " . $this->db->dbprefix('order') . " o,
+        			 " . $this->db->dbprefix('orderdetails') . " od
         			 WHERE o.id=od.orderid
         			 AND o.purchasingadmin='" . $this->session->userdata('purchasingadmin')."'
         			 AND od.itemid=" . $id . " GROUP BY od.orderid";
@@ -322,7 +324,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			$row->actions = //$row->status=='COMPLETE'?'':
     			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
     			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
-    
+
     			$items[] = $row;
     		}
     		$data['items'] = $items;
@@ -364,15 +366,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$data['jsfile'] = 'itemcodeitemjs.php';
     	$data['addlink'] = '';
     	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a>";
+    	$data ['bottomheading'] = "Store Orders With Costcode '$item->itemcode'";
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
-    	 
+
     	$uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
-    	
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
     	$this->load->view('admin/datagrid', $data);
     }
-    
+
     function poitems_export ($id)
     {
     	$item = $this->itemcode_model->get_itemcodes_by_id($id);
@@ -394,7 +399,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			$row->actions = //$row->status=='COMPLETE'?'':
     			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
     			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
-    
+
     			$items[] = $row;
     		}
     		$data['items'] = $items;
@@ -434,35 +439,35 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$data['addlink'] = '';
     	$data['heading'] = "PO items for '$item->itemcode'";
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
-    
-    	 
+
+
     	//  $this->load->view('admin/datagrid', $data);
-    
+
     	//-----------------------------------------------------------
-    
-    
+
+
     	//===============================================================================
-    		
+
     	$header[] = array('PO#','Company','Date','Price EA','Quantity','Total price','');
-    
-    
+
+
     	if(isset($data['items']))
     	{
     		$items = $data['items'];
-    
-    			
+
+
     		foreach($items as $item)
     		{
     			$header[] = array($item->ponum,$item->companyname,$item->daterequested ,formatPriceNew($item->totalprice),$item->quantity,formatPriceNew($item->totalprice),'');
     		}
-    
+
     	}
     	createXls('poitems_export',$header);
-    
+
     	die();
-    
-    
-    
+
+
+
     }
 
     function companyprices ($id)
@@ -470,7 +475,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
         if (! $item)
             die();
-        
+
      //$item = $this->itemcode_model->get_itemcodes_by_code ($item->itemcode);
         if (! $item)
         {
@@ -500,11 +505,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['addlink'] = '';
         $data['heading'] = "Company prices for '$item->itemcode'";
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
-        
+
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
-        
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
         $this->load->view('admin/datagrid', $data);
     }
 
@@ -516,7 +523,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['heading'] = 'Add New Category';
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/add_catcode');
-        
+
         $this->load->view('admin/category', $data);
     }
 
@@ -537,7 +544,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             $data['message'] = 'Duplicate Category';
             $this->load->view('admin/category', $data);
-        
+
      //$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Duplicate Itemcode</div></div>');
         //redirect('admin/itemcode/add');
         }
@@ -592,14 +599,14 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             $data['message'] = 'Duplicate Sub Category';
             $this->load->view('admin/subcategory', $data);
-        
+
      //$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Duplicate Itemcode</div></div>');
         //redirect('admin/itemcode/add');
         }
         else
         {
             $itemid = $this->itemcode_model->SaveSubCategory();
-            $this->session->set_flashdata('message', 
+            $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Sub Category Added Successfully</div></div>');
             redirect('admin/itemcode');
         }
@@ -712,7 +719,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             $this->do_upload();
             $itemid = $this->itemcode_model->SaveItemcode();
-            $this->session->set_flashdata('message', 
+            $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Code Added Successfully</div></div>');
             redirect('admin/itemcode');
         }
@@ -752,8 +759,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();
-       
-   
+
+
         $categories = array();
         if ($catcodes)
         {
@@ -778,21 +785,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/updateitemcode');
         $data['categories'] = $this->itemcode_model->getcategories();
-        
+
         $query = "SELECT * FROM ".$this->db->dbprefix('company')."
         		 WHERE id IN (SELECT company FROM ".$this->db->dbprefix('companyitem')." WHERE type='Supplier' AND itemid='$id')";
-        
+
         $data['companies'] = $this->db->query($query)->result();
-        
+
         $this->db->where('itemid',$id);
         $this->db->order_by('postedon','DESC');
         $data['articles'] = $this->db->get('itemarticle')->result();
-        
+
         $this->db->where('itemid',$id);
         $data['images'] = $this->db->where('is_video',0)->get('itemimage')->result();
         $data['videos'] = $this->db->where('is_video',1)->get('itemimage')->result();
-        
-        
+
+
         $relateditems = $this->db->select('r.relateditem')->where('item',$id)->from('relateditem r')->join('item i','r.item=i.id')->get()->result();
         $data['relateditems'] = array();
         foreach($relateditems as $ri)
@@ -801,11 +808,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }
         //print_r($relateditems);
         $data['items'] = $this->db->get('item')->result();
-        
+
         $this->load->view('admin/itemcode', $data);
     }
 
-    
+
     //relateditems
     function saverelateditem($itemid)
     {
@@ -814,15 +821,15 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         foreach($_POST['item'] as $item)
         {
             $insert = array('item'=>$itemid,'relateditem'=>$item);
-            
+
             $this->db->insert('relateditem',$insert);
         }
-        
+
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Items saved successfully.</div>');
-			
+
         redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
 
     function do_upload ()
     {
@@ -835,7 +842,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         if (! $this->upload->do_upload())
         {
             $error = array('error' => $this->upload->display_errors());
-        
+
              //$this->load->view('upload_form', $error);
         }
         else
@@ -915,7 +922,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                     $this->items_model->save_amazon($set_amazon);
                 }
             }
-            
+
             $this->do_upload();
             $this->itemcode_model->updateItemcode($itemid);
             if ($item->minprices)
@@ -929,8 +936,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 }
             $data['message'] = '<div class="success">Item Code has been updated.</div>';
             redirect('admin/itemcode/update/' . $itemid);
-        
-     //redirect('admin/itemcode/index'); 
+
+     //redirect('admin/itemcode/index');
         }
     }
 
@@ -972,11 +979,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     function _set_rules ()
     {
-    	
+
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
         $rules['weight'] = 'trim|required';
-        
+
         //$rules['keyword'] = 'trim|required';
         $rules['url'] = 'trim|required';
         $this->validation->set_rules($rules);
@@ -984,11 +991,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
     }
 
-    function getminpricecompanies() 
+    function getminpricecompanies()
     {
         $itemid = $_POST['itemid']; //urldecode($itemcode);
         $item = $this->itemcode_model->get_itemcodes_by_id($itemid);
-        
+
         //echo '<pre>';print_r($item);die;
         $ret = array();
         if(@$item->tierprices)
@@ -1008,7 +1015,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $codeid = $_POST['codeid'];
         $itemid = $_POST['id']; //urldecode($itemcode);
         $item = $this->itemcode_model->get_itemcodes_by_id($itemid);
-        
+
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -1068,7 +1075,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $table .= "<h2><b><font color='red'>Store</font></b><h2>";
         $table .= "<table class='table table-bordered'>";
         $table .= "<tr><td ><div align='right'><b>Category<b></div></td><td>" . $str . "</td></tr>";
-       
+
         $val123 = 'onchange="javascript:savclose()"';
         $table .= "<tr><td ><div align='right'><b>Item</b></div></td><td>";
         $table .= '<select name="catiditem" id="catiditem" ' . $val123 . ' >';
@@ -1087,41 +1094,44 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     {
         $company = $_POST['companyid'];
         $itemid = $_POST['itemid'];
+
         $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode
 			   	FROM
-				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a, 
+				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
 				" . $this->db->dbprefix('quote') . " q
 				WHERE
-				ai.bid=a.id AND a.quote=q.id AND ai.itemid='$itemid'				
+				ai.bid=a.id AND a.quote=q.id AND ai.itemid='$itemid'
 				AND a.company='$company' AND ai.itemid='$itemid'
 				AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode
 			   	FROM
-				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a, 
+				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q
 				WHERE
-				ai.award=a.id AND a.quote=q.id AND ai.itemid='$itemid'				
+				ai.award=a.id AND a.quote=q.id AND ai.itemid='$itemid'
 				AND ai.company='$company' AND ai.itemid='$itemid'
 				AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         $sql = $sql1 . " UNION " . $sql2;
-       
+
         $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
         $itemqry = $this->db->query($itemnamesql);
         $itemnameResult = $itemqry->result_array();
+
         $query = $this->db->query($sql);
         if ($query->num_rows > 0)
         {
             $result = $query->result();
+
             $avgforpricedays = $this->itemcode_model->getdaysmeanprice($itemid);
             $avgforpricedays = number_format($avgforpricedays, 2);
-            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai, 
+            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai,
             		" . $this->db->dbprefix('award') . " a
 				  WHERE ai.itemid='$itemid' AND ai.award=a.id AND ai.company='$company'
 				  AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 			";
-            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi, 
+            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
             		" . $this->db->dbprefix('bid') . " b
 				  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND b.company='$company'
 				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
@@ -1138,13 +1148,15 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $overalltrend = 'GOOD';
             $overalltrend = "<b><font color='red'>$overalltrend</font></b>";
             $pricedays = $this->settings_model->get_current_settings()->pricedays;
-            $trendstring = 'Price Trend: ' . $overalltrend . 
-            				"(item avg for $pricedays days: $avgforpricedays, 
+            $trendstring = 'Price Trend: ' . $overalltrend .
+            				"(item avg for $pricedays days: $avgforpricedays,
             				company avg price: $companyavgpricefordays.)<br/>";
             if ($avgforpricedays == 0)
                 $trendstring .= 'Item not awarded for set days.';
             if ($companyavgpricefordays == null)
                 $trendstring .= 'Item not awarded to this company.';
+
+
             $ret = $trendstring;
             $ret .= '<table class="table table-bordered">';
             $ret .= '<tr><th>Date</th><th>Status</th><th>PO#</th><th>Trend</th><th>Qty.</th><th>Price</th></tr>';
@@ -1193,7 +1205,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $associate_tag = $this->config->config['associate_tag']; //'optimaitsolut-20';
         $request = aws_signed_request('com', array('Operation' => 'ItemLookup', 'ItemId' => $asin, 'ResponseGroup' => 'Large'), $public_key, $private_key, $associate_tag);
         $response = @file_get_contents($request);
-        
+
         if ($response === FALSE)
         {
             echo "Request failed.\n";
@@ -1241,7 +1253,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $public_key = $this->config->config['public_key']; //'AKIAJ7PBPYZLPRSQFUPQ';
         $private_key = $this->config->config['private_key']; //'oxteCJsIqntN5hB/2hgKc8u7MX29HxaCbqM6Kk/a';
         $associate_tag = $this->config->config['associate_tag']; //'optimaitsolut-20';
-        $request = aws_signed_request('com', array('Operation' => 'ItemSearch', 'Keywords' => $_POST['keyword'], 'SearchIndex' => 'Industrial', 'Sort' => 'price', 'ResponseGroup' => 'Large'), 
+        $request = aws_signed_request('com', array('Operation' => 'ItemSearch', 'Keywords' => $_POST['keyword'], 'SearchIndex' => 'Industrial', 'Sort' => 'price', 'ResponseGroup' => 'Large'),
         $public_key, $private_key, $associate_tag);
         $response = @file_get_contents($request);
         if ($response === FALSE)
@@ -1273,7 +1285,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     {
         $this->_set_fields();
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
-       // echo '<pre>';print_r($item);die;
+      //  echo '<pre>';print_r($item);die;
         $data['item'] = $item;
         $this->validation->id = $id;
         $data['minprices'] = array();
@@ -1301,21 +1313,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->load->template('../../templates/admin/blank', $data);
         $this->load->view('admin/itemcode-ajaxdetail', $data);
     }
-    
+
     ///////inventory
     function showeditform()
     {
         $itemid = $_POST['itemid'];
-        $query = "SELECT i.*, ci.companynotes, ci.filename, ci.projectid, ci.id as cid FROM ".$this->db->dbprefix('item')." i LEFT JOIN 
-        		 ".$this->db->dbprefix('companyitem')." ci ON ci.itemid=i.id AND ci.type='Purchasing' 
+        $query = "SELECT i.*, ci.companynotes, ci.filename, ci.projectid, ci.id as cid FROM ".$this->db->dbprefix('item')." i LEFT JOIN
+        		 ".$this->db->dbprefix('companyitem')." ci ON ci.itemid=i.id AND ci.type='Purchasing'
         		 AND ci.company='".$this->session->userdata('purchasingadmin')."' WHERE i.id='$itemid'";
-        
+
         $item = $this->db->query($query)->row();
         //print_r($item);die;
-        
+
         if($item->projectid){
 				$arrproj = explode(",",$item->projectid);
-			
+
 				if($item->projectid != -1){
 					$this->db->where('companyitemid',$item->cid);
 					$companyprojectitem = $this->db->get('company_projectitem_notes')->row();
@@ -1326,8 +1338,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				}else
 				$item->companynotes = $item->companynotes;
 		}
-        
-        
+
+
         $data['item'] = $item;
 
         $query2 = "SELECT title,id FROM ".$this->db->dbprefix('project')." where purchasingadmin =".$this->session->userdata('purchasingadmin');
@@ -1337,13 +1349,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->load->template('../../templates/admin/blank');
         $this->load->view('admin/inventory/miniform', $data);
     }
-    
+
     function saveinventory()
     {
         $itemid = $_POST['itemid'];
         $pa = $this->session->userdata('purchasingadmin');
-        
-    
+
+
 		if(isset($_FILES['filename']['tmp_name']))
 		if(is_uploaded_file($_FILES['filename']['tmp_name']))
 		{
@@ -1354,20 +1366,20 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				$_POST['filename'] = $nfn;
 			}
 		}
-        
+
         $where = array();
         $where['company'] = $pa;
         $where['itemid'] = $itemid;
         $where['type'] = 'Purchasing';
-        
+
         $i=1;
         $projectids = "";
         $iscompnotes = "";
         foreach($_POST['projectid'] as $projectid){
-        	
+
         	if($projectid != -1)
 				$iscompnotes = 1;
-        	       	
+
         	if($i<count($_POST['projectid']))
         	$projectids .= $projectid.",";
         	else
@@ -1375,18 +1387,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         	$i++;
         }
         $_POST['projectid'] = $projectids;
-        
+
         $this->db->where($where);
         $check = $this->db->get('companyitem')->row();
         //echo "<pre>",print_r($check->id); die;
         //print_r($check);print_r($_POST);die;
-        
-            
+
+
         if($check)
         {
         	 if($iscompnotes==1){
         	 	$where1 = "";
-        	 	
+
         	 	$compnotedat['companynotes'] = $_POST['companynotes'];
         	 	$where1['companyitemid'] = $check->id;
         	 	$this->db->where($where1);
@@ -1395,17 +1407,17 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         			$this->db->where($where1);
             		$this->db->update('company_projectitem_notes',$compnotedat);
         		}else{
-        			
+
             		$compnotedat['companyitemid'] = $check->id;
             		$this->db->insert('company_projectitem_notes',$compnotedat);
         		}
         		unset($_POST['companynotes']);
         	 }
-        	
+
             $this->db->where($where);
             $this->db->update('companyitem',$_POST);
         }
-        else 
+        else
         {
         	$_POST['type'] = 'Purchasing';
             $_POST['company'] = $pa;
@@ -1415,20 +1427,20 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             }
             $this->db->insert('companyitem',$_POST);
             $companyitemlastid = $this->db->insert_id();
-            
+
             if($iscompnotes==1){
         	 	$where1 = "";
-        	 	
+
         	 	$compnotedat['companyitemid'] = $companyitemlastid;
             	$this->db->insert('company_projectitem_notes',$compnotedat);
-        		     		
+
         	 }
         }
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item details saved successfully.</div>');
-			
+
         redirect('admin/itemcode');
     }
-    
+
     //////// articles
     function addarticle($itemid)
     {
@@ -1437,7 +1449,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['itemid'] = $itemid;
         $this->load->view('admin/article', $data);
     }
-    
+
     function editarticle($id)
     {
         if(!$id)
@@ -1454,7 +1466,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['itemid'] = $data['article']->itemid;
         $this->load->view('admin/article', $data);
     }
-    
+
     function savearticle($itemid)
     {
         unset($_POST['_wysihtml5_mode']);
@@ -1479,16 +1491,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Article saved successfully.</div>');
 		redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
     function deletearticle($id,$itemid)
     {
         $this->db->where('id',$id)->delete('itemarticle');
-        
+
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Article deleted successfully.</div>');
-			
+
         redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
     //images
     function saveimage($itemid)
     {
@@ -1508,10 +1520,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				$this->db->insert('itemimage',$insert);
 			}
 		}
+		 else{
+				echo $this->upload->display_errors();	die;
+			}
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Image saved successfully.</div>');
 		redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
     function savevideoid($itemid){
     	if(isset($_POST['videoid']) && $_POST['videoid']!=""){
     		$videoid = $_POST['videoid'];
@@ -1521,11 +1536,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$insert['is_video'] = 1;
     		$this->db->insert('itemimage',$insert);
     	}
-    	
+
     	 $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Video ID saved successfully.</div>');
 		redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
     function convertToFlv( $input, $output ) {
     	//echo "Converting $input to $output<br />";
     	$command = "ffmpeg -v 0 -y -i $input -vframes 1 -ss 5 -vcodec mjpeg -f rawvideo -s 286x160 -aspect 16:9 $output ";
@@ -1536,16 +1551,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	echo "failed";
     	echo "Converted<br />";
     }
-    
+
     function deleteimage($id,$itemid)
     {
         $this->db->where('id',$id)->delete('itemimage');
-        
+
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Image deleted successfully.</div>');
-			
+
         redirect('admin/itemcode/update/'.$itemid);
     }
-    
+
     //links
     function savearticlelink($articleid)
     {
@@ -1568,16 +1583,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Link saved successfully.</div>');
 		redirect('admin/itemcode/editarticle/'.$articleid);
     }
-    
+
     function deletearticlelink($id,$articleid)
     {
         $this->db->where('id',$id)->delete('articlelink');
-        
+
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Link deleted successfully.</div>');
-			
+
         redirect('admin/itemcode/editarticle/'.$articleid);
     }
-    
+
     //articleitems
     function savearticleitem($articleid)
     {
@@ -1586,16 +1601,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         foreach($_POST['item'] as $item)
         {
             $insert = array('article'=>$articleid,'item'=>$item);
-            
+
             $this->db->insert('articleitem',$insert);
         }
-        
+
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Items saved successfully.</div>');
-			
+
         redirect('admin/itemcode/editarticle/'.$articleid);
     }
 
-	
+
 	function _createThumbnail($fileName, $foldername="", $width=170, $height=150)
 	{
 		$config['image_library'] = 'gd2';
@@ -1607,7 +1622,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$image_config['y_axis'] = '0';
 		$config['width'] = $width;
 		$config['height'] = $height;
-	
+
 		$this->load->library('image_lib', $config);
 		if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
 	}

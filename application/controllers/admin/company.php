@@ -69,11 +69,13 @@ class company extends CI_Controller {
         $data ['heading'] = 'Company Management';
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company/add">Add Company</a>';
-        
+
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
-        
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
         $this->load->view('admin/datagrid', $data);
     }
 
@@ -101,11 +103,13 @@ class company extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = "PO items";
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company">&lt;&lt; Back</a>';
-        
+
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
-        
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
         $this->load->view('admin/datagrid', $data);
     }
 
@@ -178,7 +182,7 @@ class company extends CI_Controller {
         $this->load->view('admin/company', $data);
     }
 
-    function updatecompany() 
+    function updatecompany()
     {
         $data ['heading'] = 'Update Company Item';
         $data ['action'] = site_url('message/updatecompany');
@@ -210,7 +214,7 @@ class company extends CI_Controller {
             $this->company_model->updateCompany($itemid);
             $data ['message'] = '<div class="success">Company has been updated.</div>';
             redirect('admin/company/update/' . $itemid);
-            //redirect('admin/company/index'); 
+            //redirect('admin/company/index');
         }
     }
 
@@ -251,8 +255,8 @@ class company extends CI_Controller {
         $c = $this->company_model->get_companys_by_id($id);
 
         $link = base_url() . 'company/complete/' . $key;
-        $body = "Dear " . $c->title . ",<br><br> 
-	  	Please click following link to complete your registration:  <br><br>		 
+        $body = "Dear " . $c->title . ",<br><br>
+	  	Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 
         $settings = (array) $this->settings_model->get_current_settings();

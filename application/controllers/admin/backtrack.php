@@ -36,7 +36,7 @@ class backtrack extends CI_Controller
 		
 		$items = array();
 		if ($count >= 1) 
-		{
+		{	$companyarr = array();
 			foreach ($quotes as $quote) 
 			{
 				$awarded = $this->quote_model->getawardedbid($quote->id);
@@ -68,6 +68,7 @@ class backtrack extends CI_Controller
 						    }
 						    
 					        if($item->company){
+					        $companyarr[] = $item->company;	
 						    $item->etalog = $this->db->where('company',$item->company)
                             			->where('quote',$quote->id)
                             			->where('itemid',$item->itemid)
@@ -124,12 +125,20 @@ class backtrack extends CI_Controller
 		        $data['backtracks'] = $items;
     		}
 		}
+	
 		if(!$items)
 		{
 		    $this->data['message'] = 'No Records';
 		}
+		
+		if(count($companyarr)>1){
+        	$companyimplode = implode(",",$companyarr);
+        	$companystr = "AND c.id in (".$companyimplode.")";
+        }else 
+        	$companystr = "";		
+		
         $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
-        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
         $data['companies'] = $this->db->query($query)->result();
         
         $data['quotes'] = $quotes;
@@ -138,7 +147,7 @@ class backtrack extends CI_Controller
 		
 		$uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
-		$data['settingtour']=$setting[0]->tour;  
+		$data['settingtour']=(isset($setting[0]->tour)) ? $setting[0]->tour : '';  
 		
 		$this->load->view ('admin/backtrack', $data);
 	}
