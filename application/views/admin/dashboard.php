@@ -240,13 +240,10 @@
 
 			<br/>
 			<div class="well span4" id="step2">
-<<<<<<< HEAD
+
 				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
 				
-=======
-				<h3 class="box-header" style=" width:95.5%">Statistics</h3>
 
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
 				<table class="table table-bordered stat">
 	   			<tr>
 	   			<td>1.</td>
@@ -531,18 +528,12 @@
 
 				</div>
 		</div>
-<<<<<<< HEAD
+
 		<div id="step1" class="span12">	
 				
 				<!--<div class="well span4" style="width:100% !important;" >-->
                 <div class="well span3" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>
-=======
-		<div id="step1" class="span4">
-
-				<div class="well span4" style="width:100% !important;" >
-					<h3 class=" box-header">Overdue Invoices & Payment Requests</h3>
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
 					<h5>Invoices with Past Due Date</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($invoices)) { ?>
@@ -587,7 +578,7 @@
 				</table>
 				</div>
 				</div>
-<<<<<<< HEAD
+
 				
 				
 			<!--	<div style="clear:both;"></div>-->
@@ -596,15 +587,7 @@
 	<!--			<div class="well span4" style="width:100% !important; margin-left:0px; " >-->
     			<div class="well span3"  >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
-=======
 
-
-				<div style="clear:both;"></div>
-
-
-				<div class="well span4" style="width:100% !important; margin-left:0px; " >
-					<h3 class=" box-header">Overdue Backorders</h3>
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
 					<h5>Backorders with Past Due Date</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($backorders)) { ?>
@@ -625,7 +608,7 @@
 				<?php } ?>
 				</table>
 				</div>
-<<<<<<< HEAD
+
 				
 				
 				
@@ -634,26 +617,7 @@
 					<div  id="step1" class="well span3">
 		<div class="tiles-title extrabox"  style="float:left; width:100%">
 					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
-=======
 
-
-
-
-
-
-
-
-
-			<?php // }?>
-			</div>
-			<?php // }?>
-
-		</div>
-		<div style="clear:both;"></div>
-	<div  id="step1" class="well span4" style="width:347px;">
-		<div class="tiles-title extrabox"  style="float:left;width: 97%;">
-					<h3 class=" box-header">PO Calendar</h3>
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
 		<section class="row-fluid">
 			<div class="box">
 				<div class="span12">
@@ -667,14 +631,11 @@
 		 </div>
 	 </div>	
 		
-<<<<<<< HEAD
+
 		<div  id="step1" class="well span3">
 		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
 					<h3 class=" box-header" style="width:94.5%">Upcoming Events</h3>
-=======
-		<div  id="step1" class="well span4">
-		<div class="tiles-title extrabox"  style="float:left;margin-left: 40px;">
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
+
 					
 				<section class="row-fluid">
 					<h3 class="box-header">Event Calendar</h3>
@@ -693,7 +654,7 @@
 				</div>
 		<?php }?>
 			</div>
-<<<<<<< HEAD
+
 			<?php }?>	
 							
 				
@@ -706,9 +667,6 @@
 		<div style="clear:both;"></div>
 
 		
-=======
-			<?php }?>
 
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
 	</div>
 </section>

@@ -6534,7 +6534,6 @@ tbody:hover tr:hover td {
 .newbox tbody:hover tr:hover td {
 	color: #444;
  	text-shadow: 0 1px 0 #fff;
-<<<<<<< HEAD
 	background:none !important; 
 }
 .widget-chat{ padding: 3%;
@@ -6546,10 +6545,7 @@ width: 94%;}
 #chart_pie{ float:left}
 #step1 .span3{ margin: 0 1% 0 0;
     width: 24%;}
-=======
-	background:none; 
-}
->>>>>>> dea7d204a1080e8364139ebde93b0ba2a9363034
+
 /*.table {
     border-collapse: collapse;
     font-family: "Lucida Sans Unicode","Lucida Grande",Sans-Serif;
