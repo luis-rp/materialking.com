@@ -412,7 +412,7 @@ function acceptall()
                             <tr>
                                 <td colspan="<?php echo $awarded->status == 'incomplete' ? 11 : 7//14:10; ?>" style="text-align:right"></td>
                                 <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
-                                <td colspan="2">&nbsp;</td>
+                                <td colspan="3">&nbsp;</td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete"></td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>

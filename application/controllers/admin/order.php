@@ -61,6 +61,7 @@ function orders_export()
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
 				$project = $this->db->query($sql)->result();
+//<<<<<<< HEAD
 				if($project)
 				$order->prjName = "assigned to ".$project[0]->title;
 				else
@@ -68,8 +69,11 @@ function orders_export()
 					$order->prjName = "";
 				}
 			
+///=======
+		//		$order->prjName = "Assigned to ".$project[0]->title;
+//>>>>>>> 281a9c3788222760bb00d9d7be97eb0142db72a3
 			}else{
-				$order->prjName = "Pending Assignment";
+				$order->prjName = "Pending Project Assignment";
 			}
 			
 			if(!is_null($order->costcode)){
@@ -216,9 +220,9 @@ function orders_export()
 				WHERE id=".$order->project;
 				$project = $this->db->query($sql)->result();
 				if($project)
-				$order->prjName = "assigned to ".$project[0]->title;
+				$order->prjName = "Assigned to ".$project[0]->title;
 			}else{
-				$order->prjName = "Pending Assignment";
+				$order->prjName = "Pending Project Assignment";
 			}
 			
 			if(!is_null($order->costcode)){

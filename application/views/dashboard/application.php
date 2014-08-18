@@ -4,6 +4,22 @@ $(document).ready(function(){
 	
 });
 //-->
+function PrintElem(elem)
+{
+    PopupPrint($(elem).html());
+}
+
+function PopupPrint(data) 
+{
+    var mywindow = window.open('', 'Dashboard', 'height=400,width=400,left=100,top=100');
+    mywindow.document.write('<html><head><title>Dashboard</title>');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write(data);
+    mywindow.document.write('</body></html>');
+    mywindow.print();
+    mywindow.close();
+    return true;
+}
 </script>
     <div class="content">  
 		<div class="page-title">	
@@ -11,6 +27,13 @@ $(document).ready(function(){
 		</div>
 		
 	   <div id="container">
+	    <div class="col-md-1" style="float:right; margin-top:-39px;">
+		        <div class="invoice-button-action-set">
+		          <p>
+		            <button type="button" class="btn btn-primary" onclick="PrintElem(dashboardwrapper)"><i class="fa fa-print"></i></button>
+		          </p>
+		        </div>
+			</div>
 				<div class="row">
                     <div class="col-md-12">
 
@@ -23,7 +46,7 @@ $(document).ready(function(){
 									<a href="javascript:;" class="remove"></a>
                                 </div>
                             </div>
-                            <div class="grid-body no-border">
+                            <div class="grid-body no-border" id="dashboardwrapper">
                               	<table class="table table-bordered">
                                 		<tr>
                                 			<td>Type</td>

@@ -91,6 +91,7 @@ $(document).ready(function(){
                                         <tbody>
 							              <?php
 									    	$i = 0;
+									    	$finaltotal = 0;
 									    	foreach($orders as $order)
 									    	{
 									    		$i++;
@@ -111,7 +112,8 @@ $(document).ready(function(){
                                                 	<?php } ?>
                                                 </td>
                                             </tr>
-                                          <?php } ?>
+                                          <?php  $finaltotal += $order->amount;  } ?>
+                                          </tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td> <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                         </tbody>
                                     </table>
                                     <br/>

@@ -1,10 +1,27 @@
-
+<script type="text/javascript">
+  function sendDueDatealert(invoicenum,ponum,companyid,quote,award)
+    {    	
+            $.ajax({
+                type: "post",
+                data: "invoicenum=" + invoicenum+"&ponum="+ponum+"&companyid="+companyid+"&quote="+quote+"&award="+award,
+                url: "sendduedatealert"
+            }).done(function(data) { 
+            	$("#msgtag").css("display","block");
+               //window.location = window.location;
+            });
+    }
+</script>
 <section class="row-fluid">
     <h3 class="box-header"><?php echo @$heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no project title" ?></h3>
     <div class="box">
         <div class="span12">
             <a class="btn btn-green" href="javascript:void(0)" onclick="history.back();">&lt;&lt; Back</a>
             <br/>
+            <br/> <br/>
+            <div id="msgtag">
+            <?php echo $this->session->flashdata('message'); ?>
+            <?php echo @$message; ?>
+			</div>
             <div align="center">
                 <h4>
                     INVOICE #: <?php echo $invoice->invoicenum; ?> 
@@ -22,7 +39,7 @@
                     	elseif (strtotime($invoice->items[0]->paymentdate) > strtotime($invoice->datedue))
                     	echo "PAID LATE";
                     } else { echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue'; } ?></font>
-                	<?php }?>
+                	<?php } else {?> <input type="button" value="Request Due Date" id="btnRequestDuedate" name="btnRequestDuedate" class="btn btn-primary btn-small" onclick="sendDueDatealert('<?php echo $invoice->invoicenum; ?>','<?php echo $quote->ponum ?>','<?php echo $invoice->items[0]->companyid; ?>','<?php echo $invoice->quote; ?>','<?php echo $invoice->items[0]->award; ?>');">  <?php }?>
                 </h4>
             </div>
             

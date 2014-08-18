@@ -564,7 +564,7 @@ class quote_model extends Model {
 
         $itemsql = "SELECT 
 					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award  
 				  FROM 
 				  " . $this->db->dbprefix('received') . " r, 
 				  " . $this->db->dbprefix('awarditem') . " ai,

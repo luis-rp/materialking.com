@@ -38,7 +38,8 @@ left:0px;}
             alwaysOn:false
         });*/
 		    
-		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); $("#contentimage").elevateZoom();  <?php } ?>
+		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#contentimage").elevateZoom();  <?php } ?>
+		 $("#bigimage").elevateZoom(); 
 		 
 	});
 	function setmiles(miles)
@@ -84,9 +85,8 @@ left:0px;}
 		$('#imagelist').css({display: "block"});
 		$('#videolist').css({display: "none"});
 		$("#bigimage").attr('src',source);
-		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
         $("#bigimage").attr('data-zoom-image1',source); 
-        <?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#bigimage").elevateZoom(); <?php } ?>
+        $("#bigimage").elevateZoom();
 		}
 	}
 </script>
