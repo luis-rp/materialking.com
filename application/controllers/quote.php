@@ -67,6 +67,7 @@ class Quote extends CI_Controller
 	
 	function invoices_export ()
 	{
+		// this function used to export the invoice data
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
