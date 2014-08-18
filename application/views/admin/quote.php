@@ -463,7 +463,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			  	<a href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>
 			  </div>
 		    <div class="control-group">
-			    <label class="control-label">Items</label>
+			     <h3 class="box-header" style="display:inline;""> <label class="control-label">Items</label></h3>
                             
 		    </div>
                   

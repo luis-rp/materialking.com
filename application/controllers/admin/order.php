@@ -54,12 +54,20 @@ function orders_export()
 		$data['orders'] = array();
 		foreach($orders as $order)
 		{
-			if(!is_null($order->project)){
+			
+			if(!is_null($order->project))
+			{
 				$sql = "SELECT *
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
 				$project = $this->db->query($sql)->result();
+				if($project)
 				$order->prjName = "assigned to ".$project[0]->title;
+				else
+				{
+					$order->prjName = "";
+				}
+			
 			}else{
 				$order->prjName = "Pending Assignment";
 			}
@@ -85,6 +93,15 @@ function orders_export()
 		//$this->load->view('admin/order/list',$data);
 			
 		//=========================================================================================
+		
+		$header[] = array('Report type' , 'Orders','' , '' , '' , '' , '','','','');	
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{	
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title ,'' , '' , '' , '' , '','','','');	
+			$header[] = array('' , '','' , '' , '' , '' , '','','','');	
+		}	
+		
 		
 		
 		$header[] = array('Order#' , 'Ordered On','Project' , 'Type' , 'Txn ID' , 'Amount' , 'Company','Paid Status','Order Status','Total');				
@@ -132,7 +149,7 @@ function orders_export()
 				$icounter++; 		
 			}
 			
-			$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)) , $code_name , $order->type , $order->txnid , "$ ".round($total,2).chr(160) , $detail_company, $detail_paymentstatus, $detail_status, "$ ".$detail_total);	
+			$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)) , $code_name , $order->type , $order->txnid , "$ ".round($total,2).chr(160) , $detail_company, $detail_paymentstatus, $detail_status, "$ ".$detail_total.chr(160));	
 		
 			$oldorderid = $order->id;
 		}

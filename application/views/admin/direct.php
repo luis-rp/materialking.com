@@ -355,14 +355,14 @@ function savclose()
 		  
 		  <hr/>
 		  <?php if($this->validation->id && !$awarded){?>
-		  <div class="pull-right">
+		  <div class="pull-right" style="margin:6px 5px 0px 0px;">
 		  	<?php if(!$costcodes){?>
 		  	<font color="red">No costcodes exist for this project.</font>
 		  	<?php }?>
-		  	<a href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>
+		  	<a class="btn btn-green" href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>
 		  </div>
 		    <div class="control-group">
-			    <label class="control-label">Items</label>
+			    <h3 class="box-header" style="float:none"><label class="control-label">Items</label></h3>
 		    </div>
 		  <div class="control-group">
 		    <table class="table table-bordered">

@@ -1,13 +1,13 @@
 
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?></h3>
-	<div class="box">
-		<div class="span12">
-		   <?php if($this->session->userdata('usertype_id')<3){?>
+	<h3 class="box-header"><?php echo @$heading; ?> <?php if($this->session->userdata('usertype_id')<3){?>
 		   <a class="btn btn-green" href="<?php echo site_url('admin/quote/index/'.$quote->pid);?>">&lt;&lt; Back</a>
 		   <?php }else{?>
 		   <a class="btn btn-green" href="<?php echo site_url('admin/purchaseuser/quotes');?>">&lt;&lt; Back</a>
-		   <?php }?>
+		   <?php }?></h3>
+	<div class="box">
+		<div class="span12">
+		   
 		   <br/>
 		   <?php echo $this->session->flashdata('message'); ?>
 		   <br/>

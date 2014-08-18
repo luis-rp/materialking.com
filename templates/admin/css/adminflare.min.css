@@ -736,6 +736,7 @@ h3.box-header { margin:0px; background:#2A2A2A; font-size:18px; color:#FFF; bord
 	background:#0698D5;
 }
 
+
 #left-panel-content a:first-child,.lp-dropdown-menu a:first-child {
     -webkit-box-shadow: #1d1d1d 0 -1px 0;
     -moz-box-shadow: #1d1d1d 0 -1px 0;
@@ -6458,6 +6459,8 @@ th {
 	position: relative;
 	text-shadow: 0 1px 0 #000;	
 }
+.tablebox { padding:10px 5px !important;}
+
 
 th:after {
 	/*background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));*/
@@ -6600,4 +6603,5 @@ width: 94%;}
     box-shadow: 1px 0 0 #fff inset;
 }
 #datatable table.table thead .sorting { background:none !important}
+ 
  

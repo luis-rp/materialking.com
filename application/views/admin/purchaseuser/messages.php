@@ -93,10 +93,10 @@ function endTour(){
 				foreach ($messages as $po)
 				{
 			?>
-            <h3 class="box-header" style="display:inline;"">PO#:<?php echo $po['quote']['ponum'];?> &nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/'.$po['quote']['id'];?>">View Bids Page</a> - &nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/track/'.$po['quote']['id'] ;?>">View Tracking Page</a> 
+            <h3 class="box-header" style="display:inline;"">PO#:<?php echo $po['quote']['ponum'];?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/'.$po['quote']['id'];?>">View Bids Page</a> - &nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/track/'.$po['quote']['id'] ;?>">View Tracking Page</a> 
 			
 			<?php if($po['quote']['complete'] == 'Yes'){?>
-	 				<a style="font-size:12px;font-weight:normal;color:red;" href="<?php echo site_url('admin/message/archivemessage/'.$po['quote']['id']);?>"> Archive </a>
+	 				<a class="btn btn-green"  href="<?php echo site_url('admin/message/archivemessage/'.$po['quote']['id']);?>"> Archive </a>
 			<?php }?>			</h3>
 			<h4></h4>
 			<div class="box widget-chat">

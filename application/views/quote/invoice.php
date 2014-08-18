@@ -93,7 +93,7 @@
 							      
 				                <table width="90%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 							      <tr>
-							        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></td>
+							        <th colspan="3" valign="top" bgcolor="#000033" ><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
 						          </tr>
 							      <tr>
 							        <td width="33%" valign="top">PO#</td>
@@ -114,7 +114,7 @@
 							    <br/>
 							    <table width="90%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 							      <tr>
-							        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+							        <th bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></th>
 							      </tr>
 							      <tr>
 							        <td><?php echo nl2br($awarded->shipto);?></td>
@@ -124,7 +124,7 @@
 							    <td width="50%" align="right">
 							     <table cellspacing="0" width="90%" cellpadding="4" style="border:1px solid #000;">
 							      <tr>
-							        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></td>
+							        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></th>
 							      </tr>
 							     <tr>
 							        <td width="33%" valign="top">Contact</td>
@@ -155,7 +155,7 @@
 							    <br/>
 							     <table width="90%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 							      <tr>
-							        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></td>
+							        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
 							        </tr>
 							      <tr>
 							        <td width="33%" valign="top">Project Title</td>

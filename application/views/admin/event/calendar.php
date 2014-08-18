@@ -42,11 +42,11 @@
 
 <section class="row-fluid">
 	<h3 class="box-header">
-		Events
+		Events 		<a href="<?php echo site_url('admin/event/add');?>" class="btn btn-green">Add Event</a>
 	</h3>
 	<?php if ($this->session->userdata('usertype_id') == 2) {?>
 	<span>
-		<a href="<?php echo site_url('admin/event/add');?>" class="btn btn-green">Add Event</a>
+
 	</span>
 	<br/><br/>
 	<?php }?>

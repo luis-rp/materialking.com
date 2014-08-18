@@ -50,33 +50,50 @@ function invoice(invoicenum)
     <div class="content">  
     	 <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
-		 <a href="<?php echo site_url('quote/invoices_export'); ?>" class="btn btn-green">Export</a><br />	
-			<h3>Invoices</h3>		
+		 
+			<h3>Invoices <a href="<?php echo site_url('quote/invoices_export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a></h3>		
 		</div>
 	
 	   <div id="container">
-	   		<div class="combofixed">
+	   		<div class="combofixed" id="tablebox" style="position:relative; padding:2% 2% 0% 0%; margin:0px; width:100%; background:#FFF">
 	   
 				<form method="post" class="form-inline"  action="<?php echo site_url('quote/invoices') ?>">
-				<table cellpadding="2">
+				<table cellpadding="0">
 				<tr>
-				<td>From Date:</td>
-				<td><input type="text" style="width:100px" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="date"/></td>
-				<td>To:</td>
-				<td><input type="text" style="width:100px" name="searchto" value="<?php echo @$_POST['searchto']?>" class="date"/> </td>
-				<td>Status:</td>
-				<td>
-				<select name="searchstatus" class="form-control selectpicker show-tick" style="width:auto">
+				<td class="tablebox">From Date:</td>
+			
+				<td class="tablebox">To:</td>
+
+				<td class="tablebox">Status:</td>
+				
+	                 
+	                 <td class="tablebox">&nbsp;Company:</td>
+	                 
+	             
+	                 <td class="tablebox">&nbsp;Payment:</td>
+	             	
+	                 
+	             <td class="tablebox">&nbsp;Keyword:</td>
+	             
+	       
+				</tr>
+				<tr>
+	
+				<td class="tablebox"><input type="text" style="width:110px" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="date"/></td>
+		
+				<td class="tablebox"><input type="text" style="width:110px" name="searchto" value="<?php echo @$_POST['searchto']?>" class="date"/> </td>
+	
+				<td class="tablebox">
+				<select name="searchstatus" class="form-control selectpicker show-tick" style="width:140px">
                             	<option value=''>All</option>
                             	<option value='Pending' <?php if(@$_POST['searchstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
                             	<option value='Verified' <?php if(@$_POST['searchstatus'] =='Verified'){echo 'SELECTED';}?>>Verified</option>
                             	<option value='Error' <?php if(@$_POST['searchstatus'] =='Error'){echo 'SELECTED';}?>>Error</option>
 	                        </select>
 	                 </td>
-	                 
-	                 <td>&nbsp;Company:</td>
-	                 <td>
-                         	<select name="searchpurchasingadmin" class="form-control selectpicker show-tick"  style="width: 140px;">
+
+	             <td class="tablebox">
+                         	<select name="searchpurchasingadmin" class="form-control selectpicker show-tick"  style="width:120px;">
                             	<option value=''>All</option>
                             	<?php foreach($purchasingadmins as $pa){?>
                             	<option value='<?php echo $pa->id;?>' <?php if(@$_POST['searchpurchasingadmin'] ==$pa->id){echo 'SELECTED';}?>><?php echo $pa->fullname;?></option>
@@ -84,9 +101,9 @@ function invoice(invoicenum)
                             </select>
 	                 </td>
 	             
-	                 <td>&nbsp;Payment:</td>
-	             	<td>
-                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width: 140px;">
+
+	             <td class="tablebox">
+                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width: 130px;">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
                            <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
@@ -94,13 +111,13 @@ function invoice(invoicenum)
                         </select>    
 	                </td>
 	                 
-	             <td>&nbsp;Keyword:</td>
-	             <td><input style="width:100px" type="text" name="searchkeyword" value="<?php echo @$_POST['searchkeyword']?>"/></td>
+	     
+	             <td class="tablebox"><input style="width:120px" type="text" name="searchkeyword" value="<?php echo @$_POST['searchkeyword']?>"/></td>
 	             
-	             <td><button class="btn btn-success btn-cons" type="submit">Filter</button></td>
+	       
 				</tr>
-				
-				<tr><td colspan="14">&nbsp;</td></tr>
+				<tr>
+                <td colspan="13"><button class="btn btn-success btn-cons" type="submit">Filter</button></td></tr>
 				</table>
                       
                </form>

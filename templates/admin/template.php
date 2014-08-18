@@ -486,10 +486,10 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <button class="btn dropdown-toggle btn btn-primary" data-toggle="dropdown">Action<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <?php if (@$mp->id) { ?>
-                                    <li><a class="myLink" onclick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/index/<?php echo $mp->id; ?>">P.O. #</a></li>
+                                    <li><a class="myLink" onClick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/index/<?php echo $mp->id; ?>">P.O. #</a></li>
                                     <?php } ?>
-                                    <li><a class="myLink" onclick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/invoices">Invoice</a></li>
-                                    <li><a class="myLink" onclick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/itemcode">Item</a></li>
+                                    <li><a class="myLink" onClick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/invoices">Invoice</a></li>
+                                    <li><a class="myLink" onClick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/itemcode">Item</a></li>
                                 </ul>
                             </div>
                         </form>
@@ -509,10 +509,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 <ul>
                     <li <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a></li>
                     
-                        <?php if ($this->session->userdata('usertype_id') < 3) { ?>
-
-                        <li class="lp-dropdown" id="step3">
-                            <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
+                        <?php if ($this->session->userdata('usertype_id') < 3) {
+						 $menu = trim($menu);
+						 ?>                               
+              <li id="step3"   class="lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+                           
+						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                             <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
                             	
                             	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">

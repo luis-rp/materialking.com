@@ -16,12 +16,12 @@ function readnotification(id)
     <div class="content">  
      <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
-			<h3>Dashboard </h3>	<a class="btn btn-primary btn-xs btn-mini" href="<?php echo base_url("company/addAd");?>">Add Ad</a>	
+			<h3>Dashboard  <a class="btn btn-primary btn-xs btn-mini" href="<?php echo base_url("company/addAd");?>">Add Ad</a>	</h3>	
 		</div>
 		
 	   <div id="container">
 	    
-		<div class="row">
+		<div class="row1">
 			 <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>

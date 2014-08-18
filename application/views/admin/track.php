@@ -443,8 +443,7 @@ function acceptall()
             if (@$shipments)
             {
             ?>
-            <h4>Shipments:</h4>
-            <?php 
+            <h3 class="box-header">Shipments:  <?php 
                 $canacceptall = false;
                 $shipitemids = array();
                 foreach($shipments as $cs)
@@ -466,7 +465,8 @@ function acceptall()
             ?>
             <?php if($canacceptall){?>
            <button class="btn btn-primary" onclick="acceptall()">Accept All</button>
-           <?php }?>
+           <?php }?></h3>
+           
            <table class="table table-bordered" >
            	<tr>
            		<th>Item</th>
@@ -496,7 +496,7 @@ function acceptall()
                 foreach ($messages as $c)
                     if (@$c['messages']) {
                         ?>
-                        <h4>Messages for <?php echo $c['companydetails']->title ?> regarding PO# <?php echo $quote->ponum; ?>:</h4>
+                         <h3 class="box-header">Messages for <?php echo $c['companydetails']->title ?> regarding PO# <?php echo $quote->ponum; ?>:</h3>
                         <table class="table table-bordered" >
                             <tr>
                                 <th>From</th>
@@ -575,7 +575,7 @@ function acceptall()
                 <hr/>
                 
         		<?php if($shippingdocs){?>
-        		<h4>Shipping Documents</h4>
+        		   <h3 class="box-header">Shipping Documents</h3>
         		<table class="table table-bordered col-md-4">
         			<tr>
         				<th>Company</th>
@@ -598,9 +598,9 @@ function acceptall()
                 <?php if ($awarded->invoices) { ?>
                 <div class="control-group">
                     <div class="controls">
-                        <h4>
+                         <h3 class="box-header">
                             Existing Invoices
-                        </h4>
+                        </h3>
                         <br/>
                         <table class="table table-bordered">
                             <tr>
@@ -663,7 +663,7 @@ function acceptall()
                 </ul>
             </section>
             <div>
-                <h4>Time Line</h4>
+                   <h3 class="box-header">Time Line</h3>
                 <div>
                     <table width="100%">
                         <tr><td style="border-right:2px black solid;" width="10%">
@@ -754,7 +754,7 @@ function acceptall()
                 {
                     ?>
                      <hr>
-                      <h4>Error Log</h4>
+                         <h3 class="box-header">Error Log</h3>
                        <table  class='table table-bordered'>
                             <tbody>
                                 <tr>

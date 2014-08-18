@@ -51,10 +51,10 @@
             });
 </script>
 <section class="row-fluid">
-			<h3 class="box-header">Assign Order to Project</h3>
+			<h3 class="box-header">Assign Order to Project <a href="<?php echo site_url('admin/order/add_to_project_export').'/'.$orderid; ?>" class="btn btn-green">Export</a></h3>
 	<div class="box">
 		<div class="span12">
-			<a href="<?php echo site_url('admin/order/add_to_project_export').'/'.$orderid; ?>" class="btn btn-green">Export</a>
+			
 			<div class="well">
 				<?php if(@$orderitems[0]->accepted == 1){?>
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/order/add_to_project/<?php echo $orderid;?>" method="post" >

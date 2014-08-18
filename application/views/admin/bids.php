@@ -200,8 +200,8 @@ $(function() {
 
 
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){?> &nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } ?>
-			&nbsp;&nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url('admin/message/messages/'.$quote->id);?>">View Messages</a></h3>
+	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } ?>
+			&nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url('admin/message/messages/'.$quote->id);?>">View Messages</a></h3>
 	<div class="box">
 		<div class="span12">
 		   <a class="btn btn-green" href="<?php echo site_url('admin/quote/index/'.$quote->pid);?>">&lt;&lt; Back</a>
@@ -348,7 +348,8 @@ $(function() {
 		  		$sn = 1;
 		  ?>
 		      <div class="control-group">
-			    <div class="controls"><strong>PO #:<?php echo $quote->ponum; ?>
+			    <div class="controls">
+                <h3 class="box-header"><strong>PO #:<?php echo $quote->ponum; ?>
 			      &nbsp; &nbsp; 
 			      Company:   <span class="company-name"><?php echo $bid->companyname;?></span> &nbsp; &nbsp;
 			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp; 
@@ -366,7 +367,7 @@ $(function() {
 			      <?php 
 			      	if($maxcountitems > count($bid->items))
 			      	{
-			      ?>
+			      ?></h3>
 			      
 			      	  <div style="color:red">*This company did not some items: <span class="btn btn-mini btn-red" onclick="$('#notbid<?php echo $bid->id;?>').modal();">Show</span></div>
 			      	  
@@ -551,7 +552,7 @@ $(function() {
 				    	if($bid->messages)
 				    	{
 				    ?>
-				    Messages:
+				  <h3 class="box-header" style="display:inline;"">  Messages:</h3>
 				    <table class="table table-bordered" >
 					    <tr>
 					    	<th>From</th>
