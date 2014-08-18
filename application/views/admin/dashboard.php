@@ -188,7 +188,7 @@
 		 tour4.end();
 			}
  </script>
- <?php if(isset($settingtour)) { ?>
+<?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
@@ -388,7 +388,7 @@
 					  <tr>
 					  <td><?php echo $msg->message; ?></td>
 					  <td><?php echo $msg->from; ?></td>
-					  <td><?php $datetime = strtotime($msg->senton); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } } ?>
@@ -408,7 +408,7 @@
 
 					  <tr>
 					  <td><?php echo $quote->ponum; ?></td>
-					  <td><?php $datetime = strtotime($quote->podate); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($quote->podate); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -429,7 +429,7 @@
 
 					  <tr>
 					  <td><?php echo $awardquote->ponum; ?></td>
-					  <td><?php $datetime = strtotime($awardquote->awardedon); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($awardquote->awardedon); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -452,7 +452,7 @@
 					  <tr>
 					  <td><?php echo $costcode->code; ?></td>
 					  <td><?php echo $costcode->title; ?></td>
-					   <td><?php $datetime = strtotime($costcode->creation_date); echo date("M d, Y H:i A", $datetime);?></td>
+					   <td><?php $datetime = strtotime($costcode->creation_date); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -473,7 +473,7 @@
 
 					  <tr>
 					  <td><?php echo $project->title; ?></td>
-					  <td><?php $datetime = strtotime($project->creation_date); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($project->creation_date); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -495,7 +495,7 @@
 
 					  <tr>
 					  <td><?php echo $user->companyname; ?></td>
-					  <td><?php $datetime = strtotime($user->regdate); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($user->regdate); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -516,7 +516,7 @@
 
 					  <tr>
 					  <td><?php echo $network->title; ?></td>
-					  <td><?php $datetime = strtotime($network->acceptedon); echo date("M d, Y H:i A", $datetime);?></td>
+					  <td><?php $datetime = strtotime($network->acceptedon); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>

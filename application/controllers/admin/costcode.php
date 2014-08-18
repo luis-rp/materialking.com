@@ -306,9 +306,9 @@ class costcode extends CI_Controller {
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
     			$project = $this->db->query($sql)->result();
-    			$order->prjName = "assigned to ".$project[0]->title;
+    			$order->prjName = "Assigned to ".$project[0]->title;
     		}else{
-    			$order->prjName = "Pending Assignment";
+    			$order->prjName = "Pending Project Assignment";
     		}
     		$data['orders'][]=$order;
     	}
@@ -377,9 +377,9 @@ class costcode extends CI_Controller {
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
         		$project = $this->db->query($sql)->result();
-        		$order->prjName = "assigned to ".$project[0]->title;
+        		$order->prjName = "Assigned to ".$project[0]->title;
         	}else{
-        		$order->prjName = "Pending Assignment";
+        		$order->prjName = "Pending Project Assignment";
         	}
         	$data['orders'][]=$order;
         }

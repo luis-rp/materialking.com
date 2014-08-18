@@ -111,7 +111,7 @@ class Store extends CI_Controller
         $this->data['categorymenu'] = $this->items_model->getStoreCategoryMenu($company);
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
         //echo '<pre>';print_r($data['categorymenu']);die;
-        $this->data['breadcrumb2'] = $this->storemodel->getsubcategorynames(@$_POST['category']);
+        $this->data['breadcrumb2'] = $this->storemodel->getsubcategorynames(@$_POST['category'],$company);
         if(isset($_POST['category']))
         $category = $_POST['category'];
         else

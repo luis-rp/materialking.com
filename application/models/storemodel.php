@@ -92,24 +92,34 @@ class Storemodel extends Model
         return $ret;
     }  
     
-    function getsubcategorynames($parentid=0) 
+    function getsubcategorynames($parentid=0,$company) 
     {
     	$this->db->order_by('catname','asc');
         $this->db->where('parent_id',$parentid);
         $menus = $this->db->get('category')->result();
         $ret = "";
+       
+        $tci = $this->db->dbprefix('companyitem');
+        $ti = $this->db->dbprefix('item');
+        $tc = $this->db->dbprefix('company');
         foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
-            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
             
+            $query = "SELECT ci.*, i.url FROM $tci ci, $ti i
+                        WHERE ci.itemid=i.id AND ci.company=$company AND type='Supplier' AND ci.instore='1' 
+                        AND i.category IN (".implode(',', $subcategories).")";
+           
+            $hasitems = $this->db->query($query)->result();
+           
             if(!$hasitems)
                 continue;
-               $ret .= '<ul><li onclick="filtercategorystore('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';
-                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
-           
             
+            $ret .= '<ul><li onclick="filtercategorystore('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';    
         }
+        
+        
+        
         $ret .= "</ul>";
         return $ret;
     }    

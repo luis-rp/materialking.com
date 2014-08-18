@@ -52,8 +52,9 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 
 		<div class="row">
 
-			<div class="col-md-6 col-sm-6" style="height:500px;overflow:auto;">
+			<div class="col-md-6 col-sm-6">
 				<div class="tiles white">
+				 <div style="height:500px;overflow:auto;">
 					  <div class="tiles-body">
 						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
@@ -124,6 +125,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 							</div>
 							</a>
 						<?php }?>
+						</div>
 					</div>
 					<div class="tiles-title extrabox">
 					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>

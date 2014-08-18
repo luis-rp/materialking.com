@@ -53,6 +53,26 @@ class Company extends CI_Controller {
             }
         }
 
+        $completeaddress="";
+            if($_POST['street'])
+            {
+            	$completeaddress.=$_POST['street'].",";
+            }
+            if($_POST['city'])
+            {
+            	$completeaddress.=$_POST['city'].",";
+            }
+            if($_POST['state'])
+            {
+            	$completeaddress.=$_POST['state'].",";
+            }
+            if($_POST['zip'])
+            {
+            	$completeaddress.=$_POST['zip'];
+            }
+
+        $_POST['address'] = $completeaddress;        
+        
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/register');
@@ -275,7 +295,7 @@ class Company extends CI_Controller {
         $data['emails'] = $emails;
         $this->load->view('company/profile', $data);
     }
-
+    
     function saveprofile() {
         $company = $this->session->userdata('company');
         if (!$company)
@@ -304,6 +324,27 @@ class Company extends CI_Controller {
                 }
             }
 
+         $completeaddress="";
+            if($_POST['street'])
+            {
+            	$completeaddress.=$_POST['street'].",";
+            }
+            if($_POST['city'])
+            {
+            	$completeaddress.=$_POST['city'].",";
+            }
+            if($_POST['state'])
+            {
+            	$completeaddress.=$_POST['state'].",";
+            }
+            if($_POST['zip'])
+            {
+            	$completeaddress.=$_POST['zip'];
+            }
+
+        $_POST['address'] = $completeaddress;    
+            
+            
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/profile');

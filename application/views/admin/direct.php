@@ -1,13 +1,20 @@
 <?php //echo '<pre>'; print_r($quoteitems);die;?>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.price_format.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
+
+
+
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/fg.menu.2.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 
 <!-- <script src="<?php echo base_url();?>templates/admin/js/jqBootstrapValidation.js"></script> -->
 
 <script type="text/javascript">
-<!--
+
 $(document).ready(function(){
 	//$('#intro').wysihtml5();
 	//$('#content').wysihtml5();
@@ -18,6 +25,30 @@ $(document).ready(function(){
 	//$('textarea').autosize();
 	$('html, body').animate({scrollTop:$(document).height()}, 'slow');
 	$("#showpricelink").hide();
+	$("#showpricelinkbrow").show();
+	
+	 $("#browseItem").click(function(){
+    	$('#selectItemWindow').dialog({ height: "auto"  });
+    });    
+ 
+    $("#selectItemWindow").hide();
+	
+    // BUTTONS
+	$('.fg-button').hover(
+		function(){ $(this).removeClass('ui-state-default').addClass('ui-state-focus'); },
+		function(){ $(this).removeClass('ui-state-focus').addClass('ui-state-default'); }
+	);
+    
+    $('#hierarchybreadcrumb').menu2({
+		content: $('#hierarchybreadcrumb').next().html(),
+		backLink: false
+	});
+	
+	$('#hierarchybreadcrumbitem').menu2({
+		content: $('#hierarchybreadcrumbitem').next().html(),
+		backLink: false
+	});
+	
 });
 //datedefault = true;
 //ccdefault = true;
@@ -165,10 +196,14 @@ function showhideviewprice(id)
 	if(itemcode=='')
 	{
 		$("#showpricelink"+id).hide();
+		$("#showpricelink"+id).hide();
+        $("#showpricelinkbrow"+id).show();
 	}
 	else
 	{
 		$("#showpricelink"+id).show();
+		$("#showpricelink"+id).show();
+        $("#showpricelinkbrow"+id).hide();
 	}
 }
 
@@ -275,7 +310,7 @@ function getcatitem(catid){
 	    }).done(function(data){
 
 	        $("#catiditem").html(data);
-
+			savclose();
 	    });
 }
 
@@ -285,6 +320,8 @@ function savclose()
 	var itemcode = document.getElementById('catiditem').value;
    	$("#itemcode").val(itemcode);
     fetchItem('itemcode');
+    $('#selectItemWindow').dialog('close');
+    $('.fg-menu-container').css({display: "none"});
 }
 </script>
 
@@ -296,6 +333,26 @@ function savclose()
 	font-size: 12px;
 	padding-right: 10px;
 }
+</style>
+
+<style type="text/css">
+	
+	#menuLog { font-size:1.0em; margin:10px 20px 20px; }
+	.hidden { position:absolute; top:0; left:-9999px; width:1px; height:1px; overflow:hidden; }
+	
+	.fg-button { clear:left; margin:0 4px 40px 0px; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+	a.fg-button { float:left;  }
+	button.fg-button { width:auto; overflow:visible; } /* removes extra button width in IE */
+	
+	.fg-button-icon-left { padding-left: 2.1em; }
+	.fg-button-icon-right { padding-right: 2.1em; }
+	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
+	
+	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
+	.fg-menu-container{z-index:1000;}
 </style>
 
 <section class="row-fluid">
@@ -455,7 +512,8 @@ function savclose()
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');showhideviewprice('');" onchange="//showhideviewprice('');"/>
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid')">View Prices</a></span>
-		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span>
+		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
+		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    		</td>
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
@@ -626,4 +684,41 @@ function savclose()
         	<div class="modal-body" id="minpricesbrow">
         	</div>
 
+        </div>
+
+        
+        <div id="selectItemWindow">
+       		 <h2>Item Filter</h2>
+                    
+                    <div>
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumbitem" name="breadcrumb"/>
+                            <input type="hidden" id="formcategoryitem" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                          
+                            <div class="location control-group">
+                            	<script>
+								 function filtercategoryitems(id)
+								 {
+									 $("#formcategory").val(id);
+									 getcatitem(id);
+								  /* 
+								    document.forms['categorysearchform'].submit();*/
+								    //setTimeout("doPost()", 10);
+								    return false;
+								 }
+							
+								 
+								</script>
+								<a tabindex="0" href="#news-items-3" class="fg-button fg-button-icon-right ui-widget ui-state-default ui-corner-all" id="hierarchybreadcrumbitem">
+									<span class="ui-icon ui-icon-triangle-1-s"></span><?php if(isset($catname) && $catname!="") echo $catname; else echo "Select Category"; ?>
+								</a>
+								<div id="news-items-3" class="hidden">
+								    <?php echo @$categorymenuitems;?>
+								</div>
+                            </div>
+                             <select name="catiditem" id="catiditem" ></select>
+                            
+                       <!-- <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>-->
+                       
+                    </div>
         </div>

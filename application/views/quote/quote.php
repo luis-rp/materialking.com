@@ -320,7 +320,7 @@ function viewPricelist(itemcode,itemname,price)
 											Quote#
 							    		</td>
 							    		<td colspan="5">
-											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { echo "."; printf('%03d',($revisionno-1)); } ?>"/>
+											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
 							    		</td>
 							    		<td>
 											<?php // if($draft){?>

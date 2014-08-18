@@ -348,23 +348,12 @@ class Dashboard extends CI_Controller
 		foreach($bcks as $bck)
 		{
 			$backtracks[]=$bck;
-		}
-			
-		$sql = "SELECT last_logged_date FROM ".$this->db->dbprefix('users')." WHERE purchasingadmin ='".$this->session->userdata('purchasingadmin')."' and usertype_id = '".$this->session->userdata('usertype_id')."'";
-		$resultid = $this->db->query($sql)->result(); 
-		$whereres = "";
-		if(@$resultid){
-			$whereres = "and m.senton > '".$resultid[0]->last_logged_date."'";
-			$purchaserloggeddate = $resultid[0]->last_logged_date;
-		}else {
-			$whereres = "";
-			$purchaserloggeddate = "";
-		}
+		}			
 		
 		$messagesql = "SELECT m.* FROM 
-		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereres} ";
+		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.senton between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate();  ";
 		
-		$msgs = $this->db->query($messagesql)->result();		
+		$msgs = $this->db->query($messagesql)->result();
 		
 		
 		$wherequote = "";
@@ -409,7 +398,7 @@ class Dashboard extends CI_Controller
 		$whereusers = "and regdate between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
 					
 		$userssql = "SELECT companyname, regdate FROM 
-		".$this->db->dbprefix('users')." u WHERE 1=1 and u.purchasingadmin='{$this->session->userdata('purchasingadmin')}' {$whereusers} ";
+		".$this->db->dbprefix('users')." u WHERE 1=1 {$whereusers} ";
 		
 		$users = $this->db->query($userssql)->result();
 			

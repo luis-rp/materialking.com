@@ -59,9 +59,9 @@ function orders_export()
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
 				$project = $this->db->query($sql)->result();
-				$order->prjName = "assigned to ".$project[0]->title;
+				$order->prjName = "Assigned to ".$project[0]->title;
 			}else{
-				$order->prjName = "Pending Assignment";
+				$order->prjName = "Pending Project Assignment";
 			}
 			
 			if(!is_null($order->costcode)){
@@ -199,9 +199,9 @@ function orders_export()
 				WHERE id=".$order->project;
 				$project = $this->db->query($sql)->result();
 				if($project)
-				$order->prjName = "assigned to ".$project[0]->title;
+				$order->prjName = "Assigned to ".$project[0]->title;
 			}else{
-				$order->prjName = "Pending Assignment";
+				$order->prjName = "Pending Project Assignment";
 			}
 			
 			if(!is_null($order->costcode)){

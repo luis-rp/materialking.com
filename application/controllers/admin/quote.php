@@ -3319,6 +3319,39 @@ with the transfer# {$tobj->id}.
             ;
         }
     }
+    
+    function sendduedatealert()
+    {
+    	$SQL = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c WHERE c.id=".$_POST['companyid'];
+    	$qry = $this->db->query($SQL);
+    	$result = $qry->result_array();
+    	
+    	$settings = (array)$this->settings_model->get_current_settings ();
+		$this->load->library('email');
+		$this->email->clear(true);
+	    $this->email->from($settings['adminemail'], "Administrator");
+	        
+        $toemail = isset($result[0]['primaryemail']) ? $result[0]['primaryemail'] : '';
+          
+        $this->email->to($toemail); 
+	   
+		$body = "
+		Dear ".$result[0]['title'].",<br><br>
+		Please set due date for PO#  {$_POST['ponum']}<br><br><br>
+		";
+		    
+   		$body .= site_url('quote/track/'.$_POST['quote'].'/'.$_POST['award']);
+
+		$this->email->subject("Request to Set Due Date");
+		$this->email->message($body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
+	
+	
+		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Request due date alert sent via email.</div></div>');
+      	
+      die;
+    }
 
     // End
 }

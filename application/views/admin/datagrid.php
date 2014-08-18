@@ -89,7 +89,7 @@
 
  </script>
 	<?php }?>
-<?php if(isset($settingtour)) { ?>
+ <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
