@@ -759,7 +759,9 @@ class site extends CI_Controller
         $this->data2 = $this->suppliers2($keyword);
         $this->data['data2'] = $this->data2;        
         //echo "<pre>",print_r($this->data); die;
+        if($keyword){
         $this->data['datatags'] = $this->items_model->find_tags($keyword);
+        }
         $this->load->view('site/items', $this->data);
     }
     

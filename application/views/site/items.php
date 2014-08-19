@@ -409,7 +409,7 @@
         
         
         
-         <?php if ($data2['norecords']=="") { ?>    
+         <?php if(isset($data2)) { if ($data2['norecords']=="") { ?>    
      <div id="content">
     <div class="container">
         <div id="main">
@@ -568,7 +568,7 @@
     </div>
 
 </div>
-    <?php } ?>
+    <?php } } ?>
     
     
     
@@ -577,9 +577,9 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
-    <?php if(!empty($datatags)){?><div><h1 class="page-header">Tags:</h1><ul class="tags"><?php 
+    <?php if(isset($datatags)) { if(!empty($datatags)){?><div><h1 class="page-header">Tags:</h1><ul class="tags"><?php 
    foreach ($datatags as $tag){
     	$tag = trim($tag);?>
     <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
-    <?php } ?></ul><?php } ?></div>
+    <?php } ?></ul><?php } } ?></div>
     </div></div></div></div></div>
