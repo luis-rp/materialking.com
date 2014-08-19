@@ -225,7 +225,9 @@
 				    		
 				    		
 							<span class="ad-details-title"><h3><?php echo $c_title; ?></h3></span>
-
+							<span class="ad-detail-info"><span class="ad-details"><?php echo $c_address; ?></span></span>
+							<span class="ad-detail-info"><span class="ad-details"><?php echo $c_phone; ?></span></span>
+							<span class="ad-detail-info"><span class="ad-details"><a href="<?php echo site_url('site/suppliers/'.$c_title); ?>"><?php echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
 				    	
 			
 
@@ -240,11 +242,8 @@
 					<tr>
 						<td>
 							<span class="ad-detail-info">Category <span class="ad-detail">
-				    			<?php 
-								
-								?></span>
+				    			<?php echo isset($a_category) ? $a_category : '';	?></span>
 							</span>
-
 				
 
 							<span class="ad-detail-info">Added <span class="ad-detail">

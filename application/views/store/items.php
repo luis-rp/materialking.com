@@ -168,7 +168,7 @@ function addtocart(itemid, companyid, price,minqty)
                                         <div class="title2 span4 ">
                                             <h2><?php echo $item->itemcode; ?></h2>
                                             <?php if(!empty($item->companynotes)){?>
-                                            <div class="company-note">
+                                            <div class="company-note" style="height:150px;overflow:auto;">
                                                 <?php echo $item->companynotes; ?>
                                             </div>
                                             <?php } ?>

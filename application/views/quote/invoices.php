@@ -138,15 +138,7 @@ function invoice(invoicenum)
                             </div>
                             
                             <div class="grid-body no-border">
-                            <br/>
-                                    <table class="table no-more-tables general">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:20%">PO Number</th>
-                                                <th style="width:80%">Invoices</th>
-                                            </tr>
-                                        </thead>                                        
-                                       </table>    
+                            
                                     <table id="datatable" class="table no-more-tables general">
                                     <thead>
                                        <tr>

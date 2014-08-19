@@ -26,7 +26,7 @@
                       
                       <div class="col-md-3 col-sm-3">
                        <label class="form-label general">&nbsp;</label>
-                       <button type="button" class="btn btn-primary btn-cons" id="login_toggle" onclick="$('#reqtype').val('reset');document.frm_login.submit()">Get Link</button>
+                       <button type="button" class="btn btn-primary btn-cons" id="login_toggle" onclick="$('#reqtype').val('reset');document.frm_login.submit()">Get Password Reset Link</button>
                       </div>
                       <a href="<?php echo site_url('company');?>">
                        	Return to Login

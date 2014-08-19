@@ -81,7 +81,7 @@ function orders_export()
 				FROM ".$this->db->dbprefix('costcode')." p
 				WHERE id=".$order->costcode;
 				$project = $this->db->query($sql)->result();
-				$order->codeName = $project[0]->code;
+				$order->codeName = "Cost Code ".$project[0]->code;
 			}else{
 				$order->codeName = "Pending Cost Code Assignment";
 			}
@@ -230,7 +230,7 @@ function orders_export()
 				FROM ".$this->db->dbprefix('costcode')." p
 				WHERE id=".$order->costcode;
 				$project = $this->db->query($sql)->result();
-				$order->codeName = $project[0]->code;
+				$order->codeName = "Cost Code ".$project[0]->code;
 			}else{
 				$order->codeName = "Pending Cost Code Assignment";
 			}
@@ -807,7 +807,7 @@ with the transfer#{$tobj->id}.
 				FROM ".$this->db->dbprefix('costcode')." p
 				WHERE id=".$order->costcode;
     			$project = $this->db->query($sql)->result();
-    			$order->codeName = $project[0]->code;
+    			$order->codeName = "Cost Code ".$project[0]->code;
     		}else{
     			$order->codeName = "Pending Cost Code Assignment";
     		}

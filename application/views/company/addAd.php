@@ -117,7 +117,7 @@
 
 							<script>
                                 $('#map-canvas').locationpicker({
-                                location: {latitude: 46.15242437752303, longitude: 2.7470703125},	
+                                location: {latitude: <?php echo $company->com_lat; ?>, longitude: <?php echo $company->com_lng; ?>},	
                                 radius: 300,
                                 inputBinding: {
                                     latitudeInput: $('#latitude'),
@@ -127,6 +127,8 @@
                                 enableAutocomplete: true,
                                 onchanged: function(currentLocation, radius, isMarkerDropped) {
                                     alert("Location changed. New location (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
+                                    $('#latitude').val(currentLocation.latitude);	
+                                    $('#longitude').val(currentLocation.longitude);
                                 }	
                                 });
 							</script>
