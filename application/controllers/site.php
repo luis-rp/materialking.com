@@ -471,7 +471,9 @@ class site extends CI_Controller
            
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
-            if(is_object($orgitem)){
+            if(!is_object($orgitem)){
+            	continue;
+            }
             if(!$initem->itemname)
             	$initem->itemname = $orgitem->itemname;
             
@@ -479,9 +481,7 @@ class site extends CI_Controller
             	$initem->image = $orgitem->item_img;
             
             $initem->url = $orgitem->url;
-            }else{
-            	$initem->url = "";
-            }
+            
             if($this->session->userdata('site_loggedin'))
             {
                 $this->db->where('company', $id);
