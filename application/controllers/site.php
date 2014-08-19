@@ -459,11 +459,12 @@ class site extends CI_Controller
                     ->where('isfeature','1')
                     ->get('companyitem')
                     ->result();
-        
+        log_message('debug',"id:".var_export($id,true));
          $data['inventory'] = array();
          
          foreach($inventory as $initem)
          {
+         	log_message('debug',var_export($initem,true));
          	
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
