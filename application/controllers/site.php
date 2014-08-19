@@ -479,6 +479,8 @@ class site extends CI_Controller
             	$initem->image = $orgitem->item_img;
             
             $initem->url = $orgitem->url;
+            }else{
+            	$initem->url = "";
             }
             if($this->session->userdata('site_loggedin'))
             {
