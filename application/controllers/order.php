@@ -382,9 +382,7 @@ class Order extends CI_Controller
 			}
 		}
 		//$this->load->view('order/details',$data);
-	
-	
-	
+		
 		//=========================================================================================
 	
 		$order = $data['order'];
@@ -414,18 +412,19 @@ class Order extends CI_Controller
 			$i++;
 			$total = $item->quantity * $item->price;
 			$gtotal += $total;
-			$header[] = array('' ,'' , '','' , $item->itemdetails->itemname ,$item->quantity , '$ '.formatPriceNew($item->price) , '$ '.formatPriceNew(number_format($total,2)) );
+			$header[] = array('' ,'' , '','' , $item->itemdetails->itemname ,$item->quantity , '$ '.$item->price.chr(160) , '$ '.number_format($total,2).chr(160) );
 		}
 		 
 		$taxpercent   = $order->taxpercent;
 		$tax          = $gtotal*$taxpercent/100;
 		$totalwithtax = $tax+$gtotal;
 	
-		$header[] = array('' ,'','' , '' , '' , '' , 'Tax' , '$ '.formatPriceNew($tax));
-		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.formatPriceNew($gtotal));
-		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.formatPriceNew($totalwithtax));
+		$header[] = array('' ,'','' , '' , '' , '' , 'Tax' , '$ '.$tax.chr(160));
+		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.$gtotal.chr(160));
+		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.$totalwithtax.chr(160));
 	
 		createXls('order_detail_'.$id, $header);
+		
 		die();
 	
 		//===============================================================================

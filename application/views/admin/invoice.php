@@ -7,6 +7,7 @@
                 url: "sendduedatealert"
             }).done(function(data) { 
             	$("#msgtag").css("display","block");
+            	$("#msgtag").html('<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Request due date alert sent via email.</div></div>');
                //window.location = window.location;
             });
     }
@@ -27,7 +28,7 @@
                     INVOICE #: <?php echo $invoice->invoicenum; ?> 
                     STATUS: <font color=#FF0000""> <?php echo $invoice->status; ?></font>
                     PAYMENT: <font color=#FF0000""> <?php echo $invoice->paymentstatus; ?></font>
-                    <?php if($invoice->datedue){?>
+                    <?php if(isset($invoice->datedue) && $invoice->datedue !=""){?>
                     DUE DATE: <font color=#FF0000""> <?php  echo date("m/d/Y", strtotime( $invoice->datedue)); ?></font>
                     <br/>
                     <font color=#FF0000""> <?php if($invoice->status == "Verified" && $invoice->paymentstatus == "Paid" && isset($invoice->items[0]->paymentdate)) {  

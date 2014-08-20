@@ -9,10 +9,10 @@ $(document).ready(function(){
 });
 </script>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?></h3>
+	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?> <a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a></h3>
 	<div class="box">
 		<div class="span12">
-		<a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a><br />
+		<br />
 		   <br/>
 		   
 		   <form class="form-inline" action="<?php echo site_url('admin/report')?>" method="post">

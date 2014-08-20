@@ -222,11 +222,11 @@ function updatedeal(id)
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
-		 <a href="<?php echo site_url('inventory/export'); ?>" class="btn btn-green">Export</a><br />	
-			<h3>Inventory </h3>
+	 
+			<h3>Inventory <a href="<?php echo site_url('inventory/export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 	<span style="float:right; margin:0px 9px 0px 0px">Go to my store</span></h3>
 			<div class="pull-right">
 				<a href="<?php echo site_url("store/items/".$this->session->userdata('company')->username);?>" target="_blank">
-				Go to my store
+			
 				</a>
 			</div>
 		</div>		
@@ -251,7 +251,7 @@ function updatedeal(id)
                                 	Category:
                                 	</td>
                                 	<td>
-                                	<select id="category" name="category" class="form-control" style="width:250px">
+                                	<select id="category" name="category" class="form-control" style="width:140px">
                                 		<option value="">All</option>
                                     	<?php foreach($categories as $cat){?>
                                     	<option value="<?php echo $cat->id;?>" <?php if(@$_POST['category']==$cat->id){echo 'selected';}?>><?php echo $cat->catname;?></option>
@@ -262,7 +262,7 @@ function updatedeal(id)
                                 	Brand:
                                 	</td>
                                 	<td>
-                                	<select id="manufacturer" name="manufacturer" class="form-control" style="width:150px">
+                                	<select id="manufacturer" name="manufacturer" class="form-control" style="width:90px">
                                 		<option value="">All</option>
                                     	<?php foreach($manufacturers as $mf){?>
                                     	<option value="<?php echo $mf->id;?>" <?php if(@$_POST['manufacturer']==$mf->id){echo 'selected';}?>><?php echo $mf->title;?></option>
@@ -294,14 +294,14 @@ function updatedeal(id)
                                             <tr>
                                                 <!-- <th style="width:10%">Item Code</th>  -->
                                                 <th style="width:15%">Item Name</th>
-                                                <th style="width:15%"><font color="#0AA699">Code/Name</font></th>
-                                                <th style="width:10%"><font color="#0AA699">Manufacturer</font></th>
-                                                <th style="width:10%"><font color="#0AA699">Part#</font></th>
-                                                <th style="width:10%"><font color="#0AA699">List Price</font></th>
-                                                <th style="width:10%"><font color="#0AA699">Min. Qty.</font></th>
-                                                <th style="width:5%"><font color="#0AA699">Stock</font></th>
-                                                <th style="width:5%"><font color="#0AA699">Store/<br/>Featured</font></th>
-                                                <th style="width:5%"><font color="#0AA699">Action</font></th>
+                                                <th style="width:15%"><font color="#fff">Code/Name</font></th>
+                                                <th style="width:10%"><font color="#fff">Manufacturer</font></th>
+                                                <th style="width:10%"><font color="#fff">Part#</font></th>
+                                                <th style="width:10%"><font color="#fff">List Price</font></th>
+                                                <th style="width:10%"><font color="#fff">Min. Qty.</font></th>
+                                                <th style="width:5%"><font color="#fff">Stock</font></th>
+                                                <th style="width:5%"><font color="#fff">Store/<br/>Featured</font></th>
+                                                <th style="width:5%"><font color="#fff">Action</font></th>
                                             </tr>
                                         </thead>
                                         
@@ -336,13 +336,13 @@ function updatedeal(id)
                                                 </td>
                                                 
                                                 <td class="v-align-middle">
-                                                	<input type="text" style="width: 80px;" placeholder="Part#"
+                                                	<input type="text" style="width: 60px;" placeholder="Part#"
                                                 	value="<?php echo @$item->companyitem->partnum?>"
                                                 	onchange="updatePartnum('<?php echo $item->id?>',this.value);"/>
                                                 </td>
                                                 
                                                 <td class="v-align-middle">
-                                                	<input type="text" style="width: 80px;" placeholder="Price"
+                                                	<input type="text" style="width: 60px;" placeholder="Price"
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);"/>
                                                 	<?php if(@$item->companyitem){?>
@@ -353,7 +353,7 @@ function updatedeal(id)
                                                 </td>
                                                 
                                                 <td class="v-align-middle">
-                                                	<input type="text"  style="width: 60px;" placeholder="Min Qty"
+                                                	<input type="text"  style="width: 50px;" placeholder="Min Qty"
                                                 	value="<?php echo @$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/>
                                                 </td>

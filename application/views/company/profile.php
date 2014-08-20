@@ -53,8 +53,8 @@ function addEmail()
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
-			<h3>Edit Profile</h3>
-			<a class="btn btn-primary btn-sm btn-small" href="<?php echo site_url('site/supplier/'.$company->username)?>" target="_blank">View Profile</a>
+			<h3>Edit Profile 	<a class="btn btn-primary btn-sm btn-small" href="<?php echo site_url('site/supplier/'.$company->username)?>" target="_blank">View Profile</a></h3>
+		
 		</div>		
 	   <div id="container">
 		

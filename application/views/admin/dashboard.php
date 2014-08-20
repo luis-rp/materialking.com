@@ -342,7 +342,7 @@
 					<?php }?>
 					</table>
 				<?php } ?>
-    				<a href="<?php echo site_url('site/suppliers')?>">
+    				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">
     					Browse Suppliers
     				</a>
 				<?php } ?>

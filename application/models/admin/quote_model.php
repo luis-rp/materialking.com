@@ -541,11 +541,13 @@ class quote_model extends Model {
     function getinvoicebynum($invoicenum) {
 
         $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum, q.duedate as datedue 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
-				   " . $this->db->dbprefix('awarditem') . " ai
-				  WHERE r.awarditem=ai.id AND invoicenum='{$invoicenum}'
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q 
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND invoicenum='{$invoicenum}'
 				  GROUP BY invoicenum
 				  ";
         //echo $totalquery;

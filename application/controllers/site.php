@@ -459,17 +459,21 @@ class site extends CI_Controller
                     ->where('isfeature','1')
                     ->get('companyitem')
                     ->result();
-        
+        log_message('debug',"id:".var_export($id,true));
          $data['inventory'] = array();
          
          foreach($inventory as $initem)
          {
+         	log_message('debug',var_export($initem,true));
          	
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
            
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
+            if(!is_object($orgitem)){
+            	continue;
+            }
             if(!$initem->itemname)
             	$initem->itemname = $orgitem->itemname;
             
@@ -715,7 +719,7 @@ class site extends CI_Controller
         $this->data['norecords'] = '';
         if (! $this->data['items'])
         {
-            $this->data['norecords'] = 'No Records found for the search.';
+            $this->data['norecords'] = 'No Records found in items for the search.';
         }
         $this->data['categories'] = $this->itemcode_model->getcategories();
         $this->data['categoriesoptions'] = $this->items_model->getTreeOptions(@$_POST['category']);
@@ -756,9 +760,131 @@ class site extends CI_Controller
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);        
         $this->data['currentcategory'] = $currentcategory;
+        $this->data2 = $this->suppliers2($keyword);
+        $this->data['data2'] = $this->data2;        
+        //echo "<pre>",print_r($this->data); die;
+        if($keyword){
+        $this->data['datatags'] = $this->items_model->find_tags($keyword);
+        }
         $this->load->view('site/items', $this->data);
     }
     
+    
+        public function suppliers2 ($keyword = false)
+    {
+        //print_r($_POST);
+        if ($this->input->post('keyword') || $keyword)
+        {
+            if (! $keyword)
+            {
+                $keyword = $this->input->post('keyword');
+            }
+
+            $query_suppliers = $this->search_supplier($keyword);
+            $this->data2['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
+            $this->data2['submiturl'] = 'site/items/' . $keyword;
+            $this->data2['keyword'] = $keyword;
+            if ($keyword)
+            {
+                $this->data2['page_titile'] = "Search for \"$keyword\"";
+            }
+            else
+            {
+                $this->data2['page_titile'] = "Suppliers List";
+            }
+        }
+        else
+        {
+            $details = get_my_address();
+            $center = $details->loc;
+            $center = "33.956419, -118.442232";
+            $this->data2['my_location'] = get_my_location($details);
+            $geo_coords = explode(",", $center);
+            $search = new stdClass();
+            $search->distance = 100000;
+            $search->current_lat = $geo_coords[0];
+            $search->current_lon = $geo_coords[1];
+            $search->earths_radius = 6371;
+            $use_supplier_position = false;
+            $this->homemodel->set_search_criteria($search);
+
+            $location = $this->input->post('location');
+
+            //$lat = $this->input->post('lat');
+            //$lng = $this->input->post('lng');
+            if ($location)
+            {
+                $return = get_geo_from_address($location);
+                if($return)
+                {
+                    $center = "{$return->lat}, {$return->long}";
+                    $center = "33.956419, -118.442232";
+                    $search->current_lat = $return->lat;
+                    $search->current_lon = $return->long;
+                    $this->homemodel->set_search_criteria($search);
+                }
+            }
+            $this->homemodel->set_distance(20);
+            $query_suppliers = $this->homemodel->get_nearest_suppliers();
+            if (! $query_suppliers->totalresult)
+            {
+                $this->homemodel->set_distance(15000);
+                $query_suppliers = $this->homemodel->get_nearest_suppliers($ignore_location = true);
+                $this->homemodel->set_distance(20);
+                $this->data2['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
+            }
+            else
+            {
+                $this->data2['found_records'] = "Found " . $query_suppliers->totalresult . " nearest suppliers";
+            }
+            $this->data2['submiturl'] = 'site/items';
+        }
+        $this->data2['norecords'] = false;
+        if ($query_suppliers->totalresult == 0)
+        {
+            $this->data2['norecords'] = 'No Records found in Suppliers for the search.';
+        }
+        $limit = 6;
+        $this->data2['totalcount'] = $query_suppliers->totalresult;
+        $this->data2['currentpage'] = $_POST['pagenum'] + 1;
+        $this->data2['totalpages'] = ceil($this->data2['totalcount'] / $limit);
+        $this->data2['submitmethod'] = 'POST';
+        $this->data2['pagingfields'] = $_POST;
+        $this->data2['suppliers'] = array();
+        $suppliers = $query_suppliers->suppliers;
+        $this->load->helper('text');
+        foreach ($suppliers as $supplier)
+        {
+            $supplier->joinstatus = '';
+            if ($this->session->userdata('site_loggedin'))
+            {
+                $supplier->joinstatus = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')"/>Join</a>';
+                $currentpa = $this->session->userdata('site_loggedin')->id;
+                $this->db->where('fromid', $currentpa);
+                $this->db->where('toid', $supplier->id);
+                $this->db->where('fromtype', 'users');
+                $this->db->where('totype', 'company');
+                if ($this->db->get('joinrequest')->result())
+                    $supplier->joinstatus = '<input type="button" value="Already sent request" class="btn btn-primary arrow-right"/>';
+                $this->db->where('purchasingadmin', $currentpa);
+                $this->db->where('company', $supplier->id);
+                if ($this->db->get('network')->result())
+                    $supplier->joinstatus = '<input type="button" value="Already in Network" class="btn btn-primary arrow-right"/>';
+            }
+            if ($keyword)
+            {
+                $supplier->contact = highlight_phrase($supplier->contact, $keyword, '<span style="color:#990000">', '</span>');
+                $supplier->address = highlight_phrase($supplier->address, $keyword, '<span style="color:#990000">', '</span>');
+                $supplier->title = highlight_phrase($supplier->title, $keyword, '<span style="color:#990000">', '</span>');
+            }
+            $this->data2['suppliers'][] = $supplier;
+        }
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
+        $this->data2['citystates'] = $this->db->query($sql)->result();
+        $this->data2['states'] = $this->db->get('state')->result();
+        $this->data2['types'] = $this->db->get('type')->result();
+        return $this->data2;
+    }
     
     public function items ()
     {

@@ -27,11 +27,11 @@ $(document).ready( function() {
 });      
 </script>
 <section class="row-fluid">
-	<h3 class="box-header">My Purchased Items</h3>
+	<h3 class="box-header">My Purchased Items <a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a></h3>
 		
 	<div class="box">
 	  <div class="span12">
-	<a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a>
+	
 	   <?php echo $this->session->flashdata('message'); ?>
 		   <br/>
 		   
@@ -82,7 +82,7 @@ $(document).ready( function() {
                                             <tr>
                                                 <td><?php echo $order->ordernumber;?></td>
                                                 <td><?php echo date('m/d/Y',strtotime($order->purchasedate)); ?> </td>
-                                               <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo "Cost Code ".$order->codeName;?></td>
+                                                <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
                                                 <td><?php echo "$ ".round($total,2);?></td> 

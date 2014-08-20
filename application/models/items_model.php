@@ -260,6 +260,29 @@ class items_model extends Model {
         return $return;
     }
     
+    public function find_tags($keyword) 
+    {
+        $where = array();
+               
+         if($keyword){
+            $where = " where `tags` like '%$keyword%'";
+         }
+
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . $where;
+        
+        $tags = $this->db->query($query)->result();
+        $taggs = array();
+        foreach($tags as $tag){
+        	$tagarr = explode(",",$tag->tags);
+        	foreach($tagarr as $tag2){
+        		if (stristr($tag2,$keyword))
+        		$taggs[] = $tag2;
+        	}
+        	
+        }        
+        return $taggs;
+    }
+    
     public function find_item_byTag($tag){
     	$limit = 18;
     	$return = new stdClass();
@@ -349,5 +372,50 @@ class items_model extends Model {
 		 	return FALSE;
 		 }
 	}
+	
+	
+	public function get_items2($categoryId) 
+    {
+        
+        $where = array();
+        
+        if (@$categoryId)
+        {
+        	$this->db->where('parent_id',$categoryId);
+        	$menus = $this->db->get('category')->result();
+        	$str= "";
+        	if($menus) {
+        	foreach ($menus as $item)
+        	{
+        		$subcategories = $this->getSubCategores($item->id,true);
+				if($subcategories) {
+        			
+					$str .= implode(',', $subcategories);
+					$str = $str.",";
+				}
+        	}
+        	$str = substr($str,0,strlen($str)-1);
+            $where []= "category in (".$str.")";
+        	}else {
+        		$where []= "category = {$categoryId}";
+        	}
+        }
+        if ($where)
+           $where = " WHERE " . implode(' AND ', $where) . " ";
+        
+            $query = "SELECT id, itemname FROM ".$this->db->dbprefix('item').' i '. $where;
+        	$result = $this->db->query($query)->result();
+        $items = array();
+		//echo "<pre>",print_r($result);  die;
+		if($result){
+			 foreach ($result as $item) {
+				$items[$item->id] = $item->itemname;
+			 } // echo "<pre>",print_r($items); die;
+			 return $items;
+		}else{
+		 	return FALSE;
+		}
+        
+    }
     
 }

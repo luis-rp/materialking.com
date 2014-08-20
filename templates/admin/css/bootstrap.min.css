@@ -1911,6 +1911,9 @@ ul.icons li [class^="icon-"],ul.icons li [class*=" icon-"] {
 .quote .icon-file{
  background-image: url("../images/report1.png"); background-repeat:no-repeat; background-position: center; width:30px; height:30px;}
  
+ a.view .icon-file{
+ background-image: url("../images/report1.png"); background-repeat:no-repeat; background-position: center; width:30px; height:30px;}
+ 
 .icon-file{
  background-image: url("../images/report.png"); background-repeat:no-repeat; background-position: center; width:30px; height:30px;}
  

@@ -186,7 +186,8 @@ function viewitems(quoteid)
 		  		$sn = 1;
 		  ?>
 		      <div class="control-group">
-			    <div class="controls"><strong>PO #:<?php echo $quote->ponum; ?>
+			    <div class="controls">
+               <strong>PO #:<?php echo $quote->ponum; ?>
 			      &nbsp; &nbsp; 
 			      Company:   <span class='company-name'><?php echo $bid->companyname;?></span> &nbsp; &nbsp;
 			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp; 
@@ -199,7 +200,7 @@ function viewitems(quoteid)
 			      	if($maxcountitems > count($bid->items))
 			      	{
 			      ?>
-			      
+			 
 			      	  <div style="color:red">*This company did not some items: <span class="btn btn-mini btn-red" onclick="$('#notbid<?php echo $bid->id;?>').modal();">Show</span></div>
 			      	  
 					  <div id="notbid<?php echo $bid->id;?>" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">

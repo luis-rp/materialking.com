@@ -242,6 +242,14 @@ class backtrack extends CI_Controller
 		//=======================================================================
 	
 	
+		$header[] = array('Report type', 'Backorders' , '' , '' , '' , '' , '' , '');		
+				
+		if($this->session->userdata('managedprojectdetails'))
+		{			
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '');
+			$header[] = array('', '' , '' , '' , '' , '' , '' , '');
+		}	
+		
 		foreach($data['backtracks'] as $backtrack)
 		{
 			if(@$backtrack['items'])
@@ -252,7 +260,7 @@ class backtrack extends CI_Controller
 					
 				$header[] = array('PO#', $backtrack['quote']->ponum , '' , '' , '' , '' , '' , '');
 					
-					
+				$header[] = array('', '' , '' , '' , '' , '' , '' , '');		
 					
 				$header[] = array('PO#', 'Item Code' , 'Item Name' , 'Company' , 'Due Qty.' , 'Unit' , 'ETA' , 'Notes');
 	

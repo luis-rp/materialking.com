@@ -44,12 +44,12 @@
 <span class="closex" id="canceltour"></span></div><?php } ?>
 <section class="row-fluid">
 	<h3 class="box-header" style="display:inline;" id="step1">
-	    <?php echo $heading;?>
+	    <?php echo $heading;?>		<?php echo $addlink; ?>
 	</h3>
 		<div class="box">
 
 			<div class="span15">
-			<?php echo $addlink; ?>
+	
 			<br/><br/>
 				<?php echo $table; ?>
 			</div>

@@ -91,36 +91,37 @@ tr.still-due td
 
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title">	
+		<div class="page-title"> <a href="<?php echo site_url('quote/track_export').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">Export</a><br />		
 			<h3>
 			Items for the PO# <?php echo $quote->ponum;?> 
 			<?php if(@$bid->quotenum){?>
 			| Quote Ref# <?php echo $bid->quotenum;?> 
 			<?php }?>
-			</h3>
-			<?php if(isset($messagekey)){ ?>
-			<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
-			<?php } ?>
-			<br>
-			<a class="pull-right" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
 			
+			<?php if(isset($messagekey)){ ?>
+		 <a class="pull-right btn btn-primary" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
+			<?php } ?>
+		 &nbsp; &nbsp;
+			<a class="pull-right btn btn-primary" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
+			 </h3>
 		</div>	
-			Order Date: <?php if(isset($quote->podate)) echo $quote->podate; else echo '';?> 
-			<br/>
-			Company: <?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?> 
-			<br/>	<br/>	
+				<br/>	
 	   <div id="container">
 		<?php 
 		    	if($awarditems)
 		    	{
 		    ?>
 		<div class="row">
+    
 			<form method="post" action="<?php echo site_url('quote/shipitems/'.$quote->id.'/'.$award);?>" enctype="multipart/form-data">
             <div class="col-md-12">
-    			
+    	
                 <div class="grid simple ">
                     <div class="grid-title no-border">
-                        <h4>&nbsp;</h4>
+                    		    Order Date: <?php if(isset($quote->podate)) echo $quote->podate; else echo '';?> 
+			<br/>
+			Company: <?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?> 
+			<br/>
                     
                     </div>
                     <div class="grid-body no-border">

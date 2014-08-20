@@ -15,20 +15,20 @@ function submitForm(val)
     <div class="content">  
     	 <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
-		 <a href="<?php echo site_url('report/export'); ?>" class="btn btn-green">Export</a><br />		
-			<h3>Report</h3>		
+	 	
+			<h3>Report  <a href="<?php echo site_url('report/export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a></h3>		
 		</div>
 	
 	   <div id="container">
 	   		<div class="combofixed" style="width:100%">
 		   
-    		   <form class="form-inline" action="<?php echo site_url('report')?>" method="post">
+    		   <form class="form-inline" action="<?php echo site_url('report')?>" method="post" style=" margin:0px;">
                     From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
                     &nbsp;&nbsp;
                     To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
                    &nbsp;&nbsp;
                     Company:
-    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 140px;" onchange="this.form.submit()"> 
+    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 100px;" onchange="this.form.submit()"> 
     					<option value=''>All Companies</option>
     					<?php foreach($purchasingadmins as $company){?>
     						<option value="<?php echo $company->id?>"
@@ -54,7 +54,7 @@ function submitForm(val)
                       <?php }?>
                   &nbsp;&nbsp;
                   Payment Status:
-                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:120px" onchange="this.form.submit()">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
                            <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>

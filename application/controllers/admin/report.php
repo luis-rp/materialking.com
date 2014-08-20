@@ -59,11 +59,19 @@ class report extends CI_Controller
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Report';
 	
-	
-		//$this->load->view ('admin/report', $data);
-	
-	
 		//=========================================================================================
+		
+		
+		
+		$header[] = array('Report Type' , 'Billing Report','' , '' , '' , '' , '' , '','','','' ,'','' ,'');	
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title,'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'','' ,'');			
+		}	
+			
+		
 		$settings = $data['settings'];
 		$tax = $settings->taxpercent;
 	
@@ -73,11 +81,7 @@ class report extends CI_Controller
 		$totalallpaid = 0;
 			
 		$i = 0;
-			
-			
-			
-			
-			
+					
 		foreach($data['reports'] as $report)
 		{
 	
@@ -112,7 +116,7 @@ class report extends CI_Controller
 				if(isset($item->datedue) && $item->datedue!="")
 				{ $aaaa_due_date =  date("m/d/Y", strtotime($item->datedue)); }
 	
-				$header[] = array($item->companyname , $item->ponum,$item->itemcode , $item->itemname , $item->unit , $item->quantity , formatPriceNew($item->ea), '$'.formatPriceNew(round($amount,2)),$item->paymentstatus,$item->status,$item->notes ,$item->invoicenum,$item->costcode,$aaaa_due_date);
+				$header[] = array($item->companyname , $item->ponum,$item->itemcode , $item->itemname , $item->unit , $item->quantity , $item->ea.chr(160), '$'.round($amount,2).chr(160),$item->paymentstatus,$item->status,$item->notes ,$item->invoicenum,$item->costcode,$aaaa_due_date);
 			}
 	
 			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'','' ,'');
@@ -121,13 +125,13 @@ class report extends CI_Controller
 			$header[] = array('DATE' , $report->receiveddate,'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 			$header[] = array('TOTAL QUANTITY' , $report->totalquantity,'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 				
-			$header[] = array('TOTAL AMOUNT' , '$'.formatPriceNew($report->totalprice),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL AMOUNT' , '$'.$report->totalprice.chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 				
-			$header[] = array('TOTAL PAID' , '$'.formatPriceNew($report->totalpaid),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL PAID' , '$'.$report->totalpaid.chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 				
 			$totalremaining = $totalprice - $totalpaid;
 				
-			$header[] = array('TOTAL REMAINING' , '$'.formatPriceNew(($report->totalprice - $report->totalpaid)),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL REMAINING' , '$'.($report->totalprice - $report->totalpaid).chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 	
 			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'','' ,'');
@@ -146,13 +150,13 @@ class report extends CI_Controller
 	
 			$header[] = array('TOTAL All QUANTITY' , $totalallquantity,'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 				
-			$header[] = array('TOTAL All AMOUNT' , '$'.formatPriceNew($totalallprice),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL All AMOUNT' , '$'.$totalallprice.chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 				
-			$header[] = array('TOTAL All PAID' , '$'.formatPriceNew($totalallpaid),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL All PAID' , '$'.$totalallpaid.chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 	
 			$totalallremaining = $totalallprice - $totalallpaid;
 	
-			$header[] = array('TOTAL All REMAINING' , '$'.formatPriceNew($totalallremaining),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
+			$header[] = array('TOTAL All REMAINING' , '$'.$totalallremaining.chr(160),'' , '' , '' , '' , '' , '','','','' ,'','' ,'');
 	
 				
 	

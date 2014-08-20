@@ -136,9 +136,9 @@ function viewPricelist(itemcode,itemname,price)
 
     <div class="content"> 
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title">	
+		<div class="page-title"> <a href="<?php echo site_url('quote/invitation_export').'/'.$invitekey; ?>" class="btn btn-green">Export</a><br />	
 			<h3>
-				Bid Invitations 
+				Bid Invitations  <a class="pull-right btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/index/'.$quote->id);?>">View Messages</a>
 			</h3>
 			<h4>
 				<?php if($draft){?>
@@ -147,7 +147,7 @@ function viewPricelist(itemcode,itemname,price)
 				<?php }else{?>
 				RFQ is active, Pending Award, Please Submit Your Bid.
 				<?php }?>
-				<a class="pull-right btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/index/'.$quote->id);?>">View Messages</a>
+				
 			</h4>
 			
 		</div>		

@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+ 
 class Quote extends CI_Controller 
 {
 	public function Quote()
@@ -607,6 +607,9 @@ class Quote extends CI_Controller
 		
 		$data['company'] = $company;
 		
+		//for export link
+		$data['invitekey'] = $key;
+		
 		$this->db->where('id',$invitation->purchasingadmin);
 		$pa = $this->db->get('users')->row();
 		$data['purchasingadmin'] = $pa;
@@ -618,6 +621,308 @@ class Quote extends CI_Controller
 		else
 			$this->load->view('quote/quote',$data);
 	}
+	
+	
+	public function invitation_export($key,$print='')
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		$invitation = $this->quotemodel->getinvitation($key);
+		if(!$invitation)
+		{
+			$message = 'Quote Already Submitted for Review, Thank You.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('quote/invitations');
+		}
+		if($company->id != $invitation->company)
+		{
+			$message = 'Wrong Access.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('quote/invitations');
+		}
+		
+		$quote = $this->quotemodel->getquotebyid($invitation->quote);
+		if($this->quotemodel->checkbidcomplete($quote->id))
+		{
+			$message = 'Bid Already Completed, Thank You.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('quote/invitations');
+		}
+		
+		
+        $sql = "SELECT tier FROM " . $this->db->dbprefix('purchasingtier') . " pt
+        		WHERE pt.purchasingadmin='".$quote->purchasingadmin."' AND pt.company='" . $company->id . "'
+			";
+        $data['patier'] = @$this->db->query($sql)->row()->tier;
+		
+		
+		$quoteitems = $this->quotemodel->getquoteitems($quote->id);
+		//print_r($quoteitems);die;
+		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);
+		$company = $this->quotemodel->getcompanybyid($invitation->company);
+		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
+		
+		$sql = "SELECT tier
+				FROM ".$this->db->dbprefix('purchasingtier')." pt 
+				WHERE pt.company='".$company->id."' AND pt.purchasingadmin='".$quote->purchasingadmin."'
+			";
+		$tier = $this->db->query($sql)->row();
+		if($tier)
+		{
+			$tier = $tier->tier;
+			$sql = "SELECT *
+				FROM ".$this->db->dbprefix('tierpricing')." pt 
+				WHERE pt.company='".$company->id."'
+			";
+			$tiers = $this->db->query($sql)->row();
+			$tier = $tiers->$tier;
+		}
+		else
+		{
+			$tier = 0;
+		}
+		//die($tier);
+		//echo $sql;
+		$admins = $this->db->query($sql)->result();
+		
+		
+		foreach($originalitems1 as $q)
+		{
+			$originalitems[$q->itemid] = $q;
+		}
+		$data['originalitems'] = $originalitems;
+		//echo '<pre>'; print_r($originalitems);
+		
+		$this->db->where('company',$company->id);
+		$tiers = $this->db->get('tierpricing')->row();
+		//print_r($tiers);die;
+		$data['tiers'] = $tiers;
+		$data['invitation'] = $key;
+		$data['quote'] = $quote;
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company->id);
+		$bid = $this->db->get('bid')->row();
+	    $data['quotenum'] = $bid?$bid->quotenum:'';
+	    $data['quotefile'] = $bid?$bid->quotefile:'';
+	    $data['expire_date'] = $bid?$bid->expire_date:'';
+	     if($bid){
+	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+	    	$revisionquote = $this->db->query($sqlq)->row();
+	    	if($revisionquote)
+	    	$data['revisionno'] = $revisionquote->revisionid;
+	    	
+	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$revisiondate = $this->db->query($sqlq)->result();
+	    	foreach($revisiondate as $revisedate){	    		
+	    		$revisionsid = $revisedate->revisionid;
+	    		$bid->$revisionsid = $revisedate->daterequested;
+	    	}
+	    	
+	    }
+	   	$data['bid'] = $bid; 
+	    
+		$items = $draftitems?$draftitems:$quoteitems;
+		$data['quoteitems'] = array();
+		//echo '<pre>';print_r($items);//die;
+
+		$sqlq = "SELECT itemcheck
+				FROM ".$this->db->dbprefix('invitation')." iv 
+				WHERE company='".$company->id."' AND purchasingadmin='".$quote->purchasingadmin."' AND invitation='".$key."'
+			";
+		$quoteinvite = $this->db->query($sqlq)->row();
+
+		if($quoteinvite){
+			$quoteitemck = $quoteinvite->itemcheck;
+		}else
+			$quoteitemck = 0;
+		$quoteitemck = 1; // Assigned itemcheck value as 1 by default
+		foreach($items as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);
+			$companyitem = $this->db->get('companyitem')->row();
+			
+			$item->companyitem = $companyitem;
+			
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+			
+			$item->orgitem = $orgitem;
+			
+    	    //if($bid && $quoteitemck)
+    	    if($quoteitemck)
+    	    {
+    			$this->db->where('itemid',$item->itemid);
+    			$this->db->where('type','Purchasing');
+    			$this->db->where('company',$quote->purchasingadmin);
+    			$paitem = $this->db->get('companyitem')->row();
+    			
+    			if($paitem)
+    			    $item->attachment = $paitem->filename;
+    			else
+    			    $item->attachment = '';
+    	    }
+			else
+			{
+			    $item->attachment = '';
+			}
+			//print_r($companyitem);
+			if($companyitem)
+			{
+				$item->itemcode = $companyitem->itemcode;
+				$item->itemname = $companyitem->itemname;
+				if(!$draftitems) $item->ea = $companyitem->ea;
+				$item->showinventorylink = false;
+				
+			}
+			else
+			{
+			    if(!$item->itemcode)
+			        $item->itemcode = $orgitem->itemcode;
+			    if(!$item->itemname)
+			        $item->itemname = $orgitem->itemname;
+				$item->showinventorylink = true;
+			}
+			$price = $item->ea;
+			if(!$draftitems)
+			    $item->ea = number_format($item->ea + ($item->ea * $tier/100),2);
+			
+			$item->totalprice = $item->ea * $item->quantity;
+			$item->tiers = array();
+			$item->tiers['Tier0'] = number_format($price,2);
+			$item->tiers['Tier1'] = number_format($price + ($price * $tiers->tier1/100),2);
+			//echo $item->tiers['Tier1'];echo '<br/>';
+			$item->tiers['Tier2'] = number_format($price + ($price * $tiers->tier2/100),2);
+			//echo $item->tiers['Tier2'];echo '<br/>';
+			$item->tiers['Tier3'] = number_format($price + ($price * $tiers->tier3/100),2);
+			//echo $item->tiers['Tier3'];echo '<br/>';
+			$item->tiers['Tier4'] = number_format($price + ($price * $tiers->tier4/100),2);
+			//echo $item->tiers['Tier4'];echo '<br/>';echo '<br/>';echo '<br/>';
+			$data['quoteitems'][]=$item;
+		}
+		//echo '<pre>';print_r($data['quoteitems']);die;
+		
+		$data['draft'] = $draftitems?1:0;
+		
+		$data['company'] = $company;
+		
+		$this->db->where('id',$invitation->purchasingadmin);
+		$pa = $this->db->get('users')->row();
+		$data['purchasingadmin'] = $pa;
+		
+		
+		
+		//--------------------------------------------------------------------------	
+		$originalitems = $data['originalitems'];
+		
+		if(isset($data['revisionno']))
+		{
+			$revisionno = $data['revisionno'];	
+		}
+		
+		
+		$header[] = array('Reporting Type',	'Bid Invitations', 	'',	'',	'', '', '');			
+		
+		$header[] = array('','', '','',	'', '', '');	
+		
+		$header[] = array('PO#',$quote->ponum, '','',	'', '', '');	
+		
+		$header[] = array('Due',$quote->duedate, '','',	'', '', '');	
+		
+		
+		$header[] = array('Company',$company->title, '','',	'', '', '');	
+		$header[] = array('Contact',$company->contact, '','',	'', '', '');	
+		
+					
+		$revision_no  = '';
+		if(isset($revisionno))
+		{
+		 	$revision_no =  $revisionno-1;
+		}
+		
+		$header[] = array('','', '','',	'', '', '');	
+		$header[] = array('Number of Revisions',$revision_no, '','',	'', '', '');	
+		
+		$header[] = array('','', '','',	'', '', '');	
+					
+		if(isset($revisionno)) 
+		{ 
+			$quotearr = explode(".",$bid->quotenum);  
+						
+			$header[] = array('Quote #','Date', '','',	'', '', '');	
+				
+				
+			if(isset($bid->id))
+			{ 
+			
+				$quotearr  = explode(".",$bid->quotenum);  				 
+				$rev_quote =  $quotearr[0].".000";
+				$rev_date  = '';
+				
+				if(isset($bid->submitdate))
+				{
+					$rev_date  =  date("m/d/Y", strtotime($bid->submitdate)); 				
+				} 
+								
+				$header[] = array($rev_quote , $rev_date, '','',	'', '', '');	
+			}		
+			
+				for($i=2;$i<=$revisionno;$i++)
+				{ 
+				
+					
+					$rev_quote = $quotearr[0].".00".($i-1);
+					
+					$rev_date = '';
+					
+					if(isset($bid->$i))
+					{
+						 $rev_date = date("m/d/Y", strtotime($bid->$i));
+					}
+										
+					$header[] = array($rev_quote , $rev_date, '','',	'', '', '');	
+				}
+				
+		} 
+		
+		$header[] = array('','', '','',	'', '', '');	
+		$header[] = array('','', '','',	'', '', '');	
+			
+		
+		$patier   = $data['patier'];
+		$header[] = array('Tier Level',$patier, '','',	'', '', '');	
+		
+		$header[] = array('','', '','',	'', '', '');	
+		
+		$header[] = array('Item Name','Qty', 'Unit','Price',	'Total', 'Date Avail', 'Note');	
+		
+		foreach($quoteitems as $q)
+		{
+		
+			if(@$q->itemid)
+			{
+				if(@$originalitems[$q->itemid])
+				{		
+					$header[] = array($originalitems[$q->itemid]->itemname,$originalitems[$q->itemid]->quantity, $originalitems[$q->itemid]->unit,'$'.$originalitems[$q->itemid]->ea.chr(160), round($originalitems[$q->itemid]->ea * $originalitems[$q->itemid]->quantity,2), $originalitems[$q->itemid]->daterequested, $originalitems[$q->itemid]->notes);
+			
+				}				
+				
+				//$header[] = array(htmlspecialchars_decode($q->itemname, ENT_COMPAT), $q->quantity, $q->unit,'$'.$q->ea.chr(160),	$q->totalprice, $q->daterequested, $q->notes);
+			}
+		}	
+				
+		createXls('bid_invitations ', $header);  			
+		die();	
+		
+		//===============================================================================	
+						
+	}
+	
+
+	
+	
 	
 	public function placebid()
 	{
@@ -1005,6 +1310,145 @@ class Quote extends CI_Controller
 		$data['backtracks'] = $backtracks;
 		$this->load->view('quote/backtracks',$data);
 	}
+	
+	public function viewbacktrack_export($quote)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		$backtrack = $this->quotemodel->getBacktrackDetails($quote,$company->id);
+		
+		$quote = $this->quotemodel->getquotebyid($quote);
+		$award = $this->quotemodel->getawardedbid($quote->id);
+		
+		$awardeditems = $this->quotemodel->getawardeditems($award->id,$company->id);
+		$data['awardeditems'] = array();
+		foreach($awardeditems as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+				$item->itemcode = $companyitem->itemcode;
+				$item->itemname = $companyitem->itemname;
+			}
+			
+			$item->etalog = $this->db->where('company',$company->id)
+                			->where('quote',$quote->id)
+                			->where('itemid',$item->itemid)
+                			->get('etalog')->result();
+			
+			$data['awardeditems'][] = $item;
+		}
+		//echo '<pre>';print_r($backtrack);die;
+		$data['backtrack'] = $backtrack;
+		$data['company'] = $company;
+		$data['quote'] = $quote;
+		
+		$this->db->where('id',$quote->purchasingadmin);
+		$data['pa'] = $this->db->get('users')->row();
+		
+		$this->load->view('quote/backtrack',$data);
+		
+		
+		//=========================================================================================
+								
+		$header[] = array('Report type' , 'Bid Progress','' , '' , ' ' , ' ' , ' ','');
+		
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		
+		
+		$recsum =0;
+		$qntsum =0;
+		foreach($backtrack['items'] as $ai)
+		{
+			$recsum = $recsum + $ai->received;
+			$qntsum = $qntsum + $ai->quantity;
+			//print_r($ai);die;
+		}
+		if($qntsum==0) $per=0;
+		else $per = number_format(($recsum/$qntsum)*100,2);
+		$per .='%';
+			
+					
+		
+		$header[] = array('Items received' , $per,'' , '' , ' ' , ' ' , ' ','');
+		
+		
+		$header[] = array('PO#' ,$quote->ponum,'' , '' , ' ' , ' ' , ' ','');
+		
+		$header[] = array('Company' ,$company->title,'' , '' , ' ' , ' ' , ' ','');
+		
+		$header[] = array('Contact' ,$company->contact,'' , '' , ' ' , ' ' , ' ','');
+			
+	
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		
+		
+		
+		$header[] = array('Item Name' , 'Qty. Req','Qty. Due' , 'Unit' , 'Price EA' , 'Total Price' , 'Date Available','Notes');
+		
+		foreach($backtrack['items'] as $q)
+		{
+			$due_quantity = $q->quantity - $q->received;
+				
+			$total_quantity = round($q->ea * ($q->quantity - $q->received), 2);
+				
+			$header[] = array(htmlentities($q->itemname) , $q->quantity,$due_quantity , $q->unit , '$'.$q->ea.chr(160) , '$'.$total_quantity.chr(160) , $q->daterequested, $q->notes);
+		
+		}
+		
+		
+		
+		
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		$header[] = array('ETA Update History' , '','' , '' , ' ' , ' ' , ' ','');
+		$header[] = array('' , '','' , '' , ' ' , ' ' , ' ','');
+		
+		$header[] = array('Date' , 'Notes','Updated' , '' , ' ' , ' ' , ' ','');
+		
+		
+		$i=0;
+		foreach($q->etalog as $l)		
+		{
+			if($q->etalog)
+			{
+				$date_1 = '';
+				if ($i==0)
+				{
+					$date_1 =  $l->daterequested;
+				}else{ 
+					$date_1 =  "changed from ".$olddate." to ".$l->daterequested;
+				}	
+				$header[] = array($date_1 , $l->notes,date("m/d/Y", strtotime($l->updated)) , '' , ' ' , ' ' , ' ','');
+				
+				$i++; $olddate = $l->daterequested; 
+			}		
+		}
+				
+		
+		createXls('backtrack_report', $header);  			
+		die();	
+		
+		//===============================================================================
+		
+				
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public function viewbacktrack($quote)
 	{
@@ -1650,8 +2094,254 @@ or edit your quote.</div></div></div>');
 			$data['messagekey'] = $message->messagekey;
 		}
 		
+		//for export link
+		$data['quoteid'] = $quoteid;
+		$data['award']   = $award;
+				
 		$this->load->view('quote/track',$data);
 	}
+	
+	
+	function track_export($quoteid,$award='')
+	{
+				
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		
+		$awardeditems = $this->quotemodel->getawardeditems($award,$company->id);
+		if(!$awardeditems)
+			redirect('quote/items/'.$quoteid);
+		$data['awarditems'] = array();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company->id);
+		$bid = $this->db->get('bid')->row();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company->id);
+		$this->db->order_by('uploadon','DESC');
+		$docs = $this->db->get('shippingdoc')->result();
+		
+		$data['shippingdocs'] = $docs;
+		
+		$complete = true;
+		$noitemsgiven = true;
+		$allawarded = true;
+		foreach($awardeditems as $ai)
+		{
+		
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+			    if($companyitem->itemcode)
+				    $ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+				    $ai->itemname = $companyitem->itemname;
+			}
+			
+			if($ai->received < $ai->quantity)
+				$complete = false;
+			if($ai->company != $company->id)
+				$allawarded = false;
+			if($ai->received > 0)
+				$noitemsgiven = false;
+			
+			$ai->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company->id)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+			
+			$data['awarditems'][] = $ai;
+		}
+		if(!$noitemsgiven)
+		{
+			if($complete)
+			{
+				$quote->status = 'Completed';
+				$quote->progress = 100;
+				$quote->mark = "progress-bar-success";
+			}
+			else
+			{
+				$quote->status = 'Partially Completed';
+				$quote->progress = 80;
+				$quote->mark = "progress-bar-success";
+			}
+		}
+		else
+		{
+			$quote->status = 'Awarded';
+			$quote->progress = 60;
+			$quote->mark = "progress-bar-success";
+		}
+		
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->where('quote',$quoteid)->where('company',$company->id)
+		             ->get()->result();
+		
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+		
+		$invs = $this->quotemodel->getinvoices($company->id);
+		$invoices = array();
+		foreach($invs as $i)
+		    if($i->quote->id == $quoteid)
+			    $invoices[]=$i;
+		//print_r($invoices);die;
+		$data['quote'] = $quote;
+		$data['award'] = $award;
+		$data['invoices'] = $invoices;
+		$data['settings'] = $settings;
+		$data['shipments'] = $shipments;
+		
+		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		
+		//  $this->load->view('quote/track',$data);
+		
+		//--------------------------------------------------------------------------
+		
+		$shippingdocs = $data['shippingdocs'];
+		
+		
+		$header[] = array('Report Type','Quote Performance','','','','','','','');
+				
+		if(isset($quote->podate))
+		{ 
+			$order_date = $quote->podate; 
+			$header[] = array('Order Date',$order_date ,'','','','','','','');
+		}
+			
+		if(isset($purchasingadmin->companyname))
+		{
+			$companyname_name =  $purchasingadmin->companyname;
+			$header[] = array('Company',$companyname_name ,'','','','','','','');
+		}
+				
+		$header[] = array('','' ,'','','','','','','');
+		$header[] = array('PO Progress',$quote->progress.'%'.chr(160) ,'','','','','','','');
+		
+		$header[] = array('','' ,'','','','','','','');
+		
+		
+		
+		
+		
+		
+		
+		$header[] = array('ITEM Code/Name','Qty','Unit','Price','Total','Requested','Notes','Shipped','Due');
+		
+		$awarditems = $data['awarditems'];
+			
+		$i = 0;
+		foreach($awarditems as $ai)
+		{
+			$i++;
+										
+			$itemname = '';
+			if(trim($ai->itemname) != '')
+			{			
+				$itemname = '('.$ai->itemname.')';
+			}
+			
+			$due = $ai->quantity - $ai->received;
+			
+			if($ai->pendingshipments)
+			{
+                 $due.=  $ai->pendingshipments.'(Pending Acknowledgement)';
+            }
+						
+			$header[] = array($ai->itemcode.$itemname, $ai->quantity , $ai->unit , '$'.$ai->ea.chr(160) ,'$'.round($ai->quantity * $ai->ea,2).chr(160),$ai->daterequested,$ai->notes,$ai->received,$due);							
+										
+		}								
+										
+										
+		if($shippingdocs)
+		{		
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Existing Documents','' ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');								
+		
+			
+			
+			$header[] = array('Date','REF#' ,'','','','','','','');	
+		
+			foreach($shippingdocs as $sd)
+			{
+				$header[] = array(date("m/d/Y",  strtotime($sd->uploadon)),$sd->invoicenum ,'','','','','','','');		
+			}
+			$header[] = array('','' ,'','','','','','','');				
+		}
+		
+		
+		
+		if($shipments)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Shipments Made For PO#', $quote->ponum ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');	
+		
+		
+			$header[] = array('Ref#','Item' ,'Quantity','Sent On','Status','','','','');	
+		
+			foreach($shipments as $s)
+			{
+				$ship_status = $s->accepted?'Accepted':'Pending';
+				$header[] = array($s->invoicenum,$s->itemname ,$s->quantity,date('m/d/Y',strtotime($s->shipdate)), $ship_status ,'','','','');
+			}				
+		}
+		
+		
+		
+		if($invoices)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Existing Invoices For PO#',  $quote->ponum ,'','','','','','','');
+			
+			$header[] = array('Invoice#','Status' ,'Received On','Total Cost','Payment Status','Due Date','','','');	
+			
+			foreach($invoices as $i)
+			{
+				$amount = $i->totalprice;
+				$amount = $amount + ($amount*$settings->taxpercent/100);
+				$amount = number_format($amount,2);
+
+				$verify_status = '';
+				if($i->status=='Verified')
+				{
+	                 $verify_status = '('.$i->paymenttype.'/'.$i->refnum.')';
+	            }
+
+				$header[] = array($i->invoicenum,$i->status ,$i->receiveddate,'$'.$amount.chr(160),$i->paymentstatus.$verify_status,date('m/d/Y',strtotime($i->datedue)),'','','');				
+			}
+		}
+										
+		createXls('po_performance', $header);  			
+		die();	
+		
+		//===============================================================================
+		
+	}
+	
+	
+	
+	
+	
+	 
+	
+	
+	
+	
+	
 	/* is merged with shipitems function
 	function saveshippingdoc()
 	{
@@ -2082,21 +2772,36 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			else
 				$itemslost++;
 		}
-		//print_r($allawardeditems);die;
+		
 		$data['itemswon'] = $itemswon;
 		$data['itemslost'] = $itemslost;
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
 		$data['award'] = $award;
 		$data['company'] = $company;
-	
-		//$this->load->view('quote/items',$data);
-	
+			
 		$quote = $data['quote'];
 	
 		//=========================================================================================
-	
-		$header[] = array('' , '','' , '' , '' , '', '');
+		$customer_name = '';
+		
+		$allawardeditems_for_c = $allawardeditems;
+		foreach($allawardeditems_for_c as $ai)
+		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			break;
+		}		
+				
+		$header[] = array('Customer' , $customer_name ,'' , '' , '' , '', '');
+		
+		$header[] = array('Report Type' , 'PO Performance','' , '' , '' , '', '');
+		
+		$header[] = array('' , '','' , '' , '' , '', '');	
 		$header[] = array('PO Performance :' , $quote->ponum,'' , '' , '' , '', '');
 		$header[] = array('' , '','' , '' , '' , '', '');
 		$header[] = array('Items Won :' , $itemswon,'' , '' , '' , '', '');
@@ -2107,10 +2812,23 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$header[] = array('Item Code' , 'Item Name','QTY.' , 'Unit', 'Price' , 'Total' , 'Requested');
 			
 		$i = 0;
+		
 		foreach($allawardeditems as $ai)
 		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			
+			
+			
+			
+			
+			//--------------------------------------------------------------
 			$i++;
-			$header[] = array($ai->itemcode , $ai->itemname,$ai->quantity , $ai->unit , '$ '. formatPriceNew($ai->ea) , '$ '.formatPriceNew(round($ai->quantity * $ai->ea,2)),$ai->daterequested);
+			$header[] = array($ai->itemcode , $ai->itemname,$ai->quantity , $ai->unit , '$ '. $ai->ea.chr(160) , '$ '.round($ai->quantity * $ai->ea,2).chr(160),$ai->daterequested);
 		}
 		createXls('Quote_items_'.$quoteid, $header);
 		die();

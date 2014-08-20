@@ -60,7 +60,7 @@
 <span class="button" id="activatetour">Start the tour</span>
 <span class="closex" id="canceltour"></span></div><?php } ?>
 <section class="row-fluid">
-	<h3 class="box-header"  style="display:inline" id="step1"><?php echo $heading; ?></h3>
+	<h3 class="box-header"  style="display:inline" id="step1"><?php echo $heading; ?>  <?php echo $addlink;?></h3>
 	<div class="box">
 	  <div class="span12">
 
@@ -73,7 +73,7 @@
               <tr>
                 <th>
                 <div>
-                <?php echo $addlink;?>
+              
                 </div>
                 </th>
                </tr>

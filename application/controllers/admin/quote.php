@@ -497,7 +497,7 @@ class quote extends CI_Controller
         $data ['action'] = site_url('admin/quote/updatequote');
         //$this->load->view ('admin/quote', $data);
 
-        if ($data['potype'] == 'Bid')
+	    if ($data['potype'] == 'Bid')
             $this->load->view('admin/quote', $data);
         else
             $this->load->view('admin/direct', $data);
@@ -1122,10 +1122,15 @@ class quote extends CI_Controller
     		$awarded     = $data['awarded'];
 
 
+		$header[] = array('Report type','Bid Review' , '' , '' , '' , '' , '','','', '','', '' );
 
-
-    	//$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
-
+    	if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );			
+			$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
+		}	
+		
+		
 
     	$alltotal=0;
 
@@ -1134,8 +1139,9 @@ class quote extends CI_Controller
     	{
 
     		$alltotal = '';
-
-    		$header[] = array('PO #:',$quote->ponum , 'Company:' , $bid->companyname , 'Submitted:' , date('m/d/Y', strtotime($bid->submitdate)) , '','','', '','', '' );
+			$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
+    		
+			$header[] = array('PO #:',$quote->ponum , 'Company:' , $bid->companyname , 'Submitted:' , date('m/d/Y', strtotime($bid->submitdate)) , '','','', '','', '' );
 
     		$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
     		$header[] = array('Item Code','Item Name' , 'Qty.' , 'Unit' , '60 day Low. Price' , 'Price EA' , 'Price Requested','Total Price','Date Available', 'Cost Code','Notes', 'Compare' );
@@ -1870,10 +1876,17 @@ class quote extends CI_Controller
 
     	//=========================================================================================
     	$quote = $data['quote'];
+    			
+		$header[] = array('Report type' , 'Order Tracking', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
-    	$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
-
-
+    	if($this->session->userdata('managedprojectdetails'))
+		{		
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title, '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		}			
+		
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );	
 
 
     	$header[] = array('Company' , 'Item Code' , 'Item Name' , 'Qty.' , 'Unit' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Cost Code' , 'Notes' , 'Still Due' );

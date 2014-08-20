@@ -93,7 +93,7 @@
 <span class="closex" id="canceltour"></span></div><?php } ?>
 
 <section class="row-fluid">
-    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?></h3>
+    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?>   <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a></h3>
     <div class="box">
         <div class="span12">
 
@@ -109,7 +109,7 @@
                             <?php echo $addlink;
                             echo '&nbsp;' . $addcatlink;
                             echo '&nbsp;' . $addsubcatlink; ?>
-                            <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>
+                          
                             <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
 
