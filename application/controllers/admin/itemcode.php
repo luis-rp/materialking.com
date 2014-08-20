@@ -33,6 +33,7 @@ class itemcode extends CI_Controller
         $this->load->template('../../templates/admin/template', $data);
     }
 
+  
     function export()
     {
     	$itemcodes = $this->itemcode_model->get_itemcodes();
@@ -77,7 +78,20 @@ class itemcode extends CI_Controller
     		$data['addcatlink'] = '';
     		$data['addsubcatlink'] = '';
     	}
-    	//===============================================================================
+    	
+		//===============================================================================
+		
+		$header[] = array('Report type','Item Code History','','','','','');
+				
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title,'','','','','');
+			
+			$header[] = array('','','','','','','');
+			
+		}	
+
+		//------------------------------------------------------
 
     	$header[] = array('ID','Code','Item Name','Unit','Total purchased amount','Last awarded date','');
 

@@ -268,6 +268,9 @@ class costcode extends CI_Controller {
 
         $this->load->view('admin/costcodelist', $data);
     }
+  
+       
+	
     function export($costcode)
     {
     	$costcode = urldecode($costcode);
@@ -306,16 +309,30 @@ class costcode extends CI_Controller {
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
     			$project = $this->db->query($sql)->result();
-    			$order->prjName = "Assigned to ".$project[0]->title;
+    			$order->prjName = "assigned to ".$project[0]->title;
     		}else{
-    			$order->prjName = "Pending Project Assignment";
+    			$order->prjName = "Pending Assignment";
     		}
     		$data['orders'][]=$order;
     	}
 
     	//===============================================================================
 
-    	$header[] = array('ID' , 'PO#' , 'Code' , 'Item Name' , 'Unit' , 'Quantity' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Status');
+    	
+		$poitem_title = 'Items with costcode '.$costcode;
+		
+		$header[] = array('Report type' , $poitem_title , '' , '' , '' , '' , '' , '' , '' , '');
+		
+						
+		if($this->session->userdata('managedprojectdetails'))
+		{
+				
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');			
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '' , '');
+		}	
+				
+		
+		$header[] = array('ID' , 'PO#' , 'Code' , 'Item Name' , 'Unit' , 'Quantity' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Status');
 
     	foreach($items  as  $enq_row)
     	{
@@ -325,6 +342,8 @@ class costcode extends CI_Controller {
     	die();
 
     }
+	
+		
     function items($costcode) {
         $costcode = urldecode($costcode);
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);

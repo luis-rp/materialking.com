@@ -304,6 +304,9 @@ class Order extends CI_Controller
 		//echo $id.'-'.$company->id.'-'.$status;die;
 		redirect('order/details/'.$id);
 	}
+	
+	
+		
 	function export_order($id)
 	{
 		$company = $this->session->userdata('company');
@@ -318,8 +321,7 @@ class Order extends CI_Controller
 		if($order->purchasingadmin)
 		{
 			$this->db->where('id',$order->purchasingadmin);
-			$order->purchaser = $this->db->get('users')->row();
-			//print_r($order->purchaser);die;
+			$order->purchaser = $this->db->get('users')->row();			
 		}
 		else
 		{
@@ -330,10 +332,10 @@ class Order extends CI_Controller
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$orderdetails = $this->db->get('orderdetails')->result();
-		//echo '<pre>';print_r($orderdetails);die;
+		
 		$data['order'] = $order;
 		$data['orderitems'] = array();
-		//echo '<pre>';print_r($order);die;
+	
 		foreach($orderdetails as $item)
 		{
 			if($item->company == $company->id)
@@ -382,7 +384,9 @@ class Order extends CI_Controller
 			}
 		}
 		//$this->load->view('order/details',$data);
-		
+	
+	
+	
 		//=========================================================================================
 	
 		$order = $data['order'];
@@ -424,12 +428,16 @@ class Order extends CI_Controller
 		$header[] = array('' , '','' , '' , '' , '' , 'Total' ,'$ '.$totalwithtax.chr(160));
 	
 		createXls('order_detail_'.$id, $header);
-		
 		die();
 	
 		//===============================================================================
 	
 	}
+
+	
+	
+	
+	
 	function accept($id,$status)
 	{
 		$company = $this->session->userdata('company');

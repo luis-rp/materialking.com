@@ -29,6 +29,7 @@ class report extends CI_Controller
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
 	
+		
 	function export($offset = 0)
 	{
 		$uri_segment = 4;
@@ -168,6 +169,7 @@ class report extends CI_Controller
 		//===============================================================================
 			
 	}
+	
 	
 	function index($offset = 0) 
 	{

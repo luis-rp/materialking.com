@@ -22,6 +22,7 @@ class Dashboard extends CI_Controller
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
 	
+		
 	function export()
 	{
 	
@@ -161,6 +162,53 @@ class Dashboard extends CI_Controller
 	
 		//===============================================================================
 	
+		
+		
+		
+		
+		
+		
+		$report_title = 'Project Statistics';		
+		$header[] = array('Report type' , $report_title , '' , '' , '' , '' , '' , '' , '');
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{			
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' , '');		
+			
+		}
+		else
+		{
+		
+			$projects_arr = array();
+			foreach($data['projects'] as $prj)
+			{			
+				
+				$projects_arr[] =  $prj->title;
+			}
+			
+			
+			
+			$projects_string = implode(", ",$projects_arr);	
+			
+			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' , '');	
+		
+		}	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+				
+		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+	
+			
+		//---------------------------------------------------------------------------
+			
+	
 		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' , 'Number of Companies');
 			
 	
@@ -193,8 +241,9 @@ class Dashboard extends CI_Controller
 	
 		//===============================================================================
 	
-	}
+	}	
 	
+		
 	function index() 
 	{
 		//echo '<pre>';print_r($data);die;

@@ -1026,7 +1026,7 @@ class quote extends CI_Controller
         redirect('admin/quote/update/' . $qid);
     }
 
-    function bids_export($qid)
+     function bids_export($qid)
     {
     	if ($this->session->userdata('usertype_id') == 3)
     		redirect('admin/purchasingadmin/bids/' . $qid);
@@ -1122,16 +1122,18 @@ class quote extends CI_Controller
     		$awarded     = $data['awarded'];
 
 
-		$header[] = array('Report type','Bid Review' , '' , '' , '' , '' , '','','', '','', '' );
 
-    	if($this->session->userdata('managedprojectdetails'))
+
+    	$header[] = array('Report type','Bid Review' , '' , '' , '' , '' , '','','', '','', '' );
+
+		if($this->session->userdata('managedprojectdetails'))
 		{
 			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );			
 			$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
 		}	
 		
 		
-
+		
     	$alltotal=0;
 
 
@@ -1232,6 +1234,9 @@ class quote extends CI_Controller
 
 
     }
+	
+	
+	
 
     function bids($qid)
     {
@@ -1654,12 +1659,21 @@ class quote extends CI_Controller
         echo '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Invoice Payment Status Changed.</div></div>';
     }
 
-    function export()
+
+
+
+     function export()
     {
     	$invoices = $this->quote_model->getinvoices();
-    	// $invoices = $this->quote_model->getinvoices_test();
-
+    	
     	//===============================================================================
+	
+		$header[] = array('Report type' , 'Invoices' , '' , '' , '' , '' , '' );	
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{			
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			$header[] = array('' , '' , '' , '' , '' , '' , '' );		
+		}	
 
     	$header[] = array('PO Number' , 'Invoice' , 'Received On' , 'Total Cost' , 'Payment Status' , 'Verification' , 'Date Due' );
     	foreach($invoices as $i)
@@ -1682,6 +1696,10 @@ class quote extends CI_Controller
     	die();
 
     }
+
+
+
+
 
 
     function invoices()
@@ -1819,7 +1837,10 @@ class quote extends CI_Controller
         $this->load->view('admin/invoice', $data);
     }
 
-    function trackexport($qid)
+ 
+ 
+
+  function trackexport($qid)
     {
     	if ($this->session->userdata('usertype_id') == 3)
     		redirect('admin/purchasinguser/bids/' . $qid);
@@ -1876,7 +1897,7 @@ class quote extends CI_Controller
 
     	//=========================================================================================
     	$quote = $data['quote'];
-    			
+		
 		$header[] = array('Report type' , 'Order Tracking', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
     	if($this->session->userdata('managedprojectdetails'))
@@ -1887,7 +1908,6 @@ class quote extends CI_Controller
 		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 		$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
 		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );	
-
 
     	$header[] = array('Company' , 'Item Code' , 'Item Name' , 'Qty.' , 'Unit' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Cost Code' , 'Notes' , 'Still Due' );
 
@@ -2148,6 +2168,8 @@ class quote extends CI_Controller
 
 
     }
+
+
 
 
     function track($qid)

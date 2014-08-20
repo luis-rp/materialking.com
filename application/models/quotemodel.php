@@ -348,6 +348,65 @@ class Quotemodel extends Model
 		return NULL;
 	}
 	
+	function getinvoices_export($company)
+	{
+		$search   = '';
+		$searches = array();
+		$pafilter = '';			
+							
+		if($this->session->userdata("quote_search"))
+		{
+			$search = $this->session->userdata("quote_search");
+		}	
+				
+		if($this->session->userdata("pafilter"))
+		{
+			$pafilter = $this->session->userdata("pafilter");
+		}		
+					
+		//----------edit ends------------------	----------------------------------------------------
+				
+		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
+				   FROM 
+				   ".$this->db->dbprefix('received')." r,
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
+				  GROUP BY invoicenum 
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				  ";
+		//echo $query;
+		//exit;
+		
+		$invoicequery = $this->db->query($query);
+		$items = $invoicequery->result();
+		
+		$invoices = array();
+		foreach($items as $invoice)
+		{
+			$quotesql = "SELECT q.*
+					   FROM 
+					   ".$this->db->dbprefix('received')." r,
+					   ".$this->db->dbprefix('awarditem')." ai,
+					   ".$this->db->dbprefix('award')." a,
+					   ".$this->db->dbprefix('quote')." q
+					  WHERE r.awarditem=ai.id AND ai.award=a.id 
+					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
+					  ";
+			$quotequery = $this->db->query($quotesql);
+			$invoice->quote = $quotequery->row();
+			
+			$invoices[]=$invoice;
+		}
+		
+		return $invoices;
+	}
+
+	
+	
+	
+	
 	function getinvoices($company)
 	{
 		$search='';
@@ -374,14 +433,48 @@ class Quotemodel extends Model
 			$todate = date('Y-m-d', strtotime($_POST['searchto']));
 			$searches[] = " STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate'";
 		}
+		
+		
+		// ------- note: $_SESSION['quote_search'] and $_SESSION['pafilter'] are used for export function
+		
+		
 		if($searches)
 		{
-			$search = " AND ".implode(" AND ", $searches);
+			$search = " AND ".implode(" AND ", $searches);			
+			$this->session->set_userdata("quote_search",$search);		
 		}
-		
-		$pafilter = '';		
+		else
+		{
+			$this->session->unset_userdata("quote_search");
+		}
+						
+		if($this->session->userdata("quote_search"))
+		{
+			$search = $this->session->userdata("quote_search");
+		}
+		//-----------------------					
+		$pafilter = '';			
 		if(@$_POST['searchpurchasingadmin'])
+		{
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+			
+			$this->session->set_userdata("pafilter",$pafilter);
+			$this->session->set_userdata("searchpurchasingadmin",$_POST['searchpurchasingadmin']);		
+		}
+		else
+		{
+			$this->session->unset_userdata('pafilter');
+		}
+				
+		if($this->session->userdata("pafilter"))
+		{
+			$pafilter = $this->session->userdata("pafilter");
+		}		
+					
+		//----------edit ends------------------	----------------------------------------------------
+		
+			
+		
 		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
 				   FROM 
