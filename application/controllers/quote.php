@@ -1452,16 +1452,7 @@ class Quote extends CI_Controller
 		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	public function viewbacktrack($quote)
 	{
 		$company = $this->session->userdata('company');
@@ -2114,237 +2105,6 @@ or edit your quote.</div></div></div>');
 	}
 	
 	
-	function track_export($quoteid,$award='')
-	{
-				
-		$company = $this->session->userdata('company');
-		if(!$company)
-			redirect('company/login');
-		
-		$quote = $this->quotemodel->getquotebyid($quoteid);
-		
-		$awardeditems = $this->quotemodel->getawardeditems($award,$company->id);
-		if(!$awardeditems)
-			redirect('quote/items/'.$quoteid);
-		$data['awarditems'] = array();
-		
-		$this->db->where('quote',$quote->id);
-		$this->db->where('company',$company->id);
-		$bid = $this->db->get('bid')->row();
-		
-		$this->db->where('quote',$quote->id);
-		$this->db->where('company',$company->id);
-		$this->db->order_by('uploadon','DESC');
-		$docs = $this->db->get('shippingdoc')->result();
-		
-		$data['shippingdocs'] = $docs;
-		
-		$complete = true;
-		$noitemsgiven = true;
-		$allawarded = true;
-		foreach($awardeditems as $ai)
-		{
-		
-			$this->db->where('itemid',$ai->itemid);
-			$this->db->where('type','Supplier');
-			$this->db->where('company',$company->id);
-			$companyitem = $this->db->get('companyitem')->row();
-			if($companyitem)
-			{
-			    if($companyitem->itemcode)
-				    $ai->itemcode = $companyitem->itemcode;
-				if($companyitem->itemname)
-				    $ai->itemname = $companyitem->itemname;
-			}
-			
-			if($ai->received < $ai->quantity)
-				$complete = false;
-			if($ai->company != $company->id)
-				$allawarded = false;
-			if($ai->received > 0)
-				$noitemsgiven = false;
-			
-			$ai->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
-			                        ->from('shipment')
-			                        ->where('quote',$quoteid)->where('company',$company->id)
-			                        ->where('itemid',$ai->itemid)->where('accepted',0)
-			                        ->get()->row()->pendingshipments;
-			
-			$data['awarditems'][] = $ai;
-		}
-		if(!$noitemsgiven)
-		{
-			if($complete)
-			{
-				$quote->status = 'Completed';
-				$quote->progress = 100;
-				$quote->mark = "progress-bar-success";
-			}
-			else
-			{
-				$quote->status = 'Partially Completed';
-				$quote->progress = 80;
-				$quote->mark = "progress-bar-success";
-			}
-		}
-		else
-		{
-			$quote->status = 'Awarded';
-			$quote->progress = 60;
-			$quote->mark = "progress-bar-success";
-		}
-		
-		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
-		             ->where('quote',$quoteid)->where('company',$company->id)
-		             ->get()->result();
-		
-	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
-		
-		$invs = $this->quotemodel->getinvoices($company->id);
-		$invoices = array();
-		foreach($invs as $i)
-		    if($i->quote->id == $quoteid)
-			    $invoices[]=$i;
-		//print_r($invoices);die;
-		$data['quote'] = $quote;
-		$data['award'] = $award;
-		$data['invoices'] = $invoices;
-		$data['settings'] = $settings;
-		$data['shipments'] = $shipments;
-		
-		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		
-		//  $this->load->view('quote/track',$data);
-		
-		//--------------------------------------------------------------------------
-		
-		$shippingdocs = $data['shippingdocs'];
-		
-		
-		$header[] = array('Report Type','Quote Performance','','','','','','','');
-				
-		if(isset($quote->podate))
-		{ 
-			$order_date = $quote->podate; 
-			$header[] = array('Order Date',$order_date ,'','','','','','','');
-		}
-			
-		if(isset($purchasingadmin->companyname))
-		{
-			$companyname_name =  $purchasingadmin->companyname;
-			$header[] = array('Company',$companyname_name ,'','','','','','','');
-		}
-				
-		$header[] = array('','' ,'','','','','','','');
-		$header[] = array('PO Progress',$quote->progress.'%'.chr(160) ,'','','','','','','');
-		
-		$header[] = array('','' ,'','','','','','','');
-		
-		
-		
-		
-		
-		
-		
-		$header[] = array('ITEM Code/Name','Qty','Unit','Price','Total','Requested','Notes','Shipped','Due');
-		
-		$awarditems = $data['awarditems'];
-			
-		$i = 0;
-		foreach($awarditems as $ai)
-		{
-			$i++;
-										
-			$itemname = '';
-			if(trim($ai->itemname) != '')
-			{			
-				$itemname = '('.$ai->itemname.')';
-			}
-			
-			$due = $ai->quantity - $ai->received;
-			
-			if($ai->pendingshipments)
-			{
-                 $due.=  $ai->pendingshipments.'(Pending Acknowledgement)';
-            }
-						
-			$header[] = array($ai->itemcode.$itemname, $ai->quantity , $ai->unit , '$'.$ai->ea.chr(160) ,'$'.round($ai->quantity * $ai->ea,2).chr(160),$ai->daterequested,$ai->notes,$ai->received,$due);							
-										
-		}								
-										
-										
-		if($shippingdocs)
-		{		
-			$header[] = array('','' ,'','','','','','','');							
-			$header[] = array('','' ,'','','','','','','');	
-			$header[] = array('Existing Documents','' ,'','','','','','','');	
-			$header[] = array('','' ,'','','','','','','');								
-		
-			
-			
-			$header[] = array('Date','REF#' ,'','','','','','','');	
-		
-			foreach($shippingdocs as $sd)
-			{
-				$header[] = array(date("m/d/Y",  strtotime($sd->uploadon)),$sd->invoicenum ,'','','','','','','');		
-			}
-			$header[] = array('','' ,'','','','','','','');				
-		}
-		
-		
-		
-		if($shipments)
-		{
-			$header[] = array('','' ,'','','','','','','');							
-			$header[] = array('','' ,'','','','','','','');	
-			$header[] = array('Shipments Made For PO#', $quote->ponum ,'','','','','','','');	
-			$header[] = array('','' ,'','','','','','','');	
-		
-		
-			$header[] = array('Ref#','Item' ,'Quantity','Sent On','Status','','','','');	
-		
-			foreach($shipments as $s)
-			{
-				$ship_status = $s->accepted?'Accepted':'Pending';
-				$header[] = array($s->invoicenum,$s->itemname ,$s->quantity,date('m/d/Y',strtotime($s->shipdate)), $ship_status ,'','','','');
-			}				
-		}
-		
-		
-		
-		if($invoices)
-		{
-			$header[] = array('','' ,'','','','','','','');							
-			$header[] = array('','' ,'','','','','','','');	
-			$header[] = array('Existing Invoices For PO#',  $quote->ponum ,'','','','','','','');
-			
-			$header[] = array('Invoice#','Status' ,'Received On','Total Cost','Payment Status','Due Date','','','');	
-			
-			foreach($invoices as $i)
-			{
-				$amount = $i->totalprice;
-				$amount = $amount + ($amount*$settings->taxpercent/100);
-				$amount = number_format($amount,2);
-
-				$verify_status = '';
-				if($i->status=='Verified')
-				{
-	                 $verify_status = '('.$i->paymenttype.'/'.$i->refnum.')';
-	            }
-
-				$header[] = array($i->invoicenum,$i->status ,$i->receiveddate,'$'.$amount.chr(160),$i->paymentstatus.$verify_status,date('m/d/Y',strtotime($i->datedue)),'','','');				
-			}
-		}
-										
-		createXls('po_performance', $header);  			
-		die();	
-		
-		//===============================================================================
-		
-	}
-	
-	
 	
 	
 	
@@ -2747,7 +2507,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		}
 	}
 	
-	
+
 	function track_export($quoteid,$award='')
 	{
 				
@@ -2890,6 +2650,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		{
 
 
+
 			$i++;
 										
 			$itemname = '';
@@ -2979,7 +2740,6 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		//===============================================================================
 		
 	}
-	
 	
 	
 	

@@ -169,11 +169,11 @@ class Dashboard extends CI_Controller
 		
 		
 		$report_title = 'Project Statistics';		
-		$header[] = array('Report type' , $report_title , '' , '' , '' , '' , '' , '' , '');
+		$header[] = array('Report type' , $report_title , '' , '' , '' , '' , '' , '' );
 		
 		if($this->session->userdata('managedprojectdetails'))
 		{			
-			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' , '');		
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );		
 			
 		}
 		else
@@ -190,7 +190,7 @@ class Dashboard extends CI_Controller
 			
 			$projects_string = implode(", ",$projects_arr);	
 			
-			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' , '');	
+			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );	
 		
 		}	
 		
@@ -203,13 +203,13 @@ class Dashboard extends CI_Controller
 		
 		
 				
-		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
 	
 			
 		//---------------------------------------------------------------------------
 			
 	
-		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' , 'Number of Companies');
+		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' );
 			
 	
 		$companies = '';
@@ -218,21 +218,21 @@ class Dashboard extends CI_Controller
 			//$companies = count($data['companies']);
 		}
 	
-		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded'] ,$companies );
+		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded']);
 	
 	
 		//--------------------------
 	
 		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
 		{
-			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
 	
-			$header[] = array('Company' , 'Credit Limit' , 'Credit Remaining' , 'Amount Due' , '' , '' , '' , '' , '');
+			$header[] = array('Company' , 'Credit Limit' , 'Credit Remaining' , 'Amount Due' , '' , '' , '' , '');
 	
 			foreach($data['networkjoinedcompanies'] as $njc)
 			{
-				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' , '');
+				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' );
 			}
 		}
 			
