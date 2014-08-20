@@ -270,6 +270,10 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
                                         <div class="input-append">
                                             <input type="hidden" name="search_type" id="search_type">
+                                            <select style="width:120px;height:20px;height:34px; margin-right:5px;" name = "searchfor" id="searchfor" >
+                                            <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
+                                            <option value="suppliers" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="suppliers") echo "selected";  ?>>Suppliers</option>
+                                            </select>&nbsp;&nbsp;
                                             <input title="Enter the terms you wish to search for." class="search-query span2 form-text" placeholder="Search" type="text" name="keyword" value="<?php echo isset($keyword) ? $keyword : ""; ?>">
                                             <button type="submit" class="btn"><i class="icon-search"></i></button>
                                         </div>

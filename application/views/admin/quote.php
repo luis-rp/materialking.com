@@ -355,24 +355,31 @@ $(function() {
 
 
 function getcatitem(catid){
-    var serviceurl = '<?php echo base_url()?>admin/itemcode/getcatitem';
+    var serviceurl = '<?php echo base_url()?>admin/itemcode/gatcatitem3';
 	//alert(catid);
 	$.ajax({
-	      type:"post",
-	      url: serviceurl,
-	      data: "catid="+catid
-	    }).done(function(data){
-
-	        $("#catiditem").html(data);
-			savclose();
-	    });
+		type:"post",
+		url: serviceurl,
+		data: "catid="+catid,
+		success: function(items) //we're calling the response json array 'cities'
+		{
+			$('#selectboxid').html('<select name="catiditem" id="catiditem" ></select>');
+			$.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+			{
+				var opt = $('<option />'); // here we're creating a new select option with for each city
+				opt.val(id);
+				opt.text(myItems);
+				$('#catiditem').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+				//savclose();
+			});
+		}
+	})
 }
 
 function savclose()
 {
-	//alert('gdgds');
 	var itemcode = document.getElementById('catiditem').value;
-   	$("#itemcode").val(itemcode);
+	$("#itemcode").val(itemcode);
     fetchItem('itemcode');
     $('#selectItemWindow').dialog('close');
     $('.fg-menu-container').css({display: "none"});
@@ -864,9 +871,10 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 								    <?php echo @$categorymenuitems;?>
 								</div>
                             </div>
-                             <select name="catiditem" id="catiditem" ></select>
-                            
-                       <!-- <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>-->
+                              <!-- <select name="catiditem" id="catiditem" ></select> -->
+                             <div id="selectboxid"></div>
+                       <div style="clear:both;"></div>     
+                       <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>
                        
                     </div>
         </div>

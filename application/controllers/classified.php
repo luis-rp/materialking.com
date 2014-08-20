@@ -106,7 +106,7 @@ class classified extends CI_Controller
 
 		// $this->load->model('items_model');
 		 header('Content-Type: application/x-json; charset=utf-8');
-		 echo(json_encode($this->items_model->get_items($categoryId)));
+		 echo(json_encode($this->items_model->get_items2($categoryId)));
 	}
 	
 	function search(){

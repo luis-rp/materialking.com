@@ -32,7 +32,7 @@
 
 
 							<?php	foreach($ads as $ad) { 
-										foreach($ad as $ad_item){
+										foreach($ad as $ad_item){ if($ad_item['latitude']!="" && $ad_item['longitude']!="") {
 							?>
 							 	{
 
@@ -42,11 +42,11 @@
 										icon: "<?php echo base_url("templates/classified/assets/images/") ?>icon.png",
 										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>shadow.png",
 									},
-									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $ad_item['title']; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 								}
 							,
 
-					<?php } }?>	
+					<?php } } } ?>	
 						
 					],
 					options:{
@@ -457,10 +457,11 @@ $.noConflict();
 	 {
 	 jQuery.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
 	 {
-		 var opt = jQuery('<option />'); // here we're creating a new select option with for each city
-		 opt.val(id);
-		 opt.text(myItems);
-		 jQuery('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+		 //var opt = jQuery('<option />'); // here we're creating a new select option with for each city
+		 //opt.val(id);
+		 //opt.text(myItems);
+		 jQuery('#items').append( new Option(myItems,id) );
+		 //jQuery('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
 	 });
 	 }
 	 

@@ -210,6 +210,7 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
+                <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?> 
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h1 class="page-header"><?php echo $page_titile;?></h1>
 
@@ -298,7 +299,7 @@
 
                     <div class="pagination pagination-centered">
                         <?php $this->view('site/paging'); ?>
-                    </div>
+                    </div><?php } ?>
                 </div>
 
                 <div class="sidebar span3">
@@ -409,7 +410,7 @@
         
         
         
-         <?php if(isset($data2)) { if ($data2['norecords']=="") { ?>    
+        <?php if(isset($data2)) { ?>       
      <div id="content">
     <div class="container">
         <div id="main">
@@ -568,7 +569,7 @@
     </div>
 
 </div>
-    <?php } } ?>
+    <?php } ?>
     
     
     

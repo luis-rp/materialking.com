@@ -757,15 +757,20 @@ class site extends CI_Controller
             $this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
         }
         
-        $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
+         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);        
-        $this->data['currentcategory'] = $currentcategory;
-        $this->data2 = $this->suppliers2($keyword);
-        $this->data['data2'] = $this->data2;        
+        $this->data['currentcategory'] = $currentcategory;          
         //echo "<pre>",print_r($this->data); die;
         if($keyword){
-        $this->data['datatags'] = $this->items_model->find_tags($keyword);
+        	      	
+        	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "suppliers"){
+        		$this->data2 = $this->suppliers2($keyword);     
+        		$this->data['data2'] = $this->data2;
+        	}
+        	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
+        	$this->data['datatags'] = $this->items_model->find_tags($keyword);
         }
+        $this->data['searchfor'] = $_POST['searchfor'];
         $this->load->view('site/items', $this->data);
     }
     

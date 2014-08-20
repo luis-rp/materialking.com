@@ -1384,7 +1384,11 @@ background-color:#333745}
     -moz-border-radius:0px;
     border-radius:0px;
     border-right:0px;
-    width:146px}
+    width:146px;
+    height:26px;
+    margin-left:5px;
+    
+    }
 .navigation-wrapper .navigation .site-search button {
     background-image:none;
     -webkit-border-radius:0px;
@@ -1405,7 +1409,9 @@ background-color:#333745}
     margin:0px 0px 0px -5px;
     padding:6px 15px;
     vertical-align:top;
-    text-indent:-9999px}
+    text-indent:-9999px;
+    height:40px;
+    }
 @media (-webkit-min-device-pixel-ratio:2), (-moz-min-device-pixel-ratio:2) {
     .navigation-wrapper .navigation .site-search button {
         background-image:url("../img/icons/search@2x.png")}
@@ -3575,4 +3581,9 @@ text-decoration: none;
 background-color: #06a7ea;
 color: white;
 font-size:12px;
+}
+
+div#searchfor_chzn input
+{
+	height:26px !important;
 }

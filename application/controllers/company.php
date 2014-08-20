@@ -18,7 +18,11 @@ class Company extends CI_Controller {
         $this->load->model('admin/settings_model');
         $this->load->model('admin/catcode_model');
         $this->load->model('admin/itemcode_model');
+        $this->load->model('form_model');
         $this->load->library("validation");
+        $this->load->helper('url','form');
+        $this->load->library('form_validation');
+        $this->load->library('session');
         if ($this->session->userdata('company'))
             $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
         $data['newnotifications'] = $this->messagemodel->getnewnotifications();
@@ -916,5 +920,45 @@ class Company extends CI_Controller {
 		 echo(json_encode($this->items_model->get_items2($categoryId)));
 	}
 
+	public function createformfields()
+    {
+    	$company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
 
+        $companyId = $this->session->userdata('company')->id;
+        $this->load->view('company/formbuilder');
+    }
+
+    public function createformdata()
+    {
+    	$companyId = $this->session->userdata('company')->id;
+		$result = $this->form_model->create_field($_POST,$companyId);
+		//$data['result'] = $this->form_model->view_field($companyId);
+
+		$path=base_url() . 'company/formview';
+
+		$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Form fields are created Successfully.<a href='.$path.' target="_self">View Form</a></div></div></div>';
+		$data['message'] = $message;
+		$this->load->view('company/formbuilder',$data);
+    }
+     public function formview()
+    {
+    	$companyId = $this->session->userdata('company')->id;
+		$data['result'] = $this->form_model->view_field($companyId);
+
+		$this->load->view('company/formview',$data);
+    }
+
+     public function saveformdata()
+    {
+    	$companyId = $this->session->userdata('company')->id;
+		$result = $this->form_model->save_fields($_POST,$companyId);
+		$data['result'] = $this->form_model->view_field($companyId);
+		$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
+		$data['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		$this->load->view('company/formview',$data);
+    }
+    
 }
