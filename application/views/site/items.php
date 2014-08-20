@@ -495,7 +495,7 @@
                                         Location
                                     </label>
                                     <div class="controls">
-                                        <input type="text" id="inputLocation" name="location" value="<?php echo ($this->input->post('location')) ? $this->input->post('location') : $data2['my_location']; ?>">
+                                        <input type="text" id="inputLocation" name="location" value="<?php echo ($this->input->post('location')) ? $this->input->post('location') : ( (isset($data2['my_location']))?$data2['my_location']:""); ?>">
                                         <?php if (0) { ?>
                                             <select id="inputLocation" name="citystates">
                                                 <?php foreach ($data2['citystates'] as $cst) { ?>

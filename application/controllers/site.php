@@ -770,6 +770,7 @@ class site extends CI_Controller
         	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
         	$this->data['datatags'] = $this->items_model->find_tags($keyword);
         }
+        if(isset($_POST['searchfor']))
         $this->data['searchfor'] = $_POST['searchfor'];
         $this->load->view('site/items', $this->data);
     }

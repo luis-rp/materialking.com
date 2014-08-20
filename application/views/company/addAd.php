@@ -146,14 +146,14 @@
                     <div class="control-group">
                         <label class="control-label">Latitude</label>
                         <div class="controls">
-                        	<input type="text" id="latitude" name="latitude" class="span10" value=""> 
+                        	<input type="text" id="latitude" name="latitude" class="span10" value="<?php if(isset($company->com_lat)) echo $company->com_lat;?>"> 
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label">Longitude</label>
                         <div class="controls">
-                            <input type="text" id="longitude" name="longitude" class="span10" value="">
+                            <input type="text" id="longitude" name="longitude" class="span10" value="<?php if(isset($company->com_lng)) echo $company->com_lng;?>">
                             
                         </div>
                     </div>
