@@ -76,6 +76,7 @@ class Quote extends CI_Controller
 		$invoices = array();
 		foreach($invs as $i)
 		{
+			if(isset($i) && isset($i->quote) && isset($i->quote->ponum))
 			$invoices[$i->quote->ponum][]=$i;
 		}
 		
@@ -1386,7 +1387,7 @@ class Quote extends CI_Controller
 			
 					
 		
-		$header[] = array('Items received' , $per,'' , '' , ' ' , ' ' , ' ','');
+		$header[] = array('Items received' , $per.chr(160),'' , '' , ' ' , ' ' , ' ','');
 		
 		
 		$header[] = array('PO#' ,$quote->ponum,'' , '' , ' ' , ' ' , ' ','');
@@ -2079,9 +2080,12 @@ or edit your quote.</div></div></div>');
 		
 		$invs = $this->quotemodel->getinvoices($company->id);
 		$invoices = array();
+		
 		foreach($invs as $i)
-		    if($i->quote->id == $quoteid)
+		{		   
+		    if(isset($i) && isset($i->quote) && isset($i->quote->id) && $i->quote->id == $quoteid)			
 			    $invoices[]=$i;
+		}
 		//print_r($invoices);die;
 		$data['quote'] = $quote;
 		$data['award'] = $award;
@@ -2249,6 +2253,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$invoices = array();
 		foreach($invs as $i)
 		{
+			if(isset($i) && isset($i->quote) && isset($i->quote->ponum))
 			$invoices[$i->quote->ponum][]=$i;
 		}
 		
@@ -2598,8 +2603,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$invs = $this->quotemodel->getinvoices($company->id);
 		$invoices = array();
 		foreach($invs as $i)
-		    if($i->quote->id == $quoteid)
+		{		   
+		    if(isset($i) && isset($i->quote) && isset($i->quote->id) && $i->quote->id == $quoteid)			
 			    $invoices[]=$i;
+		}
+				
 		//print_r($invoices);die;
 		$data['quote'] = $quote;
 		$data['award'] = $award;

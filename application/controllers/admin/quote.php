@@ -1200,7 +1200,7 @@ class quote extends CI_Controller
 
     					$k_total_price = round($q->quantity * $q->ea,2);
 
-    					$header[] = array($q->itemcode, $q->itemname , $q->quantity , $q->unit , '$ '.formatPriceNew($q->minprice) , formatPriceNew($low_price) , $pr_requested,'$ '.formatPriceNew($k_total_price) , $q->daterequested, $k_costcode,$q->notes, $k_compare );
+    					$header[] = array($q->itemcode, $q->itemname , $q->quantity , $q->unit , '$ '.formatPriceNew($q->minprice) , formatPriceNew($low_price) , $pr_requested,'$ '.formatPriceNew($k_total_price) , $q->daterequested, $k_costcode,$q->notes, $k_compare.chr(160) );
 
     				}
 

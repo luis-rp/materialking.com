@@ -223,7 +223,7 @@ function updatedeal(id)
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 	 
-			<h3>Inventory <a href="<?php echo site_url('inventory/export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 	<span style="float:right; margin:0px 9px 0px 0px">Go to my store</span></h3>
+			<h3>Inventory <a href="<?php echo site_url('inventory/export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 	<span style="float:right; margin:0px 9px 0px 0px"><a href="#" class="btn btn-primary btn-xs btn-mini">Go to my store</a></span></h3>
 			<div class="pull-right">
 				<a href="<?php echo site_url("store/items/".$this->session->userdata('company')->username);?>" target="_blank">
 			
