@@ -23,6 +23,10 @@
 	{
 		$menu = 'ads';
 	}
+	if($function == 'createformfields')
+	{
+		$menu = 'createformfields';
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -209,6 +213,7 @@
 	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search1"></i><span class="title">Sales Analytics & Performance</span></a></li>
 	  <li class="<?php if($menu=='ads'){echo 'active';}?>"> <a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag1"></i><span class="title">Classifieds</span></a></li>
 	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i><span class="title">Profile & Settings</span></a></li>
+	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-male1"></i><span class="title">Form Builder</span></a></li>
     </ul>
     
 	<a href="#" class="scrollup">Scroll</a>

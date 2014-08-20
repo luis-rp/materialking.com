@@ -665,7 +665,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         echo $str;
     }
 
-
+	function gatcatitem3(){
+    	
+    	header('Content-Type: application/x-json; charset=utf-8');
+		echo(json_encode($this->items_model->get_items3($_POST['catid'])));
+    	
+    }
+    
     function add ()
     {
         $catcodes = $this->catcode_model->get_categories_tiered();

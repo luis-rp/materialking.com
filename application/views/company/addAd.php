@@ -65,13 +65,24 @@
 
                   
                     
-                    <div class="control-group">
+                   <div class="control-group">
+                    
+                    <div style="float:left;">
                         <label class="control-label">Title</label>
                         <div class="controls">
                             <input type="text" id="title" name="title" class="span10" value="">
                             <?php //echo $this->validation->itemcode_error; ?>
                         </div>
+                        </div>
+                         <div style="float:left; margin-left:40px;">
+                        <label class="">Address</label>
+                        <div class="">
+                            <input type="text" id="address" name="address" class="span10" value="" autocomplete="off" style="float:left;">
+                            <p class="help-block" style="float:left;margin-left:10px;" >Start typing an address and select from the dropdown.</p>
+                        </div>
+                        </div>
                     </div>
+<div style="clear:both;"></div>
 
                     <div class="control-group">
                         <label class="control-label">Price</label>
@@ -107,12 +118,8 @@
              
  
                    
-                        <label class="">Address</label>
-                        <div class="">
-                            <input type="text" id="address" name="address" class="span10" value="" autocomplete="off">
-                            <p class="help-block">Start typing an address and select from the dropdown.</p>
-							
-                            <div id="map-container" style="float:right;">
+                        <div style="clear:both;"></div>
+                            <div id="map-container" style="padding-top: 32px;">
 						    <div id="map-canvas"></div>
 
 							<script>
@@ -133,20 +140,20 @@
                                 });
 							</script>
                         </div>
-                   </div>
-         
+                   
+         <div style="clear:both;"></div>
              
                     <div class="control-group">
                         <label class="control-label">Latitude</label>
                         <div class="controls">
-                        	<input type="text" id="latitude" name="latitude" class="span10" value=""> 
+                        	<input type="text" id="latitude" name="latitude" class="span10" value="<?php if(isset($company->com_lat)) echo $company->com_lat;?>"> 
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label class="control-label">Longitude</label>
                         <div class="controls">
-                            <input type="text" id="longitude" name="longitude" class="span10" value="">
+                            <input type="text" id="longitude" name="longitude" class="span10" value="<?php if(isset($company->com_lng)) echo $company->com_lng;?>">
                             
                         </div>
                     </div>

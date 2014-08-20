@@ -61,7 +61,8 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                $ret .= "<li><a href='javascript:void(0)'>" . $item->catname."</a>";
+                //$ret .= "<li><a href='javascript:void(0)'>" . $item->catname."</a>";
+                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'>" . $item->catname."</a>";
                 $ret .= $this->getCategoryMenuItems($item->id); // here is the recursion
             }
             else
@@ -410,6 +411,51 @@ class items_model extends Model {
 		if($result){
 			 foreach ($result as $item) {
 				$items[$item->id] = $item->itemname;
+			 } // echo "<pre>",print_r($items); die;
+			 return $items;
+		}else{
+		 	return FALSE;
+		}
+        
+    }
+    
+    
+        public function get_items3($categoryId) 
+    {
+        
+        $where = array();
+        
+        if (@$categoryId)
+        {
+        	$this->db->where('parent_id',$categoryId);
+        	$menus = $this->db->get('category')->result();
+        	$str= "";
+        	if($menus) {
+        	foreach ($menus as $item)
+        	{
+        		$subcategories = $this->getSubCategores($item->id,true);
+				if($subcategories) {
+        			
+					$str .= implode(',', $subcategories);
+					$str = $str.",";
+				}
+        	}
+        	$str = substr($str,0,strlen($str)-1);
+            $where []= "category in (".$str.")";
+        	}else {
+        		$where []= "category = {$categoryId}";
+        	}
+        }
+        if ($where)
+           $where = " WHERE " . implode(' AND ', $where) . " ";
+        
+            $query = "SELECT itemcode, itemname FROM ".$this->db->dbprefix('item').' i '. $where;
+        	$result = $this->db->query($query)->result();
+        $items = array();
+		//echo "<pre>",print_r($result);  die;
+		if($result){
+			 foreach ($result as $item) {
+				$items[$item->itemcode] = $item->itemname;
 			 } // echo "<pre>",print_r($items); die;
 			 return $items;
 		}else{
