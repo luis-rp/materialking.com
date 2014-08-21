@@ -53,6 +53,7 @@ class classified extends CI_Controller
     	$where = "";
     	$str = "";
     	$cat = array();
+    	$cat['catname'] = "";
     	if(isset($_POST['category']) && $_POST['category']!="") {
     		
     		if(isset($_POST['items']) && $_POST['items']!=""){
