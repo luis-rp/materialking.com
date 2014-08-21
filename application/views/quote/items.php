@@ -39,25 +39,25 @@
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 		 <a href="<?php echo site_url('quote/items_export/'.$quoteid); ?>" class="btn btn-green">Export</a><br />		
-			<h3>PO Performance : <?php echo $quote->ponum;?> </h3>
-			<h4>
-				<font color="green">Items Won : <?php echo $itemswon;?></font>
+			<h3>PO Performance : <?php echo $quote->ponum;?> <font color="green">Items Won : <?php echo $itemswon;?></font>
 				&nbsp;&nbsp;&nbsp;
 				<font color="red">Items Lost : <?php echo $itemslost;?></font>
 				<?php if($award && $itemswon && @$award->id){?>
-				<a href="<?php echo site_url('quote/track/'.$quote->id.'/'.$award->id);?>">Track</a>
+				<a class="btn btn-green" href="<?php echo site_url('quote/track/'.$quote->id.'/'.$award->id);?>">Track</a>
 				<?php }?>
 				<?php if(isset($messagekey)){ ?>
-				<a class="pull-right" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
-				<?php } ?>
-			</h4>
-			<?php if($itemswon){?>
-				<a href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">View P.O as PDF</a>
+				<a class="pull-right btn btn-green" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
+				<?php } ?> 		<?php if($itemswon){?>
+				<a class="btn btn-green" href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">View P.O as PDF</a>
 			<?php }?>
-			<br/>
+		 
 			<?php if($bid){?>
-				<a href="<?php echo site_url('quote/viewbid/'.$bid->id); ?>">View Bid as HTML</a>
-			<?php }?>
+				<a class="btn btn-green" href="<?php echo site_url('quote/viewbid/'.$bid->id); ?>">View Bid as HTML</a>
+			<?php }?> </h3>
+			<h4>
+				
+			</h4>
+	
 		</div>		
 	   <div id="container">
 		<?php 

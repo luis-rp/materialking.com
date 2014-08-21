@@ -17,7 +17,7 @@
 <div class="content">
 	<?php echo $this->session->flashdata('message'); ?>
 	<div class="page-title">	
-		<h3>Messages <i class="icon-custom-left"></i> <div style="float:right; margin:0px 8px 0px 0px"><a href="<?php echo site_url('message');?>">&lt; &lt; View All</a></div>
+		<h3>Messages <i class="icon-custom-left"></i> <div style="float:right; margin:0px 8px 0px 0px"><a  class="btn btn-green" href="<?php echo site_url('message');?>">&lt; &lt; View All</a></div>
 		</h3>
         
         
@@ -39,11 +39,11 @@
                     	<h3>
                     	PO:
 						<?php if($po['quote']['status'] == 'Awarded'){?>
-                    	<a  href="<?php echo site_url('quote/track/'.$po['quote']['id']);?>">
+                    	<a  class="btn btn-green" href="<?php echo site_url('quote/track/'.$po['quote']['id']);?>">
 		 				<?php echo $po['quote']['ponum'];?>
 		 				</a>
 		 				<?php }elseif($po['quote']['invitation']){?>
-                    	<a href="<?php echo site_url('quote/invitation/'.$po['quote']['invitation']);?>">
+                    	<a  class="btn btn-green" href="<?php echo site_url('quote/invitation/'.$po['quote']['invitation']);?>">
 		 				<?php echo $po['quote']['ponum'];?>
 		 				</a>
 		 				<?php }?>
