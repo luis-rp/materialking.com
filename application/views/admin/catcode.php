@@ -63,6 +63,20 @@
                         </div>
                     </div>
 
+                     <div class="control-group">
+                        <label class="control-label">Title</label>
+                        <div class="controls">
+                            <input type="text" id="catTitle" name="catTitle" class="span10" value="<?php if(isset($this->validation->title)) echo $this->validation->title; ?>">
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Text</label>
+                        <div class="controls">
+                             <input type="text" id="catText" name="catText" class="span10" value="<?php if(isset($this->validation->text)) echo $this->validation->text; ?>">
+                        </div>
+                    </div>                    
+                    
                     <div class="control-group">
                         <label class="control-label">&nbsp;</label>
                         <div class="controls">

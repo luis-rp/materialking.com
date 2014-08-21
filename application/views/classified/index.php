@@ -1,5 +1,22 @@
 <style>
 .views-exposed-widget{ float:left;}
+.searchutton
+{
+    background: url("../images/search.png") no-repeat scroll 90% center #3E8CC0;
+    border: medium none;
+    border-radius: 0 0 0 0;
+    box-shadow: none;
+    color: #FFFFFF;
+    font-family: "Armata","Helvetica Neue",Arial,Helvetica,Geneva,sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    margin: 0;
+    padding: 13px 38px 13px 20px;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(7, 7, 7, 0.1);
+    transition: all 0.2s ease 0s;
+}
 </style>
 <section id="big-map">
 
@@ -39,8 +56,8 @@
 
 									latLng: [<?php echo $ad_item['latitude']; ?>,<?php echo $ad_item['longitude']; ?>],
 									options: {
-										icon: "<?php echo base_url("templates/classified/assets/images/") ?>icon.png",
-										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>shadow.png",
+										icon: "<?php echo base_url("templates/classified/assets/images/") ?>/icon.png",
+										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>/shadow.png",
 									},
 									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 								}
@@ -138,7 +155,7 @@
 
 		jQuery( "#advance-search-slider" ).slider({
 		      	range: "min",
-		      	value: 500,
+		      	value: <?php if(isset($georadius)) { if($georadius!="") echo $georadius; else echo 500; } else echo 500; ?>,
 		      	min: 1,
 		      	max: 10,
 		      	slide: function( event, ui ) {
@@ -202,14 +219,14 @@
 
 			<div class="container">
 
-				<div class="advanced-search-widget-content" style="float:left; width:100%;">
+				<div class="advanced-search-widget-content" style="float:left; width:100%;height:48px;">
 
 					<!--<div class="advanced-search-title">
 
 						Search around my position
 
 					</div>-->
-                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="get" action="http://alexgurghis.com/themes/flatads">
+                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="POST" action="<?php echo base_url()?>/classified/searchads">
                     
                     <div class="views-exposed-widget views-widget-filter-search_api_views_fulltext" id="edit-search-api-views-fulltext-wrapper">
 					        <div class="views-widget">
@@ -227,8 +244,9 @@
 									<div class="controls"> 
 										
                                         <select id="category" name="category">
+                                        <option value="">Select Category</option>
                             	<?php foreach($categories as $cat){?>
-                            	<option value="<?php echo $cat->id;?>" ><?php echo $cat->catname;?></option>
+                            	<option value="<?php echo $cat->id;?>" <?php if(isset($category)) { if($category == $cat->id) echo "selected"; } ?> ><?php echo $cat->catname;?></option>
                             	<?php }?>
                             </select>
 									</div>
@@ -242,8 +260,9 @@
                                                         <div class="control-group form-type-select form-item-field-category form-item">
                                                             <div class="controls"> 
                                                                 <select id="items" name="items">
+                                                                <option value="">Select item</option>
                             	<?php foreach($items as $item){?>
-                            	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
+                            	<option value="<?php echo $item->id;?>" <?php if(isset($itemids)) { if($itemids == $item->id) echo "selected"; } ?> ><?php echo $item->itemcode;?></option>
                             	<?php }?>
                             </select>
                                                             </div>
@@ -270,6 +289,9 @@
 						</div>
 
 					</div>
+					<div class="views-exposed-widget views-submit-button">
+						    <button class="btn btn-primary form-submit searchutton" id="edit-submit-search-view" name="" value="Search" type="submit">Search</button>
+						</div>
                     </form>
 
 				</div>
@@ -448,6 +470,7 @@ $.noConflict();
 		
 	 jQuery('#category').change(function(){ //any select change on the dropdown with id country trigger this code
 	 jQuery("#items > option").remove(); //first of all clear select items
+	 jQuery("#items").append('<option value="">items</option>');
 	 var category_id = jQuery('#category').val(); // here we are taking country id of the selected one.
 	 jQuery.ajax({
 	 type: "POST",

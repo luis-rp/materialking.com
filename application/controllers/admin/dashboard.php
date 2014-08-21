@@ -444,9 +444,9 @@ class Dashboard extends CI_Controller
 		
 		
 		$whereusers = "";
-		$whereusers = "and regdate between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+		$whereusers = "and created_date between DATE_SUB(now(), INTERVAL 1 WEEK) AND now() and  purchasingadmin='{$this->session->userdata('purchasingadmin')}'";
 					
-		$userssql = "SELECT companyname, regdate FROM 
+		$userssql = "SELECT companyname, created_date FROM 
 		".$this->db->dbprefix('users')." u WHERE 1=1 {$whereusers} ";
 		
 		$users = $this->db->query($userssql)->result();

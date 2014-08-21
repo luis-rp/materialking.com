@@ -961,4 +961,44 @@ class Company extends CI_Controller {
 		$this->load->view('company/formview',$data);
     }
     
+        function updatead($id)
+	{		
+		$this->db->where("id",$id);
+    	$res['ads'] = $this->db->get("ads")->result();		
+    	$catcodes = $this->catcode_model->get_categories_tiered();
+     	$itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $res['categories'] = $categories;
+        $res['items'] = $itemcodes;
+        $res['adsid'] = $id;
+        
+        if(isset($_POST['add']))
+        {
+			$res = $_POST;
+	    	$res = $this->do_upload();
+		    log_message('debug',var_export($res,true));
+	    	//$res = $this->do_upload();
+	    
+	    	if(isset($res['error'])){
+	    		$this->session->set_flashdata('message',$res['error']);	
+	    	}
+	    	else {
+	    		$this->admodel->updateAd($res);
+	    	}
+	    	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
+			$res['message'] = $message;
+			$this->session->set_flashdata('message', $message);
+			redirect("company/ads");
+        }
+		$this->load->view('company/updatead',$res);
+		
+	}
+    
 }

@@ -495,7 +495,7 @@
 
 					  <tr>
 					  <td><?php echo $user->companyname; ?></td>
-					  <td><?php $datetime = strtotime($user->regdate); echo date("m/d/Y", $datetime);?></td>
+					  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>

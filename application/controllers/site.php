@@ -1025,6 +1025,8 @@ class site extends CI_Controller
         $item->images = $this->db->where('itemid',$item->id)->get('itemimage')->result();
         $cat_data = $this->db->where('id',$item->category)->get('category')->result();
         $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
+        $data['cat_title'] = $cat_data['0']->title;
+        $data['cat_text'] = $cat_data['0']->text;
         $mainimg = new stdClass();
         if($item->item_img)
         {

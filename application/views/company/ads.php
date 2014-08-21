@@ -33,7 +33,7 @@ function readnotification(id)
                                                 <th style="width:20%">Title</th>
                                                 <th style="width:30%">Desc</th>
                                                 <th style="width:30%">Price</th>
-                                                
+                                                <th style="width:20%">Edit</th>
                                             </tr>
                                         </thead>
                                         
@@ -48,7 +48,7 @@ function readnotification(id)
                                                 <td><a href="<?php echo base_url("classified/ad/".$ad->id);?>"><?php echo $ad->title;?></a></td>
                                                 <td><?php echo $ad->description;?></td>
                                                 <td><?php echo $ad->price;?></td>
-                                                
+                                                <td><a href="<?php echo base_url("company/updatead/".$ad->id);?>">Edit</a></td>
                                             </tr>
                                           <?php } ?>
                                         </tbody>
