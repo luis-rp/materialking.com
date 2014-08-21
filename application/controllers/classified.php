@@ -51,6 +51,8 @@ class classified extends CI_Controller
 		//echo "===="; exit;
     	$data['title'] = "Classified area";
     	$where = "";
+    	$str = "";
+    	$cat = array();
     	if(isset($_POST['category']) && $_POST['category']!="") {
     		
     		if(isset($_POST['items']) && $_POST['items']!=""){
