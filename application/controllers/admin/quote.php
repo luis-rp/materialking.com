@@ -1200,7 +1200,7 @@ class quote extends CI_Controller
 
     					$k_total_price = round($q->quantity * $q->ea,2);
 
-    					$header[] = array($q->itemcode, $q->itemname , $q->quantity , $q->unit , '$ '.formatPriceNew($q->minprice) , formatPriceNew($low_price) , $pr_requested,'$ '.formatPriceNew($k_total_price) , $q->daterequested, $k_costcode,$q->notes, $k_compare );
+    					$header[] = array($q->itemcode, $q->itemname , $q->quantity , $q->unit , '$ '.$q->minprice.chr(160) , $low_price.chr(160) , $pr_requested,'$ '.$k_total_price.chr(160) , $q->daterequested, $k_costcode,$q->notes, $k_compare );
 
     				}
 
@@ -1217,9 +1217,9 @@ class quote extends CI_Controller
     			$grandtotal = round($grandtotal,2);
     			$diff       = $alltotal - $minimum['totalprice'];
 
-    			$header[] = array('Subtotal','$ '.formatPriceNew(number_format($alltotal,2)) , '' , '' , '' , '' , '','','', '','', '' );
-    			$header[] = array('Tax','$ '.formatPriceNew($taxtotal), '' , '' , '' , '' , '','','', '','', '' );
-    			$header[] = array('Total','$ '.formatPriceNew($grandtotal) , '' , '' , '' , '' , '','','', '','', '' );
+    			$header[] = array('Subtotal','$ '.number_format($alltotal,2).chr(160) , '' , '' , '' , '' , '','','', '','', '' );
+    			$header[] = array('Tax','$ '.$taxtotal.chr(160), '' , '' , '' , '' , '','','', '','', '' );
+    			$header[] = array('Total','$ '.$grandtotal.chr(160) , '' , '' , '' , '' , '','','', '','', '' );
 
 
 
