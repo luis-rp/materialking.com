@@ -18,7 +18,8 @@ function formatPriceNew($price)
 	
 	$price = trim($price);
 		
-	$num_1 =  number_format($price);
+	
+	$num_1 =  $price;
 	
 	$num_1  = "".$num_1.chr(160);
 	
