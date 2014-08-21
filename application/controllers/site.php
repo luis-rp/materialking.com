@@ -562,6 +562,10 @@ class site extends CI_Controller
                 }
             }
         }
+        
+        $this->db->where("user_id",$data['supplier']->id);
+        $data['adforsupplier'] = $this->db->get("ads")->result();
+        
         //print_r($data['dealfeed']);die;
         $similarsuppliers = $this->supplier_model->getrelatedsupplier($id);
         $data['similarsuppliers'] = $similarsuppliers;
@@ -1397,6 +1401,11 @@ class site extends CI_Controller
                 $data['breadcrumb'] = '<b>Category:</b> '.$cat->catname;
         }
         */
+        
+        //Add for current Item
+        $this->db->where("itemid",$item->id);
+        $data['adforitem'] = $this->db->get("ads")->result();
+        
         $data['breadcrumb'] = $this->items_model->getParents($item->category);
         //echo '<pre>'; print_r($data['relateditems']);die;
         $this->load->view('site/item', $data);

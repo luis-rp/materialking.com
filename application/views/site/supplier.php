@@ -725,6 +725,36 @@ $(document).ready(function() {
                     </div>
                  </div>
                  <?php }?>
+                 
+                 
+                    <div class="sidebar span3">
+                    <div class="widget contact">
+                        <div class="content">
+                            <form>
+                                <div class="control-group">
+                                	<label class="control-label" for="radirange">
+                                    	<h5>Suppliers Classified Lisings</h5>
+                                    </label>
+                                    <div class="controls">
+                                    	<?php foreach($adforsupplier as $ad){?>
+                                    	<div>
+                                    		<img alt="" src="<?php echo base_url("/uploads/ads/".$ad->image);?>">
+                                    	</div>
+                                    	<div style="margin-top: -30px;background-color: #616261;  opacity: 0.8; color:#FFF;">
+	                                    	<div>
+	                                    	<p><?php echo $ad->title;?> $<?php echo $ad->price;?></p>
+	                                    	</div>
+                                    		<div style="text-align:right;">
+                                    			<a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a>
+                                    		</div>
+                                    	</div>
+                                    	<?php } ?>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                 </div>
                 
                 
             </div>
