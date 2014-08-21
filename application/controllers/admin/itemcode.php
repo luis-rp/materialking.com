@@ -34,7 +34,7 @@ class itemcode extends CI_Controller
     }
 
   
-    function export()
+     function export()
     {
     	$itemcodes = $this->itemcode_model->get_itemcodes();
     	$count = count($itemcodes);
@@ -95,20 +95,20 @@ class itemcode extends CI_Controller
 
     	$header[] = array('ID','Code','Item Name','Unit','Total purchased amount','Last awarded date','');
 
-    	foreach($items  as  $enq_row)
+    			
+		foreach($items  as  $enq_row)
     	{
-
-    		$item_price = '';
-    		if($enq_row->totalpurchase > 0)
-    		{
-    			$item_price = "$ ".$enq_row->totalpurchase;
-    		}
-    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , formatPriceNew($item_price)  , $enq_row->awardedon);
+  			
+    		$item_price = $enq_row->totalpoprice;
+    				
+    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $item_price.chr(160)  , $enq_row->awardedon);
     	}
     	createXls('itemcode',$header);
     	die();
 
-    }
+    }	
+	
+	
     //	function do_upload()
     //	{
     //		$config['upload_path'] = './uploads/';

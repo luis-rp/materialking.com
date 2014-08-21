@@ -1661,9 +1661,7 @@ class quote extends CI_Controller
     }
 
 
-
-
-     function export()
+ function export()
     {
     	$invoices = $this->quote_model->getinvoices();
     	
@@ -1676,7 +1674,7 @@ class quote extends CI_Controller
 			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			$header[] = array('' , '' , '' , '' , '' , '' , '' );		
 		}	
 
-    	$header[] = array('PO Number' , 'Invoice' , 'Received On' , 'Total Cost' , 'Payment Status' , 'Verification' , 'Date Due' );
+    	$header[] = array('PO Number' , 'Invoice' , 'Received On' , 'Total Cost' , 'Payment' , 'Verification' , 'Date Due' );
     	foreach($invoices as $i)
     	{
     		$dddate = '';
@@ -1689,15 +1687,27 @@ class quote extends CI_Controller
     		{
     			$total_price = '$ '.$i->totalprice;
     		}
+			
+			//----------------------------------------------------------
+			$p_status = $i->paymentstatus;
+			
+			if($i->status == 'Verified')
+			{
+				$p_status.= '/'.$i->paymenttype.'/'.$i->refnum;
+			}
+			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
+			{       				
+               $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
+			}
+			//-----------------------------------------------------------
 
-    		$header[] = array($i->quote->ponum,  $i->invoicenum,  $i->receiveddate , formatPriceNew($total_price) , $i->paymentstatus ,$i->quote->status ,$dddate );
+    		$header[] = array($i->quote->ponum,  $i->invoicenum,  $i->receiveddate , $total_price.chr(160) , $p_status ,$i->quote->status ,$dddate );
     	}
 
     	createXls('invoices' , $header);
     	die();
 
     }
-
 
 
 
