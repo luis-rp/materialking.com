@@ -51,6 +51,28 @@ class itemcode extends CI_Controller
 
     			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
 
+				$specs="";
+
+                $query = "SELECT companynotes,filename FROM ".$this->db->dbprefix('companyitem')." ci
+        		 WHERE itemid = ".$itemcode->id." AND ci.type='Purchasing' AND ci.company='".$this->session->userdata('purchasingadmin')."'" ;
+
+                $dataspecs = $this->db->query($query)->row();
+
+                if($dataspecs) {
+                	if($dataspecs->filename!="")
+                	$specs = "Yes";
+                	else if($dataspecs->companynotes!="")
+                	$specs = "Yes";
+                	else
+                	$specs = "No";
+                }else {
+                	$specs = "No";
+                }
+
+                $itemcode->specs = $specs;
+
+
+
     			$items[] = $itemcode;
     		}
 
@@ -81,33 +103,32 @@ class itemcode extends CI_Controller
     	
 		//===============================================================================
 		
-		$header[] = array('Report type','Item Code History','','','','','');
+		$header[] = array('Report type','Item Code History','','','','','','');
 				
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title,'','','','','');
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title,'','','','','','');
 			
-			$header[] = array('','','','','','','');
+			$header[] = array('','','','','','','','');
 			
 		}	
 
 		//------------------------------------------------------
 
-    	$header[] = array('ID','Code','Item Name','Unit','Total purchased amount','Last awarded date','');
+    	$header[] = array('ID','Code','Item Name','Unit','Specs','Total purchased amount','Last awarded date','');
 
     			
 		foreach($items  as  $enq_row)
     	{
   			
     		$item_price = $enq_row->totalpoprice;
-    				
-    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $item_price.chr(160)  , $enq_row->awardedon);
+					    				
+    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $enq_row->specs, $item_price.chr(160)  , $enq_row->awardedon);
     	}
     	createXls('itemcode',$header);
     	die();
 
-    }	
-	
+    }
 	
     //	function do_upload()
     //	{
