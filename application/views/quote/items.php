@@ -46,7 +46,7 @@
 				<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('quote/track/'.$quote->id.'/'.$award->id);?>">Track</a>
 				<?php }?>
 				<?php if(isset($messagekey)){ ?>
-				<a class="pull-right btn btn-green" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
+				<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
 				<?php } ?> 		<?php if($itemswon){?>
 				<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('quote/getawardedpdf/'.$quote->id); ?>">View P.O as PDF</a>
 			<?php }?>
