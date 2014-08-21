@@ -46,6 +46,61 @@ class classified extends CI_Controller
 		/*===============*/
     	$this->load->view('classified/index', $data);
     }
+    
+        public function searchads(){
+		//echo "===="; exit;
+    	$data['title'] = "Classified area";
+    	$where = "";
+    	if(isset($_POST['category']) && $_POST['category']!="") {
+    		
+    		if(isset($_POST['items']) && $_POST['items']!=""){
+    			$where .= "AND category = {$_POST['category']}";
+    		}else {
+    			$subcategories = $this->items_model->getSubCategores($_POST['category']);
+    			if($subcategories){
+
+    				$str .= implode(',', $subcategories);
+    				$where .= " AND category in (".$str.")";
+    			}else
+    			$where .= "AND category = {$_POST['category']}";
+    		}
+		
+    	}
+    	
+    	if(isset($_POST['s']) && $_POST['s']!="") 
+		$where .= " AND title like '%{$_POST['s']}%'";
+    	
+    	if(isset($_POST['items']) && $_POST['items']!="") 
+    	$where .= " AND itemid = {$_POST['items']}";    	
+    	  	
+    	$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}";
+    	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	
+    	$data['ads'] = $res;
+    	if(isset($_POST['category']) && $_POST['category']!="") 
+		$data['category'] = $_POST['category'];
+		if(isset($_POST['items']) && $_POST['items']!="") 
+        $data['itemids'] = $_POST['items'];
+        if(isset($_POST['geo-radius']) && $_POST['geo-radius']!="") 
+        $data['georadius'] = $_POST['geo-radius'];		
+        
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+        	if (isset($catcodes[0]))
+        	{
+        		build_category_tree($categories, 0, $catcodes);
+        	}
+        }
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+
+		/*===============*/
+    	$this->load->view('classified/index', $data);
+    }
+    
     public function ad($id){
     	 
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a WHERE a.id=".$id." AND a.user_id=c.id";

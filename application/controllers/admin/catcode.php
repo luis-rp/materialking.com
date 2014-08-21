@@ -214,7 +214,9 @@ class catcode extends CI_Controller {
         $this->validation->id = $id;
         $this->validation->catname = $cat[0]->catname;
         $this->validation->parent_id = $cat[0]->parent_id;
-        
+		$this->validation->title = $cat[0]->title;
+        $this->validation->text = $cat[0]->text;
+                
         $data['banner_image'] = $cat[0]->banner_image;
         
         $data ['heading'] = 'Update Category';
@@ -262,7 +264,9 @@ class catcode extends CI_Controller {
             $dataUpdate = array(
                             "catname"=>$this->input->post('catname'),
                             "parent_id"=>$this->input->post('parent_id'),
-                            "banner_image"=>$image_name
+                            "banner_image"=>$image_name,
+                            "title"=>$this->input->post('catTitle'),
+                            "text"=>$this->input->post('catText'),
             );
              $this->catcode_model->updateCategory($dataUpdate);
             

@@ -50,7 +50,9 @@ class catcode_model extends Model {
         $options = array(
             'parent_id' => $this->input->post('parent_id'),
             'catname' => $this->input->post('catname'),
-            'banner_image'=>$image_name
+            'banner_image'=>$image_name,
+            'title'=>$this->input->post('catTitle'),
+            'text'=>$this->input->post('catText')
         );
         $this->db->insert('category', $options);
         return $this->db->insert_id();
