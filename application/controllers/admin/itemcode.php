@@ -413,7 +413,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$this->load->view('admin/datagrid', $data);
     }
 
-    function poitems_export ($id)
+     function poitems_export ($id)
     {
     	$item = $this->itemcode_model->get_itemcodes_by_id($id);
     	if (! $item)
@@ -493,7 +493,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     		foreach($items as $item)
     		{
-    			$header[] = array($item->ponum,$item->companyname,$item->daterequested ,formatPriceNew($item->totalprice),$item->quantity,formatPriceNew($item->totalprice),'');
+    		
+				$header[] = array($item->ponum,$item->companyname,$item->daterequested ,formatPriceNew($item->ea),$item->quantity,formatPriceNew($item->totalprice),'');
     		}
 
     	}
