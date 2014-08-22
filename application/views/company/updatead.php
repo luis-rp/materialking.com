@@ -154,8 +154,8 @@
                                 radius: 300,
                                 inputBinding: {
                                     latitudeInput: $('#latitude'),
-                                    longitudeInput: $('#longitude'),
-                                    locationNameInput: $('#address')        
+                                    longitudeInput: $('#longitude')
+                                    //locationNameInput: $('#address')        
                                 },
                                 enableAutocomplete: true,
                                 onchanged: function(currentLocation, radius, isMarkerDropped) {

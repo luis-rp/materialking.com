@@ -1029,8 +1029,33 @@ class site extends CI_Controller
         $item->images = $this->db->where('itemid',$item->id)->get('itemimage')->result();
         $cat_data = $this->db->where('id',$item->category)->get('category')->result();
         $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
-        $data['cat_title'] = $cat_data['0']->title;
-        $data['cat_text'] = $cat_data['0']->text;
+        
+        if(isset($cat_data['0']->title) && $cat_data['0']->title!=""){
+        	$data['cat_title'] = $cat_data['0']->title;
+        	$data['cat_text'] = $cat_data['0']->text;
+        }else {
+        	$parentcategories = $this->items_model->getParentids($item->category);
+        	
+        	if($parentcategories){
+				$where = "";
+        		$str = explode(',', $parentcategories);
+        		for($i=count($str)-1;$i>=0;$i--){
+        			$cat_data2 = $this->db->where('id',$str[$i])->get('category')->result();
+        			if($cat_data2['0']->title!=""){
+        				$data['cat_title'] = $cat_data2['0']->title;
+        				$data['cat_text'] = $cat_data2['0']->text;
+        				break;
+        			}
+        		}
+        		$where .= " AND id in (".$str.")";
+        		
+        	}else {
+        	
+        		$data['cat_title'] = "";
+        		$data['cat_text'] = "";
+        	}
+        }
+        
         $mainimg = new stdClass();
         if($item->item_img)
         {
@@ -1696,4 +1721,149 @@ class site extends CI_Controller
         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) + cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
         return $angle * $earthRadius;
     }
+    
+        public function classified()
+    {    	
+    	$data['title'] = "Classified area";
+    	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
+    	$categories = $this->db->query($sql_cat)->result_array();
+    	$res = array();
+    	foreach($categories as $cat){
+    		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id']; 
+    		$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	}
+    	$data['ads'] = $res;
+		
+		/*====*/
+		$catcodes = $this->catcode_model->get_categories_tiered();
+     	$itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+		
+		/*===============*/
+    	$this->load->view('site/classified', $data);
+    }
+    
+    
+        public function viewallads($catid){
+    	
+    	$cat = array();
+    	$cat['catname'] = "";
+    	    	
+    	$data['title'] = "Classified area";
+    		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$catid; 
+    		$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	
+    	$data['ads'] = $res;
+		
+		/*====*/
+		$catcodes = $this->catcode_model->get_categories_tiered();
+     	$itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        if(isset($catid) && $catid!="") 
+		$data['category'] = $catid;
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+		
+		/*===============*/
+    	$this->load->view('site/classified', $data);
+    }
+    
+    
+    public function searchads(){
+		//echo "===="; exit;
+    	$data['title'] = "Classified area";
+    	$where = "";
+    	$str = "";
+    	$cat = array();
+    	$cat['catname'] = "";
+    	if(isset($_POST['category']) && $_POST['category']!="") {
+    		
+    		if(isset($_POST['items']) && $_POST['items']!=""){
+    			$where .= "AND category = {$_POST['category']}";
+    		}else {
+    			$subcategories = $this->items_model->getSubCategores($_POST['category']);
+    			if($subcategories){
+
+    				$str .= implode(',', $subcategories);
+    				$where .= " AND category in (".$str.")";
+    			}else
+    			$where .= "AND category = {$_POST['category']}";
+    		}
+		
+    	}
+    	
+    	if(isset($_POST['s']) && $_POST['s']!="") 
+		$where .= " AND title like '%{$_POST['s']}%'";
+    	
+    	if(isset($_POST['items']) && $_POST['items']!="") 
+    	$where .= " AND itemid = {$_POST['items']}";    	
+    	  	
+    	$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}";
+    	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	
+    	$data['ads'] = $res;
+    	if(isset($_POST['category']) && $_POST['category']!="") 
+		$data['category'] = $_POST['category'];
+		if(isset($_POST['items']) && $_POST['items']!="") 
+        $data['itemids'] = $_POST['items'];
+        if(isset($_POST['geo-radius']) && $_POST['geo-radius']!="") 
+        $data['georadius'] = $_POST['geo-radius'];		
+        
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $itemcodes = $this->itemcode_model->get_itemcodes();
+        $categories = array();
+        if ($catcodes)
+        {
+        	if (isset($catcodes[0]))
+        	{
+        		build_category_tree($categories, 0, $catcodes);
+        	}
+        }
+        $data['categories'] = $categories;
+        $data['items'] = $itemcodes;
+
+		/*===============*/
+    	$this->load->view('site/classified', $data);
+    }
+    
+    
+    public function ad($id){
+    	 
+    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a, ".$this->db->dbprefix('category')." cat WHERE a.id=".$id." AND a.user_id=c.id AND a.category = cat.id ";
+    	$data = $this->db->query($sql)->row_array();
+    	$view = $data['a_views']+1;
+    	$images = explode("|",$data["a_image"]);
+    	foreach($images as $image){
+    		$data['images'][]=$image;
+    	}
+    	$data['featured_image'] = $data['images'][0];
+    	
+    	$sql_rel =  "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
+    	$data['related'] = $this->db->query($sql_rel)->result_array();
+    	
+    	$sql_popular = "SELECT * FROM ".$this->db->dbprefix('ads')." ORDER BY views ASC LIMIT 3";
+    	$data['popular'] = $this->db->query($sql_popular)->result_array();
+    	
+    	$this->db->where('id', $id);
+    	$this->db->update('ads', array("views"=>$view));
+    	
+    	$this->load->view('site/ad',$data);
+    }
+    
 }

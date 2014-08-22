@@ -2694,8 +2694,8 @@ ul.links li {
 }
 
 .advanced-search-slider {
-	float: right;
-	width: 550px;
+	float: left;
+	width: 267px;
 }
 
 #dir-search-advanced .geo-slider .ui-widget-content {
@@ -2705,7 +2705,7 @@ ul.links li {
 .ui-slider.ui-widget {
 	margin: 21px 0;
 	text-align: center;
-	width: 400px;
+	width: 167px;
 	position: relative;
 	height: 6px;
 	float: right;
@@ -2850,7 +2850,7 @@ ul.links li {
 
 .geo-location-switch {
 	margin-top: 12px;
-	width: 120px;
+	width: 70px;
 	text-align: center;
 }
 
@@ -6670,6 +6670,26 @@ fieldset.input-full-width {
 }
 
 
+#advanced-search-widget-version2 .controls input {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border-color: -moz-use-text-color #E7E7E7 -moz-use-text-color -moz-use-text-color;
+    border-image: none;
+    border-radius: 0 0 0 0;
+    border-style: none solid none none;
+    border-width: medium 1px medium medium;
+    margin-bottom: 0;
+    padding: 14px;
+}
+
+div.full .span3 
+{
+
+width:221px !important;
+}
 
 
 

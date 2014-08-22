@@ -1,3 +1,16 @@
+<link rel='stylesheet' id='genericons-css'  href='<?php echo base_url(); ?>templates/classified/assets/fonts/genericons.css?ver=2.09' type='text/css' media='all' />
+<link rel='stylesheet' id='FlatAds-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/style.css?ver=2013-07-18' type='text/css' media='all' />
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
+<![endif]-->
+<link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap.css?ver=2.3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/custom.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap-responsive.css' type='text/css' media='all' />
+
+
 <style>
 .views-exposed-widget{ float:left;}
 .searchutton
@@ -63,7 +76,7 @@
 								}
 							,
 
-					<?php } } } ?>	
+					<?php } } }?>	
 						
 					],
 					options:{
@@ -226,7 +239,7 @@
 						Search around my position
 
 					</div>-->
-                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="POST" action="<?php echo base_url()?>/classified/searchads">
+                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="POST" action="<?php echo base_url()?>/site/searchads">
                     
                     <div class="views-exposed-widget views-widget-filter-search_api_views_fulltext" id="edit-search-api-views-fulltext-wrapper">
 					        <div class="views-widget">
@@ -287,7 +300,7 @@
 								</span>
 							</a>
 						</div>
-
+						
 					</div>
 					<div class="views-exposed-widget views-submit-button">
 						    <button class="btn btn-primary form-submit searchutton" id="edit-submit-search-view" name="" value="Search" type="submit">Search</button>
@@ -309,7 +322,7 @@
 
 
 
-    <!-- <section id="featured-list" style="opacity: 1;">
+  <!-- <section id="featured-list" style="opacity: 1;">
         
         <div class="container">
             
@@ -361,8 +374,7 @@
         <div class="container">
 
 	                    
-            <?php $cnt = 0; foreach ($ads as $key=>$value) { $cnt += count($value);  } ?>             
-            <h3>Browse our  <?php echo $cnt; ?> Ads from <?php echo count($ads); ?> Categories</h3>
+            <h3>Browse our  1 Ads from <?php echo count($categories); ?> Categories</h3>
 
             <div class="full" style="height: 509px; overflow-y: auto;">
 
@@ -372,8 +384,7 @@
 
 		    		$current = -1;
 							      
-					
-							foreach ($ads as $key=>$value) {
+						foreach ($ads as $key=>$value) {
 								
 							
 
@@ -404,9 +415,10 @@
 							?>
 
 								<li>
-								  	<img style="float:left;" class='flexslider-image' height="40" width="45" src="<?php if(isset($ad['image'])) echo base_url("uploads/ads/".$ad['image']); ?>"/> 
+								  	
+									<img style="float:left;" class='flexslider-image' height="40" width="45" src="<?php if(isset($ad['image'])) echo base_url("uploads/ads/".$ad['image']); ?>"/> 
 									
-									<a href="<?php echo base_url("classified/ad/".$ad['id']);?>" style="float:none;" >	<?php echo $ad['title'];?>	</a> <div style="margin-left:55px;"> <?php echo $ad['price'];?></div>
+									<a href="<?php echo base_url("site/ad/".$ad['id']);?>" style="float:none;" >	<?php echo $ad['title'];?>	</a> <div style="margin-left:55px;"> <?php echo $ad['price'];?></div>
 									
 									
 								  	<span class="category-counter"></span>
@@ -414,16 +426,17 @@
 
 							<?php } ?> 
 
-							<?php if($currentCat > 5) { ?>
+							<?php if($currentCat > 1) { ?>
 								 
 		    					<li>
-		    						<a target="_blank" href="<?php echo base_url("classified/viewallads/".$ad['category']); ?>">ViewAll</a>
+		    						<a target="_blank" href="<?php echo base_url("site/viewallads/".$ad['category']); ?>">ViewAll</a>
 		    					</li>
 		    				<?php } ?>
+
 		    			</ul>
 
             		</div>
-
+					
             	</div>
 
             	<?php } ?>

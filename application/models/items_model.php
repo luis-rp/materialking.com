@@ -162,6 +162,23 @@ class items_model extends Model {
         return $ret;
     }
     
+    function getParentids($catid)
+    {
+        $cat = $this->db->where('id',$catid)->get('category')->row();
+        if(!$cat)
+        	return '';
+        $ret = $cat->id;
+        $parent = $this->db->where('id',$cat->parent_id)->get('category')->result();
+        if($parent)
+        {
+            $rs = $this->getParentids($cat->parent_id);
+            $ret = $rs.",".$ret;//array_merge($ret,$rs);
+        }
+        
+        //$ret = array_reverse($ret);
+        return $ret;
+    }
+    
     function getsubcategorynames($parentid=0) 
     {
     	$this->db->order_by('catname','asc');

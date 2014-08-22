@@ -44,6 +44,12 @@ class Admodel extends Model {
     	$tag = str_replace("\n",",",$tag);
     	
     	$filedata = trim($filedata, "|");
+    	if($filedata==""){
+    		
+    	$this->db->where("id",$this->input->post("adsid"));
+    	$res = $this->db->get("ads")->result();
+    	$filedata = $res[0]->image;
+    	}  
     	$company = $this->session->userdata('company');
     	$newAd = array(
     	"user_id"=>$company->id,
@@ -62,6 +68,13 @@ class Admodel extends Model {
     	
     	$id = $this->input->post("adsid");
     	$this->db->update('ads', $newAd,array("id"=>$id));
+    }
+    
+    public function deleteAd($id)
+    {
+    	$where = array('id'=>$id);
+    	$query = $this->db->delete('ads',$where);
+    	return 1;
     }
 }
 ?>

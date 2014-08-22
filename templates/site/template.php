@@ -262,7 +262,15 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                                 echo 'class="current"';
                                             }
                                         ?>>
-                                        <a href="<?php echo base_url('site/items'); ?>">Shop</a>
+                                       <a href="<?php echo base_url('site/items'); ?>">Shop</a></li>
+                                        
+                                         <li <?php
+                                            if ($function == 'classified') {
+                                                echo 'class="current"';
+                                            }
+                                        ?>>
+                                        <a href="<?php echo base_url('site/classified'); ?>">Classifieds</a>
+                                        
                                         </li>
                                         
                                     </ul>

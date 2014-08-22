@@ -19,7 +19,7 @@
 	{
 		$menu = 'performance';
 	}
-	if($function=='ads')
+	if($function=='ads' || $function == 'updatead')
 	{
 		$menu = 'ads';
 	}

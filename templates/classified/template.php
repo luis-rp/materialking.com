@@ -172,8 +172,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 	</header><!-- #masthead -->
 	<?php echo $content;?>
-	<footer>
-<!--  <script type='text/javascript' src='https://maps.googleapis.com/maps/api/js?v=3.exp&#038;sensor=false&#038;ver=2013-07-18'></script>-->
+	<!-- <footer>
 		<div class="container">
 					
 		<div class="span3 first">		<h4 class="block-title">Recent Ads</h4><div class="block-content clearfix">
@@ -214,7 +213,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 		
 					
-	</footer>
+	</footer> -->
 
 	<section class="socket">
 

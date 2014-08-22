@@ -986,12 +986,11 @@ class Company extends CI_Controller {
 		    log_message('debug',var_export($res,true));
 	    	//$res = $this->do_upload();
 	    
-	    	if(isset($res['error'])){
-	    		$this->session->set_flashdata('message',$res['error']);	
-	    	}
-	    	else {
+	    	if(isset($res['error']))
+	    		$this->session->set_flashdata('message',$res['error']);
+	    	
 	    		$this->admodel->updateAd($res);
-	    	}
+	    		
 	    	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
 			$res['message'] = $message;
 			$this->session->set_flashdata('message', $message);
@@ -999,6 +998,16 @@ class Company extends CI_Controller {
         }
 		$this->load->view('company/updatead',$res);
 		
+	}
+	
+	function deletead($id)
+	{
+            $result=$this->admodel->deleteAd($id);
+		    $message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+			$res['message'] = $message;
+			$this->session->set_flashdata('message', $message);
+			redirect("company/ads");
+
 	}
     
 }

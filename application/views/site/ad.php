@@ -1,4 +1,16 @@
- <?php echo $this->session->flashdata('message'); ?>
+<link rel='stylesheet' id='genericons-css'  href='<?php echo base_url(); ?>templates/classified/assets/fonts/genericons.css?ver=2.09' type='text/css' media='all' />
+<link rel='stylesheet' id='FlatAds-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/style.css?ver=2013-07-18' type='text/css' media='all' />
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
+<![endif]-->
+<link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap.css?ver=2.3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/custom.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap-responsive.css' type='text/css' media='all' />
+
+<?php echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
         
         <div class="container">
