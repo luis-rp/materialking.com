@@ -374,8 +374,9 @@
         <div class="container">
 
 	                    
-            <h3>Browse our  1 Ads from <?php echo count($categories); ?> Categories</h3>
-
+             <?php $cnt = 0; foreach ($ads as $key=>$value) { $cnt += count($value);  } ?>             
+            <h3>Browse our  <?php echo $cnt; ?> Ads from <?php echo count($ads); ?> Categories</h3>
+            
             <div class="full" style="height: 509px; overflow-y: auto;">
 
             	

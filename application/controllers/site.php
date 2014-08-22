@@ -1047,8 +1047,7 @@ class site extends CI_Controller
         				break;
         			}
         		}
-        		$where .= " AND id in (".$str.")";
-        		
+        		        		
         	}else {
         	
         		$data['cat_title'] = "";
