@@ -13,7 +13,7 @@
 .featuredspan
 {
 	
-	width: 850px;
+	width: 824px;
 }
 .logo-wrapper
 {
@@ -103,7 +103,9 @@ form input[type=submit].btn {
     -o-transition:background-color 0.2s ease-in;
     transition:background-color 0.2s ease-in;
     border:0px;
-    color:#fff}
+    color:#fff;-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px}
 form input[type=submit].btn:hover {
     background-color:#045e83}
 textarea,input[type=text],input[type=password],input[type=email] {
@@ -120,7 +122,9 @@ textarea,input[type=text],input[type=password],input[type=email] {
     border:1px solid #d5d5d5;
     color:#707070;
     margin:0px;
-    padding:6px}
+    padding:6px;-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;}
 textarea:active,textarea:focus,input[type=text]:active,input[type=text]:focus,input[type=password]:active,input[type=password]:focus,input[type=email]:active,input[type=email]:focus {
     -webkit-box-shadow:none;
     -moz-box-shadow:none;
@@ -278,8 +282,24 @@ form.contact-form .name,form.contact-form .email {
     width:48%}
 form.contact-form .email {
     float:right}
+	
 .sidebar h2 {
-    color:#707070}
+    background: none repeat scroll 0 0 #06a7ea;
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0 0 0 13px;
+}
+.control-label h5{  background: none repeat scroll 0 0 #06a7ea;
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    padding: 8px 0 8px 13px;}
+	.widget label{ margin:10px 0px 0px 0px;}
 .sidebar .widget.last {
     margin-bottom:0px}
 .ad .content {
@@ -335,11 +355,26 @@ iframe.map {
 .tabs li.active a:hover {
     color:#022a3b}
 .tab-content {
-    -webkit-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
+/*    -webkit-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
     -moz-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
     box-shadow:0px 1px 1px rgba(0,0,0,0.1);
     background-color:#fff;
-    padding:20px}
+    padding:20px*/
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #fff;
+    border-color: -moz-use-text-color #ccc #ccc;
+    border-image: none;
+    border-radius: 0 0 12px 12px;
+    border-right: 1px solid #ddd;
+    border-style: none solid solid;
+    border-width: medium 1px 1px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+	}
+	
 .accordion-group {
     border:0px;
     border-bottom:1px solid #fff}
@@ -2138,11 +2173,14 @@ box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
 }
 .property-detail {
     background-color:#fff;
-    padding:20px}
+      padding: 3%;
+    width: 94%; float:left}
 .property-detail .overview {
     border:1px solid #b5b5b5;
-    margin:0px 30px 10px 0px;
+    margin:0 9px 10px 0;
+	border-radius:5px;
     padding:20px}
+	
 .property-detail .overview h2 {
     clear:both;
     line-height:1;
@@ -3179,11 +3217,11 @@ body #wrapper-outer #wrapper #footer-wrapper {
 }
 h1.page-header,h2.page-header {
     border:0px;
-    color:#022a3b;
+    color:#fff;
     font-family: "itcs";
-    font-size:25px;
+    font-size:21px;
     line-height:40px;
-    margin:20px 0px 10px;
+    margin:5px 0px 4px;
     padding:0px}
 h2 {
     color:#022a3b;
@@ -3514,6 +3552,7 @@ body.header-dark #header-inner .site-email a {
 	.title-price .title1 {
     padding:0;
     width: 380px;
+	margin:0px 0px 13px 0px;
 }
 	.title-price .title2 {
     padding: 5%;
@@ -3587,3 +3626,6 @@ div#searchfor_chzn input
 {
 	height:26px !important;
 }
+
+.expe{ float:left}
+.properties-rows{ float:left; width:100%}
