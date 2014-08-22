@@ -222,7 +222,7 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
-                    <h1 class="page-header">Featured Suppliers</h1>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px">Featured Suppliers</h3>
                     <div class="properties-grid">
                         <div class="row">
                             <?php foreach ($featured as $fc) { ?>
