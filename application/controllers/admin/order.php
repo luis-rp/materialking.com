@@ -483,9 +483,9 @@ function orders_export()
 			foreach($transfers as $item)
 			{
 				$i++;
-				$item->amount = number_format($item->amount + ($item->amount * $order->taxpercent/100),2);
+				//$item->amount = number_format($item->amount + ($item->amount * $order->taxpercent/100),2);
 	
-				$header[] = array($item->transferid , $item->companyname,'$ '.formatPriceNew($item->amount) , $item->status , '' , '' , '');
+				$header[] = array($item->transferid , $item->companyname,'$ '.$item->amount.chr(160) , $item->status , '' , '' , '');
 			}
 		}
 	
