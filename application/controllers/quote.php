@@ -2624,6 +2624,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$shippingdocs = $data['shippingdocs'];
 		
 		
+		$purchasingadmin = $data['purchasingadmin'];
+		
 		$header[] = array('Report Type','Quote Performance','','','','','','','');
 				
 		if(isset($quote->podate))
