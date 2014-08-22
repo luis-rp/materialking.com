@@ -1,4 +1,5 @@
 <?php //echo '<pre>'; print_r($inventory);die;?>
+
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
