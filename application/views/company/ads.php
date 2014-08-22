@@ -33,7 +33,8 @@ function readnotification(id)
                                                 <th style="width:20%">Title</th>
                                                 <th style="width:30%">Desc</th>
                                                 <th style="width:30%">Price</th>
-                                                <th style="width:20%">Edit</th>
+                                                <th style="width:10%">Edit</th>
+                                                <th style="width:10%">Delete</th>
                                             </tr>
                                         </thead>
                                         
@@ -49,6 +50,7 @@ function readnotification(id)
                                                 <td><?php echo $ad->description;?></td>
                                                 <td><?php echo $ad->price;?></td>
                                                 <td><a href="<?php echo base_url("company/updatead/".$ad->id);?>">Edit</a></td>
+                                                <td><a class="close" href="<?php echo base_url("company/deletead/".$ad->id);?>" onclick="return confirm('Are you really want to delete this field?');">&times;</a></td>
                                             </tr>
                                           <?php } ?>
                                         </tbody>
