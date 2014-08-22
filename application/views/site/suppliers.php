@@ -82,7 +82,7 @@
                                         <div class="image1 span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
-                                                    <img style="padding: 20px; vertical-align: middle;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
+                                                    <img style="padding: 20px 0px 20px 0px; vertical-align: middle;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
                                                 <?php } else { ?>
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>

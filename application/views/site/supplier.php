@@ -501,7 +501,7 @@ $(document).ready(function() {
                         <?php }?>
 						<br/>
                         
-                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Map</h3>
+                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Map               <span style=" color: #fff;float: right;padding: 0 10px 0 8px;"><a target="_blank" style="color:#fff; background:#000; padding:4px;" href="<?php echo 'https://maps.google.com/maps?daddr='.$addresslink; ?>">Driving Directions</a></span></h3>
                         <a name="map" id="map">
                         <?php $addressarray = explode(" ",$supplier->address);
                         		$i=1;
@@ -515,7 +515,7 @@ $(document).ready(function() {
                         		}
                         		 
                         ?>
-                        <a target="_blank" href="<?php echo 'https://maps.google.com/maps?daddr='.$addresslink; ?>">Driving Directions</a>
+          
                         <div id="property-map"></div>
                         
                         <a name="form"></a>
