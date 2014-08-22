@@ -703,12 +703,12 @@ $(document).ready(function() {
                  <?php if(@$similarsuppliers){?>
                  <div class="sidebar span3">
                     <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Similar Suppliers</h2>
+                        </div>
                         <div class="content">
-                            <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Similar Suppliers</h5>
-                                    </label>
+                                	
                                     <div class="controls">
                                     	<table cellpadding="5">
                                     	<?php foreach($similarsuppliers as $ri){?>
@@ -728,7 +728,7 @@ $(document).ready(function() {
                                     	</table>
                                     </div>
                                 </div>
-                            </form>
+                           
                         </div>
                     </div>
                  </div>
@@ -787,14 +787,15 @@ $(document).ready(function() {
 
 			});
 		</script>
-                     <div class="sidebar span3">
+                    <div class="sidebar span3">
                     <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Suppliers Classified Lisings</h2>
+                        </div>
                         <div class="content">
-                            <form>
+                           
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Similar Suppliers</h5>
-                                    </label>
+                               
                                    <div class="controls windy-demo">
                                    		<ul id="wi-el" class="wi-container">
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
@@ -807,7 +808,7 @@ $(document).ready(function() {
 										</nav>
                                      </div>
                                 </div>
-                            </form>
+                            
                         </div>
                     </div>
                  </div>
