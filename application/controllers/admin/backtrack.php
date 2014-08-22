@@ -244,12 +244,12 @@ class backtrack extends CI_Controller
 		//=======================================================================
 	
 					
-		$header[] = array('Report type', 'Backorders' , '' , '' , '' , '' , '' , '');		
+		$header[] = array('Report type', 'Backorders' , '' , '' , '' , '' , '' , '' , '');		
 				
 		if($this->session->userdata('managedprojectdetails'))
 		{	
-			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '');
-			$header[] = array('', '' , '' , '' , '' , '' , '' , '');
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' , '');
+			$header[] = array('', '' , '' , '' , '' , '' , '' , '' , '');
 		}		
 	
 		foreach($data['backtracks'] as $backtrack)
@@ -260,21 +260,20 @@ class backtrack extends CI_Controller
 				//     heading
 					
 					
-				$header[] = array('PO#', $backtrack['quote']->ponum , '' , '' , '' , '' , '' , '');
+				$header[] = array('PO#', $backtrack['quote']->ponum , '' , '' , '' , '' , '' , '' , '');
 					
-				$header[] = array('', '' , '' , '' , '' , '' , '' , '');	
+				$header[] = array('', '' , '' , '' , '' , '' , '' , '' , '');	
 					
-				$header[] = array('PO#', 'Item Code' , 'Item Name' , 'Company' , 'Due Qty.' , 'Unit' , 'ETA' , 'Notes');
-	
+				$header[] = array('PO#', 'Item Code' , 'Item Name' , 'Company' , 'Due Qty.' , 'Unit' , 'ETA' ,'Cost Code', 'Notes');
+				
+			
 				//$sheet_name = $backtrack['quote']->ponum;
 				foreach($backtrack['items'] as $item)
 				{
 	
-					$header[] = array($item->ponum, $item->itemcode,  $item->itemname ,  $item->companyname , $item->unit ,$item->daterequested ,$item->costcode , $item->notes);
+					$header[] = array($item->ponum, $item->itemcode,  $item->itemname ,  $item->companyname ,$item->duequantity, $item->unit ,$item->daterequested ,$item->costcode , $item->notes);
 				}
-					
-					
-					
+										
 				foreach($backtrack['messages'] as $cmp_messg)
 				{
 					if(isset($cmp_messg['messages']))
