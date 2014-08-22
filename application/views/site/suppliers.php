@@ -61,7 +61,7 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
-                   <h3 class="titlebox">Suppliers List</h3>
+                   <h3 class="titlebox" style="padding:0px 0px 0px 8px"><strong>Suppliers List</strong></h3>
                     <div class="properties-rows">
                         <div class="row">
 
