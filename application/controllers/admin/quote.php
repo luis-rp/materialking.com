@@ -1665,6 +1665,87 @@ class quote extends CI_Controller
     {
     	$invoices = $this->quote_model->getinvoices();
     	
+		$count = count($invoices);
+        $items = array();
+		 if ($count >= 1)
+        {
+            $settings = $this->settings_model->get_current_settings();
+            $available_statuses = array('pending', 'verified', 'error');
+            $data['available_statuses'] = $available_statuses;
+            foreach ($invoices as $invoice)
+            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
+            {
+                $invoice->ponum = $invoice->quote->ponum;
+
+                $company = $this->db->select('company.*')->from('received')
+                           ->join('awarditem','received.awarditem=awarditem.id')
+                           ->join('company','awarditem.company=company.id')
+                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->get()->row()
+                           ;
+                $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
+                $invoice->bankaccount = $bankaccount;
+
+                $invoice->companydetails = $company;
+                $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
+                //$invoice->status = $invoice->quote->status;
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $options = false;
+                foreach ($available_statuses as $status_key => $status_text)
+                {
+
+                    if (strtolower($invoice->status) == $status_text) {
+                        $selected = " selected=\"selected\"";
+                    } else {
+                        $selected = '';
+                    }
+                    $options[] = "<option value=\"$status_text\" $selected>$status_text</option>";
+                }
+                $options_payment = array();
+                $options_paymenttype = array();
+                $options_payment[]="<option value=\"Paid\" ".($invoice->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
+                //$options_payment[]="<option value=\"Requested Payment\" ".($invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Requested Paid</option>";;
+                $options_payment[]="<option value=\"Unpaid\" ".($invoice->paymentstatus=='Unpaid'||$invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
+
+                $options_paymenttype[]="<option value=\"\">Select Payment Type</option>";
+                if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+                $options_paymenttype[]="<option value=\"Credit Card\" ".($invoice->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";;
+                $options_paymenttype[]="<option value=\"Cash\" ".($invoice->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
+                $options_paymenttype[]="<option value=\"Check\" ".($invoice->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
+
+                $txtrefnum = "<input type=\"text\" id=\"refnum_$invoice->invoicenum\" name=\"refnum\" value=\"$invoice->refnum\"/>";
+
+                $update_button = "<button onclick=\"update_invoice_status('$invoice->invoicenum')\">update</button>";
+                $update_payment_button = "<button onclick=\"update_invoice_payment_status('$invoice->invoicenum')\">update</button>";
+
+                $status_html = "<select id=\"invoice_$invoice->invoicenum\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
+
+                $payment_status_html = "<select id=\"invoice_payment_$invoice->invoicenum\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
+                $payment_status_html .= "<select id=\"invoice_paymenttype_$invoice->invoicenum\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$invoice->invoicenum."','".$invoice->totalprice."');\">" . implode("", $options_paymenttype) . "</select>";
+                $payment_status_html .= $txtrefnum;
+                $payment_status_html .= $update_payment_button;
+                if($invoice->paymentstatus=='Requested Payment')
+                {
+                    $payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
+                }
+
+                $invoice->status_selectbox = $status_html;
+                $invoice->payment_status_selectbox = $payment_status_html;
+
+                $invoice->totalprice = number_format($invoice->totalprice,2);
+
+                $items[] = $invoice;
+            }
+
+            $data['items'] = $items;
+            $data['jsfile'] = 'invoicejs.php';
+        } else {
+        	$data['items'] = array();
+            $data['message'] = 'No Records';
+        }
+		
+		
+		
     	//===============================================================================
 	
 		$header[] = array('Report type' , 'Invoices' , '' , '' , '' , '' , '' );	
@@ -1687,6 +1768,7 @@ class quote extends CI_Controller
     		{
     			$total_price = '$ '.$i->totalprice;
     		}
+				
 			
 			//----------------------------------------------------------
 			$p_status = $i->paymentstatus;
@@ -1980,8 +2062,14 @@ class quote extends CI_Controller
     		$alltotal+=$q->totalprice;
 
     		$still_due = $q->quantity - $q->received;
-
-    		$header[] = array(@$q->companydetails->title , $q->itemcode , $q->itemname , $q->quantity , $q->unit, '$ '.formatPriceNew($q->ea) , '$ '.formatPriceNew($q->totalprice) , $q->daterequested , $q->costcode , $q->notes , $still_due );
+    		
+			$green_icon_value = '';
+			if($q->received != '0.00' && $q->received != '')
+			{
+               $green_icon_value = '( received:'.$q->received.')';
+			}		
+			
+			$header[] = array(@$q->companydetails->title , $q->itemcode , $q->itemname , $q->quantity.$green_icon_value , $q->unit, '$ '.formatPriceNew($q->ea) , '$ '.formatPriceNew($q->totalprice) , $q->daterequested , $q->costcode , $q->notes , $still_due );
 
     	}
 

@@ -61,7 +61,7 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
-                    <h1 class="page-header">Suppliers List</h1>
+                   <h3 class="titlebox">Suppliers List</h3>
                     <div class="properties-rows">
                         <div class="row">
 

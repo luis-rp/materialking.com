@@ -128,15 +128,15 @@ function addtocart(itemid, companyid, price,minqty)
         <div id="main">
             <div class="row">
                 <div class="span9">
-                    <h1 class="page-header">
+                   <h3 class="titlebox" style="padding:0px 0px 0px 8px">
                     <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
                     else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="<?php echo $supplier->logo; ?>">&nbsp;
                     Welcome
                     <?php if($this->session->userdata('site_loggedin')){echo $this->session->userdata('site_loggedin')->companyname;}else{echo 'Guest';}?>,
                     to
                     <?php echo $company->title; ?> Store
-                    </h1>
-                    <a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
+                    </h3>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a></h3>
                     <br/>
 
                 	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>
@@ -251,12 +251,13 @@ function addtocart(itemid, companyid, price,minqty)
 <div class="pull-right">
                 <div class="sidebar span3">
                     <div class="widget contact">
+                      	<label for="radirange" class="control-label">
+                                    	<h5>Manufacturers Carried:</h5>
+                                    </label>
                         <div class="content">
                             <form>
                                 <div class="control-group">
-                                	<label for="radirange" class="control-label">
-                                    	<h3>Manufacturers Carried:</h3>
-                                    </label>
+                              
                                     <div class="controls">
 
                           <table cellpadding="4" cellspacing="2">

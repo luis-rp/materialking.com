@@ -15,9 +15,7 @@
 $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />
-		
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/style1.css" />
+
 <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.timepicker.js"></script>
@@ -223,9 +221,10 @@ $(document).ready(function() {
         <div id="main">
             <div class="row">
                 <div class="span9">
+                 <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h2 class="page-header"><?php echo $supplier->title;?></h2></td>
+                        	<td align="left"> <h2 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h2></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
                             	<div class="addthis_toolbox addthis_default_style ">
@@ -237,6 +236,7 @@ $(document).ready(function() {
                         	</td>
                     	</tr>
                     </table>
+                    </h3>
                     <div class="carousel property">
                     </div>
 
@@ -299,12 +299,14 @@ $(document).ready(function() {
                               </div>
 
                         </div>
-                        <div class="row" style="margin-left: 3px;">
+                        <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
                         <div class="content">
                         
-                         <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  <h2>Manufacturers Carried:</h2> <?php } ?>
+                         <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  
+                         
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3> <?php } ?>
                         	
                             <ul style="float:left; display:inline-block;list-style-type: none; margin:0px; padding:0px;;text-align:center">
             			    <?php 
@@ -327,8 +329,8 @@ $(document).ready(function() {
 						<?php if($feedbacks){?>
                         <div>
                             <p>&nbsp;</p><br/>
-                            
-                            <h2>Feedback:</h2>
+                              <h3 class="titlebox" style="padding:0px 0px 0px 8px">
+                           Feedback:</h3>
                             <table class="table">
                             	<?php foreach($feedbacks as $feedback){?>
                             	<tr>
@@ -346,7 +348,7 @@ $(document).ready(function() {
                         
                         <?php if(@$dealfeed){?>
                         	<br/>
-                            <h2 class="block-title">Supplier Deals</h2>
+                            <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Supplier Deals</h3>
                             
                             <?php 
                         	foreach($dealfeed as $di)
@@ -362,7 +364,7 @@ $(document).ready(function() {
                                 
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
-                            <div style="font-size:12px; border:1px solid #CCC; margin-left:-10px; padding-left:0px;margin-bottom:5px;padding-right:0px;" class="property featuredspan">
+                            <div style="font-size:12px; border:1px solid #CCC; margin-left:0; padding-left:0px;margin-bottom:5px;padding-right:0px;" class="property featuredspan">
                                 <div class="image span2">
                                     <div class="content">
                                         <a href="<?php echo site_url("site/item/".$di->url);?>">
@@ -431,7 +433,7 @@ $(document).ready(function() {
                         
                         <?php if($inventory){?>
                         	<br/>
-                        	<h2>Featured Items:</h2>
+                        	  <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Featured Items:</h3>
                         	<?php
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) 
@@ -440,7 +442,7 @@ $(document).ready(function() {
                                        $inv->qtyreqd = 0;
                                 ?>
                                 
-                        	<div class="property featuredspan" style="border:1px solid #CCC; margin-left:-10px; padding-left:0px;margin-bottom:5px;padding-right:0px;">
+                        	<div class="property featuredspan" style="border:1px solid #CCC; margin:0; padding-left:0px;margin-bottom:5px;padding-right:0px;">
                                 <div class="image span2">
                                     <div class="content">
                                     <?php if($inv->image){?>
@@ -499,7 +501,7 @@ $(document).ready(function() {
                         <?php }?>
 						<br/>
                         
-                        <h2>Map</h2>
+                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Map</h3>
                         <a name="map" id="map">
                         <?php $addressarray = explode(" ",$supplier->address);
                         		$i=1;
@@ -517,10 +519,11 @@ $(document).ready(function() {
                         <div id="property-map"></div>
                         
                         <a name="form"></a>
-                        <h2>Request Assistance</h2>
+                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Request Assistance</h3>
                         <?php echo $this->session->flashdata('message'); ?>
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$supplier->id);?>">
         					<input type="hidden" name="redirect" value="supplier/<?php echo $supplier->username?>"/>
+                            <div class="newbox">
         					<table>
         						<tr>
         							<td width="200">Type:</td>
@@ -561,6 +564,7 @@ $(document).ready(function() {
         							<td><input type="submit" class="btn btn-primary" value="Send"/></td>
         						</tr>
         					</table>
+                          </div>
         				</form>
                     </div>
                 </div>
@@ -727,83 +731,6 @@ $(document).ready(function() {
                     </div>
                  </div>
                  <?php }?>
-                 
-                 <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
-        <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.windy.js"></script>
-        <script type="text/javascript">	
-			$(function() {
-
-				var $el = $( '#wi-el' ),
-					windy = $el.windy(),
-					allownavnext = false,
-					allownavprev = false;
-
-				$( '#nav-prev' ).on( 'mousedown', function( event ) {
-
-					allownavprev = true;
-					navprev();
-				
-				} ).on( 'mouseup mouseleave', function( event ) {
-
-					allownavprev = false;
-				
-				} );
-
-				$( '#nav-next' ).on( 'mousedown', function( event ) {
-
-					allownavnext = true;
-					navnext();
-				
-				} ).on( 'mouseup mouseleave', function( event ) {
-
-					allownavnext = false;
-				
-				} );
-
-				function navnext() {
-					if( allownavnext ) {
-						windy.next();
-						setTimeout( function() {	
-							navnext();
-						}, 150 );
-					}
-				}
-				
-				function navprev() {
-					if( allownavprev ) {
-						windy.prev();
-						setTimeout( function() {	
-							navprev();
-						}, 150 );
-					}
-				}
-
-			});
-		</script>
-                    <div class="sidebar span3">
-                    <div class="widget contact">
-                        <div class="content">
-                            <form>
-                                <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Suppliers Classified Lisings</h5>
-                                    </label>
-                                    <div class="controls windy-demo">
-                                   		<ul id="wi-el" class="wi-container">
-                                    	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img width="190" height="116" src="<?php echo base_url("/uploads/ads/".$ad->image);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
-                                    	<?php } ?>
-                                    	</ul>
-                                    	<nav>
-											<span id="nav-prev">prev</span>
-											<span id="nav-next">next</span>
-										</nav>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                 </div>
                 
                 
             </div>

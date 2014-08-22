@@ -212,7 +212,7 @@
                 <div class="span9">
                 <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?> 
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
-                    <h1 class="page-header"><?php echo $page_titile;?></h1>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px"><?php echo $page_titile;?></h3>
 
                     <div class="properties-rows">
                         <div class="row">

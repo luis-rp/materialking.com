@@ -1,5 +1,4 @@
 <?php //echo '<pre>'; print_r($inventory);die;?>
-
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
@@ -292,29 +291,25 @@ left:0px;}
             <div class="row">
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
-                	<table width="100%">
-                    	<tr>
-                        	<td align="left"> <h2 class="page-header"><?php echo $item->itemcode;?></h2></td>
-                        	<td align="right">
+                    <h3 class="titlebox">
+                	 <div class="span4"><h2 class="page-header"><?php echo $item->itemcode;?></h2></div>
                             	<!-- AddThis Button BEGIN -->
-                            	<div class="addthis_toolbox addthis_default_style ">
+                    <div class="span4"><div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
                             	<a class="addthis_button_tweet"></a>
                             	<a class="addthis_counter addthis_pill_style"></a>
                             	</div>
-                            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>
-                            	<!-- AddThis Button END -->
-                            	
-                        	</td>
-                    	</tr>
-                    </table>
-                    <div class="Quotedetail">
-                         <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com 
-                    </div>
-                    <div class="carousel property">
-                    </div>
+                   <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>
+                 <!-- AddThis Button END -->
+              </div>
+                    </h3>
+           
+               
 
                     <div class="property-detail">
+                             <div class="Quotedetail">
+                         <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com 
+                    </div>
                         <?php  if(isset($cat_image) && $cat_image!= "" && file_exists("./uploads/category-banners/".$cat_image)) { ?>
                         <div class="category-image" style="margin: 0px 0px 5px;">
                         <?php if(isset($cat_title))  { ?>
@@ -363,7 +358,7 @@ left:0px;}
                             </div>
                         </div>
 
-                        <div style="min-height: 240px;">
+                        <div class="greatedeals">
                             <p><?php echo $item->listinfo; ?></p>
                         </div>
                         <br/>
@@ -431,7 +426,9 @@ left:0px;}
                         </div>
                           <?php if(@$item->featureditem){?>
                           <br/>
-                          <table class="span5">
+                          <div class="newbox">
+                                                    <h3 class="titlebox1">Featured Seller</h3>
+                          <table class="span12">
                               <tr>
                                   <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?> at $<?php echo $item->featureditem->ea;?></td>
                                   <td>
@@ -446,19 +443,18 @@ left:0px;}
                               </tr>
                               <?php }?>
                           </table>
-                          <br/>
-                      
+                      </div>
                           <?php }?>
 	
                             <?php
                             if ($filtermanufacturer) {
                             ?>
-                            <br/><br/>
+                        
                             <table width="90%">
                             <tr>
                             <td>View By Manufacturer:</td>
                             <td>
-                                        <form method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
+                              <form method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
                             	<select id="manufacturer1" onchange="$('#manufacturer').val($('#manufacturer1').val());$('#searchform').submit()">
                             		<option value="">All</option>
                             		<?php foreach($filtermanufacturer as $fimf) if($fimf){?>
@@ -470,8 +466,8 @@ left:0px;}
                             </tr>
                             </table>
                             <?php }?>
-                            <div class="pull-right">
-                            <br/><br/>
+                            <div class="pull-right" style="margin:10px 0px;">
+                       
                             <?php if ($this->session->userdata('site_loggedin')){?>
                         		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
                                     <i class="icon icon-plus"></i> <br/>Add to RFQ
@@ -487,7 +483,8 @@ left:0px;}
                                 </a>
                             </div>
                             <br/><br/>
-                            <h4>
+                            <div class="searchnewbox">
+                            <h4 style="float:left">
                             	Search Radius(miles):
                             	<a href="javascript:void(0)" onclick="setmiles(20)">20</a>&nbsp;&nbsp;
                             	<a href="javascript:void(0)" onclick="setmiles(60)">60</a>&nbsp;&nbsp;
@@ -497,7 +494,10 @@ left:0px;}
                             <?php if(!$inventory){?>
                             No nearby suppliers for the item. Try a larger search radius.
                             <?php }?>
-                            <table id="datatable" class="table table-bordered smallfont">
+                            </div>
+                            <div class="newbox">
+  
+                            <table id="datatable newtable" class="table table-bordered smallfont ">
                             	<thead>
                                 <tr>
                                     <th>Supplier</th>
@@ -550,9 +550,9 @@ left:0px;}
                                 <?php } ?>
                                 </tbody>
                             </table>
-
+</div>
                         <?php if($amazon){ ?>
-                        
+                       <div class="newbox"> 
                         <table class="table table-bordered">
                             <tr>
                                 <th>Amazon Item Name</th>
@@ -567,7 +567,7 @@ left:0px;}
                             </tr>
 
                         </table>
-
+</div>
                         <?php } ?> 
                         <?php if(count($inventory)!=0){?>
                          <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
@@ -646,13 +646,13 @@ left:0px;}
 					    });
 					    <?php } ?>
 					   </script>
-		        <h2>Request Assistance</h2>
+		        <h3 class="titlebox1">Request Assistance</h3>
                         <a name="form"></a>
                         <?php echo $this->session->flashdata('message'); ?>
                         
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
-        					<table>
+        					  <div class="newbox"> <table cellpadding="4" cellspacing="4">
         						<tr>
         							<td width="200">Type:</td>
         							<td>
@@ -694,7 +694,7 @@ left:0px;}
         							<td></td>
         							<td><input type="submit" class="btn btn-primary" value="Send"/></td>
         						</tr>
-        					</table>
+        					</table> </div>
         				</form>
                     </div>
                 </div>
@@ -744,12 +744,13 @@ left:0px;}
                 
                     <?php if($item->articles){?>
                     <div class="widget contact">
+                        	<label class="control-label" for="radirange">
+                                    	<h2 class="block-title">Information and Resources</h2>
+                                    </label>
                         <div class="content">
                             <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Information and Resources</h5>
-                                    </label>
+                            
                                     <div class="controls">
                                     	
                                     	<?php foreach($item->articles as $article){?>
@@ -798,10 +799,11 @@ left:0px;}
                     
                     <?php if(@$dealfeed){//NOT USED NOW?>
                     <div class="widget contact">
-                        <div class="content">
-                            <label class="control-label" for="radirange">
+                    <label for="radirange" class="control-label">
                                 <h5 class="block-title">Supplier Deals</h5>
                             </label>
+                        <div class="content">
+                       
                         	<table style="font-size: 12px;">
                         	<?php 
                         	foreach($dealfeed as $di)
@@ -854,12 +856,13 @@ left:0px;}
                     <?php }?>
                 
                     <div class="widget contact">
+                    	<label class="control-label" for="radirange">
+                                    	<h5>Free Professional Assistance</h5>
+                                    </label>
                         <div class="content">
                             <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Free Professional Assistance</h5>
-                                    </label>
+                                
                                     <div class="controls">
                                     	We are construction procurement professionals and are happy to help.
                                     </div>
@@ -870,12 +873,13 @@ left:0px;}
                     </div>            
                     
                     <div class="widget contact">
+                       	<label class="control-label" for="radirange">
+                                    	<h5>Classified Listings</h5>
+                                    </label>
                         <div class="content">
                             <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Classified Listings</h5>
-                                    </label>
+                             
                                     <div class="controls">
                                     	<?php foreach($adforitem as $ad){?>
                                     	<div>
