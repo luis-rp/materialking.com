@@ -15,6 +15,8 @@
 $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />		
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/style1.css" />
 
 <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
@@ -701,12 +703,12 @@ $(document).ready(function() {
                  <?php if(@$similarsuppliers){?>
                  <div class="sidebar span3">
                     <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Similar Suppliers</h2>
+                        </div>
                         <div class="content">
-                            <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Similar Suppliers</h5>
-                                    </label>
+                                	
                                     <div class="controls">
                                     	<table cellpadding="5">
                                     	<?php foreach($similarsuppliers as $ri){?>
@@ -726,13 +728,91 @@ $(document).ready(function() {
                                     	</table>
                                     </div>
                                 </div>
-                            </form>
+                           
                         </div>
                     </div>
                  </div>
                  <?php }?>
                 
-                
+                <?php if($adforsupplier){?>
+                   <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.windy.js"></script>
+        <script type="text/javascript">	
+			$(function() {
+
+				var $el = $( '#wi-el' ),
+					windy = $el.windy(),
+					allownavnext = false,
+					allownavprev = false;
+
+				$( '#nav-prev' ).on( 'mousedown', function( event ) {
+
+					allownavprev = true;
+					navprev();
+				
+				} ).on( 'mouseup mouseleave', function( event ) {
+
+					allownavprev = false;
+				
+				} );
+
+				$( '#nav-next' ).on( 'mousedown', function( event ) {
+
+					allownavnext = true;
+					navnext();
+				
+				} ).on( 'mouseup mouseleave', function( event ) {
+
+					allownavnext = false;
+				
+				} );
+
+				function navnext() {
+					if( allownavnext ) {
+						windy.next();
+						setTimeout( function() {	
+							navnext();
+						}, 150 );
+					}
+				}
+				
+				function navprev() {
+					if( allownavprev ) {
+						windy.prev();
+						setTimeout( function() {	
+							navprev();
+						}, 150 );
+					}
+				}
+
+			});
+		</script>
+                    <div class="sidebar span3">
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Suppliers Classified Lisings</h2>
+                        </div>
+                        <div class="content">
+                           
+                                <div class="control-group">
+                               
+                                   <div class="controls windy-demo">
+                                   		<ul id="wi-el" class="wi-container">
+                                    	<?php foreach($adforsupplier as $key=>$ad){?>
+                                    	<li><img width="190" height="116" src="<?php echo base_url("/uploads/ads/".$ad->image);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                     	<?php } ?>
+                                    	</ul>
+                                    	<nav>
+											<span id="nav-prev">prev</span>
+											<span id="nav-next">next</span>
+										</nav>
+                                     </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+                 </div>
+                <?php }?>
             </div>
         </div>
     </div>
