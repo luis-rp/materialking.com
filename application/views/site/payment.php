@@ -34,7 +34,7 @@ $(document).ready(function() {
             <div class="span9">
            
              <?php echo $this->session->flashdata('message'); ?>
-                <h1 class="page-header">Pay With Credit Card</h1>
+                <h1 class="page-header titlebox">Pay With Credit Card</h1>
                 
            <div class="property-detail">
                 

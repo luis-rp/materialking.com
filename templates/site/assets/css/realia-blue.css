@@ -3216,13 +3216,24 @@ body #wrapper-outer #wrapper #footer-wrapper {
         padding-right:20px}
 }
 h1.page-header,h2.page-header {
-    border:0px;
+/*    border:0px;
     color:#fff;
     font-family: "itcs";
     font-size:21px;
     line-height:40px;
     margin:5px 0px 4px;
-    padding:0px}
+    padding:0px*/
+	background: #06a7ea;
+-webkit-border-radius: 8px 8px 0px 0px;
+-moz-border-radius: 8px 8px 0px 0px;
+border-radius: 8px 8px 0px 0px;
+float: left;
+width: 99%;
+padding:0% 0% 0% 1%;
+color: #FFF;
+margin: 8px 0px 8px 0px;
+font-size:18px;
+	}
 h2 {
     color:#022a3b;
     font-size:24px;
