@@ -844,7 +844,7 @@ h4 small {
 .page-header {
   padding-bottom: 9px;
   margin: 20px 0 30px;
-  border-bottom: 1px solid #eeeeee;
+/*  border-bottom: 1px solid #eeeeee;*/
 }
 
 ul,
@@ -6212,6 +6212,7 @@ a.badge:focus {
 .titlebox{ background:#06a7ea; -webkit-border-radius: 8px 8px 0px 0px;
 -moz-border-radius:  8px 8px 0px 0px;
 border-radius:  8px 8px 0px 0px; float:left; width:100%; color:#FFF; margin:8px 0px 8px 0px;}
+.titlebox a{ color:#fff;}
 
 .titlebox2{ background:#06a7ea; -webkit-border-radius: 8px 8px 0px 0px;
 -moz-border-radius:  8px 8px 0px 0px;
