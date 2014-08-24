@@ -332,7 +332,7 @@ left:0px;}
                                             </a>
                                     	
                                         </div>
-                                        <div id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
+                                        <div  id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
                                         <embed class="youtube-player" type="text/html" width="260" height="280" src="">     
                                         <div id="loading" style="float:left; width:100%; height:100%; text-align:center;">
         									<span style="background-color:Yellow; font-size:xx-large">Please Wait while loading</span>
@@ -450,22 +450,24 @@ left:0px;}
                             if ($filtermanufacturer) {
                             ?>
                         
-                            <table width="90%">
-                            <tr>
-                            <td>View By Manufacturer:</td>
-                            <td>
-                              <form method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
-                            	<select id="manufacturer1" onchange="$('#manufacturer').val($('#manufacturer1').val());$('#searchform').submit()">
-                            		<option value="">All</option>
-                            		<?php foreach($filtermanufacturer as $fimf) if($fimf){?>
-                            		<option value="<?php echo $fimf->id;?>" <?php echo $fimf->id==@$_POST['manufacturer']?'SELECTED':'';?>><?php echo $fimf->title;?></option>
-                            		<?php }?>
-                            	</select>
-                                        </form>
-                            </td>
-                            </tr>
-                            </table>
-                            <?php }?>
+                            <div class="newbox" style="margin-top:12px;">
+                              <h3 class="titlebox1">View By Manufacturer</h3>
+                              <table width="90%">
+                                <tr>
+                                  <td><form style="margin:0px;" method="post" action="<?php echo site_url('site/item/'.$item->id);?>">
+                                      <select name="select" id="manufacturer1" onchange="$('#manufacturer').val($('#manufacturer1').val());$('#searchform').submit()">
+                                        <option value="">All</option>
+                                        <?php foreach($filtermanufacturer as $fimf) if($fimf){?>
+                                        <option value="<?php echo $fimf->id;?>" <?php echo $fimf->id==@$_POST['manufacturer']?'SELECTED':'';?>><?php echo $fimf->title;?></option>
+                                        <?php }?>
+                                      </select>
+                                  </form></td>
+                                </tr>
+                              </table>
+                            </div>
+                           
+						   
+						    <?php }?>
                             <div class="pull-right" style="margin:10px 0px;">
                        
                             <?php if ($this->session->userdata('site_loggedin')){?>
@@ -522,26 +524,26 @@ left:0px;}
                                         
                                 ?>
                                 <tr>
-                                    <td><a href="<?php echo site_url('site/supplier/'.$inv->companydetails->username);?>"><?php echo $inv->companydetails->title . $inv->joinstatus; ?></a> </td>
-                                    <td class="tinyfont"><?php echo $inv->itemcode ?> </td>
-                                    <td><?php echo $inv->itemname ?> </td>
-                                    <td><?php echo $inv->manufacturername ?> </td>
-                                    <td class="tinyfont"><?php echo $inv->partnum ?> </td>
-                                    <td>
+                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.$inv->companydetails->username);?>"><?php echo $inv->companydetails->title . $inv->joinstatus; ?></a> </td>
+                                    <td style="padding:0px;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
+                                    <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
+                                    <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
+                                    <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>
+                                    <td style="padding:0px;">
                                     	<?php echo '$'.$inv->ea; ?>
                                     	<?php if($inv->ea != $inv->listprice && $inv->listprice != ''){?>
                                     		<br/><strike>$<?php echo $inv->listprice ?></strike>
                                     	<?php }?>
                                     	<br>Min.Order:<?php echo $inv->minqty;?>
                                     </td>
-                                    <td>
+                                    <td style="padding:0px;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?>
                                     
                                     </td>
-                                    <td class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>
+                                    <td style="padding:0px;" class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
-                                    <td align="center">
+                                    <td style="padding:0px;" align="center">
                                         <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
                                             <i class="icon icon-plus"></i>
                                         </a>
