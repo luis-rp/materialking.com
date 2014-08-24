@@ -293,7 +293,7 @@ function addtocart(itemid, companyid, price,minqty)
                  <div class="sidebar span3">
                     <div class="widget contact">
                         <div class="title">
-                            <h2 class="block-title">Main Menu of</h2>
+                            <h2 class="block-title">Main Menu</h2>
                         </div>
 
                         <div class="content">

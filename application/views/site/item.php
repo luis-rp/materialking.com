@@ -873,7 +873,7 @@ left:0px;}
                             </form>
                         </div>
                     </div>            
-                    
+                    <?php  if($adforitem){?>
                     <div class="widget contact">
                        	<label class="control-label" for="radirange">
                                     	<h5>Classified Listings</h5>
@@ -902,7 +902,7 @@ left:0px;}
                             </form>
                         </div>
                     </div>   
-                            
+                    <?php } ?>  
                 </div>
             </div>
 
