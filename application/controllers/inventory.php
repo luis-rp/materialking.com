@@ -717,11 +717,8 @@ class Inventory extends CI_Controller
     	redirect('company/login');
     	    	
     	$this->db->where('id',$_POST['id']);
-    	$qtyresult = $this->db->delete('qtydiscount')->result();
-    	if($qtyresult)
+    	$this->db->delete('qtydiscount')->result();
     	echo "success";
-    	else 
-    	echo "fail";
     	die;
     }
     
