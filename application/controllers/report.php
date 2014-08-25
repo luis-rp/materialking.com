@@ -114,7 +114,7 @@ class report extends CI_Controller
 		$totalallpaid     = 0;
 			
 		$i = 0;
-		if($data['reports'])
+		if(isset($data['reports']))
 		foreach($data['reports'] as $report)
 		{
 			$header[] = array('Company' , 'PO#','Item Code' , 'Item Name' , 'Unit' , 'Qty.' , 'EA' , 'Total','Payment','Verification','Notes' ,'Invoice#');
