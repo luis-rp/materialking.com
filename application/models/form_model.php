@@ -40,6 +40,20 @@ class form_model extends Model
 			}
 			return 1;
     	}
+    	
+    	public function delete_field($id)
+    	{
+    		$where = array('Id'=>$id);
+			$query = $this->db->delete('pms_formbuilder',$where);
+			return 1;
+    	}
+
+    	public function delete_allfield($id)
+    	{
+    		$where = array('CompanyID'=>$id);
+			$query = $this->db->delete('pms_formbuilder',$where);
+			return 1;
+    	}
     }
 
 ?>

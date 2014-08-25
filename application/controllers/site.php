@@ -16,6 +16,7 @@ class site extends CI_Controller
         $this->load->model('admin/catcode_model', '', TRUE);
         $this->load->model('admin/quote_model', '', TRUE);
 		$this->load->model ('items_model', '', TRUE);
+		$this->load->model('form_model', '', TRUE);
 		$data['banner']=$this->banner_model->display();
 		$data['categorymenu'] = $this->items_model->getCategoryMenu (0) ;
         $this->load = new My_Loader();
@@ -1863,6 +1864,77 @@ class site extends CI_Controller
     	$this->db->update('ads', array("views"=>$view));
     	
     	$this->load->view('site/ad',$data);
+    }
+    
+    
+    function formview($id)
+    {
+    	$data['result'] = $this->form_model->view_field($id);
+        $formdata="";
+    	foreach($data['result'] as $key=>$fields)
+    	 {
+    	 	$name_id=trim($fields->Label);
+    	    $formdata.='<h4>'.$fields->Label.'</h4>';
+    	     if($fields->FieldType == 'text' || $fields->FieldType == 'email' || $fields->FieldType == 'password')
+    	      {
+    	      $formdata.='<input type="'.$fields->FieldType.'" class="required input-block-level" id="'.$name_id.'" name="formfields['.$fields->Id.']" placeholder="'.$fields->Label.'" required value="'.$fields->Value.'">';
+      		  }
+
+      		if($fields->FieldType == 'dropdown')
+      		 {
+      		   $dropdownValues = explode(",",$fields->FieldValue); $k= array_search($fields->Value,$dropdownValues);
+      		   $formdata.='<select id="'.$name_id.'" name="formfields['.$fields->Id.']">';
+      		     if(count($dropdownValues) > 0)
+      		      {
+      		   	    for($i=0;$i<count($dropdownValues); $i++)
+      		   	    {
+      		   	      $formdata.='<option value="'.$dropdownValues[$i].'"';
+      		   	        if($dropdownValues[$i]==$fields->Value)
+      		   	          {"selected";}
+      		   	        else
+      		   	          { ""; }
+      		   	     $formdata.='>'.$dropdownValues[$i].'</option>';
+      		   	     }
+      		      }
+      		   	 $formdata.='</select>';
+             }
+
+		     if($fields->FieldType == 'radio')
+		      {
+		      	$dropdownValues = explode(",",$fields->FieldValue);
+		      	  if(count($dropdownValues) > 0)
+		      	    {
+		      	       for($i=0;$i<count($dropdownValues); $i++)
+		      	        {
+		     				$formdata.='<input type="radio" name="formfields['.$fields->Id.']" id="'.$dropdownValues[$i].'" value="'.$dropdownValues[$i].'"';
+		                    if($fields->Value ==$dropdownValues[$i])  'checked';
+		                    $formdata.='>&nbsp;'.$dropdownValues[$i].'<br>';
+		                 }
+		      	    }
+		      }
+
+ 			  if($fields->FieldType == 'checkbox')
+ 			    {
+ 			      $dropdownValues = explode(",",$fields->FieldValue);
+ 			       if(count($dropdownValues) > 0)
+ 			        {
+ 			          for($i=0;$i<count($dropdownValues); $i++)
+ 			           {
+ 			  	        $formdata.='<input type="checkbox" name="formfields['.$fields->Id.'][]" id="'.$name_id.'"  value="'.$dropdownValues[$i].'"';
+ 			  	        if($fields->Value ==$dropdownValues[$i]) 'checked';
+ 			  	        $formdata.='>&nbsp;'.$dropdownValues[$i].'&nbsp;&nbsp;';
+ 			  	       }
+ 			        }
+ 			     }
+
+ 			 if($fields->FieldType == 'textarea')
+ 			  {
+ 				$formdata.='<textarea id="'.$name_id.'" name="formfields['.$fields->Id.']">'.$fields->Value.'</textarea>';
+ 			  }
+    	 }
+
+    	 print_r($formdata);
+
     }
     
 }

@@ -393,7 +393,28 @@ function PopupPrint(data)
                                 				</table>
                                 			</td>
                                 		</tr>
-                                		
+										<tr>
+                                			<td colspan="2">Attachments</td>
+                                		</tr>
+                                		<tr>
+                                			<td colspan="2">
+                                				<table class="table">
+                                					
+                                						<?php if($attachmentdata)
+                                							{
+                                								$count = 1;
+                                							foreach ($attachmentdata as $key=>$val) {	?>
+                                							<tr>
+                                								<td>
+											    			<a href="<?php echo site_url('uploads/attachments/'.$val['attachmentname']);?>" target="_blank"> View Attachment <?php echo $count; ?></a>
+											    				</td>
+                                							</tr>
+											    		<?php $count ++;} 
+                                							}?>                                						
+                                						
+                                				</table>
+                                			</td>
+                                		</tr>                                		
                                 	</table>
                                 </div>
                             </div>

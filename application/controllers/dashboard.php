@@ -77,6 +77,11 @@ class Dashboard extends CI_Controller
 	    $this->db->where('purchasingadmin',$pa);
 	    $appl = $this->db->get('application')->row();
 	    $data['appl'] = $appl;
+	   
+	    $sql = "SELECT * FROM ".$this->db->dbprefix('applicationattachment')." WHERE purchasingadmin=".$pa;
+	    $qry = $this->db->query($sql);
+	    $attachmentData = $qry->result_array();	    
+	    $data['attachmentdata'] = $attachmentData;
 	    $this->load->view('dashboard/application',$data);
 	}
 	

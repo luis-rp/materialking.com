@@ -4,6 +4,17 @@ $(document).ready(function(){
 	
 });
 //-->
+
+var upload_number = 2;
+	function addFileInput() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads").appendChild(d);
+	 	upload_number++;
+	}
 </script>
 
 <section class="row-fluid">
@@ -13,7 +24,7 @@ $(document).ready(function(){
 	
     <?php echo $this->session->flashdata('message'); ?>
 	
-       <form class="form-horizontal" method="post" action="<?php echo site_url('admin/dashboard/saveappl'); ?>">
+       <form class="form-horizontal" method="post" action="<?php echo site_url('admin/dashboard/saveappl'); ?>" ENCTYPE="multipart/form-data">
         	<table class="table table-bordered">
         		<tr>
         			<td>Type</td>
@@ -357,6 +368,44 @@ $(document).ready(function(){
         						<td><input class="span12" type="text" name="ref4fax" value="<?php echo @$appl->ref4fax?>"/></td>
         						<td><input class="span12" type="text" name="ref4contact" value="<?php echo @$appl->ref4contact?>"/></td>
         					</tr>
+        					<TR>
+							<TD class="clsStdLabel1">Attachment:</TD>
+							<!--<TD><INPUT TYPE="file" id="UploadFile"  value="" name="UploadFile" style='WIDTH:300px' ></TD>-->
+							<TD>
+							
+                                				<table class="table">
+                                					
+                                						<?php if($attachmentdata)
+                                							{
+                                								$count = 1;
+                                							foreach ($attachmentdata as $key=>$val) {	?>
+                                							<tr>
+                                								<td>
+											    			<a href="<?php echo site_url('uploads/attachments/'.$val['attachmentname']);?>" target="_blank"> View Attachment <?php echo $count; ?></a>
+											    				</td>
+                                							</tr>
+											    		<?php $count ++;} 
+                                							}?>                                						
+                                						
+                                				</table>
+                          
+							<table id="searchTextResults" cellspacing="" border="0" class="" width="100%">
+								    <tr>
+								    	<td> 
+							    			<input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+											<div id="moreUploads"></div>
+											
+										</td> 
+									</tr>
+									<tr>
+										<td>
+											<div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Attach another File</a>
+											</div> 
+										</td>
+									</tr>
+							    </table> 
+							</TD>
+						</TR>
         				</table>
         			</td>
         		</tr>

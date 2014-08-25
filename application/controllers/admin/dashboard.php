@@ -621,6 +621,10 @@ class Dashboard extends CI_Controller
     	    $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
     	    $appl = $this->db->get('application')->row();
 	    }
+	    $sql = "SELECT * FROM ".$this->db->dbprefix('applicationattachment')." WHERE purchasingadmin=".$this->session->userdata('purchasingadmin');
+	    $qry = $this->db->query($sql);
+	    $attachmentData = $qry->result_array();	    
+	    $data['attachmentdata'] = $attachmentData;
 	    $data['appl'] = $appl;
 	    $this->load->view ('admin/application', $data);
 	}
@@ -632,6 +636,30 @@ class Dashboard extends CI_Controller
 		{
 			redirect ( 'admin/login/index');
 			die;
+		}
+				
+		if(isset($_FILES['UploadFile']['name']))
+		{        
+	        $count=0;
+	        foreach ($_FILES['UploadFile']['name'] as $filename) 
+	        {
+	            if(isset($_FILES['UploadFile']['tmp_name'][$count]))
+				if(is_uploaded_file($_FILES['UploadFile']['tmp_name'][$count]))
+				{
+					$ext = end(explode('.', $_FILES['UploadFile']['name'][$count]));
+					$nfn = md5(uniqid().date('YmdHi')).'.'.$ext;
+					if(move_uploaded_file($_FILES['UploadFile']['tmp_name'][$count], "uploads/attachments/".$nfn))
+					{
+						$savedata = array('purchasingadmin'=>$this->session->userdata('purchasingadmin'),
+										  'attachmentname'=>$nfn,
+										  'attachmentpath'=> "uploads/attachments/"
+										 );
+										
+						$this->db->insert('applicationattachment',$savedata);
+					}
+					 $count=$count + 1;
+				}
+	        }
 		}
 	    $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
 	    $_POST['aboutyourcompany'] = @$_POST['aboutyourcompany']?implode(', ', $_POST['aboutyourcompany']):'';

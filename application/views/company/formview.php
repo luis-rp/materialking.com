@@ -12,9 +12,10 @@
                    <div class="row">
             		<form  class="animated fadeIn" role="form" method="post" action="saveformdata">
                      <div class="col-md-6 col-sm-6 col-xs-6">
- 					<?php  foreach($result as $key=>$fields) { $name_id=trim($fields->Label);  ?>
+ 					<?php  foreach($result as $key=>$fields) { $name_id=trim($fields->Label);  ?><br>
  					<div class="form-group">
     						<label for="label" class="form-label"><?php echo $fields->Label ?></label>
+    						<a class="close" href="<?php echo base_url().'company/deleteformdata/'.$fields->Id;?>" onclick="return confirm('Are you really want to delete this field?');">&times;</a>
     							<div class="controls">
       					<?php if($fields->FieldType == 'text' || $fields->FieldType == 'email' || $fields->FieldType == 'password') {?>		<input type="<?php echo $fields->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="formfields[<?php echo $fields->Id ?>]" placeholder="<?php echo $fields->Label; ?>" required value="<?php echo $fields->Value;?>">
       					<?php  }  ?>
@@ -25,7 +26,7 @@
 						<?php if($fields->FieldType == 'radio') { $dropdownValues = explode(",",$fields->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="radio" name="formfields[<?php echo $fields->Id ?>]" id="<?php echo $dropdownValues[$i];?>" value="<?php echo $dropdownValues[$i];?>" <?php if($fields->Value ==$dropdownValues[$i]) echo 'checked'; ?>><?php echo $dropdownValues[$i];?> <?php  } } ?>
 
  					    		<?php  } ?>
- 					    <?php if($fields->FieldType == 'checkbox') { $dropdownValues = explode(",",$fields->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="checkbox" name="formfields[<?php echo $fields->Id ?>]" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($fields->Value ==$dropdownValues[$i]) echo 'checked'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
+ 					    <?php if($fields->FieldType == 'checkbox') { $dropdownValues = explode(",",$fields->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="checkbox" name="formfields[<?php echo $fields->Id ?>]" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($fields->Value ==$dropdownValues[$i]) echo 'selected'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
 
  					    		<?php } ?>
  					    <?php if($fields->FieldType == 'textarea') { ?> <textarea id="<?php echo $name_id;?>" name="formfields[<?php echo $fields->Id ?>]"><?php echo $fields->Value;?></textarea>
@@ -36,7 +37,8 @@
  					    <div class="form-group">
 	                        <label class="form-label"></label>
 	                        <div class="controls">
-	                          <input type="submit" value="Save Field" class="btn btn-primary btn-cons general">
+	                            <a href="<?php echo base_url() . 'company/createformfields';?>"><input type="button"  class="btn btn-primary" value="Back"></a>&nbsp;&nbsp;
+	             <a href="<?php echo base_url() . 'company/deleteallformdata';?>"><input type="button"  class="btn btn-primary" value="Delete All Fields"></a>
 	                        </div>
 	                    </div>
  						 </div>

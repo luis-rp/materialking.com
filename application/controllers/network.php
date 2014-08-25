@@ -77,43 +77,88 @@ class network extends CI_Controller {
     public function join() {
         if (!$_POST)
             die('Error');
-		
-       
+
+        if(isset($_POST['formfields']))
+        {
+   	        $formField = $_POST['formfields'];
+        	unset($_POST['formfields']);
+        }
         $_POST['fromtype'] = 'users';
         $_POST['fromid'] = $this->session->userdata('site_loggedin')->id;
         $this->db->where($_POST);
+
         if(!$this->db->get('joinrequest')->row())
-        {
-            //print_r($_POST);die;
+          {
             $_POST['requeston'] = date('Y-m-d H:i:s');
+
             $this->db->insert('joinrequest', $_POST);
-            
-         
+			$joinrequestID = $this->db->insert_id();
+
+			$checkBoxValues = "";
+            if(isset($formField) && isset($joinrequestID))
+             {
+               foreach ($formField as $key => $val)
+    		    {
+    			  	if($val != '')
+    			    {
+    			    	if(is_array($val)==1)
+	    		    	{
+							foreach ($val as $k1=>$newValue)
+							{
+								$checkBoxValues .= $newValue. " ,";
+							}
+							$formValue = substr($checkBoxValues, 0, -1);
+	    		    	}
+	    		    	else
+	    		    	{
+	    		    		$formValue = $val;
+	    		    	}
+					    $savedata = array('joinrequestid'=>$joinrequestID,'formfieldid'=>$key,'value' =>$formValue);
+					    $this->db->insert('joinrequestform', $savedata);
+    			    }
+			     }
+             }
+
             $supplier = $this->db->where('id',$_POST['toid'])->get('company')->row();
             $company = $this->db->where('id',$_POST['fromid'])->get('users')->row();
-            
+
+            $sql = "SELECT fb.*,jrf.Value as formValue FROM ".$this->db->dbprefix('formbuilder')." fb LEFT JOIN ".$this->db->dbprefix('joinrequestform') ." jrf ON jrf.formfieldid = fb.Id
+            		WHERE jrf.joinrequestid=".$joinrequestID;
+
+            $qry = $this->db->query($sql);
+            $formresult = $qry->result_array();
+
+            $body1= "";
+            if(isset($formresult) && count($formresult)>0)
+            {
+				foreach ($formresult as $k=>$value)
+				{
+					$body1 .= "<br/>".$value['Label']." : ".$value['formValue']." <br/>";
+				}
+            }
+
             if($_POST['accountnumber']=="")
             	$_POST['accountnumber'] = "none";
-            
-            if($_POST['wishtoapply'] ==1)
+
+            if(isset($_POST['wishtoapply']) && $_POST['wishtoapply'] ==1)
             	$wish = "Yes";
             else
-            	$wish = "No";		
-            	
+            	$wish = "No";
+
             $body = "Dear " . $supplier->title . ",<br><br>
-            ". $company->companyname." just sent you a request to join in your newtork. 
-            The following information was sent:   
+            ". $company->companyname." just sent you a request to join in your newtork.
+            The following information was sent:
             Account Number: ".$_POST['accountnumber']."
             <br/>
             Application Sent: ".$wish."
             <br/>
             Message: ".$_POST['message']."
             <br/>
+            ".$body1."
             You can login on your dasboard and accept or deny request.
             <br><br>";
-            
-            //echo $body;
-            
+
+
             $this->load->library('email');
             $this->email->from($company->email, $company->companyname);
             $this->email->to($supplier->title . ',' . $supplier->primaryemail);
@@ -121,7 +166,7 @@ class network extends CI_Controller {
             $this->email->message($body);
             $this->email->set_mailtype("html");
             $this->email->send();
-            
+
         }
         die('Success');
     }

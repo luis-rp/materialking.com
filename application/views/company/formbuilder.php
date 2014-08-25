@@ -53,10 +53,12 @@ function showOptions(obj)
     							 </div>
   						</div>
 						</div>
- 					    <div class="form-group">
+ 					     <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">
-				                          <input type="submit" value="Create Field" class="btn btn-primary btn-cons general">
+				                         <input type="submit" value="Create Form Field" class="btn btn-primary btn-lg">&nbsp;&nbsp;
+	<a href="<?php echo base_url() . 'company/formview';?>"><input type="button"  class="btn btn-primary" value="View Current Form"></a>
+
 				                        </div>
 				                      </div>
  						 </div>
