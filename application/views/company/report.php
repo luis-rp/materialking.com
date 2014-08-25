@@ -20,15 +20,29 @@ function submitForm(val)
 		</div>
 	
 	   <div id="container">
-	   		<div class="combofixed" style="width:100%">
-		   
-    		   <form class="form-inline" action="<?php echo site_url('report')?>" method="post" style=" margin:0px;">
-                    From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
-                    &nbsp;&nbsp;
-                    To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
-                   &nbsp;&nbsp;
-                    Company:
-    				<select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 100px;" onchange="this.form.submit()"> 
+	   		
+			
+			<div style="float:left; width:100%" >
+			  <form class="form-inline" action="<?php echo site_url('report')?>" method="post" style=" margin:0px;">
+<table class="table no-more-tables general" width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;style=" margin:0px;"">
+  <tr>
+    <th >From</th>
+    <th >To</th>  
+    <th >Company</th>
+	 <?php if(@$_POST['purchasingadmin']){?>	
+    <th >Select Project</th>
+	<?php } ?>
+	
+	
+    <th>Payment Status</th>
+    <th >Verification Status</th>
+    <th ><input type="submit" value="Filter" class="btn btn-primary"/>
+           <a href="<?php echo site_url('report');?>"><input type="button" value="Show All" class="btn btn-primary"/></a></th>
+  </tr>
+  <tr>
+    <td ><input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/></td>
+    <td ><input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/></td>
+    <td ><select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 100px;" onchange="this.form.submit()"> 
     					<option value=''>All Companies</option>
     					<?php foreach($purchasingadmins as $company){?>
     						<option value="<?php echo $company->id?>"
@@ -37,44 +51,44 @@ function submitForm(val)
     							<?php echo $company->companyname?>
     						</option>
     					<?php }?>
-    				</select>
-                  
-                     <?php if(@$_POST['purchasingadmin']){?>
-                      <div class="form-group">
-                        Select Project
-                        <span>
-                         	<select name="searchproject" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
-                            	<option value=''>All</option>
-                            	<?php foreach($projects as $p){?>
-                            	<option value='<?php echo $p->id;?>' <?php if(@$_POST['searchproject'] ==$p->id){echo 'SELECTED';}?>><?php echo $p->title;?></option>
-                            	<?php }?>
-                            </select>
-                        </span>
-                      </div>
-                      <?php }?>
-                  &nbsp;&nbsp;
-                  Payment Status:
-                        <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:120px" onchange="this.form.submit()">
+    				</select></td>
+  
+  <?php if(@$_POST['purchasingadmin']){?>	
+  
+    <td >
+		<select name="searchproject" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+            <option value=''>All</option>
+			<?php foreach($projects as $p){?>
+			<option value='<?php echo $p->id;?>' <?php if(@$_POST['searchproject'] ==$p->id){echo 'SELECTED';}?>><?php echo $p->title;?></option>
+			<?php }?>
+        </select>
+	</td>
+	
+	<?php } ?>
+	
+	
+	<td style="padding:0px"><select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:120px" onchange="this.form.submit()">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
                            <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
                             <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
-                        </select>  
-                 &nbsp;&nbsp;  
-	            Verification Status:
-				<select name="verificationstatus" id="verificationstatus" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                        </select></td>
+	
+    <td style="padding:0px"><select name="verificationstatus" id="verificationstatus" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
                             	<option value=''>All</option>
                             	<option value='Pending' <?php if(@$_POST['verificationstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
                             	<option value='Verified' <?php if(@$_POST['verificationstatus'] =='Verified'){echo 'SELECTED';}?>>Verified</option>
                             	<option value='Error' <?php if(@$_POST['verificationstatus'] =='Error'){echo 'SELECTED';}?>>Error</option>
-	            </select> 
-                    <input type="submit" value="Filter" class="btn btn-primary"/>
-                    <a href="<?php echo site_url('report');?>">
-                    	<input type="button" value="Show All" class="btn btn-primary"/>
-                    </a>
-               </form>
-               <br/><br/><br/><br/>
-        </div>
+	            </select></td>
+    <td style="padding:0px">&nbsp;</td>
+  </tr>
+  
+</table>
+</form>
+			 
+           </div>
+			
+			
            <?php if(@$reports){?>
 		   
 		<div class="row">
