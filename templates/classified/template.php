@@ -12,7 +12,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="IE=9" />
-	<title>Brand New Volvo V40 for rent | wp</title>
+	<!-- <title>Brand New Volvo V40 for rent | wp</title>-->
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="http://wp/xmlrpc.php">
 	<link rel="shortcut icon" href="http://alexgurghis.com/themes/flatads/wp-content/uploads/2014/02/favicon.png" type="image/x-icon" />

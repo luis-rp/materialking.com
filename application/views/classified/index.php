@@ -1,3 +1,5 @@
+<title>Classified</title>
+
 <style>
 .views-exposed-widget{ float:left;}
 .searchutton

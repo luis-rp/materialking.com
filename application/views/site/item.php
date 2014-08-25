@@ -544,9 +544,13 @@ left:0px;}
                                     <td style="padding:0px;" class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
-                                        <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
+                                        <?php if($inv->price){?>
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                       <?php }else{?>
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
                                             <i class="icon icon-plus"></i>
                                         </a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                                 <?php } ?>

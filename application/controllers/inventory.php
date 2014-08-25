@@ -725,4 +725,37 @@ class Inventory extends CI_Controller
     	die;
     }
     
+    public function updatecheckprice()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!@$_POST)
+		{
+			die;
+		}
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$_POST);
+		}
+		else
+		{
+			$_POST['company'] = $company->id;
+			$_POST['type'] = 'Supplier';
+			$this->db->insert('companyitem',$_POST);
+		}
+		//print_r($_POST);
+	}
+    
 }

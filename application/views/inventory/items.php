@@ -37,6 +37,8 @@
 
 <?php echo '<script>var qtydeleteurl="'.site_url('inventory/deleteitemqtydiscount').'";</script>'?>
 
+<?php echo '<script>var itempricecheckurl="'.site_url('inventory/updatecheckprice').'";</script>'?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -253,6 +255,20 @@
     	
     }
     
+    function updatecheckprice(itemid,price)
+    {
+    	price = price==true?1:0;
+    	var data = "itemid="+itemid+"&price="+price;
+    	//alert(data);
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: itempricecheckurl
+    	}).done(function(data){
+    		//alert(data);
+    	});
+    }
+    
 </script>
 <?php echo '<script>var formurl = "'.site_url('inventory/showeditform').'";</script>';?>
 <?php echo '<script>var dealurl = "'.site_url('inventory/showdealform').'";</script>';?>
@@ -433,6 +449,9 @@ function updatedeal(id)
                                                 		<i class="fa fa-search"></i>
                                                 	</a>
                                                 	<?php }?>
+                                                	<br/>
+                                                	<input type="checkbox" id = 'price' name = 'price' <?php echo @$item->companyitem->price?'checked="CHECKED"':''?>"
+                  											 onchange="updatecheckprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Call for price&nbsp;
                                                 </td>
                                                 
                                                 <td class="v-align-middle">

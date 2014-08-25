@@ -1,4 +1,5 @@
- <?php echo $this->session->flashdata('message'); ?>
+<title><?php if(isset($a_title)) echo $a_title;?></title>
+<?php echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
         
         <div class="container">
