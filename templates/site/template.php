@@ -93,7 +93,16 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
 
             function joinnetwork(id)
             {
+
                 $("#jointoid").val(id);
+                $.ajax({
+                    type: "post",
+                    url: '<?php echo site_url("site/formview"); ?>/'+id,
+
+                }).done(function(data) {
+					$("#htmlplace").html(data);
+                });
+
                 $("#joinmodal").modal('show');
             }
 
@@ -440,7 +449,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
     
       
         <!-- Modal -->
-        <div class="modal hide fade" id="joinmodal">
+         <div class="modal hide fade" id="joinmodal" style="height:600px;overflow:auto;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -449,6 +458,11 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                     <form id="joinform" action="<?php echo site_url('network/join'); ?>" method="post" onsubmit="joinformsubmit();return false;">
                         <input type="hidden" name="totype" value="company"/>
                         <input type="hidden" id="jointoid" name="toid" value=""/>
+                        
+                        <div class="modal-body">
+                          <div id="htmlplace"></div>
+                        </div>
+                        
                         <div class="modal-body">
                             <h4>Account Number</h4>
                             <input type="text" class="required input-block-level" name="accountnumber"/>
