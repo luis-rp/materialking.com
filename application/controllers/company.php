@@ -858,7 +858,7 @@ class Company extends CI_Controller {
     		redirect('company/login');
     	
      $catcodes = $this->catcode_model->get_categories_tiered();
-     $itemcodes = $this->itemcode_model->get_itemcodes();
+     
         $categories = array();
         if ($catcodes)
         {
@@ -867,6 +867,7 @@ class Company extends CI_Controller {
                 build_category_tree($categories, 0, $catcodes);
             }
         }
+        $itemcodes = $this->items_model->get_items4($categories[0]->id);
         $data['categories'] = $categories;
         $data['items'] = $itemcodes;
         $data['company'] = $company;
@@ -961,7 +962,21 @@ class Company extends CI_Controller {
 		$this->load->view('company/formview',$data);
     }
     
-        function updatead($id)
+    public function deleteformdata($id)
+    {
+		$data['result'] = $this->form_model->delete_field($id);
+		$this->load->view('company/formbuilder',$data);
+    }
+
+    public function deleteallformdata()
+    {
+    	$companyId = $this->session->userdata('company')->id;
+		$data['result'] = $this->form_model->delete_allfield($companyId);
+		$this->load->view('company/formbuilder',$data);
+    }
+    
+    
+    function updatead($id)
 	{		
 		$this->db->where("id",$id);
     	$res['ads'] = $this->db->get("ads")->result();		

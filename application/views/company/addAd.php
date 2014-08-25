@@ -108,8 +108,8 @@
                         <label class="control-label">Item</label>
                         <div class="controls">
                             <select id="items" name="items">
-                            	<?php foreach($items as $item){?>
-                            	<option value="<?php echo $item->id;?>" ><?php echo $item->itemcode;?></option>
+                            	<?php foreach($items as $key=>$item){ ?>
+                            	<option value="<?php echo $key;?>" ><?php echo $item;?></option>
                             	<?php }?>
                             </select>
                         </div>

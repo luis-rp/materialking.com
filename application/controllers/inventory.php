@@ -636,4 +636,93 @@ class Inventory extends CI_Controller
     }
     
     
+    function addqtydiscount(){
+    	
+    	$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		if(!@$_POST)
+		{
+			die;
+		}
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+		
+		$_POST['company'] = $company->id;
+		$result = $this->db->insert('qtydiscount',$_POST);		
+		if($result){
+		    $this->db->where('company',$company->id);
+		    $this->db->where('itemid',$_POST['itemid']);
+			$qtyresult = $this->db->get('qtydiscount')->result();
+			if($qtyresult){
+				$strput = "";
+				foreach($qtyresult as $qtyres){
+					
+					$strput .= '<div class="row form-row">
+							 <div class="col-md-8">'.$qtyres->qty.'+ Price:</div>
+							  <div class="col-md-4"><span>'.$qtyres->price.'</span><span><a href="#"><img onclick="delqtydiscount('.$qtyres->id.','.$qtyres->itemid.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span></div>
+          				  </div>';
+				}
+				echo $strput;
+			}else 
+				echo "Record Added but fetching failed";
+		}
+		else
+			echo "fail";
+		die;	
+    	
+    }
+    
+    
+    function viewqtydiscount(){
+
+    	$company = $this->session->userdata('company');
+    	if(!$company)
+    	redirect('company/login');
+
+    	if(!@$_POST)
+    	{
+    		die;
+    	}
+    	if(!@$_POST['itemid'])
+    	{
+    		die;
+    	}
+
+    	$this->db->where('company',$company->id);
+    	$this->db->where('itemid',$_POST['itemid']);
+    	$qtyresult = $this->db->get('qtydiscount')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		foreach($qtyresult as $qtyres){
+
+    			$strput .= '<div class="row form-row">
+							 <div class="col-md-8">'.$qtyres->qty.'+ Price:</div>
+							 <div class="col-md-4"><span>'.$qtyres->price.'</span><span><a href="#"><img onclick="delqtydiscount('.$qtyres->id.','.$qtyres->itemid.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span></div>
+          				  </div>';
+    		}
+    		echo $strput;
+    	}
+
+
+    }
+    
+    function deleteitemqtydiscount(){
+    	
+    	$company = $this->session->userdata('company');
+    	if(!$company)
+    	redirect('company/login');
+    	    	
+    	$this->db->where('id',$_POST['id']);
+    	$qtyresult = $this->db->delete('qtydiscount')->result();
+    	if($qtyresult)
+    	echo "success";
+    	else 
+    	echo "fail";
+    	die;
+    }
+    
 }

@@ -31,6 +31,12 @@
 
 <?php echo '<script>var itemsurl="'.site_url('inventory/itemsjson').'";</script>'?>
 
+<?php echo '<script>var qtydiscountupdateurl="'.site_url('inventory/addqtydiscount').'";</script>'?>
+
+<?php echo '<script>var viewqtydiscounturl="'.site_url('inventory/viewqtydiscount').'";</script>'?>
+
+<?php echo '<script>var qtydeleteurl="'.site_url('inventory/deleteitemqtydiscount').'";</script>'?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -170,6 +176,83 @@
     	$("#pricelisttier3").html(Number(price + (tier3 * price/100)).toFixed(2));
     	$("#pricelisttier4").html(Number(price + (tier4 * price/100)).toFixed(2));
     }
+    
+        function viewqtydiscount(itemid,itemcode,itemname,price)
+    {
+    	$("#qtypricelist").modal();
+    	$("#qtyitemcode").html(itemcode);    	
+    	$("#qtyitemname").html(itemname);
+    	price = Number(price);
+    	$("#qtylistprice").html(price.toFixed(2));
+    	
+    	var data = "itemid="+itemid;
+    	
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: viewqtydiscounturl
+    	}).done(function(data){
+    		if(data){
+    			
+    			$("#qtypriceplacer").html("");
+    			$("#qtypriceplacer").html(data);
+    		}
+    	});
+    	
+    	$("#addiscount").html('<table><tr><td>Qty</td><td>Price</td><td>&nbsp</td></td><tr><td><input type="text" name = "discqty" id="discqty"></td><td><input type="text" name = "discprice" id="discprice"></td><td><input type="button" value = "Add" onclick="addqtydiscount();"><input type="hidden" name="qtyitemid" id="qtyitemid" value="'+itemid+'" </td></tr><table>');    	
+    }
+    
+    
+    function addqtydiscount(){
+    	
+    	var data = "itemid="+$("#qtyitemid").val()+"&qty="+$("#discqty").val()+"&price="+$("#discprice").val();
+    	
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: qtydiscountupdateurl
+    	}).done(function(data){
+    		if(data){
+    			
+    			$("#qtypriceplacer").html("");
+    			$("#qtypriceplacer").html(data);
+    			$("#htmlqtymessage").html("Quantity-Price details added successfully!");
+    		}
+    	});
+    	
+    }
+    
+    function delqtydiscount(id,itemid){
+    	
+    	$.ajax({
+    		type:"post",
+    		data: "id="+id,
+    		url: qtydeleteurl,
+    		sync:false
+    	}).done(function(data){
+    		if(data){
+    			alert(data);
+    			$("#htmlqtymessage").html("Quantity-Price details deleted successfully!");
+    			
+    		}
+    	});
+    	
+    	var data2 = "itemid="+itemid;
+    	
+    	$.ajax({
+    		type:"post",
+    		data: data2,
+    		url: viewqtydiscounturl
+    	}).done(function(data){
+    		if(data){
+    			
+    			$("#qtypriceplacer").html("");
+    			$("#qtypriceplacer").html(data);
+    		}
+    	});
+    	
+    }
+    
 </script>
 <?php echo '<script>var formurl = "'.site_url('inventory/showeditform').'";</script>';?>
 <?php echo '<script>var dealurl = "'.site_url('inventory/showdealform').'";</script>';?>
@@ -355,7 +438,8 @@ function updatedeal(id)
                                                 <td class="v-align-middle">
                                                 	<input type="text"  style="width: 50px;" placeholder="Min Qty"
                                                 	value="<?php echo @$item->companyitem->minqty?>"
-                                                	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/>
+                                                	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
+                                                	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname)?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
                                                 </td>
                                                 
                                                 <td class="v-align-middle">
@@ -493,3 +577,43 @@ function updatedeal(id)
     <!-- /.modal-dialog -->
   </div>
 	  
+  
+  
+  
+  <div id="qtypricelist" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button><div id="htmlqtymessage"></div></div>
+          <h4 class="semi-bold" id="myModalLabel">
+          Price Details:
+          <span id="qtyitemcode"></span>
+          (<span id="qtyitemname"></span>) 
+          <br/> Qty. Discount Setup:          
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+          <div class="row form-row">
+            <div class="col-md-8">
+              List Price: 
+            </div>
+            <div class="col-md-4">
+              <span id="qtylistprice"></span>
+            </div>
+          </div>
+          <div id="qtypriceplacer"></div>
+                    
+          <div id="addiscount" class="row form-row"></div>
+          
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 

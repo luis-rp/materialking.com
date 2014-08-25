@@ -364,7 +364,7 @@ function acceptall()
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
                                 <td>$ <?php echo $q->totalprice; ?></td>
-                                <td><?php echo $q->daterequested; ?></td>
+                                <td><?php echo $q->daterequested;?><br/><?php echo (date('Y-m-d', strtotime( $q->daterequested)) < date('Y-m-d'))? "*Late": "";?></td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
