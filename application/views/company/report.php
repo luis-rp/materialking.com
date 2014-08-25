@@ -22,7 +22,7 @@ function submitForm(val)
 	   <div id="container">
 	   		
 			
-			<div style="float:left; width:100%" >
+			<div style="float:left; width:100%; position:relative; z-index:111" >
 			  <form class="form-inline" action="<?php echo site_url('report')?>" method="post" style=" margin:0px;">
 <table class="table no-more-tables general" width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;style=" margin:0px;"">
   <tr>
