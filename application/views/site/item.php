@@ -292,7 +292,7 @@ left:0px;}
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h3 class="titlebox">
-                	 <div class="span4"><h2 class="page-header"><?php echo $item->itemcode;?></h2></div>
+                	 <div class="span4"><h2 class="page-header"><b><?php echo $item->itemcode;?></b></h2></div>
                             	<!-- AddThis Button BEGIN -->
                     <div class="span4"><div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>

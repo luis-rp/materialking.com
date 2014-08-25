@@ -226,7 +226,7 @@ $(document).ready(function() {
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h2 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h2></td>
+                        	<td align="left"> <h3 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h3></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
                             	<div class="addthis_toolbox addthis_default_style ">
