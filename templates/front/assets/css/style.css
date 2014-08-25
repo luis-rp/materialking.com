@@ -7759,7 +7759,17 @@ table {
 }	
 
 th {
-	background: url(http://jackrugile.com/images/misc/noise-diagonal.png), linear-gradient(#777, #444);
+/*	background: url(http://jackrugile.com/images/misc/noise-diagonal.png), linear-gradient(#777, #444);*/
+	
+	background: #777;
+background: -webkit-gradient(linear, 0 0, 0 bottom, from(#777), to(#444));
+background: -webkit-linear-gradient(#777, #444);
+background: -moz-linear-gradient(#777, #444);
+background: -ms-linear-gradient(#777, #444);
+background: -o-linear-gradient(#777, #444);
+background: linear-gradient(#777, #444);
+-pie-background: linear-gradient(#777, #444);
+
 	border-left: 1px solid #555;
 	border-right: 1px solid #777;
 	border-top: 1px solid #555;
