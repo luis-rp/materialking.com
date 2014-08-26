@@ -170,6 +170,12 @@ $long = $supplier->com_lng;
 
 <script>
 $(document).ready(function() {
+	$(".subscriberDialog").hide();
+	$(".subscriber").click(function(){
+		
+		$(".subscriberDialog").dialog();
+
+	});	
 	
 	$('.fixedrating').jRating({
 		length:5,
@@ -695,6 +701,10 @@ $(document).ready(function() {
                         <div class="content">
                         	<table width="100%" cellpadding="4">
                         		<tr>
+                        			<td><b>Mailing List:</b> </td>
+                        			<td><a href="#" class="subscriber">Join</a></td>
+                        		</tr>
+                        		<tr>
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
@@ -932,7 +942,16 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
+<div class="subscriberDialog">
+	<form action="<?php echo base_url();?>subscriber/addsubscriber" method="post">
+		<h3>Subscribe to our Mailing List</h3>
+		<p>Enter your email below to subscribe to our mailing list</p>
+		<label for="name">Name:</label><input type="text" name="name" id="name">
+		<label for="mail">Mail:</label><input type="text" name="mail" id="mail">
+		<input type="hidden" value="<?php echo $supplier->id; ?>" name="cid">
+		<input type="submit" value="Subscribe!">
+	</form>
+</div>
 
 <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
     <div class="modal-dialog">

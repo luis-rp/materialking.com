@@ -217,7 +217,7 @@ class Company extends CI_Controller {
         $this->load->template('../../templates/front/register', $data);
         $this->load->view('company/login', $data);
     }
-
+	
     function checklogin() {
         if (!@$_POST)
             die('Wrong access');
@@ -1044,6 +1044,21 @@ class Company extends CI_Controller {
             {
             	$this->load->view('company/formsubmission',$data);
             }
+	}
+	
+	function mailinglist(){
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$this->db->where("cid",$company->id);
+		$subscribers = $this->db->get("newsletter_subscribers")->result();
+	
+		
+		$data['subscribers'] = $subscribers;
+		
+		$this->load->view('company/mailinglist',$data);
+		
 	}
     
 }
