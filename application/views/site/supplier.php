@@ -226,10 +226,10 @@ $(document).ready(function() {
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h3 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h3></td>
+                        	<td align="left"> <h3 class="page-header" style="padding:0px 0px 0px 7px; margin:0px; color:#FFFFFF"><?php echo $supplier->title;?></h3></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
-                            	<div class="addthis_toolbox addthis_default_style ">
+                            	<div class="addthis_toolbox addthis_default_style " style="float:right">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
                             	<a class="addthis_button_tweet"></a>
                             	<a class="addthis_counter addthis_pill_style"></a>
