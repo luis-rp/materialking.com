@@ -528,7 +528,7 @@ left:0px;}
                                 </div>
                             </div>
                         </div>
-                          <?php if(@$item->featureditem){?>
+                          <?php if(@$item->featureditem){ if($item->featuredsupplierdetails->saleitemdata==0){ ?>
                           <br/>
                           <div class="newbox">
                                                     <h3 class="titlebox1">Featured Seller</h3>
@@ -553,7 +553,7 @@ left:0px;}
                               <?php }?>
                           </table>
                       </div>
-                          <?php }?>
+                          <?php } } ?>
 	
                             <?php
                             if ($filtermanufacturer) {
@@ -627,8 +627,8 @@ left:0px;}
                                 <?php
                                     if($inventory)
                                     foreach ($inventory as $inv)
-                                    if ($inv->ea) 
-                                    {
+                                    if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
+                                   
                                         $price = $inv->ea;
                                         
                                 ?>
@@ -662,7 +662,7 @@ left:0px;}
                                         <?php } ?>
                                     </td>
                                 </tr>
-                                <?php } ?>
+                                <?php } } ?>
                                 </tbody>
                             </table>
 </div>

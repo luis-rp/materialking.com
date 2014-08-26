@@ -1024,5 +1024,26 @@ class Company extends CI_Controller {
 			redirect("company/ads");
 
 	}
+	
+	function formsubmission()
+	{
+	    $companyId = $this->session->userdata('company')->id;
+
+	    $where="";
+
+	    if(isset($_POST['companyname']) && $_POST['companyname']!="")
+	    {
+	    $where = "AND fromid = ".$_POST['companyname'];
+	    }
+
+        $sql = "SELECT fb.*,jrf.Value as formValue,jr.message,jr.accountnumber,jr.fromid, u.companyname FROM ".$this->db->dbprefix('formbuilder')." fb LEFT JOIN ".$this->db->dbprefix('joinrequestform') ." jrf ON jrf.formfieldid = fb.Id LEFT JOIN ".$this->db->dbprefix('joinrequest') ." jr ON jrf.joinrequestid = jr.id left join pms_users u on jr.fromid = u.id WHERE fb.CompanyID=".$companyId." {$where} order by fromid";
+
+            $qry = $this->db->query($sql);
+            $data['formresult'] = $qry->result_array();
+            if(isset($data['formresult']) && count($data['formresult'])>0)
+            {
+            	$this->load->view('company/formsubmission',$data);
+            }
+	}
     
 }

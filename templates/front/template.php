@@ -23,7 +23,7 @@
 	{
 		$menu = 'ads';
 	}
-	if($function == 'createformfields')
+	if($function == 'createformfields' || $function == 'createformdata' || $function == 'formview' || $function == 'deleteformdata' || $function == 'deleteallformdata' || $function == 'formsubmission')
 	{
 		$menu = 'createformfields';
 	}

@@ -755,5 +755,21 @@ class Inventory extends CI_Controller
 		}
 		//print_r($_POST);
 	}
+	
+	public function saleitem()
+	{
+		//echo "<pre>"; print_r($_POST); die;
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!@$_POST)
+		{
+			die;
+		}
+
+		$this->db->where('id',$company->id);
+		$this->db->update('company',$_POST);
+
+	}
     
 }

@@ -39,6 +39,8 @@
 
 <?php echo '<script>var itempricecheckurl="'.site_url('inventory/updatecheckprice').'";</script>'?>
 
+<?php echo '<script>var saleitemurl="'.site_url('inventory/saleitem').'";</script>'?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -271,6 +273,19 @@ function delqtydiscount(id,itemid){
     	});
     }
     
+       function saleitem(saleitemdata)
+      {
+    	saleitemdata = saleitemdata==true?1:0;
+    	//document.write(saleitemdata);
+        var data = "saleitemdata="+saleitemdata;
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: saleitemurl
+		    }).done(function(data){
+		    });
+      }
+    
 </script>
 <?php echo '<script>var formurl = "'.site_url('inventory/showeditform').'";</script>';?>
 <?php echo '<script>var dealurl = "'.site_url('inventory/showdealform').'";</script>';?>
@@ -339,6 +354,11 @@ function updatedeal(id)
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
                                
+                                <div class="pull-right">
+                  <input type="checkbox" id = 'saleitemdata' name = 'saleitemdata' <?php echo @$company->saleitemdata?'checked="CHECKED"':''?>"
+                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>
+                                </div>
+                                
                                 <form action="<?php echo site_url('inventory');?>" method="post">
                                 <table>
                                 

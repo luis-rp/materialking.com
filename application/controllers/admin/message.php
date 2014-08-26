@@ -318,6 +318,11 @@ class message extends CI_Controller
 		$data['searchmsg'] = (isset($_POST['searchmsg']) && $_POST['searchmsg'] != '') ? $_POST['searchmsg'] : " ";
 		$data['sortbyoption']  = (isset($_POST['sortby']) && $_POST['sortby'] != '') ? $_POST['sortby'] : " ";
 		$data['ponumsearch']  = (isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '') ? $_POST['ponumsearch'] : " ";
+		$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
 		$this->load->view ('admin/purchaseuser/messages', $data);
 	}
 	

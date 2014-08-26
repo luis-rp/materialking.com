@@ -437,6 +437,11 @@ $link
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;
 		$data['filterquote'] = $quote;
+		$uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
 		$this->load->view ('admin/purchaseuser/messages', $data);
 	}
 	
