@@ -202,11 +202,17 @@ function addtocart(itemid, companyid, price,minqty)
                                                 </span>
                                         </div>
                                         <div class="price">
-                                            $<?php echo $item->ea; ?>
+                                            
+                                            <?php if($item->price){?>
+                                        	<img title="<?php if(isset($company->phone)) echo $company->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" />&nbsp;Call for Price
+                                       <?php }else{?>
+                                    	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>)">
                                                 <i class="icon icon-plus"></i>
                                             </a>
+                                        <?php } ?>
+                                            
                                         </div>
 
                                     </div>

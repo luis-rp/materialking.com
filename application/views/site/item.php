@@ -1,5 +1,13 @@
 <?php //echo '<pre>'; print_r($inventory);die;?>
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
+
+
+<?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
+
+<?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
+
+<?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -184,8 +192,103 @@ left:0px;}
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
-        var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-        if(isNaN(parseInt(qty)))
+        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
+        
+       	$("#hiddenprice").val(price);
+        $("#cartprice").modal();
+        var selected = "";
+        var strselect = ('Qty');
+        strselect += '&nbsp;<select style="width:50px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        for (i = 1; i <=100; i++) { 
+        	if(i == minqty) 
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+   			} 
+   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
+        $('#cartqtydiv').html(strselect);
+        
+        var data = "itemid="+itemid+"&companyid="+companyid;
+
+        $.ajax({
+        	type:"post",
+        	data: data,
+        	url: getpriceqtydetails
+        }).done(function(data){
+        	if(data){
+
+        		$("#qtypricebox").html("");
+        		$("#qtypricebox").html(data);
+        	}
+        });
+        
+        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+        		
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+        
+       
+    }
+    
+    function showmodifiedprice(itemid, companyid, price){
+    	
+    	qty = ($('#qtycart').val());
+    	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+				
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+    }
+    
+    function addtocart2(itemid, companyid, price, minqty, isdeal){
+    	
+    	qty = ($('#qtycart').val());
+    	    	
+    	if(isNaN(parseInt(qty)))
         {
             return false;
         }
@@ -194,7 +297,7 @@ left:0px;}
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty + "&isdeal=" + isdeal;
+        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
         //alert(data); return false;
         $.ajax({
             type: "post",
@@ -204,6 +307,7 @@ left:0px;}
             alert(data);
             window.location = window.location;
         });
+    	
     }
 </script>
 
@@ -431,10 +535,15 @@ left:0px;}
                           <table class="span12">
                               <tr>
                                   <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?> at $<?php echo $item->featureditem->ea;?></td>
-                                  <td>
-                                      <a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>)">
+                                 <td>
+                                      
+                                      <?php if($item->featureditem->price){?>
+                                        	<img title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                       <?php }else{?>
+                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
+                                        <?php } ?>
                                   </td>
                               </tr>
                               <?php if(@$item->featureditem->manufacturername){?>
@@ -545,7 +654,7 @@ left:0px;}
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
                                         <?php if($inv->price){?>
-                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                        	<img title="<?php if(isset($inv->companydetails->phone)) echo $inv->companydetails->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
                                        <?php }else{?>
                                     	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
                                             <i class="icon icon-plus"></i>
@@ -973,3 +1082,42 @@ left:0px;}
                 </div>
             </div>
         </div>
+
+        
+        
+        <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          
+          <h4 class="semi-bold" id="myModalLabel">
+          Select Quantity  
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+
+        <div id="qtypricebox"></div>  
+          
+        <div class="row form-row">
+            <div id="cartqtydiv" class="col-md-8">             
+            </div>
+            <div class="col-md-4">
+              <span id="qtylistprice"></span>
+            </div>
+          </div>  
+        
+        <div id="cartsavediv"></div>   
+          
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 

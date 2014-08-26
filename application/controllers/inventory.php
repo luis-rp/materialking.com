@@ -701,7 +701,7 @@ class Inventory extends CI_Controller
 
     			$strput .= '<div class="row form-row">
 							 <div class="col-md-8">'.$qtyres->qty.'+ Price:</div>
-							 <div class="col-md-4"><span>'.$qtyres->price.'</span><span><a href="#"><img onclick="delqtydiscount('.$qtyres->id.','.$qtyres->itemid.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span></div>
+							<div class="col-md-4"><span>'.$qtyres->price.'</span><span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delqtydiscount('.$qtyres->id.','.$qtyres->itemid.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span></div>
           				  </div>';
     		}
     		echo $strput;
@@ -715,11 +715,12 @@ class Inventory extends CI_Controller
     	$company = $this->session->userdata('company');
     	if(!$company)
     	redirect('company/login');
-    	    	
-    	$this->db->where('id',$_POST['id']);
-    	$this->db->delete('qtydiscount')->result();
+    	$query = "DELETE FROM ".$this->db->dbprefix('qtydiscount')." WHERE `id` = ".$_POST['id'];
+    	$returnval = $this->db->query($query);
+    	if($returnval)
     	echo "success";
-    	die;
+    	else 
+    	echo "fail"; die;
     }
     
     public function updatecheckprice()

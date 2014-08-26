@@ -126,7 +126,7 @@ class Store extends CI_Controller
         	if($result1)
         	$this->data['catname'] = $result1[0]->catname;
         }
-        
+        $data['company'] = $company;
         $this->load->view('store/items', $this->data);
 	}
 }

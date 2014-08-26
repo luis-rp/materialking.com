@@ -3,6 +3,9 @@
 <?php echo '<script>var joinurl = "' . site_url('network/join') . '";</script>' ?>
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
 <?php echo '<script>var itemsurl="' . site_url('site/items') . '";</script>' ?>
+<?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
+<?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
+<?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 
 <?php
 /*
@@ -191,8 +194,103 @@ $(document).ready(function() {
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
-        var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-        if(isNaN(parseInt(qty)))
+        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
+        
+       	$("#hiddenprice").val(price);
+        $("#cartprice").modal();
+        var selected = "";
+        var strselect = ('Qty');
+        strselect += '&nbsp;<select style="width:50px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        for (i = 1; i <=100; i++) { 
+        	if(i == minqty) 
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+   			} 
+   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
+        $('#cartqtydiv').html(strselect);
+        
+        var data = "itemid="+itemid+"&companyid="+companyid;
+
+        $.ajax({
+        	type:"post",
+        	data: data,
+        	url: getpriceqtydetails
+        }).done(function(data){
+        	if(data){
+
+        		$("#qtypricebox").html("");
+        		$("#qtypricebox").html(data);
+        	}
+        });
+        
+        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+        		
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+        
+       
+    }
+    
+    function showmodifiedprice(itemid, companyid, price){
+    	
+    	qty = ($('#qtycart').val());
+    	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+				
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+    }
+    
+    function addtocart2(itemid, companyid, price, minqty, isdeal){
+    	
+    	qty = ($('#qtycart').val());
+    	    	
+    	if(isNaN(parseInt(qty)))
         {
             return false;
         }
@@ -201,7 +299,7 @@ $(document).ready(function() {
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty + "&isdeal=" + isdeal;
+        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
         //alert(data); return false;
         $.ajax({
             type: "post",
@@ -211,6 +309,7 @@ $(document).ready(function() {
             alert(data);
             window.location = window.location;
         });
+    	
     }
 </script>
 
@@ -409,11 +508,18 @@ $(document).ready(function() {
                                               
                                         </div>
                                         
-                                        <div class="price">
-                                           $<?php echo $di->dealprice;?>
+                                       <div class="price">
+                                          
+                                    
+                                    <?php if($di->price){?>
+                                        	<img title="<?php if(isset($di->phone)) echo $di->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                       <?php }else{?>
+                                    	 $<?php echo $di->dealprice;?>
                                             <br><br>
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,1)">
                                     <i class="icon icon-plus"></i> Buy
+                                        <?php } ?>
+                                    
                                 </a>
                                         </div>
                                     </div>
@@ -490,11 +596,17 @@ $(document).ready(function() {
                                         </div>
                                         
                                         <div class="price">
-                                            <?php echo '$'.$inv->ea;?>
+                                            
+                                        <?php if($inv->price){?>
+                                        	<img title="<?php if(isset($inv->phone)) echo $inv->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                       <?php }else{?>
+                                    	 <?php echo '$'.$inv->ea;?>
                                             <br><br>
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>)">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
+                                        <?php } ?>
+                                        
                                         </div>
                                     </div>
                                 </div>
@@ -820,3 +932,41 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
+
+
+<div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          
+          <h4 class="semi-bold" id="myModalLabel">
+          Select Quantity  
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+
+        <div id="qtypricebox"></div>  
+          
+        <div >
+            <div id="cartqtydiv" class="col-md-8">             
+            </div>
+            <div class="col-md-4">
+              <span id="qtylistprice"></span>
+            </div>
+          </div>  
+        
+        <div id="cartsavediv"></div>   
+          
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 

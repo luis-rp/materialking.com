@@ -483,6 +483,13 @@ class site extends CI_Controller
             
             $initem->url = $orgitem->url;
             
+            $this->db->where('id', $initem->company);
+            $res2 = $this->db->get('company')->row();
+            if($res2){
+            	$initem->phone = $res2->phone;
+            }else
+            $initem->phone = "";
+            
             if($this->session->userdata('site_loggedin'))
             {
                 $this->db->where('company', $id);
@@ -549,6 +556,15 @@ class site extends CI_Controller
                 $orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
                 $cmpitem = $this->db->where('itemid',$di->itemid)->where('company',$id)->where('type','Supplier')->get('companyitem')->row();
                 $di->itemname = @$cmpitem->itemname?$cmpitem->itemname:$orgitem->itemname;
+                
+                $di->price = $cmpitem->price;
+                $this->db->where('id', $cmpitem->company);            	
+            	$res = $this->db->get('company')->row();
+            	if($res){
+            		$di->phone = $res->phone;
+            	}else 
+            	$di->phone = "";
+                
                 $di->url = $orgitem->url;
                 $di->image = $orgitem->item_img;
                 $di->itemcode = $cmpitem->itemcode;
@@ -1936,5 +1952,91 @@ class site extends CI_Controller
     	 print_r($formdata);
 
     }
+    
+        function getpriceqtydetails(){
+    	
+    	if(!@$_POST)
+    	{
+    		die;
+    	}
+    	if(!@$_POST['itemid'])
+    	{
+    		die;
+    	}
+
+    	$this->db->where('company',$_POST['companyid']);
+    	$this->db->where('itemid',$_POST['itemid']);
+    	$qtyresult = $this->db->get('qtydiscount')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		foreach($qtyresult as $qtyres){
+
+    			$strput .= '<div >
+							 <div style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: $'.$qtyres->price.'</div>							 
+          				  </div>';
+    		}
+    		echo $strput;
+    	}
+
+    }
+    
+    function getpriceperqtydetails(){
+    	
+    	if(!@$_POST)
+    	{
+    		die;
+    	}
+    	if(!@$_POST['itemid'])
+    	{
+    		die;
+    	}
+    	
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' limit 1";
+    	$result1 = $this->db->query($sql1)->row();
+    	if($result1){
+    		$strput = "";
+    		$strput .= '<div>
+							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$result1->price).':</div>
+							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$result1->price)).'</span></div>
+          				  </div>';
+    		
+    		echo $strput;
+    	}else{
+    		
+    		$strput = "";
+    		$strput .= '<div >
+							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$_POST['price']).':</div>
+							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$_POST['price'])).'</span></div>
+          				  </div>';
+    		
+    		echo $strput;
+    		
+    	}
+
+    }
+    
+    
+    
+    function getnewprice(){
+    	
+    	if(!@$_POST)
+    	{
+    		die;
+    	}
+    	if(!@$_POST['itemid'])
+    	{
+    		die;
+    	}
+    	
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' limit 1";
+    	$result1 = $this->db->query($sql1)->row();
+    	if($result1){
+			echo $result1->price;
+    	}else{
+    		echo "norecord";
+    	}die;
+
+    }
+    
     
 }

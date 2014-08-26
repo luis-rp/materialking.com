@@ -224,7 +224,7 @@
     	
     }
     
-    function delqtydiscount(id,itemid){
+function delqtydiscount(id,itemid){
     	
     	$.ajax({
     		type:"post",
@@ -233,9 +233,10 @@
     		sync:false
     	}).done(function(data){
     		if(data){
-    			alert(data);
+    			if(data=="success")
     			$("#htmlqtymessage").html("Quantity-Price details deleted successfully!");
-    			
+    			else
+    			$("#htmlqtymessage").html("*Error in deleting Quantity-Price details!");   			
     		}
     	});
     	
@@ -244,7 +245,8 @@
     	$.ajax({
     		type:"post",
     		data: data2,
-    		url: viewqtydiscounturl
+    		url: viewqtydiscounturl,
+    		sync:false
     	}).done(function(data){
     		if(data){
     			
