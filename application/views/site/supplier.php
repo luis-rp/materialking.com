@@ -331,19 +331,18 @@ $(document).ready(function() {
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h3 class="page-header" style="padding:0px 0px 0px 7px; margin:0px; color:#FFFFFF"><?php echo $supplier->title;?></h3></td>
+                        	<td align="left"> <h3 class="page-header titlebox" style="padding:0px 0px 0px 7px; margin:0px; color:#FFFFFF; margin-right:5px;"><?php echo $supplier->title;?></h3></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
                             	<div class="addthis_toolbox addthis_default_style " style="float:right; width:auto">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
                             	<a class="addthis_button_tweet"></a>
-                            	<a class="addthis_counter addthis_pill_style"></a>
-                            	</div>
-                            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>
-                        	</td>
+                            	<a class="addthis_counter addthis_pill_style"></a>                            	</div>
+                            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>                        	</td>
                     	</tr>
                     </table>
-                    </h3>
+                    <?php } ?>
+                 </h3>
                     <div class="carousel property">
                     </div>
 
@@ -355,10 +354,7 @@ $(document).ready(function() {
                                         <?php if($supplier->logo !=""){?>
                                                 <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
                                                 <?php } else {?>
-                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
-                                        <?php } ?>
-                                        <span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>
-                                    </p>
+                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>                                    </p>
                                     <br/>
                                     <table width="100%" style="font-size: 11px;">
                                         <tr>
@@ -489,7 +485,7 @@ $(document).ready(function() {
                         			View Details
                         			</a>
                         			<?php }?>
-                                     </div>
+                                  </div>
                                 </div>
 
                                 <div class="body1 span6">
@@ -510,7 +506,7 @@ $(document).ready(function() {
 
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value">1234567</span>
-                                                </div>
+                                          </div>
                                               
                                         </div>
                                         
@@ -527,7 +523,7 @@ $(document).ready(function() {
                                         <?php } ?>
                                     
                                 </a>
-                                        </div>
+                                      </div>
                                     </div>
                                 </div>
                         </div>
@@ -597,7 +593,7 @@ $(document).ready(function() {
                                                 <span class="key"><strong>Min Order Qty:</strong></span>
                                                 <span class="value"><?php echo $inv->minqty ?></span>
                                                 
-                                                </div>
+                                          </div>
                                               
                                         </div>
                                         
@@ -690,7 +686,7 @@ $(document).ready(function() {
                           </div>
         				</form>
                     </div>
-                </div>
+              </div>
 
                 <div class="sidebar span3">
                     <div class="widget contact">
@@ -750,7 +746,7 @@ $(document).ready(function() {
                                                 </a>
                                                 </li>
                                         <?php } ?>
-                                        </ul>
+                                      </ul>
                         			</td>
                         		</tr>
                         		<?php if($rating){?>
@@ -830,7 +826,7 @@ $(document).ready(function() {
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Similar Suppliers</h2>
-                        </div>
+                      </div>
                         <div class="content">
                                 <div class="control-group">
                                 	
@@ -916,7 +912,7 @@ $(document).ready(function() {
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Suppliers Classified Lisings</h2>
-                        </div>
+                      </div>
                         <div class="content">
                            
                                 <div class="control-group">
@@ -931,7 +927,7 @@ $(document).ready(function() {
 											<span id="nav-prev">prev</span>
 											<span id="nav-next">next</span>
 										</nav>
-                                     </div>
+                                  </div>
                                 </div>
                             
                         </div>

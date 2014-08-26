@@ -3,21 +3,18 @@
     <div class="container">
         <div id="main">
             <div class="row">
-                <div class="span9">
+                <div class="span9 titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h2 class="page-header"><?php echo $article->title;?></h2></td>
+                       	  <td align="left"> <h2 class="page-header titlebox"><?php echo $article->title;?></h2></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
                             	<div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
                             	<a class="addthis_button_tweet"></a>
-                            	<a class="addthis_counter addthis_pill_style"></a>
-                            	</div>
+                            	<a class="addthis_counter addthis_pill_style"></a>                            	</div>
                             	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>
-                            	<!-- AddThis Button END -->
-                            	
-                        	</td>
+                            	<!-- AddThis Button END -->                        	</td>
                     	</tr>
                     </table>
                     <div class="property-detail">
