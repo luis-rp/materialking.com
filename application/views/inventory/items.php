@@ -190,7 +190,7 @@
     	$("#qtylistprice").html(price.toFixed(2));
     	
     	var data = "itemid="+itemid;
-    	
+    	$("#qtypriceplacer").html("");
     	$.ajax({
     		type:"post",
     		data: data,
