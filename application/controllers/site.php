@@ -1991,7 +1991,7 @@ class site extends CI_Controller
     		die;
     	}
     	
-    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' limit 1";
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
     		$strput = "";
@@ -2028,7 +2028,7 @@ class site extends CI_Controller
     		die;
     	}
     	
-    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' limit 1";
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
 			echo $result1->price;
