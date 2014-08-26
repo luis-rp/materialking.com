@@ -1101,7 +1101,7 @@ left:0px;}
 
         <div id="qtypricebox"></div>  
           
-        <div class="row form-row">
+        <div>
             <div id="cartqtydiv" class="col-md-8">             
             </div>
             <div class="col-md-4">
