@@ -341,7 +341,7 @@ $(document).ready(function() {
                             	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>                        	</td>
                     	</tr>
                     </table>
-                    
+<?php } ?>                    
                  </h3>
                     <div class="carousel property">
                     </div>
@@ -984,4 +984,4 @@ $(document).ready(function() {
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div> 
+</div>
