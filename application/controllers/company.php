@@ -1047,18 +1047,82 @@ class Company extends CI_Controller {
 	}
 	
 	function mailinglist(){
+		$this->load->view('company/mailinglist');
+		
+	}
+	
+	function listsubscribers(){
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
 		
 		$this->db->where("cid",$company->id);
 		$subscribers = $this->db->get("newsletter_subscribers")->result();
-	
+		
 		
 		$data['subscribers'] = $subscribers;
 		
-		$this->load->view('company/mailinglist',$data);
+		$this->load->view('company/listsubscribers',$data);
+	}
+	
+	function listtemplates(){
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
 		
+		$this->db->where("cid",$company->id);
+		$data['templates']  = $this->db->get("newsletter_template")->result();
+		
+		$this->load->view('company/listtemplates',$data);
+		
+	}
+	
+	function newtemplate(){
+		
+		$data['action'] = "new";
+		$data["cid"] = $this->session->userdata('company')->id;
+		$this->load->view('company/newnewslettertemplate',$data);
+	}
+	
+	function edittemplate($id){
+		
+		$data['action'] = "update";
+		$this->db->where("id",$id);
+		$this->db->where("cid",$this->session->userdata('company')->id);
+		$res = $this->db->get("newsletter_template")->row();
+		if(!empty($res)){
+			$data['title'] = $res->title;
+			$data['body'] = $res->body;
+			$data['id'] = $this->session->userdata('company')->id;
+			$this->load->view('company/newnewslettertemplate',$data);
+		}else{
+			$this->session->set_flashdata('message', 'The template doesnt exist');
+			redirect("company/mailinglist");
+		}
+	}
+	
+	function addtemplate(){
+		
+		$title = $this->input->post("title");
+		$body = $this->input->post("body");
+		$cid  = $this->input->post("cid");
+		
+		$this->db->insert("newsletter_template",array("cid"=>$cid, "title"=>$title,"body"=>$body));
+		
+		$this->session->set_flashdata('message', 'The template was created');
+			redirect("company/mailinglist");
+	}
+	
+	function updatetemplate($id){
+	
+		$title = $this->input->post("title");
+		$body = $this->input->post("body");
+		
+		$this->db->where("id",$id);
+		$this->db->update("newsletter_template",array("title"=>$title,"body"=>$body));
+		
+		$this->session->set_flashdata('message', 'The template was updated');
+		redirect("company/mailinglist");
 	}
     
 }
