@@ -57,9 +57,9 @@ class subscriber extends CI_Controller
 			$this->email->message($body);
 			$this->email->send();
 			
-			echo $this->email->print_debugger();
+			
 		}
 		$this->session->set_flashdata('message', 'The newsletter was sent');
-		//redirect("company/mailinglist");
+		redirect("company/mailinglist");
 	}
 }
