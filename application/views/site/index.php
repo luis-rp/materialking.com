@@ -430,7 +430,7 @@
     height: auto; 
     margin-bottom: 20px;
     margin-left: 0;
-    margin-top: 1px;
+    margin-top:10px;
     padding: 7px;
     width: 100%;
 }
