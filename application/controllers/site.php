@@ -1893,40 +1893,7 @@ class site extends CI_Controller
     	$this->load->view('site/ad',$data);
     }
     
-    
-        public function sendrequest($id)
-    {
-    	if(!$_POST)
-    		die;
-    	$body = '';
-    	$settings = (array)$this->homemodel->getconfigurations ();
-    	
-    		$supplier = $this->db->where('id',$id)->get('company')->row();
-    		$to = $supplier->primaryemail;
-    		$body .= 'You have a new request for assistance.';
-   
-    	$body .= ' Details are:<br/><br/>';
-    	$body .= "Name: ".$_POST['contactName']."<br/>";
-    	$body .= "Email: ".$_POST['email']."<br/>";
-    	$body .= "Subject: ".$_POST['subject']."<br/>";
-    
-    	$body .= "Regarding: ".$_POST['comments']."<br/>";
-    
-    	$this->load->library('email');
-    
-    	$this->email->from($settings['adminemail']);
-    	$this->email->to($to);
-    
-    	$this->email->subject('Request for assistance');
-    	$this->email->message($body);
-    	$this->email->set_mailtype("html");
-    	$this->email->send();
-    
-    	$this->session->set_flashdata('message', 'Email was sent.');
-    
-    	redirect('site/ad/'.$a_id);
-    }
-    
+ 
     	// List Items of the selected Categories
   	 function get_items($categoryId){
 
