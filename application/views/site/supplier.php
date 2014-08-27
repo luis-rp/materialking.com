@@ -3,9 +3,6 @@
 <?php echo '<script>var joinurl = "' . site_url('network/join') . '";</script>' ?>
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
 <?php echo '<script>var itemsurl="' . site_url('site/items') . '";</script>' ?>
-<?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
-<?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
-<?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 
 <?php
 /*
@@ -170,12 +167,6 @@ $long = $supplier->com_lng;
 
 <script>
 $(document).ready(function() {
-	$(".subscriberDialog").hide();
-	$(".subscriber").click(function(){
-		
-		$(".subscriberDialog").dialog();
-
-	});	
 	
 	$('.fixedrating').jRating({
 		length:5,
@@ -200,103 +191,8 @@ $(document).ready(function() {
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
-        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-        
-       	$("#hiddenprice").val(price);
-        $("#cartprice").modal();
-        var selected = "";
-        var strselect = ('Qty');
-        strselect += '&nbsp;<select style="width:50px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
-        for (i = 1; i <=100; i++) { 
-        	if(i == minqty) 
-        	selected = 'selected';
-        	else
-        	selected = "";
-           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-   			} 
-   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
-        $('#cartqtydiv').html(strselect);
-        
-        var data = "itemid="+itemid+"&companyid="+companyid;
-
-        $.ajax({
-        	type:"post",
-        	data: data,
-        	url: getpriceqtydetails
-        }).done(function(data){
-        	if(data){
-
-        		$("#qtypricebox").html("");
-        		$("#qtypricebox").html(data);
-        	}
-        });
-        
-        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
-        
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
-				
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
-        
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
-        		
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
-        
-       
-    }
-    
-    function showmodifiedprice(itemid, companyid, price){
-    	
-    	qty = ($('#qtycart').val());
-    	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-        
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
-				
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
-        
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
-				
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
-    }
-    
-    function addtocart2(itemid, companyid, price, minqty, isdeal){
-    	
-    	qty = ($('#qtycart').val());
-    	    	
-    	if(isNaN(parseInt(qty)))
+        var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
+        if(isNaN(parseInt(qty)))
         {
             return false;
         }
@@ -305,7 +201,7 @@ $(document).ready(function() {
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
+        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty + "&isdeal=" + isdeal;
         //alert(data); return false;
         $.ajax({
             type: "post",
@@ -315,7 +211,6 @@ $(document).ready(function() {
             alert(data);
             window.location = window.location;
         });
-    	
     }
 </script>
 
@@ -331,34 +226,37 @@ $(document).ready(function() {
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h3 class="page-header titlebox" style="padding:0px 0px 0px 7px; margin:0px; color:#FFFFFF; margin-right:5px;"><?php echo $supplier->title;?></h3></td>
+                        	<td align="left"> <h2 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h2></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
-                            	<div class="addthis_toolbox addthis_default_style " style="float:right; width:auto">
+                            	<div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
                             	<a class="addthis_button_tweet"></a>
-                            	<a class="addthis_counter addthis_pill_style"></a>                            	</div>
-                            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>                        	</td>
+                            	<a class="addthis_counter addthis_pill_style"></a>
+                            	</div>
+                            	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>
+                        	</td>
                     	</tr>
                     </table>
-                  
-                 </h3>
+                    </h3>
                     <div class="carousel property">
                     </div>
 
                     <div class="property-detail">
-                        <div class="pull-left overview">
+                        <div class="pull-left overview effect5">
                             <div class="row">
                                 <div class="span4" id="mydiv">
-                                    <p>
+                                    <p style="text-align:center">
                                         <?php if($supplier->logo !=""){?>
                                                 <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
                                                 <?php } else {?>
-                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>       
-                                                <?php } ?>  
-                                                </p>
-                                    <br/>
-                                    <table width="100%" style="font-size: 11px;">
+                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
+                                        <?php } ?>
+                                       
+                                    </p>
+                                    <h2 class="name"><?php echo $supplier->title;?>
+                                   </h2>
+                                    <table width="100%" style="font-size: 12px;">
                                         <tr>
                                             <td>Join Date:</td>
                                             <td><?php echo date('m/d/Y',strtotime($supplier->regdate)); ?></td>
@@ -469,7 +367,9 @@ $(document).ready(function() {
                                 
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
-                            <div style="font-size:12px; border:1px solid #CCC; margin-left:0; padding-left:0px;margin-bottom:5px;padding-right:0px;" class="property featuredspan">
+                            <div class="supplier_new">
+                            <h3>Hot Deal </h3>
+                            <div class="property">
                                 <div class="image span2">
                                     <div class="content">
                                         <a href="<?php echo site_url("site/item/".$di->url);?>">
@@ -487,7 +387,7 @@ $(document).ready(function() {
                         			View Details
                         			</a>
                         			<?php }?>
-                                  </div>
+                                     </div>
                                 </div>
 
                                 <div class="body1 span6">
@@ -508,26 +408,18 @@ $(document).ready(function() {
 
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value">1234567</span>
-                                          </div>
-                                              
+                                                </div>
                                         </div>
-                                        
-                                       <div class="price">
-                                          
-                                    
-                                    <?php if($di->price){?>
-                                        	<img title="<?php if(isset($di->phone)) echo $di->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
-                                       <?php }else{?>
-                                    	 $<?php echo $di->dealprice;?>
-                                            <br><br>
+                                        <div class="price">
+                                        <span>   $<?php echo $di->dealprice;?> &nbsp;</span>
+                                      
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,1)">
                                     <i class="icon icon-plus"></i> Buy
-                                        <?php } ?>
-                                    
                                 </a>
-                                      </div>
+                                        </div>
                                     </div>
                                 </div>
+                        </div>
                         </div>
                         <?php } ?>
                         
@@ -554,7 +446,9 @@ $(document).ready(function() {
                                        $inv->qtyreqd = 0;
                                 ?>
                                 
-                        	<div class="property featuredspan" style="border:1px solid #CCC; margin:0; padding-left:0px;margin-bottom:5px;padding-right:0px;">
+                              <div class="supplier_new1">
+                                 <h2><a href="<?php echo site_url('site/item/'.$inv->url);?>"><?php echo $inv->itemcode; ?></a></h2>
+                            <div class="property">
                                 <div class="image span2">
                                     <div class="content">
                                     <?php if($inv->image){?>
@@ -568,7 +462,7 @@ $(document).ready(function() {
                                 <div class="body1 span6">
                                     <div class="title-price row">
                                         <div class="title1 span5">
-                                            <h2><a href="<?php echo site_url('site/item/'.$inv->url);?>"><?php echo $inv->itemcode; ?></a></h2>
+                                         
                                             <p><?php echo $inv->companynotes; ?></p>
                                            
                                             <div class="area">
@@ -595,25 +489,20 @@ $(document).ready(function() {
                                                 <span class="key"><strong>Min Order Qty:</strong></span>
                                                 <span class="value"><?php echo $inv->minqty ?></span>
                                                 
-                                          </div>
+                                                </div>
                                               
                                         </div>
                                         
                                         <div class="price">
-                                            
-                                        <?php if($inv->price){?>
-                                        	<img title="<?php if(isset($inv->phone)) echo $inv->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
-                                       <?php }else{?>
-                                    	 <?php echo '$'.$inv->ea;?>
-                                            <br><br>
+                                           <span> <?php echo '$'.$inv->ea;?></span>
+                                          
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>)">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
-                                        <?php } ?>
-                                        
                                         </div>
                                     </div>
                                 </div>
+                        </div>
                         </div>
                          <?php } ?>
                         <?php }?>
@@ -688,7 +577,7 @@ $(document).ready(function() {
                           </div>
         				</form>
                     </div>
-              </div>
+                </div>
 
                 <div class="sidebar span3">
                     <div class="widget contact">
@@ -696,12 +585,8 @@ $(document).ready(function() {
                             <h2 class="block-title">Main Menu</h2>
                         </div>
 
-                        <div class="content">
+                        <div class="content_sup">
                         	<table width="100%" cellpadding="4">
-                        		<tr>
-                        			<td><b>Mailing List:</b> </td>
-                        			<td><a href="#" class="subscriber">Join</a></td>
-                        		</tr>
                         		<tr>
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
@@ -748,7 +633,7 @@ $(document).ready(function() {
                                                 </a>
                                                 </li>
                                         <?php } ?>
-                                      </ul>
+                                        </ul>
                         			</td>
                         		</tr>
                         		<?php if($rating){?>
@@ -777,7 +662,8 @@ $(document).ready(function() {
                         <div class="title">
                             <h2 class="block-title">Supplier Deals</h2>
                         </div>
-                        <div class="content">
+                        <div class="content_sup">
+                      
                         	<table>
                         	<?php 
                         	foreach($dealfeed as $di)
@@ -792,29 +678,31 @@ $(document).ready(function() {
                                 
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
-                        	<tr>
-                        		<td>
-                        		<?php if($di->image){?>
+                    
+                            
+                              	<tr>
+                        		<td  style="text-align:center"><?php if($di->image){?>
                         			<img src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="80" height="80">
                         			<?php } else {?>
                         			<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
-                        			<?php }?>
-                        		</td>
-                        		<td>
-                        		<a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
-                        		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
-                        		</td>
-                        		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,1)">
+                        			<?php }?></td>
+                        	</tr>
+                            
+                              	<tr>
+                        		<td style="text-align:center"><a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a></td>
+                        	</tr>
+                              	
+                            
+                        	<tr>
+                        		<td style="text-align:center"> <?php echo $remaining;?> remaining</td>
+                        	</tr>
+                        	<tr>
+                        		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> Remaining</td>
+                        	</tr>
+                            <tr>
+                        		<td  class="siteprices" style="text-align:center">($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,1)">
                                     <i class="icon icon-plus"></i>
-                                </a>
-                                </td>
-                        	</tr>
-                        	<tr>
-                        		<td colspan="3"><?php echo $remaining;?> remaining</td>
-                        	</tr>
-                        	<tr>
-                        		<td colspan="3">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> Remaining</td>
+                                </a></td>
                         	</tr>
                         	<?php }?>
                         	</table>
@@ -828,8 +716,8 @@ $(document).ready(function() {
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Similar Suppliers</h2>
-                      </div>
-                        <div class="content">
+                        </div>
+                        <div class="content_sup">
                                 <div class="control-group">
                                 	
                                     <div class="controls">
@@ -914,7 +802,7 @@ $(document).ready(function() {
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Suppliers Classified Lisings</h2>
-                      </div>
+                        </div>
                         <div class="content">
                            
                                 <div class="control-group">
@@ -929,7 +817,7 @@ $(document).ready(function() {
 											<span id="nav-prev">prev</span>
 											<span id="nav-next">next</span>
 										</nav>
-                                  </div>
+                                     </div>
                                 </div>
                             
                         </div>
@@ -939,51 +827,4 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
-</div>
-<div class="subscriberDialog">
-	<form action="<?php echo base_url();?>subscriber/addsubscriber" method="post">
-		<h3>Subscribe to our Mailing List</h3>
-		<p>Enter your email below to subscribe to our mailing list</p>
-		<label for="name">Name:</label><input type="text" name="name" id="name">
-		<label for="mail">Mail:</label><input type="text" name="mail" id="mail">
-		<input type="hidden" value="<?php echo $supplier->id; ?>" name="cid">
-		<input type="submit" value="Subscribe!">
-	</form>
-</div>
-
-<div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <i class="icon-credit-card icon-7x"></i>
-          
-          <h4 class="semi-bold" id="myModalLabel">
-          Select Quantity  
-          </h4>
-          <br>
-        </div>
-        <div class="modal-body">
-
-        <div id="qtypricebox"></div>  
-          
-        <div >
-            <div id="cartqtydiv" class="col-md-8">             
-            </div>
-            <div class="col-md-4">
-              <span id="qtylistprice"></span>
-            </div>
-          </div>  
-        
-        <div id="cartsavediv"></div>   
-          
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
 </div>
