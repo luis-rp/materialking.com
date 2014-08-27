@@ -288,7 +288,64 @@ class itemcode_model extends Model {
         }
         return $ret;
     }
+    
+        function gettierpriceswithqtydiscount($itemid,$quantity) 
+    {
+        $pa = $this->session->userdata('purchasingadmin');
+        $sql = "select c.id companyid, c.title companyname, ci.ea listprice 
+				FROM " . $this->db->dbprefix('company') . " c, 
+				" . $this->db->dbprefix('companyitem') . " ci, 
+				" . $this->db->dbprefix('network') . " n
+				WHERE c.id=ci.company AND c.id=n.company AND 
+				n.purchasingadmin='" . $pa . "' 
+				AND ci.itemid='" . $itemid . "' AND ci.ea != 0";
+        //echo $sql;//die;
+        $recs = $this->db->query($sql)->result();
+        $ret = array();
+        foreach ($recs as $rec) 
+        {
+        	$discountedquantityprice = $this->getnewprice($itemid,$rec->companyid, $quantity);
+        	if($discountedquantityprice>0){
+        		$rec->price = $discountedquantityprice;
+        		$rec->listprice = $discountedquantityprice;
+        	}else        	
+           	    $rec->price = $rec->listprice;
+            
+            $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . " 
+				    where purchasingadmin='$pa' AND company='" . $rec->companyid . "'";
+            
+            $tier = $this->db->query($sql)->row();
+            if ($tier) 
+            {
+                $tier = $tier->tier;
+                $this->db->where('company', $rec->companyid);
+                $pt = $this->db->get('tierpricing')->row();
+                if ($pt) 
+                {
+                    $deviation = $pt->$tier;
+                    $price = $rec->listprice + ($rec->listprice * $deviation / 100);
+                    $price = number_format($price, 2);
+                    $rec->price = $price;
+                }
+            }
+            
+            $ret[] = $rec;
+        }
+        return $ret;
+    }
 
+    function getnewprice($itemid,$companyid, $quantity){
+    	
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$companyid}' and itemid = '{$itemid}' and qty <= '{$quantity}' order by qty desc limit 1";
+    	$result1 = $this->db->query($sql1)->row();
+    	if($result1){
+			return $result1->price;
+    	}else{
+    		return 0;
+    	}die;
+
+    }
+    
     function SaveItemcode() {
     	$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
@@ -454,14 +511,15 @@ class itemcode_model extends Model {
     }
 
     // retrieve cost code by their id
-    function get_itemcodes_by_id($id) {
+    function get_itemcodes_by_id($id,$quantity) {
         $this->db->where('id', $id);
         $query = $this->db->get('item');
         if ($query->num_rows > 0) {
             $ret = $query->row();
             $ret->minprices = $this->getminimumprices($id);
             $ret->poitems = $this->getpoitems($id);
-            $ret->tierprices = $this->gettierprices($id);
+            $ret->tierprices = $this->gettierpriceswithqtydiscount($id, $quantity);
+
 
             // LAST QUOTED DATE
             $lastsql = "SELECT a.awardedon lastdate 

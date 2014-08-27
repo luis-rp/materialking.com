@@ -3,12 +3,38 @@
 <!--[if lt IE 9]>
 <link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
 <![endif]-->
-<link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap.css?ver=2.3.2' type='text/css' media='all' />
+<!-- <link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap.css?ver=2.3.2' type='text/css' media='all' /> -->
 <link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
 <link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
 <link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
-<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/custom.css?ver=1' type='text/css' media='all' />
-<link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap-responsive.css' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-custom.css?ver=1' type='text/css' media='all' />
+<!-- <link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap-responsive.css' type='text/css' media='all' /> -->
+
+
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css' type='text/css' media='all' />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery-1.6.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery.flexslider.js"></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/jquery-migrate.min.js?ver=1.2.1'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.min.js'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.infobox.js'></script>
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
+/* ]]> */
+</script>
+
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<style type="text/css" media="print">#wpadminbar { display:none; }</style>
+<style type="text/css" media="screen">
+	
+	@media screen and ( max-width: 782px ) {
+		html { margin-top: 46px !important; }
+		* html body { margin-top: 46px !important; }
+	}
+</style>
+<title><?php echo "Classified"; ?></title>
 
 
 <style>
@@ -72,7 +98,7 @@
 										icon: "<?php echo base_url("templates/classified/assets/images/") ?>/icon.png",
 										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>/shadow.png",
 									},
-									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 								}
 							,
 
@@ -303,7 +329,7 @@
 						
 					</div>
 					<div class="views-exposed-widget views-submit-button">
-						    <button class="btn btn-primary form-submit searchutton" id="edit-submit-search-view" name="" value="Search" type="submit">Search</button>
+						    <button class="btn btn-primary searchutton" id="edit-submit-search-view" name="" value="Search" type="submit">Search</button>
 						</div>
                     </form>
 
@@ -466,7 +492,7 @@ $.noConflict();
 	 var category_id = jQuery('#category').val(); // here we are taking country id of the selected one.
 	 jQuery.ajax({
 	 type: "POST",
-	 url: "<?php echo site_url('classified/get_items'); ?>/"+category_id, //here we are calling our user controller and get_cities method with the country_id
+	 url: "<?php echo site_url('site/get_items'); ?>/"+category_id, //here we are calling our user controller and get_cities method with the country_id
 	 
 	 success: function(items) //we're calling the response json array 'cities'
 	 {

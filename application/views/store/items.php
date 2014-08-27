@@ -1,5 +1,10 @@
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
 
+<?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
+
+<?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
+
+<?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 <style type="text/css">
 
 	#menuLog { font-size:1.0em; margin:10px 20px 20px; }
@@ -88,35 +93,127 @@ $(document).ready(function() {
 
 <script>
 
-function addtocart(itemid, companyid, price,minqty)
-{
-	var min=minqty;
-	var qty = prompt("Please enter the quantity you want to buy",minqty);
+ function addtocart(itemid, companyid, price, minqty, isdeal)
+    {
+    	if(typeof(minqty)==='undefined') minqty = 0;
+    	if(typeof(isdeal)==='undefined') isdeal = 0;
+        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
+        
+       	$("#hiddenprice").val(price);
+        $("#cartprice").modal();
+        var selected = "";
+        var strselect = ('Qty');
+        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        for (i = 1; i <=100; i++) { 
+        	if(i == minqty) 
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+   			} 
+   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
+        $('#cartqtydiv').html(strselect);
+        
+        var data = "itemid="+itemid+"&companyid="+companyid;
 
-	if(qty < min)
-	{
-		alert("Please Enter "+min+" or more value.");
-		return false;
-	}
+        $.ajax({
+        	type:"post",
+        	data: data,
+        	url: getpriceqtydetails
+        }).done(function(data){
+        	if(data){
 
-
-	if(isNaN(parseInt(qty)))
-	{
-		alert("Please Enter Numeric value.");
-		return false;
-	}
-
-	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + price + "&qty=" + qty;
-	//alert(data); return false;
-	$.ajax({
-		type: "post",
-		data: data,
-		url: addtocarturl
-	}).done(function(data) {
-		alert(data);
-		window.location = window.location;
-	});
-}
+        		$("#qtypricebox").html("");
+        		$("#qtypricebox").html(data);
+        	}
+        });
+        
+        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+        		
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+        
+       
+    }
+    
+    function showmodifiedprice(itemid, companyid, price){
+    	
+    	qty = ($('#qtycart').val());
+    	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getpriceperqtydetails
+        }).done(function(data){
+        	if(data){
+				
+        		$("#cartsavediv").html("");
+        		$("#cartsavediv").html(data);
+        	}
+        });
+        
+        $.ajax({
+        	type:"post",
+        	data: data2,
+        	url: getnewprice,
+        	sync:false
+        }).done(function(data){
+        	if(data){
+				
+        		if(data!="norecord")
+        		$("#hiddenprice").val(data);
+        	}
+        });
+    }
+    
+    function addtocart2(itemid, companyid, price, minqty, isdeal){
+    	
+    	qty = ($('#qtycart').val());
+    	    	
+    	if(isNaN(parseInt(qty)))
+        {
+            return false;
+        }
+        if(qty < minqty)
+        {
+            alert('Minimum quantity to order is '+ minqty);
+            return false;
+        }
+        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
+        //alert(data); return false;
+        $.ajax({
+            type: "post",
+            data: data,
+            url: addtocarturl
+        }).done(function(data) {
+            alert(data);
+            window.location = window.location;
+        });
+    	
+    }
 </script>
 
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
@@ -364,3 +461,41 @@ function addtocart(itemid, companyid, price,minqty)
         </div>
     </div>
 </div>
+
+
+<div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          
+          <h4 class="semi-bold" id="myModalLabel">
+          Select Quantity  
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+
+        <div id="qtypricebox"></div>  
+          
+        <div>
+            <div id="cartqtydiv" class="col-md-8">             
+            </div>
+            <div class="col-md-4">
+              <span id="qtylistprice"></span>
+            </div>
+          </div>  
+        
+        <div id="cartsavediv"></div>   
+          
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 

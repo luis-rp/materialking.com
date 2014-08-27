@@ -1056,7 +1056,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         //print_r($_POST);
         $codeid = $_POST['codeid'];
         $itemid = $_POST['id']; //urldecode($itemcode);
-        $item = $this->itemcode_model->get_itemcodes_by_id($itemid);
+        $quantity = $_POST['quantity'];
+        $item = $this->itemcode_model->get_itemcodes_by_id($itemid, $quantity);
 
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
         echo '<div class="modal-header">

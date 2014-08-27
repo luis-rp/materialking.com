@@ -3,13 +3,37 @@
 <!--[if lt IE 9]>
 <link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
 <![endif]-->
-<link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap.css?ver=2.3.2' type='text/css' media='all' />
+<!-- <link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap.css?ver=2.3.2' type='text/css' media='all' /> -->
 <link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
 <link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
 <link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
-<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/custom.css?ver=1' type='text/css' media='all' />
-<link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/bootstrap-responsive.css' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-custom.css?ver=1' type='text/css' media='all' />
+<!-- <link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap-responsive.css' type='text/css' media='all' /> -->
 
+
+<link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css' type='text/css' media='all' />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery-1.6.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery.flexslider.js"></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/jquery-migrate.min.js?ver=1.2.1'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.min.js'></script>
+<script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.infobox.js'></script>
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
+/* ]]> */
+</script>
+
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<style type="text/css" media="print">#wpadminbar { display:none; }</style>
+<style type="text/css" media="screen">
+		@media screen and ( max-width: 782px ) {
+		html { margin-top: 46px !important; }
+		* html body { margin-top: 46px !important; }
+	}
+</style>
+<title><?php if(isset($a_title)) echo $a_title;?></title>
 <?php echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
         
@@ -111,7 +135,7 @@
 													icon: "<?php echo $iconPath; ?>",
 													shadow: "<?php echo base_url() ?>templates/classified/assets/images/shadow.png",
 												},
-												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("classified/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 											}	
 									
 								],
@@ -283,7 +307,7 @@
 	    		<ul class="links">
 
 					<li class="service-links-pinterest-button">
-						<a href="//www.pinterest.com/pin/create/button/?url=<?php echo base_url("classified/ad/".$a_id); ?>&amp;media=&amp;description=<?php echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+						<a href="//www.pinterest.com/pin/create/button/?url=<?php echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
 						<script type="text/javascript" async src="//assets.pinterest.com/js/pinit.js"></script>
 					</li>
 
@@ -296,7 +320,7 @@
 							js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=247363645312964";
 							fjs.parentNode.insertBefore(js, fjs);
 							}(document, 'script', 'facebook-jssdk'));</script>
-						<div class="fb-share-button" data-href="<?php echo base_url("classified/ad/".$a_id); ?>" data-type="button_count"></div>
+						<div class="fb-share-button" data-href="<?php echo base_url("site/ad/".$a_id); ?>" data-type="button_count"></div>
 					</li>
 
 					<li class="service-links-google-plus-one last">
@@ -314,7 +338,7 @@
 					</li>
 
 					<li class="service-links-twitter-widget first">
-						<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1384205748.html#_=1384949257081&amp;count=horizontal&amp;counturl=<?php echo base_url("classified/ad/".$a_id) ?>&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=<?php echo base_url("classified/ad/".$a_id) ?>&amp;size=m&amp;text=<?php echo $a_title ?>&amp;url=<?php echo $a_title; ?>&amp;via=drupads" class="twitter-share-button service-links-twitter-widget twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 107px; height: 20px;"></iframe>
+						<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1384205748.html#_=1384949257081&amp;count=horizontal&amp;counturl=<?php echo base_url("site/ad/".$a_id) ?>&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=<?php echo base_url("site/ad/".$a_id) ?>&amp;size=m&amp;text=<?php echo $a_title ?>&amp;url=<?php echo $a_title; ?>&amp;via=drupads" class="twitter-share-button service-links-twitter-widget twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 107px; height: 20px;"></iframe>
 					</li>
 				</ul>
 
@@ -344,7 +368,7 @@
 
 						<div class="contact-ad-owner-arrow"></div>
 
-						<form name="contactForm" action="<?php echo base_url("classified/sendrequest/".$c_id);?>" id="contact-form" method="post" class="contactform" >
+						<form name="contactForm" action="<?php echo base_url("site/sendrequest/".$c_id);?>" id="contact-form" method="post" class="contactform" >
 															
 							<input type="text" onfocus="if(this.value=='Name*')this.value='';" onblur="if(this.value=='')this.value='Name*';" name="contactName" id="contactName" value="Name*" class="input-textarea" />
 														 
@@ -379,7 +403,7 @@
 		    							<span class="field-content">
 
 		    								<div class="ad-image-related">
-		    										<a href="<?php echo base_url("classified/ad/".$rel['id']); ?>">
+		    										<a href="<?php echo base_url("site/ad/".$rel['id']); ?>">
 		    										<?php 
 		    										$dis_img;
 		    					$image= explode("|",$rel['image']);
@@ -394,7 +418,7 @@
 		    									
 		    								<div class="ad-description">
 		    									<span class="title">
-		    										<a href="<?php echo base_url("classified/ad/".$rel['id']); ?>">
+		    										<a href="<?php echo base_url("site/ad/".$rel['id']); ?>">
 		                    							<span class="title"><?php echo $rel['title']; ?></span>
 		    										</a>
 		    									</span>
@@ -440,7 +464,7 @@
                             <li class="widget-ad-list">
                             <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$dis_img);?>">
 						    		<span class="widget-ad-list-content">
-						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("classified/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
+						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("site/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
 						    			
 										<span class="add-price"><?php echo $pop['price']; ?></span>
 						    		</span>
