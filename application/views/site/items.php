@@ -239,11 +239,11 @@
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
 
-                                                 <?php if($item->hasdiscount){?>
+                                                 <?php if(isset($item->hasdiscount)){ if($item->hasdiscount) { ?>
                                                 <div class="price2" style="position:relative; margin-right:-200px; margin-top:-153px;">
                                                 <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">
                                                 </div>
-                                                <?php }?>
+                                                <?php } } ?>
                                                 
                                             </div>
                                         </div>

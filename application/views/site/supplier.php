@@ -496,9 +496,15 @@ $(document).ready(function() {
                                         <div class="price">
                                            <span> <?php echo '$'.$inv->ea;?></span>
                                           
+                                           <?php if($inv->price){?>
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
+                       							onMouseOver="show()"  onMouseOut="hide()"/><span>Call for Price</span>
+                                       <?php }else{?>
+                                           
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>)">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
+                                        <?php } ?>
                                         </div>
                                     </div>
                                 </div>
@@ -803,7 +809,7 @@ $(document).ready(function() {
                     <div class="title">
                             <h2 class="block-title">Suppliers Classified Lisings</h2>
                         </div>
-                        <div class="content">
+                        <div class="content_sup">
                            
                                 <div class="control-group">
                                

@@ -355,7 +355,7 @@ function updatedeal(id)
                                 <h4>&nbsp;</h4>
                                
                                 <div class="pull-right">
-                  <input type="checkbox" id = 'saleitemdata' name = 'saleitemdata' <?php echo @$company->saleitemdata?'checked="CHECKED"':''?>"
+                 				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"
                                     onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>
                                 </div>
                                 

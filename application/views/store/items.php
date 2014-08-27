@@ -216,6 +216,18 @@ $(document).ready(function() {
     }
 </script>
 
+<script type="text/javascript">
+function show()
+{
+document.getElementById('sub').style.display="block";
+}
+
+function hide()
+{
+document.getElementById('sub').style.display="none";
+}
+</script>
+
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
 	<input type="hidden" id="typei" name="typei"/>
 </form>
@@ -300,8 +312,11 @@ $(document).ready(function() {
                                         </div>
                                         <div class="price">
                                             
-                                            <?php if($item->price){?>
-                                        	<img title="<?php if(isset($company->phone)) echo $company->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" />&nbsp;Call for Price
+                                             <?php if($item->price){?>
+                                        	<div id="parent">
+          									<img  style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
+                        						onMouseOver="show()"  onMouseOut="hide()" />&nbsp;Call for Price</div>
+
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
@@ -311,7 +326,11 @@ $(document).ready(function() {
                                         <?php } ?>
                                             
                                         </div>
-
+										<div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-top:20px;
+											box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
+			 								<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;">
+			 								<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
+			 						  </div>
                                     </div>
                                 </div>
                             </div>
