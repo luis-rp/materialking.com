@@ -3655,7 +3655,7 @@ body.header-dark #header-inner .site-email a {
     height: auto;
     max-height: 400px;
     /*min-height: 302px;*/
-    min-height: 320px;
+    min-height: 185px;
     width: 270px;
 }
 .properties-rows .property .body_home p {
