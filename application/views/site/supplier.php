@@ -341,7 +341,7 @@ $(document).ready(function() {
                             	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-536087a3159911fb"></script>                        	</td>
                     	</tr>
                     </table>
-<?php } ?>                    
+                  
                  </h3>
                     <div class="carousel property">
                     </div>
@@ -354,7 +354,9 @@ $(document).ready(function() {
                                         <?php if($supplier->logo !=""){?>
                                                 <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
                                                 <?php } else {?>
-                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>                                    </p>
+                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>       
+                                                <?php } ?>  
+                                                </p>
                                     <br/>
                                     <table width="100%" style="font-size: 11px;">
                                         <tr>
