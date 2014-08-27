@@ -803,7 +803,7 @@ $(document).ready(function() {
                     <div class="title">
                             <h2 class="block-title">Suppliers Classified Lisings</h2>
                         </div>
-                        <div class="content">
+                        <div class="content_sup">
                            
                                 <div class="control-group">
                                

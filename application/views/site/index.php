@@ -130,7 +130,31 @@
 <div id="content"><div class="map-wrapper">
         <div class="map">
             <div id="map" class="map-inner"></div>
+<div class="bottom-wrapper">
+        <div class="bottom container">
+            <div class="bottom-inner row">
+                <div class="item span4">
+                    <div class="address decoration"></div>
+                    <h2><a>Find Suppliers & Material</a></h2>
+                    <p>Find new suppliers, build relationships and do better business.</p>
+                </div>
 
+                <div class="item span4">
+                    <div class="key decoration"></div>
+                    <h2><a>Suite of Powerful Purchasing Tools</a></h2>
+                    <p>Automated tools to help you buy low, track pricing trends, get material on time, track backorders, manage your spending, 
+                        assign material to jobs and workers, have accurate billings, schedule materials, catch errors and more.</p>
+                </div>
+
+                <div class="item span4">
+                    <div class="gps decoration"></div>
+                    <h2><a>Easy Procurement &amp; Sourcing</a></h2>
+                    <p>EZPZP is a Fast and Easy cloud based software that allows you to save time and be more successful.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
             <div class="container">
                 <div class="row">
                     <div class="span3">
@@ -488,9 +512,9 @@
                                             </div>
 
                                             <div class="location2"><?php echo $supplier->contact; ?></div>
-                                            <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><br/><br/>
-                                            <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div><br/><br/>
-                                            <?php if(!empty($supplier->joinstatus)){?><div class="btn btn-primary arrow-right"><a href="javascript:void(0);"><?php echo $supplier->joinstatus;?></a></div><?php }?><br><br>
+<?php /*?><div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><br/><br/>
+ <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div><br/><br/>
+ <?php if(!empty($supplier->joinstatus)){?><div class="btn btn-primary arrow-right"><a href="javascript:void(0);"><?php echo $supplier->joinstatus;?></a></div><?php }?><br><br><?php */?>
                                             <?php //echo $supplier->shortdetail; ?>
                                             <br><br>
                                             <div class="area">
@@ -515,29 +539,5 @@
         </div>
     </div>
 
-    <div class="bottom-wrapper">
-        <div class="bottom container">
-            <div class="bottom-inner row">
-                <div class="item span4">
-                    <div class="address decoration"></div>
-                    <h2><a>Find Suppliers & Material</a></h2>
-                    <p>Find new suppliers, build relationships and do better business.</p>
-                </div>
-
-                <div class="item span4">
-                    <div class="key decoration"></div>
-                    <h2><a>Suite of Powerful Purchasing Tools</a></h2>
-                    <p>Automated tools to help you buy low, track pricing trends, get material on time, track backorders, manage your spending, 
-                        assign material to jobs and workers, have accurate billings, schedule materials, catch errors and more.</p>
-                </div>
-
-                <div class="item span4">
-                    <div class="gps decoration"></div>
-                    <h2><a>Easy Procurement &amp; Sourcing</a></h2>
-                    <p>EZPZP is a Fast and Easy cloud based software that allows you to save time and be more successful.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    
 </div>
