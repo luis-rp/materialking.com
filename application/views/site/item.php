@@ -387,7 +387,17 @@ left:0px;}
 	}
 </script>
 
+<script type="text/javascript">
+function show()
+{
+document.getElementById('sub').style.display="block";
+}
 
+function hide()
+{
+document.getElementById('sub').style.display="none";
+}
+</script>
 
 <div id="content">
     <div class="container">
@@ -528,6 +538,10 @@ left:0px;}
                                 </div>
                             </div>
                         </div>
+                         <div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-left:700px;
+										box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
+			 							<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;"><?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
+			 				    </div>
                           <?php if(@$item->featureditem){ if($item->featuredsupplierdetails->saleitemdata==0){ ?>
                           <br/>
                           <div class="newbox">
@@ -538,7 +552,8 @@ left:0px;}
                                  <td>
                                       
                                       <?php if($item->featureditem->price){?>
-                                        	<img title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
+                       							onMouseOver="show()"  onMouseOut="hide()"/><br/><p>Call for Price</p>
                                        <?php }else{?>
                                     	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
@@ -654,7 +669,8 @@ left:0px;}
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
                                         <?php if($inv->price){?>
-                                        	<img title="<?php if(isset($inv->companydetails->phone)) echo $inv->companydetails->phone; ?>" style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" /><br/>Call for Price
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
+                                              onMouseOver="show();"  onMouseOut="hide();" /><br/>Call for Price
                                        <?php }else{?>
                                     	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
                                             <i class="icon icon-plus"></i>
@@ -666,6 +682,10 @@ left:0px;}
                                 </tbody>
                             </table>
 </div>
+<div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-left:700px;
+										box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
+			 				<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;"><?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
+			 				</div>
                         <?php if($amazon){ ?>
                        <div class="newbox"> 
                         <table class="table table-bordered">
