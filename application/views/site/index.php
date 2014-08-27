@@ -245,7 +245,7 @@
 
     <div class="container">
         <div id="main">
-            <div class="row">
+            <?php /*?><div class="row">
                 <div class="span9">
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><b>Featured Suppliers</b></h3>
                     <div class="properties-grid">
@@ -320,7 +320,7 @@
                        
                     </div>
                 </div>
-            </div>
+            </div><?php */?>
           
 		  
 		    <!-- ----------------------------------------------------------------------------->
