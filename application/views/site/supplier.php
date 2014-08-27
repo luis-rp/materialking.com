@@ -354,7 +354,8 @@ $(document).ready(function() {
                                         <?php if($supplier->logo !=""){?>
                                                 <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
                                                 <?php } else {?>
-                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>                                    </p>
+                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><span style="margin-left: 20px;font-size: 16px;font-weight: bold;line-height: 30px;"><?php echo $supplier->title;?></span>   
+                                                <?php } ?>                                 </p>
                                     <br/>
                                     <table width="100%" style="font-size: 11px;">
                                         <tr>
@@ -984,4 +985,5 @@ $(document).ready(function() {
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div> 
+  </div>
+  
