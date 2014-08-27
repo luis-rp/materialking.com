@@ -3339,7 +3339,7 @@ with the transfer# {$tobj->id}.
         foreach ($codes as $code) {
             $item = array();
             $item['value'] = $code->itemcode;
-            $item['label'] = '<font color="#990000">' . $code->itemcode . '</font> - ' . $code->itemname;
+            $item['label'] = '<!--<font color="#990000">-->'.$code->itemcode.'<!--</font>--> - '.$code->itemname;
             $item['desc'] = $code->itemname;
             $items[] = $item;
             //$items[]= $code->itemcode.'<br/>'.$code->itemname;
