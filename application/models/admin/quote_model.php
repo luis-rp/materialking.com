@@ -310,6 +310,47 @@ class quote_model extends Model {
         //echo '<pre>';print_r($item);die;
         return $item;
     }
+    
+            function getallawardedqtyduebids() {
+        
+        $query = $this->db->get('award');
+		$itemarray = array();
+        $items = $query->result();
+        if (!$items)
+            return false;
+        //foreach($result as $item)
+        //{
+		foreach($items as $item){
+        $this->db->where('id', $item->quote);
+        $query = $this->db->get('quote');
+        if ($query->result()) {
+            $item->quotedetails = $query->row();
+            
+            $query = "SELECT *, (quantity - received) quantityleft FROM  ".$this->db->dbprefix('awarditem')." WHERE award = '".$item->id."' and STR_TO_DATE(daterequested,'%m/%d/%Y') < curdate() and (quantity - received) > 0";
+            $awarditems = array();
+            foreach ($this->db->query($query)->result() as $awarditem) {
+                $this->db->where('id', $awarditem->company);
+                $query = $this->db->get('company');
+                $awarditem->companyname = $query->row('title');
+                $awarditem->companydetails = $query->row();
+
+
+                $this->db->where('id', $awarditem->itemid);
+                $companyitem = $this->db->get('item')->row();
+
+                if ($companyitem) {
+                    $awarditem->itemcode = $companyitem->itemcode;
+                    $awarditem->itemname = $companyitem->itemname;
+                }
+                //print_r($companyitem);die;
+                $awarditems[] = $awarditem;
+            }
+            $item->items = $awarditems;
+            $itemarray[] =  $item; 
+        }
+       }        
+        return $itemarray;
+    } 
 
     function getawardedbidquote($quote) 
     {

@@ -283,16 +283,34 @@ function showhideviewprice(id)
 	}
 }
 
-function viewminprices(codeid)
+function viewminprices(codeid,quant)
 {
 	var itemid = document.getElementById(codeid).value;
+	
+	if(quant==0){
+		var quantity = document.getElementById('quantity').value;
+		
+		if(quantity=='')
+		{
+			alert("Please enter quantity");
+			return false;
+		}
+		
+	}else{
+		var quantity = document.getElementById(quant).value;
+		if(quantity=='')
+		{
+			alert("Please enter quantity");
+			return false;
+		}
+	}
 	
 	if(itemid=='')
 	{
 		return false;
 	}
 	var serviceurl = '<?php echo base_url()?>admin/itemcode/getcompanypricetable/';
-	var d = "id="+itemid+"&codeid="+codeid;
+	var d = "id="+itemid+"&codeid="+codeid+"&quantity="+quantity;
 	//alert(d);
 	$.ajax({
 	      type:"post",
@@ -555,7 +573,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			    		<input type="hidden" name="company<?php echo $q->id;?>" />
 		    			<input type="hidden" id="itemid<?php echo $q->id;?>" name="itemid<?php echo $q->id;?>" class="span itemid" value="<?php echo $q->itemid;?>"/>
 			    		<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>
-			    		<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>')">View Prices</a>
+			    		<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>')">View Prices</a>
 		    		</td>
 		    		<td>
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
@@ -613,7 +631,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');" onchange="showhideviewprice('');"/>
-		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid')">View Prices</a></span>
+		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0)">View Prices</a></span>
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    			<div><span id="showItemsFromStore">
 		    			

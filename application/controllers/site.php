@@ -945,18 +945,29 @@ class site extends CI_Controller
             $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
             
             //$item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;
-            $item->hasdeal = $this->db
+             $hasdeal = $this->db
                             ->where('itemid',$item->id)
                             ->where('dealactive','1')
                             ->where('qtyavailable >=','qtyreqd')
                             ->where('qtyavailable >','0')
                             ->where('dealdate >=',date('Y-m-d'))
                             ->get('dealitem')
-                            ->result()
-                            ?
-                            true
-                            :false
-                            ;
+                            ->result();
+
+            if($hasdeal)
+              $item->hasdeal = true;              
+            else 
+             $item->hasdeal = false;                            
+            
+            $hasdiscount = $this->db
+                            ->where('itemid',$item->id)                            
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount)
+              $item->hasdiscount = true;              
+            else 
+             $item->hasdiscount = false;  
             
             $this->data['items'][] = $item;
         }
@@ -1883,6 +1894,47 @@ class site extends CI_Controller
     }
     
     
+        public function sendrequest($id)
+    {
+    	if(!$_POST)
+    		die;
+    	$body = '';
+    	$settings = (array)$this->homemodel->getconfigurations ();
+    	
+    		$supplier = $this->db->where('id',$id)->get('company')->row();
+    		$to = $supplier->primaryemail;
+    		$body .= 'You have a new request for assistance.';
+   
+    	$body .= ' Details are:<br/><br/>';
+    	$body .= "Name: ".$_POST['contactName']."<br/>";
+    	$body .= "Email: ".$_POST['email']."<br/>";
+    	$body .= "Subject: ".$_POST['subject']."<br/>";
+    
+    	$body .= "Regarding: ".$_POST['comments']."<br/>";
+    
+    	$this->load->library('email');
+    
+    	$this->email->from($settings['adminemail']);
+    	$this->email->to($to);
+    
+    	$this->email->subject('Request for assistance');
+    	$this->email->message($body);
+    	$this->email->set_mailtype("html");
+    	$this->email->send();
+    
+    	$this->session->set_flashdata('message', 'Email was sent.');
+    
+    	redirect('site/ad/'.$a_id);
+    }
+    
+    	// List Items of the selected Categories
+  	 function get_items($categoryId){
+
+		// $this->load->model('items_model');
+		 header('Content-Type: application/x-json; charset=utf-8');
+		 echo(json_encode($this->items_model->get_items2($categoryId)));
+	}
+    
     function formview($id)
     {
     	$data['result'] = $this->form_model->view_field($id);
@@ -1996,7 +2048,7 @@ class site extends CI_Controller
     	if($result1){
     		$strput = "";
     		$strput .= '<div>
-							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$result1->price).':</div>
+							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$result1->price).'</div>
 							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$result1->price)).'</span></div>
           				  </div>';
     		
@@ -2005,7 +2057,7 @@ class site extends CI_Controller
     		
     		$strput = "";
     		$strput .= '<div >
-							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$_POST['price']).':</div>
+							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$_POST['price']).'</div>
 							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$_POST['price'])).'</span></div>
           				  </div>';
     		

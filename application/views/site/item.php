@@ -198,7 +198,7 @@ left:0px;}
         $("#cartprice").modal();
         var selected = "";
         var strselect = ('Qty');
-        strselect += '&nbsp;<select style="width:50px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+       strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
         for (i = 1; i <=100; i++) { 
         	if(i == minqty) 
         	selected = 'selected';
