@@ -17,7 +17,9 @@ class subscriber extends CI_Controller
 			
 			$this->db->where("mail",$mail);
 			$this->db->where("cid",$cid);
-			if(empty($this->db->get("newsletter_subscribers")->result())){
+			$res = $this->db->get("newsletter_subscribers")->result();
+			if(empty($res)){
+
 				$this->db->insert("newsletter_subscribers",array("cid"=>$cid,"name"=>$name,"mail"=>$mail));
 				$this->session->set_flashdata('message',"Thank you for the subscription");
 				$this->db->where("id",$cid);

@@ -375,3 +375,8 @@ $config['private_key'] = '0vttrTG/sQTO8XfyRFjpBNy3xYwJ/dBKTYENq8Ud';
 $config['associate_tag'] = 'optimaitsolut-20';
 
 $config['STRIPE_API_KEY'] = 'sk_test_2nUP1KkyqVt9PU8LLWp5KvuB';
+$config['protocol'] = 'sendmail';
+$config['mailpath'] = '/usr/sbin/sendmail';
+$config['charset'] = 'iso-8859-1';
+$config['wordwrap'] = TRUE;
+
