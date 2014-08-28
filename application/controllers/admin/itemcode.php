@@ -1077,6 +1077,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         else
         {
             $table = '';
+            $table2 = '';
             $seconds = time() - strtotime($item->lastquoted);
             $days = $seconds / (3600 * 24);
             //if ($days > 30)
