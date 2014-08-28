@@ -481,6 +481,8 @@ class site extends CI_Controller
             if(!$initem->image)
             	$initem->image = $orgitem->item_img;
             
+            $initem->unit = $orgitem->unit;		
+            	
             $initem->url = $orgitem->url;
             
             $this->db->where('id', $initem->company);
@@ -564,7 +566,7 @@ class site extends CI_Controller
             		$di->phone = $res->phone;
             	}else 
             	$di->phone = "";
-                
+                $di->unit = $orgitem->unit;	
                 $di->url = $orgitem->url;
                 $di->image = $orgitem->item_img;
                 $di->itemcode = $cmpitem->itemcode;
@@ -735,6 +737,16 @@ class site extends CI_Controller
                             :false
                             ;
             
+			$hasdiscount = $this->db
+                            ->where('itemid',$item->id)                            
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount)
+              $item->hasdiscount = true;              
+            else 
+             $item->hasdiscount = false;                 	                            
+                            
             $this->data['items'][] = $item;
         }
         $this->data['norecords'] = '';
@@ -1148,6 +1160,7 @@ class site extends CI_Controller
             $orgitem = $this->db->get('item')->row();
             if(!$initem->itemname)
                 $initem->itemname = $orgitem->itemname;
+            $initem->unit = $orgitem->unit;     
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
             $initem->listprice = $initem->ea;
@@ -1407,6 +1420,7 @@ class site extends CI_Controller
                 $di->url = $orgitem->url;
                 $di->itemcode = $orgitem->itemcode;
                 $di->itemname = $orgitem->itemname;
+                $di->unit = $orgitem->unit;
                 if(isset($tv))
                 {
                     $di->dealprice = $di->dealprice + ($di->dealprice * $tv / 100);
@@ -1510,6 +1524,16 @@ class site extends CI_Controller
     		:false
     		;
     	
+    		$hasdiscount = $this->db
+                            ->where('itemid',$item->id)                            
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount)
+              $item->hasdiscount = true;              
+            else 
+             $item->hasdiscount = false; 	
+    		
     		$this->data['items'][] = $item;
     	}
     	$this->data['norecords'] = '';
@@ -1786,8 +1810,17 @@ class site extends CI_Controller
     	$cat['catname'] = "";
     	    	
     	$data['title'] = "Classified area";
-    		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$catid; 
-    		$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	
+    	$subcategories = $this->items_model->getSubCategores($catid);
+    	if($subcategories){
+
+    		$str .= implode(',', $subcategories);
+    		$where .= " AND category in (".$str.")";
+    	}else
+    	$where .= "AND category = {$catid}";
+    	
+    	$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}"; 
+    	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
     	
     	$data['ads'] = $res;
 		

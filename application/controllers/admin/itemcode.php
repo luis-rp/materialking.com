@@ -1058,7 +1058,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $itemid = $_POST['id']; //urldecode($itemcode);
         $quantity = $_POST['quantity'];
         $item = $this->itemcode_model->get_itemcodes_by_id($itemid, $quantity);
-
+        
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -1082,18 +1082,45 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             //if ($days > 30)
                 //$table .= "<b><font color='red'>Item has not been requited within 30 days.</font></b>";
             $table .= "<table class='table table-bordered'><tr><th>Company</th><th>Price</th><th width='30'></th></tr>";
+            $table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             foreach ($item->tierprices as $mp)
             {
+            	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid);
+            	if($priceqtyresult){
+            		$table2 .= "<tr><td colspan='3'>" . $mp->companyname . "</td></tr>";
+            		$table2 .= "<tr><td colspan='3'>" . $priceqtyresult . "</td></tr>";            	
+            	}
                 $selectbutton = "<input type='button' class='btn btn-small' onclick='selectcompany(\"$codeid\",\"{$mp->companyid}\",\"{$mp->price}\")' value='Select' data-dismiss='modal'>";
                 $table .= "<tr><td>" . $mp->companyname . "</td><td>" . $mp->price . "</td><td>" . $selectbutton . "</td></tr>";
             }
             $table .= "</table>";
+            $table2 .= "</table>";
+            
+            echo $table2;
             echo $table;
         }
         echo '</div>';
     }
 
 
+    function getpriceqtydetails($companyid, $itemid){
+    	
+    	$this->db->where('company',$companyid);
+    	$this->db->where('itemid',$itemid);
+    	$qtyresult = $this->db->get('qtydiscount')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		foreach($qtyresult as $qtyres){
+
+    			$strput .= '<div >
+							 <div style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: $'.$qtyres->price.'</div>							 
+          				  </div>';
+    		}
+    		return $strput;
+    	}
+
+    }
+    
     function getcompanypricetablebrow ()
     {
         $val = 'onblur=savclose()';

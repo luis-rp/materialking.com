@@ -167,7 +167,13 @@
                                                 <?php } else { ?>
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
-
+												
+                                                <?php if(isset($item->hasdiscount)){ if($item->hasdiscount) { ?>
+                                                <div class="price2" style="position:absolute; left:205px; top:6px;">
+                                                <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">
+                                                </div>
+                                                <?php } } ?>
+                                                
                                             </div>
                                         </div>
 

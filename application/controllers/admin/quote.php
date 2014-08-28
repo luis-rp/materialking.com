@@ -2344,56 +2344,109 @@ class quote extends CI_Controller
         $this->load->view('admin/track', $data);
     }
     
-        function sendautolateemail($id){ 
+    function sendautolateemail($id){
     	$quotearr = $this->quote_model->getallawardedqtyduebids();
     	//echo "<pre>",print_r($quotearr); die;
     	foreach($quotearr as $quote){
     		if($quote->items){
-    		foreach($quote->items as $items){
-    			
-    			// echo "<pre>",print_r($items); die;
-    			$Supplierbody = "Dear {$items->companydetails->title},<br/><br/>
- Quote '{$quote->quotedetails->ponum}' still has few items left to be delivered and its requested date is already overdue: <br/>
- 
- Company: {$quote->purchasingadmin}<br>
- PO: {$quote->quotedetails->ponum}<br>
- Itemcode: {$items->itemcode}<br>
- Date Requested : {$items->daterequested}
- Quantity Left: {$items->quantityleft}";
-    			
-              /*$settings = (array)$this->settings_model->get_current_settings ();*/
-    	      $this->load->library('email');
-              //$this->email->from($settings['adminemail'], "Administrator");
-              $this->email->from('email.jonrubin@gmail.com',"Administrator");
-              $this->email->to($items->companydetails->primaryemail);
-              $this->email->subject('Quantity Due Alert');
-              $this->email->message($Supplierbody);
-              $this->email->set_mailtype("html");
-              $this->email->send($this->email);
-                                         
-              $purchaserbody = "Dear Administrator<br/><br/>
- Quote: {$quote->quotedetails->ponum} still has few items left to be delivered and its requested date is already overdue: <br/>
+    			foreach($quote->items as $items){
+
+    				// echo "<pre>",print_r($items); die;
+    				$Supplierbody = "Dear {$items->companydetails->title},<br/><br/>
+ Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
  Below are the Details:<br/><br/>
- Company: {$quote->purchasingadmin}<br>
+ Company: {$quote->quotedetails->companyname}<br>
  PO: {$quote->quotedetails->ponum}<br>
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
-    			
-              $settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
-    	      //$this->email->from($settings['adminemail'], "Administrator");
-              $this->email->from('email.jonrubin@gmail.com',"Administrator");
-              $this->email->to($settings['adminemail']);
-              $this->email->subject('Quantity Due Alert');
-              $this->email->message($purchaserbody);
-              $this->email->set_mailtype("html");
-              $this->email->send();
-             
+
+    				/*$settings = (array)$this->settings_model->get_current_settings ();*/
+    				$this->load->library('email');
+    				//$this->email->from($settings['adminemail'], "Administrator");
+    				$this->email->from('email.jonrubin@gmail.com',"Administrator");
+    				$this->email->to($items->companydetails->primaryemail);
+    				$this->email->subject('Quantity Due Alert');
+    				$this->email->message($Supplierbody);
+    				$this->email->set_mailtype("html");
+    				$this->email->send($this->email);
+
+    				$purchaserbody = "Dear {$quote->quotedetails->companyname}<br/><br/>
+ Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+ Below are the Details:<br/><br/>
+ Company: {$items->companydetails->title}<br>
+ PO: {$quote->quotedetails->ponum}<br>
+ Itemcode: {$items->itemcode}<br>
+ Date Requested : {$items->daterequested}
+ Quantity Left: {$items->quantityleft}";
+
+    				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
+    				//$this->email->from($settings['adminemail'], "Administrator");
+    				$this->email->from('email.jonrubin@gmail.com',"Administrator");
+    				$this->email->to($settings['adminemail']);
+    				$this->email->subject('Quantity Due Alert');
+    				$this->email->message($purchaserbody);
+    				$this->email->set_mailtype("html");
+    				$this->email->send();
+
+    			}
     		}
-    	  }
     	}
     	$this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email Sent Successfully.</div></div>');
-        redirect('admin/quote/track/' . $id);
+    	redirect('admin/quote/track/' . $id);
+    }
+
+
+    function sendautolateemailviacron(){
+    	$quotearr = $this->quote_model->getallawardedqtyduebids();
+    	//echo "<pre>",print_r($quotearr); die;
+    	foreach($quotearr as $quote){
+    		if($quote->items){
+    			foreach($quote->items as $items){
+
+    				// echo "<pre>",print_r($items); die;
+    				$Supplierbody = "Dear {$items->companydetails->title},<br/><br/>
+ Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+ Below are the Details:<br/><br/>
+ Company: {$quote->quotedetails->companyname}<br>
+ PO: {$quote->quotedetails->ponum}<br>
+ Itemcode: {$items->itemcode}<br>
+ Date Requested : {$items->daterequested}
+ Quantity Left: {$items->quantityleft}";
+
+    				/*$settings = (array)$this->settings_model->get_current_settings ();*/
+    				$this->load->library('email');
+    				//$this->email->from($settings['adminemail'], "Administrator");
+    				$this->email->from('email.jonrubin@gmail.com',"Administrator");
+    				$this->email->to($items->companydetails->primaryemail);
+    				$this->email->subject('Quantity Due Alert');
+    				$this->email->message($Supplierbody);
+    				$this->email->set_mailtype("html");
+    				$this->email->send($this->email);
+
+    				$purchaserbody = "Dear {$quote->quotedetails->companyname}<br/><br/>
+ Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+ Below are the Details:<br/><br/>
+ Company: {$items->companydetails->title}<br>
+ PO: {$quote->quotedetails->ponum}<br>
+ Itemcode: {$items->itemcode}<br>
+ Date Requested : {$items->daterequested}
+ Quantity Left: {$items->quantityleft}";
+
+    				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
+    				//$this->email->from($settings['adminemail'], "Administrator");
+    				$this->email->from('email.jonrubin@gmail.com',"Administrator");
+    				$this->email->to($settings['adminemail']);
+    				$this->email->subject('Quantity Due Alert');
+    				$this->email->message($purchaserbody);
+    				$this->email->set_mailtype("html");
+    				$this->email->send();
+
+    			}
+    		}
+    	}
+    	$this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email Sent Successfully.</div></div>');
+    	redirect('admin/quote/track/' . $id);
     }
 
     function acceptshipment()

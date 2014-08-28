@@ -22,6 +22,19 @@
 	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
 
 	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
+	
+	
+	.ui-tooltip {
+	padding: 8px;
+	font-size:19px !important;
+	font-weight:bold !important;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+	color:#06A7EA !important;
+	}
 	</style>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
@@ -93,55 +106,58 @@ $(document).ready(function() {
 
 <script>
 
- function addtocart(itemid, companyid, price, minqty, isdeal)
+ 
+    function addtocart(itemid, companyid, price, minqty, unit, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-        
+
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
+        $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
-        for (i = 1; i <=100; i++) { 
-        	if(i == minqty) 
+        for (i = 1; i <=100; i++) {
+        	if(i == minqty)
         	selected = 'selected';
         	else
         	selected = "";
            	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-   			} 
+   			}
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
-        
-        var data = "itemid="+itemid+"&companyid="+companyid;
 
+        var data = "itemid="+itemid+"&companyid="+companyid;
+		$("#qtypricebox").html("");
         $.ajax({
         	type:"post",
         	data: data,
+        	sync: false,
         	url: getpriceqtydetails
         }).done(function(data){
         	if(data){
-
-        		$("#qtypricebox").html("");
+        		
         		$("#qtypricebox").html(data);
         	}
         });
-        
+
         var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
+        	sync: false,
         	url: getpriceperqtydetails
         }).done(function(data){
         	if(data){
-				
+
         		$("#cartsavediv").html("");
         		$("#cartsavediv").html(data);
         	}
         });
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
@@ -149,32 +165,33 @@ $(document).ready(function() {
         	sync:false
         }).done(function(data){
         	if(data){
-        		
+
         		if(data!="norecord")
         		$("#hiddenprice").val(data);
         	}
         });
-        
-       
+
+
     }
-    
+
     function showmodifiedprice(itemid, companyid, price){
-    	
+
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
+        	sync: false,
         	url: getpriceperqtydetails
         }).done(function(data){
         	if(data){
-				
+
         		$("#cartsavediv").html("");
         		$("#cartsavediv").html(data);
         	}
         });
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
@@ -182,17 +199,17 @@ $(document).ready(function() {
         	sync:false
         }).done(function(data){
         	if(data){
-				
+
         		if(data!="norecord")
         		$("#hiddenprice").val(data);
         	}
         });
     }
-    
+
     function addtocart2(itemid, companyid, price, minqty, isdeal){
-    	
+
     	qty = ($('#qtycart').val());
-    	    	
+
     	if(isNaN(parseInt(qty)))
         {
             return false;
@@ -212,20 +229,20 @@ $(document).ready(function() {
             alert(data);
             window.location = window.location;
         });
-    	
+
     }
-</script>
 
-<script type="text/javascript">
-function show()
-{
-document.getElementById('sub').style.display="block";
-}
+</script>    
 
-function hide()
-{
-document.getElementById('sub').style.display="none";
-}
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<script>
+$(function() {
+$( document ).tooltip();
+});
 </script>
 
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
@@ -311,26 +328,20 @@ document.getElementById('sub').style.display="none";
                                                 </span>
                                         </div>
                                         <div class="price">
-                                            
-                                             <?php if($item->price){?>
+
+                                            <?php if($item->price){?>
                                         	<div id="parent">
-          									<img  style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
-                        						onMouseOver="show()"  onMouseOut="hide()" />&nbsp;Call for Price</div>
+          									<img  style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"  title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>"  />&nbsp;Call for Price</div>
 
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>)">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>')">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         <?php } ?>
-                                            
-                                        </div>
-										<div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-top:20px;
-											box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
-			 								<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;">
-			 								<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
-			 						  </div>
+
+                                        </div>										
                                     </div>
                                 </div>
                             </div>
@@ -492,7 +503,8 @@ document.getElementById('sub').style.display="none";
           <h4 class="semi-bold" id="myModalLabel">
           Select Quantity  
           </h4>
-          <br>
+          <br><br/>
+          <div id="unitbox"></div>
         </div>
         <div class="modal-body">
 

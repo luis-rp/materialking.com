@@ -321,7 +321,9 @@ class quote_model extends Model {
         //foreach($result as $item)
         //{
 		foreach($items as $item){
-        $this->db->where('id', $item->quote);
+        $this->db->select("quote.*,users.companyname");	
+        $this->db->where('quote.id', $item->quote);
+        $this->db->join("users",'quote.purchasingadmin = users.id');
         $query = $this->db->get('quote');
         if ($query->result()) {
             $item->quotedetails = $query->row();
