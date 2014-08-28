@@ -1810,7 +1810,8 @@ class site extends CI_Controller
     	$cat['catname'] = "";
     	    	
     	$data['title'] = "Classified area";
-    	
+    	$str = "";
+    	$where = "";
     	$subcategories = $this->items_model->getSubCategores($catid);
     	if($subcategories){
 
