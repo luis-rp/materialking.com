@@ -21,7 +21,7 @@ if(0)
     ini_set('display_errors', 'Off');
 }
 $config['base_url']	= 'http://materialking.com/';
-$config['base_dir']	= '/home/materialking/';
+$config['base_dir']	= '/home/materialking/public_html/';
 
 /*
 |--------------------------------------------------------------------------
