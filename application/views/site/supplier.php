@@ -63,7 +63,7 @@ padding:5px 0px;
             'maxTime': '11:30pm',
             'showDuration': false
         });
-	//$("#dialog-form").hide();
+	$("#dialog-form").hide();
         $(".join-newsletter").click(function(){
         	$( "#dialog-form" ).dialog();
             });

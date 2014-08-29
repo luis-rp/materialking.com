@@ -1093,7 +1093,7 @@ class Company extends CI_Controller {
 		$this->db->where("cid",$company->id);
 		$subscribers = $this->db->get("newsletter_subscribers")->result();
 		
-		$data;
+		$data = array();
 		foreach( $subscribers as $subscriptor){
 			
 			$this->db->where("subscriber_id",$subscriptor->id);
