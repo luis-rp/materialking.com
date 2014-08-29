@@ -34,6 +34,10 @@ $long = $supplier->com_lng;
             'maxTime': '11:30pm',
             'showDuration': false
         });
+	//$("#dialog-form").hide();
+        $(".join-newsletter").click(function(){
+        	$( "#dialog-form" ).dialog();
+            });
     });
 
     function industryitems(id)
@@ -594,6 +598,10 @@ $(document).ready(function() {
                         <div class="content_sup">
                         	<table width="100%" cellpadding="4">
                         		<tr>
+                        			<td><b>Newsletter:</b> </td>
+                        			<td><a href="#" class="join-newsletter" id="join-newsletter">Join</a></td>
+                        		</tr>
+                        		<tr>
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
@@ -830,7 +838,53 @@ $(document).ready(function() {
                     </div>
                  </div>
                 <?php }?>
+               <!-- Start Dialog Form -->  <div class="dialog-form" id="dialog-form">
+						
+				            		<form  role="form" method="post" action="<?php echo base_url();?>subscriber/addsubscriber">
+				                     <div class="col-md-6 col-sm-6 col-xs-6">
+				 					<?php  foreach($fields as $key=>$field) { $name_id=trim($field->Label);  ?><br>
+				 					<div class="form-group">
+				    						<label for="label" class="form-label"><?php echo $field->Label ?></label>
+				    						
+				    							<div class="controls">
+				      					<?php if($field->FieldType == 'text' || $field->FieldType == 'email' || $field->FieldType == 'password') {?>
+				      							<?php if($field->FieldType == 'email' ){?>
+				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="email" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>">
+				      							<?php }else{?>
+				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>">
+				      							<?php } ?>
+				      					<?php  }  ?>
+				
+				      					<?php if($field->FieldType == 'dropdown') { $dropdownValues = explode(",",$field->FieldValue); $k= array_search($field->Value,$dropdownValues); ?> 
+				      					<select id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>"><?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><option value="<?php echo $dropdownValues[$i];?>" <?php if($dropdownValues[$i]==$field->Value) { echo " selected ";} else { echo " "; } ?>><?php echo $dropdownValues[$i];?></option> <?php  } } ?></select>
+				
+				    							<?php   } ?>
+										<?php if($field->FieldType == 'radio') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="radio" name="<?php echo $field->Name; ?>" id="<?php echo $dropdownValues[$i];?>" value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'checked'; ?>><?php echo $dropdownValues[$i];?> <?php  } } ?>
+				
+				 					    		<?php  } ?>
+				 					    <?php if($field->FieldType == 'checkbox') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="checkbox" name="<?php echo $field->Name; ?>" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'selected'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
+				
+				 					    		<?php } ?>
+				 					    <?php if($field->FieldType == 'textarea') { ?> <textarea id="<?php echo $name_id;?>" name="<?php echo $field->Name; ?>"><?php echo $field->Value;?></textarea>
+				 					    		<?php  }  ?>
+				 					    	</div>
+				 					    </div>
+										<?php } ?>
+				 					    <div class="form-group">
+					                        <label class="form-label"></label>
+					                        <div class="controls">
+					                        	  <input type="hidden" name="cid" class="cid" value="<?php echo $supplier->id;?>">
+					                              <input type="submit" value="Subscribe" name="subscribe" class="btn btn-primary btn-lg">
+					                        </div>
+					                    </div>
+				 						 </div>
+									</form>
+				              
+				</div><!-- End Dialog Form -->
+                
             </div>
         </div>
     </div>
 </div>
+
+

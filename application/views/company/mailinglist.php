@@ -25,8 +25,10 @@ $(document).ready(function(){
 	  		         <div class="col-md-12">
                         <div class="grid simple ">
                         	<div class="grid-body no-border">
-					   		<p><a href="<?php echo base_url("company/newtemplate");?>">New Template</a></p>        
-							<p><a href="<?php echo base_url("company/listtemplates");?>">View Newsletter Templates</a></p>
+					   		<p><a href="<?php echo base_url("company/newtemplate");?>">New Template</a></p>
+					   		<p><a href="<?php echo base_url("company/createformsubscriptions");?>">Create/Edit Form Subscriptions</a></p>
+							<p><a href="<?php echo base_url("company/listtemplates");?>">View Your Newsletter Templates</a></p>
+							<p><a href="<?php echo base_url("company/listpretemplates");?>">View Predefined Templates</a></p>
 							<p><a href="<?php echo base_url("company/listsubscribers");?>">View Newsletter Subscribers</a></p>
 							</div>
 						</div>

@@ -28,6 +28,20 @@ class supplier_model extends Model {
             return false;
         }
     }
+    function get_supplierbyid($id){
+    	$this->db->where('id', $id);
+    	$result = $this->db->get('company');
+    	if($result->num_rows()){
+    		$row = $result->row();
+    		//            if(!trim($row->logo)){
+    		//                $row->logo = "big.png";
+    		//            }
+    	
+    		return $row;
+    	}else{
+    		return false;
+    	}
+    }
     
     function getrelatedsupplier($id)
     {

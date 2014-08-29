@@ -2,7 +2,7 @@
 <div class="content">  
     	 <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
-			<h3>Create new Newsletter Template</h3>		
+			<h3>Edit Newsletter Predefined Template</h3>		
 		</div>
 	
 	   <div id="container">
@@ -16,7 +16,7 @@
                             
                            <div class="grid-body no-border">
                             	<div class="row">
-                    				<form id="profileform" name="profileform" class="animated fadeIn" method="post" action="<?php if($action=="new"){ echo site_url('company/addtemplate'); }else{ echo site_url('company/updatetemplate/'.$id); }?>" enctype="multipart/form-data">
+                    				<form id="profileform" name="profileform" class="animated fadeIn" method="post" action="<?php echo site_url('company/addpretemplate'); ?>" enctype="multipart/form-data">
          
                     				<div class="col-md-10 col-sm-10 col-xs-10">
                     				  <div class="form-group">
@@ -37,8 +37,9 @@
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">
-				                       <?php if($action=="new"){  ?> <input type="hidden" name="cid" value="<?php echo $cid;?>"> <?php } ?>
-				                          <input type="submit" value="Save" class="btn btn-primary btn-cons general">
+				                       
+				                          <input type="submit" value="Use This Template" class="btn btn-primary btn-cons general">
+				                          *After Use this Tempalte please go to Your Templates
 				                        </div>
 				                      </div>
 				                      

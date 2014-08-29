@@ -2,34 +2,21 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 
-<script type="text/javascript">
-
-$(document).ready(function(){
-	$('.date').datepicker();
-	
-
-	
-});
-
-</script>
-
     <div class="content">  
     	 <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 		 
-			<h3>Mailing List</h3>		
+			<h3>Newsletter Template List</h3>		
 		</div>
 	
 	   <div id="container">
 	   		        
 		<?php 
-		    	if($subscribers)
+		    	if($templates)
 		    	{
 		    ?>
 		<div class="row">
-				<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
-                	<input type="hidden" id="invoicenum" name="invoicenum"/>
-                </form>
+				
                     <div class="col-md-12">
                         <div class="grid simple ">
                             <div class="grid-title no-border">
@@ -41,30 +28,23 @@ $(document).ready(function(){
                                     <table id="datatable" class="table no-more-tables general">
                                     <thead>
                                        <tr>
-                  	             			<th style="width:20%">Entry Id</th>
-                                   			<th>Data</th>
+                  	             			<th style="width:20%">Name</th>
+                                   			<th>Action</th>
                                    			
                                          </tr>
 									</thead>	
 									<tbody>                                    
 							              <?php
-									    	foreach($subscribers as $key=>$sub)
+									    	foreach($templates as $tmp)
 									    	{
 									    		?>
 									      			
                                                 		<tr>
-                                                			<td class="v-align-middle"><?php echo $key;?> </td>
-                                                			<td>
-                                                			<?php foreach($sub as $fields){ 
-                                                		
-                                                				?>
-                                                				<p><?php echo $fields["name"];?>  :  <?php echo $fields["value"];?></p>
-                                                			<?php }?>
-                                                			</td>
-                                                			
+                                                			<td class="v-align-middle"><?php echo $tmp->title;?> </td>
+                                                			<td><p><a href="<?php echo base_url("/company/editpretemplate/".$tmp->id);?>">Use this</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);">View</a></p></td>
                                                 		</tr>
                                                 		
-                                     <?php } ?>
+                                          <?php } ?>
                                         </tbody>
                                     </table>
                             </div>
@@ -73,7 +53,7 @@ $(document).ready(function(){
                 </div>
                 
                 <?php } else {?>
-       				<span style="display: block;position:absolute;z-index:9999;margin-top:10px; margin-left:30px;" class="label label-important">No Subscribers.</span>
+       				<span style="display: block;position:absolute;z-index:9999;margin-top:10px; margin-left:30px;" class="label label-important">No Templates.</span>
                 <?php }?>
 			
 		</div>

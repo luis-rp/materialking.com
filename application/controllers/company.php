@@ -19,6 +19,7 @@ class Company extends CI_Controller {
         $this->load->model('admin/catcode_model');
         $this->load->model('admin/itemcode_model');
         $this->load->model('form_model');
+        $this->load->model('form_subscription_model');
         $this->load->library("validation");
         $this->load->helper('url','form');
         $this->load->library('form_validation');
@@ -943,6 +944,26 @@ class Company extends CI_Controller {
 		$data['message'] = $message;
 		$this->load->view('company/formbuilder',$data);
     }
+    
+    public function createformsubscriptions(){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+
+    	$this->load->view('company/formsubscriptionsbuilder');
+    }
+    
+    public function insertformsubscriptions(){
+    	$companyId = $this->session->userdata('company')->id;
+    	$result = $this->form_subscription_model->create_field($_POST,$companyId);
+    	//$data['result'] = $this->form_model->view_field($companyId);
+    	
+    	$path=base_url() . 'company/formview';
+    	
+    	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Form fields are created Successfully.<a href='.$path.' target="_self">View Form</a></div></div></div>';
+    	$data['message'] = $message;
+    	 	$this->load->view('company/formsubscriptionsbuilder');
+    }
      public function formview()
     {
     	$companyId = $this->session->userdata('company')->id;
@@ -950,6 +971,13 @@ class Company extends CI_Controller {
 
 		$this->load->view('company/formview',$data);
     }
+    
+     public function formsubscriptionsview(){
+     	$companyId = $this->session->userdata('company')->id;
+     	$data['result'] = $this->form_subscription_model->view_field($companyId);
+     	
+     	$this->load->view('company/formsubscriptionsview',$data);
+     }
 
      public function saveformdata()
     {
@@ -966,6 +994,12 @@ class Company extends CI_Controller {
     {
 		$data['result'] = $this->form_model->delete_field($id);
 		$this->load->view('company/formbuilder',$data);
+    }
+    
+    public function deleteformsubscriptionsdata($id)
+    {
+    	$data['result'] = $this->form_subscription_model->delete_field($id);
+    	$this->load->view('company/formsubscriptionsbuilder',$data);
     }
 
     public function deleteallformdata()
@@ -1060,8 +1094,13 @@ class Company extends CI_Controller {
 		$subscribers = $this->db->get("newsletter_subscribers")->result();
 		
 		
-		$data['subscribers'] = $subscribers;
-		
+		foreach( $subscribers as $subscriptor){
+			
+			$this->db->where("subscriber_id",$subscriptor->id);
+			
+			$data['subscribers'][$subscriptor->id] = $this->db->get("newsletter_subscribers_data")->result_array();
+			
+		}
 		$this->load->view('company/listsubscribers',$data);
 	}
 	
@@ -1070,11 +1109,29 @@ class Company extends CI_Controller {
 		if(!$company)
 			redirect('company/login');
 		
+		/*$this->db->where("cid",$company->id);
+		$data['templates']  = $this->db->get("newsletter_template")->result();*/
+		
+		$this->db->select("*");
+		$this->db->from("newsletter_template");
+		$this->db->join("newsletter_analytics","newsletter_template.id=newsletter_analytics.tid");
 		$this->db->where("cid",$company->id);
-		$data['templates']  = $this->db->get("newsletter_template")->result();
+		$data['templates']  = $this->db->get()->result();
 		
 		$this->load->view('company/listtemplates',$data);
 		
+	}
+	
+	function listpretemplates(){
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+	
+		
+		$data['templates']  = $this->db->get("newsletter_predefined_template")->result();
+	
+		$this->load->view('company/listpretemplates',$data);
+	
 	}
 	
 	function newtemplate(){
@@ -1101,6 +1158,22 @@ class Company extends CI_Controller {
 		}
 	}
 	
+	function editpretemplate($id){
+	
+		$data['action'] = "update";
+		$this->db->where("id",$id);
+		$res = $this->db->get("newsletter_predefined_template")->row();
+		if(!empty($res)){
+			$data['title'] = $res->title;
+			$data['body'] = $res->body;
+			
+			$this->load->view('company/newnewsletterpretemplate',$data);
+		}else{
+			$this->session->set_flashdata('message', 'The template doesnt exist');
+			redirect("company/mailinglist");
+		}
+	}
+	
 	function addtemplate(){
 		
 		$title = $this->input->post("title");
@@ -1111,6 +1184,17 @@ class Company extends CI_Controller {
 		
 		$this->session->set_flashdata('message', 'The template was created');
 			redirect("company/mailinglist");
+	}
+	function addpretemplate(){
+	
+		$title = $this->input->post("title");
+		$body = $this->input->post("body");
+		$cid  = $this->session->userdata('company')->id;
+	
+		$this->db->insert("newsletter_template",array("cid"=>$cid, "title"=>$title,"body"=>$body));
+	
+		$this->session->set_flashdata('message', 'The template was created');
+		redirect("company/mailinglist");
 	}
 	
 	function updatetemplate($id){

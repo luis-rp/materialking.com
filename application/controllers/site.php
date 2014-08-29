@@ -460,12 +460,12 @@ class site extends CI_Controller
                     ->where('isfeature','1')
                     ->get('companyitem')
                     ->result();
-        log_message('debug',"id:".var_export($id,true));
+        
          $data['inventory'] = array();
          
          foreach($inventory as $initem)
          {
-         	log_message('debug',var_export($initem,true));
+         	
          	
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
@@ -587,6 +587,8 @@ class site extends CI_Controller
         $similarsuppliers = $this->supplier_model->getrelatedsupplier($id);
         $data['similarsuppliers'] = $similarsuppliers;
         //print_r($data['dealfeed']);die;
+        $this->db->where("CompanyID",$data['supplier']->id);
+        $data["fields"] = $this->db->get("formsubscription")->result(); 
         
         $this->load->view('site/supplier', $data);
     }

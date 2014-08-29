@@ -10,41 +10,81 @@ class subscriber extends CI_Controller
 	}
 	
 	public function addsubscriber(){
-		
-			$name = $this->input->post("name");
-			$mail = $this->input->post("mail");
-			$cid = $this->input->post("cid");
-			
-			$this->db->where("mail",$mail);
-			$this->db->where("cid",$cid);
-			$res = $this->db->get("newsletter_subscribers")->result();
-			if(empty($res)){
 
-				$this->db->insert("newsletter_subscribers",array("cid"=>$cid,"name"=>$name,"mail"=>$mail));
-				$this->session->set_flashdata('message',"Thank you for the subscription");
-				$this->db->where("id",$cid);
-				$supplier = $this->db->get("company")->row();
-				
-				redirect(base_url('site/supplier/' . $supplier->username));
+
+		
+			$post = $this->input->post();
+			$cid = $this->input->post("cid");
+			unset($post["cid"]);
+			unset($post["subscribe"]);
+		
+
+			
+			
+			$data;
+			if ($this->session->userdata('site_loggedin'))
+			{
+				$data = array("cid"=>$cid,"uid"=>$this->session->userdata('userid'));
 			}else{
-				//The mail already exists
-				$this->session->set_flashdata('message',"The user already exists");
-				$this->db->where("id",$cid);
-				$supplier = $this->db->get("company")->row();
-				redirect(base_url('site/supplier/' . $supplier->username));
+				$data = array("cid"=>$cid);
 			}
+			$this->db->insert("newsletter_subscribers",$data);
+			$lastid = $this->db->insert_id();
+			
+			foreach ($post as $key=>$value){
+			
+				$this->db->insert("newsletter_subscribers_data",array("subscriber_id"=>$lastid,"name"=>$key,"value"=>$value));
+			}
+			
+			$supplier = $this->supplier_model->get_supplierbyid($cid);
+			redirect('site/supplier/'.$supplier->username);
+	
 	}
 	
 	public function sendNewsletter($tid){
 		
 		$this->db->where("id",$tid);
 		$template = $this->db->get("newsletter_template")->row();
+		/*
+		 * 	$this->db->select("newsletter_subscribers_data.name,newsletter_subscribers_data.value");
+		$this->db->from("newsletter_subscribers");
+		$this->db->join("newsletter_subscribers_data","newsletter_subscribers.id=newsletter_subscribers_data.subscriber_id");
+		$this->db->where("newsletter_subscribers.cid",$this->session->userdata('company')->id);
+		$subscribers = $this->db->get()->result();
 		
+		log_message("debug",var_export($subscribers,true));
+		 */
 		$this->db->where("cid",$this->session->userdata('company')->id);
 		$subscribers = $this->db->get("newsletter_subscribers")->result();
 		
 		$company = $this->companymodel->getcompanybyid($this->session->userdata('company')->id);
-		foreach($subscribers as $subs){
+		$ok=0;
+		$errors=0;
+		foreach($subscribers as $item){
+			
+			$template_content = $template->body;
+			$this->db->where("subscriber_id",$item->id);
+			$subscribers_data = $this->db->get("newsletter_subscribers_data")->result();
+			$email;
+			foreach($subscribers_data as $vars){
+				$template_content = str_replace("{".$vars['name']."}",$vars['value'],$template_content);
+				if($vars['name']="email")
+					$email = $vars['name'];
+			}
+			$this->email->clear();
+			$this->email->to($email);
+			$this->email->from('your@example.com');
+			$this->email->subject('Newsletter from  '.$company->title);
+			$this->email->message($template_content);
+			if($this->email->send())
+				$ok++;
+			else 
+				$errors++;
+		}
+		
+		$this->db->insert("newsletter_analytics",array("tid"=>$tid,"numSent"=>$ok,"numErrors"=>$errors));;
+		
+		/*foreach($subscribers as $subs){
 			
 
 			$this->email->clear();
@@ -58,7 +98,7 @@ class subscriber extends CI_Controller
 			$this->email->send();
 			
 			
-		}
+		}*/
 		$this->session->set_flashdata('message', 'The newsletter was sent');
 		redirect("company/mailinglist");
 	}

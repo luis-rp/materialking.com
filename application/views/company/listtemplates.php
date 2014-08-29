@@ -29,6 +29,8 @@
                                     <thead>
                                        <tr>
                   	             			<th style="width:20%">Name</th>
+                  	             			<th># Send </th>
+                  	             			<th># Errors</th>
                                    			<th>Action</th>
                                    			
                                          </tr>
@@ -41,6 +43,8 @@
 									      			
                                                 		<tr>
                                                 			<td class="v-align-middle"><?php echo $tmp->title;?> </td>
+                                                			<td><?php echo $tmp->numSent;?></td>
+                                                			<td><?php echo $tmp->numErrors;?></td>
                                                 			<td><p><a href="<?php echo base_url("/company/edittemplate/".$tmp->id);?>"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo base_url("/subscriber/sendNewsletter/".$tmp->id);?>">Launch!!!</a></p></td>
                                                 		</tr>
                                                 		
