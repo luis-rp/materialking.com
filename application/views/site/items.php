@@ -229,13 +229,15 @@
                                 $i++;
                                 $item->url = urlencode($item->url);
                                 ?>
-                                <div class="property span9">
+                                <div class="property span9 ">
+                                                                 <h2 class="title_top1"  style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
                                     <div class="row">
                                         <div class="image span3">
                                             <div class="content">
-                                                <?php if ($item->item_img) { ?>
-                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt="">
+                                              <div class="sidepan">  <?php if ($item->item_img) { ?>
+                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt=""></div>
                                                 <?php } else { ?>
+                                                
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
 
@@ -251,7 +253,7 @@
                                         <div class="body span6">
                                             <div class="title-price row">
                                                 <div class="title span4">
-                                                    <h2 style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                   
                                                     <p>
                                                         <?php echo $item->notes; ?>
                                                     </p>

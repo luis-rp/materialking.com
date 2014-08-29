@@ -359,7 +359,7 @@ $( document ).tooltip();
                 	<?php if(@$categorymenu != '<ul></ul>'){?>
                     <h2>Item Filter</h2>
 
-                    <div>
+                    <div class="content_sup" style=" padding-bottom:35px;">
                         <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
@@ -385,7 +385,7 @@ $( document ).tooltip();
                       	<label for="radirange" class="control-label">
                                     	<h5>Manufacturers Carried:</h5>
                                     </label>
-                        <div class="content">
+                        <div class="content_sup">
                             <form>
                                 <div class="control-group">
                               
@@ -427,7 +427,7 @@ $( document ).tooltip();
                             <h2 class="block-title">Main Menu</h2>
                         </div>
 
-                        <div class="content">
+                        <div class="content_sup">
                         	<table width="100%" cellpadding="4">
                         		<tbody><tr>
                         			<td><b>Connection:</b> </td>

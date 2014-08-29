@@ -838,7 +838,7 @@ $( document ).tooltip();
                         <div class="title">
                             <h2 class="block-title">Search Supplier</h2>
                         </div>
-                        <div class="content">
+                        <div class="content_sup">
                             <form id="searchform" method="post">
                                 <div class="control-group">
                                     <label class="control-label" for="address">
@@ -882,7 +882,7 @@ $( document ).tooltip();
                         	<label class="control-label" for="radirange">
                                     	<h2 class="block-title">Information and Resources</h2>
                                     </label>
-                        <div class="content">
+                        <div class="content_sup">
                             <form>
                                 <div class="control-group">
                             
@@ -937,7 +937,7 @@ $( document ).tooltip();
                     <label for="radirange" class="control-label">
                                 <h5 class="block-title">Supplier Deals</h5>
                             </label>
-                        <div class="content">
+                        <div class="content_sup">
                        
                         	<table style="font-size: 12px;">
                         	<?php 
@@ -994,7 +994,7 @@ $( document ).tooltip();
                     	<label class="control-label" for="radirange">
                                     	<h5>Free Professional Assistance</h5>
                                     </label>
-                        <div class="content">
+                        <div class="content_sup">
                             <form>
                                 <div class="control-group">
                                 
@@ -1011,7 +1011,7 @@ $( document ).tooltip();
                        	<label class="control-label" for="radirange">
                                     	<h5>Classified Listings</h5>
                                     </label>
-                        <div class="content">
+                        <div class="content_sup">
                             <form>
                                 <div class="control-group">
                              

@@ -1977,24 +1977,44 @@ box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
     -webkit-box-sizing:border-box;
     -moz-box-sizing:border-box;
     box-sizing:border-box}
+	.title_top1 a{ color:#FFF; font-size:20px; font-weight:bold}
+	.title_top1 a:hover{ color:#fff;}
 .properties-rows .property {
+	 border-radius:5px 5px 0px 0px;
     display:inline-block;
     zoom:1;
- -webkit-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
+   /*-webkit-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
     -moz-box-shadow:0px 1px 1px rgba(0,0,0,0.1);
-    box-shadow:0px 1px 1px rgba(0,0,0,0.1);
+    box-shadow:0px 1px 1px rgba(0,0,0,0.1);*/
     background-color:#fff;
     margin-bottom:30px;
+	margin-top:8px;
     padding:0px;
     position:relative;
 	width:270px;
    transition: background-color 0.5s ease;
    -webkit-transition: all 0.7s ease;
 transition: all 0.7s ease;
+webkit-box-shadow: 0 0 14px 1px #969696;
+box-shadow:  0 0 14px 1px #969696;
+}
+/*SIDEPAN*/
+.properties-rows .property .sidepan img {
+  margin-left: 0px;
+  -webkit-transition: margin 1s ease;
+     -moz-transition: margin 1s ease;
+       -o-transition: margin 1s ease;
+      -ms-transition: margin 1s ease;
+          transition: margin 1s ease;
+}
+
+.properties-rows .property .sidepan img:hover {
+  margin-left: -150px;
 }
   .properties-rows .property:hover{  background-color: #FCFCFC; -webkit-box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
 box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
 }
+.title_top1{ padding:0px; margin:0px; background:#06A7EA; border-radius:5px 5px 0px 0px; text-align:center}
 .properties-rows .property:after {
     height:0;
     content:".";
