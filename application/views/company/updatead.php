@@ -58,7 +58,7 @@
                 <?php echo $this->session->flashdata('message'); ?>
                 <a class="btn btn-green" href="<?php echo site_url('company/ads'); ?>">&lt;&lt; Back</a>
                 <br/>
-                <form class="" method="post" action="<?php echo base_url("company/updatead"); ?>" enctype="multipart/form-data">
+                <form class="" method="post" action="<?php echo base_url("company/updatead/".$adsid); ?>" enctype="multipart/form-data">
                 <input type="hidden" name="adsid" id="adsid" value="<?php if(isset($adsid)) echo $adsid;?>"
                 <div  style="width:100%; float:left;">
          
