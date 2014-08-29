@@ -706,7 +706,7 @@ class Inventory extends CI_Controller
 							<div class="col-md-4"><span>'.$qtyres->price.'</span><span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delqtydiscount('.$qtyres->id.','.$qtyres->itemid.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span></div>
           				  </div>';
     		}
-    		echo $strput;
+    		echo $strput; die;
     	}
 
 

@@ -31,8 +31,27 @@ position:absolute;
 top:0px;
 left:0px;}
 
-
+ .ui-tooltip {
+	padding: 8px;
+	font-size:19px !important;
+	font-weight:bold !important;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+	color:#06A7EA !important;
+ }	
+ 
 </style>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script>
+$(function() {
+$( document ).tooltip();
+});
+</script>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/jquery.jqzoom.css" type="text/css">
 <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -188,55 +207,57 @@ left:0px;}
         }
             
     }
-    function addtocart(itemid, companyid, price, minqty, isdeal)
+        function addtocart(itemid, companyid, price, minqty, unit, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-        
+
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
+        $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
-       strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
-        for (i = 1; i <=100; i++) { 
-        	if(i == minqty) 
+        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        for (i = 1; i <=100; i++) {
+        	if(i == minqty)
         	selected = 'selected';
         	else
         	selected = "";
            	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-   			} 
+   			}
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
-        
-        var data = "itemid="+itemid+"&companyid="+companyid;
 
+        var data = "itemid="+itemid+"&companyid="+companyid;
+		$("#qtypricebox").html("");
         $.ajax({
         	type:"post",
         	data: data,
+        	sync: false,
         	url: getpriceqtydetails
         }).done(function(data){
         	if(data){
-
-        		$("#qtypricebox").html("");
+        		
         		$("#qtypricebox").html(data);
         	}
         });
-        
+
         var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
+        	sync: false,
         	url: getpriceperqtydetails
         }).done(function(data){
         	if(data){
-				
+
         		$("#cartsavediv").html("");
         		$("#cartsavediv").html(data);
         	}
         });
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
@@ -244,32 +265,33 @@ left:0px;}
         	sync:false
         }).done(function(data){
         	if(data){
-        		
+
         		if(data!="norecord")
         		$("#hiddenprice").val(data);
         	}
         });
-        
-       
+
+
     }
-    
+
     function showmodifiedprice(itemid, companyid, price){
-    	
+
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
+        	sync: false,
         	url: getpriceperqtydetails
         }).done(function(data){
         	if(data){
-				
+
         		$("#cartsavediv").html("");
         		$("#cartsavediv").html(data);
         	}
         });
-        
+
         $.ajax({
         	type:"post",
         	data: data2,
@@ -277,17 +299,17 @@ left:0px;}
         	sync:false
         }).done(function(data){
         	if(data){
-				
+
         		if(data!="norecord")
         		$("#hiddenprice").val(data);
         	}
         });
     }
-    
+
     function addtocart2(itemid, companyid, price, minqty, isdeal){
-    	
+
     	qty = ($('#qtycart').val());
-    	    	
+
     	if(isNaN(parseInt(qty)))
         {
             return false;
@@ -307,7 +329,7 @@ left:0px;}
             alert(data);
             window.location = window.location;
         });
-    	
+
     }
 </script>
 
@@ -385,18 +407,6 @@ left:0px;}
         });
         return false;
 	}
-</script>
-
-<script type="text/javascript">
-function show()
-{
-document.getElementById('sub').style.display="block";
-}
-
-function hide()
-{
-document.getElementById('sub').style.display="none";
-}
 </script>
 
 <div id="content">
@@ -537,11 +547,7 @@ document.getElementById('sub').style.display="none";
                                     <p><?php echo nl2br($item->details); ?></p>
                                 </div>
                             </div>
-                        </div>
-                         <div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-left:700px;
-										box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
-			 							<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;"><?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
-			 				    </div>
+                        </div>                        
                           <?php if(@$item->featureditem){ if($item->featuredsupplierdetails->saleitemdata==0){ ?>
                           <br/>
                           <div class="newbox">
@@ -550,12 +556,11 @@ document.getElementById('sub').style.display="none";
                               <tr>
                                   <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?> at $<?php echo $item->featureditem->ea;?></td>
                                  <td>
-                                      
+
                                       <?php if($item->featureditem->price){?>
-                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
-                       							onMouseOver="show()"  onMouseOut="hide()"/><br/><p>Call for Price</p>
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>
                                        <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>)">
+                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>')">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                         <?php } ?>
@@ -669,10 +674,9 @@ document.getElementById('sub').style.display="none";
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
                                         <?php if($inv->price){?>
-                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"
-                                              onMouseOver="show();"  onMouseOut="hide();" /><br/>Call for Price
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
                                        <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>)">
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>')">
                                             <i class="icon icon-plus"></i>
                                         </a>
                                         <?php } ?>
@@ -682,10 +686,6 @@ document.getElementById('sub').style.display="none";
                                 </tbody>
                             </table>
 </div>
-<div  id="sub" style="height:40px;width:150px;background-color:#1E90FF; border: 2px solid; border-radius:10px;margin-left:700px;
-										box-shadow: 10px 10px 5px #888888;display:none;position:fixed;">
-			 				<p style="font-weight:bold;font-size:25px;font-family:Times New Roman;padding-top:6px;padding-left:6px;color:white;"><?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?></p>
-			 				</div>
                         <?php if($amazon){ ?>
                        <div class="newbox"> 
                         <table class="table table-bordered">
@@ -971,7 +971,7 @@ document.getElementById('sub').style.display="none";
                         		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		</td>
                         		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,1)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>
@@ -1115,7 +1115,8 @@ document.getElementById('sub').style.display="none";
           <h4 class="semi-bold" id="myModalLabel">
           Select Quantity  
           </h4>
-          <br>
+          <br><br/>
+          <div id="unitbox"></div>
         </div>
         <div class="modal-body">
 

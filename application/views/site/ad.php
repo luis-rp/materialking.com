@@ -92,7 +92,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					<?php if(!empty($a_latitude)) {?>
 						    	<div id="single-page-map">
 
-			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php echo $c_address; ?></span></div>
+			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php echo $a_address; ?></span></div>
 
 					<div id="single-page-main-map"></div>
 

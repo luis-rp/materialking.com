@@ -77,7 +77,9 @@ class Store extends CI_Controller
             
             if(!$item->image)
                 $item->image = $orgitem->item_img;
-            
+                
+            $item->unit = $orgitem->unit;
+                
             if($this->session->userdata('site_loggedin'))
             {
                 $this->db->where('company', $company);
