@@ -23,7 +23,7 @@ $(document).ready(function(){
 	   <div id="container">
 	   		        
 		<?php 
-		    	if($subscribers)
+		    	if(@$subscribers)
 		    	{
 		    ?>
 		<div class="row">

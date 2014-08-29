@@ -17,7 +17,7 @@ function showOptions(obj)
          <div class="grid simple ">
             <div class="grid-title no-border">
               <?php  if(isset($message)) echo $message; else echo ''; ?>
-            <h4>Create Form Fields</h4>
+            <h4>Create Required Fields for Your Newsletter Subscription Request</h4>
             </div>
 
                   <div class="grid-body no-border">
