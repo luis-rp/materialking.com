@@ -950,7 +950,7 @@ $( document ).tooltip();
                     <div class="sidebar span3">
                     <div class="widget contact">
                     <div class="title">
-                            <h2 class="block-title">Suppliers Classified Lisings</h2>
+                            <h2 class="block-title">Suppliers Classified Listings</h2>
                         </div>
                         <div class="content_sup">
                            
