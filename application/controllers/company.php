@@ -929,7 +929,18 @@ class Company extends CI_Controller {
             redirect('company/login');
 
         $companyId = $this->session->userdata('company')->id;
-        $this->load->view('company/formbuilder');
+        $this->load->view('company/formbuilderselector');
+    
+    }
+    public function createformnetwork()
+    {
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    
+    	$companyId = $this->session->userdata('company')->id;
+    	$this->load->view('company/formnetworkbuilder');
+    
     }
 
     public function createformdata()

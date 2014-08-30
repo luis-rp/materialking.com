@@ -959,7 +959,9 @@ $( document ).tooltip();
                                    <div class="controls windy-demo">
                                    		<ul id="wi-el" class="wi-container">
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img width="190" height="116" src="<?php echo base_url("/uploads/ads/".$ad->image);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                    	<li><img  src="<?php 
+                                    	$pathinfo = pathinfo($ad->image);
+                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
                                     	<nav>

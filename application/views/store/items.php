@@ -35,6 +35,10 @@
 	box-shadow: 0 0 5px #aaa;
 	color:#06A7EA !important;
 	}
+	.title_top1{   color: #fff;
+    font-size: 18px;
+    font-weight: bold;}
+	.PlumbingSupply{ min-height:450px; max-height:1100px}
 	</style>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
@@ -274,12 +278,13 @@ $( document ).tooltip();
                             foreach ($inventory as $item)
                             if ($item->ea) {
                         ?>
-                        <div class="property span9">
+                        <div class="property span9 PlumbingSupply">
+                        <h2 class="title_top1"><?php echo $item->itemcode; ?></h2>
                             <div class="row">
                                 <div class="image span3">
                                     <div class="content">
-                                        <?php if ($item->image) { ?>
-                                            <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
+                                       <div class="sidepan"> <?php if ($item->image) { ?>
+                                            <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt=""></div>
                                         <?php } else { ?>
                                             <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                         <?php } ?>
@@ -290,9 +295,9 @@ $( document ).tooltip();
                                 <div class="body2 span6 ">
                                     <div class="title-price row">
                                         <div class="title2 span4 ">
-                                            <h2><?php echo $item->itemcode; ?></h2>
+                                           
                                             <?php if(!empty($item->companynotes)){?>
-                                            <div class="company-note" style="height:150px;overflow:auto;">
+                                            <div class="company-note" style="height:120px;overflow:auto;">
                                                 <?php echo $item->companynotes; ?>
                                             </div>
                                             <?php } ?>

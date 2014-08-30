@@ -388,6 +388,7 @@ class site extends CI_Controller
     
     public function supplier ($username)
     {
+    	$this->load->library('image_lib');
         $username = urldecode($username);
         $data['message'] = $this->session->flashdata('message');
         $data['supplier'] = $this->supplier_model->get_supplier($username);
@@ -583,8 +584,22 @@ class site extends CI_Controller
         }
         
         $this->db->where("user_id",$data['supplier']->id);
-        $data['adforsupplier'] = $this->db->get("ads")->result();
-        
+        $ads = $this->db->get("ads")->result();
+     	foreach($ads as $ad){
+     		
+     		$config['image_library'] = 'gd2';
+     		$config['source_image'] = './uploads/ads/'.$ad->image;
+     		$config['create_thumb'] = TRUE;
+     		$config['width']     = 190;
+     		$config['height']   = 194;
+     		
+     		$this->image_lib->clear();
+     		$this->image_lib->initialize($config);
+     		$this->image_lib->resize();
+     		
+     	}
+     	$data['adforsupplier']=$ads;
+     	
         //print_r($data['dealfeed']);die;
         $similarsuppliers = $this->supplier_model->getrelatedsupplier($id);
         $data['similarsuppliers'] = $similarsuppliers;

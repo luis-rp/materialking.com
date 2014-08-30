@@ -585,7 +585,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             </li>
                             <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
                             <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
-                            <li <?php if ($menu == 'reports') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
+                            <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
                         <?php } ?>
                         <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
