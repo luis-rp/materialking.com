@@ -57,6 +57,22 @@ function index()
         $data['banner'] = $this->index();
      }
 
+      function seturl($id)
+     {
+     	if(isset($_POST['bannerurl']))
+     	{
+     	$bannerurl=$_POST['bannerurl'];
+     	$data['banner']=$this->banner_model->setbannerurl($id,$bannerurl);
+     	$this->session->set_flashdata("message","Your URL is set");
+     	$data['banner']=$this->banner_model->display();
+        $this->load->view ('admin/banner',$data);
+     	}
+     	else
+     	{
+     		echo "NOt sert";
+     	}
+
+     }
 
 }
     ?>
