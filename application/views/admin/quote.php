@@ -310,7 +310,7 @@ function viewminprices(codeid,quant)
 		return false;
 	}
 	var serviceurl = '<?php echo base_url()?>admin/itemcode/getcompanypricetable/';
-	var d = "id="+itemid+"&codeid="+codeid+"&quantity="+quantity;
+	var d = "id="+itemid+"&codeid="+codeid+"&quantity="+quantity+"&quantid="+quant;
 	//alert(d);
 	$.ajax({
 	      type:"post",
@@ -344,7 +344,15 @@ function selectcompany(codeid, company, price)
 }
 
 
-
+function selectquantity(qty, quant)
+{
+	if(quant==0){
+		document.getElementById('quantity').value = qty;
+		
+	}else{
+		document.getElementById(quant).value = qty;		
+	}
+}
 
 
 </script>

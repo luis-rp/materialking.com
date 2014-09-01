@@ -163,7 +163,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         }
         ?>
         <?php //print_r($this->session->userdata('site_loggedin'));  ?>
-        <title>EZPZP</title>
+        <title><?php if(isset($a_title)) { if($a_title!="") { echo $a_title; } } else echo "EZPZP";?></title>
     </head>
     <body>
         <div id="wrapper-outer" >
@@ -223,14 +223,19 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
 													show_banners('top');
 												</script>-->
 												<?php  try { ?>
-                                                 <a target="_self" href="http://www.materialking.com">
-                                                 <div style="width:600px;height:90px; overflow:hidden;" class="fadein">
-                                                      <?php foreach ($banner as $item){ ?>
-                                                        <img src="<?php echo base_url();?>uploads/banners/<?php echo $item->banner;?>"
-                                                            alt="<?php echo $item->banner;?>" style="height:90px; width:600px;">
+
+ <div style="width:600px;height:90px; overflow:hidden;">
+    <?php foreach ($banner as $item){ ?>
+
+     <div class="fadein">
+     <img src="<?php echo base_url();?>uploads/banners/<?php echo $item->banner;?>"
+     alt="<?php if(isset($item->bannerurl)) { echo $item->bannerurl; }else { echo "http://www.materialking.com";} ?>" style="height:90px; width:600px;"
+     onclick="document.location=this.alt;return false;">
+                     </div>
+
                                                       <?php } ?>
                                                  </div>
-                                                 </a>
+                                                </a>
                                                  <?php }
                                                  catch(Exception $e) {
 	                                             echo 'No images found for this slideshow.<br />';

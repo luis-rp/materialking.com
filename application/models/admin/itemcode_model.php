@@ -314,8 +314,17 @@ class itemcode_model extends Model {
             $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . " 
 				    where purchasingadmin='$pa' AND company='" . $rec->companyid . "'";
             
+            $sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . " 
+				    where itemid='$itemid' AND company='" . $rec->companyid . "' AND type = 'Supplier'";
+            
+            $istierprice = $this->db->query($sqltier)->row();
+            if($istierprice){
+            	$istier = $istierprice->tierprice;
+            }else 
+            	$istier = 0;
+            
             $tier = $this->db->query($sql)->row();
-            if ($tier) 
+            if ($tier && $istier) 
             {
                 $tier = $tier->tier;
                 $this->db->where('company', $rec->companyid);

@@ -1793,7 +1793,7 @@ class site extends CI_Controller
     
         public function classified()
     {    	
-    	$data['title'] = "Classified area";
+    	$data['a_title'] = "Classified area";
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
     	$res = array();
@@ -1816,7 +1816,7 @@ class site extends CI_Controller
         }
         $data['categories'] = $categories;
         $data['items'] = $itemcodes;
-		
+		$data['viewallads'] = 0;
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
@@ -1827,7 +1827,7 @@ class site extends CI_Controller
     	$cat = array();
     	$cat['catname'] = "";
     	    	
-    	$data['title'] = "Classified area";
+    	$data['a_title'] = "Classified area";
     	$str = "";
     	$where = "";
     	$subcategories = $this->items_model->getSubCategores($catid);
@@ -1858,7 +1858,7 @@ class site extends CI_Controller
 		$data['category'] = $catid;
         $data['categories'] = $categories;
         $data['items'] = $itemcodes;
-		
+		$data['viewallads'] = 1;
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
@@ -1866,7 +1866,7 @@ class site extends CI_Controller
     
     public function searchads(){
 		//echo "===="; exit;
-    	$data['title'] = "Classified area";
+    	$data['a_title'] = "Classified area";
     	$where = "";
     	$str = "";
     	$cat = array();
@@ -1916,7 +1916,7 @@ class site extends CI_Controller
         }
         $data['categories'] = $categories;
         $data['items'] = $itemcodes;
-
+		$data['viewallads'] = 0;
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }

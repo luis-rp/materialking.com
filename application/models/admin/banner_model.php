@@ -21,5 +21,12 @@ class banner_model extends Model
 		$this->db->delete('banner', array('id' => $id));
 	}
 
+	public function setbannerurl($id,$bannerurl)
+	{
+		$this->db->where("id",$id);
+		$updatedata=array("bannerurl"=>$bannerurl);
+		$result=$this->db->update("banner",$updatedata);
+		return $result;
+	}
 }
 ?>

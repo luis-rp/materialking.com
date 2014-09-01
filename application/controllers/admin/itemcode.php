@@ -1057,6 +1057,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $codeid = $_POST['codeid'];
         $itemid = $_POST['id']; //urldecode($itemcode);
         $quantity = $_POST['quantity'];
+        $quantiid = $_POST['quantid'];
         $item = $this->itemcode_model->get_itemcodes_by_id($itemid, $quantity);
         
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
@@ -1086,7 +1087,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             foreach ($item->tierprices as $mp)
             {
-            	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid);
+            	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid,$quantiid);
             	if($priceqtyresult){
             		$table2 .= "<tr><td colspan='3'>" . $mp->companyname . "</td></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $priceqtyresult . "</td></tr>";            	
@@ -1104,19 +1105,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
-    function getpriceqtydetails($companyid, $itemid){
+	function getpriceqtydetails($companyid, $itemid,$quantiid){
     	
     	$this->db->where('company',$companyid);
     	$this->db->where('itemid',$itemid);
     	$qtyresult = $this->db->get('qtydiscount')->result();
     	if($qtyresult){
     		$strput = "";
+    		$selectbutton2 = "";
+    		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
-
-    			$strput .= '<div >
-							 <div style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: $'.$qtyres->price.'</div>							 
-          				  </div>';
+				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\")' value='Select'>";
+    			$strput .= '<tr >
+							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}
+    		$strput .= "</table>";
     		return $strput;
     	}
 
