@@ -929,7 +929,18 @@ class Company extends CI_Controller {
             redirect('company/login');
 
         $companyId = $this->session->userdata('company')->id;
-        $this->load->view('company/formbuilder');
+        $this->load->view('company/formbuilderselector');
+    
+    }
+    public function createformnetwork()
+    {
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    
+    	$companyId = $this->session->userdata('company')->id;
+    	$this->load->view('company/formnetworkbuilder');
+    
     }
 
     public function createformdata()
@@ -1035,8 +1046,10 @@ class Company extends CI_Controller {
 		    log_message('debug',var_export($res,true));
 	    	//$res = $this->do_upload();
 	    
-	    	if(isset($res['error']))
+	    	if(isset($res['error'])){
 	    		$this->session->set_flashdata('message',$res['error']);
+	    		redirect("company/ads");
+	    	}
 	    	
 	    		$this->admodel->updateAd($res);
 	    		

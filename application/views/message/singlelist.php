@@ -17,7 +17,7 @@
         <div class="content">
         	<?php echo $this->session->flashdata('message'); ?>
     		<div class="page-title">	
-    			<h3>Messages <i class="icon-custom-left"></i> <div style="float:right; margin:0px 8px 0px 0px"><a href="<?php echo site_url('message');?>">&lt; &lt; View All</a></div> 
+    			<h3>Messages <i class="icon-custom-left"></i> <div style="float:right; margin:0px 8px 0px 0px"></div> 
     			</h3>
     			
     		</div>		

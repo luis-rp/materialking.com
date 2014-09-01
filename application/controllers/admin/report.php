@@ -200,6 +200,7 @@ class report extends CI_Controller
         
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Report';
+		
 		$this->load->view ('admin/report', $data);
 	}
 	
