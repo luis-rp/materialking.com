@@ -147,8 +147,7 @@ class Admin extends CI_Controller {
 
 				$id = $this->adminmodel->save ();
 				$this->validation->id = $id;
-				if($this->session->userdata('usertype_id')==2)
-				{
+			//	if($this->session->userdata('usertype_id')==2)			{
 					$settings = (array)$this->settings_model->get_current_settings ();
 				    $this->load->library('email');
 					$this->email->clear(true);
@@ -166,7 +165,7 @@ $link";
 	        $this->email->message($body);
 	        $this->email->set_mailtype("html");
 	        $this->email->send();
-				}
+				//}
 				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">User Added Successfully</div></div>');
 				redirect ( 'admin/admin/index/', 'refresh' );
 			}

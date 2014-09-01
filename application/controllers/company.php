@@ -953,7 +953,7 @@ class Company extends CI_Controller {
 
 		$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Form fields are created Successfully.<a href='.$path.' target="_self">View Form</a></div></div></div>';
 		$data['message'] = $message;
-		$this->load->view('company/formbuilder',$data);
+		$this->load->view('company/formnetworkbuilder',$data);
     }
     
     public function createformsubscriptions(){
@@ -1004,7 +1004,7 @@ class Company extends CI_Controller {
     public function deleteformdata($id)
     {
 		$data['result'] = $this->form_model->delete_field($id);
-		$this->load->view('company/formbuilder',$data);
+		$this->load->view('company/formnetworkbuilder',$data);
     }
     
     public function deleteformsubscriptionsdata($id)
@@ -1017,7 +1017,7 @@ class Company extends CI_Controller {
     {
     	$companyId = $this->session->userdata('company')->id;
 		$data['result'] = $this->form_model->delete_allfield($companyId);
-		$this->load->view('company/formbuilder',$data);
+		$this->load->view('company/formnetworkbuilder',$data);
     }
     
     
@@ -1043,7 +1043,7 @@ class Company extends CI_Controller {
         {
 			$res = $_POST;
 	    	$res = $this->do_upload();
-		    log_message('debug',var_export($res,true));
+		    
 	    	//$res = $this->do_upload();
 	    
 	    	if(isset($res['error'])){

@@ -138,7 +138,7 @@ function viewPricelist(itemcode,itemname,price)
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title"> <a href="<?php echo site_url('quote/invitation_export').'/'.$invitekey; ?>" class="btn btn-green">Export</a><br />	
 			<h3>
-				Bid Invitations  <a class="pull-right btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/index/'.$quote->id);?>">View Messages</a>
+				Bid Invitations  <a class="pull-right btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/');?>">View Messages</a>
 			</h3>
 			<h4>
 				<?php if($draft){?>

@@ -23,6 +23,7 @@ class Store extends CI_Controller
 	
 	public function items($username, $manufacturer='')
 	{
+		$this->load->library('image_lib');
 		if(isset($_POST['searchbreadcrumbcategory']))
 		$_POST['category'] = $_POST['searchbreadcrumbcategory'];
 	    $username = urldecode($username);
@@ -102,7 +103,53 @@ class Store extends CI_Controller
             $this->data['inventory'][] = $item;
         }
         
-        
+        /***
+         * Deals by Supplier
+         */
+       
+         
+        $dealitems = $this->db
+        ->select('dealitem.*')
+        ->from('dealitem')
+        ->where('dealitem.company',$company)
+        ->where('dealitem.dealactive','1')
+        ->where('dealitem.qtyavailable >',0)
+        ->where('dealitem.qtyavailable >=','dealitem.qtyreqd')
+        ->where('dealitem.dealdate >=',date('Y-m-d'))
+        ->get()
+        ->result();
+        //echo '<pre>';print_r($dealitems);//die;
+        $data['dealfeed'] = array();
+        foreach($dealitems as $di)
+        {
+        	if($di->dealactive)
+        	{
+        		if(!$di->image)
+        			$di->image="big.png";
+        		$di->companyusername = $this->db->where('id',$company)->get('company')->row()->username;
+        		$di->companyname = $this->db->where('id',$company)->get('company')->row()->title;
+        		$orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
+        		$di->url = $orgitem->url;
+        		$di->itemcode = $orgitem->itemcode;
+        		$di->itemname = $orgitem->itemname;
+        		$di->unit = $orgitem->unit;
+        		if(isset($tv))
+        		{
+        			$di->dealprice = $di->dealprice + ($di->dealprice * $tv / 100);
+        			$di->dealprice = number_format($di->dealprice, 2);
+        		}
+        		if($di->memberonly)
+        		{
+        			if($this->session->userdata('site_loggedin'))
+        				$data['dealfeed'][] = $di;
+        		}
+        		else
+        		{
+        			$data['dealfeed'][] = $di;
+        		}
+        	}
+        }
+        /****End deal by supplier**/
         $this->data['norecords'] = '';
         if (! $this->data['inventory'])
         {
@@ -129,6 +176,23 @@ class Store extends CI_Controller
         	$this->data['catname'] = $result1[0]->catname;
         }
         $data['company'] = $company;
+        
+        $this->db->where("user_id",$company);
+        $ads = $this->db->get("ads")->result();
+        foreach($ads as $ad){
+        	 
+        	$config['image_library'] = 'gd2';
+        	$config['source_image'] = './uploads/ads/'.$ad->image;
+        	$config['create_thumb'] = TRUE;
+        	$config['width']     = 190;
+        	$config['height']   = 194;
+        	 
+        	$this->image_lib->clear();
+        	$this->image_lib->initialize($config);
+        	$this->image_lib->resize();
+        	 
+        }
+        $data['adforsupplier']=$ads;
         $this->load->view('store/items', $this->data);
 	}
 }

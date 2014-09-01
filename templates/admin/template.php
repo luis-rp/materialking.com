@@ -553,7 +553,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <?php } ?>
 
                                 <?php if ($this->session->userdata('usertype_id') == 2) { ?>
-                                    <li <?php if ($menu == 'purchaseuser' && $function == 'messages') { ?>class="active"<?php } ?>>
+                                    <li <?php if ($menu == 'message') { ?>class="active"<?php } ?>>
                                         <a href="<?php echo site_url('admin/message/messages/') ?>">
                                             <i class="icon-envelope"></i>&nbsp;&nbsp; Messages
                                         </a>

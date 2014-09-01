@@ -590,6 +590,7 @@ class site extends CI_Controller
      		$config['image_library'] = 'gd2';
      		$config['source_image'] = './uploads/ads/'.$ad->image;
      		$config['create_thumb'] = TRUE;
+     		$config['maintain_ratio'] = FALSE;
      		$config['width']     = 190;
      		$config['height']   = 194;
      		

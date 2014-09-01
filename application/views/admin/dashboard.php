@@ -357,7 +357,7 @@
 	    		<div id="chart_pie" style="height: 420px;"></div>
 	    		<?php } else {?>
 
-	    		<div style="width:400px; height:400px; text-align:center; display: table-cell; vertical-align:middle; border:2px solid silver; ">
+	    		<div style="width:94.5%; height:auto; text-align:center;  vertical-align:middle; border:2px solid silver;margin:0;padding:8px; ">
 	    		<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
 	    		</div>
 

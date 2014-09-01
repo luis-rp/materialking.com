@@ -478,6 +478,147 @@ $( document ).tooltip();
 
                         </div>
                     </div>
+                    
+                    <?php if(@$adforsupplier){?>
+                   <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
+			        <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.windy.js"></script>
+			        <script type="text/javascript">	
+						$(function() {
+			
+							var $el = $( '#wi-el' ),
+								windy = $el.windy(),
+								allownavnext = false,
+								allownavprev = false;
+			
+							$( '#nav-prev' ).on( 'mousedown', function( event ) {
+			
+								allownavprev = true;
+								navprev();
+							
+							} ).on( 'mouseup mouseleave', function( event ) {
+			
+								allownavprev = false;
+							
+							} );
+			
+							$( '#nav-next' ).on( 'mousedown', function( event ) {
+			
+								allownavnext = true;
+								navnext();
+							
+							} ).on( 'mouseup mouseleave', function( event ) {
+			
+								allownavnext = false;
+							
+							} );
+			
+							function navnext() {
+								if( allownavnext ) {
+									windy.next();
+									setTimeout( function() {	
+										navnext();
+									}, 150 );
+								}
+							}
+							
+							function navprev() {
+								if( allownavprev ) {
+									windy.prev();
+									setTimeout( function() {	
+										navprev();
+									}, 150 );
+								}
+							}
+			
+						});
+					</script>
+              
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Suppliers Classified Listings</h2>
+                        </div>
+                        <div class="content_sup">
+                           
+                                <div class="control-group">
+                               
+                                   <div class="controls windy-demo">
+                                   		<ul id="wi-el" class="wi-container">
+                                    	<?php foreach($adforsupplier as $key=>$ad){?>
+                                    	<li><img  src="<?php 
+                                    	$pathinfo = pathinfo($ad->image);
+                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                     	<?php } ?>
+                                    	</ul>
+                                    	<nav>
+											<span id="nav-prev">prev</span>
+											<span id="nav-next">next</span>
+										</nav>
+                                     </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+                
+                <?php }?>
+                    
+                    
+                     <?php if(@$dealfeed){//NOT USED NOW?>
+                    <div class="widget contact">
+                    <label for="radirange" class="control-label">
+                                <h5 class="block-title">Deals by Supplier</h5>
+                            </label>
+                        <div class="content_sup">
+                       
+                        	<table style="font-size: 12px;">
+                        	<?php 
+                        	foreach($dealfeed as $di)
+                        	{
+								$diff = abs(strtotime(date('Y-m-d H:i')) - strtotime($di->dealdate));
+								$years = floor($diff / (365*60*60*24)); $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+								
+								$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+								$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
+								$minuts = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
+								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
+                                
+                                $remaining = "$days days, $hours hrs, $minuts mins";
+                        	?>
+                        	<tr>
+                        		<td colspan="3">
+                        		<a href="<?php echo site_url("site/supplier/".$di->companyusername);?>"><?php echo $di->companyname?></a>
+                        		</td>
+                        	</tr>
+                        	<tr>
+                        		<td>
+                        		<?php if($di->image) {?>
+                        			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
+                        		<?php } else {?>
+                        		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
+                        		<?php }?>
+                        		</td>
+                        		<td>
+                        		<a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
+                        		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
+                        		</td>
+                        		<td>
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)">
+                                    <i class="icon icon-plus"></i>
+                                </a>
+                                </td>
+                        	</tr>
+                        	<tr>
+                        		<td colspan="3"><?php echo $remaining;?> remaining</td>
+                        	</tr>
+                        	<tr>
+                        		<td colspan="3">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
+                        	</tr>
+                        	<tr><td colspan="6">&nbsp;</td></tr>
+                        	<?php }?>
+                        	</table>
+                            
+                        </div>
+                    </div>
+                    <?php }?>
                 </div>
 </div><!--pullright-->
 

@@ -35,8 +35,9 @@ class backtrack extends CI_Controller
 		$count = count ($quotes);
 		
 		$items = array();
+		$companyarr = array();
 		if ($count >= 1) 
-		{	$companyarr = array();
+		{	
 			foreach ($quotes as $quote) 
 			{
 				$awarded = $this->quote_model->getawardedbid($quote->id);
