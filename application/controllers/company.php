@@ -876,7 +876,7 @@ class Company extends CI_Controller {
     }
     function saveAd(){
     	$res = $this->do_upload();
-	    log_message('debug',var_export($res,true));
+	    
     	//$res = $this->do_upload();
     	if(isset($res['error'])){
     		$this->session->set_flashdata('message',$res['error']);
