@@ -443,8 +443,38 @@ $( document ).tooltip();
                               </div>
 
                         </div>
-                        <div class="row expe" style="margin-left: 3px;">
-                            <p><?php echo $supplier->about; ?></p>
+                        <div class="pull-right" style="height:400px;width:400px;margin-top:-350px">
+							<h3>Gallery</h3>
+							<div>
+						 		<div id="gallery2" class="gallery">
+									<a href="<?php echo site_url('uploads/media/sample_a.jpg');?>" title="Caption for image A">
+									<img src="<?php echo site_url('uploads/media/sample_a_thumb.jpg'); ?>" /></a>
+						 			<a href="<?php echo site_url('uploads/media/sample_b.jpg');?>" title="Caption for image B">
+						 			<img src="<?php echo site_url('uploads/media/sample_b_thumb.jpg'); ?>"/></a>
+						 			<a href="<?php echo site_url('uploads/media/sample_c.jpg'); ?>" title="Caption for image C">
+						 			<img src="<?php echo site_url('uploads/media/sample_c_thumb.jpg'); ?>"/></a>
+						 			<a href="<?php echo site_url('uploads/media/sample_d.jpg');?>" title="Caption for image D">
+						 			<img src="<?php echo site_url('uploads/media/sample_d_thumb.jpg'); ?>"/></a>
+						 		</div>
+							</div>
+
+
+							<link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery-rebox.css">
+
+                            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+                            <script type="text/javascript" src="<?php echo base_url();?>templates/admin/lib/jquery-litelighter.js"></script>
+
+                           <script src="<?php echo base_url();?>templates/admin/js/jquery-rebox.js"></script>
+
+<script>
+$('#gallery2').rebox({ selector: 'a' });
+
+</script>
+
+
+
+
+                        </div>
                         </div>
                         <div class="content">
                         
