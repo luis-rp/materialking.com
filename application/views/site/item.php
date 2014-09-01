@@ -954,35 +954,29 @@ $( document ).tooltip();
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
                         	<tr>
-                        		<td colspan="3">
+                        		<td style="text-align:center">
                         		<a href="<?php echo site_url("site/supplier/".$di->companyusername);?>"><?php echo $di->companyname?></a>
-                        		</td>
-                        	</tr>
-                        	<tr>
-                        		<td>
-                        		<?php if($di->image) {?>
+                        		</td></tr>
+                                
+                             	<tr><td style="text-align:center"><?php if($di->image) {?>
                         			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
                         		<?php } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
-                        		<?php }?>
+                        		<?php }?></td></tr>
+                            	<tr>
+                                <td style="text-align:center"><a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
                         		</td>
-                        		<td>
-                        		<a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
-                        		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
-                        		</td>
-                        		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)">
-                                    <i class="icon icon-plus"></i>
+                                </tr>
+                             	
+	<tr><td style="text-align:center" ><?php echo $remaining;?> remaining</td></tr>
+ 	<tr><td style="text-align:center" >Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
+                        	</tr>
+                            <tr>
+                                <td style="text-align:center; color:#fff; font-size:14px; font-weight:bold; background:#06a7ea">($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)"> <i class="icon icon-plus"></i>
                                 </a>
-                                </td>
-                        	</tr>
-                        	<tr>
-                        		<td colspan="3"><?php echo $remaining;?> remaining</td>
-                        	</tr>
-                        	<tr>
-                        		<td colspan="3">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
-                        	</tr>
-                        	<tr><td colspan="6">&nbsp;</td></tr>
+                                </td></tr>
+                        	 
                         	<?php }?>
                         	</table>
                             

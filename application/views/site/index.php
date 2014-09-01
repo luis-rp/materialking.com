@@ -244,6 +244,135 @@
     </div>
 
     <div class="container">
+     <ul class="menu_new">
+		<li class="home">
+			<a href="#">
+				<h2>Appointments & Events</h2>
+                <h3>Event Calendar – Create & Share Events
+with Team Members.</h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="about">
+			<a href="#">
+				<h2>Item Specifications</h2>
+                <h3>Set Project Specific Item Specifications &
+Include Item Attachments. </h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="service">
+			<a href="#">
+				<h2>Track Pricing</h2>
+                <h3>View Each Company's Bid & Award Price History
+of Items, Track an Items Overall Price Trend. </h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="portfolio">
+			<a href="#">
+				<h2>Shopping</h2>
+                <h3>Shop Directly in Suppliers Stores.</h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="contact">
+			<a href="#">
+				<h2>Easy RFQ's</h2>
+                <h3>Easily Create RFQ's.</h3>
+				<span></span>
+			</a>
+		</li>
+        
+        <li class="Deals">
+			<a href="#">
+				<h2>Deals & Promotions</h2>
+                <h3>Take Advantage of Supplier Deals and
+Promotions.</h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="Bid">
+			<a href="#">
+				<h2>Bid Comparison</h2>
+                <h3>Easily Compare Supplier Bids & Award
+Split Purchase Orders.</h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="Order">
+			<a href="#">
+				<h2>Order Tracking</h2>
+                <h3>Track Orders, Catch Errors, Create Bills,
+Store Shipments & More. </h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="Budget">
+			<a href="#">
+				<h2>Budget Management</h2>
+                <h3>Track Project Budgets, Monitor Task Progress,
+View Estimated Cost to Complete.</h3>
+				<span></span>
+			</a>
+		</li>
+		<li class="Spend">
+			<a href="#">
+				<h2>Spend Charts</h2>
+                <h3>View Spending Breakdowns.</h3>
+				<span></span>
+			</a>
+		</li>
+        
+<li class="Dashboard">
+			<a href="#">
+				<h2>Project Dashboard</h2>
+                <h3>Account Dashboard Allows You To Easily
+Manager Projects and See All Important Project
+Information Easily in One Place.
+</h3>
+<span></span>
+</a>
+</li>
+
+<li class="Track">
+			<a href="#">
+				<h2>Track Invoices & Payments</h2>
+                <h3>Track Your Supplier Payments and Invoices. 
+</h3>
+<span></span>
+</a>
+</li>
+
+<li class="Delivery">
+			<a href="#">
+				<h2>Delivery Calendar</h2>
+                <h3>Schedule & Manage Your Deliveries
+with The Delivery Calendar.
+</h3>
+<span></span>
+</a>
+</li>	
+
+<li class="Export">
+			<a href="#">
+				<h2>Export Data</h2>
+                <h3>Export Your Project Data to Excel.
+</h3>
+<span></span>
+</a>
+</li>
+
+<li class="quick">
+			<a href="#">
+				<h2>P.O. Quick View</h2>
+                <h3>Quickly Review Order Statuses &
+P.O. Price Rankings 
+</h3>
+<span></span>
+</a>
+</li> 
+	</ul>
         <div id="main">
             <?php /*?><div class="row">
                 <div class="span9">
@@ -542,3 +671,4 @@
 
     
 </div>
+ 
