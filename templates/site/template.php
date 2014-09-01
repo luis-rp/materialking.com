@@ -163,7 +163,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         }
         ?>
         <?php //print_r($this->session->userdata('site_loggedin'));  ?>
-        <title>EZPZP</title>
+        <title><?php if(isset($a_title)) { if($a_title!="") { echo $a_title; } } else echo "EZPZP";?></title>
     </head>
     <body>
         <div id="wrapper-outer" >

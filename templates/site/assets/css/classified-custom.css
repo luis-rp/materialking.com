@@ -2380,7 +2380,7 @@ ul.links li {
 	line-height: 62px;
 	text-align: center;
 	color: #ffffff;
-	background: url(../images/cluster-1.png) no-repeat top left;
+	background: url(../img/cluster-1.png) no-repeat top left;
 }
 
 .cluster-2 {
@@ -2389,7 +2389,7 @@ ul.links li {
 	line-height: 82px;
 	text-align: center;
 	color: #ffffff;
-	background: url(../images/cluster-2.png) no-repeat top left;
+	background: url(../img/cluster-2.png) no-repeat top left;
 }
 
 .cluster-3 {
@@ -2398,7 +2398,7 @@ ul.links li {
 	line-height: 102px;
 	text-align: center;
 	color: #ffffff;
-	background: url(../images/cluster-3.png) no-repeat top left;
+	background: url(../img/cluster-3.png) no-repeat top left;
 }
 
 .marker-holder {
@@ -2942,7 +2942,7 @@ ul.links li {
 	position: absolute;
 	width: 62px;
 	height: 72px;
-	background: transparent url(../images/range-km.png) no-repeat top left;
+	background: transparent url(../img/range-km.png) no-repeat top left;
 	top: 0;
 	margin-top: -72px;
 	margin-left: -31px;
@@ -3184,7 +3184,7 @@ ul.links li {
 	background: #2c75a5;
     
     padding-right: 38px;
-    background-image: url(../images/search.png);
+    background-image: url(../img/search.png);
     background-position: 90% center;
     background-repeat: no-repeat;
 }

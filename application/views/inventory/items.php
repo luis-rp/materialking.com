@@ -39,6 +39,8 @@
 
 <?php echo '<script>var itempricecheckurl="'.site_url('inventory/updatecheckprice').'";</script>'?>
 
+<?php echo '<script>var itemtierpricecheckurl="'.site_url('inventory/updatetierprice').'";</script>'?>
+
 <?php echo '<script>var saleitemurl="'.site_url('inventory/saleitem').'";</script>'?>
 
 <script type="text/javascript" charset="utf-8">
@@ -273,6 +275,20 @@ function delqtydiscount(id,itemid){
     	});
     }
     
+    function updateistierprice(itemid,tierprice)
+	{
+    	tierprice = tierprice==true?1:0;
+    	var data = "itemid="+itemid+"&tierprice="+tierprice;
+    	//alert(data);
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: itemtierpricecheckurl
+    	}).done(function(data){
+    		//alert(data);
+    	});
+    }	
+    
        function saleitem(saleitemdata)
       {
     	saleitemdata = saleitemdata==true?1:0;
@@ -419,7 +435,7 @@ function updatedeal(id)
                                                 <th style="width:10%"><font color="#fff">Manufacturer</font></th>
                                                 <th style="width:10%"><font color="#fff">Part#</font></th>
                                                 <th style="width:10%"><font color="#fff">List Price</font></th>
-                                                <th style="width:10%"><font color="#fff">Min. Qty.</font></th>
+                                                <th style="width:15%"><font color="#fff">Min. Qty.</font></th>
                                                 <th style="width:5%"><font color="#fff">Stock</font></th>
                                                 <th style="width:5%"><font color="#fff">Store/<br/>Featured</font></th>
                                                 <th style="width:5%"><font color="#fff">Action</font></th>
@@ -476,11 +492,14 @@ function updatedeal(id)
                   											 onchange="updatecheckprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Call for price&nbsp;
                                                 </td>
                                                 
-                                                <td class="v-align-middle">
-                                                	<input type="text"  style="width: 50px;" placeholder="Min Qty"
+                                                 <td class="v-align-middle">
+                                                	<input type="text"  style="width: 100px;" placeholder="Min Qty"
                                                 	value="<?php echo @$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
                                                 	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname)?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
+                                                	<br/>
+                                                	<input type="checkbox" id = 'tierprice' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
+                  											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc.
                                                 </td>
                                                 
                                                 <td class="v-align-middle">

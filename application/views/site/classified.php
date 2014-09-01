@@ -12,7 +12,7 @@
 
 
 <link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css' type='text/css' media='all' />
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script> -->
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery-1.6.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery.flexslider.js"></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/jquery-migrate.min.js?ver=1.2.1'></script>
@@ -453,13 +453,12 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 							<?php } ?> 
 
-							<?php if($currentCat > 1) { ?>
+							<?php if($currentCat > 5) { ?>
 								 
 		    					<li>
-		    						<a target="_blank" href="<?php echo base_url("site/viewallads/".$ad['category']); ?>">ViewAll</a>
+		    						<?php if(isset($viewallads)) { if(!$viewallads) { ?> <a target="_blank" href="<?php echo base_url("site/viewallads/".$ad['category']); ?>">ViewAll</a><?php } }?>
 		    					</li>
 		    				<?php } ?>
-
 		    			</ul>
 
             		</div>
@@ -513,7 +512,7 @@ $.noConflict();
  // ]]>
 </script>
 
-<script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/chosen.jquery.min.js'></script>
+<!-- <script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/chosen.jquery.min.js'></script> -->
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/jquery.isotope.min.js'></script>
 <script type='text/javascript' src='//code.jquery.com/ui/1.10.4/jquery-ui.js'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/front/js/modernizr.touch.js'></script>
