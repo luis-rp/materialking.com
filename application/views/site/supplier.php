@@ -18,7 +18,8 @@
 $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />		
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/demo.css" />	
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/style1.css" />
 
 <style>
