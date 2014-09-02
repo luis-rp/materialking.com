@@ -34,7 +34,7 @@
              <td>
              <form action="<?php echo base_url()."admin/banner/seturl/".$item->id; ?>" method="post" name="banner" id="banner"  role="form">
              <input type="text" name="bannerurl" id="bannerurl" value="<?php isset($item->bannerurl)?$item->bannerurl:''?><?php echo $item->bannerurl;?>"
-                       placeholder="Enter URL">
+                       placeholder="Enter URL" required>
             <input type="submit" value="Set URL" class="btn btn-primary btn-sm"/>
              </form>
              </td>

@@ -607,7 +607,7 @@ class site extends CI_Controller
         //print_r($data['dealfeed']);die;
         $this->db->where("CompanyID",$data['supplier']->id);
         $data["fields"] = $this->db->get("formsubscription")->result(); 
-        
+        $data['image']=$this->db->get_where('companyattachment',array('company'=>$data['supplier']->id))->result();
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)
@@ -1868,24 +1868,28 @@ class site extends CI_Controller
 		//echo "===="; exit;
     	$data['a_title'] = "Classified area";
     	$where = "";
+    	$wherecat = "";
     	$str = "";
     	$cat = array();
     	$cat['catname'] = "";
     	if(isset($_POST['category']) && $_POST['category']!="") {
     		
     		if(isset($_POST['items']) && $_POST['items']!=""){
-    			$where .= "AND category = {$_POST['category']}";
+    			$wherecat .= "AND ID = {$_POST['category']}";
     		}else {
     			$subcategories = $this->items_model->getSubCategores($_POST['category']);
     			if($subcategories){
 
     				$str .= implode(',', $subcategories);
-    				$where .= " AND category in (".$str.")";
+    				$wherecat .= " AND ID in (".$str.")";
     			}else
-    			$where .= "AND category = {$_POST['category']}";
+    			$wherecat .= "AND ID = {$_POST['category']}";
     		}
 		
     	}
+    	
+    	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE 1=1 {$wherecat}";
+    	$categories = $this->db->query($sql_cat)->result_array();
     	
     	if(isset($_POST['s']) && $_POST['s']!="") 
 		$where .= " AND title like '%{$_POST['s']}%'";
@@ -1893,8 +1897,13 @@ class site extends CI_Controller
     	if(isset($_POST['items']) && $_POST['items']!="") 
     	$where .= " AND itemid = {$_POST['items']}";    	
     	  	
-    	$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}";
-    	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
+    	foreach($categories as $cat){
+    		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id']; 
+    		$result = $this->db->query($sql_ad)->result_array();
+    		if($result)
+    		$res[$cat['catname']] = $result;
+    	}
+    	    	
     	
     	$data['ads'] = $res;
     	if(isset($_POST['category']) && $_POST['category']!="") 
