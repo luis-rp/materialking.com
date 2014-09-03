@@ -411,8 +411,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 										$dis_img = $image[0];
 									else 
 										$dis_img = $image;?>
-		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>";
-
+		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>
 													</a>
 		    								</div>
 		    									

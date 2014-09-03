@@ -2074,6 +2074,37 @@ class site extends CI_Controller
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
+    		
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['companyid']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$result1->price = $result1->price + ($result1->price * $deviation / 100);
+    					$result1->price = number_format($result1->price, 2);
+    				}
+    			}
+    		}
+    		
     		$strput = "";
     		$strput .= '<div>
 							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$result1->price).'</div>
@@ -2082,6 +2113,36 @@ class site extends CI_Controller
     		
     		echo $strput;
     	}else{
+    		
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['companyid']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$_POST['price'] = $_POST['price'] + ($_POST['price'] * $deviation / 100);
+    					$_POST['price'] = number_format($_POST['price'], 2);
+    				}
+    			}
+    		}
     		
     		$strput = "";
     		$strput .= '<div >
@@ -2111,8 +2172,74 @@ class site extends CI_Controller
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
+    		
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['companyid']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$result1->price = $result1->price + ($result1->price * $deviation / 100);
+    					$result1->price = number_format($result1->price, 2);
+    				}
+    			}
+    		}
+    		
 			echo $result1->price;
     	}else{
+    		
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['companyid']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$_POST['price'] = $_POST['price'] + ($_POST['price'] * $deviation / 100);
+    					$_POST['price'] = number_format($_POST['price'], 2);
+    				}
+    			}
+    		}
+    		
+    		if(isset($_POST['price'])){
+    			if($_POST['price']!="")
+    			echo $_POST['price'];
+    		}else    		
     		echo "norecord";
     	}die;
 

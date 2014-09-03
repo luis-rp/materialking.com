@@ -244,7 +244,7 @@ function addEmail()
 									</tr>
 									<?php  foreach($image as $items)  { ?>
 									<tr>
-										<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail"/></td>
+										<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
 										<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
 									</tr>
 									<?php } ?>

@@ -144,7 +144,78 @@ class cart extends CI_Controller
 		$company = $_POST['company'];
 		$quantity = $_POST['quantity'];
 		//print_r($_POST);die;
-		$cart = $this->session->userdata('pms_site_cart');
+		$cart = $this->session->userdata('pms_site_cart');    	
+    	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['company']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['quantity']}' order by qty desc limit 1";
+    	$result1 = $this->db->query($sql1)->row();
+    	if($result1){
+    		$price = $result1->price;
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['company'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['company'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['company']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$price = $result1->price + ($result1->price * $deviation / 100);
+    					$price = number_format($price, 2);
+    				}
+    			}
+    		} 		
+			
+    		$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $price;
+    		
+    	}/*else{
+    		
+    		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
+    		if($purchasingadmin){
+    			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['company'] . "'";
+
+
+    			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['company'] . "' AND type = 'Supplier'";
+
+    			$istierprice = $this->db->query($sqltier)->row();
+    			if($istierprice){
+    				$istier = $istierprice->tierprice;
+    			}else
+    			$istier = 0;
+
+    			$tier = $this->db->query($sql)->row();
+    			if ($tier && $istier)
+    			{
+    				$tier = $tier->tier;
+    				$this->db->where('company', $_POST['company']);
+    				$pt = $this->db->get('tierpricing')->row();
+    				if ($pt)
+    				{
+    					$deviation = $pt->$tier;
+    					$price = $_POST['price'] + ($_POST['price'] * $deviation / 100);
+    					$price = number_format($_POST['price'], 2);
+    					$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $price;
+    				}
+    			}
+    		}   		
+    	}*/
+		
+		
 		$cart[$itemid.':'.$company]['quantity'] = $quantity;
 		$temp['pms_site_cart'] = $cart;
 		$this->session->set_userdata($temp);

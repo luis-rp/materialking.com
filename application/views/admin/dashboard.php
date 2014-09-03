@@ -387,17 +387,20 @@
 					  <tr>
 					  <td>Message</td>
 					  <td>From</td>
+					  <td>To</td>
 					  <td>Sent On</td>
 					  </tr>
-				<?php foreach($msgs as $msg) { if(strpos($msg->to, '(Admin)') > 0) { ?>
+				<?php foreach($msgs as $msg) { // if(strpos($msg->to, '(Admin)') > 0) { ?>
 
 					  <tr>
 					  <td><?php echo $msg->message; ?></td>
 					  <td><?php echo $msg->from; ?></td>
+					  <td><?php echo $msg->to; ?></td>
 					  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
-				<?php } } ?>
+				<?php // }
+				 } ?>
 				<?php } else { ?>
 				<tr><td>No Messages Found</td></tr>
 				<?php } ?>

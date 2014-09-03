@@ -272,7 +272,7 @@ class Quote extends CI_Controller
 		$this->load->view('quote/invitations',$data);
 	}
 	
-	public function direct($key)
+	public function direct($key=null)
 	{
 		$company = $this->session->userdata('company');
 		if(!$company)
@@ -939,7 +939,7 @@ class Quote extends CI_Controller
 	
 	public function placebid()
 	{
-		$revisionid;
+		$revisionid=1;
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
@@ -1165,6 +1165,14 @@ class Quote extends CI_Controller
             
     	    $quote = $this->quotemodel->getquotebyid($bid->quote);
     	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company->id);
+    	    
+    	    $sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+			$revisionquote = $this->db->query($sqlq)->row();
+			if($revisionquote)
+			$revisionid = $revisionquote->revisionid+1;
+			else
+			$revisionid = 1;
+    	    
     	    $biditems2 = $this->quotemodel->getrevisiondraftitems($bid->quote, $company->id,$revisionid);
     	    
     	    if(@$biditems2){

@@ -400,7 +400,7 @@ class Dashboard extends CI_Controller
 		}			
 		
 		$messagesql = "SELECT m.* FROM 
-		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.senton between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate();  ";
+		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
 		
 		$msgs = $this->db->query($messagesql)->result();
 		

@@ -466,19 +466,18 @@ $( document ).tooltip();
                         
                         <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
 						<ul>
-
-                          <?php  if(isset($image) && count($image)>0) foreach($image as $items) { ?>
+                          <?php  if(isset($image) && count($image)>0) { foreach($image as $items) { ?>
                           <li style="margin-bottom:3px;">
                          	<a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
 							<img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" width="100%x" class="img-thumbnail"/></a></li>
-                          <?php } ?>
+                               <?php } } else { echo "<p style='font-weight:bold;font-size:20px;padding-top:30px;'>No Images for Gallery</p>";  }  ?>
                           </ul>
                           </div>
                         
                         
-                         <!-- <div class="row expe" style="margin-left: 3px;">
+                         <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
-                        </div> -->
+                        </div>
                         <div class="content">
                         
                          <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  

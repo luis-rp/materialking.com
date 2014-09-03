@@ -584,7 +584,7 @@ class quote_model extends Model {
     function getinvoicebynum($invoicenum) {
 
         $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum, q.duedate as datedue 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,

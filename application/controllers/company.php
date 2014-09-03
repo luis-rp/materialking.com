@@ -1259,11 +1259,13 @@ class Company extends CI_Controller {
 	function deleteimage($id)
 	{
 		$rows['image']=$this->db->get_where('companyattachment',array('id'=>$id))->row();
-		$name=$rows[image]->imagename;
-		$path= base_url().'uploads/gallery/'.$name;
-		//echo "<pre>"; print_r($path); die;
-		//unlink($path);
+		$name=$rows['image']->imagename;
+				
+		if(file_exists('./uploads/gallery/'.$name))
+		{
 		unlink('./uploads/gallery/'.$name);
+		}
+		
 		$this->db->delete('companyattachment',array('id'=>$id));
 		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
 	    $res['message'] = $message;
