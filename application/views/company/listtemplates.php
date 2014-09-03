@@ -39,6 +39,7 @@
 							              <?php
 									    	foreach($templates as $tmp)
 									    	{
+									    		var_dump($tmp);
 									    		?>
 									      			
                                                 		<tr>
