@@ -39,14 +39,14 @@
 							              <?php
 									    	foreach($templates as $tmp)
 									    	{
-									    		var_dump($tmp);
+									    		
 									    		?>
 									      			
                                                 		<tr>
                                                 			<td class="v-align-middle"><?php echo $tmp->title;?> </td>
                                                 			<td><?php echo $tmp->numSent;?></td>
                                                 			<td><?php echo $tmp->numErrors;?></td>
-                                                			<td><p><a href="<?php echo base_url("/company/edittemplate/".$tmp->id);?>"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo base_url("/subscriber/sendNewsletter/".$tmp->id);?>">Launch!!!</a></p></td>
+                                                			<td><p><a href="<?php echo base_url("/company/edittemplate/".$tmp->tid);?>"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?php echo base_url("/subscriber/sendNewsletter/".$tmp->tid);?>">Send Newsletter</a></p></td>
                                                 		</tr>
                                                 		
                                                 <?php } ?>
