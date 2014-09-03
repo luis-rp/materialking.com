@@ -47,6 +47,17 @@ function addEmail()
 		$("#addEmailModal").modal('hide');
 	}
 }
+
+	var upload_number = 2;
+	function addFileInput() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads").appendChild(d);
+	 	upload_number++;
+	}
                         
 </script>
 
@@ -218,6 +229,27 @@ function addEmail()
 				                          <img src="<?php echo site_url('uploads/logo/thumbs/'.$company->logo);?>" width="100" height="100"/>
 				                          <?php }?>
 				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+										<label class="form-label">Add Images</label>
+										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+												<div id="moreUploads"></div>
+										    <div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a>
+											</div>
+                              <?php ///echo "<pre>"; print_r($image); die; ?>
+								<table class="table table-striped">
+									<tr>
+										<th>Image</th><th>Delete</th>
+									</tr>
+									<?php  foreach($image as $items)  { ?>
+									<tr>
+										<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail"/></td>
+										<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+									</tr>
+									<?php } ?>
+								</table>
+
 				                      </div>
 				                      
 				                      <div class="form-group">

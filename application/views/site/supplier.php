@@ -7,6 +7,26 @@
 <?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
 <?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 
+
+<!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/FlameViewportScale.js"></script>
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/jquery.tosrus.min.all.js"></script>
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.tosrus.all.css" />
+
+		<script type="text/javascript" language="javascript">
+			jQuery(function( $ ) {
+
+				$('#example-1 a').tosrus({
+					pagination	: {
+						add			: true,
+						type		: 'thumbnails'
+					}
+				});
+
+			});
+		</script>
+
 <?php
 /*
   $geocode=file_get_contents("http://maps.google.com/maps/api/geocode/json?address=".urlencode(str_replace("\n",", ",$supplier->address))."&sensor=false");
@@ -19,7 +39,7 @@ $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/demo.css" />	
+			
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/style1.css" />
 
 <style>
@@ -48,11 +68,10 @@ padding:5px 0px;
 
 </style>
 
-<script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script>
+<!-- <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script> -->
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.timepicker.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
-
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery.timepicker.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 
 <script>
@@ -201,6 +220,7 @@ padding:5px 0px;
 
 <script>
 $(document).ready(function() {
+	$("#dialog-form").hide();
 	
 	$('.fixedrating').jRating({
 		length:5,
@@ -384,7 +404,7 @@ $( document ).tooltip();
                     </div>
 
                     <div class="property-detail">
-                        <div class="pull-left overview effect5">
+                        <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
                                 <div class="span4" id="mydiv">
                                     <p style="text-align:center">
@@ -443,39 +463,22 @@ $( document ).tooltip();
                               </div>
 
                         </div>
-                        <div class="pull-right" style="height:400px;width:400px;margin-top:-350px">
-							<h3>Gallery</h3>
-							<div>
-						 		<div id="gallery2" class="gallery">
-									<a href="<?php echo site_url('uploads/media/sample_a.jpg');?>" title="Caption for image A">
-									<img src="<?php echo site_url('uploads/media/sample_a_thumb.jpg'); ?>" /></a>
-						 			<a href="<?php echo site_url('uploads/media/sample_b.jpg');?>" title="Caption for image B">
-						 			<img src="<?php echo site_url('uploads/media/sample_b_thumb.jpg'); ?>"/></a>
-						 			<a href="<?php echo site_url('uploads/media/sample_c.jpg'); ?>" title="Caption for image C">
-						 			<img src="<?php echo site_url('uploads/media/sample_c_thumb.jpg'); ?>"/></a>
-						 			<a href="<?php echo site_url('uploads/media/sample_d.jpg');?>" title="Caption for image D">
-						 			<img src="<?php echo site_url('uploads/media/sample_d_thumb.jpg'); ?>"/></a>
-						 		</div>
-							</div>
+                        
+                        <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
+						<ul>
 
-
-							<link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery-rebox.css">
-
-                            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-                            <script type="text/javascript" src="<?php echo base_url();?>templates/admin/lib/jquery-litelighter.js"></script>
-
-                           <script src="<?php echo base_url();?>templates/admin/js/jquery-rebox.js"></script>
-
-<script>
-$('#gallery2').rebox({ selector: 'a' });
-
-</script>
-
-
-
-
-                        </div>
-                        </div>
+                          <?php  if(isset($image) && count($image)>0) foreach($image as $items) { ?>
+                          <li style="margin-bottom:3px;">
+                         	<a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
+							<img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" width="100%x" class="img-thumbnail"/></a></li>
+                          <?php } ?>
+                          </ul>
+                          </div>
+                        
+                        
+                         <!-- <div class="row expe" style="margin-left: 3px;">
+                            <p><?php echo $supplier->about; ?></p>
+                        </div> -->
                         <div class="content">
                         
                          <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  

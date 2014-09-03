@@ -293,7 +293,8 @@ class Company extends CI_Controller {
         }
 
         //print_r($states);
-
+		$data['image']=$this->db->get_where('companyattachment',array('company'=>$company->id))->result();
+		
         $this->db->where('company', $company->id);
         $emails = $this->db->get('companyemail')->result();
         $data['company'] = $company;
@@ -328,7 +329,40 @@ class Company extends CI_Controller {
                     $_POST['logo'] = $nfn;
                 }
             }
+			
+            if($_FILES['UploadFile']['name'])
+            {
+            	ini_set("upload_max_filesize","128M");
+            	//$target=substr($_SERVER["DOCUMENT_ROOT"], 0).'/uploads/gallery';
+            	$target='uploads/gallery/';
+            	$count=0;
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
 
+            		$AttachmentName= $_FILES['UploadFile']['name'];
+            		//$AttachmentPath = substr($_SERVER["DOCUMENT_ROOT"], 0).'/uploads/gallery';
+            		//$AttachmentPath = site_url('uploads/gallery/');
+            		//echo "<pre>"; print_r($AttachmentPath); die;
+
+            		//$imagename=implode(",",$AttachmentName);
+
+
+            		$this->db->insert('companyattachment', array('company' => $company->id, 'imagename' => $filename));
+
+
+            		//echo "<pre>"; print_r($imagename); die;
+            	}
+            	//$_POST['lightbox'] = $imagename;
+            }
+            
          $completeaddress="";
             if($_POST['street'])
             {
@@ -1220,6 +1254,22 @@ class Company extends CI_Controller {
 		
 		$this->session->set_flashdata('message', 'The template was updated');
 		redirect("company/mailinglist");
+	}
+	
+	function deleteimage($id)
+	{
+		$rows['image']=$this->db->get_where('companyattachment',array('id'=>$id))->row();
+		$name=$rows[image]->imagename;
+		$path= base_url().'uploads/gallery/'.$name;
+		//echo "<pre>"; print_r($path); die;
+		//unlink($path);
+		unlink('./uploads/gallery/'.$name);
+		$this->db->delete('companyattachment',array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+	    $res['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		redirect("company/profile");
+
 	}
     
 }

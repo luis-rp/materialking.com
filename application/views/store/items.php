@@ -41,6 +41,14 @@
 	.PlumbingSupply{ min-height:450px; max-height:1100px}
 	</style>
 
+<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script>
+$(function() {
+$( document ).tooltip();
+});
+</script>
+
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/fg.menu.js"></script>

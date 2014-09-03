@@ -265,7 +265,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 						Search around my position
 
 					</div>-->
-                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="POST" action="<?php echo base_url()?>/site/searchads">
+                    <form accept-charset="UTF-8" id="views-exposed-form-search-view-other-ads-page" method="POST" action="<?php echo base_url()?>site/searchads">
                     
                     <div class="views-exposed-widget views-widget-filter-search_api_views_fulltext" id="edit-search-api-views-fulltext-wrapper">
 					        <div class="views-widget">

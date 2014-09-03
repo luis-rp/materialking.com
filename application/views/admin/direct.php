@@ -1,6 +1,6 @@
 <?php //echo '<pre>'; print_r($quoteitems);die;?>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.price_format.js"></script>
-<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
+<!-- <script type="text/javascript" src="<?php // echo base_url();?>templates/admin/js/jquery-ui.js"></script> -->
 
 
 
@@ -572,7 +572,7 @@ function savclose()
 		    	<tr>
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
-		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');showhideviewprice('');" onchange="//showhideviewprice('');"/>
+		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');" onchange="showhideviewprice('');"/>
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0)">View Prices</a></span>
 		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>

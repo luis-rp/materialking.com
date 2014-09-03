@@ -494,7 +494,7 @@
 				<?php foreach($users as $user) { ?>
 
 					  <tr>
-					  <td><?php echo $user->companyname; ?></td>
+					  <td><?php echo $user->username; ?></td>
 					  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
