@@ -1228,7 +1228,7 @@ class Company extends CI_Controller {
 		$cid  = $this->input->post("cid");
 		
 		$this->db->insert("newsletter_template",array("cid"=>$cid, "title"=>$title,"body"=>$body));
-		
+		$this->db->insert("newsletter_analytics",array("tid"=>$this->db->insert_id(),"numSent"=>0,"numErrors"=>0));;
 		$this->session->set_flashdata('message', 'The template was created');
 			redirect("company/mailinglist");
 	}

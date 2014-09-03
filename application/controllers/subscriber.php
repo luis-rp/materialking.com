@@ -81,8 +81,8 @@ class subscriber extends CI_Controller
 			else 
 				$errors++;
 		}
-		
-		$this->db->insert("newsletter_analytics",array("tid"=>$tid,"numSent"=>$ok,"numErrors"=>$errors));;
+		$this->db->where("tid",$tid);
+		$this->db->update("newsletter_analytics",array("numSent"=>$ok,"numErrors"=>$errors));;
 		
 		/*foreach($subscribers as $subs){
 			
