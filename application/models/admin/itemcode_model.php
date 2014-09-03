@@ -520,14 +520,15 @@ class itemcode_model extends Model {
     }
 
     // retrieve cost code by their id
-    function get_itemcodes_by_id($id,$quantity) {
+    //function get_itemcodes_by_id($id,$quantity) {
+    function get_itemcodes_by_id($id) {
         $this->db->where('id', $id);
         $query = $this->db->get('item');
         if ($query->num_rows > 0) {
             $ret = $query->row();
             $ret->minprices = $this->getminimumprices($id);
             $ret->poitems = $this->getpoitems($id);
-            $ret->tierprices = $this->gettierpriceswithqtydiscount($id, $quantity);
+       //     $ret->tierprices = $this->gettierpriceswithqtydiscount($id, $quantity); $quantity var not fount
 
 
             // LAST QUOTED DATE

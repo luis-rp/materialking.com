@@ -18,6 +18,7 @@
 	<script>
 	$(document).ready(function(){
 
+
 		 var d_pie = [];
 		  <?php $i=0; foreach($costcodesjson as $cj){?>
 		  d_pie[<?php echo $i;?>]= [ "<?php echo $cj->label;?>",  <?php echo $cj->data;?> ];
@@ -94,6 +95,11 @@
 
 	$(document).ready(function() {
 
+		$("#pid").change(function(){
+			$("#form-selector").submit();
+		});
+
+		
 		$('#calendar').fullCalendar({
 			editable: false,
 			events: "<?php echo base_url(); ?>admin/quote/jsonlist",
@@ -211,13 +217,13 @@
 
 			<br/>
 			<div class="well">
-				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post">
+				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">
 						<label for="inputEmail" class="control-label">
 						<strong>Select Your Project</strong>
 						</label>
 						<div class="controls">
-							<select name="pid" onchange="this.form.submit();">
+							<select name="pid" id="pid" >
 								<option value="0">Company Dashboard</option>
 								<?php foreach($projects as $p){?>
 								<option value="<?php echo $p->id;?>" <?php if(@$mp->id==$p->id){echo 'SELECTED';}?>>

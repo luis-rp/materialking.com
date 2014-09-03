@@ -618,7 +618,7 @@ function acceptall()
                                     <td><?php echo $invoice->totalprice; ?></td>
                                     <td><?php echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td>
                                     <td><?php echo $invoice->paymentstatus; ?></td>
-                                    <td><?php echo date("m/d/Y", strtotime($invoice->datedue)); ?></td>
+                                    <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";} ?></td>
                                     <td><?php echo $invoice->status; ?></td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="showInvoice('<?php echo $invoice->invoicenum; ?>');">
