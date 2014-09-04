@@ -1207,11 +1207,13 @@ header#navbar .container {
 .category-content {
 	float: left;
 	width: 100%;
+	position:relative;
 }
 
 .category-content ul {
 	padding-left: 0;
 }
+.category-content ul li ul { top:0; border: solid 1px}
 
 .category-icon {
 	float: left;
