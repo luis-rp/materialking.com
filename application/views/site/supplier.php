@@ -545,7 +545,7 @@ $( document ).tooltip();
                             	</tr>
                             	
                             	
-                            	<?php }?>
+                            	<?php } $key++;?>
                             	<?php }?>
                             	</tr>
                             </table>
