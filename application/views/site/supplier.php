@@ -533,10 +533,10 @@ $( document ).tooltip();
                             	<tr>
                             	<?php }?>
                             	
-                            	<td>
+                            	<td style="position:relative;">
                             	<img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/>
-                            	<div style="position: relative;top:5px;"><?php echo $member->name;?><br/><?php echo $member->title;?></div>
-                            	<div style="position: relative;bottom:5px;"><?php echo $member->phone;?><br/><?php echo $member->email;?></div>
+                            	<div style="position: absolute;top:5px;color=#06a7ea"><?php echo $member->name;?><br/><?php echo $member->title;?></div>
+                            	<div style="position: absolute;bottom:5px;color=#06a7ea"><?php echo $member->phone;?><br/><?php echo $member->email;?></div>
                             	</td>
                             	
                             	
