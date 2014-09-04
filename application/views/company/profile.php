@@ -296,8 +296,8 @@ function addEmail()
 				                          <table class="table table-striped">
 												<tr>
 													<th>Name</th>
-													<th>Picture</th>
 													<th>Title</th>
+													<th>Picture</th>
 													<th>Phone</th>
 													<th>Email</th>
 													<th>LinkedIn</th>
