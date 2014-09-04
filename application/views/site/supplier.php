@@ -38,10 +38,9 @@
 $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
-<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />
-			
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/windy.css" />			
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/site/assets/css/style1.css" />
-
+<script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
 <style>
 #parent
 {
@@ -522,6 +521,37 @@ $( document ).tooltip();
                         </div>
                         <?php }?>
                         
+                        	<?php if($members){?>
+                        <div>
+                            <p>&nbsp;</p><br/>
+                              <h3 class="titlebox" style="padding:0px 0px 0px 8px">
+                           Meet the team:</h3>
+                            <table>
+                            	
+                            	<?php $key = 0; foreach($members as $member){?>
+                            	<?php if($key==0){?>
+                            	<tr>
+                            	<?php }?>
+                            	
+                            	<td>
+                            	<img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/>
+                            	<div style="position: relative;top:5px;"><?php echo $member->name;?><br/><?php echo $member->title;?></div>
+                            	<div style="position: relative;bottom:5px;"><?php echo $member->phone;?><br/><?php echo $member->email;?></div>
+                            	</td>
+                            	
+                            	
+                            	
+                            	<?php if($key==4){ $key=0; ?>
+                            	</tr>
+                            	
+                            	
+                            	<?php }?>
+                            	<?php }?>
+                            	</tr>
+                            </table>
+                        </div>
+                        <?php }?>
+                        
                         <?php if(@$dealfeed){?>
                         	<br/>
                             <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Supplier Deals</h3>
@@ -928,7 +958,7 @@ $( document ).tooltip();
                  <?php }?>
                 
                 <?php if($adforsupplier){?>
-                   <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
+                    
         <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.windy.js"></script>
         <script type="text/javascript">	
 			$(function() {

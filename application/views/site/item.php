@@ -1029,7 +1029,7 @@ $( document ).tooltip();
                                     	<p><?php echo $ad->title;?> $<?php echo $ad->price;?></p>
                                     	</div>
                                     		<div style="text-align:right;">
-                                    			<a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a>
+                                    			<a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a>
                                     		</div>
                                     	</div>
                                     	<?php } ?>

@@ -601,6 +601,25 @@ class site extends CI_Controller
      	}
      	$data['adforsupplier']=$ads;
      	
+     	$membersDB = $this->db->where("cid", $data['supplier']->id)->get("companyteam")->result();
+     	
+     	foreach($membersDB as $mdb){
+     		$config['image_library'] = 'gd2';
+     		$config['source_image'] = './uploads/companyMembers/'.$mdb->picture;
+     		$config['create_thumb'] = TRUE;
+     		$config['maintain_ratio'] = FALSE;
+     		$config['width']     = 190;
+     		$config['height']   = 194;
+     	
+     		$this->image_lib->clear();
+     		$this->image_lib->initialize($config);
+     		$this->image_lib->resize();
+     		 
+     		$pathinfo = pathinfo($mdb->picture);
+     		$mdb->picture = $pathinfo["filename"]."_thumb.".$pathinfo["extension"];
+     		$data["members"][] = $mdb;
+     	}
+     	
         //print_r($data['dealfeed']);die;
         $similarsuppliers = $this->supplier_model->getrelatedsupplier($id);
         $data['similarsuppliers'] = $similarsuppliers;

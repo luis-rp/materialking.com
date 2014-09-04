@@ -294,7 +294,7 @@ class Company extends CI_Controller {
 
         //print_r($states);
 		$data['image']=$this->db->get_where('companyattachment',array('company'=>$company->id))->result();
-		
+		$data['members']=$this->db->where('cid',$company->id)->get("companyteam")->result();
         $this->db->where('company', $company->id);
         $emails = $this->db->get('companyemail')->result();
         $data['company'] = $company;
@@ -302,6 +302,56 @@ class Company extends CI_Controller {
         $this->load->view('company/profile', $data);
     }
     
+    function addMember(){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	$company = $this->db->where('id',$company->id)->get('company')->row();
+
+    	$config['upload_path'] = './uploads/companyMembers/';
+		$config['allowed_types'] = 'gif|jpg|png';
+		/*$config['max_size']	= '100';
+		$config['max_width']  = '1024';
+		$config['max_height']  = '768';*/
+
+		$this->load->library('upload', $config);
+
+		if ( ! $this->upload->do_upload("memberPicture"))
+		{
+			$error = $this->upload->display_errors();
+			$this->session->set_flashdata('message', $error);
+			
+		}
+		else
+		{
+			$data = $this->upload->data();
+			$this->session->set_flashdata('message', "");
+			$this->db->insert("companyteam",array("cid"=>$company->id,"name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
+	    	
+    	}
+    	redirect("company/profile");
+    	
+    }
+    function editMember(){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	$company = $this->db->where('id',$company->id)->get('company')->row();
+    	
+    	$this->db->where("id",$this->input->post("idMember"));
+    	$this->db->insert("companyteam",array("name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
+    }
+    
+    function getMemberInfo($id){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	
+    	$this->db->where("id",$id);
+    	$this->db->where("cid",$company->id);
+    	$row = $this->db->get("companyteam")->row();
+    	echo json_encode($row);
+    }
     function saveprofile() {
         $company = $this->session->userdata('company');
         if (!$company)
