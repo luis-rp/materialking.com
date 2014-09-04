@@ -616,7 +616,7 @@ P.O. Price Rankings
                             foreach ($suppliers_10_miles as $supplier) {
                                 
                                 ?>
-                                <div class="property span9">
+                                <div class="span9 category-box">
  <h2 class="supplier_new_sa"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                     <div class="row">
                                         <div class="image span3">
