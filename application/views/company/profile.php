@@ -17,7 +17,37 @@
 $(document).ready(function(){
    $("#phone").mask("(999) 999-9999");
    $("#fax").mask("(999) 999-9999");
-   $('#about').wysihtml5();
+   //$('#about').wysihtml5();
+   $("#addMemberBtn").click(function(){
+			$("#addmember").modal();
+		
+	   });
+   $(".editMemberBtn").click(function(){
+	   var id = $(this).attr("name");
+	   $.ajax({
+		    url:"<?php echo base_url("company/getMemberInfo/");?>/"+id,
+		    type:"GET",
+		    success:function(msg){
+			    
+			
+			    
+		    	$("#idMember","#editMember").val(msg.id);
+		    	$("#memberName","#editMember").val(msg.name);
+		   		$("#memberTitle","#editMember").val(msg.title);
+		   		$("#memberPhone","#editMember").val(msg.phone);
+		   		$("#memberEmail","#editMember").val(msg.email);
+		   		
+		   		$("#memberLinkedin","#editMember").val(msg.linkedin);
+		   		
+				
+		    },
+		    dataType : "json"
+		});
+	  
+		
+	   $("#editMember").modal();
+	   });
+   
 });
 
 function showEmailForm()
@@ -237,18 +267,18 @@ function addEmail()
 												<div id="moreUploads"></div>
 										    <div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a>
 											</div>
-                              <?php ///echo "<pre>"; print_r($image); die; ?>
-								<table class="table table-striped">
-									<tr>
-										<th>Image</th><th>Delete</th>
-									</tr>
-									<?php  foreach($image as $items)  { ?>
-									<tr>
-										<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
-										<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
-									</tr>
-									<?php } ?>
-								</table>
+			                              <?php ///echo "<pre>"; print_r($image); die; ?>
+											<table class="table table-striped">
+												<tr>
+													<th>Image</th><th>Delete</th>
+												</tr>
+												<?php  foreach($image as $items)  { ?>
+												<tr>
+													<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
+													<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+												</tr>
+												<?php } ?>
+											</table>
 
 				                      </div>
 				                      
@@ -256,6 +286,44 @@ function addEmail()
 				                        <label class="form-label">Invoice Notes:</label>
 				                        <div class="controls">
 				                          <textarea rows="2" cols="40" class="form-control" name="invoicenote"><?php echo $company->invoicenote;?></textarea>
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Team:</label>
+				                        <div class="controls">
+				                           <a href="javascript:void(0);" id="addMemberBtn">Add another Member</a>
+				                          <table class="table table-striped">
+												<tr>
+													<th>Name</th>
+													<th>Picture</th>
+													<th>Title</th>
+													<th>Phone</th>
+													<th>Email</th>
+													<th>LinkedIn</th>
+													<th>Actions</th>
+												</tr>
+												<?php if($members){?>
+												<?php  foreach($members as $member)  { ?>
+												<tr>
+													<td><?php echo $member->name;?></td>
+													<td><?php echo $member->title;?></td>
+													<td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
+													<td><?php echo $member->phone;?></td>
+													<td><?php echo $member->email;?></td>
+													<td><?php echo $member->linkedin;?></td>
+													<td>Delete - <a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a></td>
+													
+												</tr>
+												<?php } ?>
+												<?php }else{?>
+												<tr>
+													<td colspan="6">No Members yet</td>
+													
+												</tr>
+												<?php }?>
+											</table>
+				                          
 				                        </div>
 				                      </div>
                     				
@@ -295,6 +363,139 @@ function addEmail()
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
           
         </div>
+      </div>
+    </div>
+  </div>
+  
+   <div class="modal fade" id="addmember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php echo site_url('company/addMember');?>" enctype="multipart/form-data">
+        <div class="modal-body" style="background-color:#FFFFFF;">
+          <div class="row form-row">
+            <div class="col-md-8">
+             	
+              					     <div class="form-group">
+				                        <label class="form-label">Name:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberName" id="memberName" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">Title:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberTitle" id="memberTitle" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">Phone:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberPhone" id="memberPhone" >
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Email:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberEmail" id="memberEmail" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">LinkedInd:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberLinkedin" id="memberLinkedin" >
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Picture:</label>
+				                        <div class="controls">
+				                         <input type="file" name="memberPicture" id="memberPicture" />
+				                        </div>
+				                      </div>
+				                      
+				                      
+          		 
+            </div>
+          </div>
+         
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-primary" value="Save"/>
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          
+        </div>
+          </form>
+      </div>
+    </div>
+  </div>
+  
+   <div class="modal fade" id="editMember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php echo site_url('company/editMember');?>" enctype="multipart/form-data">
+        <div class="modal-body" style="background-color:#FFFFFF;">
+          <div class="row form-row">
+            <div class="col-md-8">
+             	
+              					     <div class="form-group">
+				                        <label class="form-label">Name:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberName" id="memberName" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">Title:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberTitle" id="memberTitle" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">Phone:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberPhone" id="memberPhone" >
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Email:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberEmail" id="memberEmail" >
+				                        </div>
+				                      </div>
+				                      
+				                       <div class="form-group">
+				                        <label class="form-label">LinkedInd:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="memberLinkedin" id="memberLinkedin" >
+				                        </div>
+				                      </div>
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Picture:</label>
+				                        <div class="controls">
+				                         <input type="file" name="memberPicture" id="memberPicture" />
+				                        </div>
+				                      </div>
+				                      
+				                      
+          		 
+            </div>
+          </div>
+         
+        </div>
+        <div class="modal-footer">
+          <input name="idMember" id="idMember" type="hidden" value=""/>
+          <input type="submit" class="btn btn-primary" value="Save"/>
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          
+        </div>
+          </form>
       </div>
     </div>
   </div>
