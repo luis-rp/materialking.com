@@ -521,7 +521,7 @@ $( document ).tooltip();
                         </div>
                         <?php }?>
                         
-                        	<?php if($members){?>
+                        	<?php if(@$members){?>
                         <div>
                             <p>&nbsp;</p><br/>
                               <h3 class="titlebox" style="padding:0px 0px 0px 8px">
