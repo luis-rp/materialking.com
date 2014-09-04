@@ -338,8 +338,29 @@ class Company extends CI_Controller {
     		redirect('company/login');
     	$company = $this->db->where('id',$company->id)->get('company')->row();
     	
+    	
+    	$config['upload_path'] = './uploads/companyMembers/';
+    	$config['allowed_types'] = 'gif|jpg|png';
+    	/*$config['max_size']	= '100';
+    	 $config['max_width']  = '1024';
+    	$config['max_height']  = '768';*/
+    	
+    	$this->load->library('upload', $config);
+    	
+    	if ( ! $this->upload->do_upload("memberPicture"))
+    	{
+    		$error = $this->upload->display_errors();
+    		$this->session->set_flashdata('message', $error);
+    			
+    	}
+    	else
+    	{
+    		$data = $this->upload->data();
+    		$this->session->set_flashdata('message', "");
+    	}
     	$this->db->where("id",$this->input->post("idMember"));
-    	$this->db->insert("companyteam",array("name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
+    	$this->db->update("companyteam",array("name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
+    	redirect("company/profile");
     }
     
     function getMemberInfo($id){

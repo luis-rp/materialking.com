@@ -308,7 +308,7 @@ function addEmail()
 												<tr>
 													<td><?php echo $member->name;?></td>
 													<td><?php echo $member->title;?></td>
-													<td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
+													<td><img width=200 height=200 src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
 													<td><?php echo $member->phone;?></td>
 													<td><?php echo $member->email;?></td>
 													<td><?php echo $member->linkedin;?></td>
