@@ -312,7 +312,7 @@ function addEmail()
 													<td><?php echo $member->phone;?></td>
 													<td><?php echo $member->email;?></td>
 													<td><?php echo $member->linkedin;?></td>
-													<td>Delete - <a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a></td>
+													<td><a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a></td>
 													
 												</tr>
 												<?php } ?>
