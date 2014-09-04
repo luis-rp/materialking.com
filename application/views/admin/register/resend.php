@@ -1,8 +1,8 @@
-	<section class="signin-container">
-		<a href="#" title="EZPZP" class="header">
+	<section class="signin-container" style="padding:30px;">
+		 <h1><a href="#" title="EZPZP" class="header">
 			<img src="<?php echo base_url(); ?>/templates/admin/images/applogo.png" alt="EZPZP">
 			<span>&nbsp;</span>
-		</a>
+		</a> </h1>
 		
 		<div id="login_error">
 		<?php echo $this->session->flashdata('message'); ?>

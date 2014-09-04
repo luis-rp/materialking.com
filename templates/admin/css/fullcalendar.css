@@ -55,8 +55,18 @@ html .fc,
 	white-space: nowrap;
 	 font-family: "itcs", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	 font-size:14px;
-
-	}
+	 padding:0px 0px 0px 14px;
+	 color:#fff;
+}
+#step1 .fc-header-title h2 {
+	margin-top: 0;
+	white-space: nowrap;
+	 font-family: "itcs", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	 font-size:12px;
+	 padding:0px 0px 0px 2px;
+	 color:#fff;
+}
+	.fc-header-right{ padding:0px 10px 0px 0px;}
 	
 .fc .fc-header-space {
 	padding-left: 10px;
@@ -100,6 +110,7 @@ html .fc,
 ------------------------------------------------------------------------*/
 	
 .fc-content {
+	 font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 	clear: both;
 	zoom: 1; /* for IE7, gives accurate coordinates for [un]freezeContentHeight */
 	}
@@ -262,14 +273,24 @@ html .fc,
 	}
 	 
 .fc-event {
+	  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
 	border: 1px solid #3a87ad; /* default BORDER color */
-	background-color: #3a87ad; /* default BACKGROUND color */
 	color: #fff;               /* default TEXT color */
-	font-size: .85em;
+	font-size: 15px;
 	cursor: default;
 	}
 	
-	
+a.fc-event:hover { background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);}	
 a.fc-event {
 	text-decoration: none;
 	}
@@ -293,6 +314,8 @@ a.fc-event:hover
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+	text-align:center;
+	padding:6px 0px;
 	}
 	
 .fc-event-time,
@@ -396,6 +419,7 @@ table.fc-border-separate {
 
 .fc-grid th {
 	text-align: center;
+	padding:4px 0px !important;
 	}
 
 .fc .fc-week-number {
@@ -408,8 +432,31 @@ table.fc-border-separate {
 	}
 	
 .fc-grid .fc-day-number {
-	float: right;
-	padding: 0 2px;
+/*	float: right;*/
+	padding: 25px 0px 0px 0px;
+	color:#fff;
+	font-size:22px;
+	font-weight:normal;
+	text-align:center;
+	}
+	
+.fc-grid .fc-day-number{ border: 1px solid #fff;
+    border-radius: 40px;
+    color: #fff;
+    display: block;
+    font-size: 15px;
+    font-weight: normal;
+    margin: auto;
+    padding: 8px 0;
+    text-align: center;
+    width: 40px;}
+	#step1 .fc-grid .fc-day-number {
+/*	float: right;*/
+	padding: 10px 0px 0px 0px;
+	color:#fff;
+	font-size:15px;
+	font-weight:normal;
+	text-align:center;
 	}
 	
 .fc-grid .fc-other-month .fc-day-number {
@@ -599,3 +646,36 @@ table.fc-border-separate {
 	}
 	
 	
+#calendar{ background: linear-gradient(135deg, #cebe29 0%, #9b1f50 33%, #2989d8 71%, #89b4ff 91%) repeat scroll 0 0 / 100% 100% rgba(0, 0, 0, 0);}
+#calendar table{ background:none}
+#calendar table td{ background:none}
+
+#calendar tbody:hover tr:hover td {
+	color: #444;
+ 	text-shadow: 0 1px 0 #fff;
+	background: rgba(255, 255, 255, 0.2); 
+}
+#calendar .fc-grid th{ padding:0px}
+#calendar table.fc-header{   background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;
+    border-bottom: 1px solid #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;}
+#calendar table.fc-header .fc-header-right{ padding:10px 10px 0px;}
+
+
+
+#calendarevent{ background: linear-gradient(135deg, #cebe29 0%, #9b1f50 33%, #2989d8 71%, #89b4ff 91%) repeat scroll 0 0 / 100% 100% rgba(0, 0, 0, 0);}
+#calendarevent table{ background:none}
+#calendarevent table td{ background:none}
+
+#calendarevent tbody:hover tr:hover td {
+	color: #444;
+ 	text-shadow: 0 1px 0 #fff;
+	background: rgba(255, 255, 255, 0.2); 
+}
+#calendarevent .fc-grid th{ padding:0px}
+#calendarevent table.fc-header{   background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;
+    border-bottom: 1px solid #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;}
+#calendarevent table.fc-header .fc-header-right{ padding:10px 10px 0px;}
+
+.fc-week{ padding:5px;}

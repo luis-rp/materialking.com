@@ -243,8 +243,15 @@ class Company extends CI_Controller {
 
             $data['comet_user_id'] = $check->id;
             $data['comet_user_email'] = $check->primaryemail;
-
+			
             $this->session->set_userdata($data);
+			
+			$this->load->helper('cookie');
+        	$this->input->set_cookie("comet_user_id", $check->id,time()+3600);
+			$this->input->set_cookie("comet_user_email", $check->primaryemail,time()+3600);
+			$this->input->set_cookie("userid", $check->id,time()+3600);
+			$this->input->set_cookie("logintype", 'company',time()+3600);
+ 			
             redirect('dashboard');
         } else {
             $data['message'] = 'Invalid Login';
@@ -255,6 +262,12 @@ class Company extends CI_Controller {
 
     function logout() {
         $this->session->sess_destroy();
+		$this->load->helper('cookie');
+		$this->input->set_cookie("comet_user_id",'',time()+3600);
+		$this->input->set_cookie("comet_user_email", '',time()+3600);
+		$this->input->set_cookie("userid", '',time()+3600);
+		$this->input->set_cookie("logintype", '',time()+3600);
+		
         redirect('company/login', 'refresh');
     }
 

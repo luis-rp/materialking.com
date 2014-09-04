@@ -1,8 +1,8 @@
-	<section class="signin-container">
-		<a href="#" title="EZPZP" class="header">
+	<section class="signin-container" style="padding:30px;">
+		 <h1><a href="#" title="EZPZP" class="header">
 			<img src="<?php echo base_url(); ?>/templates/admin/images/applogo.png" alt="EZPZP">
 			<span>&nbsp;</span>
-		</a>
+		</a> </h1>
 		
 		<div id="login_error">
 		<?php echo $this->session->flashdata('message'); ?>
@@ -21,6 +21,7 @@
 				</div>
 				<input type="submit" class="btn btn-primary btn-block" name="reqtype" value="Get Username" style="background:#E46837;"/>
 				<input type="submit" class="btn btn-primary btn-block" name="reqtype" value="Get Link" style="background:#E46837;"/>
+                <br/>
 				<a class="btn btn-primary" href="<?php echo site_url('admin/login');?>">Back To Login</a>
 				&nbsp; &nbsp;
 				<a class="btn btn-primary" href="<?php echo site_url('admin/register');?>">Create Account</a>
