@@ -230,25 +230,33 @@ function fetchItem(codeid)
 	var quantityid = codeid.replace('itemcode','quantity');
 	var notesid = codeid.replace('itemcode','notes');
 	var totalpriceid = codeid.replace('itemcode','totalprice');
-	
-	var url = '<?php echo base_url()?>admin/quote/getitembycode';
-	//alert(url);
-    $.ajax({
-      type:"post",
-      data: "code="+encodeURIComponent(itemcode)+"&projectid="+encodeURIComponent(projectid),
-      url: url
-    }).done(function(data){
-        var obj = $.parseJSON(data);
-        if(obj.itemname !== undefined)
-        {
-	        document.getElementById(idid).value = obj.itemid;
-	        document.getElementById(nameid).value = obj.itemname;
-	        document.getElementById(unitid).value = obj.unit;
-	        document.getElementById(eaid).value = obj.ea;
-	        document.getElementById(notesid).value = obj.notes;
-	        document.getElementById(totalpriceid).value = document.getElementById(quantityid).value * obj.ea;
-        }
-    });
+		if(itemcode!=""){
+		var url = '<?php echo base_url()?>admin/quote/getitembycode';
+		//alert(url);
+		$.ajax({
+			type:"post",
+			data: "code="+encodeURIComponent(itemcode)+"&projectid="+encodeURIComponent(projectid),
+			url: url
+		}).done(function(data){
+			var obj = $.parseJSON(data);
+			if(obj.itemname !== undefined)
+			{
+				document.getElementById(idid).value = obj.itemid;
+				document.getElementById(nameid).value = obj.itemname;
+				document.getElementById(unitid).value = obj.unit;
+				document.getElementById(eaid).value = obj.ea;
+				document.getElementById(notesid).value = obj.notes;
+				document.getElementById(totalpriceid).value = document.getElementById(quantityid).value * obj.ea;
+			}
+		});
+	}else{
+		document.getElementById(idid).value = "";
+		document.getElementById(nameid).value = "";
+		document.getElementById(unitid).value = "";
+		document.getElementById(eaid).value = "";
+		document.getElementById(notesid).value = "";
+		document.getElementById(totalpriceid).value = "";
+	}
 }
 
 function calculatetotalprice(id)

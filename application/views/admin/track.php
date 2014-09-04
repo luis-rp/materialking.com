@@ -46,6 +46,65 @@ $per .='%';
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <link href="<?php echo base_url(); ?>templates/admin/css/progressbar.css" media="all" rel="stylesheet" type="text/css" >
 
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/flipclock.css" media="all" type="text/css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
+
+<script type="text/javascript">
+	var clock;
+		$(document).ready(function() {
+			
+			var currentDate = new Date("08 29, 2014");
+			
+			var pastDate  = new Date("08 19, 2014");
+
+			var diff = currentDate.getTime() / 1000 - pastDate.getTime() / 1000;
+
+				
+				clock = $('.clock').FlipClock(diff, {
+					clockFace: 'DailyCounter'
+				});
+				
+				<?php $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
+                    	 if(($q->quantity - $q->received) >0)
+                    	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
+                    	else {
+                    		$greaterreceived = "";
+                    		foreach ($awarded->invoices as $invoice) {
+                    			foreach ($invoice->items as $item) {
+                    				if($item->awarditem==$q->id){
+                    					$receiveddate = $item->receiveddate;
+                    					if($greaterreceived!=""){
+                    						if(strtotime($greaterreceived)<strtotime($receiveddate))
+                    						$greaterreceived = $receiveddate;
+                    					}else
+                    					$greaterreceived = $receiveddate;
+                    				}
+                    			}
+                    		}
+                    		//echo "g=".$greaterreceived."-G";
+                    		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
+                    	}
+                    	
+                    	if($greaterseconds!=""){
+                    		if($greaterseconds<$seconds)
+                    		$greaterseconds = $seconds;
+                    	}else
+                    	$greaterseconds = $seconds;
+                    	
+						}
+						
+						$days    = floor($greaterseconds / 86400);
+                    	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
+                    	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
+                    	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));
+                    	//echo $days." d"." ".$hours." h".$minutes." m"; ?>
+				
+				clock.setTime(<?php echo $greaterseconds;?>);
+			});
+			setTimeout(function() { clock.stop(function() { }) }, 1000);
+</script>
+
 <script>
     $(document).ready(function() {
     	$("#feedbackformwrapper").hide();
@@ -291,7 +350,41 @@ function acceptall()
                         PO #:<?php echo $quote->ponum; ?>
                         &nbsp; &nbsp; 
                         Submitted:  <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>
-                    </strong>
+                    </strong><div class="clock" style="margin:1em;margin-"></div>
+                    <?php /* $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
+                    	 if(($q->quantity - $q->received) >0)
+                    	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
+                    	else {
+                    		$greaterreceived = "";
+                    		foreach ($awarded->invoices as $invoice) {
+                    			foreach ($invoice->items as $item) {
+                    				if($item->awarditem==$q->id){
+                    					$receiveddate = $item->receiveddate;
+                    					if($greaterreceived!=""){
+                    						if(strtotime($greaterreceived)<strtotime($receiveddate))
+                    						$greaterreceived = $receiveddate;
+                    					}else
+                    					$greaterreceived = $receiveddate;
+                    				}
+                    			}
+                    		}
+                    		//echo "g=".$greaterreceived."-G";
+                    		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
+                    	}
+                    	
+                    	if($greaterseconds!=""){
+                    		if($greaterseconds<$seconds)
+                    		$greaterseconds = $seconds;
+                    	}else
+                    	$greaterseconds = $seconds;
+                    	
+						}
+						
+						$days    = floor($greaterseconds / 86400);
+                    	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
+                    	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
+                    	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60))); */ ?>
+                    	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->                    
                     <br/>
                     <?php if (0) { ?>
                         &nbsp;  &nbsp;
@@ -368,10 +461,35 @@ function acceptall()
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
-                                <td>&nbsp;<?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
+                                <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
 							    				<i class="icon"></i>View
 							    			</a>
-						<?php } ?></td>	 
+						<?php } $seconds = "";
+								if(($q->quantity - $q->received) >0)
+								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon); 
+								else {
+									$greaterreceived = "";
+									foreach ($awarded->invoices as $invoice) {
+										foreach ($invoice->items as $item) {
+											if($item->awarditem==$q->id){
+												$receiveddate = $item->receiveddate;	
+												if($greaterreceived!=""){
+													if(strtotime($greaterreceived)<strtotime($receiveddate))
+													$greaterreceived = $receiveddate;
+												}else
+												$greaterreceived = $receiveddate;												
+										    }
+									   }   
+									}
+									//echo "g=".$greaterreceived."-G";
+									$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon); 
+								}
+	                            $days    = floor($seconds / 86400);
+								$hours   = floor(($seconds - ($days * 86400)) / 3600);
+								$minutes = floor(($seconds - ($days * 86400) - ($hours * 3600))/60);
+								$seconds = floor(($seconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));?>
+								<strong> <?php echo $days." d"." ".$hours." h".$minutes." m";  ?></strong>
+						        </td>	 
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty" 
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>

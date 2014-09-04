@@ -125,27 +125,35 @@ function fetchItem(codeid)
 	var totalpriceid = codeid.replace('itemcode','totalprice');
 	var companyid = codeid.replace('itemcode','company');
 
+    if(itemcode!=""){
+		$.ajax({
+			type:"post",
+			url: '<?php echo base_url()?>admin/quote/getitembycode/',
+			data: "code="+encodeURIComponent(itemcode)
+		}).done(function(data){
+			var obj = $.parseJSON(data);
+			if(obj.itemname !== undefined)
+			{
+				document.getElementById(idid).value = obj.itemid;
+				document.getElementById(nameid).value = obj.itemname;
+				document.getElementById(unitid).value = obj.unit;
+				document.getElementById(eaid).value = obj.ea;
+				document.getElementById(notesid).value = obj.notes;
+				var totalprice = document.getElementById(quantityid).value * obj.ea;
+				totalprice = Math.round(totalprice * 100) / 100;
+				document.getElementById(totalpriceid).value = totalprice;
 
-    $.ajax({
-      type:"post",
-      url: '<?php echo base_url()?>admin/quote/getitembycode/',
-      data: "code="+encodeURIComponent(itemcode)
-    }).done(function(data){
-        var obj = $.parseJSON(data);
-        if(obj.itemname !== undefined)
-        {
-	        document.getElementById(idid).value = obj.itemid;
-	        document.getElementById(nameid).value = obj.itemname;
-	        document.getElementById(unitid).value = obj.unit;
-	        document.getElementById(eaid).value = obj.ea;
-	        document.getElementById(notesid).value = obj.notes;
-	        var totalprice = document.getElementById(quantityid).value * obj.ea;
-	        totalprice = Math.round(totalprice * 100) / 100;
-	        document.getElementById(totalpriceid).value = totalprice;
-
-	        getminpricecompanies(obj.itemid, companyid, '');
-        }
-    });
+				getminpricecompanies(obj.itemid, companyid, '');
+			}
+		});
+	}else{
+		document.getElementById(idid).value = "";
+		document.getElementById(nameid).value = "";
+		document.getElementById(unitid).value = "";
+		document.getElementById(eaid).value = "";
+		document.getElementById(notesid).value = "";
+		document.getElementById(totalpriceid).value = "";
+	}
 }
 
 

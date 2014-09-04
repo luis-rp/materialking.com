@@ -1340,7 +1340,7 @@ class quote extends CI_Controller
 
         $awardarray = array();
         $awardarray['quote'] = $qid;
-        $awardarray['awardedon'] = date('Y-m-d');
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
         $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         $this->quote_model->db->insert('award', $awardarray);
         $awardid = $this->quote_model->db->insert_id();
@@ -1485,7 +1485,7 @@ class quote extends CI_Controller
         $awardarray = array();
         $awardarray['quote'] = $bid->quote;
         $awardarray['shipto'] = $_POST['shipto'];
-        $awardarray['awardedon'] = date('Y-m-d');
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
         $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         $this->quote_model->db->insert('award', $awardarray);
         $awardid = $this->quote_model->db->insert_id();
@@ -1543,7 +1543,7 @@ class quote extends CI_Controller
         $awardarray = array();
         $awardarray['quote'] = $_POST['quote'];
         $awardarray['shipto'] = $_POST['shipto'];
-        $awardarray['awardedon'] = date('Y-m-d');
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
         $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         $this->quote_model->db->insert('award', $awardarray);
         $awardid = $this->quote_model->db->insert_id();
@@ -2601,6 +2601,17 @@ with the transfer# {$tobj->id}.
 		redirect('admin/quote/invoices');
     }
 
+    public function mysql_date($date)
+	{
+		if(isset($date) && !empty($date))
+		{
+			$time = date('H:m:s');
+			$parts = explode('/', $date);
+			$newDate  = "$parts[2]-$parts[0]-$parts[1] $time";
+			return $newDate;
+		}	
+	}
+    
     function savetrack($quoteid,$ajax=0)
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
@@ -2637,10 +2648,10 @@ with the transfer# {$tobj->id}.
                     $this->session->set_userdata($temp);
                 }
                 if ($this->input->post('makedefaultreceiveddate') == '1') {
-                    $temp['defaultreceiveddate'] = $_POST['receiveddate' . $key];
+                    $temp['defaultreceiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);
                     $this->session->set_userdata($temp);
                 }
-                $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $_POST['receiveddate' . $key]);
+                $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 $this->quote_model->db->insert('received', $insertarray);
 
@@ -2815,7 +2826,7 @@ with the transfer# {$tobj->id}.
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
 				    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
-				    <td style="border: 1px solid #000000;">' . $_POST['receiveddate' . $invoiceitem['id']] . '</td>
+				    <td style="border: 1px solid #000000;">' . $this->mysql_date($_POST['receiveddate' . $invoiceitem['id']]) . '</td>
 				    <td style="border: 1px solid #000000;">' . $received[$invoiceitem['id']]['received'] . '</td>
 				    <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td>
 				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] . '</td>

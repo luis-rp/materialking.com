@@ -465,11 +465,11 @@ $( document ).tooltip();
                         
                         <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
 						<ul>
-                          <?php  if(isset($image) && count($image)>0) { foreach($image as $items) { ?>
+                           <?php  if(isset($image) && count($image)>0)  foreach($image as $items) { ?>
                           <li style="margin-bottom:3px;">
                          	<a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
 							<img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" width="100%x" class="img-thumbnail"/></a></li>
-                               <?php } } else { echo "<p style='font-weight:bold;font-size:20px;padding-top:30px;'>No Images for Gallery</p>";  }  ?>
+                               <?php }   ?>
                           </ul>
                           </div>
                         

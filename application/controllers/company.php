@@ -1332,7 +1332,7 @@ class Company extends CI_Controller {
 		$rows['image']=$this->db->get_where('companyattachment',array('id'=>$id))->row();
 		$name=$rows['image']->imagename;
 				
-		if(file_exists('./uploads/gallery/'.$name))
+		if(file_exists('./uploads/gallery/'.$name) && !is_dir('./uploads/gallery/'.$name))
 		{
 		unlink('./uploads/gallery/'.$name);
 		}
