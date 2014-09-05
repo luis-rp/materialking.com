@@ -47,7 +47,9 @@ $per .='%';
 <link href="<?php echo base_url(); ?>templates/admin/css/progressbar.css" media="all" rel="stylesheet" type="text/css" >
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/flipclock.css" media="all" type="text/css">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+-->
 <script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
 
 <script type="text/javascript">

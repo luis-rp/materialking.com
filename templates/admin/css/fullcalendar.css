@@ -440,16 +440,7 @@ table.fc-border-separate {
 	text-align:center;
 	}
 	
-.fc-grid .fc-day-number{ border: 1px solid #fff;
-    border-radius: 40px;
-    color: #fff;
-    display: block;
-    font-size: 15px;
-    font-weight: normal;
-    margin: auto;
-    padding: 8px 0;
-    text-align: center;
-    width: 40px;}
+
 	#step1 .fc-grid .fc-day-number {
 /*	float: right;*/
 	padding: 10px 0px 0px 0px;
@@ -649,6 +640,16 @@ table.fc-border-separate {
 #calendar{ background: linear-gradient(135deg, #cebe29 0%, #9b1f50 33%, #2989d8 71%, #89b4ff 91%) repeat scroll 0 0 / 100% 100% rgba(0, 0, 0, 0);}
 #calendar table{ background:none}
 #calendar table td{ background:none}
+
+#calendar .fc-state-highlight .fc-day-number{ background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;
+    border-bottom: 1px solid #fff;
+    border-radius: 100px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
+    height: 68px;
+    margin: auto;
+    width: 100px;}
+	
+	
 
 #calendar tbody:hover tr:hover td {
 	color: #444;
