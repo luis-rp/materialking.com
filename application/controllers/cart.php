@@ -145,6 +145,12 @@ class cart extends CI_Controller
 		$quantity = $_POST['quantity'];
 		//print_r($_POST);die;
 		$cart = $this->session->userdata('pms_site_cart');    	
+		
+		if(isset($cart[$_POST['itemid'].':'.$_POST['company']]['itemdetails']->ea))
+		$ea = $cart[$_POST['itemid'].':'.$_POST['company']]['itemdetails']->ea;
+		else 
+		$ea = 0;
+		
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['company']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['quantity']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
@@ -181,7 +187,7 @@ class cart extends CI_Controller
 			
     		$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $price;
     		
-    	}/*else{
+    	}else{
     		
     		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
     		if($purchasingadmin){
@@ -207,13 +213,13 @@ class cart extends CI_Controller
     				if ($pt)
     				{
     					$deviation = $pt->$tier;
-    					$price = $_POST['price'] + ($_POST['price'] * $deviation / 100);
-    					$price = number_format($_POST['price'], 2);
+    					$price = $ea + ($ea * $deviation / 100);
+    					$price = number_format($price, 2);
     					$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $price;
     				}
     			}
     		}   		
-    	}*/
+    	}
 		
 		
 		$cart[$itemid.':'.$company]['quantity'] = $quantity;
