@@ -47,7 +47,6 @@ $per .='%';
 <link href="<?php echo base_url(); ?>templates/admin/css/progressbar.css" media="all" rel="stylesheet" type="text/css" >
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/flipclock.css" media="all" type="text/css">
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
 
 <script type="text/javascript">
@@ -331,7 +330,7 @@ function acceptall()
             <?php echo @$message; ?>
 
 
-            <div class="control-group">
+            <div class="control-group" style="height:103px;">
                 <div class="controls">
 
                         <?php if ($awarded->status == 'incomplete') { ?>
@@ -350,7 +349,8 @@ function acceptall()
                         PO #:<?php echo $quote->ponum; ?>
                         &nbsp; &nbsp; 
                         Submitted:  <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>
-                    </strong><div class="clock" style="margin:1em;margin-"></div>
+                    </strong><div class="clock" style="margin:1em;position:absolute; left:417px; top:215px; width:75%;"></div>
+                    <div style="clear:both;"></div>
                     <?php /* $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
                     	 if(($q->quantity - $q->received) >0)
                     	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
@@ -462,7 +462,7 @@ function acceptall()
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
                                 <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
-							    				<i class="icon"></i>View
+							    				<i class="icon"></i><p style="padding-left:36px;">View</p>
 							    			</a>
 						<?php } $seconds = "";
 								if(($q->quantity - $q->received) >0)
@@ -488,8 +488,28 @@ function acceptall()
 								$hours   = floor(($seconds - ($days * 86400)) / 3600);
 								$minutes = floor(($seconds - ($days * 86400) - ($hours * 3600))/60);
 								$seconds = floor(($seconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));?>
-								<strong> <?php echo $days." d"." ".$hours." h".$minutes." m";  ?></strong>
-						        </td>	 
+								<strong> <?php //echo $days." d"." ".$hours." h".$minutes." m";  ?></strong>
+					<div style="height:40px;width:110px;">
+							<strong><p style="font-size:15px;">&nbsp;&nbsp;D&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;M</p></strong>
+                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $days ?></p>
+                    	</div>
+
+                    	<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
+
+                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $hours ?></p>
+                   		</div>
+
+                   		<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
+
+                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+                   			<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $minutes ?></p>
+                    	</div>
+
+                    	<div style="clear:left;"></div>
+                    </div>
+								</td> 
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty" 
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
