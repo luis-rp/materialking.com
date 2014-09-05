@@ -41,7 +41,7 @@
 </style>
 
 
-<section class="row-fluid">
+<section class="row-fluid" id="eventbox">
 	<h3 class="box-header">Purchase Orders</h3>
 	<div class="box">
 	<div class="span12">

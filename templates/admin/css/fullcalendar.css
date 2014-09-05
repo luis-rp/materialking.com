@@ -641,13 +641,30 @@ table.fc-border-separate {
 #calendar table{ background:none}
 #calendar table td{ background:none}
 
-#calendar .fc-state-highlight .fc-day-number{ background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;
-    border-bottom: 1px solid #fff;
+#calendar .fc-state-highlight .fc-day-number{ /*background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;*/
+    border: 2px solid #fff;
     border-radius: 100px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
-    height: 68px;
+   height: 36px; 
     margin: auto;
-    width: 100px;}
+     width: 45px; }
+	 
+	#eventbox  .fc-state-highlight .fc-day-number{ /*background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;*/
+    border: 2px solid #fff;
+    border-radius: 100px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
+   height: 36px; 
+    margin: auto;
+     width: 63px; }
+	
+#calendarevent .fc-state-highlight .fc-day-number{ /*background: linear-gradient(to bottom, #06a1e2, #0694d0) repeat-x scroll 0 0 #df6b3e;*/
+    border: 2px solid #fff;
+    border-radius: 100px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset;
+     height: 36px; 
+    margin: auto;
+    width: 45px; }
+
 	
 	
 
