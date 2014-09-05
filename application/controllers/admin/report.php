@@ -173,6 +173,9 @@ class report extends CI_Controller
 	
 	function index($offset = 0) 
 	{
+		//log_message("debug",,true));
+		if(!is_object($this->session->userdata('managedprojectdetails')))
+			redirect("admin/dashboard");
 		$uri_segment = 4;
 		$offset = $this->uri->segment ($uri_segment);
 		$reports = $this->report_model->get_reports ();
