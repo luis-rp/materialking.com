@@ -286,45 +286,54 @@ class cart extends CI_Controller
 					"state"   => $_POST['shippingState'],
 					"zip"     => $_POST['shippingZip'],
 			);
-			$to_address = \EasyPost\Address::create($to_address_params);
-				
-			$from_address_params = array("name"    => $item['companydetails']->contact,
-					"street1" => $item['companydetails']->address,
-					"street2" => "",
-					"city"    => $item['companydetails']->city,
-					"state"   => $item['companydetails']->state,
-					"zip"	  => $item['companydetails']->zip);
 			
-			$from_address = \EasyPost\Address::create($from_address_params);
-			// create parcel
-			$parcel_params = array(
-					"predefined_package" => null,
-					"weight"             => $current_item->weight
-			);
-			if($current_item->length !=  "0.0"){
-				$parcel_params["length"] = $current_item->length;
+			try
+			{
+				$to_address = \EasyPost\Address::create($to_address_params);
+					
+				$from_address_params = array("name"    => $item['companydetails']->contact,
+						"street1" => $item['companydetails']->address,
+						"street2" => "",
+						"city"    => $item['companydetails']->city,
+						"state"   => $item['companydetails']->state,
+						"zip"	  => $item['companydetails']->zip);
+				
+				$from_address = \EasyPost\Address::create($from_address_params);
+				// create parcel
+				$parcel_params = array(
+						"predefined_package" => null,
+						"weight"             => $current_item->weight
+				);
+				if($current_item->length !=  "0.0"){
+					$parcel_params["length"] = $current_item->length;
+				}
+				if($current_item->width !=  "0.0"){
+					$parcel_params["width"] = $current_item->width;
+				}
+				if($current_item->height !=  "0.0"){
+					$parcel_params["height"] = $current_item->height;
+				}
+				$parcel = \EasyPost\Parcel::create($parcel_params);
+	
+				// create shipment
+				$shipment_params = array("from_address" => $from_address,
+						"to_address"   => $to_address,
+						"parcel"       => $parcel
+				);
+				$shipment = \EasyPost\Shipment::create($shipment_params);
+				if (count($shipment->rates) === 0) {
+					$item['rate']  = 'No rates for your address';
+				}else{
+					$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
+					$item['rate'] = $rate;
+				}
+				$data['cart'][]=$item;
 			}
-			if($current_item->width !=  "0.0"){
-				$parcel_params["width"] = $current_item->width;
+			catch(Exception $e)
+			{
+				mail('krevye@gmail.com', 'Error from  - EasyPost', var_export($e,1));
+				redirect('cart');
 			}
-			if($current_item->height !=  "0.0"){
-				$parcel_params["height"] = $current_item->height;
-			}
-			$parcel = \EasyPost\Parcel::create($parcel_params);
-
-			// create shipment
-			$shipment_params = array("from_address" => $from_address,
-					"to_address"   => $to_address,
-					"parcel"       => $parcel
-			);
-			$shipment = \EasyPost\Shipment::create($shipment_params);
-			if (count($shipment->rates) === 0) {
-				$item['rate']  = 'No rates for your address';
-			}else{
-				$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
-				$item['rate'] = $rate;
-			}
-			$data['cart'][]=$item;
 			
 		}
 		$data['settings'] = $this->settings_model->get_current_settings();
