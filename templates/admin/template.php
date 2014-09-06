@@ -116,11 +116,46 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 	$('body').powerTour({
                 		tours:[
                 				{
-                				
-                					
+                					trigger: '',
+                	                startWith: 0,
+                	                easyCancel         : true,
+                					escKeyCancel       : true,
+                					scrollHorizontal   : false,
+                					keyboardNavigation : true,
+                					loopTour           : false,
+                					onStartTour        : function(ui){ 
+                						
+                						// show bottom bar
+                						$('#demo-bar-footer').animate({bottom: 0},1000);	
+                													
+                					},
+                					onEndTour          : function(ui){
+                						
+                						// animate back to the top
+                						$('html, body').animate({scrollTop:0}, 1000, 'swing');	
+                						//$('html, body').animate({scrollLeft:0}, 1000, 'swing');	
+                						
+                						// progress meter hide and reset
+                						$('#progressmeter').children('#progressmeter-bar').width(0).next().text();
+                						
+                						// hide bottom bar
+                						$('#demo-bar-footer').animate({bottom: '-70px'},1000);	
+                						
+                					},	
+                					onProgress         : function(ui){ 
+
+                						// ui.stepInex returns a zero based number!
+                						var i       = (ui.stepIndex + 1);
+                						var total   = ui.totalSteps;
+                						var barSize = 100 / total * i+'%';
+
+                						// progress meter
+                						$('#progressmeter-text').html('<span>'+i+'</span> / '+total+'').prev('#progressmeter-bar').animate({width: barSize},400);
+                						
+                					},
                 					steps:[
                 							{
-                								hookTo          : '',//not needed
+                								
                 								content         : '#step1',
                 								width           : 350,
                 								position        : 'str',
@@ -133,7 +168,188 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 								scrollSpeed     : 400,
                 								scrollEasing    : 'swing',
                 								scrollDelay     : 0,
-                								timer           : '00:20',
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '',
+                								content         : '#step-2',
+                								width           : 435,
+                								position        : 'sc',
+                								offsetY         : 0,
+                								offsetX         : 0,
+                								fxIn            : 'flipInX',
+                								fxOut           : 'flipOutY',
+                								showStepDelay   : 1000,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){ 
+                									
+                									// fadd fx class to buy button
+                									$('#hook-two > .btn').addClass('colorfadingbutton');
+                									
+                								},
+                								onHideStep      : function(ui){
+
+                									// remove fx class from buy button
+                									$('#hook-two > .btn').removeClass('colorfadingbutton');	
+                									
+                								}
+                							},{
+                								hookTo          : '#step3',
+                								content         : '#step-3',
+                								width           : 435,
+                								position        : 'br',
+                								offsetY         : 80,
+                								offsetX         : 0,
+                								fxIn            : 'flipInX',
+                								fxOut           : 'flipOutY',
+                								showStepDelay   : 1000,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step4',//not needed
+                								content         : '#step-4',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step5',//not needed
+                								content         : '#step-5',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step6',//not needed
+                								content         : '#step-6',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step7',//not needed
+                								content         : '#step-7',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step8',//not needed
+                								content         : '#step-8',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step9',//not needed
+                								content         : '#step-9',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							},{
+                								hookTo          : '#step10',//not needed
+                								content         : '#step-10',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
                 								highlight       : false,
                 								keepHighlighted : false,
                 								onShowStep      : function(ui){	},
@@ -318,7 +534,170 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
     </head>
 
     <body>
-
+ 		<!-- *********** -->
+		<!-- STEPS       -->
+        <!-- *********** -->
+         <div id="step1" class="single-step">
+            <header>
+               <h3>1. Welcome to the tour</h3>
+            </header>
+            <p>
+            Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly.
+            </p>
+            <footer>
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                <a href="#" class="btn btn-primary pull-right" data-powertour-action="next">Continue</a>
+            </footer> 
+        </div>
+        
+        <div id="step-2" class="single-step">
+        <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 2</h3>
+            </header>
+            <p>
+            All of your Quotes, Purchase Orders, Invoices and Items you buy are assigned to a Project and a Cost Code for easy tracking, budgeting and reporting. Let’s add your first Project and Cost Code.
+            </p>
+            <footer>
+               <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a>    
+                    
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-3" class="single-step  ltr-text">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 3</h3>
+            </header>
+            <p>
+            The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.
+            </p>
+            <footer>
+               <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a>    
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-4" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 4</h3>
+            </header>
+            <p>
+            Please Click on the Projects tab.
+            </p>
+            <footer>
+               <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+          
+            </footer> 
+        </div>
+        
+        <div id="step-5" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 5</h3>
+            </header>
+            <p>
+        	 Please Click the Add Project button.
+            </p>
+            <footer>
+                   <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-6" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 6</h3>
+            </header>
+            <p>
+            Fill out the form and click Save Project.
+            </p>
+            <footer>
+                   <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-7" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 7</h3>
+            </header>
+            <p>
+           Congratulations - You have created your first project. Now let's create a Cost Code.
+            </p>
+            <footer>
+                   <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-8" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 8</h3>
+            </header>
+            <p>
+            Click the Manage tab.
+            </p>
+            <footer>
+                   <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-9" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 9</h3>
+            </header>
+            <p>
+            Click the Cost Code option.
+            </p>
+            <footer>
+                   <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <div id="step-10" class="single-step">
+            <span class="connectorarrow-tr"><!-- custom --></span> 
+            <header>
+               <h3>Step 10</h3>
+            </header>
+            <p>
+            Click Add Cost Code.
+            </p>
+            <footer>
+               <a href="#" class="btn btn-primary" data-powertour-action="next">Next</a>  
+                    <a href="#" class="btn btn-default" data-powertour-action="prev">Prev</a> 
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                
+            </footer> 
+        </div>
+        
+        <!-- *********** -->
+		<!-- STEPS   END  -->
+        <!-- *********** -->
         <header class="navbar navbar-fixed-top" id="main-navbar">
             <div class="navbar-inner">
 
@@ -436,12 +815,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <nav id="left-panel" >
             <div id="left-panel-content" style="padding-top: 0px;">
                 <ul>
-                    <li <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a></li>
+                    <li  <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a></li>
                     
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);
 						 ?>                               
-              <li id="step3"   class="lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+              <li   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
                            
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                             <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
@@ -571,21 +950,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <!-- <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>-->
         
-        <!-- *********** -->
-		<!-- STEPS       -->
-        <!-- *********** -->
-         <div id="step1" class="single-step">
-            <header>
-               <h3>1. Welcome to the tour</h3>
-            </header>
-            <p>
-            Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly.
-            </p>
-            <footer>
-                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
-                <a href="#" class="btn btn-primary pull-right" data-powertour-action="next">Continue</a>
-            </footer> 
-        </div>
+       
         
         
     </body>

@@ -335,7 +335,7 @@ function acceptall()
             <?php echo @$message; ?>
 
 
-            <div class="control-group" style="height:103px;">
+            <div class="control-group">
                 <div class="controls">
 
                         <?php if ($awarded->status == 'incomplete') { ?>
@@ -354,7 +354,7 @@ function acceptall()
                         PO #:<?php echo $quote->ponum; ?>
                         &nbsp; &nbsp; 
                         Submitted:  <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>
-                    </strong><div class="clock" style="margin:1em;position:absolute; left:417px; top:215px; width:75%;"></div>
+                    </strong><div class="clock"></div>
                     <div style="clear:both;"></div>
                     <?php /* $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
                     	 if(($q->quantity - $q->received) >0)
@@ -390,7 +390,7 @@ function acceptall()
                     	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
                     	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60))); */ ?>
                     	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->                    
-                    <br/>
+                   
                     <?php if (0) { ?>
                         &nbsp;  &nbsp;
                         <form action="<?php echo site_url('admin/quote/changestatus/' . $quote->id); ?>" method="post" class="form-horizontal">
@@ -410,8 +410,7 @@ function acceptall()
                 </div>
             </div>
 
-            <hr/>
-            <br/>
+         
 
             <div class="barBg">
                 <div class="bar carrot" id ="timelineid" >
@@ -494,7 +493,7 @@ function acceptall()
 								$minutes = floor(($seconds - ($days * 86400) - ($hours * 3600))/60);
 								$seconds = floor(($seconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));?>
 								<strong> <?php //echo $days." d"." ".$hours." h".$minutes." m";  ?></strong>
-					<div style="height:40px;width:110px;">
+					<div style="height:40px;width:160px;">
 							<strong><p style="font-size:15px;">&nbsp;&nbsp;D&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;M</p></strong>
                     	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
                     		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $days ?></p>
@@ -673,7 +672,7 @@ function acceptall()
                         ?>
 			
 
-                <div class="well">
+                <div class="well" style="float:left">
                     <form class="form-horizontal" method="post" action="<?php echo site_url('admin/message/sendmessage/' . $quote->id . '/track') ?>" onsubmit="this.to.value = this.company.options[this.company.selectedIndex].innerHTML"  enctype="multipart/form-data">
                         <input type="hidden" name="quote" value="<?php echo $quote->id; ?>"/>
                         <input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname') ?> (Admin)"/>
@@ -789,6 +788,13 @@ function acceptall()
             }
             ?>
             <section id="progress">
+       <!--     <ul class="breadcrumb1">
+  <li><a href="#">Created Sep <span><?php echo date('M d,Y', strtotime($quote->podate)); ?></span></a></li>
+  <li><a href="#">Issued Date Sep <span><?php echo date('M d,Y', strtotime($awarded->awardedon)); ?></span></a></li>
+  <li><a href="#">Delivery Expected Date Sep <span><?php echo date('M d,Y', strtotime(@$awarded->items[0]->daterequested)); ?></span></a></li>
+  <li><a href="#" class="current"><?php echo $per; ?> Received </a></li>
+  <li><a href="#">Closed</a></li>
+</ul>-->
                 <ul>
                 	<li class="<?php echo (!$quote->podate) ? "active" : "complete"; ?>">
                 		Created <span><?php echo date('M d,Y', strtotime($quote->podate)); ?></span>
@@ -803,11 +809,11 @@ function acceptall()
                 	<?php }?>
                 	<li class="<?php echo $class; ?>"><?php echo $per; ?> Received <span>&nbsp;</span></li>
                 	<li class="<?php echo $closed; ?>">Closed</li>
-                </ul>
+                </ul> 
             </section>
             <div>
                    <h3 class="box-header">Time Line</h3>
-                <div>
+                <div style="float:left; width:100%">
                     <table width="100%">
                         <tr><td style="border-right:2px black solid;" width="10%">
                                     <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>&nbsp;</td><td width="90%">&nbsp;&nbsp;&nbsp;PO #<?php echo $quote->ponum; ?> Submitted</td>

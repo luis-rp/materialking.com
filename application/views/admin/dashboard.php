@@ -89,7 +89,7 @@
 
 
 <link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
-<script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.custom.min.js'></script>
+<script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.js'></script>
 <script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
 <script>
 
@@ -161,7 +161,7 @@
 
  <script type="text/javascript">
 	 $(document).ready(function(){
- tour4 = new Tour({
+ /*tour4 = new Tour({
 	  steps: [
 	  {
 	    element: "#step1",
@@ -171,7 +171,7 @@
 
 
 	]
-	});
+	});*/
 
 	$("#activatetour").click(function(e){
 		  e.preventDefault();
@@ -202,7 +202,7 @@
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
-<h3 class="box-header" style="display:inline" id="step1">
+<h3 class="box-header" style="display:inline" id="step3" >
 				Your Dashboard
 				&nbsp;
 
@@ -371,7 +371,7 @@
 
 	    	</div>
 			<?php }else{?>
-			<div id="step1" class="span8" style="margin-left:1%;">
+			<div  class="span8" style="margin-left:1%;">
 			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php }else{?>
@@ -538,7 +538,7 @@
 				</div>
 		</div>
 
-		<div id="step1" class="span12">	
+		<div  class="span12">	
 				
 				<!--<div class="well span4" style="width:100% !important;" >-->
                 <div class="well span3" >
@@ -623,7 +623,7 @@
 				
 				
 				
-					<div  id="step1" class="well span3">
+					<div   class="well span3">
 		<div class="tiles-title extrabox"  style="float:left; width:100%">
 					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
 
@@ -641,7 +641,7 @@
 	 </div>	
 		
 
-		<div  id="step1" class="well span3">
+		<div   class="well span3">
 		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
 		
 

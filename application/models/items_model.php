@@ -13,13 +13,25 @@ class items_model extends Model {
         $this->keyword = $keyword;
     }
     
-    function getCategoryMenu ($parentid=0) 
+    function getCategoryMenukkkk ($parentid=0) 
     {
     	$this->db->order_by('catname','asc');
         $this->db->where('parent_id',$parentid);
         $menus = $this->db->get('category')->result();
-        $ret = "<ul>";
-        foreach ($menus as $item) 
+       
+	   
+	   
+	    $ret = "<ul>";
+       
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	    foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
             $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
@@ -44,6 +56,52 @@ class items_model extends Model {
         return $ret;
     }
     
+	
+	 function getCategoryMenu ($parentid=0) 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',$parentid);
+        $menus = $this->db->get('category')->result();
+       
+	   
+	   if($parentid==0)
+	   {
+	   
+	    $ret = "<ul class='topmenu' id='css3menu1'>";
+        }
+		else
+		{
+			$ret = "<ul >";
+		}
+	  
+	  
+	    foreach ($menus as $item) 
+        {
+            $subcategories = $this->getSubCategores($item->id,true);
+            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            
+            if(!$hasitems)
+                continue;
+            $this->db->where('parent_id',$item->id);
+            $submenus = $this->db->get('category')->result();
+            if ($submenus) 
+            {
+                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
+                $ret .= $this->getCategoryMenu($item->id); // here is the recursion
+            }
+            else
+            {
+                $ret .= "<li class='topmenu'><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+            }
+            $ret .= "</li>";
+        }
+        $ret .= "</ul>";
+        return $ret;
+    }
+	
+	
+	
 	function getCategoryMenuItems ($parentid=0) 
     {
     	$this->db->order_by('catname','asc');
