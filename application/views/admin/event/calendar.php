@@ -40,7 +40,7 @@
 </style>
 
 
-<section class="row-fluid">
+<section class="row-fluid" id="eventbox">
 	<h3 class="box-header">
 		Events 		<a href="<?php echo site_url('admin/event/add');?>" class="btn btn-green">Add Event</a>
 	</h3>

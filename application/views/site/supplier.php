@@ -529,9 +529,10 @@ $( document ).tooltip();
                         
                         	<?php if(@$members){?>
                         <div>
-                            <p>&nbsp;</p><br/>
-                              <h3 class="titlebox" style="padding:0px 0px 0px 8px">
+                           
+                              <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
                            Meet The Team:</h3>
+                           <div class="meet_team">
                             <table>
                             	
                             	<?php $key = 0; foreach($members as $member){?>
@@ -540,10 +541,19 @@ $( document ).tooltip();
                             	<?php }?>
                             	
                             	<td style="position:relative;">
-                            	<img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/>
-                            	<div style="position: absolute;top:5px;color:#06a7ea"><?php echo $member->name;?><br/><?php echo $member->title;?></div>
-                            	<div style="position: absolute;bottom:5px;color:#06a7ea"><?php echo $member->phone;?><br/><?php echo $member->email;?></div>
-                            	</td>
+                                
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
+  </tr>
+  <tr>
+    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
+  </tr>
+  <tr>
+    <td><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
+  </tr>
+</table>
+</td>
                             	
                             	
                             	
@@ -555,6 +565,7 @@ $( document ).tooltip();
                             	<?php }?>
                             	</tr>
                             </table>
+                           </div>
                         </div>
                         <?php }?>
                         
