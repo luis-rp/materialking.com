@@ -47,7 +47,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
 <?php } ?>
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
-        <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
+        <!--  <link href="templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">-->
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tagsinput.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-tagsinput">
         <link href="<?php echo base_url(); ?>templates/admin/css/jquerytour.css" media="all" rel="stylesheet" type="text/css">
@@ -57,8 +57,17 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-          <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
-
+        <!--  <script src="templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script> -->
+	    <!-- POWERTOUR CORE -->
+	    
+	    <script src="<?php echo base_url(); ?>templates/admin/js/powertour.2.1.0.min.js"></script>            <!-- Core jQuery file -->
+	    <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/powertour.2.1.0.css"/>      <!-- Core CSS file -->
+	    
+	    <!-- POWERTOUR STYLING -->
+	    
+	    <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/powertour-style-clean.css"/><!-- Styling CSS file -->
+	    <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/powertour-connectors.css"/> <!-- Extra styling elements CSS file -->
+	    <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/animate.min.css"/>          <!-- Animation core CSS file -->
         <style type="text/css">
             #theme_switcher
             {
@@ -100,150 +109,70 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 				}else{
                */
 				
-                	if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
+                	//if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
                 ?>
-					var field;
-                tour = new Tour({
-  		    	  steps: [
-  		    	  {
-  		    	    element: "#step1",
-  		    	    title: "Step 1",
-  		    	    content: "Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly."
-  		    	  },
-  		    	  {
-  		    	    element: "#step2",
-  		    	    title: "Step 2",
-  		    	    content: "All of your Quotes, Purchase Orders, Invoices and Items you buy are assigned to a Project and a Cost Code for easy tracking, budgeting and reporting. Let’s add your first Project and Cost Code.",
-  		    	    
-  		    	  },
-  		    	  {
-  			    	    element: "#step3",
-  			    	    title: "Step 3",
-  			    	    content: "The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.", 
-  			    	    reflex:true,
-  			    		  onNext:function(tour){
-  							$("#step3 a").click();
-    	  		    	    }
-  			      },
-  			      {
-    			    	    element: "#step4",
-    			    	    title: "Step 4",
-    			    	    reflex:true,
-    			    	    content: "Please Click on the Projects tab.",
-    			    	   
-    			   },
-    			   {
-        			   	path:"/admin/project",
-			    	    element: "#step5",
-			    	    title: "Step 5",
-			    	    content: "Please Click the Add Project button.",
-			    	    reflex:true,
-			    	 
-    			   },
-    			   {
-        			   	  path:"/admin/project/add",
-    				      element: "#step6",
-    				      title: "Step 6",
-    				      content: "Fill out the form and click Save Project.",
-    				      reflex:true,
-    				     
-    				      onNext: function(tour){
-        				  
-    				    	  $("#form-add-prj").submit();
-        				      }
-    				   
-			  		 },
-			  		 {
-			  			 path:"/admin/project",
-				    	    element: "#step7",
-				    	    title: "Step 7",
-				    	    
-				    	    content: "Congratulations - You have created your first project. Now let's create a Cost Code.",
 
-					 },
-			  		 {
-				  		   
-				    	    element: "#step3",
-				    	    title: "Step 8",
-				    	    content: "Click the Manage tab.",
-				    	    reflex:true,
-				    	 
-				    		  onNext:function(tour){
-		  							$("#step3 a").click();
-		    	  		    	    }
+                $(document).ready(function($){
+                	$('body').powerTour({
+                		tours:[
+                				{
+                				
+                					
+                					steps:[
+                							{
+                								hookTo          : '',//not needed
+                								content         : '#step1',
+                								width           : 350,
+                								position        : 'str',
+                								offsetY         : -80,
+                								offsetX         : -50,
+                								fxIn            : 'lightSpeedIn',
+                								fxOut           : 'bounceOutLeft',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:20',
+                								highlight       : false,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){	},
+                								onHideStep      : function(ui){ }
+                							}
+                							
+                							
+                							
+                					],
+                					stepDefaults:[
+                							{
+                								width           : 300,
+                								position        : 'tr',
+                								offsetY         : 0,
+                								offsetX         : 0,
+                								fxIn            : 'fadeIn',
+                								fxOut           : 'fadeOut',
+                								showStepDelay   : 0,
+                								center          : 'step',
+                								scrollSpeed     : 400,
+                								scrollEasing    : 'swing',
+                								scrollDelay     : 0,
+                								timer           : '00:00',
+                								highlight       : true,
+                								keepHighlighted : false,
+                								onShowStep      : function(ui){ },
+                								onHideStep      : function(ui){ }
+                							}
+                					]
+                				},
+                				
+                			]
+                	});
 
-					 },
-			  		 {
-				  		   
-				    	    element: "#step9",
-				    	    title: "Step 9",
-				    	    content: "Click the Cost Code option.",
-				    	    reflex:true,
-				    	    
+                	$('body').powerTour('run',0);
+                });
+                  	  		
 
-					 },
-			  		 {
-				  		    path:"/admin/costcode",
-				    	    element: "#step10",
-				    	    title: "Step 10",
-				    	    content: "Click Add Cost Code.",
-				    	    reflex:true,
-				    	    
-
-					 },
-					 {
-						 path:"/admin/costcode/add",
-				    	    element: "#step11",
-				    	    title: "Step 11",
-				    	    content: "Fill out the form and click Update Cost Code.",
-				    	    reflex:true,
-				    	  
-
-					 },
-					 {
-				  		   
-				    	    element: "#step12",
-				    	    title: "Step 12",
-				    	    prev:-1,
-				    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending.",
-
-					 },
-			  		 
-			    	  
-  		    	],
-				onEnd:function(tour){
-						$.ajax({
-							url:"<?php echo base_url("/admin/admin/finish_user_tour");?>",
-							});
-					}
-  		    	});
-                <?php if(isset($viewname) && $viewname=="dashboard"){?>
-               tour.restart();
-               <?php } ?>
-  		    	// Initialize the tour
-  		    	tour.init();
-
-  		    	// Start the tour
-  		    	tour.start();
-  		  /*  	$("#step6").click(function(e){
-					if(!$("#title").val()){
-						alert("Please fill out Title Field");
-						return false;
-					}
-  	  		    });*/
-  		    	
-  		     $("#pages-dropdown","#step3").click(function(e){
-  	  	
-  	  		    	//alert(tour.getCurrentStep());
-  	  		    	 
-  	  		    	if(e.hasOwnProperty('originalEvent') && (tour.getCurrentStep()==2 || tour.getCurrentStep()==7)){
-						tour.next();
-  	  		    	}
-  	  		    });
-
-  	  		
-
-  	  		    <?php } ?>
+  	  		    <?php //} ?>
   	  		    
   	  		   
 				//	} 
@@ -641,5 +570,23 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         </section>
         <!-- <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>-->
+        
+        <!-- *********** -->
+		<!-- STEPS       -->
+        <!-- *********** -->
+         <div id="step1" class="single-step">
+            <header>
+               <h3>1. Welcome to the tour</h3>
+            </header>
+            <p>
+            Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly.
+            </p>
+            <footer>
+                <a href="#" class="btn btn-default" data-powertour-action="stop">Cancel</a>
+                <a href="#" class="btn btn-primary pull-right" data-powertour-action="next">Continue</a>
+            </footer> 
+        </div>
+        
+        
     </body>
 </html>
