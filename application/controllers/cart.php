@@ -331,7 +331,7 @@ class cart extends CI_Controller
 			}
 			catch(Exception $e)
 			{
-				mail('krevye@gmail.com', 'Error from  - EasyPost', var_export($e,1));
+				mail('krevye@gmail.com', 'Error from  - EasyPost', $e);
 				redirect('cart');
 			}
 			
