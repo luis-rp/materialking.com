@@ -86,6 +86,12 @@ padding:5px 0px;
         $(".join-newsletter").click(function(){
         	$( "#dialog-form" ).dialog();
             });
+        $("#subscribe").click(function(){
+				if(confirm("Are you sure"))
+					$("#form-addsubscriber").submit();
+				
+					
+            });
     });
 
     function industryitems(id)
@@ -1038,9 +1044,10 @@ $( document ).tooltip();
                     </div>
                  </div>
                 <?php }?>
-               <!-- Start Dialog Form -->  <div class="dialog-form" id="dialog-form">
+               <!-- Start Dialog Form -->  
+               <div class="dialog-form" id="dialog-form">
 						
-				            		<form  role="form" method="post" action="<?php echo base_url();?>subscriber/addsubscriber">
+				            		<form  role="form" method="post" name="form-addsubscriber" id="form-addsubscriber" action="<?php echo base_url();?>subscriber/addsubscriber">
 				                     <div class="col-md-6 col-sm-6 col-xs-6">
 				 					<?php  foreach($fields as $key=>$field) { $name_id=trim($field->Label);  ?><br>
 				 					<div class="form-group">
@@ -1074,7 +1081,7 @@ $( document ).tooltip();
 					                        <label class="form-label"></label>
 					                        <div class="controls">
 					                        	  <input type="hidden" name="cid" class="cid" value="<?php echo $supplier->id;?>">
-					                              <input type="submit" value="Subscribe" name="subscribe" class="btn btn-primary btn-lg">
+					                              <input type="button" value="Subscribe" name="subscribe" id="subscribe" class="btn btn-primary btn-lg">
 					                        </div>
 					                    </div>
 				 						 </div>
