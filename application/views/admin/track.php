@@ -468,7 +468,10 @@ function acceptall()
                                 <td><?php echo $q->itemname; ?></td>
                                 <td><div id="topLoader<?php echo $counter_kk; ?>">      
     
-      <?php $new_pr_value = ($q->received/100) *10; ?>
+      <?php
+      //$q->quantity;//100%
+      $new_pr_value = round(($q->received * 100) / $q->quantity); 
+      //$new_pr_value = ($q->received/100) *10; ?>
        
        <script>
         $(function() {
