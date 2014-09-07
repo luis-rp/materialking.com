@@ -324,7 +324,7 @@ tr.still-due td
 	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
 	                  	<?php }?>
 					</td>
-					<td><input type="text" class="span daterequested highlight" name="daterequested" value="<?php echo date('m/d/Y',strtotime($i->datedue));?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
+					<td><input type="text" class="span daterequested highlight" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
 				</tr>
 				<?php }?>
 			</table>
