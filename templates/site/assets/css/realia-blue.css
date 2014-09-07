@@ -4367,4 +4367,159 @@ background-image:url(../img/icon-15.png);
 }
 
 /*--------------------------------menubar------------------------------------*/
-.free{ position:absolute; left:0px; z-index:999}
+.free{ position: fixed; left:0px; z-index:999}
+
+
+
+ul#css3menu1, ul#css3menu1 ul {
+    background-color: #ffffff;
+    border-style: solid;
+    border-width: 0;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+ul#css3menu1 ul {
+    background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 0 7px #ffffff;
+    /*left: 200%;*/
+    opacity: 0;
+    padding: 0 7px 7px;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.5s ease 0s, left 0.5s ease 0s;
+    visibility: hidden;
+}
+ul#css3menu1 li:hover > ul {
+    opacity: 1;
+    visibility: visible;
+}
+ul#css3menu1 li {
+    display: block;
+    font-size: 0;
+    position: relative;
+    white-space: nowrap;
+}
+ul#css3menu1 li:hover {
+    z-index: 1;
+}
+ul#css3menu1 ul ul {
+  /*  left: 200%;*/
+    position: absolute;
+    top: 0;
+}
+
+
+ul#css3menu1 > li:hover > ul {
+    left: -100%;
+}
+ul#css3menu1 ul li:hover > ul {
+    left: -100%;
+}
+
+
+ul#css3menu1 {
+    background-color: #00b4dc;
+    border-radius: 0;
+    display: block;
+    float: left;
+    font-size: 0;
+/*    padding: 0 6px 6px;*/
+    position: relative;
+    z-index: 999;
+	width:100%;
+}
+ul#css3menu1 > li {
+    margin: 0px 0 0;
+	border-bottom: solid 2px #fff;
+}
+ul#css3menu1 a:active, ul#css3menu1 a:focus {
+    outline-style: none;
+}
+ul#css3menu1 a {
+    background-repeat: repeat;
+    border-style: none;
+    border-width: 0;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+/*   font: 13px Tahoma,sans-serif;*/
+    padding: 3px;
+    text-align: left;
+    text-decoration: none;
+    vertical-align: middle;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:15px;
+}
+ul#css3menu1 ul li {
+    float: none;
+    margin: 7px 0 0;
+	background:#06a7ea;
+}
+ul#css3menu1 ul a {
+    background-color: transparent;
+    border-color: #cccccc;
+    border-radius: 0;
+    border-style: dotted;
+    border-width: 0 0 1px;
+    color: #fff;
+    font: 14px Tahoma,sans-serif;
+    padding: 5px 0;
+    text-align: left;
+    text-decoration: none;
+}
+ul#css3menu1 li:hover > a, ul#css3menu1 li a.pressed {
+    border-style: none;
+    color: #ffffff;
+    text-decoration: none;
+}
+ul#css3menu1 img {
+    border: medium none;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+ul#css3menu1 ul span {
+    background-image: none;
+    padding-right: 5px;
+}
+ul#css3menu1 ul li:hover > a, ul#css3menu1 ul li a.pressed {
+    background-color: transparent;
+    border-color: #cccccc;
+    border-style: dotted;
+    color: #fff;
+    text-decoration: none;
+}
+ul#css3menu1 > li > a {
+    padding: 10px;
+}
+ul#css3menu1 li.topmenu > a {
+    background-color: #00b4dc;
+    border-radius: 0;
+    color: #ffffff;
+   font: 14px Tahoma,sans-serif;
+    padding: 10px;
+    text-shadow: none;
+}
+ul#css3menu1 li.topmenu:hover > a, ul#css3menu1 li.topmenu a.pressed {
+    background-color: #00b4dc;
+    color: #cfcfcf;
+    text-shadow: none;
+}
+ul#css3menu1 li.toplast > a {
+    background-color: #00b4dc;
+    border-radius: 0;
+    border-width: 0;
+    color: #ffffff;
+   font: 14px Tahoma,sans-serif;
+    padding: 10px;
+    text-shadow: none;
+}
+ul#css3menu1 li.toplast:hover > a, ul#css3menu1 li.toplast a.pressed {
+    background-color: #00b4dc;
+    color: #cfcfcf;
+    text-shadow: none;
+}
+ul#css3menu1 li.sublast > a {
+    border-width: 0;
+}

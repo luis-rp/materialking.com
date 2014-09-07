@@ -28,153 +28,7 @@
 </style>
 
 
-<style>
-
-ul#css3menu1, ul#css3menu1 ul {
-    background-color: #ffffff;
-    border-style: solid;
-    border-width: 0;
-    list-style: none outside none;
-    margin: 0;
-    padding: 0;
-}
-ul#css3menu1 ul {
-    background-color: #ffffff;
-    border-radius: 3px;
-    box-shadow: 0 0 7px #ffffff;
-    left: 200%;
-    opacity: 0;
-    padding: 0 7px 7px;
-    position: absolute;
-    top: 0;
-    transition: opacity 0.5s ease 0s, left 0.5s ease 0s;
-    visibility: hidden;
-}
-ul#css3menu1 li:hover > ul {
-    opacity: 1;
-    visibility: visible;
-}
-ul#css3menu1 li {
-    display: block;
-    font-size: 0;
-    position: relative;
-    white-space: nowrap;
-}
-ul#css3menu1 li:hover {
-    z-index: 1;
-}
-ul#css3menu1 ul ul {
-    left: 200%;
-    position: absolute;
-    top: 0;
-}
-ul#css3menu1 > li:hover > ul {
-    left: 100%;
-}
-ul#css3menu1 ul li:hover > ul {
-    left: 100%;
-}
-ul#css3menu1 {
-    background-color: #00b4dc;
-    border-radius: 0;
-    display: block;
-    float: left;
-    font-size: 0;
-    padding: 0 6px 6px;
-    position: relative;
-    z-index: 999;
-}
-ul#css3menu1 > li {
-    margin: 6px 0 0;
-}
-ul#css3menu1 a:active, ul#css3menu1 a:focus {
-    outline-style: none;
-}
-ul#css3menu1 a {
-    background-repeat: repeat;
-    border-style: none;
-    border-width: 0;
-    color: #000000;
-    cursor: pointer;
-    display: block;
-    font-size: small;
-    padding: 3px;
-    text-align: left;
-    text-decoration: none;
-    vertical-align: middle;
-}
-ul#css3menu1 ul li {
-    float: none;
-    margin: 7px 0 0;
-}
-ul#css3menu1 ul a {
-    background-color: transparent;
-    border-color: #cccccc;
-    border-radius: 0;
-    border-style: dotted;
-    border-width: 0 0 1px;
-    color: #555555;
-    font: 13px Tahoma,sans-serif;
-    padding: 5px 0;
-    text-align: left;
-    text-decoration: none;
-}
-ul#css3menu1 li:hover > a, ul#css3menu1 li a.pressed {
-    border-style: none;
-    color: #ffffff;
-    text-decoration: none;
-}
-ul#css3menu1 img {
-    border: medium none;
-    margin-right: 3px;
-    vertical-align: middle;
-}
-ul#css3menu1 ul span {
-    background-image: none;
-    padding-right: 5px;
-}
-ul#css3menu1 ul li:hover > a, ul#css3menu1 ul li a.pressed {
-    background-color: transparent;
-    border-color: #cccccc;
-    border-style: dotted;
-    color: #00b4dc;
-    text-decoration: none;
-}
-ul#css3menu1 > li > a {
-    padding: 10px;
-}
-ul#css3menu1 li.topmenu > a {
-    background-color: #00b4dc;
-    border-radius: 0;
-    color: #ffffff;
-    font: 20px Yanone Kaffeesatz,Arial,Helvetica,sans-serif;
-    padding: 10px;
-    text-shadow: none;
-}
-ul#css3menu1 li.topmenu:hover > a, ul#css3menu1 li.topmenu a.pressed {
-    background-color: #00b4dc;
-    color: #cfcfcf;
-    text-shadow: none;
-}
-ul#css3menu1 li.toplast > a {
-    background-color: #00b4dc;
-    border-radius: 0;
-    border-width: 0;
-    color: #ffffff;
-    font: 20px Yanone Kaffeesatz,Arial,Helvetica,sans-serif;
-    padding: 10px;
-    text-shadow: none;
-}
-ul#css3menu1 li.toplast:hover > a, ul#css3menu1 li.toplast a.pressed {
-    background-color: #00b4dc;
-    color: #cfcfcf;
-    text-shadow: none;
-}
-ul#css3menu1 li.sublast > a {
-    border-width: 0;
-}
-
-</style>
+ 
 
 
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
@@ -466,14 +320,14 @@ ul#css3menu1 li.sublast > a {
                                     
                     <h2>Item Filter</h2>
                     
-                    <div>
+                    <div class="content_sup" style="height:72px;">
                         
                         <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
                             
-                            <div class="location control-group">
+                            <div class="location control-group" style="margin:0px;">
                             	<?php $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>

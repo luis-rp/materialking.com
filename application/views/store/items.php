@@ -377,10 +377,9 @@ $( document ).tooltip();
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-
-                            <div class="location control-group">
+                           <!-- <div class="location control-group">-->
                             	<?php $this->load->view('site/catmenu.php');?>
-                            </div>
+                            <!--</div>-->
                         </form>
 
                         <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">

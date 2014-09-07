@@ -202,7 +202,7 @@
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
-<h3 class="box-header" style="display:inline" id="step3" >
+<h3 class="box-header" style="display:inline"  >
 				Your Dashboard
 				&nbsp;
 

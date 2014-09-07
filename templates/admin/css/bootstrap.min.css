@@ -5432,4 +5432,20 @@ td.minimum
 .datagrid-header-right table td:hover{ background:none}
 
 /*-----------------------------Breadcume---------------------------------------*/
- 
+    
+      #topLoader {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 32px;
+      }
+      
+      #container {
+        width: 100px;
+        padding: 10px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      #animateButton {
+        width: 100px;
+      }
