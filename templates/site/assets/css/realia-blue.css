@@ -4523,3 +4523,28 @@ ul#css3menu1 li.toplast:hover > a, ul#css3menu1 li.toplast a.pressed {
 ul#css3menu1 li.sublast > a {
     border-width: 0;
 }
+	.bxcontainer  nav{
+		position: relative;
+width: 96px;
+margin: 0 auto;
+margin-bottom: 30px;
+		}
+		.bxcontainer  nav span:first-child {
+background-position: 0 0;
+}
+		.bxcontainer nav span {
+	width: 40px;
+	height: 40px;
+	margin: 0 4px;
+	float: left;
+	background: url(../img/nav.png) no-repeat 100% 0;
+	text-indent: -9000px;
+	cursor: pointer;
+	border-radius: 50%;
+	box-shadow: 0 2px 3px rgba(0,0,0,0.5);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}

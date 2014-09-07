@@ -252,6 +252,7 @@ class quote_model extends Model {
                 //print_r($companyitem);die;
                 $awarditems[] = $awarditem;
             }
+            log_message('debug',var_export($awarditems,true));
             $item->items = $awarditems;
             /*
               $invoicesql = "SELECT r.*, ai.itemname
