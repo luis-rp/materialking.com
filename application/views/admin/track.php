@@ -53,6 +53,9 @@ $per .='%';
 -->
 
 <script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+   
+    <script src="<?php echo base_url(); ?>templates/admin/js/jquery.percentageloader-0.1.js"></script>
 
 <script type="text/javascript">
 	var clock;
@@ -446,8 +449,18 @@ function acceptall()
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
-                        <?php $alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) { ?>
-                        <?php $alltotal+=$q->totalprice; ?>
+                       
+					    <?php 
+						
+						$counter_kk = 1;
+						
+						$alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) { 
+						
+						$counter_kk++;
+						
+						?>
+                       
+					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
                                 <td><?php echo $q->itemcode; ?></td>
@@ -457,6 +470,47 @@ function acceptall()
                                 <?php if($q->received != '0.00' && $q->received != ''){?>
                                 <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
                                 <?php }?>
+                             
+      
+	  <div id="topLoader<?php echo $counter_kk; ?>">      
+    
+      <?php $new_pr_value = $q->received/100; ?>
+       
+       <script>
+        $(function() {
+          var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : true, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
+              $topLoader.setValue(Math.round(<?php echo $q->received;?>));
+            }});
+
+          var topLoaderRunning = false;
+          $("#animateButton").click(function() {
+            if (topLoaderRunning) {
+              return;
+            }
+            topLoaderRunning = true;
+            $topLoader.setProgress(0);
+            $topLoader.setValue('0kb');
+            var kb = 0;
+            var totalKb = 999;
+            
+            var animateFunc = function() {
+              kb += 17;
+              $topLoader.setProgress(kb / totalKb);
+              $topLoader.setValue(kb.toString() + 'kb');
+              
+              if (kb < totalKb) {
+                setTimeout(animateFunc, 25);
+              } else {
+                topLoaderRunning = false;
+              }
+            }
+            
+            setTimeout(animateFunc, 25);
+            
+          });
+        });      
+      </script>
+    </div>
                                 </td>
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>

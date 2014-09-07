@@ -67,11 +67,11 @@ class items_model extends Model {
 	   if($parentid==0)
 	   {
 	   
-	    $ret = "<ul class='topmenu' id='css3menu1'>";
+	    $ret = "<ul class='topmenu' id='css3menu1' >";
         }
 		else
 		{
-			$ret = "<ul >";
+			$ret = "<ul class='topmenu' id='css3menu1' >";
 		}
 	  
 	  

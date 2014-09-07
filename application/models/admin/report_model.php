@@ -13,8 +13,8 @@ class report_model extends Model
  		$filter = '';
  		if(!@$_POST)
  		{
- 			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
- 			$_POST['searchto'] = date('m/d/Y');
+ 			$_POST['searchfrom'] = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+ 			$_POST['searchto'] = date('Y-m-d');
  		}
  		if(@$_POST)
  		{
@@ -22,18 +22,18 @@ class report_model extends Model
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%m/%d/%Y') >= '$fromdate'
- 						    AND STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate'";
+ 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
+ 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
  			}
  			elseif(@$_POST['searchfrom'])
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%m/%d/%Y') >= '$fromdate'";
+ 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'";
  			}
  			elseif(@$_POST['searchto'])
  			{
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate'";
+ 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
  			}
  			if(@$_POST['searchcompany'])
  			{

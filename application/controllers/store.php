@@ -119,7 +119,7 @@ class Store extends CI_Controller
         ->get()
         ->result();
         //echo '<pre>';print_r($dealitems);//die;
-        $data['dealfeed'] = array();
+        $this->data['dealfeed'] = array();
         foreach($dealitems as $di)
         {
         	if($di->dealactive)
@@ -141,11 +141,11 @@ class Store extends CI_Controller
         		if($di->memberonly)
         		{
         			if($this->session->userdata('site_loggedin'))
-        				$data['dealfeed'][] = $di;
+        				$this->data['dealfeed'][] = $di;
         		}
         		else
         		{
-        			$data['dealfeed'][] = $di;
+        			$this->data['dealfeed'][] = $di;
         		}
         	}
         }
@@ -192,7 +192,7 @@ class Store extends CI_Controller
         	$this->image_lib->resize();
         	 
         }
-        $data['adforsupplier']=$ads;
+        $this->data['adforsupplier']=$ads;
         $this->load->view('store/items', $this->data);
 	}
 }

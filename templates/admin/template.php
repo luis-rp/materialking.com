@@ -820,7 +820,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);
 						 ?>                               
-              <li   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+              <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
                            
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                             <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >

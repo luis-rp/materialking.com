@@ -119,6 +119,9 @@ $( document ).tooltip();
 </script>
 <script type="text/javascript" charset="utf-8">
     $(document).ready( function() {
+        $("#requestLink").click(function(){
+			$("#requestModalForm").modal();
+            });
     	$("#daterequested").datepicker();
         $("#day").datepicker();
         $("#time").timepicker({
@@ -1005,7 +1008,7 @@ $( document ).tooltip();
                                     <div class="controls">
                                     	We are construction procurement professionals and are happy to help.
                                     </div>
-                                    <a href="#form">Request</a>
+                                    <a href="javascript:void(0)" id="requestLink">Request</a>
                                 </div>
                             </form>
                         </div>
@@ -1107,7 +1110,65 @@ $( document ).tooltip();
             </div>
         </div>
 
-        
+         <!-- Request Modal Form -->
+        <div class="modal hide fade" id="requestModalForm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                       
+                           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+                            <h3 class="modal-title nobottompadding" id="myModalRequestLabel">Request Assistance</h3>
+                    </div>
+                   <form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>">
+        					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
+        					  <div class="newbox"> <table cellpadding="4" cellspacing="4">
+        						<tr>
+        							<td width="200">Type:</td>
+        							<td>
+        								<select id="requresttype" name="type" onchange="setlabel()">
+        									<option value="Request Phone Assistance">Request Phone Assistance</option>
+        									<option value="Schedule Appointment">Schedule Appointment</option>
+        								</select>
+        							</td>
+        						</tr>
+        						<tr>
+        							<td>Name</td>
+        							<td><input type="text" name="name" required/></td>
+        						</tr>
+        						<tr>
+        							<td>Email</td>
+        							<td><input type="email" name="email" required/></td>
+        						</tr>
+        						
+        						<tr>
+        							<td>Phone</td>
+        							<td><input type="text" name="phone" required/></td>
+        						</tr>
+        						
+        						<tr>
+        							<td id="daytd">Best day to call</td>
+        							<td><input type="text" id="day" name="day"/></td>
+        						</tr>
+        						
+        						<tr>
+        							<td id="timetd">Best time to call</td>
+        							<td><input type="text" id="time" name="time" value="6:00am"/></td>
+        						</tr>
+        						
+        						<tr>
+        							<td>Regarding</td>
+        							<td><textarea name="regarding" rows="5" style="width: 350px;"></textarea>
+        						</tr>
+        						<tr>
+        							<td></td>
+        							<td><input type="submit" class="btn btn-primary" value="Send"/></td>
+        						</tr>
+        					</table> </div>
+        				</form>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal Form -->
         
         <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
     <div class="modal-dialog">

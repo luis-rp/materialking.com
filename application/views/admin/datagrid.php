@@ -159,7 +159,7 @@
                </tr>
               </tfoot>
             </table>
-            <?php if($jsfile!="itemcodeitemjs.php" && !@$items2) echo "No Records Exist"; ?>
+            <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo "No Records Exist"; ?>
            </div>
          </div>
 

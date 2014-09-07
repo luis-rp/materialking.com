@@ -569,6 +569,7 @@ class site extends CI_Controller
             	$di->phone = "";
                 $di->unit = $orgitem->unit;	
                 $di->url = $orgitem->url;
+                if(!$di->image)
                 $di->image = $orgitem->item_img;
                 $di->itemcode = $cmpitem->itemcode;
                 if($di->memberonly)
