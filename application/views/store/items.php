@@ -487,58 +487,17 @@ $( document ).tooltip();
                     </div>
                     
                     <?php if(@$adforsupplier){?>
-                   <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/modernizr.custom.79639.js"></script>
-			        <script type="text/javascript" src="<?php echo base_url();?>templates/site/assets/js/jquery.windy.js"></script>
-			        <script type="text/javascript">	
-						$(function() {
-			
-							var $el = $( '#wi-el' ),
-								windy = $el.windy(),
-								allownavnext = false,
-								allownavprev = false;
-			
-							$( '#nav-prev' ).on( 'mousedown', function( event ) {
-			
-								allownavprev = true;
-								navprev();
-							
-							} ).on( 'mouseup mouseleave', function( event ) {
-			
-								allownavprev = false;
-							
-							} );
-			
-							$( '#nav-next' ).on( 'mousedown', function( event ) {
-			
-								allownavnext = true;
-								navnext();
-							
-							} ).on( 'mouseup mouseleave', function( event ) {
-			
-								allownavnext = false;
-							
-							} );
-			
-							function navnext() {
-								if( allownavnext ) {
-									windy.next();
-									setTimeout( function() {	
-										navnext();
-									}, 150 );
-								}
-							}
-							
-							function navprev() {
-								if( allownavprev ) {
-									windy.prev();
-									setTimeout( function() {	
-										navprev();
-									}, 150 );
-								}
-							}
-			
-						});
-					</script>
+                   <script src="<?php echo base_url(); ?>templates/site/assets/js/jquery.bxslider.min.js"></script>
+					<!-- bxSlider CSS file -->
+					<link href="<?php echo base_url(); ?>templates/site/assets/css/jquery.bxslider.css" rel="stylesheet" />
+					
+					        <script type="text/javascript">	
+								$(function() {$('.bxslider').bxSlider({
+									  
+									});
+					
+								});
+							</script>
               
                     <div class="widget contact">
                     <div class="title">
@@ -548,18 +507,15 @@ $( document ).tooltip();
                            
                                 <div class="control-group">
                                
-                                   <div class="controls windy-demo">
-                                   		<ul id="wi-el" class="wi-container">
+                                   <div class="controls bxcontainer">
+                                   		<ul class="bxslider">
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
                                     	<li><img  src="<?php 
                                     	$pathinfo = pathinfo($ad->image);
                                     	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
-                                    	<nav>
-											<span id="nav-prev">prev</span>
-											<span id="nav-next">next</span>
-										</nav>
+                                    	
                                      </div>
                                 </div>
                             

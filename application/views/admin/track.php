@@ -427,6 +427,7 @@ function acceptall()
                         <th>Company</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
+                        <th>Item Progress</th>
                         <th>Qty.</th>
                         <th>Unit</th>
                         <th>Price EA</th>
@@ -465,16 +466,9 @@ function acceptall()
                                 <td><?php echo @$q->companydetails->title; ?></td>
                                 <td><?php echo $q->itemcode; ?></td>
                                 <td><?php echo $q->itemname; ?></td>
-                                <td>
-                                <?php echo $q->quantity; ?>
-                                <?php if($q->received != '0.00' && $q->received != ''){?>
-                                <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
-                                <?php }?>
-                             
-      
-	  <div id="topLoader<?php echo $counter_kk; ?>">      
+                                <td><div id="topLoader<?php echo $counter_kk; ?>">      
     
-      <?php $new_pr_value = $q->received/100; ?>
+      <?php $new_pr_value = ($q->received/100) *10; ?>
        
        <script>
         $(function() {
@@ -510,7 +504,15 @@ function acceptall()
           });
         });      
       </script>
-    </div>
+    </div></td>
+                                <td>
+                                <?php echo $q->quantity; ?>
+                                <?php if($q->received != '0.00' && $q->received != ''){?>
+                                <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
+                                <?php }?>
+                             
+      
+	  
                                 </td>
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
