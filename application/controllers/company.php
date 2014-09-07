@@ -1282,6 +1282,10 @@ class Company extends CI_Controller {
 			$data['title'] = $res->title;
 			$data['body'] = $res->body;
 			$data['id'] = $this->session->userdata('company')->id;
+
+			$this->db->where("CompanyID",$this->session->userdata('company')->id);
+			$data['fields'] = $this->db->get("formsubscription")->result();
+			
 			$this->load->view('company/newnewslettertemplate',$data);
 		}else{
 			$this->session->set_flashdata('message', 'The template doesnt exist');

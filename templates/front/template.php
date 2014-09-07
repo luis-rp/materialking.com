@@ -27,7 +27,7 @@
 	{
 		$menu = 'createformfields';
 	}
-	if($function=='mailinglist' || $function == 'newtemplate' || $function=="listsubscribers" || $function=="listtemplates" || $function=="edittemplate" || $function=="formsubscriptionsview" || $function=="listpretemplates")
+	if($function=='mailinglist' || $function == 'newtemplate' || $function=="listsubscribers" || $function=="listtemplates" || $function=="edittemplate" || $function=="formsubscriptionsview" || $function=="listpretemplates" || $function=="createformsubscriptions")
 	{
 		$menu = 'mailinglist';
 	}

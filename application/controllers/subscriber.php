@@ -11,16 +11,11 @@ class subscriber extends CI_Controller
 	
 	public function addsubscriber(){
 
-
-		
 			$post = $this->input->post();
 			$cid = $this->input->post("cid");
 			unset($post["cid"]);
 			unset($post["subscribe"]);
 		
-
-			
-			
 			$data;
 			if ($this->session->userdata('site_loggedin'))
 			{
@@ -35,8 +30,18 @@ class subscriber extends CI_Controller
 			
 				$this->db->insert("newsletter_subscribers_data",array("subscriber_id"=>$lastid,"name"=>$key,"value"=>$value));
 			}
+		
 			
 			$supplier = $this->supplier_model->get_supplierbyid($cid);
+			if($this->input->post("email")){
+				$this->email->from($supplier->primaryemail);
+				$this->email->to($this->input->post("email"));
+			
+				$this->email->subject('Welcome to '.$supplier->title.' Newsletter');
+				$this->email->message('You have successfully subscribed to '.$supplier->title.' newsletter');
+			
+				$this->email->send();
+			}
 			redirect('site/supplier/'.$supplier->username);
 	
 	}
@@ -67,13 +72,13 @@ class subscriber extends CI_Controller
 			$subscribers_data = $this->db->get("newsletter_subscribers_data")->result();
 			$email;
 			foreach($subscribers_data as $vars){
-				$template_content = str_replace("{".$vars['name']."}",$vars['value'],$template_content);
-				if($vars['name']="email")
-					$email = $vars['name'];
+				$template_content = str_replace("{".$vars->name."}",$vars->value,$template_content);
+				if($vars->name="email")
+					$email = $vars->name;
 			}
 			$this->email->clear();
 			$this->email->to($email);
-			$this->email->from('your@example.com');
+			$this->email->from($company->primaryemail);
 			$this->email->subject('Newsletter from  '.$company->title);
 			$this->email->message($template_content);
 			if($this->email->send())
