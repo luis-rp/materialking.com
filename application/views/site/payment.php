@@ -176,13 +176,14 @@ $(document).ready(function() {
                     
                 </div>
             </div>
-			<div class=shippingInfo">
+			<div class="shippingInfo">
 				<input type="hidden" name="name" value="<?php echo $name;?>">
 				<input type="hidden" name="street" value="<?php echo $street;?>">
 				<input type="hidden" name="city" value="<?php echo $city;?>">
 				<input type="hidden" name="state" value="<?php echo $state;?>">
 				<input type="hidden" name="zip" value="<?php echo $zip;?>">
 				<input type="hidden" name="country" value="<?php echo $country;?>">
+                <input type="hidden" name="itemshipping" value="<?php echo $itemshipping;?>">
 			</div>
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
