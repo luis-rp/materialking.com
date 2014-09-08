@@ -202,7 +202,7 @@
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
-<h3 class="box-header" style="display:inline"  >
+<h3 class="box-header" style="display:inline" id="step1" >
 				Your Dashboard
 				&nbsp;
 
@@ -355,7 +355,7 @@
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>
 	    	</div>
 
-
+			
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
 	    		<h3 class="box-header" style="width:94.5%">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
@@ -372,12 +372,7 @@
 	    	</div>
 			<?php }else{?>
 			<div  class="span8" style="margin-left:1%;">
-			<?php if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){ ?>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<?php }else{?>
-				<?php if($settingtour) { ?>
-				&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="<?php echo base_url("/admin/admin/restart_tour");?>">Restart Tour</a>
-			<?php } ?>
+		
 
 			<div class="well span4" style=" margin-top:15px; width:100%;" >
 					<h3 class=" box-header" >Activity Feed</h3>
@@ -661,7 +656,7 @@
 
 
 				</div>
-		<?php }?>
+		<?php //making error dashboard}?>
 			</div>
 
 			<?php }?>	

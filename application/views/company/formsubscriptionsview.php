@@ -12,6 +12,21 @@
                    <div class="row">
             		<form  class="animated fadeIn" role="form" method="post" action="saveformdata">
                      <div class="col-md-6 col-sm-6 col-xs-6">
+	                     <div class="form-group">
+	    						<label for="label" class="form-label">Name:</label>
+	    						<div class="controls"> 
+	    							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required value="Name">
+	    						</div>
+	                     </div>
+	                     
+	                     <div class="form-group">
+	    						<label for="label" class="form-label">Email:</label>
+	    						<div class="controls"> 
+	    							<input type="text" class="form-control" id="email" name="email" placeholder="Email" required value="Email">
+	    						</div>
+	                     </div>
+                     
+                     
                      <?php if($result){ ?>
  					<?php  foreach($result as $key=>$fields) { $name_id=trim($fields->Label);  ?><br>
  					<div class="form-group">

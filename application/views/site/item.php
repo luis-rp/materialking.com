@@ -129,6 +129,13 @@ $( document ).tooltip();
             'maxTime': '11:30pm',
             'showDuration': false
         });
+
+        $("#day-modal-req").datepicker();
+        $("#time-modal-req").timepicker({
+            'minTime': '6:00am',
+            'maxTime': '11:30pm',
+            'showDuration': false
+        });
         
     	$('#datatable').dataTable( {
     		"sPaginationType": "full_numbers",
@@ -416,6 +423,7 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
+            
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h3 class="titlebox">
@@ -1147,12 +1155,12 @@ $( document ).tooltip();
         						
         						<tr>
         							<td id="daytd">Best day to call</td>
-        							<td><input type="text" id="day" name="day"/></td>
+        							<td><input type="text" id="day-modal-req" name="day-modal-req"/></td>
         						</tr>
         						
         						<tr>
         							<td id="timetd">Best time to call</td>
-        							<td><input type="text" id="time" name="time" value="6:00am"/></td>
+        							<td><input type="text" id="time-modal-req" name="time-modal-req" value="6:00am"/></td>
         						</tr>
         						
         						<tr>

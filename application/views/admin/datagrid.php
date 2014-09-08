@@ -380,7 +380,9 @@
          <?php
          }
          ?>
-				<?php if(isset($orders)) { ?>
+				<?php 
+				if(isset($jsfile) && $jsfile=="costcodeitemjs.php"){
+				if( isset($orders)) { ?>
 
                 <table id="datatable" class="table table-bordered">
                     <thead>
@@ -426,7 +428,9 @@
             	<table id="datatable" class="table">
             	<tr><td>No Purchase Orders.</td></tr>
             	</table>
-            	<?php }?>
+            	<?php }
+            	}
+            	?>
             </div>
       </div>
     </div>

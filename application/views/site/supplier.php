@@ -1000,7 +1000,7 @@ $( document ).tooltip();
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
                                     	<li><img  src="<?php 
                                     	$pathinfo = pathinfo($ad->image);
-                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
                                     	
@@ -1016,6 +1016,19 @@ $( document ).tooltip();
 						
 				            		<form  role="form" method="post" name="form-addsubscriber" id="form-addsubscriber" action="<?php echo base_url();?>subscriber/addsubscriber">
 				                     <div class="col-md-6 col-sm-6 col-xs-6">
+				                     <div class="form-group">
+				    						<label for="label" class="form-label">Name:</label>
+				    						<div class="controls"> 
+				    							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+				    						</div>
+				                     </div>
+	                     
+				                     <div class="form-group">
+				    						<label for="label" class="form-label">Email:</label>
+				    						<div class="controls"> 
+				    							<input type="text" class="form-control" id="email" name="email" placeholder="email" required >
+				    						</div>
+				                     </div>
 				 					<?php  foreach($fields as $key=>$field) { $name_id=trim($field->Label);  ?><br>
 				 					<div class="form-group">
 				    						<label for="label" class="form-label"><?php echo $field->Label ?></label>

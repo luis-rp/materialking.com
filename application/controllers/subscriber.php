@@ -70,11 +70,11 @@ class subscriber extends CI_Controller
 			$template_content = $template->body;
 			$this->db->where("subscriber_id",$item->id);
 			$subscribers_data = $this->db->get("newsletter_subscribers_data")->result();
-			$email;
+			$email="";
 			foreach($subscribers_data as $vars){
 				$template_content = str_replace("{".$vars->name."}",$vars->value,$template_content);
-				if($vars->name="email")
-					$email = $vars->name;
+				if($vars->name=="email")
+					$email = $vars->value;
 			}
 			$this->email->clear();
 			$this->email->to($email);

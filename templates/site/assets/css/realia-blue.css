@@ -4370,9 +4370,7 @@ background-image:url(../img/icon-15.png);
 .free{ position: fixed; left:0px; z-index:999}
 
 
-
 ul#css3menu1, ul#css3menu1 ul {
-    background-color: #ffffff;
     border-style: solid;
     border-width: 0;
     list-style: none outside none;
@@ -4380,16 +4378,18 @@ ul#css3menu1, ul#css3menu1 ul {
     padding: 0;
 }
 ul#css3menu1 ul {
-    background-color: #ffffff;
-    border-radius: 3px;
-    box-shadow: 0 0 7px #ffffff;
-    /*left: 200%;*/
+
+    background: #555555;
+    background-repeat: repeat;
+    border-radius: 0;
+    left: 0;
     opacity: 0;
-    padding: 0 7px 7px;
+    padding: 0 1px 1px;
     position: absolute;
-    top: 0;
-    transition: opacity 0.5s ease 0s, left 0.5s ease 0s;
+    top: 100%;
+    transition: opacity 0.5s ease 0s;
     visibility: hidden;
+	width:210px;
 }
 ul#css3menu1 li:hover > ul {
     opacity: 1;
@@ -4397,6 +4397,7 @@ ul#css3menu1 li:hover > ul {
 }
 ul#css3menu1 li {
     display: block;
+    float: left;
     font-size: 0;
     position: relative;
     white-space: nowrap;
@@ -4405,34 +4406,26 @@ ul#css3menu1 li:hover {
     z-index: 1;
 }
 ul#css3menu1 ul ul {
-  /*  left: 200%;*/
+    left: 100%;
     position: absolute;
     top: 0;
 }
-
-
-ul#css3menu1 > li:hover > ul {
-    left: -100%;
-}
-ul#css3menu1 ul li:hover > ul {
-    left: -100%;
-}
-
-
 ul#css3menu1 {
-    background-color: #00b4dc;
+    background-color: #ffffff;
     border-radius: 0;
-    display: block;
-    float: left;
+    display: inline-block;
     font-size: 0;
-/*    padding: 0 6px 6px;*/
+    padding: 0;
     position: relative;
     z-index: 999;
 	width:100%;
 }
+* html ul#css3menu1 li a {
+    display: inline-block;
+}
 ul#css3menu1 > li {
-    margin: 0px 0 0;
-	border-bottom: solid 2px #fff;
+    margin: 0;
+
 }
 ul#css3menu1 a:active, ul#css3menu1 a:focus {
     outline-style: none;
@@ -4441,37 +4434,37 @@ ul#css3menu1 a {
     background-repeat: repeat;
     border-style: none;
     border-width: 0;
-    color: #fff;
-    cursor: pointer;
+    color: #000000;
+    cursor: default;
     display: block;
-/*   font: 13px Tahoma,sans-serif;*/
+    font-size: small;
     padding: 3px;
     text-align: left;
     text-decoration: none;
     vertical-align: middle;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:15px;
+	font-size:16px;
 }
 ul#css3menu1 ul li {
     float: none;
-    margin: 7px 0 0;
-	background:#06a7ea;
+/*	  background-image:url("../img/arrowmain0.png");
+	      background-position: right center;
+    background-repeat: no-repeat;*/
+    margin: 1px 0 0;
 }
 ul#css3menu1 ul a {
-    background-color: transparent;
-    border-color: #cccccc;
+/*    background-color: #555555;*/
     border-radius: 0;
-    border-style: dotted;
-    border-width: 0 0 1px;
     color: #fff;
-    font: 14px Tahoma,sans-serif;
-    padding: 5px 0;
+    font: 16px Open Sans,Arial,sans-serif;
+    padding: 10px 15px;
     text-align: left;
     text-decoration: none;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease 0s;
 }
 ul#css3menu1 li:hover > a, ul#css3menu1 li a.pressed {
     border-style: none;
-    color: #ffffff;
+    color: #000;
     text-decoration: none;
 }
 ul#css3menu1 img {
@@ -4479,72 +4472,52 @@ ul#css3menu1 img {
     margin-right: 3px;
     vertical-align: middle;
 }
-ul#css3menu1 ul span {
-    background-image: none;
-    padding-right: 5px;
+ul#css3menu1 b {
+    background-image: url(../img/arrowmain0.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+    display: block;
+    overflow: visible;
+    padding-right: 26px;	font-weight:normal;
+}
+ul#css3menu1 li:hover > a > b {	font-weight:normal;
+  
+}
+ul#css3menu1 ul b {
+    background-image: url(../img/arrowsub.png);
+    padding-right: 16px;
+	font-weight:normal;
+}
+ul#css3menu1 ul li:hover > a b {
+    background-image: url(../img/arrowsub.png);
+		font-weight:normal;
 }
 ul#css3menu1 ul li:hover > a, ul#css3menu1 ul li a.pressed {
-    background-color: transparent;
-    border-color: #cccccc;
-    border-style: dotted;
+    background-color: #4c4c4c;
     color: #fff;
     text-decoration: none;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 ul#css3menu1 > li > a {
-    padding: 10px;
+    padding: 10px 16px;
 }
 ul#css3menu1 li.topmenu > a {
-    background-color: #00b4dc;
+
+    background-color: transparent;
+    border-color: transparent;
     border-radius: 0;
-    color: #ffffff;
-   font: 14px Tahoma,sans-serif;
-    padding: 10px;
+    border-style: solid;
+    border-width: 4px 0 0;
+/*    color: #444444;*/
+    font: bold 16px Open Sans,Arial,sans-serif;
+    padding: 10px 16px;
     text-shadow: none;
+    transition: all 0.5s ease 0s;
 }
 ul#css3menu1 li.topmenu:hover > a, ul#css3menu1 li.topmenu a.pressed {
-    background-color: #00b4dc;
-    color: #cfcfcf;
-    text-shadow: none;
-}
-ul#css3menu1 li.toplast > a {
-    background-color: #00b4dc;
-    border-radius: 0;
-    border-width: 0;
-    color: #ffffff;
-   font: 14px Tahoma,sans-serif;
-    padding: 10px;
-    text-shadow: none;
-}
-ul#css3menu1 li.toplast:hover > a, ul#css3menu1 li.toplast a.pressed {
-    background-color: #00b4dc;
-    color: #cfcfcf;
-    text-shadow: none;
-}
-ul#css3menu1 li.sublast > a {
-    border-width: 0;
-}
-	.bxcontainer  nav{
-		position: relative;
-width: 96px;
-margin: 0 auto;
-margin-bottom: 30px;
-		}
-		.bxcontainer  nav span:first-child {
-background-position: 0 0;
-}
-		.bxcontainer nav span {
-	width: 40px;
-	height: 40px;
-	margin: 0 4px;
-	float: left;
-	background: url(../img/nav.png) no-repeat 100% 0;
-	text-indent: -9000px;
-	cursor: pointer;
-	border-radius: 50%;
-	box-shadow: 0 2px 3px rgba(0,0,0,0.5);
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+    background-color: #555555;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-style: solid;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }

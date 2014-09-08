@@ -470,8 +470,8 @@ function acceptall()
     
       <?php
       //$q->quantity;//100%
-      $new_pr_value = round(($q->received * 100) / $q->quantity); 
-      //$new_pr_value = ($q->received/100) *10; ?>
+    $new_pr_value = (($q->received * 100) / $q->quantity)/100; 
+   //   $new_pr_value = ($q->received/100) *10; ?>
        
        <script>
         $(function() {

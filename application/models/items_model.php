@@ -71,7 +71,7 @@ class items_model extends Model {
         }
 		else
 		{
-			$ret = "<ul class='topmenu' id='css3menu1' >";
+			$ret = "<ul >";
 		}
 	  
 	  
@@ -86,12 +86,14 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
-                $ret .= $this->getCategoryMenu($item->id); // here is the recursion
+                 //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
+                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."</b></a>";
+			   	   
+			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
             }
             else
             {
-                $ret .= "<li class='topmenu'><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
             $ret .= "</li>";
@@ -107,8 +109,22 @@ class items_model extends Model {
     	$this->db->order_by('catname','asc');
         $this->db->where('parent_id',$parentid);
         $menus = $this->db->get('category')->result();
-        $ret = "<ul>";
-        foreach ($menus as $item) 
+        //$ret = "<ul>";
+       
+	   
+	    if($parentid==0)
+	   {
+	   
+	    $ret = "<ul class='topmenu' id='css3menu1' >";
+        }
+		else
+		{
+			$ret = "<ul >";
+		}
+	   
+	   
+	   
+	    foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
             $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
@@ -120,8 +136,9 @@ class items_model extends Model {
             if ($submenus) 
             {
                 //$ret .= "<li><a href='javascript:void(0)'>" . $item->catname."</a>";
-                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'>" . $item->catname."</a>";
-                $ret .= $this->getCategoryMenuItems($item->id); // here is the recursion
+                $ret .= "<li  class='topmenu'><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'><b>" . $item->catname."</b></a>";
+               			   
+			    $ret .= $this->getCategoryMenuItems($item->id); // here is the recursion
             }
             else
             {
@@ -138,8 +155,23 @@ class items_model extends Model {
     {
         $this->db->where('parent_id',$parentid);
         $menus = $this->db->get('category')->result();
-        $ret = "<ul>";
+        //$ret = "<ul>";
         
+		
+		 if($parentid==0)
+	   {
+	   
+	    $ret = "<ul class='topmenu' id='css3menu1' >";
+        }
+		else
+		{
+			$ret = "<ul >";
+		}
+		
+		
+		
+		
+		
         $tci = $this->db->dbprefix('companyitem');
         $ti = $this->db->dbprefix('item');
         $tc = $this->db->dbprefix('company');
@@ -162,7 +194,7 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."</b></a>";
                 $ret .= $this->getStoreCategoryMenu($supplier,$item->id); // here is the recursion
             }
             else

@@ -1269,6 +1269,8 @@ class Company extends CI_Controller {
 		
 		$data['action'] = "new";
 		$data["cid"] = $this->session->userdata('company')->id;
+		$this->db->where("CompanyID",$this->session->userdata('company')->id);
+		$data['fields'] = $this->db->get("formsubscription")->result();
 		$this->load->view('company/newnewslettertemplate',$data);
 	}
 	
