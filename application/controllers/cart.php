@@ -360,9 +360,20 @@ class cart extends CI_Controller
 		$data['state'] = $_POST['shippingState'];
 		$data['zip'] = $_POST['shippingZip'];
 		$data['country'] = $_POST['shippingCountry'];
+/*
+ * <<<<<<< HEAD
 		//echo "<pre>".$dataitemshipping; print_r($data['cart']); die;
  		$data['itemshipping'] = $dataitemshipping;	
  		
+*/
+		if(is_object($item['rate'])){
+		$data['itemshipping'] = $item['rate']->rate;		
+ 		}
+		else{
+		$data['itemshipping'] = $item['rate'];	
+		}
+		
+
 		$this->load->view('site/payment', $data);
 	}
 	
