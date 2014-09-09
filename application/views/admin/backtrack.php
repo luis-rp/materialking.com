@@ -7,12 +7,12 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Backorder Items"
 	  },
-	 
-   	  
+
+
 	]
 	});
 
-	
+
 
 
 	$("#activatetour").click(function(e){
@@ -26,17 +26,17 @@
 	$('#canceltour').live('click',endTour);
  });
  function start(){
-	 
+
 		// Start the tour
 			tour2.start();
 		 }
  function endTour(){
-	 
+
 	 $("#tourcontrols").remove();
 	 tour2.end();
 		}
  </script>
-<?php 
+<?php
     $quotes = array();
     if(@$backtracks)
     foreach($backtracks as $ponum=>$backtrack)
@@ -56,7 +56,7 @@
 		<div class="span12">
 		    <?php echo $this->session->flashdata('message'); ?>
 		   <br/>
-		   
+
 		   <form class="form-inline" action="<?php echo site_url('admin/backtrack')?>" method="post">
                 Item: <input type="text" name="searchitem" value="<?php echo @$_POST['searchitem']?>"/>
                 &nbsp;&nbsp;
@@ -90,14 +90,14 @@
                 </a>
            </form>
 		   <br/>
-		   <?php 
-		   	if(!@$backtracks) 
-		   		echo 'No Backorders Found'; 
-		   	else 
+		   <?php
+		   	if(!@$backtracks)
+		   		echo 'No Backorders Found';
+		   	else
 		   		foreach($backtracks as $backtrack){
 		   			if(@$backtrack['items'])
 		   			{
-		   				
+
 						$combocompanies = array();
 						foreach($backtrack['items'] as $q)
 						{
@@ -112,7 +112,7 @@
 		   ?>
 		   <h3 class="box-header">
 			  <div>
-			  	
+
 			  		<span class="poheading">PO#: <?php echo $backtrack['quote']->ponum;?></span>
 			  		<?php if($this->session->userdata('usertype_id')<3){?>
 			  		<a class="btn btn-primary" href="<?php echo site_url('admin/quote/track/'.$backtrack['quote']->id);?>">Track</a>
@@ -131,7 +131,7 @@
 				  </div>
 			  </div>
               </h3>
-			 
+
 			    <table class="table table-bordered">
 			    	<tr>
 			    		<th width="170">Item Code</th>
@@ -144,8 +144,8 @@
 			    		<th width="90">Notes</th>
 			    		<th width="90">History</th>
 			    	</tr>
-			    	<?php 
-			    		
+			    	<?php
+
 			    		foreach($backtrack['items'] as $item)
 			    		{
 			    	?>
@@ -154,6 +154,11 @@
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->companyname;?></td>
 			    		<td><?php echo $item->duequantity;?></td>
+
+			    		<?php if($pendingshipments){?>
+                                        <br/><?php echo $pendingshipments;?> - Pending Acknowledgement
+                                        <?php }?>
+
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo $item->daterequested;?></td>
 			    		<td><?php echo $item->costcode;?></td>
@@ -161,13 +166,13 @@
 			    		<td>&nbsp;<?php if($item->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $item->id?>').modal();">
 							    				<i class="icon icon-search"></i>View
 							    			</a>
-						<?php } ?></td>	    			
+						<?php } ?></td>
 			    	</tr>
 			    	<?php }?>
 		      </table>
 		      <br/>
-		      
-			    <?php 
+
+			    <?php
 			    	if(@$backtrack['messages'])
 			    	foreach($backtrack['messages'] as $c)
 			    	if(@$c['messages'])
@@ -183,7 +188,7 @@
                         <th>&nbsp;</th>
 				    </tr>
 				    <?php
-				    	
+
 				    	foreach($c['messages'] as $msg)
 				    	{
 				    ?>
@@ -203,7 +208,7 @@
 				    	}
 				    ?>
 			    </table>
-			    <?php 
+			    <?php
 			    	}
 			    ?>
 			    <br/>
@@ -213,7 +218,7 @@
 	<input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname')?> (Admin)"/>
 	<input type="hidden" name="to" value=""/>
 	<input type="hidden" name="ponum" value="<?php echo $backtrack['quote']->ponum;?>"/>
-				    	
+
     <div class="control-group">
     <label class="control-label" for="company">Send Message To:</label>
     <div class="controls">
@@ -224,22 +229,22 @@
 	</select>
     </div>
     </div>
-    
+
     <div class="control-group">
     <label class="control-label" for="message">Message</label>
     <div class="controls">
    		<textarea name="message" class="span8" rows="5" required></textarea>
     </div>
     </div>
-    
+
      <div class="control-group">
     <label class="control-label" for="userfile">Attachment</label>
     <div class="controls">
    		 <input type="file" name="userfile" size="13" />
     </div>
     </div>
-    
-    
+
+
     <div class="control-group">
     <label class="control-label" for="">&nbsp;</label>
     <div class="controls">
@@ -252,24 +257,26 @@
 	    	<?php }?>
 	    </div>
     </div>
-    <?php // echo "<pre>",print_r($backtrack['quote']); die;  
-    if(isset($backtrack['items']) && count($backtrack['items'])>0) { foreach($backtrack['items'] as $q) { //if($q->etalog) {?>  
+    <?php // echo "<pre>",print_r($backtrack['quote']); die;
+    if(isset($backtrack['items']) && count($backtrack['items'])>0) { foreach($backtrack['items'] as $q) { //if($q->etalog) {?>
   <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-           <table style="border:0px !important;" class="no-border"><tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($q->ponum)) echo $q->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
+           <table style="border:0px !important;" class="no-border">
+            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+           <tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($q->ponum)) echo $q->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
           <tr><td style="border:0px;"><b>Item Code:</b> <?php if(isset($q->itemcode)) echo $q->itemcode; ?></td> <td style="border:0px;"><b>Item Name: </b><?php if(isset($q->itemname)) echo $q->itemname ; ?></td> <td style="border:0px;"><b>Received Qty: </b><?php if(isset($q->received)) echo number_format($q->received,0) ; ?></td></tr>
           <tr><td style="border:0px;">&nbsp;</td> <td style="border:0px;"><b>Company: </b><?php if(isset($q->companyname)) echo $q->companyname; ?> </td> <td style="border:0px;"><b>Due Qty: </b><?php if(isset($q->quantity) && isset($q->received) ) { echo number_format(($q->quantity - $q->received),0); } ?></td></tr><table>
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          
+
+
         </div>
         <div class="modal-body">
           <table class="table table-bordered">
           	<tr>
           		<th>Date</th>
           		<th>Notes</th>
-          		<th>Updated</th>      		
+          		<th>Updated</th>
           	</tr>
           	<?php $i=0; foreach($q->etalog as $l){?>
           	<tr>
@@ -285,7 +292,7 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-<?php //} 
+<?php //}
 } }
 
 		   		}?>

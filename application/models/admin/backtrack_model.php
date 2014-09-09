@@ -39,6 +39,54 @@ class backtrack_model extends Model
 		return $ret;	
 	}
 	
+		function get_quoteswithoutprj()
+	{
+		$ret = array();
+		$sql2 ="SELECT *
+		FROM
+		".$this->db->dbprefix('project')." 
+		WHERE 
+		purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+
+		$query2 = $this->db->query ($sql2);
+		$result = $query2->result ();
+		if ($result)
+		{
+			foreach($result as $res){
+				$where = '';
+
+				$sql ="SELECT *
+		FROM
+		".$this->db->dbprefix('quote')." 
+		WHERE 
+		pid='".$res->id."' 
+		ORDER BY podate DESC";
+
+				if($this->session->userdata('usertype_id')>1)
+				{
+					$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('quote')." 
+			WHERE pid='".$res->id."' AND 
+			purchasingadmin='".$this->session->userdata('purchasingadmin')."' 
+			ORDER BY podate DESC";
+				}
+				
+				$query = $this->db->query ($sql);
+				if ($query->result ())
+				{
+					$ret[] = $query->result ();
+
+				}
+
+			}
+		}
+		
+		if(!$ret)
+			return array();		
+		return $ret;
+	}
+	
 
  	function get_backtracks()
  	{

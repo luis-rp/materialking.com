@@ -348,11 +348,13 @@
 					<?php }?>
 					</table>
 				<?php } ?>
+					<div> 
     				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">
     					Browse Suppliers
     				</a>
 				<?php } ?>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>
+				</div>
 	    	</div>
 
 			
@@ -537,19 +539,20 @@
 				
 				<!--<div class="well span4" style="width:100% !important;" >-->
                 <div class="well span3" >
-					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>
-					<h5>Invoices with Past Due Date</h5>
+					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($invoices)) { ?>
 					  <tr>
 					  <td>Invoice</td>
 					  <td>Due Date</td>
 					  </tr>
-				<?php foreach($invoices as $invoice) { ?>
+				<?php foreach ($invoices as $invoice)
+            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->quote->duedate)) < date('Y-m-d'))
+            { ?>
 
 					  <tr>
 					  <td><?php echo $invoice->invoicenum; ?></td>
-					  <td><?php $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime);?></td>
+					  <td><?php $datetime = strtotime($invoice->quote->duedate); echo date("m/d/Y", $datetime);?></td>
 					  </tr>
 
 				<?php } ?>
@@ -557,30 +560,7 @@
 				<tr><td>No Invoices Found</td></tr>
 				<?php } ?>
 				</table>
-				<div class="tiles-title extrabox" >
-
-					<h5>Orders Requested Payment By Supplier</h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($invoicespay)) { ?>
-					  <tr>
-					  <td>Invoice</td>
-					  <td>Due Date</td>
-					  <td>Payment Alert Date</td>
-					  </tr>
-				<?php foreach($invoicespay as $invoice) { ?>
-
-					  <tr>
-					  <td><?php echo $invoice->invoicenum; ?></td>
-					  <td><?php $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); ?></td>
-					   <td><?php $datetime1 = strtotime($invoice->alertsentdate); echo date("m/d/Y", $datetime1);?></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Orders Found</td></tr>
-				<?php } ?>
-				</table>
-				</div>
+				
 				</div>
 
 				
@@ -589,22 +569,38 @@
 				
 				
 	<!--			<div class="well span4" style="width:100% !important; margin-left:0px; " >-->
-    			<div class="well span3"  >
+    			<div class="well span3" style="width: 30%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
-
-					<h5>Backorders with Past Due Date</h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($backorders)) { ?>
-					  <tr>
-					  <td>Invoice</td>
-					  <td>Due Date</td>
-					  </tr>
-				<?php foreach($backorders as $invoice) { ?>
-
-					  <tr>
-					  <td><?php echo $invoice['quote']->ponum; ?></td>
-					  <td><?php echo $invoice['quote']->duedate; ?></td>
-					  </tr>
+					<?php if(isset($backtracks)) { ?>
+					 
+				<?php foreach($backtracks as $backtrack) { ?>
+					<?php if($backtrack['items']) { ?>
+					<table class="table table-bordered">
+					<tr><td colspan="6"><h5><?php echo $backtrack['quote']->ponum;?><h5></td></tr>
+			    	<tr>
+			    		<th width="170">Item Code</th>
+			    		<th width="200">Item Name</th>
+			    		<th width="200">Company</th>
+			    		<th width="60">Due Qty.</th>
+			    		<th width="50">Unit</th>
+			    		<th width="75">ETA</th>			    		
+			    	</tr>
+			    	
+					<?php foreach($backtrack['items'] as $item)
+			    			{?>
+			    	<tr>
+			    		<td><?php echo $item->itemcode;?></td>
+			    		<td><?php echo $item->itemname;?></td>
+			    		<td><?php echo $item->companyname;?></td>
+			    		<td><?php echo $item->duequantity;?></td>
+			    		<td><?php echo $item->unit;?></td>
+			    		<td><?php echo $item->daterequested;?></td>			    			    				
+			    	</tr>
+			    	<?php }?>
+			    	</table>	
+			    	
+			    <?php } ?>					  
 
 				<?php } ?>
 				<?php } else { ?>

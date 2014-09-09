@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$recsum =0;
     $qntsum =0;
 	foreach($awarditems as $ai)
@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
- <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?> 
+ <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 		$('#datatable').dataTable( {
@@ -32,11 +32,11 @@
 					null,
 					{ "bSortable": false},
 					{ "bSortable": false}
-			
+
 				]
 			} );
 	 $('.dataTables_length').hide();
-	 $('.daterequested').datepicker();	 
+	 $('.daterequested').datepicker();
 	})
 	function invoice(invoicenum)
 	{
@@ -59,8 +59,8 @@
 
 		}
 	}
-	
-	
+
+
 </script>
 
 
@@ -83,57 +83,57 @@ tr.still-due td
 {
 	color: #990000;
 }
-</style> 
+</style>
 
 <form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
 	<input type="hidden" id="invoicenum" name="invoicenum"/>
 </form>
 
-    <div class="content">  
+    <div class="content">
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title"> <a href="<?php echo site_url('quote/track_export').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">Export</a><br />		
+		<div class="page-title"> <a href="<?php echo site_url('quote/track_export').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">Export</a><br />
 			<h3>
-			Items for the PO# <?php echo $quote->ponum;?> 
+			Items for the PO# <?php echo $quote->ponum;?>
 			<?php if(@$bid->quotenum){?>
-			| Quote Ref# <?php echo $bid->quotenum;?> 
+			| Quote Ref# <?php echo $bid->quotenum;?>
 			<?php }?>
-			
+
 			<?php if(isset($messagekey)){ ?>
 		 <a class="pull-right btn btn-primary" href="<?php echo site_url('message/messages/'.$messagekey);?>">View Messages</a>
 			<?php } ?>
 		 &nbsp; &nbsp;
 			<a class="pull-right btn btn-primary" href="<?php echo site_url('quote/items/'.$quote->id);?>">View Performance</a>
 			 </h3>
-		</div>	
-				<br/>	
+		</div>
+				<br/>
 	   <div id="container">
-		<?php 
+		<?php
 		    	if($awarditems)
 		    	{
 		    ?>
 		<div class="row">
-    
+
 			<form method="post" action="<?php echo site_url('quote/shipitems/'.$quote->id.'/'.$award);?>" enctype="multipart/form-data">
             <div class="col-md-12">
-    	
+
                 <div class="grid simple ">
                     <div class="grid-title no-border">
-                    		    Order Date: <?php if(isset($quote->podate)) echo $quote->podate; else echo '';?> 
+                    		    Order Date: <?php if(isset($quote->podate)) echo $quote->podate; else echo '';?>
 			<br/>
-			Company: <?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?> 
+			Company: <?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname; else echo '';?>
 			<br/>
-                    
+
                     </div>
                     <div class="grid-body no-border">
-                    
+
                         <div class="progress progress-striped active progress-large">
     				    	<div class="progress-bar progress-bar-success" style="width: <?php echo $per;?>;" data-percentage="<?php echo $per;?>"><?php echo $per;?> items received</div>
     					</div>
-                    
+
                         <div class="progress progress-striped active progress-large">
     				    	<div class="progress-bar progress-bar-success" style="width: <?php echo $quote->progress;?>%;" data-percentage="<?php echo $quote->progress;?>%">PO Progress: <?php echo $quote->progress;?>%</div>
     					</div>
-    					
+
     						<table id="datatable" class="table no-more-tables general">
                                 <thead>
                                     <tr>
@@ -150,7 +150,7 @@ tr.still-due td
                                         <th style="width:5%">Ref#</th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
     				              <?php
     						    	$i = 0;
@@ -208,7 +208,7 @@ tr.still-due td
 			<input type="submit" class="btn btn-primary" value="Send Shipment"/>
                     </div>
                  </div>
-             </div>   
+             </div>
         		<?php if($shippingdocs){?>
             <div class="col-md-12">
                  <div class="grid simple ">
@@ -240,9 +240,9 @@ tr.still-due td
             <?php }?>
         	</form>
         </div>
-        
+
         <?php if($shipments){?>
-        
+
         <div class="row">
                <div class="col-md-12">
     		    <div class="grid simple ">
@@ -250,7 +250,7 @@ tr.still-due td
         	<h4>Shipments Made For PO# <?php echo $quote->ponum;?> </h4>
                     </div>
                     <div class="grid-body no-border">
-        
+
 			<table class="borderless general">
 				<tr>
 					<th>Ref#</th>
@@ -259,7 +259,7 @@ tr.still-due td
 					<th>Sent On</th>
 					<th>Status</th>
 				</tr>
-				<?php 
+				<?php
 				    foreach($shipments as $s)
 				    {
 				?>
@@ -277,7 +277,7 @@ tr.still-due td
              </div>
           </div>
         <?php }?>
-        
+
         <?php if($invoices){?>
         <div class="row">
             <div class="col-md-12">
@@ -286,7 +286,7 @@ tr.still-due td
         	<h4>Existing Invoices For PO# <?php echo $quote->ponum;?> </h4>
                     </div>
                     <div class="grid-body no-border">
-        	
+
 			<table class="borderless general">
 				<tr>
 					<th>Invoice#</th>
@@ -296,7 +296,7 @@ tr.still-due td
 					<th>Payment Status</th>
 					<th>Due Date</th>
 				</tr>
-				<?php 
+				<?php
 				    foreach($invoices as $i)
 				    {
 				        $amount = $i->totalprice;
@@ -310,11 +310,11 @@ tr.still-due td
 					</a>
 					</td>
 					<td><?php echo $i->status;?></td>
-					<td><?php echo $i->receiveddate;?></td>
+					<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
 					<td>$<?php echo $amount;?></td>
 					<td>
 						<?php echo $i->paymentstatus;?>
-						
+
 	                  	<?php if($i->paymentstatus=='Unpaid'){?>
 	                  	<form action="<?php echo site_url('quote/requestpayment/'.$quote->id.'/'.$award);?>" method="post">
 	                  		<input type="hidden" name="invoicenum" value="<?php echo $i->invoicenum;?>"/>
@@ -332,11 +332,11 @@ tr.still-due td
                  </div>
               </div>
         </div>
-        
+
         <?php }?>
-        
+
         <?php } else { //if awarded items ?>
-        
+
             <div class="errordiv">
     			<div class="alert alert-info">
                   	<button data-dismiss="alert" class="close"></button>
@@ -346,6 +346,6 @@ tr.still-due td
              	</div>
     		</div>
         <?php }?>
-			
+
 		</div>
-	  </div> 
+	  </div>

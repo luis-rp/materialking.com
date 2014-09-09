@@ -1,5 +1,5 @@
-<?php 
-	//echo '<pre>';print_r($reports);die; 
+<?php
+	//echo '<pre>';print_r($reports);die;
 	$tax = $settings->taxpercent;
 ?>
 <script type="text/javascript">
@@ -14,7 +14,7 @@ $(document).ready(function(){
 		<div class="span12">
 		<br />
 		   <br/>
-		   
+
 		   <form class="form-inline" action="<?php echo site_url('admin/report')?>" method="post">
                 From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
                 &nbsp;&nbsp;
@@ -38,9 +38,9 @@ $(document).ready(function(){
                 </a>
            </form>
            <?php if(@$reports){?>
-		   
+
 			  <div>
-			  	
+
 			  		<strong>DATE:</strong> From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <span id="totalallquantity"></span>
@@ -53,29 +53,29 @@ $(document).ready(function(){
 			  </div>
            <?php }?>
            <hr/>
-		   <?php 
+		   <?php
 		   		$totalallquantity = 0;
 		   		$totalallprice = 0;
 		   		$totalallpaid = 0;
-		   		if(!@$reports) 
-		   			echo 'No Records Found'; 
-		   		else 
+		   		if(!@$reports)
+		   			echo 'No Records Found';
+		   		else
 		   			foreach($reports as $report)
 		   			{
 			    		if(!$report->totalpaid) $report->totalpaid = 0;
 		   				$report->totalpaid = $report->totalpaid + ($report->totalpaid*$tax/100);
 		   				$report->totalpaid = round($report->totalpaid,2);
-		   				
+
 		   				$report->totalprice = $report->totalprice + ($report->totalprice*$tax/100);
 		   				$report->totalprice = round($report->totalprice,2);
-		   				
+
 		   				$totalallquantity+=$report->totalquantity;
 			    		$totalallpaid += $report->totalpaid;
 		   ?>
-		   
-			  <div>
-			  	
-			  		<strong>DATE:</strong> <?php echo $report->receiveddate;?>
+
+			  <div>$report->receiveddate;
+
+			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime($report->receiveddate));?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <?php echo $report->totalquantity;?>
 			  		<br/>
@@ -103,8 +103,8 @@ $(document).ready(function(){
 			    		<th>Invoice#</th>
 			    		<th>Due Date</th>
 			    	</tr>
-			    	<?php 
-			    		
+			    	<?php
+
 			    		foreach($report->items as $item)
 			    		{
 			    			$amount = $item->quantity * $item->ea;
@@ -137,16 +137,16 @@ $(document).ready(function(){
 			    		</td>
 			    		<?php }?>
 			    	</tr>
-			    	<?php 
+			    	<?php
 			    		}
 			    	?>
 		      </table>
 		      <br/>
 		      <br/>
-	    	<?php 
+	    	<?php
 		   			}
 		   			$totalallremaining = $totalallprice - $totalallpaid;
-		   			
+
 		   			echo '<script>$("#totalallquantity").html("'.$totalallquantity.'");</script>';
 		   			echo '<script>$("#totalallprice").html("'.$totalallprice.'");</script>';
 		   			echo '<script>$("#totalallpaid").html("'.$totalallpaid.'");</script>';

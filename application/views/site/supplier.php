@@ -266,48 +266,50 @@ $(document).ready(function() {
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
 
-        var data = "itemid="+itemid+"&companyid="+companyid;
-		$("#qtypricebox").html("");
-        $.ajax({
-        	type:"post",
-        	data: data,
-        	sync: false,
-        	url: getpriceqtydetails
-        }).done(function(data){
-        	if(data){
-        		
-        		$("#qtypricebox").html(data);
-        	}
-        });
+        if(!isdeal) {
 
-        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+        	var data = "itemid="+itemid+"&companyid="+companyid;
+        	$("#qtypricebox").html("");
+        	$.ajax({
+        		type:"post",
+        		data: data,
+        		sync: false,
+        		url: getpriceqtydetails
+        	}).done(function(data){
+        		if(data){
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	sync: false,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
+        			$("#qtypricebox").html(data);
+        		}
+        	});
 
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
+        	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		sync: false,
+        		url: getpriceperqtydetails
+        	}).done(function(data){
+        		if(data){
 
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
+        			$("#cartsavediv").html("");
+        			$("#cartsavediv").html(data);
+        		}
+        	});
 
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		url: getnewprice,
+        		sync:false
+        	}).done(function(data){
+        		if(data){
+
+        			if(data!="norecord")
+        			$("#hiddenprice").val(data);
+        		}
+        	});
+        }
 
     }
 
@@ -315,32 +317,33 @@ $(document).ready(function() {
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+    	if(!isdeal) {
+    		$.ajax({
+    			type:"post",
+    			data: data2,
+    			sync: false,
+    			url: getpriceperqtydetails
+    		}).done(function(data){
+    			if(data){
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	sync: false,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
+    				$("#cartsavediv").html("");
+    				$("#cartsavediv").html(data);
+    			}
+    		});
 
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
+    		$.ajax({
+    			type:"post",
+    			data: data2,
+    			url: getnewprice,
+    			sync:false
+    		}).done(function(data){
+    			if(data){
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
-
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
+    				if(data!="norecord")
+    				$("#hiddenprice").val(data);
+    			}
+    		});
+    	}
     }
 
     function addtocart2(itemid, companyid, price, minqty, isdeal){

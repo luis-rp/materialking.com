@@ -317,6 +317,7 @@ class quote extends CI_Controller
                     {
                         $status = 'Complete';
                     }
+                    $item->quantity = $ai->quantity;
                     $item->received = $ai->received;
 
                 }

@@ -1492,10 +1492,16 @@ class Quote extends CI_Controller
 				->where('itemid',$item->itemid)
 				->get('etalog')->result();
 
+				$pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$company->id)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+				
 				$data['awardeditems'][] = $item;
 			}
 		}
-		//echo '<pre>';print_r($backtrack);die;
+		$data['pendingshipments'] = $pendingshipments;
 		$data['backtrack'] = $backtrack;
 		$data['company'] = $company;
 		$data['quote'] = $quote;

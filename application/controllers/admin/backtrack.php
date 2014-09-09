@@ -75,6 +75,14 @@ class backtrack extends CI_Controller
                             			->where('itemid',$item->itemid)
                             			->get('etalog')->result();
 					        }
+					        
+					        $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                             $data['pendingshipments']=$pendingshipments;
+					        
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{
 								$item->companyname = @$item->companydetails->title;

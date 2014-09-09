@@ -223,7 +223,7 @@ function paycc(ptype,idnumber,amount)
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
-                    			<td><?php echo $item->receiveddate;?></td>
+                    			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<td><?php if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo $item->totalprice;?></td>
                     			<td>

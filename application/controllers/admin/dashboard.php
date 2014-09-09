@@ -389,15 +389,95 @@ class Dashboard extends CI_Controller
 			$data['costcodesjson'] = $costcodesjson;
 		}
 		
-		$invoices = $this->quote_model->getpendinginvoices($this->session->userdata('purchasingadmin'));
-		$invoicespay = $this->quote_model->getpaymentrequestedorders($this->session->userdata('purchasingadmin'));
+		$invoices = $this->quote_model->getinvoices();
+		//$invoicespay = $this->quote_model->getpaymentrequestedorders($this->session->userdata('purchasingadmin'));
 		
-		$bcks = $this->quote_model->getBacktracks($this->session->userdata('purchasingadmin'));
+		/*$bcks = $this->quote_model->getBacktracks($this->session->userdata('purchasingadmin'));
 		$backtracks = array();
 		foreach($bcks as $bck)
 		{
 			$backtracks[]=$bck;
-		}			
+		}*/
+		$this->load->model('admin/backtrack_model');
+		$quotes = $this->backtrack_model->get_quoteswithoutprj ();
+		//echo "<pre>",print_r($quotes);
+		$count = count ($quotes[0]);		
+		$items = array();
+		$companyarr = array();
+		if ($count >= 1) 
+		{	
+			foreach ($quotes[0] as $quote) 
+			{
+				$awarded = $this->quote_model->getawardedbid($quote->id);
+				$items[$quote->ponum]['quote'] = $quote;
+				if($awarded)
+				{
+					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
+					{
+						foreach($awarded->items as $item)
+						{
+							if(date('Y-m-d', strtotime( $item->daterequested)) < date('Y-m-d')) {
+						    $checkcompany = true;
+						    $checkitemname = true;
+						    
+						    if(@$_POST['searchcompany'])
+						    {
+						        $checkcompany = $item->company == @$_POST['searchcompany'];
+						    }
+						    
+						    if(@$_POST['searchitem'])
+						    {
+						        if(strpos($item->itemname, @$_POST['searchitem'])!== FALSE)
+						        {
+						            $checkitemname = true;
+						        }
+						        else
+						        {
+						            $checkitemname = false;
+						        }
+						    }
+						    					        
+							if($item->received < $item->quantity && $checkcompany && $checkitemname)
+							{
+								$item->companyname = @$item->companydetails->title;
+								if(!$item->companyname)
+									$item->companyname = '&nbsp;';
+								$item->ponum = $quote->ponum;
+								$item->duequantity = $item->quantity - $item->received;
+								if(!isset($items[$quote->ponum]['items']))
+									$items[$quote->ponum]['items'] = array();
+								$items[$quote->ponum]['items'][]=$item;
+									
+							}
+						  }	
+						}
+						
+					}
+				}
+			}
+			
+		
+    		if($this->session->userdata('usertype_id')==3)
+    		{
+    			$data['backtracks'] = array();
+    			foreach($items as $item)
+    			{
+    			    $this->db->where('quote',$item['quote']->id);
+    			    $this->db->where('userid',$this->session->userdata('id'));
+    			    $check = $this->db->get('quoteuser')->row();
+    			    if($check)
+    			    {
+    			        $data['backtracks'][]=$item;
+    			    }
+    			}
+    		}
+    		else
+    		{
+		        $data['backtracks'] = $items;
+    		}
+		}		
+		
+		//echo "<pre>",print_r($data['backtracks']); die;
 		
 		$messagesql = "SELECT m.* FROM 
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
@@ -462,10 +542,10 @@ class Dashboard extends CI_Controller
 		
 		if($invoices)
 		$data['invoices'] = $invoices;
-		if($invoicespay)
+		/*if($invoicespay)
 		$data['invoicespay'] = $invoicespay;
 		if($backtracks)
-		$data['backorders'] = $backtracks;		
+		$data['backorders'] = $backtracks;*/	
 		if($msgs)
 		$data['msgs'] = $msgs;		
 		if($newquotes)

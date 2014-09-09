@@ -54,24 +54,24 @@ $per .='%';
 
 <script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
 <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
-   
+
     <script src="<?php echo base_url(); ?>templates/admin/js/jquery.percentageloader-0.1.js"></script>
 
 <script type="text/javascript">
 	var clock;
 		$(document).ready(function() {
-			
+
 			var currentDate = new Date("08 29, 2014");
-			
+
 			var pastDate  = new Date("08 19, 2014");
 
 			var diff = currentDate.getTime() / 1000 - pastDate.getTime() / 1000;
 
-				
+
 				clock = $('.clock').FlipClock(diff, {
 					clockFace: 'DailyCounter'
 				});
-				
+
 				<?php $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
                     	 if(($q->quantity - $q->received) >0)
                     	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
@@ -80,7 +80,7 @@ $per .='%';
                     		foreach ($awarded->invoices as $invoice) {
                     			foreach ($invoice->items as $item) {
                     				if($item->awarditem==$q->id){
-                    					$receiveddate = $item->receiveddate;
+                    					$receiveddate =date('m/d/Y', strtotime($item->receiveddate));
                     					if($greaterreceived!=""){
                     						if(strtotime($greaterreceived)<strtotime($receiveddate))
                     						$greaterreceived = $receiveddate;
@@ -92,22 +92,23 @@ $per .='%';
                     		//echo "g=".$greaterreceived."-G";
                     		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
                     	}
-                    	
+
                     	if($greaterseconds!=""){
                     		if($greaterseconds<$seconds)
                     		$greaterseconds = $seconds;
                     	}else
                     	$greaterseconds = $seconds;
-                    	
+
 						}
-						
+
 						$days    = floor($greaterseconds / 86400);
                     	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
                     	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
                     	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));
                     	//echo $days." d"." ".$hours." h".$minutes." m"; ?>
-				
+
 				clock.setTime(<?php echo $greaterseconds;?>);
+				//setTimeout(function() { clock.stop(function() { }) }, 1000);
 			});
 			setTimeout(function() { clock.stop(function() { }) }, 1000);
 </script>
@@ -130,7 +131,7 @@ $per .='%';
 				alert('Error : please retry');
 			}
 		});
-		
+
     	$('.fixedrating').jRating({
 			length:5,
 			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
@@ -140,13 +141,13 @@ $per .='%';
 			canRateAgain : false,
 			decimalLength:1,
 			 onClick : function(element,rate) {
-		         
+
 		        },
 			onError : function(){
 				alert('Error : please retry');
 			}
 		});
-		
+
         <?php if ($per == '0.00%') { ?>
         //$("#timelineid").attr("class", "bar madras");
         $("#timelineid").attr("class", "bar");
@@ -165,7 +166,7 @@ $per .='%';
 	            $("#makedefaultinvoicenum").val('1');
 	            $(".invoicenum").val($("#invoicenum" + qid).val());
 	        }
-    	}    
+    	}
     }
 
     function defaultreceiveddate(qid,cnt)
@@ -177,7 +178,7 @@ $per .='%';
 	            $("#makedefaultreceiveddate").val('1');
 	            $(".receiveddate").val($("#receiveddate" + qid).val());
 	        }
-    	}    
+    	}
     }
 
     function selectbycompany()
@@ -222,7 +223,7 @@ $per .='%';
     }
 
     function errorselected()
-    {    	
+    {
         var selected = new Array();
         var quantities = new Array();
         var invoicenums = new Array();
@@ -241,8 +242,8 @@ $per .='%';
         });
         if (selected.length > 0)
         {
-            var errors = selected.join(',');          
-			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();			
+            var errors = selected.join(',');
+			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();
 
             $.ajax({
                 type: "post",
@@ -253,11 +254,11 @@ $per .='%';
             });
         }
     }
-    
+
     function showErrorModal()
 	{
 		$('#commentmodal').modal();
-		$('#commentwrapper').html('Loading...');		
+		$('#commentwrapper').html('Loading...');
 	}
 	function getCommentdata()
 	{
@@ -288,7 +289,7 @@ $per .='%';
 		}
 		return true;
 	}
-	
+
 </script>
 <?php echo '<script type="text/javascript">var accepturl = "' . site_url('admin/quote/acceptshipment') . '";</script>'; ?>
 <?php echo '<script type="text/javascript">var accepallturl = "' . site_url('admin/quote/acceptall') . '";</script>'; ?>
@@ -320,7 +321,7 @@ function acceptall()
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
 		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
 		<?php }?>
-		
+
 		$("#trackform").submit();
     });
 }
@@ -355,7 +356,7 @@ function acceptall()
                     <span class="label label-pink"><?php echo $awarded->status; ?></span>
                     <strong>
                         PO #:<?php echo $quote->ponum; ?>
-                        &nbsp; &nbsp; 
+                        &nbsp; &nbsp;
                         Submitted:  <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>
                     </strong><div class="clock"></div>
                     <div style="clear:both;"></div>
@@ -379,21 +380,21 @@ function acceptall()
                     		//echo "g=".$greaterreceived."-G";
                     		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
                     	}
-                    	
+
                     	if($greaterseconds!=""){
                     		if($greaterseconds<$seconds)
                     		$greaterseconds = $seconds;
                     	}else
                     	$greaterseconds = $seconds;
-                    	
+
 						}
-						
+
 						$days    = floor($greaterseconds / 86400);
                     	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
                     	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
                     	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60))); */ ?>
-                    	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->                    
-                   
+                    	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->
+
                     <?php if (0) { ?>
                         &nbsp;  &nbsp;
                         <form action="<?php echo site_url('admin/quote/changestatus/' . $quote->id); ?>" method="post" class="form-horizontal">
@@ -413,12 +414,12 @@ function acceptall()
                 </div>
             </div>
 
-         
+
 
             <div class="barBg">
                 <div class="bar carrot" id ="timelineid" >
                     <div class="barFill" ><div align="center" style="overflow: hidden;color:black;" class="myLink"><b><?php echo $per; ?> Received</b></div></div>
-                </div>              
+                </div>
             </div>
             <br/>
             <div class="control-group">
@@ -446,33 +447,33 @@ function acceptall()
                         <?php } ?>
                     </tr>
                         <?php if ($awarded->status == 'incomplete') { ?>
-                        <form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>"> 
+                        <form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
-                       
-					    <?php 
-						
+
+					    <?php
+
 						$counter_kk = 1;
-						
-						$alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) { 
-						
+
+						$alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) {
+
 						$counter_kk++;
-						
+
 						?>
-                       
+
 					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
                                 <td><?php echo $q->itemcode; ?></td>
                                 <td><?php echo $q->itemname; ?></td>
-                                <td><div id="topLoader<?php echo $counter_kk; ?>">      
-    
+                                <td><div id="topLoader<?php echo $counter_kk; ?>">
+
       <?php
       //$q->quantity;//100%
-    $new_pr_value = (($q->received * 100) / $q->quantity)/100; 
+    $new_pr_value = (($q->received * 100) / $q->quantity)/100;
    //   $new_pr_value = ($q->received/100) *10; ?>
-       
+
        <script>
         $(function() {
           var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : true, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
@@ -489,23 +490,23 @@ function acceptall()
             $topLoader.setValue('0kb');
             var kb = 0;
             var totalKb = 999;
-            
+
             var animateFunc = function() {
               kb += 17;
               $topLoader.setProgress(kb / totalKb);
               $topLoader.setValue(kb.toString() + 'kb');
-              
+
               if (kb < totalKb) {
                 setTimeout(animateFunc, 25);
               } else {
                 topLoaderRunning = false;
               }
             }
-            
+
             setTimeout(animateFunc, 25);
-            
+
           });
-        });      
+        });
       </script>
     </div></td>
                                 <td>
@@ -513,9 +514,9 @@ function acceptall()
                                 <?php if($q->received != '0.00' && $q->received != ''){?>
                                 <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
                                 <?php }?>
-                             
-      
-	  
+
+
+
                                 </td>
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
@@ -529,23 +530,23 @@ function acceptall()
 							    			</a>
 						<?php } $seconds = "";
 								if(($q->quantity - $q->received) >0)
-								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon); 
+								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
 								else {
 									$greaterreceived = "";
 									foreach ($awarded->invoices as $invoice) {
 										foreach ($invoice->items as $item) {
 											if($item->awarditem==$q->id){
-												$receiveddate = $item->receiveddate;	
+												$receiveddate = date('m/d/Y', strtotime($item->receiveddate));
 												if($greaterreceived!=""){
 													if(strtotime($greaterreceived)<strtotime($receiveddate))
 													$greaterreceived = $receiveddate;
 												}else
-												$greaterreceived = $receiveddate;												
+												$greaterreceived = $receiveddate;
 										    }
-									   }   
+									   }
 									}
 									//echo "g=".$greaterreceived."-G";
-									$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon); 
+									$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
 								}
 	                            $days    = floor($seconds / 86400);
 								$hours   = floor(($seconds - ($days * 86400)) / 3600);
@@ -572,24 +573,24 @@ function acceptall()
 
                     	<div style="clear:left;"></div>
                     </div>
-								</td> 
+								</td>
                                 <?php if ($awarded->status == 'incomplete') { ?>
-                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty" 
+                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>
                                     </td>
                                     <td>
-                                        <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>" 
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"'; 
-                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?> 
-                                               value="<?php //if($this->session->userdata('defaultinvoicenum')) echo $this->session->userdata('defaultinvoicenum'); ?>"  
+                                        <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>"
+                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"';
+                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
+                                               value="<?php //if($this->session->userdata('defaultinvoicenum')) echo $this->session->userdata('defaultinvoicenum'); ?>"
                                                onchange="defaultinvoicenum('<?php echo $q->id; ?>');"/>
                                     </td>
                                     <td>
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" '; 
+                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" ';
                                                else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
-                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>" 
+                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
                                                data-date-format="mm/dd/yyyy"/>
                                     </td>
                                     <td>
@@ -644,7 +645,7 @@ function acceptall()
             if (@$shipments)
             {
             ?>
-            <h3 class="box-header">Shipments:  <?php 
+            <h3 class="box-header">Shipments:  <?php
                 $canacceptall = false;
                 $shipitemids = array();
                 foreach($shipments as $cs)
@@ -667,7 +668,7 @@ function acceptall()
             <?php if($canacceptall){?>
            <button class="btn btn-primary" onclick="acceptall()">Accept All</button>
            <?php }?></h3>
-           
+
            <table class="table table-bordered" >
            	<tr>
            		<th>Item</th>
@@ -729,7 +730,7 @@ function acceptall()
                         <?php
                         }
                         ?>
-			
+
 
                 <div class="well" style="float:left">
                     <form class="form-horizontal" method="post" action="<?php echo site_url('admin/message/sendmessage/' . $quote->id . '/track') ?>" onsubmit="this.to.value = this.company.options[this.company.selectedIndex].innerHTML"  enctype="multipart/form-data">
@@ -737,7 +738,7 @@ function acceptall()
                         <input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname') ?> (Admin)"/>
                         <input type="hidden" name="to" value=""/>
                         <input type="hidden" name="ponum" value="<?php echo $quote->ponum; ?>"/>
-    
+
                         <div class="control-group">
                             <label class="control-label" for="company">Send Message To:</label>
                             <div class="controls">
@@ -748,22 +749,22 @@ function acceptall()
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="control-group">
                             <label class="control-label" for="message">Message</label>
                             <div class="controls">
                                 <textarea name="message" class="span8" rows="5" required></textarea>
                             </div>
                         </div>
-    
+
                         <div class="control-group">
                             <label class="control-label" for="userfile">Attachment</label>
                             <div class="controls">
                                 <input type="file" name="userfile" size="13" />
                             </div>
                         </div>
-    
-    
+
+
                         <div class="control-group">
                             <label class="control-label" for="">&nbsp;</label>
                             <div class="controls">
@@ -774,7 +775,7 @@ function acceptall()
                 </div>
 
                 <hr/>
-                
+
         		<?php if($shippingdocs){?>
         		   <h3 class="box-header">Shipping Documents</h3>
         		<table class="table table-bordered col-md-4">
@@ -868,7 +869,7 @@ function acceptall()
                 	<?php }?>
                 	<li class="<?php echo $class; ?>"><?php echo $per; ?> Received <span>&nbsp;</span></li>
                 	<li class="<?php echo $closed; ?>">Closed</li>
-                </ul> 
+                </ul>
             </section>
             <div>
                    <h3 class="box-header">Time Line</h3>
@@ -888,7 +889,7 @@ function acceptall()
                                             foreach ($invoice->items as $item) {
                                             ?>
                                             <tr><td  style="border-right:2px #dff0d8 solid;" width="15%">
-                                                    <span><?php echo $item->receiveddate; ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span><?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; ?></span></td>
+                                                    <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span><?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; ?></span></td>
                                             </tr>
                                             <?php } ?>
                                     </table>
@@ -908,8 +909,8 @@ function acceptall()
             			<th>Rating</th>
             			<th>Feedback</th>
             			<th></th>
-            		</tr>
-                	<?php 
+            		</tr><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?>
+                	<?php
                 	    foreach($messagecompanies as $combocompany)
                 	    {
                 	        if(isset($feedbacks[$combocompany['id']]))
@@ -927,7 +928,7 @@ function acceptall()
             				<?php }?>
             			</th>
             		</tr>
-                	<?php 
+                	<?php
                 	    }
                 	?>
             	</table>
@@ -956,8 +957,8 @@ function acceptall()
             </div>
             <?php }?>
              <div>
-                <?php 
-            
+                <?php
+
                 if(!empty($errorLog))
                 {
                     ?>
@@ -984,7 +985,7 @@ function acceptall()
                                     <td><?php echo $error->invoicenum;?></td>
                                     <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
-                        <?php 
+                        <?php
                         }?>
                        </tbody>
                  </table>
@@ -1013,7 +1014,7 @@ function acceptall()
             <tr>
                 <td>&nbsp;</td>
                 <td><input type="button" value="Submit" class="btn btn-primary" onclick="$('#trackform').submit()"/></td>
-            </tr>        	
+            </tr>
         </table>
     </div>
 </div>
@@ -1029,24 +1030,26 @@ function acceptall()
 </div>
 
 
-    <?php // echo "<pre>",print_r($backtrack['quote']); die;  
-    if(isset($awarded->items) && count($awarded->items)>0) { foreach($awarded->items as $q) { //if($q->etalog) {?>  
+    <?php // echo "<pre>",print_r($backtrack['quote']); die;
+    if(isset($awarded->items) && count($awarded->items)>0) { foreach($awarded->items as $q) { //if($q->etalog) {?>
   <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-         <table style="border:0px !important;" class="no-border"><tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($quote->ponum)) echo $quote->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
+         <table style="border:0px !important;" class="no-border">
+         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+         <tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($quote->ponum)) echo $quote->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
           <tr><td style="border:0px;"><b>Item Code:</b> <?php if(isset($q->itemcode)) echo $q->itemcode; ?></td> <td style="border:0px;"><b>Item Name: </b><?php if(isset($q->itemname)) echo $q->itemname ; ?></td> <td style="border:0px;"><b>Received Qty: </b><?php if(isset($q->received)) echo number_format($q->received,0) ; ?></td></tr>
           <tr><td style="border:0px;">&nbsp;</td> <td style="border:0px;"><b>Company: </b><?php if(isset($q->companyname)) echo $q->companyname; ?> </td> <td style="border:0px;"><b>Due Qty: </b><?php if(isset($q->quantity) && isset($q->received) ) { echo number_format(($q->quantity - $q->received),0); } ?></td></tr><table>
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-        
+
+
         </div>
         <div class="modal-body">
           <table class="table table-bordered">
           	<tr>
           		<th>Date</th>
           		<th>Notes</th>
-          		<th>Updated</th>      		
+          		<th>Updated</th>
           	</tr>
           	<?php $i=0; foreach($q->etalog as $l){?>
           	<tr>
@@ -1062,5 +1065,5 @@ function acceptall()
     </div>
     <!-- /.modal-dialog -->
   </div>
-<?php //} 
+<?php //}
 } }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$recsum =0;
     $qntsum =0;
 	foreach($backtrack['items'] as $ai)
@@ -29,36 +29,36 @@ $(document).ready(function(){
 });
 
 function clearnotes(noteid){
-	
+
 	$('#'+noteid).val("");
-	
+
 }
 
 </script>
 
-    <div class="content"> 
+    <div class="content">
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title"><a href="<?php echo site_url('quote/viewbacktrack_export').'/'.$quoteid->id; ?>" class="btn btn-green">Export</a><br />	
-			<h3>Please Update the date available for following items</h3>		
-		</div>		
+		<div class="page-title"><a href="<?php echo site_url('quote/viewbacktrack_export').'/'.$quoteid->id; ?>" class="btn btn-green">Export</a><br />
+			<h3>Please Update the date available for following items</h3>
+		</div>
 	   <div id="container">
 		<div class="row">
                     <div class="col-md-12">
                         <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-                                
+
                             </div>
                             <div class="grid-body no-border">
-                            
+
                             <div class="progress progress-striped active progress-large">
 						    	<div class="progress-bar progress-bar-warning" style="width: 80%;" data-percentage="0%">Bid Progress: 80%, PARTIALLY COMPLETED</div>
 							</div>
-                            
+
                             <div class="progress progress-striped active progress-large">
 						    	<div class="progress-bar progress-bar-success" style="width: <?php echo $per;?>;" data-percentage="0%"><?php echo $per;?> items received</div>
 							</div>
-                                   
+
 								<table class="table no-more-tables general">
 									<tr>
 										<td>
@@ -77,7 +77,7 @@ function clearnotes(noteid){
 									     </td>
 									 </tr>
 								</table>
-								
+
 							    <table class="table no-more-tables general" style="width: 95%;">
 							    	<tr>
 							    		<th>Item Name</th>
@@ -90,14 +90,17 @@ function clearnotes(noteid){
 							    		<th>Notes</th>
 							    		<th>History</th>
 							    	</tr>
-							    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>"> 
-								  	
+							    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>">
+
 									<?php foreach($backtrack['items'] as $q) {//print_r($q);?>
-									
 							    	<tr>
 							    		<td><?php echo htmlentities($q->itemname);?></td>
 							    		<td><?php echo $q->quantity;?></td>
-							    		<td><?php echo $q->quantity - $q->received;?></td>
+							    		<td><?php echo $q->quantity - $q->received;?>
+							    		 <?php if($pendingshipments){?>
+                                        <br/><?php echo $pendingshipments;?> - Pending Acknowledgement
+                                        <?php }?>
+							    		</td>
 							    		<td><?php echo $q->unit;?></td>
 							    		<td>$<?php echo $q->ea;?></td>
 							    		<td>$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
@@ -119,33 +122,35 @@ function clearnotes(noteid){
 							    	</tr>
 							    	</form>
 						    	</table>
-								
-								
+
+
                             </div>
                         </div>
                     </div>
                 </div>
-                
-			
+
+
 		</div>
-	  </div> 
-<?php foreach($backtrack['items'] as $q) if($q->etalog) {?>  
+	  </div>
+<?php foreach($backtrack['items'] as $q) if($q->etalog) {?>
   <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <table style="border:0px !important;" class="no-border"><tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($quote->ponum)) echo $quote->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
+          <table style="border:0px !important;" class="no-border">
+           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($quote->ponum)) echo $quote->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
           <tr><td style="border:0px;"><b>Item Code:</b> <?php if(isset($q->itemcode)) echo $q->itemcode; ?></td> <td style="border:0px;"><b>Item Name: </b><?php if(isset($q->itemname)) echo $q->itemname ; ?></td> <td style="border:0px;"><b>Received Qty: </b><?php if(isset($q->received)) echo number_format($q->received,0) ; ?></td></tr>
           <tr><td style="border:0px;">&nbsp;</td> <td style="border:0px;"><b>Company: </b><?php if(isset($company->title)) echo $company->title; ?> </td> <td style="border:0px;"><b>Due Qty: </b><?php if(isset($q->quantity) && isset($q->received) ) { echo number_format(($q->quantity - $q->received),0); }?></td></tr><table>
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          
+
+
         </div>
         <div class="modal-body">
           <table class="table table-bordered">
           	<tr>
           		<th>Date</th>
           		<th>Notes</th>
-          		<th>Updated</th>      		
+          		<th>Updated</th>
           	</tr>
           	<?php $i=0; foreach($q->etalog as $l){?>
           	<tr>
