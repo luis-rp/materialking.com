@@ -347,7 +347,7 @@ function showInvoice(invoicenum)
                                             foreach($invoice->items as $item) { 
                                         ?>
                                            <tr><td  style="border-right:2px #dff0d8 solid;" width="15%">
-                                    <span><?php echo $item->receiveddate; ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span><?php echo '<b>'.$item->itemname.'</b> - '.$item->quantity.' Received'; ?></span></td>
+                                    <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span><?php echo '<b>'.$item->itemname.'</b> - '.$item->quantity.' Received'; ?></span></td>
                                            </tr>
                                     <?php } ?></table><?php  }?>
                                     </td>

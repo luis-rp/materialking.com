@@ -575,7 +575,7 @@
 					<?php if(isset($backtracks)) { ?>
 					 
 				<?php foreach($backtracks as $backtrack) { ?>
-					<?php if($backtrack['items']) { ?>
+					<?php if(isset($backtrack['items'])) { ?>
 					<table class="table table-bordered">
 					<tr><td colspan="6"><h5><?php echo $backtrack['quote']->ponum;?><h5></td></tr>
 			    	<tr>

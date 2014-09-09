@@ -401,7 +401,10 @@ class Dashboard extends CI_Controller
 		$this->load->model('admin/backtrack_model');
 		$quotes = $this->backtrack_model->get_quoteswithoutprj ();
 		//echo "<pre>",print_r($quotes);
+		if(isset($quotes[0]))
 		$count = count ($quotes[0]);		
+		else 
+		$count = 0;	
 		$items = array();
 		$companyarr = array();
 		if ($count >= 1) 
