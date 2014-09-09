@@ -73,8 +73,7 @@ $(document).ready(function(){
 			    		$totalallpaid += $report->totalpaid;
 		   ?>
 
-			  <div>$report->receiveddate;
-
+			  <div>
 			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime($report->receiveddate));?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <?php echo $report->totalquantity;?>
