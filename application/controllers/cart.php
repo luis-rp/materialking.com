@@ -259,6 +259,7 @@ class cart extends CI_Controller
 		$dataitemshipping=0;
 		foreach($cart as $item)
 		{
+			//echo "<pre>"; print_r($item['quantity']);
 			$this->db->where('itemid',$item['itemid']);
 			$this->db->where('company',$item['company']);
 			$this->db->where('type','Supplier');
@@ -305,7 +306,7 @@ class cart extends CI_Controller
 				{
 					$parcel_params = array(
 							"predefined_package" => null,
-							"weight"             => $current_item->weight
+							"weight"             => $current_item->weight*$item['quantity']
 					);
 					if($current_item->length !=  "0.0"){
 						$parcel_params["length"] = $current_item->length;
@@ -361,19 +362,18 @@ class cart extends CI_Controller
 		$data['zip'] = $_POST['shippingZip'];
 		$data['country'] = $_POST['shippingCountry'];
 /*
- * <<<<<<< HEAD
-		//echo "<pre>".$dataitemshipping; print_r($data['cart']); die;
+ 		//echo "<pre>".$dataitemshipping; print_r($data['cart']); die;
  		$data['itemshipping'] = $dataitemshipping;	
  		
 */
-		if(is_object($item['rate'])){
+		/*if(is_object($item['rate'])){
 		$data['itemshipping'] = $item['rate']->rate;		
  		}
 		else{
 		$data['itemshipping'] = $item['rate'];	
-		}
+		}*/
 		
-
+		$data['itemshipping'] = $dataitemshipping;
 		$this->load->view('site/payment', $data);
 	}
 	
