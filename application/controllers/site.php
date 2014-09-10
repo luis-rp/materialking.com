@@ -208,6 +208,8 @@ class site extends CI_Controller
     		}
     		$data['recentcompanies'][] = $recent;
     	}
+    	$data['page_title']="The B2B Network for Contractors & Supply Houses";
+    	$data['page_description']="The B2B Network for Contractors & Supply Houses";
     	$this->load->view('site/index', $data);
     }
     
@@ -340,6 +342,9 @@ class site extends CI_Controller
         $this->data['citystates'] = $this->db->query($sql)->result();
         $this->data['states'] = $this->db->get('state')->result();
         $this->data['types'] = $this->db->get('type')->result();
+    
+       	$this->data['page_title'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
+       	$this->data['page_description'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
         $this->load->view('site/suppliers', $this->data);
     }
     
@@ -388,6 +393,7 @@ class site extends CI_Controller
     
     public function supplier ($username)
     {
+    	$this->load->helper('text');
     	$this->load->library('image_lib');
         $username = urldecode($username);
         $data['message'] = $this->session->flashdata('message');
@@ -628,6 +634,10 @@ class site extends CI_Controller
         $this->db->where("CompanyID",$data['supplier']->id);
         $data["fields"] = $this->db->get("formsubscription")->result(); 
         $data['image']=$this->db->get_where('companyattachment',array('company'=>$data['supplier']->id))->result();
+   
+       	$data['page_title'] = $data["supplier"]->title;
+       	$data['page_description'] = character_limiter($data["supplier"]->shortdetail,150);
+       
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)
@@ -1066,8 +1076,11 @@ class site extends CI_Controller
         }
         
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
-        $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);        
+        $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']); 
+               
         //echo '<pre>';print_r($data['categorymenu']);die;
+        $this->data['page_title'] = "The Building & Construction Supply House Marketplace";
+        $this->data['page_description'] = "The Building & Construction Supply House Marketplace";
         $this->load->view('site/items', $this->data);
     }
     public function getCategoryImage($catID)
@@ -1402,6 +1415,7 @@ class site extends CI_Controller
         //echo '<pre>';print_r($inventorydata);die;
         $data['inventory'] = array();
         $data['filtermanufacturer'] = array();
+		
         foreach($inventorydata as $initem)
         {
             if(!isset($data['filtermanufacturer'][$initem->manufacturer]))
@@ -1511,7 +1525,11 @@ class site extends CI_Controller
         $data['adforitem'] = $this->db->get("ads")->result();
         
         $data['breadcrumb'] = $this->items_model->getParents($item->category);
-        //echo '<pre>'; print_r($data['relateditems']);die;
+        $data['categorymenu'] = $this->data['categorymenu'] = $this->items_model->getCategoryMenu();
+		
+			   
+	    //echo '<pre>'; print_r($data['relateditems']);die;
+	    $data['page_title'] = $data["item"]->itemname;
         $this->load->view('site/item', $data);
     }
     public function tag($tag){
@@ -1659,6 +1677,7 @@ class site extends CI_Controller
         $data['articleitems'] = $this->db->select('item.*')->where('article',$article->id)->from('articleitem')->join('item','item=item.id')->get()->result();
         $data['item'] = $this->db->where('id',$article->itemid)->get('item')->row();
         //print_r($data);die;
+        $data['page_title'] = "Item Articles";
         $this->load->view('site/article',$data);
     }
     

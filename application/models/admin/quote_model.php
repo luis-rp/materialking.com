@@ -512,7 +512,7 @@ class quote_model extends Model {
 
 
         $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -525,7 +525,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum 
                 ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC";
-        //echo $query;
+        log_message('debug',var_export($query,true));
         $invoicequery = $this->db->query($query);
         $items = $invoicequery->result();
 
@@ -540,6 +540,7 @@ class quote_model extends Model {
 					  WHERE r.awarditem=ai.id AND ai.award=a.id 
 					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
+            
             $quotequery = $this->db->query($quotesql);
             $invoice->quote = $quotequery->row();
 

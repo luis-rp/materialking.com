@@ -193,6 +193,7 @@ class Store extends CI_Controller
         	 
         }
         $this->data['adforsupplier']=$ads;
+         $this->data['page_title'] = $this->data["company"]->title." Online Store";
         $this->load->view('store/items', $this->data);
 	}
 }

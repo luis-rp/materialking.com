@@ -287,7 +287,7 @@ class items_model extends Model {
            
             
         }
-        $ret .= "</ul>";
+     //  $ret .= "</ul>";
         return $ret;
     }
     

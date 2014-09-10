@@ -51,7 +51,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
     font-weight: normal;
     line-height: 22px;
     margin: 0;
-    padding: 13px 38px 13px 20px;
+    padding: 13px 37px 14px 20px;
     text-align: center;
     text-shadow: 1px 1px 1px rgba(7, 7, 7, 0.1);
     transition: all 0.2s ease 0s;

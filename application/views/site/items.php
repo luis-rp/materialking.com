@@ -214,6 +214,16 @@
     <div class="container">
         <div id="main">
             <div class="row">
+             <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                            
+                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
+                            	<?php $this->load->view('site/catmenu.php');?>
+                            </div>
+                        </form>
+                       
                 <div class="span9">
                 <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?> 
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
@@ -317,12 +327,14 @@
 
                 <div class="sidebar span3">
                 	
-                                    
-                    <h2>Item Filter</h2>
+                       <?php 
+                 //var_dump($breadcrumb2);
+                      if(isset($breadcrumb2) && $breadcrumb2!="") {?>             
+                    <h2>Sub Categories</h2>
                     
                     <div class="content_sup" style="height:72px;">
                         
-                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+                       <?php /*?> <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
@@ -331,11 +343,12 @@
                             	<?php $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>
-                       
+                       <?php */?>
+                        <div style="clear:both;"></div>
+                     <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
                     </div>
                     
-                    <div style="clear:both;"></div>
-                     <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
+                   <?php } ?>
                    
                 </div>
 

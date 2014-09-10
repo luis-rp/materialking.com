@@ -217,6 +217,22 @@ $( document ).tooltip();
         }
             
     }
+
+    function setlabelReqModal()
+    {
+        $type = $("#requresttype-modal-req").val();
+        if($type=='Request Phone Assistance')
+        {
+            $("#daytd-modal-req").html('Best Day To Call');
+            $("#timetd-modal-req").html('Best Time To Call');
+        }
+        else
+        {
+            $("#daytd-modal-req").html('Appointment Date Requested');
+            $("#timetd-modal-req").html('Appointment Time Requested');
+        }
+            
+    }
         function addtocart(itemid, companyid, price, minqty, unit, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
@@ -423,7 +439,15 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-            
+               <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                            
+                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
+                            	<?php $this->load->view('site/catmenu.php');?>
+                            </div>
+                        </form>
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h3 class="titlebox">
@@ -844,8 +868,14 @@ $( document ).tooltip();
         				</form>
                     </div>
                 </div>
-                <div class="sidebar span3">
-                    <div class="widget contact">
+               
+			   
+			    <div class="sidebar span3">
+                
+                    
+                     
+				  
+				    <div class="widget contact">
                         <div class="title">
                             <h2 class="block-title">Search Supplier</h2>
                         </div>
@@ -912,12 +942,13 @@ $( document ).tooltip();
 
                     <?php if(@$relateditems){?>
                     <div class="widget contact">
-                        <div class="content">
+                    	<label class="control-label" for="radirange">
+                                    	<h5 class="block-title">Related Items</h5>
+                                    </label>
+                        <div class="content_sup">
                             <form>
                                 <div class="control-group">
-                                	<label class="control-label" for="radirange">
-                                    	<h5>Related Items</h5>
-                                    </label>
+                                
                                     <div class="controls">
                                     	<table>
                                     	<?php foreach($relateditems as $ri){?>
@@ -1133,7 +1164,7 @@ $( document ).tooltip();
         						<tr>
         							<td width="200">Type:</td>
         							<td>
-        								<select id="requresttype" name="type" onchange="setlabel()">
+        								<select id="requresttype-modal-req" name="type" onchange="setlabelReqModal()">
         									<option value="Request Phone Assistance">Request Phone Assistance</option>
         									<option value="Schedule Appointment">Schedule Appointment</option>
         								</select>
@@ -1154,12 +1185,12 @@ $( document ).tooltip();
         						</tr>
         						
         						<tr>
-        							<td id="daytd">Best day to call</td>
+        							<td id="daytd-modal-req">Best day to call</td>
         							<td><input type="text" id="day-modal-req" name="day-modal-req"/></td>
         						</tr>
         						
         						<tr>
-        							<td id="timetd">Best time to call</td>
+        							<td id="timetd-modal-req">Best time to call</td>
         							<td><input type="text" id="time-modal-req" name="time-modal-req" value="6:00am"/></td>
         						</tr>
         						

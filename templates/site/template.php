@@ -23,6 +23,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="EZPZP">
         <meta name="google-site-verification" content="jumUq6TsaD8CvuK9tOgwLo1z9vB80ib8mwzAXwpGsm8" />
+        <?php if(isset($page_description)){?><meta name="description" content="<?php echo $page_description;?>"><?php } ?>
 		<?php if($_SERVER['SERVER_NAME'] != 'localhost' || 0){?>
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
         <?php }?>
@@ -163,7 +164,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         }
         ?>
         <?php //print_r($this->session->userdata('site_loggedin'));  ?>
-        <title><?php if(isset($a_title)) { if($a_title!="") { echo $a_title; } } else echo "EZPZP";?></title>
+        <title><?php if(isset($page_title))  echo $page_title;  else echo "EZPZP";?></title>
     </head>
     <body>
        <div class="free">
@@ -295,7 +296,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
                                         <div class="input-append">
                                             <input type="hidden" name="search_type" id="search_type">
-                                            <select style="width:120px;height:20px;height:34px; margin-right:5px;" name = "searchfor" id="searchfor" >
+                                            <select style="width:120px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
                                             <option value="suppliers" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="suppliers") echo "selected";  ?>>Suppliers</option>
                                             </select>&nbsp;&nbsp;

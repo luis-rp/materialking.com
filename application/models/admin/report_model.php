@@ -62,7 +62,7 @@ class report_model extends Model
 					  $search
 					  ORDER BY receiveddate DESC
 					  ";
-		//echo $datesql;
+		
 		$datequery = $this->db->query($datesql);
 		$sepdates = $datequery->result();
 		

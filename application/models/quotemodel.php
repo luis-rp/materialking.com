@@ -503,6 +503,7 @@ class Quotemodel extends Model
 					  WHERE r.awarditem=ai.id AND ai.award=a.id 
 					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
+			
 			$quotequery = $this->db->query($quotesql);
 			$invoice->quote = $quotequery->row();
 			

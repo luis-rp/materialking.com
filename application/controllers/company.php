@@ -246,11 +246,17 @@ class Company extends CI_Controller {
 			
             $this->session->set_userdata($data);
 			
-			$this->load->helper('cookie');
+			@session_start();
+			$_SESSION['comet_user_id']=$check->id;
+			$_SESSION['comet_user_email']=$check->primaryemail;
+			$_SESSION['userid']=$check->id;
+			$_SESSION['logintype']='company';
+			
+			/*$this->load->helper('cookie');
         	$this->input->set_cookie("comet_user_id", $check->id,time()+3600);
 			$this->input->set_cookie("comet_user_email", $check->primaryemail,time()+3600);
 			$this->input->set_cookie("userid", $check->id,time()+3600);
-			$this->input->set_cookie("logintype", 'company',time()+3600);
+			$this->input->set_cookie("logintype", 'company',time()+3600);*/
  			
             redirect('dashboard');
         } else {
@@ -262,11 +268,11 @@ class Company extends CI_Controller {
 
     function logout() {
         $this->session->sess_destroy();
-		$this->load->helper('cookie');
+		/*$this->load->helper('cookie');
 		$this->input->set_cookie("comet_user_id",'',time()+3600);
 		$this->input->set_cookie("comet_user_email", '',time()+3600);
 		$this->input->set_cookie("userid", '',time()+3600);
-		$this->input->set_cookie("logintype", '',time()+3600);
+		$this->input->set_cookie("logintype", '',time()+3600);*/
 		
         redirect('company/login', 'refresh');
     }

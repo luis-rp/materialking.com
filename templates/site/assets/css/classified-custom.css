@@ -6895,7 +6895,7 @@ div.full .span3
 width:221px !important;
 }
 
-.csstransforms .navigation-wrapper .navigation .site-search input{ height:30px;}
+.csstransforms .navigation-wrapper .navigation .site-search input{ height:26px;}
 #searchfor .site-search input{ height:30px;}
 #searchfor   {  border-radius: 0;
     font-size: 15px;
@@ -6908,4 +6908,6 @@ width:221px !important;
     padding: 0;}
 .csstransforms .navigation-wrapper .navigation .site-search .input-append, .input-prepend{ margin:0px;}
 
+.contact th{ text-align:left !important}
+.menu nav ul{ margin:0px; padding:0px;}
  
