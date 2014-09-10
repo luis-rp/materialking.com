@@ -249,13 +249,15 @@ $(document).ready(function() {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-		
+		$('#cartqtydiv').html('');
+		$("#cartsavediv").html('');
+		$("#qtypricebox").html('');		
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
-        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
         for (i = 1; i <=100; i++) {
         	if(i == minqty)
         	selected = 'selected';
@@ -313,7 +315,7 @@ $(document).ready(function() {
 
     }
 
-    function showmodifiedprice(itemid, companyid, price){
+    function showmodifiedprice(itemid, companyid, price, isdeal){
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;

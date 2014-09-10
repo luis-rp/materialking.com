@@ -153,12 +153,12 @@
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->duequantity;?></td>
+			    		<td><?php echo $item->duequantity;?>
 
-			    		<?php if($pendingshipments){?>
-                                        <br/><?php echo $pendingshipments;?> - Pending Acknowledgement
+			    		<?php if($item->pendingshipments){?>
+                                        <br/><?php echo $item->pendingshipments;?> - Pending Acknowledgement
                                         <?php }?>
-
+						</td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo $item->daterequested;?></td>
 			    		<td><?php echo $item->costcode;?></td>

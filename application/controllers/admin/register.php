@@ -185,26 +185,30 @@ class Register extends CI_Controller
     		{
     			$errormessage = "Invalid email";
     		}
-    	}
-    	$user = $this->db->get('users')->row();
-    	if(isset($user->regkey))
-    	$key = $user->regkey;
-    	else
-    	$key = "";
+    		else
+    		{
+    			$user = $this->db->get_where('users',array('email'=> $_POST['email']))->row();
+    			if(isset($user->regkey))
+    			$key = $user->regkey;
+    			else
+    			$key = "";
 
-    	if(!$key)
-    	{
-    		$errormessage = "Account already activated.";
+    			if(!$key)
+    			{
+    				$errormessage = "Account already activated.";
+    			}
+    		}
     	}
 
     	if ($errormessage) {
-    		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
+    		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button>
+    		<div class="msgBox">' . $errormessage . '</div></div></div>');
     		redirect('admin/register/resend');
     	}
 
     	$link = site_url('admin/register/complete/'.$key);
     	$body = "Dear ".$user->companyname.",<br><br>
-	  	Please click following link to complete your registration:  <br><br>		 
+	  	Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 
     	$settings = (array)$this->settings_model->get_setting_by_id (1);
@@ -218,7 +222,8 @@ class Register extends CI_Controller
     	$this->email->set_mailtype("html");
     	$this->email->send();
 
-    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Activation link sent to your email successfully.</div></div></div>');
+    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">
+    	</a><div class="msgBox">Activation link sent to your email successfully.</div></div></div>');
     	redirect('admin/register/resend');
     }
     //////////////////////////////////

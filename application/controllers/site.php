@@ -1696,25 +1696,29 @@ class site extends CI_Controller
 	    else
 	    {
 	        $to = $settings['adminemail'];
+	        if(@$_POST['redirect'])
 		    $body .= 'You have a new request for assistance regarding '.site_url($_POST['redirect']).'.';
+		    else 
+		    $body .= 'You have a new request for assistance.';
 	    }
 		$body .= ' Details are:<br/><br/>';
-		$body .= "Type: ".$_POST['type']."<br/>";
-		$body .= "Name: ".$_POST['name']."<br/>";
+		/*$body .= "Type: ".$_POST['type']."<br/>";
+		$body .= "Name: ".$_POST['name']."<br/>";*/
 		$body .= "Email: ".$_POST['email']."<br/>";
-		$body .= "Phone: ".$_POST['phone']."<br/>";
-		
-		if($_POST['type'] == 'Request Phone Assistance')
-		{
-    		$body .= "Best day to call: ".$_POST['day']."<br/>";
-    		$body .= "Best time to call: ".$_POST['time']."<br/>";
+		//$body .= "Phone: ".$_POST['phone']."<br/>";
+		if(@$_POST['type']) {
+			if($_POST['type'] == 'Request Phone Assistance')
+			{
+				$body .= "Best day to call: ".$_POST['day']."<br/>";
+				$body .= "Best time to call: ".$_POST['time']."<br/>";
+			}else {
+				$body .= "Appointment date: ".$_POST['day']."<br/>";
+				$body .= "Appointment time: ".$_POST['time']."<br/>";
+			}
+
 		}
-		else 
-		{
-    		$body .= "Appointment date: ".$_POST['day']."<br/>";
-    		$body .= "Appointment time: ".$_POST['time']."<br/>";
-		}
 		
+		if(@$_POST['regarding'])
 		$body .= "Regarding: ".$_POST['regarding']."<br/>";
 
 		$this->load->library('email');
@@ -1728,8 +1732,10 @@ class site extends CI_Controller
 		$this->email->send();
 		
         $this->session->set_flashdata('message', 'Email was sent.');
-		
+		if(@$_POST['redirect'])
 	    redirect('site/'.$_POST['redirect']);
+	    else 
+	    redirect('site');
     }
     
     public function additemtoquote()

@@ -18,6 +18,8 @@ class Dashboard extends CI_Controller
 		$this->load->model('admin/quote_model');
 		$this->load->model('admin/project_model');
 		$this->load->model('admin/settings_model');
+		$this->load->helper('timezone');
+		date_default_timezone_set(bd_time());		
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->load->template ( '../../templates/admin/template', $data);
 	}

@@ -81,7 +81,7 @@ class backtrack extends CI_Controller
 			                        ->where('quote',$quote->id)->where('company',$item->company)
 			                        ->where('itemid',$item->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
-                             $data['pendingshipments']=$pendingshipments;
+                             $item->pendingshipments=$pendingshipments;
 					        
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{

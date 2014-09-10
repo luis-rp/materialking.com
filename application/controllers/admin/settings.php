@@ -14,6 +14,8 @@ class Settings extends CI_Controller
 		$this->load->helper ( 'form', 'url');
 		$data ['title'] = 'Site Settings';
 		$this->load->model('admin/settings_model');
+		$this->load->helper('timezone');
+		date_default_timezone_set(bd_time());		
 		$this->load->model('admin/quote_model');
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->load = new My_Loader();
@@ -29,6 +31,7 @@ class Settings extends CI_Controller
 		$this->validation->pricedays = $data->pricedays;
 		$this->validation->pricepercent = $data->pricepercent;
 		$this->validation->tour = $data->tour;
+		$this->validation->timezone = $data->timezone;
 		$var ['action'] = site_url ('admin/settings/update');
 		$this->load->view ('admin/settings', $var);
 	}
@@ -41,6 +44,7 @@ class Settings extends CI_Controller
 		$fields ['pricedays'] = 'pricedays';
 		$fields ['pricepercent']= 'pricepercent';
 		$fields ['tour']= 'tour';
+		$fields ['timezone']= 'timezone';
 		$this->validation->set_fields ($fields);
 	}
 	
