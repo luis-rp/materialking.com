@@ -273,7 +273,12 @@ class Company extends CI_Controller {
 		$this->input->set_cookie("comet_user_email", '',time()+3600);
 		$this->input->set_cookie("userid", '',time()+3600);
 		$this->input->set_cookie("logintype", '',time()+3600);*/
-		
+		@session_start();
+		$_SESSION['comet_user_id']='';
+		$_SESSION['comet_user_email']='';
+		$_SESSION['userid']='';
+		$_SESSION['logintype']='';
+			
         redirect('company/login', 'refresh');
     }
 
