@@ -49,6 +49,20 @@
     
     
     <div class="control-group">
+    <label class="control-label">TimeZone</label>
+    <div class="controls">
+     <?php $timezone_identifiers = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, 'US');?>
+    <select name="timezone" id="timezone">   
+    <?php foreach($timezone_identifiers as $timezone_identifier) { ?>
+    	<option value="<?php echo $timezone_identifier; ?>" <?php if(@$this->validation->timezone == $timezone_identifier) echo "selected"; ?>   ><?php echo $timezone_identifier; ?></option>
+    <?php } ?>
+    </select>
+  
+     </div>
+    </div>
+    
+    
+    <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
      <input name="add" type="submit" class="btn btn-primary" value="Update"/>

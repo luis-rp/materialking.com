@@ -218,6 +218,8 @@ class cart extends CI_Controller
     					$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $price;
     				}
     			}
+    		}else{
+    			$cart[$_POST['itemid'].':'.$_POST['company']]['price'] = $ea;
     		}   		
     	}
 		

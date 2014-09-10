@@ -78,7 +78,8 @@ class settings_model extends Model
           	'adminemail'=>$this->input->post('adminemail'),
           	'pricedays'=>$this->input->post('pricedays'),
           	'pricepercent'=>$this->input->post('pricepercent'),
-          	'tour'=>$this->input->post('tour')
+          	'tour'=>$this->input->post('tour'),
+          	'timezone'=>$this->input->post('timezone')
 		);
 		
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));

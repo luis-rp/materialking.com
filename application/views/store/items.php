@@ -124,13 +124,15 @@ $(document).ready(function() {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-
+		$('#cartqtydiv').html('');
+		$("#cartsavediv").html('');
+		$("#qtypricebox").html('');
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
-        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+');">';
+        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
         for (i = 1; i <=100; i++) {
         	if(i == minqty)
         	selected = 'selected';
@@ -140,82 +142,82 @@ $(document).ready(function() {
    			}
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
+        if(!isdeal) {
+        	var data = "itemid="+itemid+"&companyid="+companyid;
+        	$("#qtypricebox").html("");
+        	$.ajax({
+        		type:"post",
+        		data: data,
+        		sync: false,
+        		url: getpriceqtydetails
+        	}).done(function(data){
+        		if(data){
 
-        var data = "itemid="+itemid+"&companyid="+companyid;
-		$("#qtypricebox").html("");
-        $.ajax({
-        	type:"post",
-        	data: data,
-        	sync: false,
-        	url: getpriceqtydetails
-        }).done(function(data){
-        	if(data){
-        		
-        		$("#qtypricebox").html(data);
-        	}
-        });
+        			$("#qtypricebox").html(data);
+        		}
+        	});
 
-        var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+        	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	sync: false,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		sync: false,
+        		url: getpriceperqtydetails
+        	}).done(function(data){
+        		if(data){
 
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
+        			$("#cartsavediv").html("");
+        			$("#cartsavediv").html(data);
+        		}
+        	});
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		url: getnewprice,
+        		sync:false
+        	}).done(function(data){
+        		if(data){
 
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
-
-
+        			if(data!="norecord")
+        			$("#hiddenprice").val(data);
+        		}
+        	});
+        }
     }
 
-    function showmodifiedprice(itemid, companyid, price){
+    function showmodifiedprice(itemid, companyid, price, isdeal){
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+    	if(!isdeal) {
+    		$.ajax({
+    			type:"post",
+    			data: data2,
+    			sync: false,
+    			url: getpriceperqtydetails
+    		}).done(function(data){
+    			if(data){
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	sync: false,
-        	url: getpriceperqtydetails
-        }).done(function(data){
-        	if(data){
+    				$("#cartsavediv").html("");
+    				$("#cartsavediv").html(data);
+    			}
+    		});
 
-        		$("#cartsavediv").html("");
-        		$("#cartsavediv").html(data);
-        	}
-        });
+    		$.ajax({
+    			type:"post",
+    			data: data2,
+    			url: getnewprice,
+    			sync:false
+    		}).done(function(data){
+    			if(data){
 
-        $.ajax({
-        	type:"post",
-        	data: data2,
-        	url: getnewprice,
-        	sync:false
-        }).done(function(data){
-        	if(data){
-
-        		if(data!="norecord")
-        		$("#hiddenprice").val(data);
-        	}
-        });
+    				if(data!="norecord")
+    				$("#hiddenprice").val(data);
+    			}
+    		});
+    	}
     }
 
     function addtocart2(itemid, companyid, price, minqty, isdeal){
