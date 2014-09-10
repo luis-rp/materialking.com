@@ -65,6 +65,8 @@ class subscriber extends CI_Controller
 		$company = $this->companymodel->getcompanybyid($this->session->userdata('company')->id);
 		$ok=0;
 		$errors=0;
+		$config['mailtype'] = "html";
+		$this->email->initialize($config);
 		foreach($subscribers as $item){
 			
 			$template_content = $template->body;
