@@ -82,6 +82,7 @@ class network extends CI_Controller {
         $temp['site_loggedin'] = null;
         $this->session->set_userdata($temp);
 	    $this->session->sess_destroy();
+		@session_start();
 		$_SESSION['comet_user_id']='';
 		$_SESSION['comet_user_email']='';
 		$_SESSION['userid']='';
