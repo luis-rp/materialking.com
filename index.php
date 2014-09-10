@@ -1,5 +1,8 @@
 <?php
 require_once 'xls_functions.php';
+
+date_default_timezone_set('America/Los_Angeles');	
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

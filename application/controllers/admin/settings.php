@@ -14,8 +14,8 @@ class Settings extends CI_Controller
 		$this->load->helper ( 'form', 'url');
 		$data ['title'] = 'Site Settings';
 		$this->load->model('admin/settings_model');
-		$this->load->helper('timezone');
-		date_default_timezone_set(bd_time());		
+		//$this->load->helper('timezone');
+		//date_default_timezone_set(bd_time());		
 		$this->load->model('admin/quote_model');
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->load = new My_Loader();
