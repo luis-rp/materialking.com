@@ -40,8 +40,8 @@ function submitForm(val)
            <a href="<?php echo site_url('report');?>"><input type="button" value="Show All" class="btn btn-primary"/></a></th>
   </tr>
   <tr>
-    <td ><input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/></td>
-    <td ><input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/></td>
+    <td ><input type="text" name="searchfrom" value="<?php echo date("m/d/Y", strtotime(@$_POST['searchfrom']));?>" class="datefield" style="width: 90px;"/></td>
+    <td ><input type="text" name="searchto" value="<?php echo date("m/d/Y", strtotime(@$_POST['searchto']));?>" class="datefield" style="width: 90px;"/></td>
     <td ><select id="purchasingadmin" name="purchasingadmin" class="form-control selectpicker show-tick" style="width: 100px;" onchange="this.form.submit()">
     					<option value=''>All Companies</option>
     					<?php foreach($purchasingadmins as $company){?>

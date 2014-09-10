@@ -714,7 +714,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                 		   	Add Attachment   <input type="file" name="userfile" />
                           	</div> 
     		    			</div> 
-    		    			<input type="submit" value="Upload" class="btn btn-primary"/>
+    		    			
     		    			<?php if(@$this->validation->quoteattachment){?>
                         	<br>
                         	<a href="<?php echo site_url('uploads/quote').'/'.@$this->validation->quoteattachment ;?>" target="_blank">  
@@ -747,7 +747,13 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 				    </div>
 			   </div>
 			   <?php }?>
-		    
+		    <div class="span3">
+			    
+				    <div class="controls">
+				    <label class="control-label">&nbsp;</label>
+				    	<input type="submit" value="Upload" class="btn btn-primary"/>
+				    </div>
+			   </div>
 		    </div>
 	    
 	    	<p>&nbsp;</p>

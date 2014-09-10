@@ -97,11 +97,11 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
-							ERROR Log
+							ERROR LOG
 						</div>
 					  <br>
 						<?php if(!$logDetails){?>
-							<span class="label label-important">No New Error log</span>
+							<span class="label label-important">No New Errors</span>
 						<?php }?>
 						<?php foreach($logDetails as $key=>$errorLog){ ?>
 					
