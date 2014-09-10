@@ -53,11 +53,17 @@ class network extends CI_Controller {
             $temp['site_loggedin']->comet_user_email = $row->email;
             $this->session->set_userdata($temp);
 			
-			$this->load->helper('cookie');
+			/*$this->load->helper('cookie');
         	$this->input->set_cookie("comet_user_id", $row->id,time()+3600);
 			$this->input->set_cookie("comet_user_email", $row->email,time()+3600);
 			$this->input->set_cookie("userid", $row->id,time()+3600);
-			$this->input->set_cookie("logintype", '',time()+3600);
+			$this->input->set_cookie("logintype", '',time()+3600);*/
+			
+			@session_start();
+			$_SESSION['comet_user_id']=$row->id;
+			$_SESSION['comet_user_email']=$row->email;
+			$_SESSION['userid']=$row->id;
+			$_SESSION['logintype']='';
             
             $this->session->set_userdata($row);
           	$this->session->set_userdata(array("userid"=>$row->id));
@@ -76,11 +82,11 @@ class network extends CI_Controller {
         $temp['site_loggedin'] = null;
         $this->session->set_userdata($temp);
 	    $this->session->sess_destroy();
-		$this->load->helper('cookie');
+		/*$this->load->helper('cookie');
 		$this->input->set_cookie("comet_user_id",'',time()+3600);
 		$this->input->set_cookie("comet_user_email", '',time()+3600);
 		$this->input->set_cookie("userid",'',time()+3600);
-		$this->input->set_cookie("logintype", '',time()+3600);
+		$this->input->set_cookie("logintype", '',time()+3600);*/
 		
         redirect('site', 'refresh');
     }
