@@ -390,8 +390,8 @@ class Dashboard extends CI_Controller
 					GROUP BY o.costcode";
 			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
-			if($result){
-			$codes[$cnt]->label = $item->code;
+			if($result[0]){
+			$codes[$cnt]->label = $result[0]->label;
 			$codes[$cnt]->data = $result[0]->data;
 			$codes[$cnt]->type = "new";
 			$cnt++;
