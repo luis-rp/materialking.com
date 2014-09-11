@@ -78,8 +78,13 @@ class Login extends CI_Controller {
             $this->last_logged_date = $this->session->userdata('last_logged_date');
         	$this->usertype_id = $this->session->userdata('usertype_id'); 
         	$this->username = $this->session->userdata('username');
-        	
-        	redirect('admin/dashboard', $data);
+			
+			@session_start();
+			$_SESSION['comet_user_id']=$this->id;
+			$_SESSION['comet_user_email']=$data['email'];
+			$_SESSION['userid']=$this->id;
+			$_SESSION['logintype']='';
+         	redirect('admin/dashboard', $data);
         }
         else
         {
@@ -91,6 +96,11 @@ class Login extends CI_Controller {
 	function logout()
 	{
 	    $this->session->sess_destroy();
+		@session_start();
+		$_SESSION['comet_user_id']='';
+		$_SESSION['comet_user_email']='';
+		$_SESSION['userid']='';
+		$_SESSION['logintype']='';
 	    redirect('admin/login/index', 'refresh'); 
 	}
 	
