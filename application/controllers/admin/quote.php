@@ -26,6 +26,15 @@ class quote extends CI_Controller
         $data ['title'] = "Administrator";
 
         $this->load->model('admin/settings_model');
+        $id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
         $data['config'] = (array) $this->settings_model->get_current_settings();
         $this->load->model('admin/project_model');
         $this->load->model('admin/company_model');

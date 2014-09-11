@@ -391,6 +391,8 @@ class Dashboard extends CI_Controller
 			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
 			if($result[0]){
+			  if (!isset($codes[$cnt])) 
+    			$codes[$cnt] = new stdClass();	
 			$codes[$cnt]->label = $result[0]->label;
 			$codes[$cnt]->data = $result[0]->data;
 			$codes[$cnt]->type = "new";

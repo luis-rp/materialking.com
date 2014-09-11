@@ -19,6 +19,16 @@ class Banner extends CI_Controller {
 		$this->load->library ( array ('table', 'validation', 'session'));
 		$this->load->helper ( 'form', 'url');
 		$this->load->model('admin/banner_model');
+		$this->load->model('admin/settings_model');
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
 		$data ['title'] = 'Banner Settings';
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/admin/template', $data);
