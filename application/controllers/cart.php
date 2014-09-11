@@ -417,6 +417,9 @@ class cart extends CI_Controller
 		$totalprice = $totalprice+ $totalshipping+ $tax;
 	    $totalprice = number_format($totalprice,2);
 		
+		@session_start();
+		$_SESSION['cart_shipping_vals']=$_POST['itemshipping'];
+		
 		if($this->session->userdata('site_loggedin'))
 	    	$config = (array)$this->settings_model->get_setting_by_admin ($this->session->userdata('site_loggedin')->id);
 	    else
