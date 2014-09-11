@@ -476,6 +476,7 @@ class cart extends CI_Controller
 			$order['txnid'] = $chargeobj->balance_transaction;
 			$order['email'] = @$_POST['email'];
 			$order['taxpercent'] = $data['settings']->taxpercent;
+			$order['shipping'] = $totalshipping;
 			
 			$this->db->insert('order',$order);
 			$oid = $this->db->insert_id();
