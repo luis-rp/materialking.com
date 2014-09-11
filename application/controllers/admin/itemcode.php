@@ -25,6 +25,15 @@ class itemcode extends CI_Controller
         $this->load->model('admin/itemcode_model');
         $this->load->model('admin/quote_model');
         $this->load->model('admin/settings_model');
+        $id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
         $this->load->model('admin/catcode_model');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');

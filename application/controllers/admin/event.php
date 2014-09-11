@@ -24,6 +24,15 @@ class event extends CI_Controller
 		$this->load->model('admin/adminmodel');
 		$this->load->model('admin/event_model');
 		$this->load->model('admin/settings_model');
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->form_validation->set_error_delimiters ('<div class="red">', '</div>');
 		$data ['title'] = "Administrator";
