@@ -103,6 +103,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 	//if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
                 ?>
 
+                <?php  if(isset($settingtour)) {
+					if($settingtour==1) { ?>
+					
                 $(document).ready(function($){
 
 					var field;
@@ -247,7 +250,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 });
                   	  		
 
-  	  		    <?php //} ?>
+  	  		    <?php } } ?>
   	  		    
   	  		   
 				//	} 
@@ -461,7 +464,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                             <?php } ?>
                             <li class="separator"></li>
                             <li>
-                                <a href="#"><i class="icon-time"></i><?php echo date('D, d M Y h:i A'); ?><span class="responsive-text"> </span></a>
+                                <a href="#"><i class="icon-time"></i><?php if(isset($timezone)) { $date = new DateTime($time, new DateTimeZone('America/Los_Angeles')); $date->setTimezone(new DateTimeZone($timezone)); echo $time= $date->format('D, d M Y h:i A'); } else { echo date('D, d M Y h:i A'); } ?><span class="responsive-text"> </span></a>
                             </li>
                             
                             <li class="dropdown">

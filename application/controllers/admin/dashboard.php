@@ -20,6 +20,15 @@ class Dashboard extends CI_Controller
 		$this->load->model('admin/settings_model');
 		//$this->load->helper('timezone');
 		//date_default_timezone_set(bd_time());		
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
@@ -344,6 +353,53 @@ class Dashboard extends CI_Controller
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
 			$codes = $this->db->query($query)->result();
+			$codearr = array();			
+			foreach($codes as $code2)
+			$codearr[] = $code2->label;
+						
+			$where2 = "";
+			
+			if(count($codearr)>0){
+				$codestr = implode(",",$codearr); 
+				$where2 = "AND code not in ({$codestr})";
+			}
+			
+			$sql ="SELECT *	FROM ".$this->db->dbprefix('costcode')." WHERE 1=1 {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
+		
+			if($this->session->userdata('usertype_id')>1)
+			{
+				$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')." 
+			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
+			}
+		
+		$query = $this->db->query ($sql);
+		$cnt = count($codearr);
+		if ($query->result ()) 
+		{
+			$result = $query->result();
+			$ret = array();
+			foreach($result as $item)
+			{
+			
+			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+			$result = $this->db->query($query2)->result();
+			//echo "<pre>",print_r($result); die;
+			if($result){
+			$codes[$cnt]->label = $item->code;
+			$codes[$cnt]->data = $result[0]->data;
+			$codes[$cnt]->type = "new";
+			$cnt++;
+			}
+			
+			}
+		}		
+			
 			$costcodesjson = array();
 			foreach($codes as $c)
 			{
@@ -368,8 +424,7 @@ class Dashboard extends CI_Controller
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
 					$queryOrder = $this->db->query($sqlOrders);
-					if($queryOrder->result()){
-					
+					if($queryOrder->result() && (!isset($c->type))){
 					
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
