@@ -33,7 +33,13 @@
             	<tr><td colspan="8">&nbsp;</td></tr>
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
-            	    $totalwithtax = number_format($tax+$gtotal,2);
+            	    
+					$shipping_vals=0;
+					@session_start();
+					if(isset($_SESSION['cart_shipping_vals']))
+					$shipping_vals= $_SESSION['cart_shipping_vals'];
+					
+					$totalwithtax = number_format($tax+$gtotal+$shipping_vals,2);
             	?>
             	<tr>
             		<td colspan="7" align="right">Total</td>
@@ -43,6 +49,11 @@
             	<tr>
             		<td colspan="7" align="right">Tax</td>
             		<td style="text-align:right;">$<?php echo number_format($tax,2);?></td>
+            	</tr>
+                
+                <tr>
+            		<td colspan="7" align="right">Shipment rate</td>
+            		<td style="text-align:right;">$<?php echo number_format($shipping_vals,2);?></td>
             	</tr>
             	
             	<tr>
