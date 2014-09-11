@@ -258,7 +258,7 @@ class cart extends CI_Controller
 		
 		$data['cart']=array();
 		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
-		$dataitemshipping=0;
+		$dataitemshipping=0; $userinfoship = array();$_SESSION['cart_shipping_vals_each']='';
 		foreach($cart as $item)
 		{
 			//echo "<pre>"; print_r($item['quantity']);
@@ -340,12 +340,23 @@ class cart extends CI_Controller
 				}
 				$data['cart'][]=$item;
 				
+				if(is_object($item['rate']))
+					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate']->rate;
+				else
+					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
+				
+				@session_start();
+				$_SESSION['cart_shipping_vals_each']=$userinfoship;
+				
 				if(is_object($item['rate'])){
 					$dataitemshipping +=$item['rate']->rate;		
 				}
 				else{
 					$dataitemshipping +=$item['rate'];	
 				}
+				
+				//@session_start(); echo $dataitemshipping;
+				//print_r($_SESSION); die;
 				
 			}
 			catch(Exception $e)
@@ -363,9 +374,9 @@ class cart extends CI_Controller
 		$data['state'] = $_POST['shippingState'];
 		$data['zip'] = $_POST['shippingZip'];
 		$data['country'] = $_POST['shippingCountry'];
-/*
- 		//echo "<pre>".$dataitemshipping; print_r($data['cart']); die;
- 		$data['itemshipping'] = $dataitemshipping;	
+
+ 		//echo "<pre>".$dataitemshipping; print_r($_SESSION); die;
+ 		/*$data['itemshipping'] = $dataitemshipping;	
  		
 */
 		/*if(is_object($item['rate'])){
@@ -388,6 +399,8 @@ class cart extends CI_Controller
 		$cart = $this->session->userdata('pms_site_cart');
 		$ordernumber = $this->session->userdata('pms_orderid');
 		
+		//@session_start();
+		//print_r($_SESSION); die;
 		
 		if(!$cart || !$ordernumber)
 		{
@@ -406,9 +419,8 @@ class cart extends CI_Controller
 		foreach($cart as $ci)
 		{
 			$totalprice+= $ci['quantity'] * $ci['price'];
-			
 		}
-		$settings = $this->settings_model->get_current_settings();
+ 		$settings = $this->settings_model->get_current_settings();
 		
 		 $tax = number_format($totalprice*$settings->taxpercent/100,2);
  		 $gtotal = number_format($totalprice,2);
@@ -494,6 +506,7 @@ class cart extends CI_Controller
     			$od['paymentstatus'] = 'Paid';
     			$od['paymenttype'] = 'Credit Card';
     			$od['paymentnote'] = $chargeobj->balance_transaction;
+				$od['shipping'] = $_SESSION['cart_shipping_vals_each'][$ci['company'].'comp'.$ci['itemid']];
 				$this->db->insert('orderdetails',$od);
 			
 	    		$notifications[$ci['company']]['ponum'] = $ordernumber;
@@ -503,7 +516,7 @@ class cart extends CI_Controller
 	    		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
 		
 			}
-		
+			$_SESSION['cart_shipping_vals_each']='';
 			foreach($notifications as $notification)
 			{
 			    $this->db->insert('notification',$notification);
