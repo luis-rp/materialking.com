@@ -14,6 +14,15 @@ class Settings extends CI_Controller
 		$this->load->helper ( 'form', 'url');
 		$data ['title'] = 'Site Settings';
 		$this->load->model('admin/settings_model');
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
 		//$this->load->helper('timezone');
 		//date_default_timezone_set(bd_time());		
 		$this->load->model('admin/quote_model');
