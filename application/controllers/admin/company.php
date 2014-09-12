@@ -264,18 +264,21 @@ class company extends CI_Controller {
         $c = $this->company_model->get_companys_by_id($id);
 
         $link = base_url() . 'company/complete/' . $key;
-        $body = "Dear " . $c->title . ",<br><br>
-	  	Please click following link to complete your registration:  <br><br>
+        	$data['email_body_title'] = "Dear " . $c->title ;
+	  		$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
-
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->settings_model->get_current_settings();
         $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
 
         $this->email->to($c->title . ',' . $c->email);
 
         $this->email->subject('Request to Join the Network.');
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
     }

@@ -1188,7 +1188,11 @@ class Quote extends CI_Controller
 		    
     		$settings = (array)$this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
     	    $this->load->library('email');
-    		$this->email->clear(true);
+
+    	    $config['charset'] = 'utf-8';
+    	    $config['mailtype'] = 'html';
+    	    $this->email->initialize($config);
+    		//$this->email->clear(true);
             $to = array();
             $this->email->from($settings['adminemail'], "Administrator");
     		$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
@@ -1203,15 +1207,16 @@ class Quote extends CI_Controller
             }
             $to = implode(',',$to);
             $this->email->to($to); 
-            $body = "Dear Admin,<br><br>
-    		  	This is a notification of bid details by ".$company->title." for PO# ".$quote->ponum.".<br/><br/>
+            $data['email_body_title'] = "Dear Admin";
+    		$data['email_body_content'] = "This is a notification of bid details by ".$company->title." for PO# ".$quote->ponum.".<br/><br/>
     		  	Please find the details below:<br/><br/>
     		  	$html
     		    ";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
     		//echo($to.'<br/>');
     		//echo $body;
            	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$company->title);
-            $this->email->message($body);	
+            $this->email->message($send_body);	
             if(isset($attachment)) { 
                 $this->email->attach($attachment);
             }
@@ -1575,7 +1580,10 @@ class Quote extends CI_Controller
 		
 		$settings = (array)$this->settings_model->get_setting_by_admin ($q->purchasingadmin);
 	    $this->load->library('email');
-		$this->email->clear(true);
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
+		//$this->email->clear(true);
         $this->email->from($settings['adminemail'], "Administrator");
         $this->email->to($settings['adminemail']); 
         $sql = "SELECT u.email FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu
@@ -1587,13 +1595,14 @@ class Quote extends CI_Controller
         {
         	$this->email->cc($pu->email);
         }
-        $body = "Dear Admin,<br><br>
-		  	ETA has been updated by ".$company->title." for PO# ".$quote->ponum.".<br/><br/>
+        $data['email_body_title'] = "Dear Admin";
+		$data['email_body_content'] = "ETA has been updated by ".$company->title." for PO# ".$quote->ponum.".<br/><br/>
 		  	Please find the details below:<br/><br/>
 		  	$emailitems
 		    ";
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
        	$this->email->subject('Backorder update for PO# '.$quote->ponum. " by ".$company->title);
-        $this->email->message($body);	
+        $this->email->message($send_body);	
         $this->email->set_mailtype("html");
         $this->email->send();
 		
@@ -1680,12 +1689,16 @@ class Quote extends CI_Controller
 				$this->model->db->update('awarditem',$updatearray);
 			}
 		}
-		$body  = "Company has modified bid for following backorder:<br/><br/>";
-		$body .= "PO#: ".$quote->ponum."<br/>";
-		$body .= "Company: ".$company->title."<br/>";
+		$data['email_body_title']   = "Company has modified bid for following backorder:";
+		$data['email_body_content']  = "PO#: ".$quote->ponum."<br/>";
+		$data['email_body_content']  .= "Company: ".$company->title."<br/>";
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');
-		
+
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($settings['adminemail'], "Administrator");
 		$this->email->to($settings['adminemail']);
 		
@@ -1693,7 +1706,7 @@ class Quote extends CI_Controller
 		$this->email->cc($pa->email);
 		
 		$this->email->subject('Backorder Update Notification');
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		
@@ -2240,16 +2253,19 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
+    		$config['charset'] = 'utf-8';
+    		$config['mailtype'] = 'html';
+    		$this->email->initialize($config);
     		
     		$this->email->from($company->primaryemail);
     		$this->email->to($pa->email);
     		$subject = 'Shipment made by supplier';
     		
-    		$body = "Supplier {$company->title} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y').".
-    				  <br><br>Details:$shipitems";
-    		
+    		$data['email_body_title']  = "Supplier {$company->title} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
+    		$data['email_body_content'] = "<br><br>Details:".$shipitems;
+    		$send_body = $this->load->view("email_templates/template",$data,TRUE);
     		$this->email->subject($subject);
-    		$this->email->message($body);
+    		$this->email->message($send_body);
     		$this->email->set_mailtype("html");
     		$this->email->reply_to($company->primaryemail);
     		$this->email->send();
@@ -2294,14 +2310,15 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$invs = $this->quotemodel->getinvoicesdetailsformail($company->id,$_POST['invoicenum']);
 		
 		$subject = "Due Date Set For Invoice ".$_POST['invoicenum'];
-		$body = "";
+		$data['email_body_title']  = "";
+		$data['email_body_content']  = "";
 		$gtotal = 0;
 		foreach ($invs as $invoice)
 		{     		
-			$body .= 'Dear '.$invoice->username.' ,<br><br>';
-			$body .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' to Due on  '.$invoice->DueDate.'<br><br>';
-			$body .= 'Please see order details below :<br>';
-			$body .= '
+			$data['email_body_title'] .= 'Dear '.$invoice->username.' ,<br><br>';
+			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' to Due on  '.$invoice->DueDate.'<br><br>';
+			$data['email_body_content'] .= 'Please see order details below :<br>';
+			$data['email_body_content'] .= '
 					<table class="table table-bordered span12" border="1">
 		            	<tr>
 		            		<th>Invoice</th>
@@ -2318,7 +2335,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		            		<th>Price</th>
 		            	</tr>';
 			
-	        $body .= '<td>'.$invoice->invoicenum.'</td>
+	        $data['email_body_content'] .= '<td>'.$invoice->invoicenum.'</td>
             		<td>'.$invoice->receiveddate.'</td>
             		<td>'.$invoice->supplierusername.'</td>
             		<td>'.$invoice->address.'</td>
@@ -2336,7 +2353,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	        $tax = $gtotal * $invoice->taxpercent / 100;
             $totalwithtax = number_format($tax+$gtotal,2);
             	
-            $body .= '<tr><td colspan="12">&nbsp;</td> <tr>
+            $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
             		<td colspan="11" align="right">Total</td>
             		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
             	</tr>
@@ -2350,16 +2367,20 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td colspan="11" align="right">Total</td>
             		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>';
-            $body .= '</table>';   
-	    }            
+            $data['email_body_content'] .= '</table>';   
+	    }      
+	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
-		$this->email->clear(true);
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		//$this->email->clear(true);
 		$this->email->to($invs[0]->email);
 		//$this->email->cc('pratiksha@esparkinfo.com');
 		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
 		
 		$this->email->subject($subject);
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
 	}
@@ -2443,7 +2464,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');
-		
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($pa->email);
 		
@@ -2452,13 +2475,13 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		if(isset($_POST['status']) && $_POST['status']!="" && $_POST['status']=="Error")
 		$subject = 'Supplier Disputes Payment'; 
-		
-		$body = "Supplier {$company->title} has set the status of 
+		$data['email_body_title'] = "";
+		$data['email_body_content']= "Supplier {$company->title} has set the status of 
 				Invoice# {$_POST['invoicenum']} to {$_POST['status']} 
 				for PO# {$quote->ponum} on ".date('m/d/Y').".";
-		
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->email->subject($subject);
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
 		$this->email->send();
@@ -2497,17 +2520,20 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');
-		
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($pa->email);
 		$subject = 'Payment requested by supplier';
-		
-		$body = "Supplier {$company->title} has sent payment request for
+		$data['email_body_title'] = "";
+		$data['email_body_content'] = "Supplier {$company->title} has sent payment request for
 		Invoice# {$invoicenum}
 		for PO# {$quote->ponum} on ".date('m/d/Y').".";
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		
 		$this->email->subject($subject);
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
 		$this->email->send();

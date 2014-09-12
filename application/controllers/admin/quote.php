@@ -596,17 +596,20 @@ class quote extends CI_Controller
                     $this->quote_model->db->insert('invitation', $insertarray);
 
                     $link = base_url() . 'home/quote/' . $key;
-                    $body = "Dear " . $c->title . ",<br><br>
+                    $data['email_body_title']= "Dear " . $c->title;
 
-				  	Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
+				  	$data['email_body_content'] = "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
 				    ";
+                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
-
+                    $config['charset'] = 'utf-8';
+                    $config['mailtype'] = 'html';
+                    $this->email->initialize($config);
                     $this->email->from($settings['adminemail'], "Administrator");
 
                     $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
@@ -618,7 +621,7 @@ class quote extends CI_Controller
                       } */
 
                     $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
-                    $this->email->message($body);
+                    $this->email->message($send_body);
                     $this->email->set_mailtype("html");
                     $this->email->send();
 
@@ -649,21 +652,25 @@ class quote extends CI_Controller
                     $key = $this->quote_model->getInvitationKey($itemid, $c->id);
 
                     $link = base_url() . 'home/quote/' . $key;
-                    $body = "Dear " . $c->title . ",<br><br>
-				    This is a reminder email for earlier invitation for the quote.<br><br>
+                    $data['email_body_title'] = "Dear " . $c->title;
+				    $data['email_body_content'] = "This is a reminder email for earlier invitation for the quote.<br><br>
 				  	Please click following link for the quote PO# " . $this->input->post('ponum') . "):  <br><br>
 				    <a href='$link' target='blank'>$link</a>
 				    ";
+                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
+                    $config['charset'] = 'utf-8';
+                    $config['mailtype'] = 'html';
+                    $this->email->initialize($config);
                     $this->email->clear(true);
                     $this->email->from($settings['adminemail'], "Administrator");
 
                     $this->email->to( $c->title . ',' . $c->primaryemail);
 
                     $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
-                    $this->email->message($body);
+                    $this->email->message($send_body);
                     $this->email->set_mailtype("html");
                     $this->email->send();
 
@@ -695,21 +702,25 @@ class quote extends CI_Controller
                     $key = $this->quote_model->getInvitationKey($itemid, $c->id);
 
                     $link = base_url() . 'home/quote/' . $key;
-                    $body = "Dear " . $c->title . ",<br><br>
-				    This is to notify you that there is a revision about the quote.<br><br>
+                    $data['email_body_title'] = "Dear " . $c->title;
+				    $data['email_body_content'] = "This is to notify you that there is a revision about the quote.<br><br>
 				  	Please click following link for the quote PO# " . $this->input->post('ponum') . "):  <br><br>
 				    <a href='$link' target='blank'>$link</a>
 				    ";
+                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
+                    $config['charset'] = 'utf-8';
+                    $config['mailtype'] = 'html';
+                    $this->email->initialize($config);
                     $this->email->clear(true);
                     $this->email->from($settings['adminemail'], "Administrator");
 
                     $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
 
                     $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
-                    $this->email->message($body);
+                    $this->email->message($send_body);
                     $this->email->set_mailtype("html");
                     $this->email->send();
 
@@ -803,21 +814,24 @@ class quote extends CI_Controller
             $this->quote_model->db->insert('invitation', $insertarray);
 
             $link = base_url() . 'quote/direct/' . $key;
-            $body = "Dear " . $c->title . ",<br><br>
+            	$data['email_body_title'] = "Dear " . $c->title ;
 
-		  	Please click on following link to review the purchase order(PO# " . $quote->ponum . "):  <br><br>
+		  		$data['email_body_content'] = "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):  <br><br>
 		    <a href='$link' target='blank'>$link</a><br><br>
 		    The PO Details are:<br><br>
 		    $emailitems
 		    ";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
-
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
             $this->email->subject('Request for Quote Proposal (PO# ' . $quote->ponum.')');
-            $this->email->message($body);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
 
@@ -1641,8 +1655,8 @@ class quote extends CI_Controller
 
     		$pa = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
 
-    		$body = "Dear " . $company->title . ",<br><br>
-    		". $pa->companyname." sent payment for the Invoice#: ".$_POST['invoicenum'].";
+    		$data['email_body_title']  = "Dear " . $company->title ;
+    		$data['email_body_content'] =  $pa->companyname." sent payment for the Invoice#: ".$_POST['invoicenum'].";
     		The following information sent:
     		<br/>
     		PO# : ".$quote->ponum."
@@ -1657,12 +1671,15 @@ class quote extends CI_Controller
     		<br/>
     		Payment Date: ".date('m/d/Y')."
     		<br><br>";
-
+    		$send_body = $this->load->view("email_templates/template",$data,TRUE);
     		$this->load->library('email');
+    		$config['charset'] = 'utf-8';
+    		$config['mailtype'] = 'html';
+    		$this->email->initialize($config);
     		$this->email->from($pa->email, $pa->companyname);
     		$this->email->to($company->title . ',' . $company->primaryemail);
     		$this->email->subject('Payment made for the invoice: '.$_POST['invoicenum']);
-    		$this->email->message($body);
+    		$this->email->message($send_body);
     		$this->email->set_mailtype("html");
     		$this->email->send();
         }
@@ -2357,45 +2374,51 @@ class quote extends CI_Controller
     function sendautolateemail($id){
     	$quotearr = $this->quote_model->getallawardedqtyduebids();
     	//echo "<pre>",print_r($quotearr); die;
+    	$this->load->library('email');
+    	$config['charset'] = 'utf-8';
+    	$config['mailtype'] = 'html';
+    	$this->email->initialize($config);
     	foreach($quotearr as $quote){
     		if($quote->items){
     			foreach($quote->items as $items){
 
     				// echo "<pre>",print_r($items); die;
-    				$Supplierbody = "Dear {$items->companydetails->title},<br/><br/>
- Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
- Below are the Details:<br/><br/>
- Company: {$quote->quotedetails->companyname}<br>
- PO: {$quote->quotedetails->ponum}<br>
- Itemcode: {$items->itemcode}<br>
- Date Requested : {$items->daterequested}
- Quantity Left: {$items->quantityleft}";
-
+    				$data['email_body_title'] = "Dear {$items->companydetails->title}";
+					 $data['email_body_content'] = "Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+					 Below are the Details:<br/><br/>
+					 Company: {$quote->quotedetails->companyname}<br>
+					 PO: {$quote->quotedetails->ponum}<br>
+					 Itemcode: {$items->itemcode}<br>
+					 Date Requested : {$items->daterequested}
+					 Quantity Left: {$items->quantityleft}";
+    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
     				/*$settings = (array)$this->settings_model->get_current_settings ();*/
-    				$this->load->library('email');
+    			
+    				$this->email->clear();
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
     				$this->email->to($items->companydetails->primaryemail);
     				$this->email->subject('Quantity Due Alert');
-    				$this->email->message($Supplierbody);
+    				$this->email->message($send_body);
     				$this->email->set_mailtype("html");
     				$this->email->send($this->email);
 
-    				$purchaserbody = "Dear {$quote->quotedetails->companyname}<br/><br/>
- Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+    				$data['email_body_title'] = "Dear {$quote->quotedetails->companyname}";
+ $data['email_body_content'] = "Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
  Below are the Details:<br/><br/>
  Company: {$items->companydetails->title}<br>
  PO: {$quote->quotedetails->ponum}<br>
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
-
+ $send_body = $this->load->view("email_templates/template",$data,TRUE);
+ 					$this->email->clear();
     				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
     				$this->email->to($settings['adminemail']);
     				$this->email->subject('Quantity Due Alert');
-    				$this->email->message($purchaserbody);
+    				$this->email->message($send_body);
     				$this->email->set_mailtype("html");
     				$this->email->send();
 
@@ -2410,45 +2433,50 @@ class quote extends CI_Controller
     function sendautolateemailviacron(){
     	$quotearr = $this->quote_model->getallawardedqtyduebids();
     	//echo "<pre>",print_r($quotearr); die;
+    	$this->load->library('email');
+    	$config['charset'] = 'utf-8';
+    	$config['mailtype'] = 'html';
+    	$this->email->initialize($config);
     	foreach($quotearr as $quote){
     		if($quote->items){
     			foreach($quote->items as $items){
 
     				// echo "<pre>",print_r($items); die;
-    				$Supplierbody = "Dear {$items->companydetails->title},<br/><br/>
- Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+    				$data['email_body_title']  = "Dear {$items->companydetails->title}";
+ $data['email_body_content'] = "Quote '{$quote->quotedetails->ponum}' still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
  Below are the Details:<br/><br/>
  Company: {$quote->quotedetails->companyname}<br>
  PO: {$quote->quotedetails->ponum}<br>
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
-
+    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
     				/*$settings = (array)$this->settings_model->get_current_settings ();*/
-    				$this->load->library('email');
+    				$this->email->clear();
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
     				$this->email->to($items->companydetails->primaryemail);
     				$this->email->subject('Quantity Due Alert');
-    				$this->email->message($Supplierbody);
+    				$this->email->message($send_body);
     				$this->email->set_mailtype("html");
     				$this->email->send($this->email);
 
-    				$purchaserbody = "Dear {$quote->quotedetails->companyname}<br/><br/>
- Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
+    				$data['email_body_title']  = "Dear {$quote->quotedetails->companyname}";
+ $data['email_body_content'] = "Quote: {$quote->quotedetails->ponum} still has items left to be delivered and the item due has been past. These items are now past due. <br/><br/>
  Below are the Details:<br/><br/>
  Company: {$items->companydetails->title}<br>
  PO: {$quote->quotedetails->ponum}<br>
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
-
+    				$this->email->clear();
+    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
     				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
     				$this->email->to($settings['adminemail']);
     				$this->email->subject('Quantity Due Alert');
-    				$this->email->message($purchaserbody);
+    				$this->email->message($send_body);
     				$this->email->set_mailtype("html");
     				$this->email->send();
 
@@ -2590,18 +2618,22 @@ class quote extends CI_Controller
     		  $pa = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
 
 
-              $transferbody = "Dear {$company->title},<br/><br/>
-$ {$_POST['amount']} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
+              $data['email_body_title']  = "Dear {$company->title}";
+$data['email_body_content'] = "$ {$_POST['amount']} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
 with the transfer# {$tobj->id}.
 <br>Payment by: ".$pa->companyname."
 <br>PO#: ".$quote->ponum."
 ";
+              $send_body = $this->load->view("email_templates/template",$data,TRUE);
               $settings = (array)$this->settings_model->get_current_settings ();
     	      $this->load->library('email');
+    	      $config['charset'] = 'utf-8';
+    	      $config['mailtype'] = 'html';
+    	      $this->email->initialize($config);
               $this->email->from($settings['adminemail'], "Administrator");
               $this->email->to($company->primaryemail);
               $this->email->subject('Bank transfer notification from ezpzp');
-              $this->email->message($transferbody);
+              $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
 
@@ -2625,6 +2657,8 @@ with the transfer# {$tobj->id}.
     function savetrack($quoteid,$ajax=0)
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
+        $data['email_body_title'] = "";
+        $data['email_body_content'] = "";
         //echo '<pre>';print_r($awarded);die;
         $quote = $awarded->quotedetails;
         if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
@@ -2901,8 +2935,8 @@ with the transfer# {$tobj->id}.
             $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_invoice_' . $invoice['invoicenum'] . '_' . date('YmdHis') . '.pdf';
             $pdf->Output($pdfname, 'f');
 
-            $mailbody = "Please find the attachment invoice for PO#: " . $quote->ponum . ".<br/><br/>";
-            $mailbody .= "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/><br/>";
+            $data['email_body_content'] = "Please find the attachment invoice for PO#: " . $quote->ponum . ".<br/><br/>";
+            $data['email_body_content'] .= "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/><br/>";
 
             $settings = (array) $this->settings_model->get_current_settings();
 
@@ -2913,14 +2947,17 @@ with the transfer# {$tobj->id}.
             foreach ($purchaseusers as $pu) {
                 $toemail = $toemail . ',' . $pu->email;
             }
-
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
 
             $this->email->subject('Invoice for PO#:' . $quote->ponum);
-            $this->email->message($mailbody);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->attach($pdfname);
             $this->email->send();
@@ -2944,6 +2981,8 @@ with the transfer# {$tobj->id}.
 
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
+        $data['email_body_title'] = "";
+        $data['email_body_content'] = "";
         foreach($credits as $cid=>$credit)
         {
             $amount = $credit['amount'];
@@ -2958,17 +2997,17 @@ with the transfer# {$tobj->id}.
                 $this->db->update('purchasingtier',array('creditlimit'=>$tier->creditlimit-$amount));
                 $company = $this->company_model->get_companys_by_id($cid);
 
-                $mailbody = "Credit amount of ".$cpa->fullname.', '.$cpa->companyname." has been deducted by $".$amount.".<br>";
-                $mailbody .= "Remaining available credit for ".$cpa->companyname." is $".$tier->creditlimit - $amount.".<br><br>";
-                $mailbody .= "Find the details below:<br/><br/>";
-                $mailbody .= "<table>";
-                $mailbody .= "<tr><td>Name</td><td>Price</td><td>Quantity</td><td>Total</td></tr>";
+                $data['email_body_title'] = "Credit amount of ".$cpa->fullname.', '.$cpa->companyname." has been deducted by $".$amount.".<br>";
+                $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname." is $".$tier->creditlimit - $amount.".<br><br>";
+                $data['email_body_content'] .= "Find the details below:<br/><br/>";
+                $data['email_body_content'] .= "<table>";
+                $data['email_body_content'] .= "<tr><td>Name</td><td>Price</td><td>Quantity</td><td>Total</td></tr>";
                 $totalamount = 0;
                 foreach($items as $item)
                 {
                     $amount = $item['quantity'] * $item['ea'];
                     $totalamount += $amount;
-                    $mailbody .= "<tr>
+                    $data['email_body_content'] .= "<tr>
                     				<td>{$item['itemname']}</td>
                     				<td>{$item['ea']}</td>
                     				<td>{$item['quantity']}</td>
@@ -2978,34 +3017,37 @@ with the transfer# {$tobj->id}.
                 $tax = $totalamount * $config['taxpercent'] / 100;
                 $totalamountwithtax = $totalamount + $tax;
                 $totalamountwithtax = number_format($totalamountwithtax,2);
-                $mailbody .= "<tr>
+                $data['email_body_content'] .= "<tr>
                 				<td>Total</td>
                 				<td></td>
                 				<td></td>
                 				<td>".$totalamount."</td>
                 			</tr>";
-                $mailbody .= "<tr>
+                $data['email_body_content'] .= "<tr>
                 				<td>Tax</td>
                 				<td></td>
                 				<td></td>
                 				<td>".number_format($tax)."</td>
                 			</tr>";
-                $mailbody .= "<tr>
+                $data['email_body_content'] .= "<tr>
                 				<td>Total</td>
                 				<td></td>
                 				<td></td>
                 				<td>".$totalamountwithtax."</td>
                 			</tr>";
 
-                $mailbody .= "</table>";
-
+                $data['email_body_content'] .= "</table>";
+                $send_body = $this->load->view("email_templates/template",$data,TRUE);
                 $this->load->library('email');
+                $config['charset'] = 'utf-8';
+                $config['mailtype'] = 'html';
+                $this->email->initialize($config);
                 $this->email->clear(true);
                 $this->email->from($config['adminemail'], "Administrator");
                 $this->email->to($company->primaryemail.','.$cpa->email);
 
                 $this->email->subject('Credit Alert');
-                $this->email->message($mailbody);
+                $this->email->message($send_body);
                 $this->email->set_mailtype("html");
                 $this->email->send();
             }
@@ -3051,16 +3093,20 @@ with the transfer# {$tobj->id}.
             $this->quote_model->db->insert('backtrack', $insertarray);
 
             $link = base_url() . 'home/backtrack/' . $key;
-            $body = "Dear " . $c->title . ",<br><br>
+            $data['email_body_title'] = "Dear " . $c->title ;
 
-		  	Please update us on the estimated delivery dates for the following still due items off of PO# " . $quote->ponum . ":  <br><br>
+		  	$data['email_body_content'] = "Please update us on the estimated delivery dates for the following still due items off of PO# " . $quote->ponum . ":  <br><br>
 		    <a href='$link' target='blank'>$link</a>
 		    And let us know the delivery date of remaining items.
 		    ";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
-
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
+            	
             $this->email->from($settings['adminemail'], "Administrator");
 
             $toemail = $settings['adminemail'] . ',' . $c->primaryemail;
@@ -3074,7 +3120,7 @@ with the transfer# {$tobj->id}.
             //$this->email->to($settings['adminemail'] . ',' . $c->email);
 
             $this->email->subject('Backorder update for PO# ' . $quote->ponum);
-            $this->email->message($body);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
 
@@ -3101,13 +3147,16 @@ with the transfer# {$tobj->id}.
         $project = $this->project_model->get_projects_by_id($quote->pid);
 
         // notification to purchasing user
-        $body = "Dear Admin,<br><br>
+        $data['email_body_title']  = "Dear Admin";
 
-		  	This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.
+		$data['email_body_content'] ="This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.
 		    ";
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->settings_model->get_current_settings();
         $this->load->library('email');
-
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
 
         $toemail = array();
@@ -3121,7 +3170,7 @@ with the transfer# {$tobj->id}.
         //$this->email->to($settings['adminemail'] . ',' . $c->email);
 
         $this->email->subject('Award PO notification for PO# ' . $quote->ponum);
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
 
@@ -3359,11 +3408,14 @@ with the transfer# {$tobj->id}.
             $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_' . $company['id'] . '_accept.pdf';
             $pdf->Output($pdfname, 'f');
             $link = '<a href="' . site_url('quote/track/' . $quote->id) . '"></a>';
-            $mailbody = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
-            $mailbody .= "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
-
+            $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
+            $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
 
@@ -3377,7 +3429,7 @@ with the transfer# {$tobj->id}.
             $this->email->to($toemail);
 
             $this->email->subject('Your Purchase order for PO#:' . $quote->ponum);
-            $this->email->message($mailbody);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->attach($pdfname);
             $this->email->send();
@@ -3588,6 +3640,9 @@ with the transfer# {$tobj->id}.
     	
     	$settings = (array)$this->settings_model->get_current_settings ();
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->clear(true);
 	    $this->email->from($settings['adminemail'], "Administrator");
 	        
@@ -3595,15 +3650,13 @@ with the transfer# {$tobj->id}.
           
         $this->email->to($toemail); 
 	   
-		$body = "
-		Dear ".$result[0]['title'].",<br><br>
-		Please set due date for PO#  {$_POST['ponum']}<br><br><br>
-		";
+		$data['email_body_title'] = "Dear ".$result[0]['title'];
+		$data['email_body_content'] = "Please set due date for PO#  {$_POST['ponum']}<br><br><br>";
 		    
-   		$body .= site_url('quote/track/'.$_POST['quote'].'/'.$_POST['award']);
-
+   		$data['email_body_content'].= site_url('quote/track/'.$_POST['quote'].'/'.$_POST['award']);
+   		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->email->subject("Request to Set Due Date");
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
 	

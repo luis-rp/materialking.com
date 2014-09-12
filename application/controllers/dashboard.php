@@ -109,18 +109,21 @@ class Dashboard extends CI_Controller
 		}else 
 			$datestr =  "overdue since ".$duedate;
 		
-		$body = "Dear Administrator ,<br><br>
-			Your Payment of $ ".$totalprice." against invoice '". $_POST['invoice']."' is ".$datestr." , Please Pay immediately.
+		$data['email_body_title'] = "Dear Administrator ";
+		$data['email_body_content'] =	"Your Payment of $ ".$totalprice." against invoice '". $_POST['invoice']."' is ".$datestr." , Please Pay immediately.
 			<br/><br/><br/>
 			Thanks
 			<br><br>";
-
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		//echo "<pre>",print_r($_POST); die;
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from( $company->primaryemail, $company->title);
 		$this->email->to($settings['adminemail'], "Administrator");
 		$this->email->subject('Pending Payment.');
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		if($this->email->send())
 		echo "success";
@@ -184,17 +187,20 @@ class Dashboard extends CI_Controller
 			$supplier = $this->db->where('id', $company->id)->get('company')->row();
 			$company = $this->db->where('id',$row->fromid)->get('users')->row();
 			
-			$body = "Dear " . $company->companyname . ",<br><br>
-			Congratulation! ". $supplier->title." has just accept your request to join in the network.
+			$data['email_body_title'] = "Dear " . $company->companyname ;
+			$data['email_body_content'] = "Congratulation! ". $supplier->title." has just accept your request to join in the network.
 			<br/>
 			Thanks
 			<br><br>";
-			
+			$send_body = $this->load->view("email_templates/template",$data,TRUE);
 			$this->load->library('email');
+			$config['charset'] = 'utf-8';
+			$config['mailtype'] = 'html';
+			$this->email->initialize($config);
 			$this->email->from($supplier->primaryemail, $supplier->title);
 			$this->email->to($company->companyname . ',' . $company->email);
 			$this->email->subject('Request Accepted.');
-			$this->email->message($body);
+			$this->email->message($send_body);
 			$this->email->set_mailtype("html");
 			$this->email->send();
 			

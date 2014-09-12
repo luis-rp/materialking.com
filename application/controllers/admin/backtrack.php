@@ -367,16 +367,21 @@ class backtrack extends CI_Controller
         $this->db->insert('notification', $notification);
         
 		$link = base_url().'home/backtrack/'.$key;
-	    $body = "Dear ".$c->title.",<br><br>
+	    $data['email_body_title'] = "Dear ".$c->title;
 	    		 
-	  	Please update us on the estimated delivery dates for the following still due items off of PO# ".$quote->ponum.":  <br><br>		 
+	  	$data['email_body_content'] = "Please update us on the estimated delivery dates for the following still due items off of PO# ".$quote->ponum.":  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>
 	    And let us know the delivery date of remaining items.
 	    ";
+	    
+	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
 	    //$this->load->model('admin/settings_model');
 	    $settings = (array)$this->settings_model->get_current_settings ();
 	    $this->load->library('email');
-		$this->email->clear(true);
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
+	//	$this->email->clear(true);
         $this->email->from($settings['adminemail'], "Administrator");
         $this->email->to($settings['adminemail']); 
         $emails = explode(',',$c->email);
@@ -394,7 +399,7 @@ class backtrack extends CI_Controller
         }
         
         $this->email->subject('Backorder update for PO# '.$quote->ponum);
-        $this->email->message($body);	
+        $this->email->message($send_body);	
         $this->email->set_mailtype("html");
         $this->email->send();
         

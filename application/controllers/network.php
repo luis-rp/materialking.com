@@ -167,8 +167,8 @@ class network extends CI_Controller {
             else
             	$wish = "No";
 
-            $body = "Dear " . $supplier->title . ",<br><br>
-            ". $company->companyname." just sent you a request to join in your newtork.
+           $data['email_body_title']  = "Dear " . $supplier->title ;
+           $data['email_body_content'] = $company->companyname." just sent you a request to join in your newtork.
             The following information was sent:
             Account Number: ".$_POST['accountnumber']."
             <br/>
@@ -179,13 +179,17 @@ class network extends CI_Controller {
             ".$body1."
             You can login on your dasboard and accept or deny request.
             <br><br>";
-
-
+            
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            	
+            $this->email->initialize($config);
             $this->email->from($company->email, $company->companyname);
             $this->email->to($supplier->title . ',' . $supplier->primaryemail);
             $this->email->subject('Request to Join Network.');
-            $this->email->message($body);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
 

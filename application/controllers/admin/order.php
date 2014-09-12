@@ -668,8 +668,8 @@ function orders_export()
 		
 		$c = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
 		
-		$body = "Dear " . $company->title . ",<br><br>
-		". $c->companyname." send payment for the PO ".$orders->ordernumber.";
+		$data['email_body_title']  = "Dear " . $company->title;
+		$data['email_body_content'] = $c->companyname." send payment for the PO ".$orders->ordernumber.";
 		The following information sent:
 		Payment Type : ".$_POST['paymenttype']."
 		<br/>
@@ -679,12 +679,15 @@ function orders_export()
 		<br/>
 		Payment Date: ".date('Y-m-d')."
 		<br><br>";
-		
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($c->email, $c->companyname);
 		$this->email->to($company->title . ',' . $company->primaryemail);
 		$this->email->subject('Payment made for the order: '.$orders->ordernumber);
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		
@@ -754,20 +757,22 @@ function orders_export()
               else 
               $ordernumber = $_POST['orderid'];
               
-              $transferbody = "Dear {$company->title},<br/><br/>
-$ {$_POST['amount']} has been transfered to your bank account for order#{$ordernumber}, 
+              $data['email_body_title']  = "Dear {$company->title}";
+			  $data['email_body_content'] = "$ {$_POST['amount']} has been transfered to your bank account for order#{$ordernumber}, 
 with the transfer#{$tobj->id}.
 ";
               $settings = (array)$this->settings_model->get_current_settings ();
-    		  
+              $send_body = $this->load->view("email_templates/template",$data,TRUE);
     	      $this->load->library('email');
-    		
+    	      $config['charset'] = 'utf-8';
+    	      $config['mailtype'] = 'html';
+    	      $this->email->initialize($config);
               $this->email->from($settings['adminemail'], "Administrator");
             
               $this->email->to($company->primaryemail); 
             
               $this->email->subject('Order details from ezpzp');
-              $this->email->message($transferbody);	
+              $this->email->message($send_body);	
               $this->email->set_mailtype("html");
               $this->email->send();
               
@@ -1038,7 +1043,8 @@ with the transfer#{$tobj->id}.
 	
 	function sendemail($id)
 	{
-		$body = $_POST['message'];
+		$data['email_body_title'] = $_POST['message'];
+		$data['email_body_content'] = "";
 		$order = $this->db->where('id',$id)->get('order')->row();
 		$company = $this->db->where('id',$_POST['company'])->get('company')->row();
 		$orderdetails = $this->db->where('orderid',$id)->where('company',$company->id)->get('orderdetails')->result();
@@ -1058,9 +1064,9 @@ with the transfer#{$tobj->id}.
 			$orderitems[]=$item;
 		}
 		
-		$body .= "<br><br><strong>Supplier Name:</strong> {$company->title} <br><br><strong>Supplier Address:</strong> {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>"; 
+		$data['email_body_content'] .= "<br><br><strong>Supplier Name:</strong> {$company->title} <br><br><strong>Supplier Address:</strong> {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>"; 
 		
-		$body .= '
+		$data['email_body_content'] .= '
 			<table class="table table-bordered span12" border="1">
 				 <tr><td colspan ="4">Type :'.$order->type.'</td></tr> 
             	<tr>
@@ -1075,7 +1081,7 @@ with the transfer#{$tobj->id}.
                 	{
                 	    $total = $item->quantity*$item->quantity;
                 	    $gtotal+=$total;
-                         $body .= '<tr>
+                         $data['email_body_content'] .= '<tr>
                             		<td>'.$item->itemdetails->itemname.'</td>
                             		<td>'.$item->price.'</td>
                             		<td>'.$item->quantity.'</td>
@@ -1086,7 +1092,7 @@ with the transfer#{$tobj->id}.
             	    $tax = $gtotal*$order->taxpercent/100;
             	    $totalwithtax = number_format($tax+$gtotal,2);
             	
-            	$body .= '<tr>
+            	$data['email_body_content'] .= '<tr>
             		<td colspan="3" align="right">Total</td>
             		<td>$'.number_format($gtotal,2).'</td>
             	</tr>
@@ -1103,15 +1109,18 @@ with the transfer#{$tobj->id}.
             	
             </table>';
             	
-            	$body .='<br/><br/><p>order#'.$order->ordernumber.'<br/><a href="'.base_url().'/order/details/'.$order->id.'" >Manage Order</a>';	
-            	
+            	$data['email_body_content'] .='<br/><br/><p>order#'.$order->ordernumber.'<br/><a href="'.base_url().'/order/details/'.$order->id.'" >Manage Order</a>';	
+        
+            	$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
-		
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->to($company->primaryemail);
 		$this->email->from($this->session->userdata('email'));
 		
 		$this->email->subject($_POST['subject']);
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		

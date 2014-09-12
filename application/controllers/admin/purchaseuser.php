@@ -122,20 +122,22 @@ class purchaseuser extends CI_Controller
 			$user = $this->db->get('users')->row();
 			
 			$this->load->library('email');
-			$this->email->clear(true);
+			$config['charset'] = 'utf-8';
+			$config['mailtype'] = 'html';
+			$this->email->initialize($config);
+			//$this->email->clear(true);
 	        $this->email->from($settings['adminemail'], "Administrator");
 	        
 	        $this->email->to($user->email); 
 			$link = '<a href="'.site_url('admin/purchaseuser/quoteitems/'.$quote->id).'"></a>';
-		    $body = "
-		    Dear ".$user->fullname.",<br><br>
-		   Your are assigned to the PO# $quote->ponum <br/><br/>
+		    $data['email_body_title'] = "Dear ".$user->fullname;
+		    $data['email_body_content'] = "Your are assigned to the PO# $quote->ponum <br/><br/>
 You will receive alerts regarding action items taken on this PO.<br/><br/>
 $link 
 	    	";
-		    
+		    $send_body = $this->load->view("email_templates/template",$data,TRUE);
 		    $this->email->subject("PO assigned");
-	        $this->email->message($body);	
+	        $this->email->message($send_body);	
 	        $this->email->set_mailtype("html");
 	        $this->email->send();
 		}

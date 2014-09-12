@@ -157,12 +157,13 @@ class Register extends CI_Controller
 	    $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
 	    
-	    $image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
+	   /* $image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
 	    $data['logoExt'] = get_mime_by_extension($image);
-	    $data['logo'] = base64_encode(file_get_contents($image));
+	    $data['logo'] = base64_encode(file_get_contents($image));*/
 	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
 	    
-	    $config['mailtype'] = 'html';
+	   	$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
 	    	
 	    $this->email->initialize($config);
 	    
@@ -182,20 +183,18 @@ class Register extends CI_Controller
 		
 		$this->load->library('email');
 		$this->load->helper('file');
-		$data['email_body_title'] ="Dear Username";
-		$data['email_body_content'] = "lease click following link to complete your registration:  <br><br>		 
-	    <a href='#' target='blank'>Link</a>";
 		
-		$image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
+		
+	/*	$image =  "/home/luis/git/materialking.com/templates/site/assets/img/logo.png";
 		$data['logoExt'] = get_mime_by_extension($image);
-		$data['logo'] = base64_encode(file_get_contents($image));
+		$data['logo'] = base64_encode(file_get_contents($image));*/
+		$data['email_body_title'] ="Dear Username";
+		$data['email_body_content'] = "lease click following link to complete your registration:  <br><br>
+	    <a href='#' target='blank'>Link</a>";
 		$send_body = $this->load->view("email_templates/template",$data,TRUE);
-		$config['protocol'] = 'sendmail';
-		$config['mailpath'] = '/usr/sbin/sendmail';
-		$config['charset'] = 'iso-8859-1';
-		$config['wordwrap'] = TRUE;
+
+		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
-			
 		$this->email->initialize($config);
 			
 		$this->email->from("admin@godaddy.com");
@@ -253,18 +252,21 @@ class Register extends CI_Controller
     	}
 
     	$link = site_url('admin/register/complete/'.$key);
-    	$body = "Dear ".$user->companyname.",<br><br>
-	  	Please click following link to complete your registration:  <br><br>
+    	 $data['email_body_title'] = "Dear ".$user->companyname;
+	  	 $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
-
+	  	 $send_body = $this->load->view("email_templates/template",$data,TRUE);
     	$settings = (array)$this->settings_model->get_setting_by_id (1);
     	$this->load->library('email');
+    	$config['charset'] = 'utf-8';
+    	$config['mailtype'] = 'html';
+    	$this->email->initialize($config);
     	$this->email->from($settings['adminemail'], "Administrator");
 
     	$this->email->to($user->fullname . ',' . $user->email);
 
     	$this->email->subject('Activate your account.');
-    	$this->email->message($body);
+    	$this->email->message($send_body);
     	$this->email->set_mailtype("html");
     	$this->email->send();
 
@@ -413,8 +415,8 @@ class Register extends CI_Controller
 		$this->session->set_userdata($temp);
 		
 		$link = base_url() . 'admin';
-		$body = "Dear " . $_POST['username'] . ",<br><br>
-		Congratulations! <br><br> Thanks for registration, Click Below link to login in Dashboard.
+		$data['email_body_title'] = "Dear " . $_POST['username'];
+		$data['email_body_content'] = "Congratulations! <br><br> Thanks for registration, Click Below link to login in Dashboard.
 		<br/><br/>
 		Your Login Profile is as follows:<br/>
 		Login User Name : ". $_POST['username'] ." <br/>
@@ -424,13 +426,16 @@ class Register extends CI_Controller
 		Email Address: ". $coreemail ." <br/> <br/>
 		
 		<a href='$link' target='blank'>$link</a>";
-		
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$settings = (array) $this->companymodel->getconfigurations(1);
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($settings['adminemail'], "Administrator");
 		$this->email->to($_POST['username'] . ',' . $coreemail);
 		$this->email->subject('Registration Completed');
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		
@@ -482,18 +487,21 @@ class Register extends CI_Controller
 		
 		
 		$link = base_url().'admin/register/change/'.$key;
-	    $body = "Dear ".$user->fullname.",<br><br> 
-	  	Please click following link to change your password:  <br><br>		 
+	      $data['email_body_title'] = "Dear ".$user->fullname; 
+	  	  $data['email_body_content'] = "Please click following link to change your password:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-	    
+	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
 	    $settings = (array)$this->settings_model->get_setting_by_id (1);
 	    $this->load->library('email');
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
         
         $this->email->to($user->fullname . ',' . $user->email); 
         
         $this->email->subject('Password change link.');
-        $this->email->message($body);	
+        $this->email->message($send_body);	
         $this->email->set_mailtype("html");
         $this->email->send();
 		

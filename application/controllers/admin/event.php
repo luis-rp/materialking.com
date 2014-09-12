@@ -259,9 +259,9 @@ class event extends CI_Controller
 	         return false;
 	     $to = implode(',',$emails);
 	     
-            $body = "Dear User,<br><br>
+            $data['email_body_title'] = "Dear User";
 		    		 
-		  	You have been assigned to the event " . $event->title . " :  <br><br>	
+		  	$data['email_body_content'] = "You have been assigned to the event " . $event->title . " :  <br><br>	
 		    Please find the details below:<br/><br/>
   	        date: ".$event->evtdate."<br/>
   	        starttime: ".$event->eventstart."<br/>
@@ -271,15 +271,19 @@ class event extends CI_Controller
   	        contact phone: ".$event->contactphone."<br/>
   	        notes: ".$event->notes."<br/>
 		    ";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
 
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
             $this->email->from($settings['adminemail'], "Administrator");
 
             $this->email->to($to);
             $this->email->subject('New Event assigned: ' . $event->title);
-            $this->email->message($body);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
 	}
@@ -330,22 +334,25 @@ class event extends CI_Controller
 		                    ->get()->result();
 	     //echo "<pre>",print_r($userdata[0]->companyname); die;		
 			     
-            $body = "Dear User,<br><br>
+            $data['email_body_title'] = "Dear User";
 		    		 
-		  	You have got a new comment from company ".$userdata[0]->companyname." for event " . $event->title . " :  <br><br>	
+		  	$data['email_body_content'] = "You have got a new comment from company ".$userdata[0]->companyname." for event " . $event->title . " :  <br><br>	
 		    Please find the details below:<br/><br/>
   	        ".$_POST['comment']."<br/><br/>
   	        Comment Posted on:".$_POST['commentdate']."<br/>
 		    ";
+            $send_body = $this->load->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
-
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
             $this->email->from($settings['adminemail'], "Administrator");
 
             $this->email->to($to);
             $this->email->subject('New Comment');
-            $this->email->message($body);
+            $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
             //echo "<pre>",print_r($this->email); die;

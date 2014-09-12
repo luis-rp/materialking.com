@@ -167,23 +167,29 @@ class Message extends CI_Controller
 		//$settings = (array)$this->quotemodel->getconfigurations ();
 		$settings = (array)$this->quotemodel->getpurchaseremail($quote->purchasingadmin);
 	    $this->load->library('email');
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    
+	    $this->email->initialize($config);
 		$this->email->clear(true);
         $this->email->to($settings['adminemail'], "Administrator");
         $this->email->from($c->primaryemail, $c->title); 
 			        
 	    $link = base_url().'message/messages/'.$key;
             
-	    $body = "
-		    Dear Administrator,<br><br>
+	    $data['email_body_title']  = "Dear Administrator";
+	    $data['email_body_content'] = "
 		    You have got a new message from '".$c->title."' regarding PO# '$ponum'.<br><br>
 		    '{$_POST['message']}'
 		    <br><br>
 	  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
 	    	<a href='$link' target='blank'>$link</a>";
-	    
+	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+
+	  
         $this->email->subject("New Message");
-        $this->email->message($body);	
-        $this->email->set_mailtype("html");
+        $this->email->message($send_body);	
+        //$this->email->set_mailtype("html");
         $this->email->send();
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Message sent for PO#: '.$ponum.'</div></div></div>');
 		redirect('message/index/'.$key);

@@ -988,7 +988,8 @@ hr {
            
               <table class="header" style="border-collapse: collapse;border-spacing: 0;width: 100%">
                 <tbody><tr>
-                  <td class="logo" style="padding-top: 16px;padding-bottom: 32px;padding-left: 0;padding-right: 0;vertical-align: top;color: #2f353e;font-family: sans-serif;font-size: 24px;line-height: 24px;letter-spacing: -0.02em" align="center"><center><div id="emb-email-header"><img style="border-left-width: 0;border-top-width: 0;border-bottom-width: 0;border-right-width: 0;-ms-interpolation-mode: bicubic;display: block;Margin-left: auto;Margin-right: auto;max-width: 140px" src="data:<?php echo $logoExt;?>;base64,<?php echo $logo;?>" alt="Logo" width="140" height="87" /></div></center></td>
+                  <td class="logo" style="padding-top: 16px;padding-bottom: 32px;padding-left: 0;padding-right: 0;vertical-align: top;color: #2f353e;font-family: sans-serif;font-size: 24px;line-height: 24px;letter-spacing: -0.02em" align="center"><center><div id="emb-email-header">
+                  <img style="border-left-width: 0;border-top-width: 0;border-bottom-width: 0;border-right-width: 0;-ms-interpolation-mode: bicubic;display: block;Margin-left: auto;Margin-right: auto;max-width: 140px" src="data:<?php echo $logoExt;?>;base64,<?php echo $logo;?>" alt="Logo" width="140" height="87" /></div></center></td>
                 </tr>
               </tbody></table>
             </center>

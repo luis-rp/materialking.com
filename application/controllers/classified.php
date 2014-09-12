@@ -162,27 +162,29 @@ class classified extends CI_Controller
     {
     	if(!$_POST)
     		die;
-    	$body = '';
+    	
     	$settings = (array)$this->homemodel->getconfigurations ();
     	
     		$supplier = $this->db->where('id',$id)->get('company')->row();
     		$to = $supplier->primaryemail;
-    		$body .= 'You have a new request for assistance.';
+    		$data['email_body_title'] = 'You have a new request for assistance.';
    
-    	$body .= ' Details are:<br/><br/>';
-    	$body .= "Name: ".$_POST['contactName']."<br/>";
-    	$body .= "Email: ".$_POST['email']."<br/>";
-    	$body .= "Subject: ".$_POST['subject']."<br/>";
+    	$data['email_body_title'] = ' Details are:<br/><br/>';
+    	$data['email_body_title'] .= "Name: ".$_POST['contactName']."<br/>";
+    	$data['email_body_title'] .= "Email: ".$_POST['email']."<br/>";
+    	$data['email_body_title'] .= "Subject: ".$_POST['subject']."<br/>";
     
-    	$body .= "Regarding: ".$_POST['comments']."<br/>";
-    
+    	$data['email_body_title'] .= "Regarding: ".$_POST['comments']."<br/>";
+    	$send_body = $this->load->view("email_templates/template",$data,TRUE);
     	$this->load->library('email');
-    
+    	$config['charset'] = 'utf-8';
+    	$config['mailtype'] = 'html';
+    	$this->email->initialize($config);
     	$this->email->from($settings['adminemail']);
     	$this->email->to($to);
     
     	$this->email->subject('Request for assistance');
-    	$this->email->message($body);
+    	$this->email->message($send_body);
     	$this->email->set_mailtype("html");
     	$this->email->send();
     

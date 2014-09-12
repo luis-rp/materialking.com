@@ -282,17 +282,20 @@ class Order extends CI_Controller
 			if($order->email)
 			{
         		$this->load->library('email');
-        		
+        		$config['charset'] = 'utf-8';
+        		$config['mailtype'] = 'html';
+        			
+        		$this->email->initialize($config);
         		$this->email->from($company->primaryemail);
         		$this->email->to($order->email);
         		$subject = 'Payment verified by supplier';
         		
-        		$body = "Payment verified for order# {$order->ordernumber}<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
-		
-		        $body .= $this->getorderdetails($order->id);	
-				
+        		$data['email_body_title'] = "Payment verified for order# {$order->ordernumber}";
+        		$data['email_body_content'] = "<strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
+		        $data['email_body_content'] .= $this->getorderdetails($order->id);	
+		        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         		$this->email->subject($subject);
-        		$this->email->message($body);	
+        		$this->email->message($send_body);	
         		$this->email->set_mailtype("html");
         		$this->email->reply_to($company->primaryemail);
         		$this->email->send();
@@ -484,22 +487,26 @@ class Order extends CI_Controller
 		
 		//echo $id.'-'.$company->id.'-'.$status;die;
 	
-		$body = "";
+		
 		$order = $this->db->where('id',$id)->get('order')->row();
-		$body .= "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
-		$body .= "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
+		$data['email_body_title'] = "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
+		$data['email_body_content'] = "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		
-		$body .= $this->getorderdetails($id);
-		
+		$data['email_body_content'] = $this->getorderdetails($id);
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->db->where('id',$order->purchasingadmin);
 		$admin = $this->db->get('users')->row();
 		
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';	
+		$config['mailtype'] = 'html';
+			
+		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($admin->email);
 		$subject = 'Order Status';
 		$this->email->subject($subject);
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
 		$this->email->send();
@@ -527,19 +534,25 @@ class Order extends CI_Controller
 		
 		
 		$subject = "Payment requested by ".$company->title." for order# ".$order->ordernumber;
-		$body = "";
-		$body .= $company->title." has requested payment of order #".$order->ordernumber." on ".date('m/d/Y');
-		$body .= "<br><br>Order Details:";
+	
+		$data['email_body_title'] = $company->title." has requested payment of order #".$order->ordernumber." on ".date('m/d/Y');
+		$data['email_body_content'] = "<br><br>Order Details:";
 		
-		$body .= $this->getorderdetails($id);
+		$data['email_body_content'] .= $this->getorderdetails($id);
+		
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$admin = $this->db->where('id',$order->purchasingadmin)->get('users')->row();
 		
 		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+			
+		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($admin->email);
 		
 		$this->email->subject($subject);
-		$this->email->message($body);
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
 		$this->email->send();
@@ -555,7 +568,7 @@ class Order extends CI_Controller
 		if(!$company)
 			redirect('company/login');
 
-		$body = $_POST['message'];
+		$data['email_body_title'] = $_POST['message'];
 		$order = $this->db->where('id',$id)->get('order')->row();
 		$orderdetails = $this->db->where('orderid',$id)->where('company',$company->id)->get('orderdetails')->result();
 	    $orderitems = array();
@@ -573,23 +586,26 @@ class Order extends CI_Controller
 			
 			$orderitems[]=$item;
 		}
-		$body .= "<br/>Order Status:" . (@$orderdetails[0]->accepted==1?'Approved':(@$orderdetails[0]->accepted==-1?'Declined':'Pending'));
-		$body .= "<br/>Payment Status:" . @$orderdetails[0]->paymentstatus;
-		$body .= "<br/><br>Order details:";
+		$data['email_body_content'] = "<br/>Order Status:" . (@$orderdetails[0]->accepted==1?'Approved':(@$orderdetails[0]->accepted==-1?'Declined':'Pending'));
+		$data['email_body_content'] .= "<br/>Payment Status:" . @$orderdetails[0]->paymentstatus;
+		$data['email_body_content'] .= "<br/><br>Order details:";
 		
 		$body .= $this->getorderdetails($id);	
-		
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 			
 	    $settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');
-		
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+			
+		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($_POST['to']);
 		$subject = '';
 		if(@$_POST['paymentrequest'])
 		    $subject = 'PAYMENT REQUEST ';
 		$this->email->subject($subject.$_POST['subject']);
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
 		
