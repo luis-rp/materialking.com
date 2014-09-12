@@ -73,7 +73,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         </style>
 <?php if(!$this->session->userdata('managedprojectdetails')){ ?>
         <script type="text/javascript">
-        var tour;
+        var tour1;
         var helpTour;
             $(document).ready(function() {
 
@@ -109,128 +109,131 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 $(document).ready(function($){
 
 					var field;
-	                tour = new Tour({
-	  		    	  steps: [
-	  		    	  {
-	  		    	    element: "#step1",
-	  		    	    title: "Step 1",
-	  		    	    content: "Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly."
-	  		    	  },
-	  		    	  {
-	  		    	    element: "#step2",
-	  		    	    title: "Step 2",
-	  		    	    content: "All of your Quotes, Purchase Orders, Invoices and Items you buy are assigned to a Project and a Cost Code for easy tracking, budgeting and reporting. Let’s add your first Project and Cost Code.",
-	  		    	    
-	  		    	  },
-	  		    	  {
-	  			    	    element: "#step3",
-	  			    	    title: "Step 3",
-	  			    	    content: "The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.", 
-	  			    	    reflex:true,
-	  			    		  onNext:function(tour){
-	  							$("#step3 a").click();
-	    	  		    	    }
-	  			      },
-	  			      {
-	    			    	    element: "#step4",
-	    			    	    title: "Step 4",
-	    			    	    reflex:true,
-	    			    	    content: "Please Click on the Projects tab.",
-	    			    	   
-	    			   },
-	    			   {
-	        			   	path:"/admin/project",
-				    	    element: "#step5",
-				    	    title: "Step 5",
-				    	    content: "Please Click the Add Project button.",
-				    	    reflex:true,
-				    	 
-	    			   },
-	    			   {
-	        			   	  path:"/admin/project/add",
-	    				      element: "#step6",
-	    				      title: "Step 6",
-	    				      content: "Fill out the form and click Save Project.",
-	    				      reflex:true,
-	    				     
-	    				      onNext: function(tour){
-	        				  
-	    				    	  $("#form-add-prj").submit();
-	        				      }
-	    				   
-				  		 },
-				  		 {
-				  			 path:"/admin/project",
-					    	    element: "#step7",
-					    	    title: "Step 7",
-					    	    
-					    	    content: "Congratulations - You have created your first project. Now let's create a Cost Code.",
-
-						 },
-				  		 {
-					  		   
-					    	    element: "#step3",
-					    	    title: "Step 8",
-					    	    content: "Click the Manage tab.",
+					 tour1 = new Tour({
+		  		    	  steps: [
+		  		    	  {
+		  		    	    element: "#step1",
+		  		    	    title: "Step 1",
+		  		    	    content: "Welcome to the on-page tour for Dashboard"
+		  		    	  },
+		  		    	  {
+		  		    	    element: "#step2",
+		  		    	    title: "Step 2",
+		  		    	    content: "All of your Quotes, Purchase Orders, Invoices and Items you buy are assigned to a Project and a Cost Code for easy tracking, budgeting and reporting. Let’s add your first Project and Cost Code.",
+		  		    	    
+		  		    	  },
+		  		    	  {
+		  			    	    element: "#step3",
+		  			    	    title: "Step 3",
+		  			    	    content: "The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.", 
+		  			    	    reflex:true,
+		  			    		  onNext:function(tour){
+		  							$("#step3 a").click();
+		    	  		    	    }
+		  			      },
+		  			      {
+		    			    	    element: "#step4",
+		    			    	    title: "Step 4",
+		    			    	    reflex:true,
+		    			    	    content: "Please Click on the Projects tab.",
+		    			    	   
+		    			   },
+		    			   {
+		        			   	path:"/admin/project",
+					    	    element: "#step5",
+					    	    title: "Step 5",
+					    	    content: "Please Click the Add Project button.",
 					    	    reflex:true,
 					    	 
-					    		  onNext:function(tour){
-			  							$("#step3 a").click();
-			    	  		    	    }
+		    			   },
+		    			   {
+		        			   	  path:"/admin/project/add",
+		    				      element: "#step6",
+		    				      title: "Step 6",
+		    				      content: "Fill out the form and click Save Project.",
+		    				      reflex:true,
+		    				     
+		    				      onNext: function(tour){
+		        				  
+		    				    	  $("#form-add-prj").submit();
+		        				      }
+		    				   
+					  		 },
+					  		 {
+					  			 path:"/admin/project",
+						    	    element: "#step7",
+						    	    title: "Step 7",
+						    	    
+						    	    content: "Congratulations - You have created your first project. Now let's create a Cost Code.",
 
-						 },
-				  		 {
-					  		   
-					    	    element: "#step9",
-					    	    title: "Step 9",
-					    	    content: "Click the Cost Code option.",
-					    	    reflex:true,
-					    	    
+							 },
+					  		 {
+						  		   
+						    	    element: "#step3",
+						    	    title: "Step 8",
+						    	    content: "Click the Manage tab.",
+						    	    reflex:true,
+						    	 
+						    		  onNext:function(tour){
+				  							$("#step3 a").click();
+				    	  		    	    }
 
-						 },
-				  		 {
-					  		    path:"/admin/costcode",
-					    	    element: "#step10",
-					    	    title: "Step 10",
-					    	    content: "Click Add Cost Code.",
-					    	    reflex:true,
-					    	    
+							 },
+					  		 {
+						  		   
+						    	    element: "#step9",
+						    	    title: "Step 9",
+						    	    content: "Click the Cost Code option.",
+						    	    reflex:true,
+						    	    
 
-						 },
-						 {
-							 path:"/admin/costcode/add",
-					    	    element: "#step11",
-					    	    title: "Step 11",
-					    	    content: "Fill out the form and click Update Cost Code.",
-					    	    reflex:true,
+							 },
+					  		 {
+						  		    path:"/admin/costcode",
+						    	    element: "#step10",
+						    	    title: "Step 10",
+						    	    content: "Click Add Cost Code.",
+						    	    reflex:true,
+						    	    
+
+							 },
+							 {
+								 path:"/admin/costcode/add",
+						    	    element: "#step11",
+						    	    title: "Step 11",
+						    	    content: "Fill out the form and click Update Cost Code.",
+						    	    reflex:true,
+						    	  
+
+							 },
+							 {
+						  		   
+						    	    element: "#step12",
+						    	    title: "Step 12",
+						    	    prev:-1,
+						    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending.",
+
+							 },
+					  		 
 					    	  
-
-						 },
-						 {
-					  		   
-					    	    element: "#step12",
-					    	    title: "Step 12",
-					    	    prev:-1,
-					    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending.",
-
-						 },
-				  		 
-				    	  
-	  		    	],
-					onEnd:function(tour){
-							$.ajax({
-								url:"<?php echo base_url("/admin/admin/finish_user_tour");?>",
-								});
-						}
-	  		    	});
-	                <?php if(isset($viewname) && $viewname=="dashboard"){?>
-	               tour.restart();
-	               <?php } ?>
-	  		    	// Initialize the tour
+		  		    	],
+						onEnd:function(tour){
+								$.ajax({
+									url:"<?php echo base_url("/admin/admin/finish_user_tour");?>",
+									});
+							}
+		  		    	});
+	  		    	
+	                <?php /* if(isset($viewname) && $viewname=="dashboard"){?>
+	               tour1.restart();
+	               <?php } */?>
+	  		    	/*// Initialize the tour
 	  		    	tour.init();
 
 	  		    	// Start the tour
-	  		    	tour.start();
+	  		    	tour.start();*/
+
+	  		    	
 	  		  /*  	$("#step6").click(function(e){
 						if(!$("#title").val()){
 							alert("Please fill out Title Field");
@@ -238,14 +241,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						}
 	  	  		    });*/
 	  		    	
-	  		     $("#pages-dropdown","#step3").click(function(e){
+	  		    /* $("#pages-dropdown","#step3").click(function(e){
 	  	  	
 	  	  		    	//alert(tour.getCurrentStep());
 	  	  		    	 
 	  	  		    	if(e.hasOwnProperty('originalEvent') && (tour.getCurrentStep()==2 || tour.getCurrentStep()==7)){
 							tour.next();
 	  	  		    	}
-	  	  		    });
+	  	  		    });*/
 	                    
                 });
                   	  		
@@ -593,7 +596,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
                             <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
                             <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
-                        <?php } ?>
+                      
                         <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/') ?>">
@@ -607,7 +610,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                             </li>
                         <?php } ?>
-                        
+                          <?php } ?>
                         <li <?php if ($menu == 'settings') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
