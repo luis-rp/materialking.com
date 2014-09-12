@@ -12,12 +12,16 @@
 
 
 <link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css' type='text/css' media='all' />
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script> -->
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery-1.6.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/classified/assets/js/jquery.flexslider.js"></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/jquery-migrate.min.js?ver=1.2.1'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.min.js'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.infobox.js'></script>
+
+<script type="text/javascript">
+$.noConflict();
+</script> 
 
 <script type='text/javascript'>
 /* <![CDATA[ */
@@ -377,7 +381,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 							<input type="text" onfocus="if(this.value=='Subject*')this.value='';" onblur="if(this.value=='')this.value='Subject*';" name="subject" id="subject" value="Subject*" class="input-textarea" />
 														 
 							<textarea name="comments" id="commentsText" cols="8" rows="5" ></textarea>
-															
+							<input type="hidden" name="hiddenad" id="hiddenad" value="<?php if(isset($a_id)) echo $a_id; ?>" />								
 							<br />
 
 																	
