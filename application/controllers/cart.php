@@ -1073,14 +1073,19 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		else
 			$settings = (array)$this->settings_model->get_setting_by_admin (1);
 		//echo $email.'-'.$html.'<br/>';
+		$data['email_body_title']  = "";
+		$data['email_body_content'] = $html;
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 	    $this->load->library('email');
-		
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
         
         $this->email->to($email); 
         
         $this->email->subject($subject);
-        $this->email->message($html);	
+        $this->email->message($send_body);	
         $this->email->set_mailtype("html");
         $this->email->send();
 	}

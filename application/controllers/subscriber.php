@@ -33,12 +33,17 @@ class subscriber extends CI_Controller
 		
 			
 			$supplier = $this->supplier_model->get_supplierbyid($cid);
+			$config['charset'] = 'utf-8';
+			$config['mailtype'] = 'html';
+			$this->email->initialize($config);
 			if($this->input->post("email")){
 				$this->email->from($supplier->primaryemail);
 				$this->email->to($this->input->post("email"));
-			
+				$data['email_body_title'] = "";
+				$data['email_body_content'] = 'You have successfully subscribed to '.$supplier->title.' newsletter';
+				$send_body = $this->load->view("email_templates/template",$data,TRUE);
 				$this->email->subject('Welcome to '.$supplier->title.' Newsletter');
-				$this->email->message('You have successfully subscribed to '.$supplier->title.' newsletter');
+				$this->email->message($send_body);
 			
 				$this->email->send();
 			}
@@ -65,6 +70,7 @@ class subscriber extends CI_Controller
 		$company = $this->companymodel->getcompanybyid($this->session->userdata('company')->id);
 		$ok=0;
 		$errors=0;
+		$config['charset'] = 'utf-8';
 		$config['mailtype'] = "html";
 		$this->email->initialize($config);
 		foreach($subscribers as $item){

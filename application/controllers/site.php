@@ -1685,51 +1685,56 @@ class site extends CI_Controller
     {
         if(!$_POST)
             die;
-        $body = '';
+      
 	    $settings = (array)$this->homemodel->getconfigurations ();
+	    $data['email_body_title'] = "";
+	    $data['email_body_content'] = "";
 	    if(strpos(@$_POST['redirect'], 'supplier') === 0)
 	    {
 	        $supplier = $this->db->where('id',$id)->get('company')->row();
 	        $to = $supplier->primaryemail;
-		    $body .= 'You have a new request for assistance.';
+		    $data['email_body_title'] = 'You have a new request for assistance.';
 	    }
 	    else
 	    {
 	        $to = $settings['adminemail'];
 	        if(@$_POST['redirect'])
-		    $body .= 'You have a new request for assistance regarding '.site_url($_POST['redirect']).'.';
+		    $data['email_body_title'] = 'You have a new request for assistance regarding '.site_url($_POST['redirect']).'.';
 		    else 
-		    $body .= 'You have a new request for assistance.';
+		    $data['email_body_title'] = 'You have a new request for assistance.';
 	    }
-		$body .= ' Details are:<br/><br/>';
+		$data['email_body_content'] .= ' Details are:<br/><br/>';
 		//$body .= "Type: ".$_POST['type']."<br/>";
-		$body .= "Name: ".$_POST['contactName']."<br/>";
-		$body .= "Email: ".$_POST['email']."<br/>";
-		$body .= "Subject: ".$_POST['subject']."<br/>";
-		$body .= "Details: ".$_POST['comments']."<br/>";
+		$data['email_body_content'] .= "Name: ".$_POST['contactName']."<br/>";
+		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
+		$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
+		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
 			{
-				$body .= "Best day to call: ".$_POST['day']."<br/>";
-				$body .= "Best time to call: ".$_POST['time']."<br/>";
+				$data['email_body_content'] .= "Best day to call: ".$_POST['day']."<br/>";
+				$data['email_body_content'] .= "Best time to call: ".$_POST['time']."<br/>";
 			}else {
-				$body .= "Appointment date: ".$_POST['day']."<br/>";
-				$body .= "Appointment time: ".$_POST['time']."<br/>";
+				$data['email_body_content'] .= "Appointment date: ".$_POST['day']."<br/>";
+				$data['email_body_content'] .= "Appointment time: ".$_POST['time']."<br/>";
 			}
 
 		}
 		
 		if(@$_POST['regarding'])
-		$body .= "Regarding: ".$_POST['regarding']."<br/>";
+		$data['email_body_content'] .= "Regarding: ".$_POST['regarding']."<br/>";
 
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
-		
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
 		$this->email->from($settings['adminemail']);
 		$this->email->to($to);
 		
 		$this->email->subject('Request for assistance');
-		$this->email->message($body);	
+		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		

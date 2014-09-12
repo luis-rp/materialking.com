@@ -97,18 +97,21 @@ class Company extends CI_Controller {
         $c = $this->companymodel->getcompanybyid($id);
 
         $link = base_url() . 'company/complete/' . $key;
-        $body = "Dear " . $c->title . ",<br><br> 
-	  	Please click following link to complete your registration:  <br><br>		 
+        $data['email_body_title'] = "Dear " . $c->title ;
+	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
 
         $this->email->to($c->title . ',' . $c->primaryemail);
 
         $this->email->subject('Activate your account.');
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
     }
@@ -190,8 +193,8 @@ class Company extends CI_Controller {
         $data['company'] = $c;
         $this->session->set_userdata($data);
         
-        $body = "Dear " . $c->username . ",<br><br>
-        Congratulations! <br><br> Thanks for registration, Your registration is complete. You can login in Dashboard.
+        $data['email_body_title']  = "Dear " . $c->username;
+        $data['email_body_content']  = "Congratulations! <br><br> Thanks for registration, Your registration is complete. You can login in Dashboard.
         <br/><br/>
         Your Login Profile is as follows:<br/>
         Login User Name : ". $c->username ." <br/>
@@ -199,13 +202,16 @@ class Company extends CI_Controller {
         Company Name: ". $c->title ." <br/>
         Email Address: ". $c->primaryemail ." <br/>
         Contact Name: ". $c->contact ." <br/> <br/>";
-        
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
         $this->email->to($c->primaryemail);
         $this->email->subject('Registration Completed');
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
         
@@ -612,18 +618,22 @@ class Company extends CI_Controller {
         $this->db->update('company', array('passkey' => $key));
 
         $link = base_url() . 'company/change/' . $key;
-        $body = "Dear " . $c->title . ",<br><br> 
-	  	Please click following link to change your password:  <br><br>		 
+        $data['email_body_title']  = "Dear " . $c->title ;
+	  	$data['email_body_content']  = "Please click following link to change your password:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
 
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
 
         $this->email->to($c->title . ',' . $c->primaryemail);
 
         $this->email->subject('Password change link.');
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
 
@@ -727,18 +737,21 @@ class Company extends CI_Controller {
         }
 
         $link = base_url() . 'company/complete/' . $key;
-        $body = "Dear " . $c->title . ",<br><br> 
-	  	Please click following link to complete your registration:  <br><br>		 
+        $data['email_body_title'] = "Dear " . $c->title ;
+	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-
+        $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
 
         $this->email->to($c->title . ',' . $c->primaryemail);
 
         $this->email->subject('Activate your account.');
-        $this->email->message($body);
+        $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
 

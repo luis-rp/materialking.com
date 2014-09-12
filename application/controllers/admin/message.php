@@ -86,24 +86,27 @@ class message extends CI_Controller
         $settings = (array)$this->settings_model->get_current_settings ();
          
 	    $this->load->library('email');
-		$this->email->clear(true);
+		//$this->email->clear(true);
+
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
         $this->email->from($settings['adminemail'], "Administrator");
         
         $this->email->to($c->primaryemail); 
 			        
 		$link = base_url().'message/messages/'.$key;
 		
-	    $body = "
-    	Dear ".$c->title.",<br><br>
-    	You have got a new message regarding PO# $ponum.<br><br>
+	    $data['email_body_title']  = "Dear ".$c->title;
+    	$data['email_body_content']  = "You have got a new message regarding PO# $ponum.<br><br>
     	'{$_POST['message']}'
     	<br><br>
   		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
     	<a href='$link' target='blank'>$link</a>
 	    ";
-	  
+	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
         $this->email->subject("New Message");
-        $this->email->message($body);	
+        $this->email->message($send_body);	
         $this->email->set_mailtype("html");
         $this->email->send();
         
@@ -189,7 +192,11 @@ class message extends CI_Controller
 			$c = $company['companydetails'];
 			$settings = (array)$this->settings_model->get_current_settings ();
 		    $this->load->library('email');
-			$this->email->clear(true);
+			//$this->email->clear(true);
+		    $config['charset'] = 'utf-8';
+		    $config['mailtype'] = 'html';
+		    $this->email->initialize($config);
+		    
 	        $this->email->from($settings['adminemail'], "Administrator");
 	        
 	        
@@ -202,24 +209,24 @@ class message extends CI_Controller
             }
             $this->email->to($toemail); 
 			
-		    $body = "
+		    $data['email_body_title']  = "
 		    Dear ".$c->title.",<br><br>
 		    There are errors on items you sent for PO# {$quote->ponum}:
 		  	<dl>
 		  	";
-		    
+		    $data['email_body_content'] = "";
 			while(list($e,$items)=each($company['items']))
 			{
-		  		$body.="
+		  		$data['email_body_content'] .="
 		  		<dt>".$e." (".count($items)." items):</dt>";
-		  		$body.="
+		  		$data['email_body_content'] .="
 		  		<dd>
 		  			<table cellspacing=5 cellpadding=25 border=1 clsss='table table-bordered col-md-4' style='border-radius: 3px;border-style: solid solid solid solid;border-width: 1px 1px 1px 1px;'>
 		  				<tr><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th><th>Comment</th></tr>
 		  			";
 		  			foreach($items as $item)
 		  			{
-	  					$body .= "
+	  					$data['email_body_content']  .= "
 	  					<tr>
 	  						<td>".$item->itemcode."</td>
 	  						<td>".$company['quantities'][$e][$i]."</td>
@@ -229,17 +236,18 @@ class message extends CI_Controller
 	  					</tr>
 	  					";
 		  			}
-		  		$body.="
+		  		$data['email_body_content'] .="
 		  			</table>
 		  		</dd>";
 			}
-		  	$body.="
+		  	$data['email_body_content'] .="
 		  	</dl>
 		    ";
 		  	//echo($body);
 		    //die;
+		  	$send_body = $this->load->view("email_templates/template",$data,TRUE);
 	        $this->email->subject("Error in items sent");
-	        $this->email->message($body);	
+	        $this->email->message($send_body);	
 	        $this->email->set_mailtype("html");
 	        $this->email->send();
 		}
