@@ -903,12 +903,26 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$item['rate']=0;
 			}
 				$data['cart'][]=$item;
+				
+				if(is_object($item['rate']))
+					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate']->rate;
+				else
+					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
+				
+				if(is_object($item['rate'])){
+					$dataitemshipping +=$item['rate']->rate;		
+				}
+				else{
+					$dataitemshipping +=$item['rate'];	
+				}
+				
 			}
 			catch(Exception $e)
 			{
  				redirect('cart');
 			}
 		}
+		$data['totalordershipping'] = $dataitemshipping;
 		$this->load->view('site/cartmessage', $data);
 	}
 	
