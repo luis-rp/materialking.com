@@ -184,6 +184,7 @@ $(document).ready(function() {
 				<input type="hidden" name="zip" value="<?php echo $zip;?>">
 				<input type="hidden" name="country" value="<?php echo $country;?>">
                 <input type="hidden" name="itemshipping" value="<?php echo $itemshipping;?>">
+                <input type="hidden" name="shippingforvendors" value="<?php echo $shippingforvendors;?>">
 			</div>
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
