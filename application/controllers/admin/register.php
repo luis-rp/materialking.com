@@ -161,7 +161,33 @@ class Register extends CI_Controller
         $this->email->send();
 	}
     
-    
+	function testemail(){
+	
+	
+		
+		$this->load->library('email');
+		$data['mailbody'] = "This is the data";
+		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		
+		
+		$config['protocol'] = 'sendmail';
+		$config['mailpath'] = '/usr/sbin/sendmail';
+		$config['charset'] = 'iso-8859-1';
+		$config['wordwrap'] = TRUE;
+		$config['mailtype'] = 'html';
+			
+		$this->email->initialize($config);
+			
+		$this->email->from("admin@godaddy.com");
+	
+		$this->email->to("syd.sozo@gmail.com");
+	
+		$this->email->subject('Activate your account.');
+		$this->email->message($send_body);
+		$this->email->send();
+		
+		echo $this->email->print_debugger();
+	}
     ////////////////////////
     function resend()
     {

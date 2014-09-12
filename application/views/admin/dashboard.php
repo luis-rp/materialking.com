@@ -176,9 +176,9 @@
 	$("#activatetour").click(function(e){
 		  e.preventDefault();
 			$("#tourcontrols").remove();
-			tour4.restart();
+			//tour1.restart();
 			// Initialize the tour
-			tour4.init();
+			//tour1.init();
 			start();
 		});
 	 });
@@ -186,12 +186,12 @@
 	 function start(){
 
 			// Start the tour
-				tour4.start();
+				tour1.start();
 			 }
 	 function endTour(){
 
 		 $("#tourcontrols").remove();
-		 tour4.end();
+		 tour1.end();
 			}
  </script>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
@@ -202,8 +202,8 @@
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
-<h3 class="box-header" style="display:inline" id="step1" >
-				Your Dashboard
+<h3 class="box-header" style="display:inline" >
+				<span id="step1" >Your Dashboard</span>
 				&nbsp;
 
 				<?php if($this->session->userdata('usertype_id') == 2){?>

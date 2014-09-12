@@ -645,7 +645,7 @@ function acceptall()
             if (@$shipments)
             {
             ?>
-            <h3 class="box-header">Shipments:  <?php
+            <h3 class="box-header">Shipments: ACCEPT ALL BUTTON MISSING <?php
                 $canacceptall = false;
                 $shipitemids = array();
                 foreach($shipments as $cs)

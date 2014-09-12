@@ -168,7 +168,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 						<?php if(!$newrequests){?>
 							<span class="label label-important">No Pending Requests</span>
 						<?php }
-							else
+							else{
 							foreach($newrequests as $penreq){?>
 
 							<div class="notification-messages">
@@ -177,7 +177,11 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 								</div>
 								<div class="message-wrapper">
 									<div class="heading">
+										<?php if($penreq->from){?>
 										You got a request from <?php echo $penreq->from->fullname;?> of <?php echo $penreq->from->companyname;?>
+										<?php }else{?>
+										No request information
+										<?php }?>
 										&nbsp; <?php echo $penreq->tago;?>
 										<?php if($penreq->accountnumber){;?>
 										<br/>Account Number: <?php echo $penreq->accountnumber;?>
@@ -186,7 +190,11 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 										<br/>Message: <?php echo $penreq->message;?>
 										<?php }?>
 										<?php if($penreq->wishtoapply){?>
+											<?php if($penreq->from){?>
 											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>
+											<?php }else{?>
+											No Application information
+											<?php }?>
 										<?php }?>
 
 									</div>
@@ -200,7 +208,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 							</div>
 							</a>
 
-						<?php }?>
+						<?php } }?>
 					</div>
 				</div>
 
@@ -213,7 +221,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 						<?php if(!$networkjoinedpurchasers){?>
 							<span class="label label-important">You have no purchasing companies in your network</span>
 						<?php }
-							else
+							else{
 							foreach($networkjoinedpurchasers as $njp){?>
 
 							<div class="notification-messages">
@@ -221,11 +229,11 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 									<div class="heading">
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>
 										<br/><a href="<?php echo site_url('company/tier');?>">Manage Connection</a>
-										<?php if($njp->accountnumber){;?>
+										<?php if($njp->accountnumber){?>
 										/ Account Number: <?php echo $njp->accountnumber;?>
 
 										<?php }?>
-										<?php if(isset($njp->message)){;?>
+										<?php if(isset($njp->message)){?>
 										<br/>Message: <?php echo $njp->message;?>
 										<?php }?>
 										<?php if($njp->wishtoapply){?>
@@ -235,9 +243,10 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 									</div>
 								</div>
 							</div>
-						<?php }?>
+						<?php } }?>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 
