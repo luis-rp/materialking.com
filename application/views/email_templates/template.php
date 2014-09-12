@@ -1,187 +1,1081 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Copernica Marketing Software</title>
-<style type="text/css">
-
-/* Default CSS */
-body,#body_style {margin: 0; padding: 0; background: #f1f1f1; color: #5b656e;}
-a {color: #09c;}
-a img {border: none; text-decoration: none;}
-table, table td {border-collapse: collapse;}
-td, h1, h2, h3, p {font-family: arial, helvetica, sans-serif; color: #313a42;}
-h1, h2, h3, h4 {color: #313a42 !important; font-weight: normal; line-height: 1.2;}
-h1 {font-size: 24px;}
-h2 {font-size: 18px;}
-h3 {font-size: 16px;}
-p {margin: 0 0 1.6em 0;}
-
-/* Force Outlook to provide a "view in browser" menu link. */
-#outlook a {padding:0;}
-
-/* Preheader and webversion */
-.preheader {background-color: #f6f6f6;}
-.preheaderContent, .webversion, .webversion a {color: #999999; font-size: 10px;}
-.preheaderContent{width: 440px;}
-.preheaderContent, .webversion {padding: 5px 10px;}
-.webversion {width: 200px; text-align: right;}
-.webversion a {text-decoration: underline; color: #999999; font-size: 10px;}
-
-/* Logo (branding) */
-.logoContainer {padding: 20px 0 10px 0px; width: 320px;}
-.logoContainer a {color: #ffffff;}
-
-/* Whitespace (imageless spacer) */
-.whitespace {font-family: 0px; line-height: 0px;}
-
-/* Button */
-.buttonContainer {padding: 10px 20px 10px 20px;}
-.button {padding: 10px 5px 10px 5px; text-align: center; background-color: #ff6b6b; border-radius: 4px;}
-.button a {color: #ffffff; text-decoration: none; display: block; text-transform: uppercase;}
-
-/* Featured content */
-.featuredHeader {background: #556270;}
-#featuredImage img {display: block; margin: 0 auto;}
-.featuredTitle {color: #ffffff; font-size: 26px; padding: 0px 0px 10px 0px; font-weight: bold;}
-.featuredContent {color: #ffffff;}
-
-/* One horizontal section of content: e.g. */
-.section {padding: 20px 0px 0px 0px;}
-.sectionOdd {background-color: #f1f1f1;}
-.sectionEven {background-color: #ffffff;}
-.sectionOdd, .sectionEven {padding: 30px 0px 30px 0px;}
-
-/* An article */
-.sectionArticleTitle, .sectionArticleContent {text-align: center;}
-.sectionArticleTitle {font-size: 18px; padding: 10px 0px 5px; 0px;}
-.sectionArticleContent {font-size: 13px; line-height: 18px;}
-.sectionArticleImage {text-align: center;}
-.sectionArticleImage img {padding: 0px 0px 0px 0px; -ms-interpolation-mode: bicubic;}
-
-
-.sectionTitle, .sectionSubTitle{text-align: center;}
-.sectionTitle {font-size: 26px; padding: 0px 10px 10px 10px}
-.sectionSubTitle {padding: 0px 10px 20px 10px;}
-
-/* Footer and social media */
-.footNotes {padding: 0px 20px 0px 20px;}
-.footNotes a {color: #556270; font-size: 13px;}
-.socialMedia {background: #556270;}
-
-
-/* CSS for specific screen width(s) */
-@media only screen and (max-width: 480px) {
-	body,table,td,p,a,li,blockquote {-webkit-text-size-adjust:none !important;}
-	body[yahoofix] table {width: 100% !important;}
-	body[yahoofix] .webversion {display: none; font-size: 0; max-height: 0; line-height: 0; mso-hide: all;}
-	body[yahoofix] .logoContainer, body[yahoofix] .featuredTitle , body[yahoofix] .featuredContent {text-align: center;}
-	body[yahoofix] .sectionArticleImage img {height: auto !important; max-width: 100% !important;}
-	body[yahoofix] .preheaderContent{text-align: center;}
-	body[yahoofix] .buttonContainer {padding: 0px 20px 0px 20px;}
-	body[yahoofix] .column {float: left; width: 100%;}
-	body[yahoofix] #featuredImage {text-align: center;}
-	body[yahoofix] .featuredTitle {line-height: 24px; font-weight: normal !important; padding: 0px 10px 25px 10px;}
-	body[yahoofix] .featuredContent {padding: 0px 10px 20px 10px;}
-	body[yahoofix] .sectionArticleTitle {padding: 0px 10px 0px 10px !important;}
-	body[yahoofix] .sectionArticleContent {padding: 0px 10px 30px 10px !important;}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+@import url(https://fonts.googleapis.com/css?family=Montserrat:400,700);
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 100%;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+td {
+  padding: 0;
+  vertical-align: top;
+}
+.spacer,
+.border {
+  font-size: 1px;
+  line-height: 1px;
+}
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+.image {
+  font-size: 0;
+  Margin-bottom: 26px;
+}
+.image img {
+  display: block;
+}
+.logo img {
+  display: block;
+}
+strong {
+  font-weight: bold;
+}
+h1,
+h2,
+h3,
+p,
+ol,
+ul,
+li {
+  Margin-top: 0;
+}
+ol,
+ul,
+li {
+  padding-left: 0;
+}
+.btn a {
+  mso-hide: all;
+}
+blockquote {
+  Margin-top: 0;
+  Margin-right: 0;
+  Margin-bottom: 0;
+  padding-right: 0;
+}
+.column-top {
+  font-size: 52px;
+  line-height: 52px;
+}
+.column-bottom {
+  font-size: 26px;
+  line-height: 26px;
+}
+.column {
+  text-align: left;
+}
+.contents {
+  width: 100%;
+}
+.padded {
+  padding-left: 90px;
+  padding-right: 90px;
+}
+.wrapper {
+  background-color: #f0f0f0;;
+  width: 100%;
+  min-width: 620px;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+table.wrapper {
+  table-layout: fixed;
+}
+.one-col,
+.two-col,
+.three-col {
+  Margin-left: auto;
+  Margin-right: auto;
+  width: 600px;
+}
+.one-col p,
+.one-col ol,
+.one-col ul {
+  Margin-bottom: 26px;
+}
+.two-col p,
+.two-col ol,
+.two-col ul {
+  Margin-bottom: 22px;
+}
+.two-col .image {
+  Margin-bottom: 22px;
+}
+.two-col .column-bottom {
+  font-size: 30px;
+  line-height: 30px;
+}
+.two-col .column {
+  width: 300px;
+}
+.two-col .padded {
+  padding-left: 25px;
+  padding-right: 25px;
+}
+.three-col p,
+.three-col ol,
+.three-col ul {
+  Margin-bottom: 21px;
+}
+.three-col .image {
+  Margin-bottom: 21px;
+}
+.three-col .column-bottom {
+  font-size: 31px;
+  line-height: 31px;
+}
+.three-col .column {
+  width: 200px;
+}
+.three-col .padded {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+@media only screen and (max-width: 620px) {
+  [class*=wrapper] {
+    min-width: 320px !important;
+    width: 100%!important;
+  }
+  [class*=wrapper] .one-col,
+  [class*=wrapper] .two-col,
+  [class*=wrapper] .three-col {
+    width: 320px !important;
+  }
+  [class*=wrapper] .column {
+    display: block;
+    float: left;
+    width: 320px !important;
+  }
+  [class*=wrapper] .padded {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+  [class*=wrapper] .full {
+    display: none;
+  }
+  [class*=wrapper] .block {
+    display: block !important;
+  }
+  [class*=wrapper] .hide {
+    display: none !important;
+  }
+  [class*=wrapper] .image {
+    margin-bottom: 26px !important;
+  }
+  [class*=wrapper] .image img {
+    height: auto !important;
+    width: 100% !important;
+  }
+}
+.wrapper h1 {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.wrapper h2 {
+  font-weight: 400;
+}
+.wrapper h3 {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.wrapper p,
+.wrapper ol,
+.wrapper ul {
+  font-weight: 300;
+}
+.dark .one-col h1 {
+  font-weight: 700;
+}
+.dark .one-col blockquote {
+  letter-spacing: 0.02em;
+}
+.shadow {
+  font-size: 2px;
+  line-height: 2px;
+}
+.dark,
+.darkest,
+.light,
+.lightest {
+  width: 100%;
+}
+.wrapper p,
+.wrapper ol,
+.wrapper ul {
+  font-family: sans-serif;
+}
+.wrapper h1,
+.wrapper h2,
+.wrapper h3,
+.wrapper blockquote p,
+.wrapper .btn a,
+.wrapper .header .logo,
+.wrapper .footer .twitter,
+.wrapper .footer .facebook,
+.wrapper .footer .forward {
+  font-family: sans-serif;
+}
+@media screen and (min-width: 0) {
+  .wrapper h1,
+  .wrapper h2,
+  .wrapper h3,
+  .wrapper blockquote p,
+  .wrapper .btn a,
+  .wrapper .header .logo,
+  .wrapper .footer .twitter,
+  .wrapper .footer .facebook,
+  .wrapper .footer .forward {
+    font-family: Montserrat, Avenir, sans-serif !important;
+  }
+}
+.wrapper a {
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.wrapper h1 {
+  font-size: 36px;
+  line-height: 42px;
+  Margin-bottom: 24px;
+}
+.wrapper h2 {
+  font-size: 26px;
+  line-height: 32px;
+  Margin-bottom: 20px;
+}
+.wrapper h3 {
+  font-size: 16px;
+  line-height: 24px;
+  Margin-bottom: 16px;
+}
+.wrapper p,
+.wrapper ol,
+.wrapper ul {
+  font-size: 16px;
+  line-height: 26px;
+  text-rendering: optimizeLegibility;
+}
+.wrapper p a,
+.wrapper ol a,
+.wrapper ul a {
+  text-decoration: underline;
+}
+.wrapper p a:hover,
+.wrapper ol a:hover,
+.wrapper ul a:hover {
+  text-decoration: none;
+}
+.wrapper blockquote {
+  border-top: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+  Margin-left: 0;
+  Margin-right: 0;
+}
+.wrapper blockquote p {
+  text-align: center;
+}
+.wrapper blockquote :last-child {
+  Margin-bottom: 0 !important;
+}
+.btn {
+  Margin-bottom: 26px;
+}
+.btn a {
+  background-repeat: repeat-x;
+  background-position: left top;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 24px;
+  padding: 13px 35px 12px 35px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+.divider {
+  width: 100%;
+}
+.hr {
+  font-size: 4px;
+  line-height: 4px;
+  padding-bottom: 26px;
+}
+hr {
+  border: 0;
+  height: 4px;
+  width: 50px;
+  color: #dfdfdf;
+  background-color: #dfdfdf;
+}
+.one-col .column table:nth-last-child(2) td h1:last-child,
+.one-col .column table:nth-last-child(2) td h2:last-child,
+.one-col .column table:nth-last-child(2) td h3:last-child,
+.one-col .column table:nth-last-child(2) td p:last-child,
+.one-col .column table:nth-last-child(2) td ol:last-child,
+.one-col .column table:nth-last-child(2) td ul:last-child {
+  Margin-bottom: 26px;
+}
+.one-col a {
+  color: #2186b8;
+}
+.one-col a:hover {
+  color: #196b93 !important;
+}
+.one-col h1,
+.one-col h2,
+.one-col h3 {
+  color: #2e3b4e;
+}
+.one-col h1 {
+  text-align: center;
+}
+.one-col p,
+.one-col ol,
+.one-col ul {
+  color: #4e5561;
+}
+.one-col ol,
+.one-col ul {
+  Margin-left: 30px;
+}
+.one-col li {
+  Margin-bottom: 13px;
+}
+.one-col blockquote {
+  Margin-bottom: 26px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.one-col blockquote p,
+.one-col blockquote ol,
+.one-col blockquote ul {
+  color: #7e8186;
+  font-size: 18px;
+  line-height: 32px;
+  Margin-left: -65px;
+  Margin-right: -65px;
+}
+.one-col .btn {
+  text-align: center;
+}
+.one-col .btn a {
+  background-color: #78b424;
+  background-image: url(https://i7.createsend1.com/static/eb/master/05-slate/images/one-col-btn.gif);
+  box-shadow: 0 2px 0 #66952a;
+  color: #ffffff;
+}
+.one-col .btn a:hover {
+  color: #e7f4c5 !important;
+}
+.light {
+  background-color: #f1f1f1;
+}
+.two-col .column table:nth-last-child(2) td h1:last-child,
+.two-col .column table:nth-last-child(2) td h2:last-child,
+.two-col .column table:nth-last-child(2) td h3:last-child,
+.two-col .column table:nth-last-child(2) td p:last-child,
+.two-col .column table:nth-last-child(2) td ol:last-child,
+.two-col .column table:nth-last-child(2) td ul:last-child {
+  Margin-bottom: 22px;
+}
+.two-col a {
+  color: #2186b8;
+}
+.two-col a:hover {
+  color: #196b93 !important;
+}
+.two-col h1,
+.two-col h2,
+.two-col h3 {
+  color: #2e3b4e;
+}
+.two-col h1 {
+  font-size: 26px;
+  line-height: 32px;
+  Margin-bottom: 24px;
+}
+.two-col h2 {
+  font-size: 20px;
+  line-height: 28px;
+  Margin-bottom: 16px;
+}
+.two-col h3 {
+  font-size: 14px;
+  line-height: 22px;
+  Margin-bottom: 12px;
+}
+.two-col p,
+.two-col ol,
+.two-col ul {
+  color: #5f6a7d;
+  font-size: 14px;
+  line-height: 22px;
+  Margin-bottom: 22px;
+}
+.two-col ol,
+.two-col ul {
+  Margin-left: 26px;
+}
+.two-col li {
+  Margin-bottom: 11px;
+}
+.two-col .btn {
+  Margin-bottom: 22px;
+}
+.two-col .btn a {
+  background-color: #1f7faf;
+  background-image: url(https://i8.createsend1.com/static/eb/master/05-slate/images/two-col-btn.gif);
+  box-shadow: 0 2px 0 #22688b;
+  color: #ffffff;
+  font-size: 12px;
+  letter-spacing: -0.02em;
+  line-height: 22px;
+  padding: 10px 28px;
+}
+.two-col .btn a:hover {
+  color: #a9dfee !important;
+}
+.two-col .hr {
+  padding-bottom: 22px;
+}
+.two-col .hr hr {
+  background-color: #c2c2c2;
+  color: #c2c2c2;
+}
+.two-col blockquote {
+  border-top-color: #c2c2c2;
+  border-bottom-color: #c2c2c2;
+  Margin-bottom: 22px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.two-col blockquote p,
+.two-col blockquote ol,
+.two-col blockquote ul {
+  color: #5f6a7d;
+  font-size: 16px;
+  line-height: 24px;
+  Margin-left: 0;
+  Margin-right: 0;
+}
+.darkest {
+  background-color: #313740;
+}
+.three-col .column table:nth-last-child(2) td h1:last-child,
+.three-col .column table:nth-last-child(2) td h2:last-child,
+.three-col .column table:nth-last-child(2) td h3:last-child,
+.three-col .column table:nth-last-child(2) td p:last-child,
+.three-col .column table:nth-last-child(2) td ol:last-child,
+.three-col .column table:nth-last-child(2) td ul:last-child {
+  Margin-bottom: 21px;
+}
+.three-col a {
+  color: #19a9e5;
+}
+.three-col a:hover {
+  color: #2186b8 !important;
+}
+.three-col h1,
+.three-col h2,
+.three-col h3,
+.three-col p,
+.three-col ol,
+.three-col ul {
+  color: #f6f6f8;
+}
+.three-col h1 {
+  font-size: 20px;
+  line-height: 28px;
+  Margin-bottom: 14px;
+}
+.three-col h2 {
+  font-size: 16px;
+  line-height: 22px;
+  Margin-bottom: 12px;
+}
+.three-col h3 {
+  font-size: 13px;
+  line-height: 21px;
+  Margin-bottom: 10px;
+}
+.three-col p,
+.three-col ol,
+.three-col ul {
+  color: #d8dee3;
+  font-size: 13px;
+  line-height: 21px;
+  Margin-bottom: 21px;
+  text-shadow: 0 1px 0 #000000;
+}
+.three-col ol,
+.three-col ul {
+  Margin-left: 20px;
+}
+.three-col li {
+  Margin-bottom: 10px;
+}
+.three-col .btn {
+  Margin-bottom: 21px;
+}
+.three-col .btn a {
+  background-color: #192129;
+  background-image: url(https://i9.createsend1.com/static/eb/master/05-slate/images/three-col-btn.gif);
+  box-shadow: 0 2px 0 #11161a;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 19px;
+  padding: 6px 18px 5px 18px;
+  letter-spacing: 0.02em;
+}
+.three-col .btn a:hover {
+  color: #adb3b9 !important;
+}
+.three-col .hr {
+  padding-bottom: 21px;
+}
+.three-col .hr hr {
+  background-color: #5d5f60;
+  color: #5d5f60;
+}
+.three-col blockquote {
+  border-top-color: #5d5f60;
+  border-bottom-color: #5d5f60;
+  padding: 12px 0;
+  Margin-bottom: 21px;
+}
+.three-col blockquote p,
+.three-col blockquote ol,
+.three-col blockquote ul {
+  color: #939799;
+  font-size: 15px;
+  line-height: 23px;
+  text-shadow: 0 1px 0 #000000;
+}
+.dark {
+  background-color: #3a424f;
+}
+.dark .shadow {
+  background-color: #333943;
+}
+.dark .one-col .column-top {
+  font-size: 64px;
+  line-height: 64px;
+}
+.dark .one-col .column-bottom {
+  font-size: 38px;
+  line-height: 38px;
+}
+.dark .one-col h1,
+.dark .one-col h2,
+.dark .one-col h3 {
+  color: #ffffff;
+  text-align: center;
+}
+.dark .one-col h1 a,
+.dark .one-col h2 a,
+.dark .one-col h3 a {
+  color: #ffffff;
+}
+.dark .one-col h1 {
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+.dark .one-col h2 {
+  font-weight: 400;
+}
+.dark .one-col p,
+.dark .one-col ol,
+.dark .one-col ul {
+  color: #e2edf7;
+}
+.dark .one-col p a,
+.dark .one-col ol a,
+.dark .one-col ul a {
+  color: #e2edf7;
+}
+.dark .one-col p a:hover,
+.dark .one-col ol a:hover,
+.dark .one-col ul a:hover {
+  color: #adb3b9 !important;
+}
+.dark .one-col p {
+  text-align: center;
+}
+.dark .one-col .btn a {
+  background-color: #3a424f;
+  background-image: none;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #282e37;
+  padding: 11px 37px;
+}
+.dark .one-col .btn a:hover {
+  border-color: #adb3b9 !important;
+  color: #adb3b9 !important;
+}
+.dark .one-col .hr hr {
+  background-color: #606771;
+  color: #606771;
+}
+.dark .one-col blockquote {
+  background-image: url(https://i10.createsend1.com/static/eb/master/05-slate/images/blockquote.gif);
+  background-repeat: no-repeat;
+  background-position: center top;
+  border-top: 0 solid #3a424f;
+  border-bottom: 0 solid #3a424f;
+  Margin-bottom: 23px;
+  padding-top: 38px;
+  padding-bottom: 0;
+}
+.dark .one-col blockquote p,
+.dark .one-col blockquote ol,
+.dark .one-col blockquote ul {
+  color: #e2edf7;
+  Margin-left: 0;
+  Margin-right: 0;
+}
+.preheader {
+  width: 100%;
+}
+.preheader td {
+  color: #adb3b9;
+  font-family: sans-serif;
+  font-size: 11px;
+  line-height: 13px;
+  width: 50%;
+}
+.preheader .title,
+.preheader .webversion {
+  padding: 8px 32px;
+}
+.preheader .title {
+  text-align: left;
+}
+.preheader .webversion {
+  text-align: right;
+}
+.header {
+  width: 100%;
+}
+.header td {
+  color: #adb3b9;
+  font-family: sans-serif;
+  font-size: 11px;
+  line-height: 13px;
+}
+.header .logo {
+  padding-top: 16px;
+  padding-bottom: 32px;
+  color: #2f353e;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  line-height: 24px;
+}
+.header .logo a {
+  color: #2f353e;
+}
+.header .logo img {
+  Margin-left: auto;
+  Margin-right: auto;
+}
+.footer {
+  background-color: #1a232b;
+  width: 100%;
+}
+.footer .shadow {
+  background-color: #07090b;
+  font-size: 2px;
+  line-height: 2px;
+}
+.footer .inner {
+  padding-top: 60px;
+  padding-bottom: 55px;
+}
+.footer .cols {
+  width: 600px;
+}
+.footer .left,
+.footer .right {
+  color: #8e959c;
+  font-family: sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  padding-bottom: 22px;
+}
+.footer .left {
+  text-align: left;
+  width: 53%;
+  padding-right: 5px;
+}
+.footer .right {
+  text-align: right;
+  width: 47%;
+  padding-left: 5px;
+}
+.footer a {
+  color: #8e959c;
+}
+.footer #address a,
+.footer #permission a {
+  color: #8e959c;
+  text-decoration: none;
+}
+.footer td.spacer {
+  width: 7px;
+}
+.footer .social td {
+  padding-bottom: 14px;
+}
+.footer .twitter,
+.footer .facebook,
+.footer .forward {
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #11161a;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-transform: uppercase;
+  mso-hide: all;
+  padding-top: 4px;
+  padding-bottom: 3px;
+  padding-right: 11px;
+  word-break: keep-all;
+}
+.footer .twitter {
+  background-color: #19a9e5;
+  background-image: url(https://i1.createsend1.com/static/eb/master/05-slate/images/twitter.gif);
+  padding-left: 33px;
+  text-shadow: 0 1px 0 #1895c9;
+}
+.footer .facebook {
+  background-color: #18527c;
+  background-image: url(https://i2.createsend1.com/static/eb/master/05-slate/images/facebook.gif);
+  padding-left: 25px;
+  text-shadow: 0 1px 0 #184a6f;
+}
+.footer .forward {
+  background-color: #7ebd26;
+  background-image: url(https://i3.createsend1.com/static/eb/master/05-slate/images/forward.gif);
+  padding-left: 26px;
+  text-shadow: 0 1px 0 #70a624;
+}
+@media (min-width: 0) {
+  body {
+    background-color: #1A232B;
+    background-image: url(https://i4.createsend1.com/static/eb/master/05-slate/images/footer.gif);
+    min-width: 100% !important;
+  }
+  [class*=wrapper] {
+    width: 100%!important;
+  }
+}
+@media only screen and (max-width: 620px) {
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td h1:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td h1:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td h1:last-child,
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td h2:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td h2:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td h2:last-child,
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td h3:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td h3:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td h3:last-child,
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td p:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td p:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td p:last-child,
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td ol:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td ol:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td ol:last-child,
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td ul:last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td ul:last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td ul:last-child {
+    Margin-bottom: 26px !important;
+  }
+  [class*=wrapper] .one-col .column:last-child table:nth-last-child(2) td blockquote :last-child,
+  [class*=wrapper] .two-col .column:last-child table:nth-last-child(2) td blockquote :last-child,
+  [class*=wrapper] .three-col .column:last-child table:nth-last-child(2) td blockquote :last-child {
+    margin-bottom: 0 !important;
+  }
+  [class*=wrapper] .preheader {
+    display: none;
+  }
+  [class*=wrapper] .logo {
+    padding-top: 32px!important;
+  }
+  [class*=wrapper] .logo img {
+    max-width: 280px !important;
+    height: auto!important;
+  }
+  [class*=wrapper] .footer .inner {
+    padding-top: 76px !important;
+  }
+  [class*=wrapper] .footer .cols {
+    width: 320px !important;
+  }
+  [class*=wrapper] .footer .left,
+  [class*=wrapper] .footer .right {
+    display: block !important;
+    width: 300px !important;
+    text-align: center !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    margin: 0 auto !important;
+  }
+  [class*=wrapper] .social {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  [class*=wrapper] .social .spacer {
+    display: none!important;
+  }
+  [class*=wrapper] .social td {
+    padding-left: 0!important;
+    padding-right: 0!important;
+    display: block !important;
+  }
+  [class*=wrapper] .social td:last-child {
+    padding-bottom: 30px !important;
+  }
+  [class*=wrapper] .first .column-bottom,
+  [class*=wrapper] .second .column-top,
+  [class*=wrapper] .three-col .second .column-bottom,
+  [class*=wrapper] .three-col .third .column-top {
+    display: none;
+  }
+  [class*=wrapper] h1 {
+    font-size: 36px !important;
+    line-height: 42px !important;
+    margin-bottom: 24px !important;
+  }
+  [class*=wrapper] h2 {
+    font-size: 26px !important;
+    line-height: 32px !important;
+    margin-bottom: 20px !important;
+  }
+  [class*=wrapper] h3 {
+    font-size: 16px !important;
+    line-height: 24px !important;
+    margin-bottom: 16px !important;
+  }
+  [class*=wrapper] p,
+  [class*=wrapper] ol,
+  [class*=wrapper] ul {
+    font-size: 16px !important;
+    line-height: 26px !important;
+    margin-bottom: 26px !important;
+  }
+  [class*=wrapper] ol,
+  [class*=wrapper] ul {
+    margin-left: 32px !important;
+  }
+  [class*=wrapper] li {
+    margin-bottom: 13px !important;
+  }
+  [class*=wrapper] .image {
+    margin-bottom: 26px !important;
+  }
+  [class*=wrapper] .hr {
+    padding-bottom: 26px !important;
+  }
+  [class*=wrapper] .btn {
+    margin-bottom: 26px !important;
+  }
+  [class*=wrapper] .btn a {
+    display: block !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 24px !important;
+    padding: 13px 10px 12px 10px !important;
+  }
+  [class*=wrapper] blockquote {
+    border-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 16px !important;
+    padding-bottom: 0 !important;
+  }
+  [class*=wrapper] blockquote:after {
+    border-top: inherit;
+    content: '';
+    display: block;
+    height: 26px;
+    margin-top: 16px;
+  }
+  [class*=wrapper] blockquote p,
+  [class*=wrapper] blockquote ol,
+  [class*=wrapper] blockquote ul {
+    font-size: 18px !important;
+    line-height: 32px !important;
+    margin-left: -10px !important;
+    margin-right: -10px !important;
+  }
+  [class*=wrapper] blockquote ol,
+  [class*=wrapper] blockquote ul {
+    margin-left: 10px !important;
+  }
+  [class*=wrapper] blockquote :last-child {
+    margin-bottom: 0 !important;
+  }
+  [class*=wrapper] .dark .column-top {
+    font-size: 62px !important;
+    line-height: 62px !important;
+  }
+  [class*=wrapper] .dark .column-bottom {
+    font-size: 38px !important;
+    line-height: 38px !important;
+  }
+  [class*=wrapper] .dark .btn a {
+    padding: 11px 10px !important;
+  }
+  [class*=wrapper] .dark blockquote {
+    padding-top: 38px !important;
+    padding-bottom: 25px !important;
+  }
+  [class*=wrapper] .dark blockquote:after {
+    display: none;
+  }
+}
+@media only screen and (max-width: 620px) and (-webkit-min-device-pixel-ratio: 2), only screen and (max-width: 620px) and (min--moz-device-pixel-ratio: 2), only screen and (max-width: 620px) and (-o-min-device-pixel-ratio: 2/1), only screen and (max-width: 620px) and (min-device-pixel-ratio: 2), only screen and (max-width: 620px) and (min-resolution: 192dpi), only screen and (max-width: 620px) and (min-resolution: 2dppx) {
+  [class*=wrapper] .dark blockquote {
+    background-image: url(https://i5.createsend1.com/static/eb/master/05-slate/images/blockquote-2x.gif) !important;
+    background-size: 28px 26px !important;
+  }
+  [class*=wrapper] .footer .twitter {
+    background-image: url(https://i6.createsend1.com/static/eb/master/05-slate/images/twitter-2x.gif) !important;
+    background-size: 150px 43px;
+  }
+  [class*=wrapper] .footer .facebook {
+    background-image: url(https://i7.createsend1.com/static/eb/master/05-slate/images/facebook-2x.gif) !important;
+    background-size: 150px 43px;
+  }
+  [class*=wrapper] .footer .forward {
+    background-image: url(https://i8.createsend1.com/static/eb/master/05-slate/images/forward-2x.gif) !important;
+    background-size: 150px 43px;
+  }
 }
 </style>
+    <!--[if mso]>
+    <style>
+      .spacer, .border, .column-top, .column-bottom {
+        mso-line-height-rule: exactly;
+      }
+      h1, h2, h3, blockquote p, blockquote ol, blockquote ul {
+        font-family: sans-serif !important;
+      }
+    </style>
+    <![endif]-->
+  <meta name="robots" content="noindex,nofollow" />
+<meta property="og:title" content="My First Campaign" />
 </head>
-<body yahoofix>
-<span id="body_style" style="display:block">
-
-<!-- Preheader -->
-<table class="preheader" cellpadding="0" cellspacing="0" width="100%">
-		<tr>
-		<td>
-		<!-- preheaderContent and webversion -->
-		<table border="0" cellpadding="0" cellspacing="0" summary="" width="640" align="center">
-				<tr>
-				<td class="preheaderContent">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</td>
-				<td class="webversion">No images? <a href="#" title="View the webversion">View the webversion</a></td>
-				</tr>
-				</table>
-            <!-- End preheaderContent and webversion -->
-            </td>
-            </tr>
-            </table>
-            <!-- End preheader -->
-
-            <!-- topHeader -->
-            <table border="0" cellspacing="0" cellpadding="0" width="100%" summary="" class="topHeader">
-            		<tr>
-            		<td>
-            		<!-- Logo (branding) -->
-            		<table border="0" cellspacing="0" cellpadding="0" width="640" align="center" summary="">
-              <tr>
-              <td class="logoContainer" align="center">
-              <a href="/" title="Lorem logo">
-              <img class="logo" src="tech-logo.png" alt="Lorem logo" />
-              </a>
-              </td>
-              		</tr>
-              				</table>
-              				<!-- End Logo (branding) -->
-              				</td>
-              				</tr>
-              				</table>
-              				<!-- End topHeader -->
-
-              				<!-- featuredHeader -->
-              				<table border="0" cellspacing="0" cellpadding="0" width="100%" summary="" class="featuredHeader">
-              						<tr>
-              						<td class="section">
-              						<table border="0" cellspacing="0" cellpadding="0" width="640" align="center" summary="">
-              						<tr>
-              						<td class="column">
-              						<table border="0" cellspacing="0" cellpadding="0" width="395" summary="">
-                    <tr>
-                    <td class="featuredTitle">
-                    Lorem ipsum dolor sit amet.
-                    </td>
-                    </tr>
-                    <tr>
-                    <td class="featuredContent">
-                    <?php echo $mailbody;?>
-                    </td>
-                    </tr>
-                    </table>
-                    </td>
-                    <td id="featuredImage" class="column"><img src="mobile-phone.png" width="234" alt="" /></td>
-                    </tr>
-                    </table>
-                    </td>
-                    </tr>
-                    </table>
-                    <!-- End featuredHeader -->
-
-                
-
-      <!-- Footer -->
-      <table border="0" cellspacing="0" cellpadding="0" width="100%" summary="" class="footer">
-        <tr><td class="whitespace" height="10">&nbsp;</td></tr>
-        <tr>
-          <td>
-            <table border="0" cellspacing="0" cellpadding="0" width="120" align="center" summary="">
-              <tr>
-                <td class="footNotes" align="center">
-                  <a href="#" title="Unsubscribe">Unsubscribe</a>
-                </td>
-                <td class="footNotes" align="center">
-                  <a href="#" title="Lorem">Lorem</a>
-                </td>
-                <td class="footNotes" align="center">
-                  <a href="#" title="Dolor">Dolor</a>
-                </td>
-              </tr>
-            </table>
+  <body class="emb-font-stack-default" bgcolor="#ffffff">
+    <center class="wrapper" style="background-color: #f0f0f0;;width: 100%;min-width: 620px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%">
+      <table class="wrapper" style="border-collapse: collapse;border-spacing: 0;background-color: #f0f0f0;;width: 100%;min-width: 620px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;table-layout: fixed">
+        <tbody><tr>
+          <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top">
+            <center>
+           
+              <table class="header" style="border-collapse: collapse;border-spacing: 0;width: 100%">
+                <tbody><tr>
+                  <td class="logo" style="padding-top: 16px;padding-bottom: 32px;padding-left: 0;padding-right: 0;vertical-align: top;color: #2f353e;font-family: sans-serif;font-size: 24px;line-height: 24px;letter-spacing: -0.02em" align="center"><center><div id="emb-email-header"><img style="border-left-width: 0;border-top-width: 0;border-bottom-width: 0;border-right-width: 0;-ms-interpolation-mode: bicubic;display: block;Margin-left: auto;Margin-right: auto;max-width: 140px" src="data:<?php echo $logoExt;?>;base64,<?php echo $logo;?>" alt="Logo" width="140" height="87" /></div></center></td>
+                </tr>
+              </tbody></table>
+            </center>
           </td>
         </tr>
-        <tr><td class="whitespace" height="10">&nbsp;</td></tr>
-      </table>
-      <!-- End Footer -->
-    </span>
-  </body>
-</html>
+      </tbody></table>
+      
+          <table class="wrapper" style="border-collapse: collapse;border-spacing: 0;background-color: #f0f0f0;;width: 100%;min-width: 620px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;table-layout: fixed">
+            <tbody><tr>
+              <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top">
+                <center>
+                  <table class="lightest" style="border-collapse: collapse;border-spacing: 0;width: 100%">
+                    <tbody><tr>
+                      <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top" align="center">
+                        <table class="one-col" style="border-collapse: collapse;border-spacing: 0;Margin-left: auto;Margin-right: auto;width: 600px">
+                          <tbody><tr>
+                            <td class="column" style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top;text-align: left">
+                              <div><div class="column-top" style="font-size: 52px;line-height: 52px">&nbsp;</div></div>
+                                <table class="contents" style="border-collapse: collapse;border-spacing: 0;width: 100%">
+                                  <tbody><tr>
+                                    <td class="padded" style="padding-top: 0;padding-bottom: 0;padding-left: 90px;padding-right: 90px;vertical-align: top">
+                                      
+            <div style="height:20px">&nbsp;</div>
+          
+                                    </td>
+                                  </tr>
+                                </tbody></table>
+                              
+                                <table class="contents" style="border-collapse: collapse;border-spacing: 0;width: 100%">
+                                  <tbody><tr>
+                                    <td class="padded" style="padding-top: 0;padding-bottom: 0;padding-left: 90px;padding-right: 90px;vertical-align: top">
+                                      
+           								<h1 style="Margin-top: 0;font-weight: 400;letter-spacing: -0.02em;font-family: sans-serif;font-size: 36px;line-height: 42px;Margin-bottom: 24px;color: #2e3b4e;text-align: center"><?php echo $email_body_title;?></h1>
+           								<p style="Margin-top: 0;font-weight: 300;font-family: sans-serif;font-size: 16px;line-height: 26px;text-rendering: optimizeLegibility;Margin-bottom: 26px;color: #4e5561">
+           								<?php echo $email_body_content;?>
+           								</p>
+           								
+          
+                                    </td>
+                                  </tr>
+                                </tbody></table>
+                              
+                              <div class="column-bottom" style="font-size: 26px;line-height: 26px">&nbsp;</div>
+                            </td>
+                          </tr>
+                        </tbody></table>
+                      </td>
+                    </tr>
+                  </tbody></table>
+                </center>
+              </td>
+            </tr>
+          </tbody></table>
+        
+   <table class="wrapper" style="border-collapse: collapse;border-spacing: 0;background-color: #f6f9fb;width: 100%;min-width: 620px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;table-layout: fixed">
+        <tbody><tr>
+          <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top">
+            <center>
+              <table class="footer" style="border-collapse: collapse;border-spacing: 0;background-color: #1a232b;width: 100%">
+                <tbody><tr>
+                  <td class="shadow" style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top;font-size: 2px;line-height: 2px;background-color: #07090b" background="https://i3.createsend1.com/static/eb/master/05-slate/images/footer-shadow.gif">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td class="inner" style="padding-top: 60px;padding-bottom: 55px;padding-left: 0;padding-right: 0;vertical-align: top" align="center">
+                    <table class="cols" style="border-collapse: collapse;border-spacing: 0;width: 600px">
+                      <tbody><tr>
+                       
+                        <td class="right" style="padding-top: 0;padding-bottom: 22px;padding-left: 5px;padding-right: 0;vertical-align: top;color: #8e959c;font-family: sans-serif;font-size: 12px;line-height: 20px;text-align: right;width: 100%">
+                          
+                          <div class="spacer" style="font-size: 1px;line-height: 20px">&nbsp;</div>
+                          <div>
+                            <span class="block">
+                              &copy; Copyright 2014 by EZPZ-P. All rights reserved.
+                              
+                            </span>
+                           
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody></table>
+                  </td>
+                </tr>
+              </tbody></table>
+            </center>
+          </td>
+        </tr>
+      </tbody></table>
+    </center>
+  
+</body></html>
