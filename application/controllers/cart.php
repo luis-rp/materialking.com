@@ -283,12 +283,29 @@ class cart extends CI_Controller
 			$this->db->where('id',$item['itemid']);
 			$current_item = $this->db->get('item')->row();
 			// create addresses
-			$to_address_params = array("name"    => $_POST['shippingName'],
-					"street1" => $_POST['shippingStreet'],
+			
+			if($_POST){
+			$vendorShipping['shippingStreet']=$_POST['shippingStreet'];
+			$vendorShipping['shippingCity']=$_POST['shippingCity'];
+			$vendorShipping['shippingState']=$_POST['shippingState'];
+			$vendorShipping['shippingZip']=$_POST['shippingZip'];
+			$vendorShipping['shippingName']=$_POST['shippingName'];
+			$vendorShipping['shippingCountry']=$_POST['shippingCountry'];
+			$tempshipping['pms_site_full_address'] = $vendorShipping;
+			$this->session->set_userdata($tempshipping);
+			}
+			else
+			{
+				$vendorShipping = $this->session->userdata('pms_site_full_address');
+			}
+			
+			//print_r($vendorShipping);
+			$to_address_params = array("name"    => $vendorShipping['shippingName'],
+					"street1" => $vendorShipping['shippingStreet'],
 					"street2" => "",
-					"city"    => $_POST['shippingCity'],
-					"state"   => $_POST['shippingState'],
-					"zip"     => $_POST['shippingZip'],
+					"city"    => $vendorShipping['shippingCity'],
+					"state"   => $vendorShipping['shippingState'],
+					"zip"     => $vendorShipping['shippingZip'],
 			);
 			
 			try
@@ -361,12 +378,12 @@ class cart extends CI_Controller
 		}
 		$userinfoship=http_build_query($userinfoship,'',', ');
 		$data['settings'] = $this->settings_model->get_current_settings();
-		$data['name'] = $_POST['shippingName'];
-		$data['street'] = $_POST['shippingStreet'];
-		$data['city'] = $_POST['shippingCity'];
-		$data['state'] = $_POST['shippingState'];
-		$data['zip'] = $_POST['shippingZip'];
-		$data['country'] = $_POST['shippingCountry'];
+		$data['name'] = $vendorShipping['shippingName'];
+		$data['street'] = $vendorShipping['shippingStreet'];
+		$data['city'] = $vendorShipping['shippingCity'];
+		$data['state'] = $vendorShipping['shippingState'];
+		$data['zip'] = $vendorShipping['shippingZip'];
+		$data['country'] = $vendorShipping['shippingCountry'];
 		$data['shippingforvendors'] = $userinfoship;
  		$data['itemshipping'] = $dataitemshipping;
 		$this->load->view('site/payment', $data);

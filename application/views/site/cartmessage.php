@@ -30,7 +30,13 @@ $(document).ready(function() {
             		<th>Quantity</th>
             		<th>Total</th>
             	</tr>
-            	<?php $totalRates=$totalordershipping; 
+            	<?php 
+				if(isset($totalordershipping) && $totalordershipping!='')
+				$totalRates=$totalordershipping; 
+				else
+				{
+					$totalRates=$totalordershipping=0;
+				}
 				$gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
             	/*if(is_object($item['rate'])){
             	
