@@ -30,11 +30,12 @@ $(document).ready(function() {
             		<th>Quantity</th>
             		<th>Total</th>
             	</tr>
-            	<?php $gtotal=0;$totalRates=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
-            	if(is_object($item['rate'])){
+            	<?php $totalRates=$totalordershipping; 
+				$gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
+            	/*if(is_object($item['rate'])){
             	
             		$totalRates +=$item['rate']->rate;
-            	}
+            	}*/
             	?>
             	<tr>
             		<td><?php echo $item['itemdetails']->itemname;?></td>
@@ -60,7 +61,7 @@ $(document).ready(function() {
             	</tr>
             	<tr>
             		<td colspan="4" align="right">Shipment rate</td>
-            		<td>$<?php echo $totalRates;?></td>
+            		<td>$<?php echo number_format($totalordershipping,2);?></td>
             	</tr>
             	<tr>
             		<td colspan="4" align="right">Total</td>
@@ -68,7 +69,9 @@ $(document).ready(function() {
             	</tr>
             </table>
             
-            <?php }?>
+            <?php }
+			
+			?>
             
                 </div>
             </div>

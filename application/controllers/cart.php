@@ -605,7 +605,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 						"zip"     => $_POST['zip'],
 				);
 				
-				try{
+				//Commented by dev - 120914
+				/*try{
 					$to_address = \EasyPost\Address::create($to_address_params);
 					
 					$from_address_params = array("name"    => $item['companydetails']->contact,
@@ -658,7 +659,9 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				catch(Exception $e)
 				{
 					$item['rate']=0;
-				}
+				}*/
+				//Commented by dev - 120914
+				$item['rate']=0;
 				$data['cart'][]=$item;
 				///////////////////////////
 			
@@ -715,6 +718,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				
 			}
                         $data['order'] = $oid;
+						$data['totalordershipping'] = $totalshipping;
 		}
 		else
 		{
