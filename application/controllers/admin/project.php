@@ -23,7 +23,7 @@ class project extends CI_Controller
 		$data['settingtour']=$setting;
 		$data['timezone']='America/Los_Angeles';
 		}else{
-		$data['timezone']=$setting[0]->tour;
+		$data['settingtour']=$setting[0]->tour;
 		$data['timezone']=$setting[0]->timezone;
 		}
 		$data['pendingbids'] = $this->quote_model->getpendingbids();

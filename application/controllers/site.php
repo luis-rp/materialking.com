@@ -1702,9 +1702,11 @@ class site extends CI_Controller
 		    $body .= 'You have a new request for assistance.';
 	    }
 		$body .= ' Details are:<br/><br/>';
-		/*$body .= "Type: ".$_POST['type']."<br/>";
-		$body .= "Name: ".$_POST['name']."<br/>";*/
+		//$body .= "Type: ".$_POST['type']."<br/>";
+		$body .= "Name: ".$_POST['contactName']."<br/>";
 		$body .= "Email: ".$_POST['email']."<br/>";
+		$body .= "Subject: ".$_POST['subject']."<br/>";
+		$body .= "Details: ".$_POST['comments']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
@@ -1731,11 +1733,15 @@ class site extends CI_Controller
 		$this->email->set_mailtype("html");
 		$this->email->send();
 		
-        $this->session->set_flashdata('message', 'Email was sent.');
+        $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox"> Email was sent successfully</div></div>');
+        
+        if(isset($_POST['hiddenad']))
+        $adid = $_POST['hiddenad'];
+        
 		if(@$_POST['redirect'])
 	    redirect('site/'.$_POST['redirect']);
 	    else 
-	    redirect('site');
+	    redirect('site/ad/'.$adid);
     }
     
     public function additemtoquote()
