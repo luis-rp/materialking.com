@@ -258,7 +258,7 @@ class cart extends CI_Controller
 		
 		$data['cart']=array();
 		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
-		$dataitemshipping=0; $userinfoship = array();$_SESSION['cart_shipping_vals_each']='';
+		$dataitemshipping=0; $userinfoship = array();
 		foreach($cart as $item)
 		{
 			//echo "<pre>"; print_r($item['quantity']);
@@ -345,9 +345,6 @@ class cart extends CI_Controller
 				else
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
 				
-				@session_start();
-				$_SESSION['cart_shipping_vals_each']=$userinfoship;
-				
 				if(is_object($item['rate'])){
 					$dataitemshipping +=$item['rate']->rate;		
 				}
@@ -355,18 +352,14 @@ class cart extends CI_Controller
 					$dataitemshipping +=$item['rate'];	
 				}
 				
-				//@session_start(); echo $dataitemshipping;
-				//print_r($_SESSION); die;
-				
-			}
+ 			}
 			catch(Exception $e)
 			{
-				//echo $current_item->weight.$current_item->itemname.$item['itemid']; echo "<pre>"; print_r($e);  die;
-				//mail('krevye@gmail.com', 'Error from  - EasyPost', $e);
-				redirect('http://materialking.com/cart/');
+  				redirect('http://materialking.com/cart/');
 			}
 			
 		}
+		$userinfoship=http_build_query($userinfoship,'',', ');
 		$data['settings'] = $this->settings_model->get_current_settings();
 		$data['name'] = $_POST['shippingName'];
 		$data['street'] = $_POST['shippingStreet'];
@@ -374,19 +367,8 @@ class cart extends CI_Controller
 		$data['state'] = $_POST['shippingState'];
 		$data['zip'] = $_POST['shippingZip'];
 		$data['country'] = $_POST['shippingCountry'];
-
- 		//echo "<pre>".$dataitemshipping; print_r($_SESSION); die;
- 		/*$data['itemshipping'] = $dataitemshipping;	
- 		
-*/
-		/*if(is_object($item['rate'])){
-		$data['itemshipping'] = $item['rate']->rate;		
- 		}
-		else{
-		$data['itemshipping'] = $item['rate'];	
-		}*/
-		
-		$data['itemshipping'] = $dataitemshipping;
+		$data['shippingforvendors'] = $userinfoship;
+ 		$data['itemshipping'] = $dataitemshipping;
 		$this->load->view('site/payment', $data);
 	}
 	
@@ -398,10 +380,7 @@ class cart extends CI_Controller
 		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		$cart = $this->session->userdata('pms_site_cart');
 		$ordernumber = $this->session->userdata('pms_orderid');
-		
-		//@session_start();
-		//print_r($_SESSION); die;
-		
+ 		
 		if(!$cart || !$ordernumber)
 		{
 			redirect('');
@@ -494,6 +473,8 @@ class cart extends CI_Controller
 			$oid = $this->db->insert_id();
 			$data['order'] = $ordernumber;
 			$notifications = array();
+			
+			$getvendorship=explode(', ',$_REQUEST['shippingforvendors']);
 			foreach($cart as $ci)
 			{
 				$od = array();
@@ -506,9 +487,19 @@ class cart extends CI_Controller
     			$od['paymentstatus'] = 'Paid';
     			$od['paymenttype'] = 'Credit Card';
     			$od['paymentnote'] = $chargeobj->balance_transaction;
-				$od['shipping'] = $_SESSION['cart_shipping_vals_each'][$ci['company'].'comp'.$ci['itemid']];
+				$shipmentofvendor=0;
+ 					foreach($getvendorship as $getvendorship2)
+					{
+						$getvendorship3=explode('=',trim($getvendorship2));
+						//echo $getvendorship3[0].'---'.$ci['company'].'comp'.$ci['itemid'];
+						if($getvendorship3[0]==$ci['company'].'comp'.$ci['itemid'])
+						{
+							$shipmentofvendor=$getvendorship3[1];
+						}
+					}
+ 				$od['shipping'] = $shipmentofvendor;
 				$this->db->insert('orderdetails',$od);
-			
+ 			
 	    		$notifications[$ci['company']]['ponum'] = $ordernumber;
 	    		$notifications[$ci['company']]['category'] = 'Order';
 	    		$notifications[$ci['company']]['company'] = $ci['company'];
@@ -516,8 +507,8 @@ class cart extends CI_Controller
 	    		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
 		
 			}
-			$_SESSION['cart_shipping_vals_each']='';
-			foreach($notifications as $notification)
+			
+ 			foreach($notifications as $notification)
 			{
 			    $this->db->insert('notification',$notification);
 			}
@@ -614,7 +605,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 						"zip"     => $_POST['zip'],
 				);
 				
-				try{
+				//Commented by dev - 120914
+				/*try{
 					$to_address = \EasyPost\Address::create($to_address_params);
 					
 					$from_address_params = array("name"    => $item['companydetails']->contact,
@@ -667,7 +659,9 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				catch(Exception $e)
 				{
 					$item['rate']=0;
-				}
+				}*/
+				//Commented by dev - 120914
+				$item['rate']=0;
 				$data['cart'][]=$item;
 				///////////////////////////
 			
@@ -724,6 +718,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				
 			}
                         $data['order'] = $oid;
+						$data['totalordershipping'] = $totalshipping;
 		}
 		else
 		{
