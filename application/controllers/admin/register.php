@@ -417,6 +417,12 @@ class Register extends CI_Controller
 		$temp['site_loggedin'] = $row;
 		$this->session->set_userdata($temp);
 		
+		@session_start();
+		$_SESSION['comet_user_id']=$u->id;
+		$_SESSION['comet_user_email']=$u->email;
+		$_SESSION['userid']=$u->id;
+		$_SESSION['logintype']='';
+		
 		$link = base_url() . 'admin';
 		$data['email_body_title'] = "Dear " . $_POST['username'];
 		$data['email_body_content'] = "Congratulations! <br><br> Thanks for registration, Click Below link to login in Dashboard.
