@@ -330,8 +330,7 @@ class Register extends CI_Controller
 		if(!preg_match("/^([0-9]{5})(-[0-9]{4})?$/i",$_POST['zip']))
 		{
 			$errormessage="Please Enter valid(5 or 5-4) combination of Zip Code";
-		}
-		
+		}		
 		$coreemail = $u->email;
 		$coreemailids = $u->id;
 		if(!$u)
