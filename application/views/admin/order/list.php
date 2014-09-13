@@ -92,6 +92,7 @@ $(document).ready( function() {
                                                 			<th>Company</th>
                                                 			<th>Paid Status</th>
                                                 			<th>Order Status</th>
+                                                            <th>Shipping</th>
                                                 			<th>Total</th>
                                                 		</tr>
                                                 		<?php foreach($order->details as $detail){?>
@@ -99,7 +100,7 @@ $(document).ready( function() {
                                                 			<td><?php echo $detail->company;?></td>
                                                 			<td><?php echo $detail->paymentstatus;?></td>
                                                 			<td><?php if($detail->status=="Void") echo "Declined"; else echo $detail->status;?></td>
-                                                			<td><?php echo round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
+     <td>$<?php echo $detail->shipping;?></td>                                           			<td>$<?php echo round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
                                                 		</tr>
                                                 		<?php }?>
                                                 	</table>

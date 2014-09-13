@@ -27,7 +27,7 @@
             $(document).ready(function() {
                 
                 $(".form-horizontal").submit(function(obj){
-                                var msj = "Please confirm the assignment of Order #<?php echo $order->ordernumber;?> , To Project Name ("+$('.pid option:selected').text()+") , Cost-Code ("+$('.ccid option:selected').text()+"), Total Value of Order =  <?php echo $total+$tax;?> ";
+                                var msj = "Please confirm the assignment of Order #<?php echo $order->ordernumber;?> , To Project Name ("+$('.pid option:selected').text()+") , Cost-Code ("+$('.ccid option:selected').text()+"), Total Value of Order =  <?php echo $total+$tax+$order->shipping;?> ";
                 		if(!confirm(msj)){return false;}
                  });
                 $(".pid").change(function(event){
@@ -114,7 +114,8 @@
 											echo number_format($gtotal,2);
 											?></td></tr>
 											<tr><td>Tax:</td><td></td><td>$<?php echo $tax;?></td></tr>
-											<tr><td>Total:</td><td></td><td>$<?php echo $tax+number_format($gtotal,2);?></td></tr>
+                                            <tr><td>Shipping:</td><td></td><td>$<?php echo $order->shipping;?></td></tr>
+											<tr><td>Total:</td><td></td><td>$<?php echo $order->shipping+$tax+number_format($gtotal,2);?></td></tr>
 										</tbody>
 										</table>
 				<input type="submit" value="Assign">
@@ -168,7 +169,8 @@
                                                 <td colspan="2">$<?php echo number_format($gtotal,2);?></td>
                                             </tr>
                                             <tr><td  colspan="3">Tax</td><td colspan="2">$<?php echo $tax;?></td></tr>
-											<tr><td  colspan="3">Total</td><td colspan="2">$<?php echo $tax+number_format($gtotal,2);?></td></tr>
+                                            <tr><td  colspan="3">Shipping</td><td colspan="2">$<?php echo $order->shipping;?></td></tr>
+											<tr><td  colspan="3">Total</td><td colspan="2">$<?php echo $order->shipping+$tax+number_format($gtotal,2);?></td></tr>
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
