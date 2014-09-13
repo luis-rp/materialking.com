@@ -333,7 +333,7 @@ class Register extends CI_Controller
 		}
 		
 		$coreemail = $u->email;
-		
+		$coreemailids = $u->id;
 		if(!$u)
 		{
 			$errormessage = 'Invalid Key.';
@@ -417,9 +417,9 @@ class Register extends CI_Controller
 		$this->session->set_userdata($temp);
 		
 		@session_start();
-		$_SESSION['comet_user_id']=$u->id;
-		$_SESSION['comet_user_email']=$u->email;
-		$_SESSION['userid']=$u->id;
+		$_SESSION['comet_user_id']=$coreemailids;
+		$_SESSION['comet_user_email']=$coreemail;
+		$_SESSION['userid']=$coreemailids;
 		$_SESSION['logintype']='';
 		
 		$link = base_url() . 'admin';
