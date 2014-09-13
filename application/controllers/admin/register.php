@@ -402,8 +402,7 @@ class Register extends CI_Controller
 				'taxrate' => '9.00',
 				'pricedays' =>  '120',
 				'pricepercent' =>  '2.00',
-		);
-		
+		);		
 		$this->db->insert('settings', $data);
 		
 		$this->db->where('id',$u->id);
