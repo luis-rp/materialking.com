@@ -330,10 +330,9 @@ class Register extends CI_Controller
 		if(!preg_match("/^([0-9]{5})(-[0-9]{4})?$/i",$_POST['zip']))
 		{
 			$errormessage="Please Enter valid(5 or 5-4) combination of Zip Code";
-		}
-		
+		}		
 		$coreemail = $u->email;
-		
+		$coreemailids = $u->id;
 		if(!$u)
 		{
 			$errormessage = 'Invalid Key.';
@@ -417,9 +416,9 @@ class Register extends CI_Controller
 		$this->session->set_userdata($temp);
 		
 		@session_start();
-		$_SESSION['comet_user_id']=$u->id;
-		$_SESSION['comet_user_email']=$u->email;
-		$_SESSION['userid']=$u->id;
+		$_SESSION['comet_user_id']=$coreemailids;
+		$_SESSION['comet_user_email']=$coreemail;
+		$_SESSION['userid']=$coreemailids;
 		$_SESSION['logintype']='';
 		
 		$link = base_url() . 'admin';
