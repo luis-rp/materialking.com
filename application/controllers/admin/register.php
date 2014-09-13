@@ -402,8 +402,7 @@ class Register extends CI_Controller
 				'taxrate' => '9.00',
 				'pricedays' =>  '120',
 				'pricepercent' =>  '2.00',
-		);
-		
+		);		
 		$this->db->insert('settings', $data);
 		
 		$this->db->where('id',$u->id);
@@ -416,6 +415,12 @@ class Register extends CI_Controller
 		// for store
 		$temp['site_loggedin'] = $row;
 		$this->session->set_userdata($temp);
+		
+		@session_start();
+		$_SESSION['comet_user_id']=$u->id;
+		$_SESSION['comet_user_email']=$u->email;
+		$_SESSION['userid']=$u->id;
+		$_SESSION['logintype']='';
 		
 		$link = base_url() . 'admin';
 		$data['email_body_title'] = "Dear " . $_POST['username'];

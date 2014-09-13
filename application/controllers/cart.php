@@ -916,8 +916,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				}
 				else{
 					$dataitemshipping +=$item['rate'];	
-				}
-				
+				}				
 			}
 			catch(Exception $e)
 			{
