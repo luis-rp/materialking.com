@@ -1110,7 +1110,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
         $this->email->subject($subject);
         $this->email->message($send_body);	
         $this->email->set_mailtype("html");
-       // $this->email->send();
+        $this->email->send();
         
 	}
 }
