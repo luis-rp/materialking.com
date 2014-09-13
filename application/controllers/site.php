@@ -1724,8 +1724,8 @@ class site extends CI_Controller
 		
 		if(@$_POST['regarding'])
 		$data['email_body_content'] .= "Regarding: ".$_POST['regarding']."<br/>";
-
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';

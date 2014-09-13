@@ -373,8 +373,8 @@ class backtrack extends CI_Controller
 	    <a href='$link' target='blank'>$link</a>
 	    And let us know the delivery date of remaining items.
 	    ";
-	    
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	$loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	    //$this->load->model('admin/settings_model');
 	    $settings = (array)$this->settings_model->get_current_settings ();
 	    $this->load->library('email');

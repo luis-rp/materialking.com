@@ -160,7 +160,8 @@ class Register extends CI_Controller
 	   /* $image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
 	    $data['logoExt'] = get_mime_by_extension($image);
 	    $data['logo'] = base64_encode(file_get_contents($image));*/
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	    
 	   	$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
@@ -191,7 +192,8 @@ class Register extends CI_Controller
 		$data['email_body_title'] ="Dear Username";
 		$data['email_body_content'] = "lease click following link to complete your registration:  <br><br>
 	    <a href='#' target='blank'>Link</a>";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
@@ -255,7 +257,8 @@ class Register extends CI_Controller
     	 $data['email_body_title'] = "Dear ".$user->companyname;
 	  	 $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
-	  	 $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	 $loaderEmail = new My_Loader();
+	  	 $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     	$settings = (array)$this->settings_model->get_setting_by_id (1);
     	$this->load->library('email');
     	$config['charset'] = 'utf-8';
@@ -426,7 +429,8 @@ class Register extends CI_Controller
 		Email Address: ". $coreemail ." <br/> <br/>
 		
 		<a href='$link' target='blank'>$link</a>";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$settings = (array) $this->companymodel->getconfigurations(1);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
@@ -490,7 +494,8 @@ class Register extends CI_Controller
 	      $data['email_body_title'] = "Dear ".$user->fullname; 
 	  	  $data['email_body_content'] = "Please click following link to change your password:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	  $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	    $settings = (array)$this->settings_model->get_setting_by_id (1);
 	    $this->load->library('email');
 	    $config['charset'] = 'utf-8';

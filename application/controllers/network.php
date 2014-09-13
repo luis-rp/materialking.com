@@ -179,8 +179,8 @@ class network extends CI_Controller {
             ".$body1."
             You can login on your dasboard and accept or deny request.
             <br><br>";
-            
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+           $loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $this->load->library('email');
             $config['charset'] = 'utf-8';
             $config['mailtype'] = 'html';

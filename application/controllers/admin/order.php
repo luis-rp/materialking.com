@@ -679,7 +679,8 @@ function orders_export()
 		<br/>
 		Payment Date: ".date('Y-m-d')."
 		<br><br>";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
@@ -762,7 +763,8 @@ function orders_export()
 with the transfer#{$tobj->id}.
 ";
               $settings = (array)$this->settings_model->get_current_settings ();
-              $send_body = $this->load->view("email_templates/template",$data,TRUE);
+              $loaderEmail = new My_Loader();
+              $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     	      $this->load->library('email');
     	      $config['charset'] = 'utf-8';
     	      $config['mailtype'] = 'html';
@@ -1110,8 +1112,8 @@ with the transfer#{$tobj->id}.
             </table>';
             	
             	$data['email_body_content'] .='<br/><br/><p>order#'.$order->ordernumber.'<br/><a href="'.base_url().'/order/details/'.$order->id.'" >Manage Order</a>';	
-        
-            	$send_body = $this->load->view("email_templates/template",$data,TRUE);
+            	$loaderEmail = new My_Loader();
+            	$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';

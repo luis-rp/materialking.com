@@ -267,7 +267,8 @@ class company extends CI_Controller {
         	$data['email_body_title'] = "Dear " . $c->title ;
 	  		$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  		$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->settings_model->get_current_settings();
         $this->load->library('email');
         $config['charset'] = 'utf-8';

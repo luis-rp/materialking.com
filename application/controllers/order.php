@@ -293,7 +293,8 @@ class Order extends CI_Controller
         		$data['email_body_title'] = "Payment verified for order# {$order->ordernumber}";
         		$data['email_body_content'] = "<strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		        $data['email_body_content'] .= $this->getorderdetails($order->id);	
-		        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		      	$loaderEmail = new My_Loader();
+		        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         		$this->email->subject($subject);
         		$this->email->message($send_body);	
         		$this->email->set_mailtype("html");
@@ -493,7 +494,8 @@ class Order extends CI_Controller
 		$data['email_body_content'] = "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		
 		$data['email_body_content'] = $this->getorderdetails($id);
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->db->where('id',$order->purchasingadmin);
 		$admin = $this->db->get('users')->row();
 		
@@ -539,8 +541,8 @@ class Order extends CI_Controller
 		$data['email_body_content'] = "<br><br>Order Details:";
 		
 		$data['email_body_content'] .= $this->getorderdetails($id);
-		
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$admin = $this->db->where('id',$order->purchasingadmin)->get('users')->row();
 		
 		$this->load->library('email');
@@ -590,8 +592,9 @@ class Order extends CI_Controller
 		$data['email_body_content'] .= "<br/>Payment Status:" . @$orderdetails[0]->paymentstatus;
 		$data['email_body_content'] .= "<br/><br>Order details:";
 		
-		$body .= $this->getorderdetails($id);	
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$data['email_body_content'] .= $this->getorderdetails($id);	
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 			
 	    $settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');

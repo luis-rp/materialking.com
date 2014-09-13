@@ -41,7 +41,8 @@ class subscriber extends CI_Controller
 				$this->email->to($this->input->post("email"));
 				$data['email_body_title'] = "";
 				$data['email_body_content'] = 'You have successfully subscribed to '.$supplier->title.' newsletter';
-				$send_body = $this->load->view("email_templates/template",$data,TRUE);
+				$loaderEmail = new My_Loader();
+				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 				$this->email->subject('Welcome to '.$supplier->title.' Newsletter');
 				$this->email->message($send_body);
 			
