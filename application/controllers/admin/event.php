@@ -271,7 +271,8 @@ class event extends CI_Controller
   	        contact phone: ".$event->contactphone."<br/>
   	        notes: ".$event->notes."<br/>
 		    ";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		  	$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
@@ -341,7 +342,8 @@ class event extends CI_Controller
   	        ".$_POST['comment']."<br/><br/>
   	        Comment Posted on:".$_POST['commentdate']."<br/>
 		    ";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		  	$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');

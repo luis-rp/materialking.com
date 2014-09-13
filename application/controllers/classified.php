@@ -175,7 +175,8 @@ class classified extends CI_Controller
     	$data['email_body_title'] .= "Subject: ".$_POST['subject']."<br/>";
     
     	$data['email_body_title'] .= "Regarding: ".$_POST['comments']."<br/>";
-    	$send_body = $this->load->view("email_templates/template",$data,TRUE);
+    	$loaderEmail = new My_Loader();
+    	$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     	$this->load->library('email');
     	$config['charset'] = 'utf-8';
     	$config['mailtype'] = 'html';

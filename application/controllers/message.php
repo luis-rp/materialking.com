@@ -184,7 +184,8 @@ class Message extends CI_Controller
 		    <br><br>
 	  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
 	    	<a href='$link' target='blank'>$link</a>";
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 
 	  
         $this->email->subject("New Message");

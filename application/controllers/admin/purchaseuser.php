@@ -135,7 +135,8 @@ class purchaseuser extends CI_Controller
 You will receive alerts regarding action items taken on this PO.<br/><br/>
 $link 
 	    	";
-		    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		    $loaderEmail = new My_Loader();
+		    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		    $this->email->subject("PO assigned");
 	        $this->email->message($send_body);	
 	        $this->email->set_mailtype("html");

@@ -1212,7 +1212,8 @@ class Quote extends CI_Controller
     		  	Please find the details below:<br/><br/>
     		  	$html
     		    ";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+    		$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     		//echo($to.'<br/>');
     		//echo $body;
            	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$company->title);
@@ -1600,7 +1601,8 @@ class Quote extends CI_Controller
 		  	Please find the details below:<br/><br/>
 		  	$emailitems
 		    ";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
        	$this->email->subject('Backorder update for PO# '.$quote->ponum. " by ".$company->title);
         $this->email->message($send_body);	
         $this->email->set_mailtype("html");
@@ -1692,7 +1694,8 @@ class Quote extends CI_Controller
 		$data['email_body_title']   = "Company has modified bid for following backorder:";
 		$data['email_body_content']  = "PO#: ".$quote->ponum."<br/>";
 		$data['email_body_content']  .= "Company: ".$company->title."<br/>";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$settings = (array)$this->homemodel->getconfigurations ();
 		$this->load->library('email');
 
@@ -2263,7 +2266,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		
     		$data['email_body_title']  = "Supplier {$company->title} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
     		$data['email_body_content'] = "<br><br>Details:".$shipitems;
-    		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+    		$loaderEmail = new My_Loader();
+    		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     		$this->email->subject($subject);
     		$this->email->message($send_body);
     		$this->email->set_mailtype("html");
@@ -2369,7 +2373,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             	</tr>';
             $data['email_body_content'] .= '</table>';   
 	    }      
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
@@ -2479,7 +2484,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['email_body_content']= "Supplier {$company->title} has set the status of 
 				Invoice# {$_POST['invoicenum']} to {$_POST['status']} 
 				for PO# {$quote->ponum} on ".date('m/d/Y').".";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->email->subject($subject);
 		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
@@ -2530,7 +2536,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['email_body_content'] = "Supplier {$company->title} has sent payment request for
 		Invoice# {$invoicenum}
 		for PO# {$quote->ponum} on ".date('m/d/Y').".";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		
 		$this->email->subject($subject);
 		$this->email->message($send_body);

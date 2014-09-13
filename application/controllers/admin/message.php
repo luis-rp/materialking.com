@@ -104,7 +104,8 @@ class message extends CI_Controller
   		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
     	<a href='$link' target='blank'>$link</a>
 	    ";
-	    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+    	$loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $this->email->subject("New Message");
         $this->email->message($send_body);	
         $this->email->set_mailtype("html");
@@ -245,7 +246,8 @@ class message extends CI_Controller
 		    ";
 		  	//echo($body);
 		    //die;
-		  	$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		  	$loaderEmail = new My_Loader();
+		  	$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	        $this->email->subject("Error in items sent");
 	        $this->email->message($send_body);	
 	        $this->email->set_mailtype("html");

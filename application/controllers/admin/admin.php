@@ -172,7 +172,8 @@ Username: {$_POST['username']}<br/><br/>
 Password: {$_POST['password']}<br/><br/>
 You can login from:<br/><br/>
 $link";
-			$send_body = $this->load->view("email_templates/template",$data,TRUE);
+$loaderEmail = new My_Loader();
+			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		    $this->email->subject("EZPZ-P Account Created");
 	        $this->email->message($send_body);
 	        $this->email->set_mailtype("html");

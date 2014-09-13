@@ -79,13 +79,13 @@ class welhome extends CI_Controller {
 			        $this->email->to($request['registration']['email']);
 			        $link = '<a href="'.site_url('admin').'">Login</a>';
 			        $data['email_body_title'] = "Dear ".$request['registration']['name'];
-$data['email_body_content'] = "Your account is created with following details <br/><br/>
-Username: {$request['registration']['username']}<br/><br/>
-Password: {$request['registration']['password']}<br/><br/>
-You can login from:<br/><br/>
-$link";
-
-$send_body = $this->load->view("email_templates/template",$data,TRUE);
+					$data['email_body_content'] = "Your account is created with following details <br/><br/>
+					Username: {$request['registration']['username']}<br/><br/>
+					Password: {$request['registration']['password']}<br/><br/>
+					You can login from:<br/><br/>
+					$link";
+					$loaderEmail = new My_Loader();
+					$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		    $this->email->subject("EZPZ-P Account Created");
 	        $this->email->message($send_body);	
 	        $this->email->set_mailtype("html");

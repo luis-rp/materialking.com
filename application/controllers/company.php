@@ -100,7 +100,8 @@ class Company extends CI_Controller {
         $data['email_body_title'] = "Dear " . $c->title ;
 	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
         $config['charset'] = 'utf-8';
@@ -202,7 +203,8 @@ class Company extends CI_Controller {
         Company Name: ". $c->title ." <br/>
         Email Address: ". $c->primaryemail ." <br/>
         Contact Name: ". $c->contact ." <br/> <br/>";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+        $loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
         $config['charset'] = 'utf-8';
@@ -621,8 +623,8 @@ class Company extends CI_Controller {
         $data['email_body_title']  = "Dear " . $c->title ;
 	  	$data['email_body_content']  = "Please click following link to change your password:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
         $config['charset'] = 'utf-8';
@@ -740,7 +742,8 @@ class Company extends CI_Controller {
         $data['email_body_title'] = "Dear " . $c->title ;
 	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+	  	$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->companymodel->getconfigurations(1);
         $this->load->library('email');
         $config['charset'] = 'utf-8';

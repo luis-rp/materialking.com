@@ -114,7 +114,8 @@ class Dashboard extends CI_Controller
 			<br/><br/><br/>
 			Thanks
 			<br><br>";
-		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		//echo "<pre>",print_r($_POST); die;
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
@@ -192,7 +193,8 @@ class Dashboard extends CI_Controller
 			<br/>
 			Thanks
 			<br><br>";
-			$send_body = $this->load->view("email_templates/template",$data,TRUE);
+			$loaderEmail = new My_Loader();
+			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 			$this->load->library('email');
 			$config['charset'] = 'utf-8';
 			$config['mailtype'] = 'html';

@@ -603,7 +603,8 @@ class quote extends CI_Controller
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
 				    ";
-                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+				  	$loaderEmail = new My_Loader();
+                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
@@ -657,7 +658,8 @@ class quote extends CI_Controller
 				  	Please click following link for the quote PO# " . $this->input->post('ponum') . "):  <br><br>
 				    <a href='$link' target='blank'>$link</a>
 				    ";
-                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+				    $loaderEmail = new My_Loader();
+                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
@@ -707,7 +709,8 @@ class quote extends CI_Controller
 				  	Please click following link for the quote PO# " . $this->input->post('ponum') . "):  <br><br>
 				    <a href='$link' target='blank'>$link</a>
 				    ";
-                    $send_body = $this->load->view("email_templates/template",$data,TRUE);
+				    $loaderEmail = new My_Loader();
+                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
@@ -821,7 +824,8 @@ class quote extends CI_Controller
 		    The PO Details are:<br><br>
 		    $emailitems
 		    ";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		  		$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
@@ -1671,7 +1675,8 @@ class quote extends CI_Controller
     		<br/>
     		Payment Date: ".date('m/d/Y')."
     		<br><br>";
-    		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+    		$loaderEmail = new My_Loader();
+    		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     		$this->load->library('email');
     		$config['charset'] = 'utf-8';
     		$config['mailtype'] = 'html';
@@ -2391,7 +2396,8 @@ class quote extends CI_Controller
 					 Itemcode: {$items->itemcode}<br>
 					 Date Requested : {$items->daterequested}
 					 Quantity Left: {$items->quantityleft}";
-    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
+					 $loaderEmail = new My_Loader();
+    				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     				/*$settings = (array)$this->settings_model->get_current_settings ();*/
     			
     				$this->email->clear();
@@ -2411,7 +2417,8 @@ class quote extends CI_Controller
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
- $send_body = $this->load->view("email_templates/template",$data,TRUE);
+ $loaderEmail = new My_Loader();
+ $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
  					$this->email->clear();
     				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
     				//$this->email->from($settings['adminemail'], "Administrator");
@@ -2450,7 +2457,8 @@ class quote extends CI_Controller
  Itemcode: {$items->itemcode}<br>
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
-    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
+ $loaderEmail = new My_Loader();
+    				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     				/*$settings = (array)$this->settings_model->get_current_settings ();*/
     				$this->email->clear();
     				//$this->email->from($settings['adminemail'], "Administrator");
@@ -2470,7 +2478,8 @@ class quote extends CI_Controller
  Date Requested : {$items->daterequested}
  Quantity Left: {$items->quantityleft}";
     				$this->email->clear();
-    				$send_body = $this->load->view("email_templates/template",$data,TRUE);
+    				$loaderEmail = new My_Loader();
+    				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     				$settings = (array)$this->settings_model->get_setting_by_admin($quote->purchasingadmin);
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
@@ -2624,7 +2633,8 @@ with the transfer# {$tobj->id}.
 <br>Payment by: ".$pa->companyname."
 <br>PO#: ".$quote->ponum."
 ";
-              $send_body = $this->load->view("email_templates/template",$data,TRUE);
+$loaderEmail = new My_Loader();
+              $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
               $settings = (array)$this->settings_model->get_current_settings ();
     	      $this->load->library('email');
     	      $config['charset'] = 'utf-8';
@@ -2947,7 +2957,8 @@ with the transfer# {$tobj->id}.
             foreach ($purchaseusers as $pu) {
                 $toemail = $toemail . ',' . $pu->email;
             }
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+            $loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $this->load->library('email');
             $config['charset'] = 'utf-8';
             $config['mailtype'] = 'html';
@@ -3037,7 +3048,8 @@ with the transfer# {$tobj->id}.
                 			</tr>";
 
                 $data['email_body_content'] .= "</table>";
-                $send_body = $this->load->view("email_templates/template",$data,TRUE);
+                $loaderEmail = new My_Loader();
+                $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                 $this->load->library('email');
                 $config['charset'] = 'utf-8';
                 $config['mailtype'] = 'html';
@@ -3099,7 +3111,8 @@ with the transfer# {$tobj->id}.
 		    <a href='$link' target='blank'>$link</a>
 		    And let us know the delivery date of remaining items.
 		    ";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		  	$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
@@ -3151,7 +3164,8 @@ with the transfer# {$tobj->id}.
 
 		$data['email_body_content'] ="This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.
 		    ";
-        $send_body = $this->load->view("email_templates/template",$data,TRUE);
+		$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->settings_model->get_current_settings();
         $this->load->library('email');
         $config['charset'] = 'utf-8';
@@ -3410,7 +3424,8 @@ with the transfer# {$tobj->id}.
             $link = '<a href="' . site_url('quote/track/' . $quote->id) . '"></a>';
             $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
             $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
-            $send_body = $this->load->view("email_templates/template",$data,TRUE);
+            $loaderEmail = new My_Loader();
+            $send_body = $loaderEmail>view("email_templates/template",$data,TRUE);
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
             $config['charset'] = 'utf-8';
@@ -3654,7 +3669,8 @@ with the transfer# {$tobj->id}.
 		$data['email_body_content'] = "Please set due date for PO#  {$_POST['ponum']}<br><br><br>";
 		    
    		$data['email_body_content'].= site_url('quote/track/'.$_POST['quote'].'/'.$_POST['award']);
-   		$send_body = $this->load->view("email_templates/template",$data,TRUE);
+   		$loaderEmail = new My_Loader();
+   		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->email->subject("Request to Set Due Date");
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
