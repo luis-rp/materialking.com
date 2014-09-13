@@ -244,7 +244,7 @@ function orders_export()
 				$order->codeName = "Pending Cost Code Assignment";
 			}
 			$data['orders'][]=$order;
-			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus    
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus ,od.shipping   
                       FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o   
                       WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id";  
             $order->details = $this->db->query($query)->result(); 
