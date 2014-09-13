@@ -91,7 +91,13 @@ function updatecart(itemid,companyid,quantity)
             		<td colspan="2">$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>	
-     
+     		<?php
+			$adderror=$this->session->userdata('cart_address_error');
+			echo $adderror;
+			
+			$cadderr['cart_address_error'] = null;
+			$this->session->set_userdata($cadderr);
+			?>
             <form name="formCart" action="" id="formCart"  method="post">
        
             	 <table class="table table-bordered">
