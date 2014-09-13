@@ -823,6 +823,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		$data['order'] = $oid;
 		$data['status'] = 'Success';
 		$data['cart']=array();
+		$dataitemshipping=0; $userinfoship = array();
 		foreach($cart as $item)
 		{
 			$this->db->where('itemid',$item['itemid']);
