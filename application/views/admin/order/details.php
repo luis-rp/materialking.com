@@ -130,6 +130,8 @@ function paycc(ptype,company, amount)
                             <th style="width:20%">Company</th>
                             <th style="width:10%">Amount</th>
                             <th style="width:10%">Tax</th>
+                            <th style="width:10%">Shipping</th>
+                             <th style="width:10%">Total amount</th>
                             <th style="width:10%">Payment</th>
                             <th style="width:20%">Type</th>
                             <th style="width:20%">Notes/Check No./Txn Id</th>
@@ -157,6 +159,8 @@ function paycc(ptype,company, amount)
                             <td><?php echo $item->title;?></td>
                             <td>$<?php echo $item->amount;?></td>
                             <td>$<?php echo $tax;?></td>
+                            <td>$<?php echo number_format($order->shipping,2);?></td>
+                            <td>$<?php echo number_format(($order->shipping+$tax+$item->amount),2);?></td>
                             <td>
                             	
                             	<?php if($item->paymentstatus =='Requested Payment'){?>
@@ -187,6 +191,8 @@ function paycc(ptype,company, amount)
                             <td><?php echo $item->title;?></td>
                             <td>$<?php echo $item->amount;?></td>
                             <td>$<?php echo $tax;?></td>
+                            <td>$<?php echo number_format($order->shipping,2);?></td>
+                            <td>$<?php echo number_format($order->shipping+$tax+$item->amount,2);?></td>
                             <td><?php echo $item->paymentstatus;?></td>
                             <td><?php echo $item->paymenttype;?></td>
                             <td><?php echo $item->paymentnote;?></td>
@@ -283,7 +289,7 @@ Send Message:
 				    	foreach($transfers as $item)
 				    	{
 				    		$i++;
-				    		$item->amount = number_format($item->amount + ($item->amount * $order->taxpercent/100),2)
+				    		$item->amount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2)
 				      ?>
                         <tr>
                             <td><?php echo $item->transferid;?></td>
