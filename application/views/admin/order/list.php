@@ -85,7 +85,7 @@ $(document).ready( function() {
                                                 <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
-                                                <td><?php echo "$ ".round($total,2);?></td> 
+                                                <td><?php echo "$ ".round($total+$order->shipping,2);?></td> 
                                                 <td>
                                                 	<table class="table table-bordered datagrid">
                                                 		<tr>
