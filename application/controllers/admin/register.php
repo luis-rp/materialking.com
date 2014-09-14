@@ -156,7 +156,7 @@ class Register extends CI_Controller
 	    $data['email_body_title'] ="Dear ".$user->companyname;
 	    $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
-	    
+	    	
 	   /* $image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
 	    $data['logoExt'] = get_mime_by_extension($image);
 	    $data['logo'] = base64_encode(file_get_contents($image));*/
@@ -419,7 +419,7 @@ class Register extends CI_Controller
 		
 		$link = base_url() . 'admin';
 		$data['email_body_title'] = "Dear " . $_POST['username'];
-		$data['email_body_content'] = "Congratulations! <br><br> Thanks for registration, Click Below link to login in Dashboard.
+		$data['email_body_content'] = "Congratulations! <br><br> Thank You for registering with us, Below are your account details, You can click or copy/paste the link below to access your login screen.
 		<br/><br/>
 		Your Login Profile is as follows:<br/>
 		Login User Name : ". $_POST['username'] ." <br/>
@@ -428,7 +428,7 @@ class Register extends CI_Controller
 		Contact Name: ". $_POST['fullname'] ." <br/>
 		Email Address: ". $coreemail ." <br/> <br/>
 		
-		<a href='$link' target='blank'>$link</a>";
+		<a href='$link' target='blank'>Login: $link</a>";
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$settings = (array) $this->companymodel->getconfigurations(1);
