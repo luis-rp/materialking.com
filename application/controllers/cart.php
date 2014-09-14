@@ -372,9 +372,10 @@ class cart extends CI_Controller
  			}
 			catch(Exception $e)
 			{
-  				redirect('http://materialking.com/cart/');
-			}
-			
+  				$cadderr['cart_address_error'] = "<div style='padding-bottom:5px; color:red;'>Please enter correct address.</div>";
+				$this->session->set_userdata($cadderr);
+				redirect('cart');
+			}			
 		}
 		$userinfoship=http_build_query($userinfoship,'',', ');
 		$data['settings'] = $this->settings_model->get_current_settings();
@@ -769,81 +770,24 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email,$subject);
 		}
 		$companies = array();
-		foreach($cart as $ci)
-		{
-			if(!isset($companies[$ci['company']]))
-			{
-				$companies[$ci['company']] = $this->orderpdf($ci['company'],true,'Manual');
-				
-				$this->db->where('id',$ci['company']);
-				$cd = $this->db->get('company')->row();
-				
-				$subject = "Order Details from ezpzp";
-				$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject);
-				
-			}
-		}
-		$order = array();
-		$order['ordernumber'] = $ordernumber;
-		$order['type'] = 'Manual';
-		$order['purchasingadmin'] = $this->session->userdata('site_loggedin')->id;
-		$order['purchasedate'] = date('Y-m-d H:i:s');
-		$order['email'] = $this->session->userdata('site_loggedin')->email;
-		$order['taxpercent'] = $data['settings']->taxpercent;
-		//print_r($order);die;
-		$this->db->insert('order',$order);
-		$oid = $this->db->insert_id();
 		
-		$notifications = array();
-		foreach($cart as $ci)
-		{
-			$od = array();
-			$od['orderid'] = $oid;
-			$od['itemid'] = $ci['itemid'];
-			$od['quantity'] = $ci['quantity'];
-			$od['company'] = $ci['company'];
-			$od['price'] = $ci['price'];
-    		$od['accepted'] = '0';
-			$this->db->insert('orderdetails',$od);
-			
-    		$notifications[$ci['company']]['ponum'] = $ordernumber;
-    		$notifications[$ci['company']]['category'] = 'Order';
-    		$notifications[$ci['company']]['company'] = $ci['company'];
-    		$notifications[$ci['company']]['quote'] = $oid;
-    		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
-		}
-		
-		foreach($notifications as $notification)
-		{
-		    $this->db->insert('notification',$notification);
-		}
-		$this->removeallcart();
-		$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber;
-		$data['ordernumber'] = $ordernumber;
-		$data['order'] = $oid;
-		$data['status'] = 'Success';
 		$data['cart']=array();
-		foreach($cart as $item)
+		$dataitemshipping=0; $userinfoship = array();
+ 		
+ 		foreach($cart as $item)
 		{
 			$this->db->where('itemid',$item['itemid']);
 			$this->db->where('company',$item['company']);
 			$this->db->where('type','Supplier');
 			$itemdetails = $this->db->get('companyitem')->row();
-			
-			$orgitem = $this->db->where('id',$item['itemid'])->get('item')->row();
-			
-			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
-			
-			$item['itemdetails'] = $itemdetails;
-			
-			$this->db->where('id',$item['company']);
+ 			$orgitem = $this->db->where('id',$item['itemid'])->get('item')->row();
+ 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+ 			$item['itemdetails'] = $itemdetails;
+ 			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();
-			
-			
-			
+ 			
 			///Easy Post
-				
-				
+ 				
 			$this->db->where('id',$item['itemid']);
 			$current_item = $this->db->get('item')->row();
 			
@@ -855,8 +799,9 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 					"state"   => $_POST['shippingState'],
 					"zip"     => $_POST['shippingZip'],
 			);
-			
-			try{
+ 			
+			try
+			{
 			$to_address = \EasyPost\Address::create($to_address_params);
 			
 			$from_address_params = array("name"    => $item['companydetails']->contact,
@@ -865,11 +810,11 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 					"city"    => $item['companydetails']->city,
 					"state"   => $item['companydetails']->state,
 					"zip"	  => $item['companydetails']->zip);
-				
+			//print_r($from_address_params);print_r($current_item);die;	
 			$from_address = \EasyPost\Address::create($from_address_params);
 			// create parcel
 			if($current_item->weight>0)
-			{
+			{ 
 				$parcel_params = array(
 						"predefined_package" => null,
 						"weight"             => $current_item->weight
@@ -915,14 +860,85 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				}
 				else{
 					$dataitemshipping +=$item['rate'];	
-				}
-				
+				}				
 			}
 			catch(Exception $e)
 			{
- 				redirect('cart');
+ 				$cadderr['cart_address_error'] = "<div style='padding-bottom:5px; color:red;'>Please enter correct address.</div>";
+				$this->session->set_userdata($cadderr);
+				redirect('cart');
 			}
 		}
+ 		
+		foreach($cart as $ci)
+		{
+			if(!isset($companies[$ci['company']]))
+			{
+				$companies[$ci['company']] = $this->orderpdf($ci['company'],true,'Manual');
+				
+				$this->db->where('id',$ci['company']);
+				$cd = $this->db->get('company')->row();
+				
+				$subject = "Order Details from ezpzp";
+				$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject);
+				
+			}
+		}
+		$order = array();
+		$order['ordernumber'] = $ordernumber;
+		$order['type'] = 'Manual';
+		$order['purchasingadmin'] = $this->session->userdata('site_loggedin')->id;
+		$order['purchasedate'] = date('Y-m-d H:i:s');
+		$order['email'] = $this->session->userdata('site_loggedin')->email;
+		$order['taxpercent'] = $data['settings']->taxpercent;
+		$order['shipping'] = $dataitemshipping;
+		//print_r($order);die;
+		$this->db->insert('order',$order);
+		$oid = $this->db->insert_id();
+		
+		$notifications = array();
+		$userinfoship=http_build_query($userinfoship,'',', ');
+		$getvendorship=explode(', ',$userinfoship);
+		foreach($cart as $ci)
+		{
+			$od = array();
+			$od['orderid'] = $oid;
+			$od['itemid'] = $ci['itemid'];
+			$od['quantity'] = $ci['quantity'];
+			$od['company'] = $ci['company'];
+			$od['price'] = $ci['price'];
+    		$od['accepted'] = '0';
+			
+			$shipmentofvendor=0;
+				foreach($getvendorship as $getvendorship2)
+				{
+					$getvendorship3=explode('=',trim($getvendorship2));
+					//echo $getvendorship3[0].'---'.$ci['company'].'comp'.$ci['itemid'];
+					if($getvendorship3[0]==$ci['company'].'comp'.$ci['itemid'])
+					{
+						$shipmentofvendor=$getvendorship3[1];
+					}
+				}
+			$od['shipping'] = $shipmentofvendor;			
+			$this->db->insert('orderdetails',$od);
+			
+    		$notifications[$ci['company']]['ponum'] = $ordernumber;
+    		$notifications[$ci['company']]['category'] = 'Order';
+    		$notifications[$ci['company']]['company'] = $ci['company'];
+    		$notifications[$ci['company']]['quote'] = $oid;
+    		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
+		}
+		
+		foreach($notifications as $notification)
+		{
+		    $this->db->insert('notification',$notification);
+		}
+		$this->removeallcart();
+		$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber;
+		$data['ordernumber'] = $ordernumber;
+		$data['order'] = $oid;
+		$data['status'] = 'Success';
+		
 		$data['totalordershipping'] = $dataitemshipping;
 		$this->load->view('site/cartmessage', $data);
 	}

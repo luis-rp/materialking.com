@@ -330,10 +330,9 @@ class Register extends CI_Controller
 		if(!preg_match("/^([0-9]{5})(-[0-9]{4})?$/i",$_POST['zip']))
 		{
 			$errormessage="Please Enter valid(5 or 5-4) combination of Zip Code";
-		}
-		
+		}		
 		$coreemail = $u->email;
-		
+		$coreemailids = $u->id;
 		if(!$u)
 		{
 			$errormessage = 'Invalid Key.';
@@ -345,8 +344,7 @@ class Register extends CI_Controller
 		elseif($_POST['password'] != $_POST['repassword'])
 		{
 			$errormessage = 'Password and Confirm Password does not matched. Please try again.';
-		}
-		
+		}		
 		$this->db->where('username',$_POST['username']);
 		if($rowcount=$this->db->get('users')->num_rows > 0)
 		{
@@ -402,8 +400,7 @@ class Register extends CI_Controller
 				'taxrate' => '9.00',
 				'pricedays' =>  '120',
 				'pricepercent' =>  '2.00',
-		);
-		
+		);		
 		$this->db->insert('settings', $data);
 		
 		$this->db->where('id',$u->id);
@@ -416,6 +413,12 @@ class Register extends CI_Controller
 		// for store
 		$temp['site_loggedin'] = $row;
 		$this->session->set_userdata($temp);
+		
+		@session_start();
+		$_SESSION['comet_user_id']=$coreemailids;
+		$_SESSION['comet_user_email']=$coreemail;
+		$_SESSION['userid']=$coreemailids;
+		$_SESSION['logintype']='';
 		
 		$link = base_url() . 'admin';
 		$data['email_body_title'] = "Dear " . $_POST['username'];
