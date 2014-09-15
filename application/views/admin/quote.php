@@ -768,10 +768,10 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                                   Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
                                   <span id="mileid"><br>Mile radius from location<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()"> </span>
                               </div>
-                              <div>
+                              <!-- <div>
                                   Include Internet and retailers
                                   <input type="checkbox" name="internetret" id="internetret">
-                                  </div>
+                                  </div> -->
                               <div>
                                  Supply Network
                                  <input type="checkbox" name="supplynet" id="supplynet" checked >

@@ -360,7 +360,7 @@ class Dashboard extends CI_Controller
 			$where2 = "";
 			
 			if(count($codearr)>0){
-				$codestr = implode(",",$codearr); 
+				$codestr = "'" .implode("', '", $codearr) . "'";
 				$where2 = "AND code not in ({$codestr})";
 			}
 			
@@ -390,7 +390,7 @@ class Dashboard extends CI_Controller
 					GROUP BY o.costcode";
 			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
-			if($result[0]){
+			if(isset($result[0])){
 			  if (!isset($codes[$cnt])) 
     			$codes[$cnt] = new stdClass();	
 			$codes[$cnt]->label = $result[0]->label;

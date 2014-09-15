@@ -119,7 +119,7 @@ $(document).ready(function() {
 <script>
 
  
-    function addtocart(itemid, companyid, price, minqty, unit, isdeal)
+    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
@@ -127,9 +127,11 @@ $(document).ready(function() {
 		$('#cartqtydiv').html('');
 		$("#cartsavediv").html('');
 		$("#qtypricebox").html('');
+		$("#itemnamebox").html('');
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
+        $("#itemnamebox").html(itemcode+"  /  "+itemname);
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
@@ -143,7 +145,7 @@ $(document).ready(function() {
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
         if(!isdeal) {
-        	var data = "itemid="+itemid+"&companyid="+companyid;
+        	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
         	$("#qtypricebox").html("");
         	$.ajax({
         		type:"post",
@@ -349,7 +351,7 @@ $( document ).tooltip();
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>')">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars($item->itemcode);?>', '<?php echo htmlspecialchars($item->itemname);?>')">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         <?php } ?>
@@ -566,7 +568,7 @@ $( document ).tooltip();
                         		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		</td>
                         		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars($di->itemcode);?>', '<?php echo htmlspecialchars($di->itemname);?>',1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>
@@ -610,9 +612,10 @@ $( document ).tooltip();
           <i class="icon-credit-card icon-7x"></i>
           
           <h4 class="semi-bold" id="myModalLabel">
-          Select Quantity  
+          <div id="itemnamebox"></div>
+          <br> Select Quantity  
           </h4>
-          <br><br/>
+          <br>
           <div id="unitbox"></div>
         </div>
         <div class="modal-body">

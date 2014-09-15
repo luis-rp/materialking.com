@@ -169,7 +169,7 @@ function updatecart(itemid,companyid,quantity)
             	 </table>
           
             	 <?php if($this->session->userdata('site_loggedin')) {?>
-            	 <input type="button" id="submitProcess" class="btn btn-primary arrow-right" value="Process Order">
+            	 <input type="button" id="submitProcess" class="btn btn-primary arrow-right" value="USE P.O.(PURCHASE ORDER) ">
                  <?php }?>
             	
             	 <input type="button" id="submitCC" class="btn btn-primary arrow-right" value="Credit Card Payment">

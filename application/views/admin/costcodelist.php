@@ -45,6 +45,7 @@ $(document).ready(function(){
 					   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/ok.gif');?>'/>");
 				   else
 					   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/bad.png');?>'/>");
+				   location.reload();   
 			    });
 		}
 		else
