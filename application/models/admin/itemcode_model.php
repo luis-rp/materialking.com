@@ -51,6 +51,17 @@ class itemcode_model extends Model {
                     foreach ($item->poitems as $po) {
                         $item->totalpoprice += $po->totalprice;
                     }
+                    
+                    $sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	 totalprice2 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od 
+                WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";    
+                    $query2 = $this->db->query($sql2);
+                    if ($query2->result()) {
+                    	$result2 = $query2->result();
+                    	if(isset($result2[0]->totalprice2))
+                    	$item->totalpoprice += $result2[0]->totalprice2;
+                    }
+                        
                 $item->minprices = $this->getminimumprices($item->itemcode);
                 $ret[] = $item;
             }
