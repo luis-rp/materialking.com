@@ -817,7 +817,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			{ 
 				$parcel_params = array(
 						"predefined_package" => null,
-						"weight"             => $current_item->weight
+						"weight"             => $current_item->weight*$item['quantity']
 				);
 				if($current_item->length !=  "0.0"){
 					$parcel_params["length"] = $current_item->length;
