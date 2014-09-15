@@ -2089,7 +2089,7 @@ class site extends CI_Controller
 
     }
     
-        function getpriceqtydetails(){
+                function getpriceqtydetails(){
     	
     	if(!@$_POST)
     	{
@@ -2099,17 +2099,55 @@ class site extends CI_Controller
     	{
     		die;
     	}
-
+		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;	
     	$this->db->where('company',$_POST['companyid']);
     	$this->db->where('itemid',$_POST['itemid']);
     	$qtyresult = $this->db->get('qtydiscount')->result();
     	if($qtyresult){
     		$strput = "";
+    		$i=0;
     		foreach($qtyresult as $qtyres){
+    			
+    			if($purchasingadmin){
+    				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
 
+
+    				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    				$istierprice = $this->db->query($sqltier)->row();
+    				if($istierprice){
+    					$istier = $istierprice->tierprice;
+    				}else
+    				$istier = 0;
+
+    				$tier = $this->db->query($sql)->row();
+    				if ($tier && $istier)
+    				{
+    					$tier = $tier->tier;
+    					$this->db->where('company', $_POST['companyid']);
+    					$pt = $this->db->get('tierpricing')->row();
+    					if ($pt)
+    					{
+    						$deviation = $pt->$tier;
+    						$qtyres->price = $qtyres->price + ($qtyres->price * $deviation / 100);
+    						$qtyres->price = number_format($qtyres->price, 2);
+    					}
+    				}
+    			}
+    			
+    			if($i==0){    			
+    				
+    				$strput .= '<div >
+							 <div style="padding-bottom:9px;" class="col-md-8">1 - '.($qtyres->qty-1).'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $'.$_POST['price'].'</div>							 
+          				  </div>';
+    			}
+    			
     			$strput .= '<div >
 							 <div style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: $'.$qtyres->price.'</div>							 
           				  </div>';
+    			$i++;
     		}
     		echo $strput;
     	}
@@ -2173,7 +2211,7 @@ class site extends CI_Controller
     		$strput = "";
     		$strput .= '<div >
 							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$_POST['price']).'</div>
-							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$_POST['price'])).'</span></div>
+							 <!-- <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$_POST['price'])).'</span></div> -->
           				  </div>';
     		
     		echo $strput;

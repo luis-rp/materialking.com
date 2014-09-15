@@ -685,7 +685,7 @@ class Order extends CI_Controller
             	    }
             	 
             	    $tax = $gtotal * $order->taxpercent / 100;
-            	    $totalwithtax = number_format($tax+$gtotal,2);
+            	    $totalwithtax = number_format($tax+$gtotal+$order->shipping,2);
             	
             	$body .= '<tr><td colspan="5">&nbsp;</td> <tr>
             		<td colspan="3" align="right">Total</td>
@@ -695,6 +695,11 @@ class Order extends CI_Controller
             	<tr>
             		<td colspan="3" align="right">Tax</td>
             		<td style="text-align:right;">$'. number_format($tax,2).'</td>
+            	</tr>
+				
+				<tr>
+            		<td colspan="3" align="right">Shipping</td>
+            		<td style="text-align:right;">$'. number_format($order->shipping,2).'</td>
             	</tr>
             	
             	<tr>

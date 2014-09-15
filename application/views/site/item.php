@@ -233,7 +233,8 @@ $( document ).tooltip();
         }
             
     }
-        function addtocart(itemid, companyid, price, minqty, unit, isdeal)
+    
+    function addtocart(itemid, companyid, price, minqty, unit, itemcode,itemname, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
@@ -241,9 +242,11 @@ $( document ).tooltip();
         $('#cartqtydiv').html('');
 		$("#cartsavediv").html('');
 		$("#qtypricebox").html('');
+		$("#itemnamebox").html('');
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
         var selected = "";
+        $("#itemnamebox").html(itemcode+"  /  "+itemname);
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
@@ -257,7 +260,7 @@ $( document ).tooltip();
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
         if(!isdeal) {
-        	var data = "itemid="+itemid+"&companyid="+companyid;
+        	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
         	$("#qtypricebox").html("");
         	$.ajax({
         		type:"post",
@@ -598,7 +601,7 @@ $( document ).tooltip();
                                       <?php if($item->featureditem->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>
                                        <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>')">
+                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo addslashes($item->itemcode);?>', '<?php echo addslashes($item->itemname);?>')">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                         <?php } ?>
@@ -714,7 +717,7 @@ $( document ).tooltip();
                                         <?php if($inv->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
                                        <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>')">
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo addslashes($inv->itemcode);?>', '<?php echo addslashes($inv->itemname);?>')">
                                             <i class="icon icon-plus"></i>
                                         </a>
                                         <?php } ?>
@@ -1027,7 +1030,7 @@ $( document ).tooltip();
                         		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
                         	</tr>
                             <tr>
-                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>',1)">
+                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo addslashes($di->itemcode);?>', '<?php echo addslashes($di->itemname);?>',1)">
                                     <i class="icon icon-plus"></i>
                                 </a></td>
                             </tr>
@@ -1220,9 +1223,10 @@ $( document ).tooltip();
           <i class="icon-credit-card icon-7x"></i>
           
           <h4 class="semi-bold" id="myModalLabel">
-          Select Quantity  
+          <div id="itemnamebox"></div>
+          <br> Select Quantity  
           </h4>
-          <br><br/>
+          <br>
           <div id="unitbox"></div>
         </div>
         <div class="modal-body">
