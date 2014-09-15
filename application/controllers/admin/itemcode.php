@@ -170,7 +170,7 @@ class itemcode extends CI_Controller
     		$sql="";
     		$sql = "DELETE i,a,ai FROM ". $this->db->dbprefix('awarditem')." ai INNER JOIN ".$this->db->dbprefix('award')." a ON  ai.award=a.id INNER JOIN ".$this->db->dbprefix('item')." i ON  i.id=ai.itemid ";
     		$sql .= "WHERE i.id=".$myValue;
-    		log_message('debug',$sql);
+    		//log_message('debug',$sql);
     		 $this->db->query($sql);
     	}
     }

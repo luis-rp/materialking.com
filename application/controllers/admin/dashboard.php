@@ -388,13 +388,15 @@ class Dashboard extends CI_Controller
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
-			$result = $this->db->query($query2)->result();
+			$result = $this->db->query($query2)->row();
 			//echo "<pre>",print_r($result); die;
-			if(isset($result[0])){
+
+			if($result){
+
 			  if (!isset($codes[$cnt])) 
     			$codes[$cnt] = new stdClass();	
-			$codes[$cnt]->label = $result[0]->label;
-			$codes[$cnt]->data = $result[0]->data;
+			$codes[$cnt]->label = $result->label;
+			$codes[$cnt]->data = $result->data;
 			$codes[$cnt]->type = "new";
 			$cnt++;
 			}

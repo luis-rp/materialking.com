@@ -905,7 +905,7 @@ with the transfer#{$tobj->id}.
     				$total = number_format($item->quantity * $item->price,2);
     				$gtotal+=$total;
     				$i++;
-    				log_message('debug',var_export($item,true));
+    				//log_message('debug',var_export($item,true));
     			}
     			$gd_total =  number_format($gtotal,2);
     			$gd_tax   =  $tax + number_format($gtotal,2);

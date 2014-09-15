@@ -66,7 +66,7 @@ class Dashboard extends CI_Controller
 		{			
 			$tago[] = $this->messagemodel->tago(strtotime($val['created'])); 			
 		}
-		log_message("debug",var_export($data['newrequests'],true));
+		//log_message("debug",var_export($data['newrequests'],true));
 		$data['logDetails'] = $logDetails;
 		$data['tago'] = $tago;
 		
