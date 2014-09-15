@@ -3474,7 +3474,7 @@ $loaderEmail = new My_Loader();
 
     function finditemcode()
     {
-    	  log_message('debug',"texxxxxxxxxto");
+    	  //log_message('debug',"texxxxxxxxxto");
         $codes = $this->quote_model->finditemcode($_GET['term']);
         $items = array();
         foreach ($codes as $code) {
