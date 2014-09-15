@@ -404,8 +404,10 @@ class costcode extends CI_Controller {
         		$sql = "SELECT *
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
-        		$project = $this->db->query($sql)->result();
-        		$order->prjName = "Assigned to ".$project[0]->title;
+        		$project = $this->db->query($sql)->row();
+        		$order->prjName = "Assigned to ".$project->title;
+        		$order->prjName .= "<br>";
+        		$order->prjName .= "Assignet to '$costcode' costcode";
         	}else{
         		$order->prjName = "Pending Project Assignment";
         	}
