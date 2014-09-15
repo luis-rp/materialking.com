@@ -488,6 +488,47 @@ $( document ).tooltip();
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
+                        <?php if(@$members){?>
+                        <div>
+                           
+                              <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
+                           Meet The Team:</h3>
+                           <div class="meet_team">
+                            <table>
+                            	
+                            	<?php $key = 0; foreach($members as $member){?>
+                            	<?php if($key==0){?>
+                            	<tr>
+                            	<?php }?>
+                            	
+                            	<td style="position:relative;">
+                                
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
+  </tr>
+  <tr>
+    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
+  </tr>
+  <tr>
+    <td><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
+  </tr>
+</table>
+</td>
+                            	
+                            	
+                            	
+                            	<?php if($key==4){ $key=0; ?>
+                            	</tr>
+                            	
+                            	
+                            	<?php } $key++;?>
+                            	<?php }?>
+                            	</tr>
+                            </table>
+                           </div>
+                        </div>
+                        <?php }?>
                         <div class="content">
                         
                          <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  
@@ -532,47 +573,7 @@ $( document ).tooltip();
                         </div>
                         <?php }?>
                         
-                        	<?php if(@$members){?>
-                        <div>
-                           
-                              <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
-                           Meet The Team:</h3>
-                           <div class="meet_team">
-                            <table>
-                            	
-                            	<?php $key = 0; foreach($members as $member){?>
-                            	<?php if($key==0){?>
-                            	<tr>
-                            	<?php }?>
-                            	
-                            	<td style="position:relative;">
-                                
-                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
-  </tr>
-  <tr>
-    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
-  </tr>
-  <tr>
-    <td><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
-  </tr>
-</table>
-</td>
-                            	
-                            	
-                            	
-                            	<?php if($key==4){ $key=0; ?>
-                            	</tr>
-                            	
-                            	
-                            	<?php } $key++;?>
-                            	<?php }?>
-                            	</tr>
-                            </table>
-                           </div>
-                        </div>
-                        <?php }?>
+                        	
                         
                         <?php if(@$dealfeed){?>
                         	<br/>
