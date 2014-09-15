@@ -3425,7 +3425,7 @@ $loaderEmail = new My_Loader();
             $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
             $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
             $loaderEmail = new My_Loader();
-            $send_body = $loaderEmail>view("email_templates/template",$data,TRUE);
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
             $config['charset'] = 'utf-8';
