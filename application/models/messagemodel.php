@@ -27,6 +27,7 @@ class Messagemodel extends Model
 	function getnewnotifications()
 	{
 		$company = $this->session->userdata('company');
+		log_message("debug",var_export($company,true));
 		if(!$company)
 			return array();
 		$this->db->where('isread',0);
@@ -34,6 +35,7 @@ class Messagemodel extends Model
 		$this->db->order_by('senton','desc');
 		$this->db->limit(5,0);
 		$nots = $this->db->get('notification')->result();
+		log_message("debug",var_export($nots,true));
 		$ret = array();
 		foreach($nots as $not)
 		{

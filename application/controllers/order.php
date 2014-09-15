@@ -41,7 +41,7 @@ class Order extends CI_Controller
 					$data['orders'] = array();
 					foreach($orders as $order)
 					{
-						log_message('debug',$sql);
+						//log_message('debug',$sql);
 						if($order->purchasingadmin)
 						{
 							$this->db->where('id',$order->purchasingadmin);
@@ -148,7 +148,7 @@ class Order extends CI_Controller
 		$data['orders'] = array();
 		foreach($orders as $order)
 		{
-			log_message('debug',$sql);
+			//log_message('debug',$sql);
 			if($order->purchasingadmin)
 			{
 				$this->db->where('id',$order->purchasingadmin);

@@ -252,7 +252,7 @@ class quote_model extends Model {
                 //print_r($companyitem);die;
                 $awarditems[] = $awarditem;
             }
-            log_message('debug',var_export($awarditems,true));
+            //log_message('debug',var_export($awarditems,true));
             $item->items = $awarditems;
             /*
               $invoicesql = "SELECT r.*, ai.itemname
@@ -525,7 +525,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum 
                 ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC";
-        log_message('debug',var_export($query,true));
+        //log_message('debug',var_export($query,true));
         $invoicequery = $this->db->query($query);
         $items = $invoicequery->result();
 
