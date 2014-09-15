@@ -638,7 +638,7 @@ $( document ).tooltip();
                                         <div class="price">
                                         <span>   $<?php echo $di->dealprice;?> &nbsp;</span>
                                       
-                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars($di->itemcode);?>', '<?php echo htmlspecialchars($di->itemname);?>',1)">
+                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo addslashes($di->itemcode);?>', '<?php echo addslashes($di->itemname);?>',1)">
                                     <i class="icon icon-plus"></i> Buy
                                 </a>
                                         </div>
@@ -725,7 +725,7 @@ $( document ).tooltip();
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price</div>
                                        <?php }else{?>
                                             <span> <?php echo '$'.$inv->ea;?></span>
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars($inv->itemcode);?>', '<?php echo htmlspecialchars($inv->itemname);?>')">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo addslashes($inv->itemcode);?>', '<?php echo addslashes($inv->itemname);?>')">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
                                         <?php } ?>
@@ -934,7 +934,7 @@ $( document ).tooltip();
                         		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> Remaining</td>
                         	</tr>
                             <tr>
-                        		<td  class="siteprices" style="text-align:center">($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars($di->itemcode);?>', '<?php echo htmlspecialchars($di->itemname);?>',1)">
+                        		<td  class="siteprices" style="text-align:center">($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo addslashes($di->itemcode);?>', '<?php echo addslashes($di->itemname);?>',1)">
                                     <i class="icon icon-plus"></i>
                                 </a></td>
                         	</tr>
