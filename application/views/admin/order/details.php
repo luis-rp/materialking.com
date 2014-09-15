@@ -290,7 +290,7 @@ Send Message:
 				    	{
 				    		$i++;
  				    		//$totamount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2);
- 				    		$totamount = number_format($item->amount + $order->shipping ,2);?>
+ 				    		$totamount = number_format($item->amount + $order->shipping ,2);?> 
                         <tr>
                             <td><?php echo $item->transferid;?></td>
                             <td><?php echo $item->companyname;?></td>
