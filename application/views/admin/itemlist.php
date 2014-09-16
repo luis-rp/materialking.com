@@ -90,7 +90,7 @@
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="closex" id="canceltour"></span></div><?php } ?>
+<span class="closeX" id="canceltour"></span></div><?php } ?>
 
 <section class="row-fluid">
     <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?>   <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a></h3>

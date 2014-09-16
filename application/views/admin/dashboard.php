@@ -176,15 +176,15 @@
 	$("#activatetour").click(function(e){
 		  e.preventDefault();
 			$("#tourcontrols").remove();
-			//tour1.restart();
+			tour1.restart();
 			// Initialize the tour
-			//tour1.init();
+			tour1.init();
 			start();
 		});
 	 });
 		$('#canceltour').live('click',endTour);
 	 function start(){
-
+		  
 			// Start the tour
 				tour1.start();
 			 }
