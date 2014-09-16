@@ -250,7 +250,7 @@ $( document ).tooltip();
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
-        for (i = 1; i <=100; i++) {
+        for (i = 1; i <=500; i++) {
         	if(i == minqty)
         	selected = 'selected';
         	else
