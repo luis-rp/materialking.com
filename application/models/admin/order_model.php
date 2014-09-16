@@ -8,11 +8,11 @@ class order_model extends Model
 	
 	function get_order_by_costcode($costcode){
 		
-	$sql = "SELECT o.* FROM ".
+	$sql = "SELECT o.*, od.paymentnote FROM ".
 						$this->db->dbprefix('order')." o,".
 						$this->db->dbprefix('orderdetails')." od, ".
 						$this->db->dbprefix('costcode')." cc".
-						" WHERE o.costcode=cc.id AND o.id=od.id".
+						" WHERE o.costcode=cc.id AND o.id=od.orderid".
 	 					" AND	 cc.code='".$costcode."'";
 	log_message("debug",$sql);
 				$query = $this->db->query ($sql);

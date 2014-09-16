@@ -50,7 +50,7 @@ class costcode_model extends Model
 				$item->totalspent = $query->row ('totalcost');
 				/****/
 				
-						$sql2 = "SELECT SUM( od.price * od.quantity ) sumT
+						$sql2 = "SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
 					WHERE cc.id =  ".$item->id."
 					AND o.costcode = cc.id
@@ -63,6 +63,7 @@ class costcode_model extends Model
 								
 							$totalOrder = $query2->row();
 							$item->totalspent += $totalOrder->sumT;
+							$item->shipping = $totalOrder->shipping;
 						}
 					
 				/****/

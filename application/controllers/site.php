@@ -566,18 +566,22 @@ class site extends CI_Controller
                 $cmpitem = $this->db->where('itemid',$di->itemid)->where('company',$id)->where('type','Supplier')->get('companyitem')->row();
                 $di->itemname = @$cmpitem->itemname?$cmpitem->itemname:$orgitem->itemname;
                 
-                $di->price = $cmpitem->price;
+                $di->price = @$cmpitem->price?$cmpitem->price:'';
+                if(@$cmpitem->company){
                 $this->db->where('id', $cmpitem->company);            	
             	$res = $this->db->get('company')->row();
             	if($res){
             		$di->phone = $res->phone;
             	}else 
             	$di->phone = "";
+                }else
+                $di->phone = "";
+                
                 $di->unit = $orgitem->unit;	
                 $di->url = $orgitem->url;
                 if(!$di->image)
                 $di->image = $orgitem->item_img;
-                $di->itemcode = $cmpitem->itemcode;
+                $di->itemcode = @$cmpitem->itemcode?$cmpitem->itemcode:'';
                 if($di->memberonly)
                 {
                     if($this->session->userdata('site_loggedin'))

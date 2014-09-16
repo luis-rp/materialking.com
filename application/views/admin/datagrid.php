@@ -160,6 +160,7 @@
               </tfoot>
             </table>
             <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo "No Records Exist"; ?>
+            <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo "No Records Exist"; ?>
            </div>
          </div>
 
@@ -381,7 +382,7 @@
          }
          ?>
 				<?php 
-				if(isset($jsfile) && $jsfile=="costcodeitemjs.php"){
+				if(isset($jsfile) && (($jsfile=="costcodeitemjs.php") || ($jsfile=="itemcodeitemjs.php"))){
 				if( isset($orders)) { ?>
 
                 <table id="datatable" class="table table-bordered">
@@ -419,7 +420,7 @@
 ;?></td>
                             <td><?php if(isset($order->prjName)) echo $order->prjName;?></td>
                             <td><?php echo $order->type;?></td>
-                            <td><?php echo $order->txnid;?></td>
+                            <td><?php echo ($order->txnid)?$order->txnid:$order->paymentnote;?></td>
                             <td>
                             	<a href="<?php echo site_url('admin/order/details/'.$order->id);?>">
                             		<span class="icon icon-search"></span>

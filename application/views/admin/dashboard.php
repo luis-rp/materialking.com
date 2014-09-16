@@ -574,7 +574,7 @@
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($backtracks)) { ?>
 					 
-				<?php foreach($backtracks as $backtrack) { ?>
+				<?php $i=0; foreach($backtracks as $backtrack) { ?>
 					<?php if(isset($backtrack['items'])) { ?>
 					<table class="table table-bordered">
 					<tr><td colspan="6"><h5><?php echo $backtrack['quote']->ponum;?><h5></td></tr>
@@ -600,11 +600,16 @@
 			    	<?php }?>
 			    	</table>	
 			    	
-			    <?php } ?>					  
+			    <?php $i++; } ?>					  
 
 				<?php } ?>
+				
+				<?php if($i== 0) { ?>
+				<tr><td>No Overdue Backorders Found</td></tr>
+				<?php } ?>
+				
 				<?php } else { ?>
-				<tr><td>No Orders Found</td></tr>
+				<tr><td>No Overdue Backorders Found</td></tr>
 				<?php } ?>
 				</table>
 				</div>

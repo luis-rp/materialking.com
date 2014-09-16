@@ -221,9 +221,10 @@ class costcode extends CI_Controller {
                 $costcode->budgetper = $per;
                 $costcode->cost = "$ " . $costcode->cost;
                 if ($costcode->totalspent != '-') {
+                	$costcode->code = trim($costcode->code);
                     $costcode->totalspent = $costcode->totalspent;
                     $costcode->actions .= ' ' .
-                            anchor('admin/costcode/items/' . $costcode->code, '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
+                            anchor('admin/costcode/items/' . str_replace('%2F', '/', urlencode(urlencode($costcode->code))), '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
                     ;
                 }
                 $costcode->manualprogress = $costcode->manualprogress ? $costcode->manualprogress : 0;
@@ -354,7 +355,10 @@ class costcode extends CI_Controller {
 	
 		
     function items($costcode) {
+    	$costcode = str_replace('%7C', '/', $costcode);
+    	$costcode=urldecode($costcode);
         $costcode = urldecode($costcode);
+        
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode);
 

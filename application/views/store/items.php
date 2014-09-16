@@ -351,7 +351,7 @@ $( document ).tooltip();
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo addslashes($item->itemcode);?>', '<?php echo addslashes($item->itemname);?>')">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>')">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         <?php } ?>
@@ -568,7 +568,7 @@ $( document ).tooltip();
                         		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		</td>
                         		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo addslashes($di->itemcode);?>', '<?php echo addslashes($di->itemname);?>',1)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>

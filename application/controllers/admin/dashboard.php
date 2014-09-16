@@ -383,7 +383,7 @@ class Dashboard extends CI_Controller
 			foreach($result as $item)
 			{
 			
-			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data
+			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
@@ -398,6 +398,7 @@ class Dashboard extends CI_Controller
 			$codes[$cnt]->label = $result->label;
 			$codes[$cnt]->data = $result->data;
 			$codes[$cnt]->type = "new";
+			$codes[$cnt]->shipping = $result->shipping;
 			$cnt++;
 			}
 			
@@ -420,7 +421,7 @@ class Dashboard extends CI_Controller
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
 						
-					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, 
 							".$this->db->dbprefix('orderdetails')." od
 					WHERE cc.code =  '".$c->label."'
@@ -432,8 +433,12 @@ class Dashboard extends CI_Controller
 					
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
+							$c->shipping = $totalOrder->shipping;
 					}
 					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					if(isset($c->shipping))
+						$c->data = $c->data + $c->shipping;
+						
 					/*********/
 					$c->label = $c->label . ' - $'.$c->data;
 					$costcodesjson[]=$c;
