@@ -349,7 +349,15 @@ class cart extends CI_Controller
 					}else{
 						$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
 						$item['rate'] = $rate;
-					}
+						$shipment->buy($rate);
+					
+					    $shipment22 = \EasyPost\Shipment::retrieve($rate->shipment_id);
+						
+						if($shipment22->postage_label->label_url!='')
+							$item['label']=$shipment22->postage_label->label_url;
+						else
+							$item['label']=$shipment->postage_label->label_url;
+						}
 				}
 				else
 				{
@@ -361,6 +369,9 @@ class cart extends CI_Controller
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate']->rate;
 				else
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
+					
+					$userinfoship[$item['company'].'comp2'.$item['itemid']]=$item['label'];
+
 				
 				if(is_object($item['rate'])){
 					$dataitemshipping +=$item['rate']->rate;		
@@ -459,6 +470,7 @@ class cart extends CI_Controller
 			}
 			$companies = array();
 			$companiesamount = array();
+			$getvendorship=explode(', ',$_REQUEST['shippingforvendors']);
 			foreach($cart as $ci)
 			{
 				if(!isset($companies[$ci['company']]))
@@ -469,7 +481,21 @@ class cart extends CI_Controller
 					
 					//echo $ci['company'].$cd->primaryemail.'>'.$companies[$ci['company']].'<br/>';
 					$subject = "Order Details from ezpzp";
-					$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject, $cd->title);
+					
+					$labelforvendor='';$addemaillabel='';
+ 					foreach($getvendorship as $getvendorship2)
+					{
+						$getvendorship3=explode('=',trim($getvendorship2));
+						//echo $getvendorship3[0].'---'.$ci['company'].'comp'.$ci['itemid'];
+						if($getvendorship3[0]==$ci['company'].'comp2'.$ci['itemid'])
+						{
+							$labelforvendor=$getvendorship3[1];
+						}
+					}
+					if($labelforvendor!='')
+					$addemaillabel="<br><br>Label url: ".$labelforvendor;
+						
+					$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject, $cd->title);
 				}
 				if(!isset($companiesamount[$ci['company']]))
 				    $companiesamount[$ci['company']] = 0;
@@ -492,7 +518,7 @@ class cart extends CI_Controller
 			$data['order'] = $ordernumber;
 			$notifications = array();
 			
-			$getvendorship=explode(', ',$_REQUEST['shippingforvendors']);
+			
 			foreach($cart as $ci)
 			{
 				$od = array();
@@ -838,10 +864,18 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$shipment = \EasyPost\Shipment::create($shipment_params);
 				if (count($shipment->rates) === 0) {
 					$item['rate']  = 'No rates for your address';
+					$item['label']  = '';
 				}else{
 					$rate = \EasyPost\Rate::retrieve($shipment->lowest_rate());
 					$item['rate'] = $rate;
 					$shipment->buy($rate);
+					
+					$shipment22 = \EasyPost\Shipment::retrieve($rate->shipment_id);
+				  //echo "<pre>"; echo $shipment22->postage_label->label_url;  echo "cccc".$shipment->postage_label->label_url; print_r($shipment22); die;  
+				  if($shipment22->postage_label->label_url!='')
+				  	$item['label']=$shipment22->postage_label->label_url;
+				  else
+				  	$item['label']=$shipment->postage_label->label_url;
 				}
 			}
 			else
@@ -854,6 +888,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate']->rate;
 				else
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
+				
+				$userinfoship[$item['company'].'comp2'.$item['itemid']]=$item['label'];
 				
 				if(is_object($item['rate'])){
 					$dataitemshipping +=$item['rate']->rate;		
@@ -869,7 +905,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				redirect('cart');
 			}
 		}
- 		
+ 		$userinfoship=http_build_query($userinfoship,'',', ');
+		$getvendorship=explode(', ',$userinfoship);
 		foreach($cart as $ci)
 		{
 			if(!isset($companies[$ci['company']]))
@@ -880,7 +917,22 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$cd = $this->db->get('company')->row();
 				
 				$subject = "Order Details from ezpzp";
-				$this->sendEmail($companies[$ci['company']],$cd->primaryemail, $subject);
+				
+				$labelforvendor='';$addemaillabel='';
+				foreach($getvendorship as $getvendorship2)
+				{
+					$getvendorship3=explode('=',trim($getvendorship2));
+					//echo $getvendorship3[0].'---'.$ci['company'].'comp'.$ci['itemid'];
+					if($getvendorship3[0]==$ci['company'].'comp2'.$ci['itemid'])
+					{
+						$labelforvendor=$getvendorship3[1];
+					}
+				}
+				if($labelforvendor!='')
+				$addemaillabel="<br><br>Label url: ".$labelforvendor;
+				
+				//echo $companies[$ci['company']].$addemaillabel; die;
+				$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject);
 				
 			}
 		}
@@ -897,8 +949,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		$oid = $this->db->insert_id();
 		
 		$notifications = array();
-		$userinfoship=http_build_query($userinfoship,'',', ');
-		$getvendorship=explode(', ',$userinfoship);
+		
+		
 		foreach($cart as $ci)
 		{
 			$od = array();
