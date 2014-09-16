@@ -160,6 +160,7 @@
               </tfoot>
             </table>
             <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo "No Records Exist"; ?>
+            <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo "No Records Exist"; ?>
            </div>
          </div>
 
@@ -381,7 +382,7 @@
          }
          ?>
 				<?php 
-				if(isset($jsfile) && $jsfile=="costcodeitemjs.php"){
+				if(isset($jsfile) && (($jsfile=="costcodeitemjs.php") || ($jsfile=="itemcodeitemjs.php"))){
 				if( isset($orders)) { ?>
 
                 <table id="datatable" class="table table-bordered">
