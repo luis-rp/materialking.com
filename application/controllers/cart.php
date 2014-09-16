@@ -493,7 +493,7 @@ class cart extends CI_Controller
 						}
 					}
 					if($labelforvendor!='')
-					$addemaillabel="<br><br>Label url: ".$labelforvendor;
+					$addemaillabel="<br><br>Label url: ".urldecode($labelforvendor);
 						
 					$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject, $cd->title);
 				}
@@ -929,7 +929,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 					}
 				}
 				if($labelforvendor!='')
-				$addemaillabel="<br><br>Label url: ".$labelforvendor;
+				$addemaillabel="<br><br>Label url: ".urldecode($labelforvendor);
 				
 				//echo $companies[$ci['company']].$addemaillabel; die;
 				$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject);
