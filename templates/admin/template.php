@@ -224,14 +224,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 							}
 		  		    	});
 	  		    	
-	                <?php /* if(isset($viewname) && $viewname=="dashboard"){?>
+	                <?php  if(isset($viewname) && $viewname=="dashboard"){?>
 	               tour1.restart();
-	               <?php } */?>
-	  		    	/*// Initialize the tour
+	               <?php } ?>
+	  		    	// Initialize the tour
 	  		    	tour.init();
 
 	  		    	// Start the tour
-	  		    	tour.start();*/
+	  		    	tour.start();
 
 	  		    	
 	  		  /*  	$("#step6").click(function(e){

@@ -161,7 +161,7 @@
 
  <script type="text/javascript">
 	 $(document).ready(function(){
- /*tour4 = new Tour({
+ tour4 = new Tour({
 	  steps: [
 	  {
 	    element: "#step1",
@@ -171,14 +171,14 @@
 
 
 	]
-	});*/
+	});
 
 	$("#activatetour").click(function(e){
 		  e.preventDefault();
 			$("#tourcontrols").remove();
-			tour1.restart();
+			tour4.restart();
 			// Initialize the tour
-			tour1.init();
+			tour4.init();
 			start();
 		});
 	 });
@@ -186,12 +186,12 @@
 	 function start(){
 		  
 			// Start the tour
-				tour1.start();
+				tour4.start();
 			 }
 	 function endTour(){
 
 		 $("#tourcontrols").remove();
-		 tour1.end();
+		 tour4.end();
 			}
  </script>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
