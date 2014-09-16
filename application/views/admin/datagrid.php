@@ -419,7 +419,7 @@
 ;?></td>
                             <td><?php if(isset($order->prjName)) echo $order->prjName;?></td>
                             <td><?php echo $order->type;?></td>
-                            <td><?php echo $order->txnid;?></td>
+                            <td><?php echo ($order->txnid)?$order->txnid:$order->paymentnote;?></td>
                             <td>
                             	<a href="<?php echo site_url('admin/order/details/'.$order->id);?>">
                             		<span class="icon icon-search"></span>

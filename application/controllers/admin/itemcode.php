@@ -187,8 +187,7 @@ class itemcode extends CI_Controller
             	$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
 
                 $itemcode->ea = "$ " . $itemcode->ea;
-                $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
-
+                
                 $itemcode->actions = "<input type='checkbox' name='del_group' class='del_group' value='".$itemcode->id."' />";
                 $itemcode->actions .= anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
                 'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>',
@@ -198,11 +197,13 @@ class itemcode extends CI_Controller
                     $itemcode->actions = '<a href="javascript:void(0)" onclick="updateitem('.$itemcode->id.')"><span class="icon-2x icon-edit"></span></a>';
                     //echo $itemcode->actions;die;
                 }
-                if ($itemcode->poitems)
+                if ($itemcode->poitems || $itemcode->totalpoprice!=0)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/poitems/' . $itemcode->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view'));
                 if ($itemcode->minprices)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
 
+                $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;    
+                    
                 $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
 
                 $specs="";
