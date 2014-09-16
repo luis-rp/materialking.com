@@ -454,7 +454,12 @@ class costcode extends CI_Controller {
         {
         	$this->validation->project = $mp->id;
         }
-
+        $id = $this->session->userdata('id');
+        $setting=$this->settings_model->getalldata($id);
+        if(empty($setting))
+        	$data['settingtour']=$setting;
+        else
+        	$data['settingtour']=$setting[0]->tour;
         $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
         $data['viewname'] = 'costcode';
         $this->load->view('admin/costcode', $data);

@@ -73,7 +73,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         </style>
 <?php if(!$this->session->userdata('managedprojectdetails')){ ?>
         <script type="text/javascript">
-        var tour1;
+        var tourMain;
         var helpTour;
             $(document).ready(function() {
 
@@ -109,12 +109,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 $(document).ready(function($){
 
 					var field;
-					 tour1 = new Tour({
+					tourMain = new Tour({
 		  		    	  steps: [
 		  		    	  {
 		  		    	    element: "#step1",
 		  		    	    title: "Step 1",
-		  		    	    content: "Welcome to the on-page tour for Dashboard"
+		  		    	    content: "Welcome to your Account, before your job gets <b>a whole lot easier</b>, this tour will help you complete a few simple but necessary steps and get you up and running	quickly."
 		  		    	  },
 		  		    	  {
 		  		    	    element: "#step2",
@@ -225,13 +225,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 		  		    	});
 	  		    	
 	                <?php  if(isset($viewname) && $viewname=="dashboard"){?>
-	               tour1.restart();
+	                tourMain.restart();
 	               <?php } ?>
 	  		    	// Initialize the tour
-	  		    	tour.init();
+	  		    	tourMain.init();
 
 	  		    	// Start the tour
-	  		    	tour.start();
+	  		    	tourMain.start();
 
 	  		    	
 	  		  /*  	$("#step6").click(function(e){
