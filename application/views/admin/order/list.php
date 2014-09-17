@@ -84,7 +84,7 @@ $(document).ready( function() {
                                                 <td><?php echo date('m/d/Y',strtotime($order->purchasedate)); ?> </td>
                                                 <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
-                                                <td><?php echo $order->txnid;?></td>
+                                               <td><?php echo $order->txnid?$order->txnid:$order->paymentnote;?></td>
                                                 <td><?php echo "$ ".round($total+$order->shipping,2);?></td> 
                                                 <td>
                                                 	<table class="table table-bordered datagrid">

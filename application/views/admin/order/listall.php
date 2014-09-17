@@ -55,7 +55,7 @@ $(document).ready( function() {
                                             <tr>
                                                 <td><?php echo $order->ordernumber;?></td>
                                                 <td><?php echo $order->purchasedate;?></td>
-                                                <td><?php echo $order->purchaser->companyname;?></td>
+                                                <td><?php echo @$order->purchaser->companyname;?></td>
                                                 <td><?php echo $order->type;?></td>
                                                 <td><?php echo $order->txnid;?></td>
                                                 <td>

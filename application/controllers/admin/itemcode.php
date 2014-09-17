@@ -411,7 +411,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$data['jsfile'] = 'itemcodeitemjs.php';
     	$data['addlink'] = '';
     	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a>";
-    	$data ['bottomheading'] = "Store Orders With Costcode '$item->itemcode'";
+    	$data ['bottomheading'] = "Store Orders With Itemcode '$item->itemcode'";
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
 
     	$uid = $this->session->userdata('id');

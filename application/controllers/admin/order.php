@@ -208,7 +208,7 @@ function orders_export()
 				$filter = " AND o.ordernumber='".$_POST['ordernumber']."'";
 			}
 		}
-		$sql = "SELECT o.*,od.orderid as odorderid, sum(od.price*od.quantity) as totalprice  
+		$sql = "SELECT o.*,od.orderid as odorderid,od.paymentnote, sum(od.price*od.quantity) as totalprice  
                 FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid 
 				WHERE purchasingadmin=".$this->session->userdata('id')."
 				$search
