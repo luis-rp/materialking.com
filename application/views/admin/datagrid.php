@@ -382,7 +382,7 @@
          }
          ?>
 				<?php 
-				if(isset($jsfile) && (($jsfile=="costcodeitemjs.php") || ($jsfile=="itemcodeitemjs.php"))){
+				if(isset($jsfile) && ($jsfile=="costcodeitemjs.php")){
 				if( isset($orders)) { ?>
 
                 <table id="datatable" class="table table-bordered">
@@ -440,6 +440,78 @@
             	<?php }
             	}
             	?>
+            	
+            	
+            	<?php
+				if(isset($jsfile) && ($jsfile=="itemcodeitemjs.php")){
+				if( isset($orders)) { ?>
+
+                <table id="datatable" class="table table-bordered">
+                    <thead>
+                    	<tr><td colspan="8"><?php if(isset($bottomheading)){?><h3 class="box-header"><?php echo $bottomheading; ?></h3><?php } ?></td></tr>
+                        <tr>
+                            <th style="width:5%">S.No.</th>
+                            <th style="width:15%">Order#</th>
+                            <th style="width:20%">Ordered On</th>
+                            <th style="width:20%">Order Total</th>
+                            <th style="width:20%">Project</th>
+                            <th style="width:10%">Type</th>
+                            <th style="width:10%">Txn ID</th>
+                            <th style="width:10%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+		              <?php
+				    	$i = 0;
+
+				    	foreach($orders as $order)
+				    	{
+				    		log_message('debug',var_export($order,true));
+
+				    		$i++;
+							$sql = "SELECT sum(od.price*od.quantity) as totalprice, sum(shipping) as shipping
+							FROM ".$this->db->dbprefix('orderdetails')." od where od.orderid=".$order->orderid." group by od.orderid";
+							$orderdetails = $this->db->query($sql)->result();
+ 				       ?>
+                        <tr>
+                            <td><?php echo $order->sno;?></td>
+                            <td><?php echo $order->ordernumber;?></td>
+                            <td><?php echo $order->purchasedate;?></td>
+                            <?php /*
+                            $taxpercent = $order->taxpercent;
+                            $tot=$order->price*$order->quantity;
+                    	    $tax = $tot * $taxpercent/100;
+                    	    $totalwithtax = $tax+$order->shipping+$tot;*/
+                      ?>
+                            <td>$<?php echo number_format($orderdetails[0]->totalprice + $orderdetails[0]->shipping + ($orderdetails[0]->totalprice * $order->taxpercent/100),2)
+;?></td>
+                             <!-- <td>$<?php echo number_format($totalwithtax,2);?></td> -->
+                            <td><?php if(isset($order->prjName)) echo $order->prjName;?></td>
+                            <td><?php echo $order->type;?></td>
+                            <td><?php echo $order->txnid;?></td>
+                            <td>
+                            	<a href="<?php echo site_url('admin/order/details/'.$order->orderid);?>">
+                            		<span class="icon icon-search"></span>
+                            	</a>
+                            	<a href="<?php echo site_url('admin/order/add_to_project/'.$order->orderid);?>">
+                            		<span class="icon icon-list-ul"></span>
+                            	</a>
+                            </td>
+                        </tr>
+                      <?php }//die; ?>
+                    </tbody>
+                </table>
+            	<?php }else{ ?>
+            	<table id="datatable" class="table">
+            	<tr><td>No Purchase Orders.</td></tr>
+            	</table>
+            	<?php }
+            	}
+            	?>
+            	
+            	
             </div>
       </div>
     </div>

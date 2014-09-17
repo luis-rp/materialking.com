@@ -16,7 +16,7 @@ class form_subscription_model extends Model
     						'FieldType'=>$_POST['type'],
     						'FieldValue'=>$_POST['frm_option'],
     						'Label'=>$_POST['label'],
-    						'Name'=>$_POST['name'],
+    						'Name'=>strtolower($_POST['name']),
     						);
 			return $this->db->insert('pms_formsubscription', $savedata);
 

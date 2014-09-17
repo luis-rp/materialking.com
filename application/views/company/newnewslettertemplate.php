@@ -29,7 +29,7 @@
 				                      <div class="form-group">
 				                        <label class="form-label">Template Body:</label>
 				                        <p>Please use your Subscriber information inside { } to match the data</p>
-				                        <p><?php foreach($fields as $field){ ?>{<?php echo $field->Name;?>},<?php } ?></p>
+				                        <p><?php foreach($fields as $field){ ?>{<?php echo $field->Name;?>},<?php } ?>{name},{email}</p>
 				                        <div class="controls">
 				                          <textarea rows="10" cols="40" class="form-control ckeditor" id="body" name="body"><?php echo @$body;?></textarea>
 				                        </div>

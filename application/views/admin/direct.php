@@ -243,7 +243,7 @@ function showhideviewprice(id)
 	}
 }
 
-function viewminprices(codeid,quant)
+function viewminprices(codeid,quant,priceid)
 {
 	var itemid = document.getElementById(codeid).value;
 	
@@ -270,7 +270,7 @@ function viewminprices(codeid,quant)
 		return false;
 	}
 	var serviceurl = '<?php echo base_url()?>admin/itemcode/getcompanypricetable/';
-	var d = "id="+itemid+"&codeid="+codeid+"&quantity="+quantity+"&quantid="+quant;
+	var d = "id="+itemid+"&codeid="+codeid+"&quantity="+quantity+"&quantid="+quant+"&priceid="+priceid;
 	//alert(d);
 	$.ajax({
 	      type:"post",
@@ -306,15 +306,18 @@ function selectcompany(codeid, company, price)
 	$("#"+priceid).val(price);
 }
 
-function selectquantity(qty, quant)
+function selectquantity(qty, quant, price, priceid)
 {
 	if(quant==0){
 		document.getElementById('quantity').value = qty;
+		document.getElementById('ea').value = price;
 		
 	}else{
 		document.getElementById(quant).value = qty;		
+		document.getElementById(priceid).value = price;
 	}
 }
+
 
 function checkzero(classname)
 {
@@ -513,7 +516,7 @@ function savclose()
 		    		<td>
 		    			<input type="hidden" id="itemid<?php echo $q->id;?>" name="itemid<?php echo $q->id;?>" class="span itemid" value="<?php echo $q->itemid;?>"/>
 			    		<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>
-		    			<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>')">View Prices</a>
+		    			<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
 		    		</td>
 		    		<td>
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
@@ -581,7 +584,7 @@ function savclose()
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');showhideviewprice('');" onchange="//showhideviewprice('');"/>
-		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0)">View Prices</a></span>
+		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    		</td>
