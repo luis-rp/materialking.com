@@ -316,11 +316,11 @@ function acceptall()
         data: "quote=" + '<?php echo $quote->id;?>',
         url: accepallturl
     }).done(function(data) {
-		<?php foreach($shipments as $s) if($s->accepted == 0){?>
+		<?php foreach($shipments2 as $s) // if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
 		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
-		<?php }?>
+		<?php // }?>
 
 		$("#trackform").submit();
     });

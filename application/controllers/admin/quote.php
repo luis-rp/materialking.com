@@ -2352,6 +2352,9 @@ class quote extends CI_Controller
 		             ->from('shipment')->join('item','shipment.itemid=item.id')
 		             ->where('quote',$qid)->get()->result();
 
+		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
+        $shipments2 = $this->db->query($shipmentsquery)->result();                      
+		             
 		if($awarded){
 			foreach($awarded->items as $item) {
 				if($item->company){
@@ -2371,6 +2374,7 @@ class quote extends CI_Controller
         $data['messages'] = $messages;
         $data['awarded'] = $awarded;
         $data['shipments'] = $shipments;
+        $data['shipments2'] = $shipments2;
         $data['heading'] = "TRACK Items";
         $data['adquoteid'] = $qid;
         $this->load->view('admin/track', $data);
