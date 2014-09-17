@@ -275,7 +275,7 @@ function orders_export()
 				$order->purchaser = new stdClass();
 				$order->purchaser->companyname = 'Guest';
 			}
-			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent  
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent , od.shipping shipping 
                       FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o  
                       WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id"; 
 			$order->details = $this->db->query($query)->result();
