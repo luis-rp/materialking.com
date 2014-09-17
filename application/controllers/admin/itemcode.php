@@ -1068,6 +1068,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $itemid = $_POST['id']; //urldecode($itemcode);
         $quantity = $_POST['quantity'];
         $quantiid = $_POST['quantid'];
+        $priceid = $_POST['priceid'];
         $item = $this->itemcode_model->get_itemcodes_by_id2($itemid, $quantity);
         
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
@@ -1097,7 +1098,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             foreach ($item->tierprices as $mp)
             {
-            	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid,$quantiid);
+            	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid,$quantiid,$priceid);
             	if($priceqtyresult){
             		$table2 .= "<tr><td colspan='3'>" . $mp->companyname . "</td></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $priceqtyresult . "</td></tr>";            	
@@ -1108,14 +1109,15 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $table .= "</table>";
             $table2 .= "</table>";
             
-            echo $table2;
-            echo $table;
+            echo $table2;            
         }
         echo '</div>';
+        
+        echo '<div class="modal-body" id="minprices2">'.$table.'</div>';
     }
 
 
-	function getpriceqtydetails($companyid, $itemid,$quantiid){
+	function getpriceqtydetails($companyid, $itemid,$quantiid,$priceid){
     	
     	$this->db->where('company',$companyid);
     	$this->db->where('itemid',$itemid);
@@ -1125,7 +1127,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$selectbutton2 = "";
     		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
-				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\")' value='Select'>";
+				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select'>";
     			$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}
