@@ -1893,8 +1893,8 @@ class site extends CI_Controller
 											if($adi>1){								
 												$a = 360.0 / 100;
 												
-												$data['ads'][$keycat][$keyad]['latitude'] =  $ad_item['latitude'] + -.00004 * cos((+$a*i) / 180 * PI());  //x
-												$data['ads'][$keycat][$keyad]['longitude'] = $ad_item['longitude'] + -.00004 * sin((+$a*i) / 180 * PI());  //Y														
+												$data['ads'][$keycat][$keyad]['latitude'] =  $ad_item['latitude'] + -.00004 * cos((+$a) / 180 * PI());  //x
+												$data['ads'][$keycat][$keyad]['longitude'] = $ad_item['longitude'] + -.00004 * sin((+$a) / 180 * PI());  //Y														
 									} } } } } }
 		
     	$this->load->view('site/classified', $data);
