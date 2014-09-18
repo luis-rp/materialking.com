@@ -213,15 +213,15 @@ $(function() {
 		   <span class="poheading"><?php echo $quote->potype=='Direct'?'Direct':'Via Quote';?></span>
 		   <?php if($isawarded){?>
 		   <h4>
-		   Awarded on <?php echo $awarded->awardedon;?>
+		    Awarded on <?php $olddate=strtotime($awarded->awardedon); $newdate = date('m/d/Y H:i:s', $olddate); echo $newdate; ?>
 		   <a href="<?php echo site_url('admin/quote/track/'.$quote->id);?>">Track</a>
 		   </h4>
 		   <div class="span12">
 		   <table class="table table-bordered span4 awarded-table">
-			   <tr><td class="span4">Subtotal:</td><td class="span8"><?php echo $awardedtotal;?></td>
-               <td class="span4">Total Saved:</td><td class="span8"><?php echo $totalsaved;?></td>
-			   <tr><td>Tax:</td><td><?php echo $awardedtax;?></td>
-			   <tr><td>Total:</td><td><?php echo $awardedtotalwithtax;?></td>
+			   <tr><td class="span4">Subtotal:</td><td class="span8">$<?php echo number_format($awardedtotal,2);?></td>
+               <td class="span4">Total Saved:</td><td class="span8">$<?php echo number_format($totalsaved,2);?></td>
+			   <tr><td>Tax:</td><td>$<?php echo number_format($awardedtax,2);?></td>
+			   <tr><td>Total:</td><td>$<?php echo number_format($awardedtotalwithtax,2);?></td>
 		   </table>
            
 		   </div>
@@ -484,7 +484,7 @@ $(function() {
 									    echo ' (RFQ)';
 									}
 							?></td>
-				    		<td>$ <span id="itemtotal<?php echo $q->id;?>"><?php echo round($q->quantity * $q->ea,2);?></span></td>
+				    		<td>$<span id="itemtotal<?php echo $q->id;?>"><?php echo number_format($q->quantity * $q->ea,2);?></span></td>
 				    		<td>
 				    			<?php echo $q->daterequested;?>
 				    			<?php if(@$q->originaldate) if(@$q->originaldate != $q->daterequested){ echo '<br/><span style="color:red">Req:'.$q->originaldate.'</span>';}?>
@@ -527,11 +527,11 @@ $(function() {
 				    	</tr>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Tax: </td>
-				    		<td colspan="7">$ <?php echo $taxtotal;?></td>
+				    		<td colspan="7">$ <?php echo number_format($taxtotal,2);?></td>
 				    	</tr>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Total: </td>
-				    		<td colspan="7">$ <span class="total-value"><?php echo $grandtotal;?></span></td>
+				    		<td colspan="7">$ <span class="total-value"><?php echo number_format($grandtotal,2);?></span></td>
 				    	</tr>
 				    	<?php if(!$isawarded){?>
 				    	<tr>

@@ -100,13 +100,14 @@ $(document).ready(function(){
 	    </div>
     </div>
 
-    <div class="control-group">
+   <div class="control-group">
         <label class="control-label" >State*</label>
            <select name="state" id="state" required  style="margin-left: 19px;">
-             <?php   foreach ($company as $com) { $fetchstate=$com->state;}?>
-	            <?php foreach($states as $st){?>
-                  <option value='<?php echo $st->state_abbr;?>' <?php if($fetchstate == $st->state_abbr){echo 'SELECTED';}?>><?php echo $st->state_name;?></option>
+            <?php foreach ($company as $com) { $fetchstate=$com->state; } ?>
+	            <?php foreach($states as $st){ ?>
+                  <option value='<?php echo $st->state_abbr;?>'<?php if(isset($fetchstate)){if($fetchstate == $st->state_abbr){echo 'SELECTED';}}?>><?php echo $st->state_name;?></option>
                 <?php  } ?>
+
            </select>
      </div>
 

@@ -22,11 +22,11 @@
 	<tr>
 		<td>Due Date: <?php echo $quote->duedate;?></td>
 	</tr>
-	
+
 	<tr>
 		<td colspan="2"></td>
 	</tr>
-	
+
 	<tr>
 		<td colspan="2">
 			<table>
@@ -39,7 +39,7 @@
             		<th>Notes</th>
             		<th>Ext. Price</th>
         		</tr>
-        		<?php 
+        		<?php
         		$total = 0;
         		foreach($biditems as $bi)
         		{
@@ -53,54 +53,54 @@
         		<td><?php echo $bi->ea; ?></td>
         		<td><?php echo $bi->unit; ?></td>
         		<td><?php echo $bi->notes; ?></td>
-        		<td><?php echo $extprice; ?></td>
+        		<td><?php echo number_format($extprice,2); ?></td>
         		</tr>
-        		<?php 
+        		<?php
         		}
         		$total = round($total,2);
         		$tax = $total * $taxpercent / 100;
         		$tax = round($tax,2);
         		$alltotal = $total + $tax;
         		?>
-        		
+
     		    <tr>
         		<td colspan="7">&nbsp;</td>
         		</tr>
         	    <tr>
-        		
+
         		<td>Supplier Quote # </td>
         		<td colspan="7"><?php echo $bid->quotenum; ?></td>
                     </tr>
     		    <tr>
-                        
+
         		<td>Supplier Expire Date</td>
-        		<td colspan="7"><?php echo $bid->expire_date; ?></td>
+        		<td colspan="7"><?php $olddate=strtotime($bid->expire_date); $newdate = date('m/d/Y H:i:s', $olddate); echo $newdate; ?></td>
                     </tr>
-                    
+
                 <tr>
-                        
+
         		<td>Supplier Quote Date</td>
-        		<td colspan="7"><?php echo $bid->submitdate; ?></td>
-                    </tr>    
-                    
+        		<td colspan="7"><?php $olddate1=strtotime($bid->submitdate); $newdate1 = date('m/d/Y H:i:s', $olddate1); echo $newdate1; ?></td>
+                    </tr>
+
     		    <tr>
-                        
+
         		<td>Quote Total: </td>
-        		<td colspan="7"><?php echo $total; ?></td>
+        		<td colspan="7">$<?php echo number_format($total,2); ?></td>
         		</tr>
-        		
+
     		    <tr>
         		<td>Tax: </td>
-        		<td colspan="7"><?php echo $tax; ?></td>
+        		<td colspan="7">$<?php echo number_format($tax,2); ?></td>
         		</tr>
-        		
+
     		    <tr>
         		<td>Total: </td>
-        		<td colspan="7"><?php echo $alltotal; ?></td>
+        		<td colspan="7">$<?php echo number_format($alltotal,2); ?></td>
         		</tr>
-        		
+
 			</table>
 		</td>
 	</tr>
-	
+
 </table>

@@ -148,6 +148,25 @@ class company extends CI_Controller {
             $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
             $_POST['regkey'] = $key;
             $itemid = $this->company_model->SaveCompany();
+            $company = $this->db->get_where('company',array('id'=>$itemid))->row();
+            $settings = (array)$this->settings_model->get_current_settings ();
+            $this->load->library('email');
+            $this->email->clear(true);
+            $this->email->from($settings['adminemail'], "Administrator");
+            $this->email->to($company->primaryemail);
+            $body = "Dear " . $company->contact . ",<br><br>
+		 Your Company Account Has been created by Administrator.<br><br>Check The Details Below:<br><br>
+		 Company Name : ".$company->title."
+		<br/>
+		Username : ".$company->username."
+		<br/>
+		Password : ".$company->password."
+		<br><br>";
+
+            $this->email->subject("Your Account Has been Created Successfully by Administrator.");
+            $this->email->message($body);
+            $this->email->set_mailtype("html");
+            $this->email->send();
             $this->sendRegistrationEmail($itemid, $key);
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Company Added Successfully</div></div>');
             redirect('admin/company');

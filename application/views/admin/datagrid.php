@@ -435,7 +435,7 @@
                 </table>
             	<?php }else{ ?>
             	<table id="datatable" class="table">
-            	<tr><td>No Purchase Orders.</td></tr>
+            	<tr><td>No Store Orders.</td></tr>
             	</table>
             	<?php }
             	}
@@ -505,7 +505,7 @@
                 </table>
             	<?php }else{ ?>
             	<table id="datatable" class="table">
-            	<tr><td>No Purchase Orders.</td></tr>
+            	<tr><td>No Store Orders.</td></tr>
             	</table>
             	<?php }
             	}
