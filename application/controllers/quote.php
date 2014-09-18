@@ -1003,7 +1003,7 @@ class Quote extends CI_Controller
 					$bidarray['quotenum'] = "";
 			}
 			else 
-				$bidarray['quotenum'] = $_POST['quotenum'].".000";
+				$bidarray['quotenum'] = $_POST['quotenum'];
 		
 				$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 				
@@ -1092,7 +1092,7 @@ class Quote extends CI_Controller
 			}
 			$bidarray = array('quote'=>$invitation->quote,'company'=>$invitation->company,'submitdate'=>date('Y-m-d'));
 			
-			$bidarray['quotenum'] = $_POST['quotenum'].".000";
+			$bidarray['quotenum'] = $_POST['quotenum'];
 			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
 			$bidarray['draft'] = $_POST['draft'];
 			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;

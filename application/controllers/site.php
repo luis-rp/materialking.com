@@ -1878,6 +1878,25 @@ class site extends CI_Controller
         $data['items'] = $itemcodes;
 		$data['viewallads'] = 0;
 		/*===============*/
+		
+		foreach($data['ads'] as $keycat=>$ad) { 
+										foreach($ad as $keyad=>$ad_item){ if($ad_item['latitude']!="" && $ad_item['longitude']!="") { $adi=0;
+							?>
+							
+							<?php	foreach($data['ads'] as $ad2) { 
+										foreach($ad2 as $ad_item2){ 
+											
+											if( ($ad_item['latitude'] == $ad_item2['latitude'])) {	
+												$adi++; 
+												
+											}
+											if($adi>1){								
+												$a = 360.0 / 100;
+												
+												$data['ads'][$keycat][$keyad]['latitude'] =  $ad_item['latitude'] + -.00004 * cos((+$a*i) / 180 * PI());  //x
+												$data['ads'][$keycat][$keyad]['longitude'] = $ad_item['longitude'] + -.00004 * sin((+$a*i) / 180 * PI());  //Y														
+									} } } } } }
+		
     	$this->load->view('site/classified', $data);
     }
     

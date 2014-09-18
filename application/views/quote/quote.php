@@ -165,9 +165,9 @@ function viewPricelist(itemcode,itemname,price)
 									<tr>
 										<td>
 										  <strong>
-									      PO#: <?php echo $quote->ponum;?></td><td><span style="margin-left:500px;">Revision History</span></td></tr>
+									     PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
 									      <tr><td>
-									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; ?></span></tr>
+									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
 									      <td>Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>

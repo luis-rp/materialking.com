@@ -665,9 +665,9 @@ function acceptall()
                     $shipitemids[$cs->awarditem] = 1;
                 }*/
             ?>
-            <?php //if($canacceptall){?>
+            <?php if(count($shipments2)>0){?>
            <button class="btn btn-primary" onclick="acceptall()">Accept All</button>
-           <?php //}?></h3>
+           <?php }?></h3>
 
            <table class="table table-bordered" >
            	<tr>

@@ -994,6 +994,8 @@ class quote extends CI_Controller
 		        $updatearray['quoteattachment'] = $nfn;
 		        $this->quote_model->db->where('id', $qid);
 		        $this->quote_model->db->update('quote', $updatearray);
+		        $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
+			<div class="msgBox">File uploaded successfully.</div></div>');
         	}
         }
         else
