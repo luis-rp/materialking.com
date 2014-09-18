@@ -841,6 +841,8 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 	    
 	    </div>
     </div>
+   </div>
+ </div>      
 </section>
 
         <div id="minpricemodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
