@@ -670,12 +670,9 @@ P.O. Price Rankings
     <div class="modal fade" id="videModal" tabindex="-1" role="dialog" aria-labelledby="videModalModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title" id="videModalModalLabel"></h4>
-	      </div>
-	      <div class="modal-body">
-	        <video width="320" height="240" controls>
+	      
+	      <div class="modal-body" style="padding:0;">
+	        <video width="530" height="430" controls autoplay>
 			  <source src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4">
 
 			Your browser does not support the video tag.
