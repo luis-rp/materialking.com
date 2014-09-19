@@ -24,7 +24,8 @@
 	
 	function closevideo(){
 				
-		$("#VideoContainer").html("");
+		document.getElementById('VideoContainer').sendEvent("PLAY","false"); 
+		//$("#VideoContainer").html("");
 	}
 	
 </script>
