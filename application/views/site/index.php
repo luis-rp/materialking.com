@@ -23,8 +23,8 @@
 	}
 	
 	function closevideo(){
-		
-		$("#videoContainer").stop();
+				
+		$("#videoContainer").pause();
 	}
 	
 </script>
