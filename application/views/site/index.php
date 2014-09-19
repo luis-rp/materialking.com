@@ -24,8 +24,8 @@
 	
 	function closevideo(){
 				
-		document.getElementById('VideoContainer').sendEvent("PLAY","false"); 
-		//$("#VideoContainer").html("");
+		$("#videoContainer").remove();
+		$("#videoContainer2").remove();
 	}
 	
 </script>
@@ -680,7 +680,7 @@ P.O. Price Rankings
 	      
 	      <div class="modal-body" style="padding:0;">
 	        <video id="videoContainer" width="530" height="430" controls autoplay>
-			  <source src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4">
+			  <source id="videoContainer2" src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4">
 
 			Your browser does not support the video tag.
 			</video>
