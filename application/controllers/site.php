@@ -33,6 +33,20 @@ class site extends CI_Controller
     public function index ()
     {
 
+    	if(isset($_SERVER['REMOTE_ADDR'])){
+			
+			$this->db->where('ip', $_SERVER['REMOTE_ADDR']);
+    					if ($this->db->get('ipaddress')->result()){
+    						$data['videocount'] = 1;
+    					}else{					
+    						$datatoadd = array('ip' => $_SERVER['REMOTE_ADDR']);    						
+							$this->db->insert('ipaddress',$datatoadd);
+							$data['videocount'] = 0;
+    					}
+		
+		}else 
+		$data['videocount'] = 0;
+    	
     	$details = get_my_address();
     	$center = $details->loc;
     	//$center = "56, 38";

@@ -34,6 +34,9 @@
         InitEzmark();
         InitMap();
         InitChosen();
+        
+        var videocount = <?php echo $videocount;?>;
+        if(videocount==0)
         $("#videModal").modal();
     });
 
