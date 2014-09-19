@@ -4,6 +4,28 @@ $(document).ready(function(){
 	$('#costcodedate').datepicker();
 });
 //-->
+
+function changeparent(projectid){
+	
+	$. ajax ({
+					type: "POST",					
+					data: {"projectid" : projectid},
+					url: "getcostcodefromproject",
+					success: function (data) {
+						if(data){
+							$('#parent').empty();		
+							$('#parent').append( new Option("Top Parent","") ); 				
+							$('#parent').append(data);							
+							$('#parent').val('');
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+}
+
 </script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <section class="row-fluid">
@@ -32,7 +54,7 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">Select Project</label>
     <div class="controls">
-      <select id="project" name="project">
+      <select id="project" name="project" onchange="changeparent(this.value);">
       	<?php foreach($projects as $p){?>
       	<option value="<?php echo $p->id;?>" <?php if(isset($parents[0]->project)) { if($p->id==$parents[0]->project){echo 'SELECTED';} } ?>>
       		<?php echo $p->title;?>

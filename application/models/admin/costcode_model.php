@@ -80,17 +80,21 @@ class costcode_model extends Model
 		}
 	}
 	
-	function listHeirarchicalCombo($parent_id = 0, $level = 0, $selected = ''){
+	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = ''){
 		static $temp = '';
 		# retrieve all children of $parent
-		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' ORDER BY code ASC";
+		$where = "";
+		if($projectid!="")
+		$where = 'and project = '.$projectid;
+		
+		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' {$where} ORDER BY code ASC";
 		
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT *
 			FROM
 			".$this->db->dbprefix('costcode')." 
-			WHERE parent = '{$parent_id}' AND purchasingadmin='".$this->session->userdata('purchasingadmin')."' 
+			WHERE parent = '{$parent_id}' AND purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where} 
 			ORDER BY code ASC";
 		}
 		
@@ -111,8 +115,10 @@ class costcode_model extends Model
 				$is_selected = "";
 			}
 			$separator = str_repeat("&raquo;&nbsp;", $level);
-			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['code']}</option>\r\n";				
-			$this->listHeirarchicalCombo($row['id'], $level + 1, $selected);			
+			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['code']}</option>\r\n";						if($projectid!="")
+			$this->listHeirarchicalCombo($projectid,$row['id'], $level + 1, $selected);	
+			else 
+			$this->listHeirarchicalCombo('',$row['id'], $level + 1, $selected);		
 		} 
 		return $temp;
 	}

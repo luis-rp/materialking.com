@@ -636,6 +636,31 @@ class Quote extends CI_Controller
 	}
 	
 	
+	function getpriceqtydetails(){
+    	
+		$companyid = $_POST['companyid'];
+		$itemid = $_POST['itemid'];
+		$quantiid = $_POST['quantityid'];
+		$priceid = $_POST['priceid'];		
+		
+    	$this->db->where('company',$companyid);
+    	$this->db->where('itemid',$itemid);
+    	$qtyresult = $this->db->get('qtydiscount')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		$selectbutton2 = "";
+    		$strput .= "<table class='table table-bordered'>";
+    		foreach($qtyresult as $qtyres){
+				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select' data-dismiss='modal'>";
+    			$strput .= '<tr >
+							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
+    		}
+    		$strput .= "</table>";
+    		echo $strput;
+    	}
+
+    }	
+	
 	public function invitation_export($key,$print='')
 	{
 		$company = $this->session->userdata('company');

@@ -582,6 +582,13 @@ class costcode extends CI_Controller {
         $this->load->view('admin/costcode', $data);
     }
 
+    function getcostcodefromproject(){
+    	       
+        $resultcostcode = $this->costcode_model->listHeirarchicalCombo($_POST['projectid']);    
+              
+    	echo $resultcostcode; die;
+    }
+    
     function add_costcode() {
         $data ['heading'] = 'Add New Costcode';
         $data ['action'] = site_url('admin/costcode/add_costcode');
