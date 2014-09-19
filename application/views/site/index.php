@@ -24,7 +24,7 @@
 	
 	function closevideo(){
 				
-		$("#videoContainer").pause();
+		$("#VideoContainer").html("");
 	}
 	
 </script>
