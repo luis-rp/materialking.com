@@ -150,9 +150,10 @@ class company extends CI_Controller {
             $itemid = $this->company_model->SaveCompany();
             $company = $this->db->get_where('company',array('id'=>$itemid))->row();
             $settings = (array)$this->settings_model->get_current_settings ();
+            $settings['defaultemail'] ? $mail=$settings['defaultemail'] : $mail=$settings['adminemail'];
             $this->load->library('email');
             $this->email->clear(true);
-            $this->email->from($settings['adminemail'], "Administrator");
+            $this->email->from($mail, "Administrator");            
             $this->email->to($company->primaryemail);
             $body = "Dear " . $company->contact . ",<br><br>
 		 Your Company Account Has been created by Administrator.<br><br>Check The Details Below:<br><br>
@@ -269,7 +270,7 @@ class company extends CI_Controller {
     function _set_rules() {
         $rules ['title'] = 'trim|required';
         $rules ['primaryemail'] = 'trim|required';
-        $rules ['password']='trim|md5';
+        $rules ['password']='trim';
         $rules ['zip']='trim|integer|is_natural|required';
         $rules ['contact'] = 'trim|required';
 

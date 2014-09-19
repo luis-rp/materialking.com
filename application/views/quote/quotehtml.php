@@ -74,13 +74,13 @@
     		    <tr>
 
         		<td>Supplier Expire Date</td>
-        		<td colspan="7"><?php $olddate=strtotime($bid->expire_date); $newdate = date('m/d/Y H:i:s', $olddate); echo $newdate; ?></td>
+        		<td colspan="7"><?php $olddate=strtotime($bid->expire_date); $newdate = date('m/d/Y', $olddate); echo $newdate; ?></td>
                     </tr>
 
                 <tr>
 
         		<td>Supplier Quote Date</td>
-        		<td colspan="7"><?php $olddate1=strtotime($bid->submitdate); $newdate1 = date('m/d/Y H:i:s', $olddate1); echo $newdate1; ?></td>
+        		<td colspan="7"><?php $olddate1=strtotime($bid->submitdate); $newdate1 = date('m/d/Y', $olddate1); echo $newdate1; ?></td>
                     </tr>
 
     		    <tr>

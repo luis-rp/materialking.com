@@ -22,8 +22,8 @@
 	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
 
 	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
-	
-	
+
+
 	.ui-tooltip {
 	padding: 8px;
 	font-size:19px !important;
@@ -118,7 +118,7 @@ $(document).ready(function() {
 
 <script>
 
- 
+
     function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
@@ -187,12 +187,14 @@ $(document).ready(function() {
         		}
         	});
         }
+
     }
 
     function showmodifiedprice(itemid, companyid, price, isdeal){
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
+
     	if(!isdeal) {
     		$.ajax({
     			type:"post",
@@ -248,7 +250,7 @@ $(document).ready(function() {
 
     }
 
-</script>    
+</script>
 
 
 
@@ -286,10 +288,7 @@ $( document ).tooltip();
                     <div class="properties-rows">
                       <div class="row">
 
-                        <?php
-                            foreach ($inventory as $item)
-                            if ($item->ea) {
-                        ?>
+                        <?php foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
                         <h2 class="title_top1"><?php echo $item->itemcode; ?></h2>
                             <div class="row">
@@ -307,7 +306,7 @@ $( document ).tooltip();
                                 <div class="body2 span6 ">
                                     <div class="title-price row">
                                         <div class="title2 span4 ">
-                                           
+
                                             <?php if(!empty($item->companynotes)){?>
                                             <div class="company-note" style="height:120px;overflow:auto;">
                                                 <?php echo $item->companynotes; ?>
@@ -356,7 +355,7 @@ $( document ).tooltip();
                                             </a>
                                         <?php } ?>
 
-                                        </div>										
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -373,72 +372,8 @@ $( document ).tooltip();
 
 
                 <div class="sidebar span3">
-                	<?php if(@$categorymenu != '<ul></ul>'){?>
-                    <h2>Item Filter</h2>
 
-                    <div class="content_sup" style=" padding-bottom:35px;">
-                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
-                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
-                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                           <!-- <div class="location control-group">-->
-                            	<?php $this->load->view('site/catmenu.php');?>
-                            <!--</div>-->
-                        </form>
-
-                        <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
-                    	<input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
-                    	
-                    </form>
-                        
-                    </div>
-                    <?php }?>
-                    <div style="clear:both;"></div>
-<div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
-<div class="pull-right">
-                <div class="sidebar span3">
-                    <div class="widget contact">
-                      	<label for="radirange" class="control-label">
-                                    	<h5>Manufacturers Carried:</h5>
-                                    </label>
-                        <div class="content_sup">
-                            <form>
-                                <div class="control-group">
-                              
-                                    <div class="controls">
-
-                          <table cellpadding="4" cellspacing="2">
-            			    <?php
-            			        foreach ($types as $type)
-                                    if ($type->category == 'Manufacturer') {
-                            ?>
-                            	<tr>
-                            	<td>
-                                    <a style="text-decoration:none;" href="<?php echo site_url('store/items/'.$supplier->username.'/'.$type->id);?>">
-                                    <?php if($type->image){?>
-                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>"/>
-                                    <?php }else{?>
-                                    <?php echo $type->title; ?>
-                                    <?php }?>
-                                    </a>
-                                    </td>
-                              </tr>
-                            <?php } ?>
-                             </table>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                 </div>
-                 </div><!--pull right-->
-
-
-
-<div class="pull-right">
-
-                 <div class="sidebar span3">
-                    <div class="widget contact">
+                 <div class="widget contact">
                         <div class="title">
                             <h2 class="block-title">Main Menu</h2>
                         </div>
@@ -489,65 +424,133 @@ $( document ).tooltip();
 
                         </div>
                     </div>
-                    
+                  <?php if(isset($inventory) && count($inventory)<0) {?>
+
+                	<?php if(@$categorymenu != '<ul></ul>'){?>
+                    <h2>Item Filter</h2>
+
+                    <div class="content_sup" style=" padding-bottom:35px;">
+                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                           <!-- <div class="location control-group">-->
+                            	<?php $this->load->view('site/catmenu.php');?>
+                            <!--</div>-->
+                        </form>
+
+                        <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
+                    	<input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
+
+                    </form>
+
+                    </div>
+                    <?php } }?>
+                    <div style="clear:both;"></div>
+<div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
+<div class="pull-right">
+                <div class="sidebar span3">
+                    <div class="widget contact">
+                      	<label for="radirange" class="control-label">
+                                    	<h5>Manufacturers Carried:</h5>
+                                    </label>
+                        <div class="content_sup">
+                            <form>
+                                <div class="control-group">
+
+                                    <div class="controls">
+
+                          <table cellpadding="4" cellspacing="2">
+            			    <?php
+            			        foreach ($types as $type)
+                                    if ($type->category == 'Manufacturer') {
+                            ?>
+                            	<tr>
+                            	<td>
+                                    <a style="text-decoration:none;" href="<?php echo site_url('store/items/'.$supplier->username.'/'.$type->id);?>">
+                                    <?php if($type->image){?>
+                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>"/>
+                                    <?php }else{?>
+                                    <?php echo $type->title; ?>
+                                    <?php }?>
+                                    </a>
+                                    </td>
+                              </tr>
+                            <?php } ?>
+                             </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                 </div>
+                 </div><!--pull right-->
+
+
+
+<div class="pull-right">
+
+                 <div class="sidebar span3">
+
+
                     <?php if(@$adforsupplier){?>
                    <script src="<?php echo base_url(); ?>templates/site/assets/js/jquery.bxslider.min.js"></script>
 					<!-- bxSlider CSS file -->
 					<link href="<?php echo base_url(); ?>templates/site/assets/css/jquery.bxslider.css" rel="stylesheet" />
-					
-					        <script type="text/javascript">	
+
+					        <script type="text/javascript">
 								$(function() {$('.bxslider').bxSlider({
-									  
+
 									});
-					
+
 								});
 							</script>
-              
+
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Classifieds by Supplier</h2>
                         </div>
                         <div class="content_sup">
-                           
+
                                 <div class="control-group">
-                               
+
                                    <div class="controls bxcontainer">
                                    		<ul class="bxslider">
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img  src="<?php 
+                                    	<li><img  src="<?php
                                     	$pathinfo = pathinfo($ad->image);
                                     	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
-                                    	
+
                                      </div>
                                 </div>
-                            
+
                         </div>
                     </div>
-                
+
                 <?php }?>
-                    
-                    
+
+
                      <?php if(@$dealfeed){//NOT USED NOW?>
                     <div class="widget contact">
                     <label for="radirange" class="control-label">
                                 <h5 class="block-title">Deals by Supplier</h5>
                             </label>
                         <div class="content_sup">
-                       
+
                         	<table style="font-size: 12px;">
-                        	<?php 
+                        	<?php
                         	foreach($dealfeed as $di)
                         	{
 								$diff = abs(strtotime(date('Y-m-d H:i')) - strtotime($di->dealdate));
 								$years = floor($diff / (365*60*60*24)); $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-								
+
 								$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 								$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
 								$minuts = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
 								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
-                                
+
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
                         	<tr>
@@ -582,7 +585,7 @@ $( document ).tooltip();
                         	<tr><td colspan="6">&nbsp;</td></tr>
                         	<?php }?>
                         	</table>
-                            
+
                         </div>
                     </div>
                     <?php }?>
@@ -610,35 +613,35 @@ $( document ).tooltip();
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          
+
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
-          <br> Select Quantity  
+          <br> Select Quantity
           </h4>
           <br>
           <div id="unitbox"></div>
         </div>
         <div class="modal-body">
 
-        <div id="qtypricebox"></div>  
-          
+        <div id="qtypricebox"></div>
+
         <div>
-            <div id="cartqtydiv" class="col-md-8">             
+            <div id="cartqtydiv" class="col-md-8">
             </div>
             <div class="col-md-4">
               <span id="qtylistprice"></span>
             </div>
-          </div>  
-        
-        <div id="cartsavediv"></div>   
-          
+          </div>
+
+        <div id="cartsavediv"></div>
+
         </div>
         <div class="modal-footer">
-          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
+          <input type="hidden" name="hiddenprice" id="hiddenprice" />
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div> 
+  </div>
