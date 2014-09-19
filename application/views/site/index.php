@@ -21,6 +21,12 @@
 		}
         return true;
 	}
+	
+	function closevideo(){
+		
+		$("#videoContainer").stop();
+	}
+	
 </script>
 <script>
     $(document).ready(function() {
@@ -672,14 +678,14 @@ P.O. Price Rankings
 	    <div class="modal-content">
 	      
 	      <div class="modal-body" style="padding:0;">
-	        <video width="530" height="430" controls autoplay>
+	        <video id="videoContainer" width="530" height="430" controls autoplay>
 			  <source src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4">
 
 			Your browser does not support the video tag.
 			</video>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closevideo();">Close</button>
 	   
 	      </div>
 	    </div>
