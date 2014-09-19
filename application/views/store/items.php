@@ -424,7 +424,7 @@ $( document ).tooltip();
 
                         </div>
                     </div>
-                  <?php if(isset($inventory) && count($inventory)<0) {?>
+                  <?php if(isset($inventory) && count($inventory)>0) {?>
 
                 	<?php if(@$categorymenu != '<ul></ul>'){?>
                     <h2>Item Filter</h2>
