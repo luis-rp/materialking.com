@@ -205,7 +205,7 @@ $(function() {
 	<div class="box">
 		<div class="span12">
 		   <a class="btn btn-green" href="<?php echo site_url('admin/quote/index/'.$quote->pid);?>">&lt;&lt; Back</a>
-		   &nbsp;&nbsp;<a href="<?php echo site_url('admin/quote/bids_export').'/'.$quote->id; ?>" class="btn btn-green">Export</a><br />
+		   &nbsp;&nbsp;<a href="<?php echo site_url('admin/quote/bids_export').'/'.$quote->id; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp;<a href="<?php echo site_url('admin/quote/bids_pdf').'/'.$quote->id; ?>" class="btn btn-green">View PDF</a><br />
 		   <br/>
 		   <?php echo $this->session->flashdata('message'); ?>
 		   <?php echo @$message; ?>

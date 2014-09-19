@@ -138,7 +138,104 @@ class itemcode extends CI_Controller
     	die();
 
     }
-	
+	//PDF
+	function itempdf()
+    {
+    	$itemcodes = $this->itemcode_model->get_itemcodes();
+    	$count = count($itemcodes);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($itemcodes as $itemcode)
+    		{
+    			if($itemcode->awardedon)
+    				$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
+
+    			$itemcode->ea = "$ " . $itemcode->ea;
+    			$itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
+
+    			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
+
+				$specs="";
+
+                $query = "SELECT companynotes,filename FROM ".$this->db->dbprefix('companyitem')." ci
+        		 WHERE itemid = ".$itemcode->id." AND ci.type='Purchasing' AND ci.company='".$this->session->userdata('purchasingadmin')."'" ;
+
+                $dataspecs = $this->db->query($query)->row();
+
+                if($dataspecs) {
+                	if($dataspecs->filename!="")
+                	$specs = "Yes";
+                	else if($dataspecs->companynotes!="")
+                	$specs = "Yes";
+                	else
+                	$specs = "No";
+                }else {
+                	$specs = "No";
+                }
+
+                $itemcode->specs = $specs;
+
+
+
+    			$items[] = $itemcode;
+    		}
+
+    		$data['items'] = $items;
+    		$data['jsfile'] = 'itemcodejs.php';
+    	}
+    	else
+    	{
+    		$this->data['message'] = 'No Records';
+    	}
+    	$data['addlink'] = '';
+    	$data['heading'] = 'Item Code Management';
+    	$data['table'] = $this->table->generate();
+    	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
+    	$data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
+    	$data['addsubcatlink'] = false;
+
+    	//uksort($array, 'strcasecmp');
+
+    	$data['categories'] = $this->itemcode_model->getcategories(); ;
+
+    	if ($this->session->userdata('usertype_id') == 2)
+    	{
+    		$data['addlink'] = '';
+    		$data['addcatlink'] = '';
+    		$data['addsubcatlink'] = '';
+    	}
+    	
+		//===============================================================================
+		
+		$header[] = array('Report type:','Item Code History','','','','','');
+				
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title,'','','','','');
+			
+			$header[] = array('','','','','','','');
+			
+		}	
+
+		//------------------------------------------------------
+
+    	$header[] = array('<b>ID</b>','<b>Code</b>','<b>Item Name</b>','<b>Unit</b>','<b>Specs</b>','<b>Total purchased amount</b>','<b>Last awarded date</b>');
+
+    			
+		foreach($items  as  $enq_row)
+    	{
+  			
+    		$item_price = $enq_row->totalpoprice;
+					    				
+    		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $enq_row->specs, $item_price.chr(160)  , $enq_row->awardedon);
+    	}
+		$headername = "Item Code Management";
+    	createitemPDF('itemcode', $header,$headername);
+    	die();
+
+    }
+		
     //	function do_upload()
     //	{
     //		$config['upload_path'] = './uploads/';

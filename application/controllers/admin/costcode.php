@@ -154,6 +154,123 @@ class costcode extends CI_Controller {
 
     }
 
+	// PDF 
+	
+    function costcodepdf($mpid= 0)
+    {
+    	$offset = 0;
+    	$uri_segment = 4;
+    	$mpid = $this->uri->segment($uri_segment);
+    	$mp = $this->session->userdata('managedprojectdetails');
+
+
+
+    	if(!@$_POST && @$mp->id)
+    	{
+    		@$_POST['projectfilter'] = $mp->id;
+    	}
+
+
+    	if($mpid > 0)
+    	{
+    		@$_POST['projectfilter'] = $mpid;
+    	}
+
+
+    	$costcodes = $this->costcode_model->get_costcodes(1000, 0);
+
+    	$this->load->library('pagination');
+    	$config ['base_url'] = site_url('admin/costcode/index');
+    	$config ['total_rows'] = $this->costcode_model->total_costcode();
+    	$config ['per_page'] = $this->limit;
+    	$config ['uri_segment'] = $uri_segment;
+
+    	$this->pagination->initialize($config);
+    	$data ['pagination'] = $this->pagination->create_links();
+    	$this->load->library('table');
+    	$this->table->set_empty("&nbsp;");
+    	$this->table->set_heading('ID', 'Name', 'Email', 'Actions');
+    	$i = 0 + $offset;
+
+    	if ($this->session->userdata('usertype_id') > 1)
+    		$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+    	else
+    		$where = "";
+
+    	$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+    	$taxrate = $this->db->query($cquery)->row();
+    	$data['taxrate'] = $taxrate->taxrate;
+
+    	$count = count($costcodes);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($costcodes as $costcode)
+    		{
+    			if ($costcode->totalspent != '-' && $costcode->cost > 0)
+    			{
+    				if ($costcode->totalspent / $costcode->cost > 1)
+    				{
+    					$per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
+    					$costcode->budget =  $per ;
+    				}
+    				else
+    				{
+    					$per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
+    					$costcode->budget =  $per;
+    				}
+    			}
+    			else
+    			{
+    				$per = 0;
+    				$costcode->budget = '';
+    			}
+    			$costcode->budgetper = $per;
+    			$costcode->cost = "$ " . $costcode->cost;
+    			if ($costcode->totalspent != '-') {
+    				$costcode->totalspent = $costcode->totalspent;
+    			}
+    			$costcode->manualprogress = $costcode->manualprogress ? $costcode->manualprogress : 0;
+    			$costcode->manualprogressbar = $costcode->manualprogress ;
+    			$per = str_replace('%', '', $per);
+    			if ($per <= $costcode->manualprogress)
+    			{
+    				$costcode->status = 'Good';
+    			}
+    			else
+    			{
+    				$costcode->status = 'Bad';
+    			}
+    			$items[] = $costcode;
+    		}
+
+    		$data['items'] = $items;
+    	}
+    	else {
+    		$data['items'] = array();
+    	}
+
+    	//=========================================================================================
+
+    	$header[] = array('Code' , 'Budget','$ Spent' , 'Budget % Allocated' , 'Task Progress % Complete' , 'Status' );
+		
+    	$taxrate = 	$data['taxrate'];
+
+    	foreach( $data['items'] as $item)
+    	{
+
+    		$spent = "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100)),2 );
+
+    		$header[] = array($item->code , formatPriceNew($item->cost) , formatPriceNew($spent) , $item->budget.chr(160) , $item->manualprogressbar.'%'.chr(160) , $item->status );
+    	} 
+		$headername = "Cost Code Management";
+    	createPDF('costcodes', $header,$headername);
+    	die();
+
+    	//===============================================================================
+
+    }
+
     function index($offset = 0)
     {
         $uri_segment = 4;
