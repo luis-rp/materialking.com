@@ -1,6 +1,5 @@
 <?php
 require_once 'xls_functions.php';
-require_once ('pdf_functions.php');
 
 date_default_timezone_set('America/Los_Angeles');	
 
