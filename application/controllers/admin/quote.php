@@ -1265,6 +1265,7 @@ class quote extends CI_Controller
 
 
     }
+	
 	//BID PDF
 	function bids_pdf($qid)
     {
@@ -1470,14 +1471,13 @@ class quote extends CI_Controller
     	}
     	 
 		$headername = "Bid Placed";
-    	createitemPDF('bids_pdf_'.$qid, $header,$headername);
+    	createOtherPDF('bids_pdf_'.$qid, $header,$headername);
     	die();
 
     	//===============================================================================
 
 
     }
-	
 	
 	
 
@@ -2037,6 +2037,139 @@ class quote extends CI_Controller
 
     }
 
+	// Invoices PDF
+	 function invoicepdf()
+    {
+    	$invoices = $this->quote_model->getinvoices();
+    	
+		$count = count($invoices);
+        $items = array();
+		 if ($count >= 1)
+        {
+            $settings = $this->settings_model->get_current_settings();
+            $available_statuses = array('pending', 'verified', 'error');
+            $data['available_statuses'] = $available_statuses;
+            foreach ($invoices as $invoice)
+            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
+            {
+                $invoice->ponum = $invoice->quote->ponum;
+
+                $company = $this->db->select('company.*')->from('received')
+                           ->join('awarditem','received.awarditem=awarditem.id')
+                           ->join('company','awarditem.company=company.id')
+                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->get()->row()
+                           ;
+                $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
+                $invoice->bankaccount = $bankaccount;
+
+                $invoice->companydetails = $company;
+                $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
+                //$invoice->status = $invoice->quote->status;
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $options = false;
+                foreach ($available_statuses as $status_key => $status_text)
+                {
+
+                    if (strtolower($invoice->status) == $status_text) {
+                        $selected = " selected=\"selected\"";
+                    } else {
+                        $selected = '';
+                    }
+                    $options[] = "<option value=\"$status_text\" $selected>$status_text</option>";
+                }
+                $options_payment = array();
+                $options_paymenttype = array();
+                $options_payment[]="<option value=\"Paid\" ".($invoice->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
+                //$options_payment[]="<option value=\"Requested Payment\" ".($invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Requested Paid</option>";;
+                $options_payment[]="<option value=\"Unpaid\" ".($invoice->paymentstatus=='Unpaid'||$invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
+
+                $options_paymenttype[]="<option value=\"\">Select Payment Type</option>";
+                if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+                $options_paymenttype[]="<option value=\"Credit Card\" ".($invoice->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";;
+                $options_paymenttype[]="<option value=\"Cash\" ".($invoice->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
+                $options_paymenttype[]="<option value=\"Check\" ".($invoice->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
+
+                $txtrefnum = "<input type=\"text\" id=\"refnum_$invoice->invoicenum\" name=\"refnum\" value=\"$invoice->refnum\"/>";
+
+                $update_button = "<button onclick=\"update_invoice_status('$invoice->invoicenum')\">update</button>";
+                $update_payment_button = "<button onclick=\"update_invoice_payment_status('$invoice->invoicenum')\">update</button>";
+
+                $status_html = "<select id=\"invoice_$invoice->invoicenum\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
+
+                $payment_status_html = "<select id=\"invoice_payment_$invoice->invoicenum\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
+                $payment_status_html .= "<select id=\"invoice_paymenttype_$invoice->invoicenum\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$invoice->invoicenum."','".$invoice->totalprice."');\">" . implode("", $options_paymenttype) . "</select>";
+                $payment_status_html .= $txtrefnum;
+                $payment_status_html .= $update_payment_button;
+                if($invoice->paymentstatus=='Requested Payment')
+                {
+                    $payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
+                }
+
+                $invoice->status_selectbox = $status_html;
+                $invoice->payment_status_selectbox = $payment_status_html;
+
+                $invoice->totalprice = number_format($invoice->totalprice,2);
+
+                $items[] = $invoice;
+            }
+
+            $data['items'] = $items;
+            $data['jsfile'] = 'invoicejs.php';
+        } else {
+        	$data['items'] = array();
+            $data['message'] = 'No Records';
+        }
+		
+		
+		
+    	//===============================================================================
+	
+		$header[] = array('Report type:' , 'Invoices' , '' , '' , '' , '' , '' );	
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{			
+			$header[] = array('<b>Project Title</b>', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			
+			//$header[] = array('' , '' , '' , '' , '' , '' , '' );		
+		}	
+
+    	$header[] = array('<b>PO Number</b>' , '<b>Invoice</b>' , '<b>Received On</b>' , '<b>Total Cost</b>' , '<b>Payment</b>' , '<b>Verification</b>' , '<b>Date Due</b>' );
+    	foreach($invoices as $i)
+    	{
+    		$dddate = '';
+    		if($i->quote->duedate)
+    		{ $dddate = date("m/d/Y", strtotime($i->quote->duedate)); }
+
+    		$total_price = '';
+
+    		if($i->totalprice > 0)
+    		{
+    			$total_price = '$ '.$i->totalprice;
+    		}
+				
+			
+			//----------------------------------------------------------
+			$p_status = $i->paymentstatus;
+			
+			if($i->status == 'Verified')
+			{
+				$p_status.= '/'.$i->paymenttype.'/'.$i->refnum;
+			}
+			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
+			{       				
+               $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
+			}
+			//-----------------------------------------------------------
+
+    		$header[] = array($i->quote->ponum,  $i->invoicenum,  $i->receiveddate , $total_price.chr(160) , $p_status ,$i->quote->status ,$dddate );
+    	}
+		
+		$headername = "INVOICES";
+    	createOtherPDF('invoices', $header,$headername);
+    	die();
+ 
+    }
+	
 
 
 
@@ -2513,7 +2646,8 @@ class quote extends CI_Controller
 
 
     }
-// TRACK PDF
+	
+	// TRACK PDF
 
  function trackpdf($qid)
     {
@@ -2581,7 +2715,7 @@ class quote extends CI_Controller
 		}			
 		
 		//$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
-		$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		$header[] = array('<b>PO #</b>' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
 		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );	
 
     	$header[] = array('<b>Company</b>' , '<b>Item Code</b>' , '<b>Item Name</b>' , '<b>Qty.</b>' , '<b>Unit</b>' , '<b>Price EA</b>' , '<b>Total Price</b>' , '<b>Date Requested</b>' , '<b>Cost Code</b>' , '<b>Notes</b>' , '<b>Still Due</b>' );
@@ -2714,7 +2848,7 @@ class quote extends CI_Controller
     		{
     			if (@$c['messages'])
     			{
-    				$message_for = 'Messages for '. $c['companydetails']->title.' regarding PO# '. $quote->ponum;
+    				$message_for = 'Messages for <b>'. $c['companydetails']->title.'</b> regarding PO# <b>'. $quote->ponum.'</b>';
 
     				$header[] = array($message_for , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
@@ -2844,13 +2978,14 @@ class quote extends CI_Controller
 
     	 
 		$headername = "TRACK Items";
-    	createitemPDF('track_items', $header,$headername);
+    	createOtherPDF('track_items', $header,$headername);
     	die();
 
     	//===============================================================================
 
 
     }
+
 
 
 

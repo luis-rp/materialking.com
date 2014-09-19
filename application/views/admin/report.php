@@ -9,7 +9,7 @@ $(document).ready(function(){
 });
 </script>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?> <a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a></h3>
+	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?> <a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('admin/report/reportpdf'); ?>" class="btn btn-green">View PDF</a></h3>
 	<div class="box">
 		<div class="span12">
 		<br />

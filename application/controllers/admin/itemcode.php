@@ -212,9 +212,9 @@ class itemcode extends CI_Controller
 				
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title,'','','','','');
+			$header[] = array('<b>Project Title</b>',$this->session->userdata('managedprojectdetails')->title,'','','','','');
 			
-			$header[] = array('','','','','','','');
+			//$header[] = array('','','','','','','');
 			
 		}	
 
@@ -231,10 +231,11 @@ class itemcode extends CI_Controller
     		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $enq_row->specs, $item_price.chr(160)  , $enq_row->awardedon);
     	}
 		$headername = "Item Code Management";
-    	createitemPDF('itemcode', $header,$headername);
+    	createOtherPDF('itemcode', $header,$headername);
     	die();
 
     }
+	
 		
     //	function do_upload()
     //	{

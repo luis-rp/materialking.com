@@ -327,7 +327,164 @@ class backtrack extends CI_Controller
 	}
 	
 //=========================================================================	
-
+//=========================================================================	
+	
+	function backtrackpdf($offset = 0)
+	{
+		$uri_segment = 4;
+		$offset = $this->uri->segment ($uri_segment);
+		$quotes = $this->backtrack_model->get_quotes();
+	
+		$count = count ($quotes);
+	
+		$items = array();
+		if ($count >= 1)
+		{
+			foreach ($quotes as $quote)
+			{
+				$awarded = $this->quote_model->getawardedbid($quote->id);
+				$items[$quote->ponum]['quote'] = $quote;
+				if($awarded)
+				{
+					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
+					{
+						foreach($awarded->items as $item)
+						{
+							$checkcompany = true;
+							$checkitemname = true;
+	
+							if($item->received < $item->quantity && $checkcompany && $checkitemname)
+							{
+								$item->companyname = @$item->companydetails->title;
+								if(!$item->companyname)
+									$item->companyname = '&nbsp;';
+								$item->ponum = $quote->ponum;
+								$item->duequantity = $item->quantity - $item->received;
+								if(!isset($items[$quote->ponum]['items']))
+									$items[$quote->ponum]['items'] = array();
+								$items[$quote->ponum]['items'][]=$item;
+	
+								$messagesql = "SELECT * FROM ".$this->db->dbprefix('message')." WHERE quote='{$quote->id}' AND company='{$item->company}' ORDER BY senton ASC";
+	
+	
+								if(!isset($items[$quote->ponum]['messages'][$item->company]))
+									$items[$quote->ponum]['messages'][$item->company] = array();
+								$items[$quote->ponum]['messages'][$item->company]['companyname'] = $item->companyname;
+								//$items[$quote->ponum]['messages'][$item->company]['sql'] = $messagesql;
+								if($this->db->query($messagesql)->result())
+								{
+									$result = $this->db->query($messagesql)->result();
+									//foreach($result as $msgrow)
+									$items[$quote->ponum]['messages'][$item->company]['messages']=$result;
+								}
+							}
+						}
+	
+					}
+				}
+			}
+			//echo '<pre>';print_r($quotes);die;
+	
+			if($this->session->userdata('usertype_id')==3)
+			{
+				$data['backtracks'] = array();
+				foreach($items as $item)
+				{
+					$this->db->where('quote',$item['quote']->id);
+					$this->db->where('userid',$this->session->userdata('id'));
+					$check = $this->db->get('quoteuser')->row();
+					if($check)
+					{
+						$data['backtracks'][]=$item;
+					}
+				}
+			}
+			else
+			{
+				$data['backtracks'] = $items;
+			}
+		}
+		if(!$items)
+		{
+			$this->data['message'] = 'No Records';
+		}
+		$query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		$data['companies'] = $this->db->query($query)->result();
+	
+		$data['quotes'] = $quotes;
+		$data ['addlink'] = '';
+		$data ['heading'] = 'Backorder Items';
+			
+		//=======================================================================
+	
+					
+		$header[] = array('Report type:', 'Backorders' , '' , '' , '' , '' , '' , '' , '');		
+				
+		if($this->session->userdata('managedprojectdetails'))
+		{	
+			$header[] = array('<b>Project Title</b>', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' , '');
+			$header[] = array('', '' , '' , '' , '' , '' , '' , '' , '');
+		}		
+	
+		foreach($data['backtracks'] as $backtrack)
+		{
+			if(@$backtrack['items'])
+			{
+	
+				//     heading
+					
+					
+				$header[] = array('<b>PO#</b>', $backtrack['quote']->ponum , '' , '' , '' , '' , '' , '' , '');
+					
+				$header[] = array('', '' , '' , '' , '' , '' , '' , '' , '', '' , '');	
+					
+				$header[] = array('<b>PO#</b>', '<b>Item Code</b>' , '<b>Item Name</b>' , '<b>Company</b>' , '<b>Due Qty.</b>' , '<b>Unit</b>' , '<b>ETA</b>' ,'<b>Cost Code</b>', '<b>Notes</b>');
+				
+			
+				//$sheet_name = $backtrack['quote']->ponum;
+				foreach($backtrack['items'] as $item)
+				{
+	
+					$header[] = array($item->ponum, $item->itemcode,  $item->itemname ,  $item->companyname ,$item->duequantity, $item->unit ,$item->daterequested ,$item->costcode , $item->notes);
+				}
+										
+				foreach($backtrack['messages'] as $cmp_messg)
+				{
+					if(isset($cmp_messg['messages']))
+					{
+							
+						$header[] = array('' , '' , '' , '' , '' , '' , '', '' , '');
+						$header[] = array('' , '' , '' , '' , '' , '' , '', '' , '');
+						$header[] = array('' , '' , '' , '' , '' , '' , '', '' , '');
+						$header[] = array('<b>Messages for </b>' , $backtrack['quote']->ponum , '' , '' , '' , '' , '', '' , '');
+						$header[] = array('<b>From</b>' , '<b>To</b>' , '<b>Message</b>' , '<b>Date/Time</b>' , '' , '' , '', '' , '');
+	
+						foreach($cmp_messg['messages'] as $c)
+						{
+							if(isset($c->from))
+								$header[] = array($c->from , $c->to , $c->message , $c->senton , '' , '' , '', '' , '');
+						}
+					}
+				}
+	
+	
+					
+				$header[] = array('' , '' , '' , '' , '' , '' , '', '' , '');
+				$header[] = array('' , '' , '' , '' , '' , '' , '', '' , '');
+					
+	
+			}// outer if
+		}// outer foreach
+			
+		 
+			$headername = "Backorder Items";
+    	createOtherPDF('backtrack', $header,$headername);
+    	die();
+	
+	}
+	
+//=========================================================================	
 	
 	function sendbacktrack($quoteid)
 	{

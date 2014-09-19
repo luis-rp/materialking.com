@@ -174,6 +174,143 @@ function orders_export()
 				
 	}
 	
+	// ORDER PDF
+	function orders_pdf()
+	{
+		$search = '';
+		$filter = '';
+		
+		if(!@$_POST)
+		{
+			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+			$_POST['searchto'] = date('m/d/Y');
+		}
+		
+		
+		$sql = "SELECT o.*,od.orderid as odorderid, sum(od.price*od.quantity) as totalprice  
+                FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid 
+				WHERE purchasingadmin=".$this->session->userdata('id')."
+				$search
+				$filter		
+				GROUP BY o.id 
+				ORDER BY purchasedate DESC";
+			
+		$orders = $this->db->query($sql)->result();
+		$data['orders'] = array();
+		foreach($orders as $order)
+		{
+			
+			if(!is_null($order->project))
+			{
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('project')." p
+				WHERE id=".$order->project;
+				$project = $this->db->query($sql)->result();
+//<<<<<<< HEAD
+				if($project)
+				$order->prjName = "assigned to ".$project[0]->title;
+				else
+				{
+					$order->prjName = "";
+				}
+			
+///=======
+		//		$order->prjName = "Assigned to ".$project[0]->title;
+//>>>>>>> 281a9c3788222760bb00d9d7be97eb0142db72a3
+			}else{
+				$order->prjName = "Pending Project Assignment";
+			}
+			
+			if(!is_null($order->costcode)){
+				$sql = "SELECT *
+				FROM ".$this->db->dbprefix('costcode')." p
+				WHERE id=".$order->costcode;
+				$project = $this->db->query($sql)->result();
+				$order->codeName = "Cost Code ".$project[0]->code;
+			}else{
+				$order->codeName = "Pending Cost Code Assignment";
+			}
+			$data['orders'][]=$order;
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus    
+                      FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o   
+                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id";  
+            $order->details = $this->db->query($query)->result(); 
+		}
+		$data['title_orders'] = "Orders";
+		
+		
+		//$this->load->view('admin/order/list',$data);
+			
+		//=========================================================================================
+		
+		$header[] = array('Report type:' , 'Orders','' , '' , '' , '' , '','','','');	
+		
+		if($this->session->userdata('managedprojectdetails'))
+		{	
+			$header[] = array('<b>Project Title</b>', $this->session->userdata('managedprojectdetails')->title ,'' , '' , '' , '' , '','','','');	
+			$header[] = array('' , '','' , '' , '' , '' , '','','','');	
+		}	
+		
+		
+		
+		$header[] = array('<b>Order#</b>' , '<b>Ordered On</b>','<b>Project</b>' , '<b>Type</b>' , '<b>Txn ID</b>' , '<b>Amount</b>' , '<b>Company</b>','<b>Paid Status</b>','<b>Order Status</b>','<b>Total</b>');				
+			
+		$total = 0; 
+        $oldorderid = ""; 
+		$i = 0;	
+			
+				
+		foreach($data['orders'] as $order)
+		{
+			$i++;
+			if($order->id != $oldorderid){ 
+			$total = 0; 
+			$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+			}else{ 
+				$total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
+			} 
+	
+			$code_name = $order->prjName.','.$order->codeName;
+			
+			
+			//---------------------
+			$icounter              = 1;
+			
+			$detail_company        = '';
+			$detail_paymentstatus  = '';
+			$detail_status         = '';
+			$detail_total          = '';
+			
+			
+			foreach($order->details as $detail)
+			{
+				if($icounter == 1)
+				{
+					$detail_company        = $detail->company;
+					$detail_paymentstatus  = $detail->paymentstatus;
+					if($detail->status == "Void") 
+						$detail_status =  "Declined"; 
+					else
+						$detail_status =  $detail->status;
+					
+					$detail_total   = round(($detail->total + ($detail->total*$detail->taxpercent)/100 ),2)	;
+				}
+				$icounter++; 		
+			}
+			if($order->txnid != ''){ $ordertxn = $order->txnid ;} else { $ordertxn = '';}
+			$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)) , $code_name , $order->type , $ordertxn , "$ ".round($total,2).chr(160) , $detail_company, $detail_paymentstatus, $detail_status, "$ ".$detail_total.chr(160));	
+		
+			$oldorderid = $order->id;
+		}
+		$headername = "My Purchased Items";
+    	createOtherPDF('orders', $header,$headername);
+    	die();		
+
+		
+		//===============================================================================
+				
+	}
+	
 	function orders()
 	{
 		$search = '';
@@ -520,6 +657,249 @@ function orders_export()
 	
 		createXls('Orderdetails', $header);
 		die();
+	
+		//===============================================================================
+			
+	
+	}
+		// ORDER DETAILS PDF
+	function details_pdf($id)
+	{
+		$this->db->where('id',$id);
+		$order = $this->db->get('order')->row();
+		if(!$order)
+			redirect('order');
+	
+		if($order->purchasingadmin)
+		{
+			$this->db->where('id',$order->purchasingadmin);
+			$order->purchaser = $this->db->get('users')->row();
+		}
+		else
+		{
+			$order->purchaser->companyname = 'Guest';
+		}
+		$this->db->where('orderid',$id);
+		$orderdetails = $this->db->get('orderdetails')->result();
+	
+		$transfers = $this->db->where('orderid',$id)->get('transfer')->result();
+		foreach($transfers as $transfer)
+		{
+			$config = $this->config->config;
+			require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+			Stripe::setApiKey($config['STRIPE_API_KEY']);
+	
+			$info = Stripe_Transfer::retrieve($transfer->transferid);
+			$this->db->where('id',$transfer->id)->update('transfer',array('status'=>$info['status']));
+		}
+		$sql = "SELECT t.*, c.title companyname FROM
+			   ".$this->db->dbprefix('transfer')." t, ".$this->db->dbprefix('company')." c
+				   WHERE t.orderid='$id' AND t.company=c.id";
+		$transfers = $this->db->query($sql)->result();
+		$data['transfers'] = $transfers;
+		if(!is_null($order->project)){
+			$this->db->where('id',$order->project);
+			$prj = $this->db->get('project')->row();
+			$order->prjName = $prj->title;
+		}
+		$data['order'] = $order;
+		if(!is_null($order->costcode)){
+			$this->db->where('id',$order->costcode);
+			$costcodes = $this->db->get('costcode')->result();
+			$data['costcodes'] = $costcodes;
+		}
+		$data['orderitems'] = array();
+	
+		$companyamounts = array();
+		$companies = array();
+		foreach($orderdetails as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$itemdetails = $this->db->get('companyitem')->row();
+	
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+				
+			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+				
+			$item->itemdetails = $itemdetails;
+				
+			$bankaccount = $this->db->where('company',$item->company)->get('bankaccount')->row();
+			$item->bankaccount = $bankaccount;
+				
+			$data['orderitems'][]=$item;
+				
+			if(!isset($companyamounts[$item->company]))
+			{
+				$company = $this->db->where('id',$item->company)->get('company')->row();
+				$companies[]=$company;
+				$company->amount = $item->quantity * $item->price;
+				$company->paymentstatus = $item->paymentstatus;
+				$company->paymenttype = $item->paymenttype;
+				$company->paymentnote = $item->paymentnote;
+					
+				$bankaccount = $this->db->where('company',$item->company)->get('bankaccount')->row();
+				$item->bankaccount = $bankaccount;
+					
+				$company->bankaccount = $bankaccount;
+				 
+				$companyamounts[$item->company] = $company;
+				$companyamounts[$item->company]->status = $item->status;
+				$companyamounts[$item->company]->accepted = $item->accepted;
+			}
+			else
+			{
+				$companyamounts[$item->company]->amount += $item->quantity * $item->price;
+			}
+		}
+		$data['companyamounts'] = $companyamounts;
+		$data['companies'] = $companies;
+		$data['orderid'] = $id;
+		$pa = $order->purchasingadmin;
+		$messages = $this->db->where('orderid',$id)->order_by('senton')->get('ordermessage')->result();
+		$data['messages'] = array();
+		foreach($messages as $msg)
+		{
+			if(($msg->fromtype=='users' && $msg->fromid==$pa)||($msg->totype=='users' && $msg->toid==$pa))
+			{
+				$from = $this->db->where('id',$msg->fromid)->get($msg->fromtype)->row();
+				$msg->fromname = $msg->fromtype=='company'?$from->title:@$from->companyname;
+				$to = $this->db->where('id',$msg->toid)->get($msg->totype)->row();
+				$msg->toname = $msg->totype=='company'?$to->title:@$to->companyname;
+				 
+				$data['messages'][]=$msg;
+			}
+		}
+		//echo '<pre>';print_r($companyamounts);die;
+		$this->load->view('admin/order/details',$data);
+	
+	
+	
+		//=========================================================================================
+	
+		//-----------------------orderitems-----------------------------
+			
+		$order = 	$data['order'];
+	
+	
+		$header[] = array('<b>Order#</b>' , $order->ordernumber,'' , '' , '' , '' , '');
+		$header[] = array('<b>Item Code</b>' , '<b>Quantity</b>','<b>Price</b>' , '<b>Total</b>' , '<b>Status</b>' , '' , '');
+	
+		$orderitems = $data['orderitems'];
+		if($orderitems)
+		{
+			$i = 0;
+			$gtotal = 0;
+			foreach($orderitems as $item)
+			{
+				$total = $item->quantity * $item->price;
+				$gtotal+=$total;
+				$i++;
+	
+				$o_status = '';
+	
+				if($item->status=="Void")
+				{ $o_status =  "Declined";
+				}else
+				{$o_status =  $item->status;}
+	
+	
+				$header[] = array($item->itemdetails->itemname , $item->quantity,'$ '.formatPriceNew($item->price) , '$ '.formatPriceNew(number_format($total,2)) , $o_status , ' ' , '');
+			}
+				
+			$taxpercent   = $order->taxpercent;
+			$tax          = $gtotal * $taxpercent/100;
+			$totalwithtax = $tax+$gtotal;
+	
+			$header[] = array('' , '','<b>Total</b>' , '$ '.formatPriceNew(number_format($gtotal,2)) , '' , '','');
+			$header[] = array('' , '','<b>Tax</b>' , '$ '.formatPriceNew(number_format($tax,2)) , '' , '','');
+			$header[] = array('' , '','<b>Total</b>' , '$ '.formatPriceNew(number_format($totalwithtax,2)) , '' , '','');
+		}
+	
+	
+		//---------------------------companyamounts----------------------------------------------
+		$order           = $data['order'];
+		$companyamounts  = $data['companyamounts'];
+	
+	
+		if($companyamounts && $order->type=='Manual')
+		{
+			$header[] = array('' , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Payments for order</b>' , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Company</b>' , '<b>Amount</b>','<b>Tax</b>' , '<b>Payment</b>' , '<b>Type</b>' , '<b>Notes/Check No./Txn Id</b>' , '<b>Status</b>');
+				
+			$i = 0;
+			foreach($companyamounts as $item)
+			{
+				$i++;
+				$tax = $item->amount * $order->taxpercent / 100;
+				$tax = number_format($tax,2);
+				$c_status = '';
+				if($item->status=="Void") $c_status =  "Declined"; else $c_status =  $item->status;
+	
+				$header[] = array($item->title , '$ '.formatPriceNew($item->amount) ,'$ '.formatPriceNew($tax) , $item->paymentstatus , $item->paymenttype.'', $item->paymentnote.'' , $c_status.'');
+			}
+		}
+	
+		//-----------------messages-----------------------------------------
+		$messages   = $data['messages'];
+		if($messages)
+		{
+				
+			$header[] = array('' , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Messages</b>'  , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Date</b>' , '<b>Subject</b>','<b>From</b>' , '<b>To</b>' , '<b>Message</b>' , '' , '');
+	
+			foreach($messages as $message)
+			{
+				$header[] = array(date('m/d/Y',strtotime($message->senton)) , $message->subject,$message->fromname , $message->toname, $message->message , '' , '');
+			}
+		}
+	
+		//-----------------------transfers-----------------------------------------
+	
+		$transfers   = $data['transfers'];
+	
+		if($transfers)
+		{
+			$header[] = array('' , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Transfers</b>'  , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Transferid</b>' , '<b>Company</b>','<b>Amount</b>' , '<b>Status</b>' , '' , '' , '');
+	
+			$i = 0;
+			foreach($transfers as $item)
+			{
+				$i++;
+				//$item->amount = number_format($item->amount + ($item->amount * $order->taxpercent/100),2);
+	
+				$header[] = array($item->transferid , $item->companyname,'$ '.$item->amount.chr(160) , $item->status , '' , '' , '');
+			}
+		}
+	
+		//-----------------------costcodes-----------------------------------------
+	
+		if(isset($data['costcodes']))
+		{
+			$costcodes = $data['costcodes'];
+				
+			$header[] = array('' , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Costcodes</b>'  , '','' , '' , '' , '' , '');
+			$header[] = array('<b>Cost Code</b>' , '<b>Cost</b>','' , '' , '' , '' , '');
+	
+			foreach($costcodes as $cc)
+			{
+				$header[] = array($cc->code , $cc->cost ,'' , '' , '' , '' , '');
+			}
+		}
+	
+		//-----------------------------------------------------------------------
+			
+	
+	
+		 
+		$headername = "Order Items";
+    	createOtherPDF('Orderdetails', $header,$headername);
+    	die();
 	
 		//===============================================================================
 			
@@ -966,7 +1346,179 @@ with the transfer#{$tobj->id}.
     		
     	}
     }
+		
+	// Add to project PDF
 	
+	function add_to_project_pdf($id)
+    {
+    	$project = $this->session->userdata('managedproject');
+    
+    	if(!$project)
+    		redirect('admin/dashboard');   
+    
+    	if($this->input->post('pid') != 0)
+    	{
+    		$this->db->where('id',$id);
+    		$this->db->update('order',array('project'=>$this->input->post('pid'),'costcode'=>$this->input->post('ccid')));
+    		redirect('admin/order');
+    	}
+    	else
+    	{
+    		$this->db->where('id',$id);
+    		$order = $this->db->get('order')->row();
+    		if(!$order)
+    			redirect('admin/order');
+    			
+    		if($order->purchasingadmin)
+    		{
+    			$this->db->where('id',$order->purchasingadmin);
+    			$order->purchaser = $this->db->get('users')->row();
+    		}
+    		else
+    		{
+    			$order->purchaser->companyname = 'Guest';
+    		}
+    			
+    		$this->db->where('orderid',$id);
+    		$orderdetails = $this->db->get('orderdetails')->result();
+    			
+    		if(!is_null($order->costcode)){
+    			$sql = "SELECT *
+				FROM ".$this->db->dbprefix('costcode')." p
+				WHERE id=".$order->costcode;
+    			$project = $this->db->query($sql)->result();
+    			$order->codeName = "Cost Code ".$project[0]->code;
+    		}else{
+    			$order->codeName = "Pending Cost Code Assignment";
+    		}
+    			
+    		$data['order'] = $order;
+    		$data['orderitems'] = array();
+    			
+    		foreach($orderdetails as $item)
+    		{
+    			$this->db->where('itemid',$item->itemid);
+    			$this->db->where('type','Supplier');
+    			$itemdetails = $this->db->get('companyitem')->row();
+    
+    			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+    			 
+    			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+    			 
+    			$item->itemdetails = $itemdetails;
+    			 
+    			$this->db->where('id',$item->company);
+    			$companyname = $this->db->get('company')->row();
+    			$item->companyname = $companyname->title;
+    				
+    			$data['orderitems'][]=$item;
+    		}
+    
+    		$data['projects']  =  $this->statmodel->getProjects();
+    		$data['orderid'] = $id;
+    			
+    		//$this->load->view('admin/order/list_projects',$data);
+    			
+    			
+    		//=========================================================================================
+    			
+    		//$header[] = array('Item Code' , 'Company','Quantity' , 'Price' , 'Price' , 'Total' , 'Status'  );
+    
+    		$order      = $data['order'];
+    		$orderitems = $data['orderitems'];
+    			
+    			
+    			
+    		$total;$i = 0;
+    		$gtotal = 0;
+    		foreach($orderitems as $item)
+    		{
+    			$total = number_format($item->quantity * $item->price,2);
+    			$gtotal+=$total;
+    			$i++;
+    		}
+    		$total = number_format($gtotal,2);
+    			
+    		$tax = number_format(($order->taxpercent * $total)/100,2);
+    			
+    			
+    		if(@$orderitems[0]->accepted == 1)
+    		{
+    				
+    			$header[] = array('Order Items for Order#' , $order->ordernumber , '' , '' , '' , '' );
+    			$header[] = array('<b>ORDER #</b>' , '<b>DATE</b>', '<b>TYPE</b>' , '' , '' , '' );
+    				
+    			$header[] = array($order->ordernumber , date('m/d/Y',strtotime($order->purchasedate)), $order->type , '' , '' , '' );
+    				
+    			$i      = 0;
+    			$gtotal = 0;
+    
+    			foreach($orderitems as $item)
+    			{
+    				$total = number_format($item->quantity * $item->price,2);
+    				$gtotal+=$total;
+    				$i++;
+    				log_message('debug',var_export($item,true));
+    			}
+    			$gd_total =  number_format($gtotal,2);
+    			$gd_tax   =  $tax + number_format($gtotal,2);
+    
+    
+    			$header[] = array('<b>SubTotal:</b>' , '', '$ '.formatPriceNew($gd_total) , '' , '' , '' );
+    			$header[] = array('<b>Tax:</b>' , '', '$ '.formatPriceNew($tax) , '' , '' , ''  );
+    			$header[] = array('<b>Total:</b>' , '', '$ '.formatPriceNew($gd_tax) , '' , '' , ''  );
+    
+    
+    			$header[] = array('' , '', '' , '' , '' , ''  );
+    			$header[] = array('' , '', '' , '' , '' , ''  );
+    
+   		 $headername = "Assign Order to Project";
+    	createOtherPDF('add_to_project', $header,$headername);
+    	die();
+    				
+    				
+    		}
+    		//--------------------------------------------------------------------------------
+    			
+    			
+    		if($orderitems)
+    		{
+    
+    			$header[] = array('<b>Item Code</b>' , '<b>Company</b>','<b>Quantity</b>' , '<b>Price</b>' ,  '<b>Total</b>' , '<b>Status</b>'  );
+    				
+    			$i = 0;
+    			$gtotal = 0;
+    			foreach($orderitems as $item)
+    			{
+    				$total = number_format($item->quantity * $item->price,2);
+    				$gtotal+=$total;
+    				$i++;
+    					
+    				//------------------
+    				$item_status = '';
+    				if($item->status=="Void") $item_status =  "Declined"; else $item_status = $item->status;
+    					
+    				$header[] = array($item->itemdetails->itemname , $item->companyname ,$item->quantity , '$ '.formatPriceNew($item->price) , $total , $item_status );
+    			}
+    
+    			//-------------------------------------
+    
+    			$gd_tatal_2 = $tax+number_format($gtotal,2);
+    
+    			$header[] = array('<b>SubTotal</b>' , '','' , '$ '.formatPriceNew(number_format($gtotal,2)) ,  '' , ''  );
+    			$header[] = array('<b>Tax</b>' , '','' , '$ '.formatPriceNew(number_format($tax,2)) ,  '' , ''  );
+    			$header[] = array('<b>Total</b>' , '','' , '$ '.formatPriceNew($gd_tatal_2)  ,  '' , ''  );
+    
+    		 
+    	$headername = "Assign Order to Project";
+    	createPDF('add_to_project', $header,$headername);
+    	die();
+			}
+    		//===============================================================================
+    			
+    		
+    	}
+    }
 	function add_to_project($id)
 	{
 		$project = $this->session->userdata('managedproject');

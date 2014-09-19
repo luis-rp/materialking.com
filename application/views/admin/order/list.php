@@ -27,7 +27,7 @@ $(document).ready( function() {
 });      
 </script>
 <section class="row-fluid">
-	<h3 class="box-header">My Purchased Items <a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a></h3>
+	<h3 class="box-header">My Purchased Items <a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('admin/order/orders_pdf'); ?>" class="btn btn-green">View PDF</a></h3>
 		
 	<div class="box">
 	  <div class="span12">

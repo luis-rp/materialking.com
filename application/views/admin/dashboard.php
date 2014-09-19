@@ -353,7 +353,7 @@
     					Browse Suppliers
     				</a>
 				<?php } ?>
-				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>
+				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>&nbsp;<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>
 				</div>
 	    	</div>
 

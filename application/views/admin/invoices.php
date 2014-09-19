@@ -144,7 +144,7 @@ function paycc(ptype,idnumber,amount)
 <span class="button" id="activatetour">Start the tour</span>
 <span class="closeX" id="canceltour"></span></div><?php } ?>
 <section class="row-fluid">
-    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no title" ?><a href="<?php echo site_url('admin/quote/export'); ?>" class="btn btn-green">Export</a><br /></h3>
+    <h3 class="box-header" style="display:inline;" id="step1"><?php echo $heading; ?> - <?php echo ($this->session->userdata('managedprojectdetails')) ? $this->session->userdata('managedprojectdetails')->title : "no title" ?><a href="<?php echo site_url('admin/quote/export'); ?>" class="btn btn-green">Export</a>&nbsp;&nbsp;<a href="<?php echo site_url('admin/quote/invoicepdf'); ?>" class="btn btn-green">View PDF</a><br /></h3>
     <div class="box">
         <div class="span12">
             <div id="message_div">
