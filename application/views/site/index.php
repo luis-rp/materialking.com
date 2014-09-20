@@ -35,9 +35,7 @@
         InitMap();
         InitChosen();
         
-        var videocount = <?php echo $videocount;?>;
-        if(videocount==0)
-        $("#videModal").modal();
+        
     });
 
     function InitEzmark() {
@@ -677,23 +675,6 @@ P.O. Price Rankings
         </div>
     </div>
 
-    <div class="modal fade" id="videModal" tabindex="-1" role="dialog" aria-labelledby="videModalModalLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      
-	      <div class="modal-body" style="padding:0;">
-	        <video id="videoContainer" width="530" height="430" controls autoplay>
-			  <source id="videoContainer2" src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4">
-
-			Your browser does not support the video tag.
-			</video>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closevideo();">Close</button>
-	   
-	      </div>
-	    </div>
-	  </div>
-	</div>
+   
 </div>
  
