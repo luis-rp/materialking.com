@@ -51,7 +51,7 @@ function invoice(invoicenum)
     	 <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 
-			<h3>Invoices <a href="<?php echo site_url('quote/invoices_export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a></h3>
+			<h3>Invoices <a href="<?php echo site_url('quote/invoices_export'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('quote/invoices_pdf'); ?>" class="btn btn-primary btn-xs btn-mini">View PDF</a></h3>
 		</div>
 
 	   <div id="container">

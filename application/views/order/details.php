@@ -8,7 +8,7 @@ $(document).ready( function() {
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
 		
-			<h3>Order items for order# <?php if(isset($order->ordernumber)) echo $order->ordernumber?>  <a href="<?php echo site_url('order/export_order/'.$order->id); ?>" class="btn btn-primary btn-xs btn-mini">Export</a><br /></h3>
+			<h3>Order items for order# <?php if(isset($order->ordernumber)) echo $order->ordernumber?>  <a href="<?php echo site_url('order/export_order/'.$order->id); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('order/pdf_order/'.$order->id); ?>" class="btn btn-primary btn-xs btn-mini">View PDF</a><br /></h3>
 			<?php if(isset($order->txnid)) {?>
 			<h3>Transaction ID: <?php echo $order->txnid?></h3>
 			<?php }?>

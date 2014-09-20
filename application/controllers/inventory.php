@@ -463,6 +463,86 @@ class Inventory extends CI_Controller
 
 	}
 	
+	//Inventory PDF
+	function inventoryPDF()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+	
+		$limit = 10;
+		if (!isset($_POST['pagenum']))
+			$_POST['pagenum'] = 0;
+		$start = $_POST['pagenum'] * $limit;
+		$items = $this->inventorymodel->getItems($company->id,$limit, $start);
+	
+		$data['totalcount'] = $this->inventorymodel->count_all($company->id);
+		$data['currentpage'] = $_POST['pagenum'] + 1;
+		$data['totalpages'] = ceil($data['totalcount'] / $limit);
+		$data['submitmethod'] = 'POST';
+		$data['submiturl'] = 'inventory';
+		$data['pagingfields'] = $_POST;
+		$data['suppliers'] = array();
+	
+		$this->db->where('company',$company->id);
+		$tier = $this->db->get('tierpricing')->row();
+	
+		$data['tier'] = $tier;
+		$data['items'] = $items;
+		//$data['manufacturers'] = $this->db->order_by('title')->get('manufacturer')->result();
+		$data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
+		$data['categories'] = $this->itemcode_model->getcategories();
+	
+	
+		//$this->load->view('inventory/items',$data);
+	
+		//=========================================================================================
+	
+		$header[] = array('Item Name' , 'Code', 'Name','Manufacturer' , 'Part#' , 'List Price' , 'Min. Qty.' ,'Stock');
+			
+		$i = 0;
+	
+	
+		$manufacturers = $data['manufacturers'];
+		foreach($items as $item)
+		{
+			$i++;
+				
+			$Item_code = @$item->companyitem->itemcode;
+			$Item_name = @$item->companyitem->itemname;
+				
+			$mf_name = '';
+			foreach($manufacturers as $mf)
+			{
+				if($mf->id == @$item->companyitem->manufacturer)
+				{
+					$mf_name = $mf->title;
+				}
+			}
+			$list_partnum = @$item->companyitem->partnum;
+			$item_price   = @$item->companyitem->ea;
+			$item_minqty  = @$item->companyitem->minqty;
+			$item_qtyavailable  = @$item->companyitem->qtyavailable;
+				
+			$i_price = '';
+			if($item_price > 0)
+			{
+				$i_price = '$ '.$item_price ;
+			}
+				
+				
+			$header[] = array($item->itemname.'', $Item_code.'', $Item_name.'' ,$mf_name.'', $list_partnum.'' , formatPriceNew($i_price).'' , $item_minqty.'' ,$item_qtyavailable.'');
+				
+		}
+		 
+		$headername = "Inventory";
+		createPDF('inventory', $header,$headername);
+		die();
+	
+		//===============================================================================
+
+	}
+	
     function showeditform($itemid)
     {
 		$company = $this->session->userdata('company');

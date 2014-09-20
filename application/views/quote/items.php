@@ -39,7 +39,7 @@
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 			
-			<h3>PO Performance : <?php echo $quote->ponum;?> <font color="green">Items Won : <?php echo $itemswon;?></font> 	 <a href="<?php echo site_url('quote/items_export/'.$quoteid); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 
+			<h3>PO Performance : <?php echo $quote->ponum;?> <font color="green">Items Won : <?php echo $itemswon;?></font> 	 <a href="<?php echo site_url('quote/items_export/'.$quoteid); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 	&nbsp;&nbsp; <a href="<?php echo site_url('quote/items_pdf/'.$quoteid); ?>" class="btn btn-primary btn-xs btn-mini">View PDF</a> 
 				&nbsp;&nbsp;&nbsp;
 				<font color="red">Items Lost : <?php echo $itemslost;?></font>
 				<?php if($award && $itemswon && @$award->id){?>

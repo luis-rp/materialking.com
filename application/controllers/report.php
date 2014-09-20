@@ -196,5 +196,126 @@ class report extends CI_Controller
 		//===============================================================================
 	
 	}
+	
+	// Report PDF
+	function report_pdf($offset = 0)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		$uri_segment = 4;
+		$offset = $this->uri->segment ($uri_segment);
+		$reports = $this->reportmodel->get_reports ();
+			
+		$count = count ($reports);
+		$items = array();
+		if ($count >= 1)
+		{
+			foreach ($reports as $report)
+			{
+				$items[] = $report;
+			}
+			$data['reports'] = $items;
+		}
+		if(!$items)
+		{
+			$this->data['message'] = 'No Records';
+		}
+		$query = "SELECT u.* FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
+					  WHERE u.id=n.purchasingadmin AND n.company='".$company->id."'";
+			
+		$data['purchasingadmins'] = $this->db->query($query)->result();
+			
+		$data ['addlink'] = '';
+		$data ['heading'] = 'Report';
+	
+		//=========================================================================================
+	
+		$totalallquantity = 0;
+		$totalallprice    = 0;
+		$totalallpaid     = 0;
+			
+		$i = 0;
+		if(isset($data['reports']))
+		foreach($data['reports'] as $report)
+		{
+			$header[] = array('Company' , 'PO#','Item Code' , 'Item Name' , 'Unit' , 'Qty.' , 'EA' , 'Total','Payment','Verification','Notes' ,'Invoice#');
+	
+			$totalquantity  = 0;
+			$totalprice     = 0;
+			$totalpaid      = 0;
+			$totalremaining = 0;
+			foreach($report->items as $item)
+			{
+				$amount = $item->quantity * $item->ea;
+				$amount = round($amount + ($amount*$item->taxpercent/100),2);
+				$totalallprice += $amount;
+					
+				$totalquantity += $item->quantity;
+				$totalprice += $amount;
+				if($item->paymentstatus=='Paid')
+				{
+					$totalpaid += $amount;
+					$totalallpaid += $amount;
+				}
+					
+				$header[] = array($item->companyname , $item->ponum,$item->itemcode , $item->itemname , $item->unit , $item->quantity , formatPriceNew($item->ea), '$'.formatPriceNew(round($amount,2)),$item->paymentstatus,$item->status,$item->notes ,$item->invoicenum);
+					
+			}
+	
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$totalremaining = $totalprice - $totalpaid;
+	
+			$header[] = array('<b>DATE</b>' , $report->receiveddate,'' , '' , '' , '' , '' , '','','','' ,'');
+			$header[] = array('<b>TOTAL QUANTITY</b>' , $totalquantity,'' , '' , '' , '' , '' , '','','','' ,'');
+				
+			$header[] = array('<b>TOTAL AMOUNT</b>' , '$'.formatPriceNew($totalprice),'' , '' , '' , '' , '' , '','','','' ,'');
+				
+			$header[] = array('<b>TOTAL PAID</b>' , '$'.formatPriceNew($totalpaid),'' , '' , '' , '' , '' , '','','','' ,'');
+				
+			$header[] = array('<b>TOTAL REMAINING</b>' , '$'.formatPriceNew($totalremaining),'' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+	
+	
+		}
+			
+			
+		$reports = $data['reports'];
+			
+		if(@$reports)
+		{
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$header[] = array('' , '','' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$date_range = $_POST['searchfrom'].' - '.$_POST['searchto'];
+	
+			$header[] = array('<b>DATE</b>' , $date_range,'' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$header[] = array('<b>TOTAL All QUANTITY</b>' , $totalallquantity,'' , '' , '' , '' , '' , '','','','' ,'');
+				
+			$header[] = array('<b>TOTAL All AMOUNT</b>' , '$'.formatPriceNew($totalallprice),'' , '' , '' , '' , '' , '','','','' ,'');
+				
+			$header[] = array('<b>TOTAL All PAID</b>' , '$'.formatPriceNew($totalallpaid),'' , '' , '' , '' , '' , '','','','' ,'');
+	
+			$totalallremaining = $totalallprice - $totalallpaid;
+	
+			$header[] = array('<b>TOTAL All REMAINING</b>' , '$'.formatPriceNew($totalallremaining),'' , '' , '' , '' , '' , '','','','' ,'');
+		}
+			
+			
+			
+		$headername = "Report";
+    	createPDF('report', $header,$headername);
+    	die();	
+			
+			
+		//===============================================================================
+	
+	}
 }
 ?>

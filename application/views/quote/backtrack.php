@@ -38,7 +38,7 @@ function clearnotes(noteid){
 
     <div class="content">
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title"><a href="<?php echo site_url('quote/viewbacktrack_export').'/'.$quoteid->id; ?>" class="btn btn-green">Export</a><br />
+		<div class="page-title"><a href="<?php echo site_url('quote/viewbacktrack_export').'/'.$quoteid->id; ?>" class="btn btn-green">Export</a> &nbsp;&nbsp;<a href="<?php echo site_url('quote/viewbacktrack_pdf').'/'.$quoteid->id; ?>" class="btn btn-green">View PDF</a><br />
 			<h3>Please Update the date available for following items</h3>
 		</div>
 	   <div id="container">

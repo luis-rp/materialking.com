@@ -169,7 +169,7 @@ function createOtherPDF($sheet_name, $pdfdata,$headername)
 			//Table Heading
 			$tbl.='<thead><tr style="background-color:#FFFFFF;font-size:14px;color:#000000;">';
 			$tbl.='<th align="left" width="15%"><h4 style="font-size:18px;margin-bottom:0px;">'.$rows[0][0].'</h4></th>';
-			$tbl.='<th align="left" width="30%"><h4 style="font-size:18px;margin-bottom:0px;">'.$rows[0][1].'</h4></th>';			
+			$tbl.='<th align="left" width="40%"><h4 style="font-size:18px;margin-bottom:0px;">'.$rows[0][1].'</h4></th>';			
 				 
 		   
 			$tbl.='</tr></thead>';

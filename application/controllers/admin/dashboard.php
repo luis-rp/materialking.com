@@ -253,7 +253,8 @@ class Dashboard extends CI_Controller
 		//===============================================================================
 	
 	}	
-//Dashboard PDF
+	
+	//Dashboard PDF
 	function dashboard_pdf()
 	{
 	
@@ -474,7 +475,8 @@ class Dashboard extends CI_Controller
 	
 		//===============================================================================
 	
-	}		
+	}	
+	
 		
 	function index() 
 	{
@@ -581,7 +583,7 @@ class Dashboard extends CI_Controller
 			$where2 = "";
 			
 			if(count($codearr)>0){
-				$codestr = "'" .implode("', '", $codearr) . "'";
+				$codestr = implode(",",$codearr); 
 				$where2 = "AND code not in ({$codestr})";
 			}
 			
@@ -604,22 +606,19 @@ class Dashboard extends CI_Controller
 			foreach($result as $item)
 			{
 			
-			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data, o.shipping 
+			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
-			$result = $this->db->query($query2)->row();
+			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
-
-			if($result){
-
+			if($result[0]){
 			  if (!isset($codes[$cnt])) 
     			$codes[$cnt] = new stdClass();	
-			$codes[$cnt]->label = $result->label;
-			$codes[$cnt]->data = $result->data;
+			$codes[$cnt]->label = $result[0]->label;
+			$codes[$cnt]->data = $result[0]->data;
 			$codes[$cnt]->type = "new";
-			$codes[$cnt]->shipping = $result->shipping;
 			$cnt++;
 			}
 			
@@ -642,7 +641,7 @@ class Dashboard extends CI_Controller
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
 						
-					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, 
 							".$this->db->dbprefix('orderdetails')." od
 					WHERE cc.code =  '".$c->label."'
@@ -654,12 +653,8 @@ class Dashboard extends CI_Controller
 					
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
-							$c->shipping = $totalOrder->shipping;
 					}
 					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
-					if(isset($c->shipping))
-						$c->data = $c->data + $c->shipping;
-						
 					/*********/
 					$c->label = $c->label . ' - $'.$c->data;
 					$costcodesjson[]=$c;

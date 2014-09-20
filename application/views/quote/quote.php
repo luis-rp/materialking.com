@@ -1,8 +1,6 @@
 <?php //echo '<pre>'; print_r($originalitems);die;?>
 <?php echo "<script>var changetierurl='".site_url('company/changetier')."';</script>";?>
 <?php echo "<script>var changepriceurl='".site_url('company/changeitemprice')."';</script>";?>
-<?php // echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
-<?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo "<script>var tier1=".$tiers->tier1.";</script>";?>
 <?php echo "<script>var tier2=".$tiers->tier2.";</script>";?>
 <?php echo "<script>var tier3=".$tiers->tier3.";</script>";?>
@@ -120,7 +118,7 @@ function asktierchange(pa,tier)
 		    });
 	}
 }
-function viewPricelist(itemid, quantityid,priceid, itemcode,itemname,price)
+function viewPricelist(itemcode,itemname,price)
 {
 	$("#pricelist").modal();
 	$("#pricelistitemcode").html(itemcode);
@@ -131,71 +129,6 @@ function viewPricelist(itemid, quantityid,priceid, itemcode,itemname,price)
 	$("#pricelisttier2").html(Number(price + (tier2 * price/100)).toFixed(2));
 	$("#pricelisttier3").html(Number(price + (tier3 * price/100)).toFixed(2));
 	$("#pricelisttier4").html(Number(price + (tier4 * price/100)).toFixed(2));
-	$("#hiddenitemid").val(itemid);
-	$("#hiddenprice").val(price);
-	$("#hiddenquantityid").val(quantityid);
-	$("#hiddenpriceid").val(priceid);
-}
-
-/*function showqtydiscount(companyid){
-	
-	var itemid = $("#hiddenitemid").val();
-	var price = $("#hiddenprice").val();
-	
-	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
-        	$("#qtypricebox").html("");
-        	$.ajax({
-        		type:"post",
-        		data: data,
-        		sync: false,
-        		url: getpriceqtydetails
-        	}).done(function(data){
-        		if(data){
-        			$("#pricelist").css('display', 'none');
-					$("#qtydiscount").modal();
-        			$("#qtypricebox").html(data);
-        		}
-        	});
-	
-}*/
-
-
-function showqtydiscount(companyid){
-	
-	var itemid = $("#hiddenitemid").val();
-	var price = $("#hiddenprice").val();
-	var quantityid = $("#hiddenquantityid").val();
-	var priceid = $("#hiddenpriceid").val();
-	
-	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid;
-        	$("#qtypricebox").html("");
-        	$.ajax({
-        		type:"post",
-        		data: data,
-        		sync: false,
-        		url: getpriceqtydetails
-        	}).done(function(data){
-        		if(data){
-        			$("#pricelist").css('display', 'none');
-					$("#qtydiscount").modal();
-        			$("#qtypricebox").html(data);
-        		}
-        	});
-	
-}
-
-
-function selectquantity(qty, quant, price, priceid)
-{		
-		$("#"+quant).val(qty);		
-		$("#"+priceid).val(price);	
-		$("#pricelist").css('display', 'block');
-}
-
-
-function displaypricemodal(){
-	
-	$("#pricelist").css('display', 'block');
 }
 //-->
 </script>
@@ -203,7 +136,7 @@ function displaypricemodal(){
 
     <div class="content"> 
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title"> <a href="<?php echo site_url('quote/invitation_export').'/'.$invitekey; ?>" class="btn btn-green">Export</a><br />	
+		<div class="page-title"> <a href="<?php echo site_url('quote/invitation_export').'/'.$invitekey; ?>" class="btn btn-green">Export</a> &nbsp;&nbsp;<a href="<?php echo site_url('quote/invitation_pdf').'/'.$invitekey; ?>" class="btn btn-green">View PDF</a><br />	
 			<h3>
 				Bid Invitations  <a class="pull-right btn btn-primary btn-xs btn-mini" href="<?php echo site_url('message/messages/'.$invitekey);?>">View Messages</a>
 			</h3>
@@ -232,9 +165,9 @@ function displaypricemodal(){
 									<tr>
 										<td>
 										  <strong>
-									     PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
+									      PO#: <?php echo $quote->ponum;?></td><td><span style="margin-left:500px;">Revision History</span></td></tr>
 									      <tr><td>
-									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
+									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; ?></span></tr>
 									      <td>Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>
@@ -327,7 +260,7 @@ function displaypricemodal(){
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
 							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>');">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>');">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -430,12 +363,6 @@ function displaypricemodal(){
 											<input type="button" value="Save Quote" class="btn btn-primary" onclick="$('#draft').val('Yes');$('#olditemform').submit();"/>
 							    		</td>
 							    	</tr>
-							    	
-							    	<input type="hidden" name="hiddenitemid" id="hiddenitemid" />
-							    	<input type="hidden" name="hiddenprice" id="hiddenprice" />
-							    	<input type="hidden" name="hiddenquantityid" id="hiddenquantityid" />
-							    	<input type="hidden" name="hiddenpriceid" id="hiddenpriceid" />
-							    	
 							    	</form>
 							    	</tbody>
 						    	</table>
@@ -506,7 +433,7 @@ function displaypricemodal(){
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-default" style="float: left;" type="button" onclick="showqtydiscount(<?php echo $company->id; ?>);" >View available qty. discounts</button> <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -514,30 +441,6 @@ function displaypricemodal(){
     <!-- /.modal-dialog -->
   </div>
 	  
-  
-    <div id="qtydiscount" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      	 <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button" onclick="displaypricemodal();">x</button>
-          <br>
-          <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">
-           Quantity Discounts          
-          </h4>          
-        </div>        
-        <div class="modal-body">
-
-        <div id="qtypricebox"></div>                   
-            
-        <div class="modal-footer">          
-          <button data-dismiss="modal" class="btn btn-default" type="button" onclick="displaypricemodal();">Close</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div> 
 	  
 	  			<div id="itemmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
                     <div class="modal-dialog">
