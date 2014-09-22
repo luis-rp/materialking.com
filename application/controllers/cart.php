@@ -361,7 +361,7 @@ class cart extends CI_Controller
 				}
 				else
 				{
-					$item['rate']=0;
+					$item['rate']=0;$item['label']='';
 				}
 				$data['cart'][]=$item;
 				
@@ -562,6 +562,7 @@ class cart extends CI_Controller
 			foreach($companiesamount as $caid=>$amount)
 			{
 			    $amount = $amount + $amount*$settings->taxpercent/100;
+				$amount=$amount-.55-($amount*2.9/100);
 			    $amount = round($amount,2);
 			    $bankaccount = $this->db->where('company',$caid)->get('bankaccount')->row();
 			    $company = $this->db->where('id',$caid)->get('company')->row();
@@ -880,7 +881,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			}
 			else
 			{
-				$item['rate']=0;
+				$item['rate']=0; $item['label']='';
 			}
 				$data['cart'][]=$item;
 				
