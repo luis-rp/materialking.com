@@ -680,10 +680,10 @@ class Order extends CI_Controller
 	
 		
 		$order = $this->db->where('id',$id)->get('order')->row();
-		$data['email_body_title'] = "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
-		$data['email_body_content'] = "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
-		
-		$data['email_body_content'] = $this->getorderdetails($id);
+		$data['email_body_content'] = "Order:".$order->ordernumber;
+		$data['email_body_title'] .= "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
+		$data['email_body_content'] .= "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
+		$data['email_body_content'] .= $this->getorderdetails($id);
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->db->where('id',$order->purchasingadmin);

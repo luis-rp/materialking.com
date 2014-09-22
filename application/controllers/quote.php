@@ -738,6 +738,31 @@ class Quote extends CI_Controller
 			$this->load->view('quote/quote',$data);
 	}
 	
+	function getpriceqtydetails(){
+    	
+		$companyid = $_POST['companyid'];
+		$itemid = $_POST['itemid'];
+		$quantiid = $_POST['quantityid'];
+		$priceid = $_POST['priceid'];		
+		
+    	$this->db->where('company',$companyid);
+    	$this->db->where('itemid',$itemid);
+    	$qtyresult = $this->db->get('qtydiscount')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		$selectbutton2 = "";
+    		$strput .= "<table class='table table-bordered'>";
+    		foreach($qtyresult as $qtyres){
+				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select' data-dismiss='modal'>";
+    			$strput .= '<tr >
+							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
+    		}
+    		$strput .= "</table>";
+    		echo $strput;
+    	}
+
+    }
+	
 	
 	public function invitation_export($key,$print='')
 	{
@@ -1561,7 +1586,7 @@ class Quote extends CI_Controller
     	        redirect('quote');
     	    if($bid->company != $company->id)
     	        redirect('quote');
-            if($bid->quotefile !="")
+            if($bid->quotefile !="" && (file_exists('./uploads/quotefile/'.$bid->quotefile) && !is_dir('./uploads/quotefile/'.$bid->quotefile)))
             {
                 $attachment = "uploads/quotefile/".$bid->quotefile;
             }
@@ -1597,7 +1622,7 @@ class Quote extends CI_Controller
     	    $this->email->initialize($config);
     		//$this->email->clear(true);
             $to = array();
-            $this->email->from($settings['adminemail'], "Administrator");
+            $this->email->from($company->primaryemail);
     		$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
             $to[] = $pa->email;
             $to[] = $settings['adminemail'];
