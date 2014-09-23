@@ -529,7 +529,9 @@ $( document ).tooltip();
                            </div>
                         </div>
                         <?php }?>
-                        <?php if(isset($types[0]->category) && $types[0]->category!="") { ?>
+                        <?php //if(isset($types[0]->category) && $types[0]->category!="") { 
+								if($types){
+							?>
                         <div class="content">
                         
                          <p>&nbsp;</p>  
