@@ -36,6 +36,8 @@
         InitChosen();
         <?php if($videocount == 0) {?>
         $("#videopopup").modal();
+        <?php } else { ?>
+        	$("#videopopsrc").remove();
         <?php } ?>
         
     });
@@ -677,11 +679,7 @@ P.O. Price Rankings
         </div>
     </div>
 
-   
-</div>
- 
-
-<div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
       	 <div class="modal-header">
@@ -691,13 +689,13 @@ P.O. Price Rankings
         </div>        
         <div class="modal-body">
 
-        <video id="videopopsrc" controls="controls" autoplay="autoplay" loop="loop"
-width="530" height="350" preload="auto" title="Video">
+        <video id="videopopsrc" controls="controls" autoplay="autoplay" 
+width="530" height="350" title="Video">
     <source src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4"/>
     <source src="//www.cdn.com/video.ogv" type="video/ogv"/>
     <source src="//www.cdn.com/video.webm" type="video/webm"/>
 </video>                 
-            
+        </div>    
         <div class="modal-footer">          
           <button data-dismiss="modal" class="btn btn-default" type="button" onclick="closevideo();">Close</button>
         </div>
@@ -706,4 +704,5 @@ width="530" height="350" preload="auto" title="Video">
     </div>
     <!-- /.modal-dialog -->
   </div> 
- 
+   
+</div>
