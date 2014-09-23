@@ -370,6 +370,7 @@ class cart extends CI_Controller
 				else
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
 					
+					if(isset($item['label']) && $item['label']!='')
 					$userinfoship[$item['company'].'comp2'.$item['itemid']]=$item['label'];
 
 				
@@ -890,6 +891,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				else
 					$userinfoship[$item['company'].'comp'.$item['itemid']]=$item['rate'];
 				
+				if(isset($item['label']) && $item['label']!='')
 				$userinfoship[$item['company'].'comp2'.$item['itemid']]=$item['label'];
 				
 				if(is_object($item['rate'])){
