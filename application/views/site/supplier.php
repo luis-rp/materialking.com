@@ -529,11 +529,12 @@ $( document ).tooltip();
                            </div>
                         </div>
                         <?php }?>
+                        <?php if(isset($types[0]->category) && $types[0]->category!="") { ?>
                         <div class="content">
                         
-                         <?php if(isset($types[0]->category) && $types[0]->category!="") { ?><p>&nbsp;</p>  
+                         <p>&nbsp;</p>  
                          
-                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3> <?php } ?>
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3> 
                         	
                             <ul style="float:left; display:inline-block;list-style-type: none; margin:0px; padding:0px;;text-align:center">
             			    <?php 
@@ -552,7 +553,7 @@ $( document ).tooltip();
                             <?php } ?>
                             </ul>
                         </div>
-						
+						<?php } ?>
 						<?php if($feedbacks){?>
                         <div>
                             <p>&nbsp;</p><br/>

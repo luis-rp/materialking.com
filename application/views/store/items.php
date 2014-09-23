@@ -448,7 +448,8 @@ $( document ).tooltip();
                     <?php } }?>
                     <div style="clear:both;"></div>
 <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
-<div class="pull-right">
+			<?php if($types){?>
+			<div class="pull-right">
                 <div class="sidebar span3">
                     <div class="widget contact">
                       	<label for="radirange" class="control-label">
@@ -485,7 +486,7 @@ $( document ).tooltip();
                     </div>
                  </div>
                  </div><!--pull right-->
-
+			<?php } ?>
 
 
 <div class="pull-right">
