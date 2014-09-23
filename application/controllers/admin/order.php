@@ -315,6 +315,7 @@ function orders_export()
 	{
 		$search = '';
 		$filter = '';
+		$filter2 = '';
 		if(!@$_POST)
 		{
 			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
@@ -342,7 +343,27 @@ function orders_export()
 			}
 			if(@$_POST['ordernumber'])
 			{
-				$filter = " AND o.ordernumber='".$_POST['ordernumber']."'";
+				$filter .= " AND o.ordernumber='".$_POST['ordernumber']."'";
+			}
+			if(@$_POST['searchcompany'])
+			{
+				$filter .= " AND od.company='".$_POST['searchcompany']."'";
+			}
+			if(@$_POST['searchpaymentstatus'])
+			{
+				$filter .= " AND od.paymentstatus='".$_POST['searchpaymentstatus']."'";
+			}
+			if(@$_POST['searchorderstatus'])
+			{
+				$filter .= " AND od.status='".$_POST['searchorderstatus']."'";
+			}
+			if(@$_POST['searchproject'])
+			{
+				$filter .= " AND o.project='".$_POST['searchproject']."'";
+			}
+			if(@$_POST['searchcostcode'])
+			{
+				$filter .= " AND o.costcode='".$_POST['searchcostcode']."'";
 			}
 		}
 		$sql = "SELECT o.*,od.orderid as odorderid,od.paymentnote, sum(od.price*od.quantity) as totalprice  
@@ -381,12 +402,97 @@ function orders_export()
 				$order->codeName = "Pending Cost Code Assignment";
 			}
 			$data['orders'][]=$order;
+			
+			if(@$_POST['searchcompany'])
+			{
+				$filter2 .= " AND od.company='".$_POST['searchcompany']."'";
+			}
+			if(@$_POST['searchpaymentstatus'])
+			{
+				$filter2 .= " AND od.paymentstatus='".$_POST['searchpaymentstatus']."'";
+			}
+			if(@$_POST['searchorderstatus'])
+			{
+				$filter2 .= " AND od.status='".$_POST['searchorderstatus']."'";
+			}
+			if(@$_POST['searchproject'])
+			{
+				$filter2 .= " AND o.project='".$_POST['searchproject']."'";
+			}
+			if(@$_POST['searchcostcode'])
+			{
+				$filter2 .= " AND o.costcode='".$_POST['searchcostcode']."'";
+			}
 			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus ,od.shipping   
                       FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o   
-                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id GROUP BY c.id";  
+                      WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id {$filter2} GROUP BY c.id";  
             $order->details = $this->db->query($query)->result(); 
 		}
 		$data['title_orders'] = "Orders";
+		
+				$sql2 = "SELECT o.*,od.company as company   
+                FROM ".$this->db->dbprefix('order')." o join ".$this->db->dbprefix('orderdetails')." od on o.id = od.orderid 
+				WHERE purchasingadmin=".$this->session->userdata('id')." ORDER BY purchasedate DESC";
+		
+		$orders2 = $this->db->query($sql2)->result();
+		$companyarr = array();
+		$projectarr = array();
+		$costcodearr = array();
+		foreach($orders2 as $order2){
+			if(isset($order2->company)){
+				if($order2->company!="")
+				$companyarr[] = $order2->company;
+			}
+			
+			if(isset($order2->project)){
+				if($order2->project!="")
+				$projectarr[] = $order2->project;
+			}
+			
+			if(isset($order2->costcode)){
+				if($order2->costcode!="")
+				$costcodearr[] = $order2->costcode;
+			}		
+		}
+		
+		
+		if(count($companyarr)>1){
+        	$companyimplode = implode(",",$companyarr);
+        	$companystr = "AND c.id in (".$companyimplode.")";
+        }else 
+        	$companystr = "";
+		
+        
+        if(count($projectarr)>1){
+        	$projectimplode = implode(",",$projectarr);
+        	$projectstr = "AND p.id in (".$projectimplode.")";
+        }else 
+        	$projectstr = "";
+        	
+        	
+        if(count($costcodearr)>1){
+        	$costimplode = implode(",",$costcodearr);
+        	$costcodestr = "AND c.id in (".$costimplode.")";
+        }else 
+        	$costcodestr = "";	
+        			
+		
+		$query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
+        $data['companies'] = $this->db->query($query)->result();
+		
+        $wherep = "";
+        if ($this->session->userdata('usertype_id') > 1)
+                $wherep = " AND purchasingadmin =".$this->session->userdata('purchasingadmin');               
+        $queryp = "SELECT p.* FROM ".$this->db->dbprefix('project')." p WHERE 1=1 {$wherep} {$projectstr}";
+        $data['projects'] = $this->db->query($queryp)->result();
+                
+        $wherecost = "";
+        if ($this->session->userdata('usertype_id') > 1)
+                $wherecost = " AND purchasingadmin =".$this->session->userdata('purchasingadmin');               
+        $querycost = "SELECT c.* FROM ".$this->db->dbprefix('costcode')." c WHERE 1=1 {$wherecost} {$costcodestr}";
+        $data['costcode'] = $this->db->query($querycost)->result();   
+		
 		$this->load->view('admin/order/list',$data);
 	}
 	

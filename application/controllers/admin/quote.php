@@ -309,7 +309,7 @@ class quote extends CI_Controller
         }
         $ret = '<h5>PO#:' . $quote->ponum . '&nbsp; &nbsp;' . anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view')) . '</h5>';
         $ret .= '<table class="table table-bordered">';
-        $ret .= '<tr><th>Itemcode</th><th>Price Status</th><th>Qty.</th><th>Qty. received</th><th>Qty. due</th><th>Status</th></tr>';
+        $ret .= '<tr><th>Itemcode</th><th>Price Ea</th><th>Price Status</th><th>Qty.</th><th>Qty. received</th><th>Qty. due</th><th>Status</th></tr>';
         foreach ($quoteitems as $item)
         {
             $awarded = false;
@@ -346,7 +346,7 @@ class quote extends CI_Controller
              		$received = 0;
              	else
              		$received = $item->received;
-                $ret .= '<tr><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a></td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $received. '</td><td>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
+                $ret .= '<tr><td><a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">'.$item->itemcode.'</a></td><td>'.$item->ea.'</td><td width="64"><img src="' . site_url('templates/admin/images/'.$ps.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $received. '</td><td>' . ($item->quantity - $item->received) . '</td><td>' . $status . '</td></tr>';
              }
         }
         $ret .= '</table>';

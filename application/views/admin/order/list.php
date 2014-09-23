@@ -43,10 +43,60 @@ $(document).ready( function() {
                 Order #:
 				<input type="text" name="ordernumber" value="<?php echo @$_POST['ordernumber']?>" style="width: 70px;"/>
                 &nbsp;&nbsp;
+                    Company:
+				    <select id="searchcompany" name="searchcompany" style="width: 150px;">
+					 <option value=''>All Companies</option>
+					  <?php if(count($companies)>0) { foreach($companies as $company){?>
+						<option value="<?php echo $company->id?>"
+							<?php if(@$_POST['searchcompany']==$company->id){echo 'SELECTED';}?>
+							>
+							<?php if(isset($company->title) && $company->title!="") echo $company->title?>
+						</option>
+					 <?php } }?>
+				    </select>
+				 &nbsp;&nbsp;
+                        Paid Status:
+                        <select id="searchpaymentstatus" name="searchpaymentstatus" style="width: 100px;">
+                            <option value=''>All</option>
+                            <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
+                           <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
+                            <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
+                        </select>   
+                &nbsp;&nbsp;
+                        Order Status:
+                        <select id="searchorderstatus" name="searchorderstatus" style="width: 100px;">
+                            <option value=''>All</option>
+                            <option value="Accepted" <?php if (@$_POST['searchorderstatus'] == 'Accepted') { echo 'SELECTED'; } ?>>Accepted</option>
+                           <option value="Void" <?php if (@$_POST['searchorderstatus'] == 'Void') { echo 'SELECTED'; } ?>>Void</option>
+                            <option value="Pending" <?php if (@$_POST['searchorderstatus'] == 'Pending') { echo 'SELECTED'; } ?>>Pending</option>
+                        </select>         
+                &nbsp;&nbsp;
+                Project:
+                <select name="searchproject" id="searchproject"  style="width: 100px;">
+								<option value="">View All</option>
+								<?php foreach($projects as $p){?>
+						      	<option value="<?php echo $p->id;?>" <?php if($p->id==@$_POST['searchproject']){echo 'SELECTED';}?>>
+						      		<?php echo $p->title;?>
+						      	</option>
+						      	<?php }?>
+							</select>
+                &nbsp;&nbsp;
+                Costcode:
+                <select name="searchcostcode" id="searchcostcode"  style="width: 100px;">
+								<option value="">View All</option>
+								<?php foreach($costcode as $c){?>
+						      	<option value="<?php echo $c->id;?>" <?php if($c->id==@$_POST['searchcostcode']){echo 'SELECTED';}?>>
+						      		<?php echo $c->code;?>
+						      	</option>
+						      	<?php }?>
+							</select>
+                &nbsp;&nbsp;
+                <div style="float:right;margin-top:5px;margin-right:16px;">
                 <input type="submit" value="Filter" class="btn btn-primary"/>
                 <a href="<?php echo site_url('admin/order');?>">
                 	<input type="button" value="Show All" class="btn btn-primary"/>
                 </a>
+                </div>
            </form>
 	    
 			<div>
@@ -54,13 +104,15 @@ $(document).ready( function() {
                                     <table id="datatable" class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style="width:10%">Order#</th>
-                                                <th style="width:10%">Ordered On</th>
-                                                <th style="width:10%">Project</th>
-                                                <th style="width:10%">Type</th>
-                                                <th style="width:10%">Txn ID</th>
-                                                <th style="width:10%">Amount</th> 
-                                                <th style="width:30%">Details</th>
+                                                <th style="width:8%">Order#</th>
+                       							<th style="width:7%">Ordered On</th>
+                                                <th style="width:8%">Project</th>
+                                                <th style="width:7%">Type</th>
+                                                <th style="width:7%">Txn ID</th>
+                                                <th style="width:8%">Total Amount</th>
+                                                <th style="width:9%">Total Amount Paid</th>
+                                                <th style="width:8%">Total Amount Due</th>
+                                                <th style="width:28%">Details</th>
                                                 <th style="width:10%">Actions</th>
                                             </tr>
                                         </thead>
@@ -86,6 +138,24 @@ $(document).ready( function() {
                                                 <td><?php echo $order->type;?></td>
                                                <td><?php echo $order->txnid?$order->txnid:$order->paymentnote;?></td>
                                                 <td><?php echo "$ ".round($total+$order->shipping,2);?></td> 
+                                                 <?php
+                                               $totalpaid=0;
+                                               $totaldue=0;
+                                               foreach($order->details as $detail)
+                                                   {
+                                               		  if($detail->paymentstatus=='Paid')
+                                               			{
+                                               				$totalpaid +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               			}
+
+                                               		  if($detail->paymentstatus=='Unpaid')
+                                               			{
+                                               				$totaldue +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               			}
+                                                   }
+                                                  ?>
+                                                <td>$<?php echo $totalpaid; ?></td>
+                                                <td>$<?php echo $totaldue; ?></td>
                                                 <td>
                                                 	<table class="table table-bordered datagrid">
                                                 		<tr>

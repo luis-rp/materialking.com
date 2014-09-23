@@ -62,7 +62,7 @@ class itemcode_model extends Model {
                     	$item->totalpoprice += $result2[0]->totalprice2;
                     }
                         
-                $item->minprices = $this->getminimumprices($item->itemcode);
+               // $item->minprices = $this->getminimumprices($item->itemcode);
                 $ret[] = $item;
             }
             //print_r($ret);die;

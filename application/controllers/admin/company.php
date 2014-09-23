@@ -145,6 +145,7 @@ class company extends CI_Controller {
             $data['states'] = $this->db->get('state')->result();
             $this->load->view('admin/company', $data);
         } else {
+        	$pwd = "";
             $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
             $_POST['regkey'] = $key;
             $itemid = $this->company_model->SaveCompany();
@@ -155,13 +156,14 @@ class company extends CI_Controller {
             $this->email->clear(true);
             $this->email->from($mail, "Administrator");            
             $this->email->to($company->primaryemail);
+            $company->pwd1?$pwd=$company->pwd1:$pwd=$company->password;
             $body = "Dear " . $company->contact . ",<br><br>
 		 Your Company Account Has been created by Administrator.<br><br>Check The Details Below:<br><br>
 		 Company Name : ".$company->title."
 		<br/>
 		Username : ".$company->username."
 		<br/>
-		Password : ".$company->password."
+		Password : ".$pwd."
 		<br><br>";
 
             $this->email->subject("Your Account Has been Created Successfully by Administrator.");

@@ -697,3 +697,8 @@ table.fc-border-separate {
 #calendarevent table.fc-header .fc-header-right{ padding:10px 10px 0px;}
 
 .fc-week{ padding:5px;}
+
+td.fc-widget-content
+{
+ position:static !important
+}

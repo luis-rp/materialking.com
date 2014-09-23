@@ -584,7 +584,7 @@ class Dashboard extends CI_Controller
 			$where2 = "";
 			
 			if(count($codearr)>0){
-				$codestr = implode(",",$codearr); 
+				$codestr = "'" .implode("', '", $codearr) . "'";
 				$where2 = "AND code not in ({$codestr})";
 			}
 			

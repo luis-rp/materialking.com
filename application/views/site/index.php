@@ -24,8 +24,8 @@
 	
 	function closevideo(){
 				
-		$("#videoContainer").remove();
-		$("#videoContainer2").remove();
+		$("#videopopsrc").remove();
+		$("#videopopsrc").remove();
 	}
 	
 </script>
@@ -34,7 +34,9 @@
         InitEzmark();
         InitMap();
         InitChosen();
-        
+        <?php if($videocount == 0) {?>
+        $("#videopopup").modal();
+        <?php } ?>
         
     });
 
@@ -677,4 +679,31 @@ P.O. Price Rankings
 
    
 </div>
+ 
+
+<div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      	 <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button" onclick="closevideo();">x</button>
+          <br>
+          <i class="icon-credit-card icon-7x"></i>                   
+        </div>        
+        <div class="modal-body">
+
+        <video id="videopopsrc" controls="controls" autoplay="autoplay" loop="loop"
+width="530" height="350" preload="auto" title="Video">
+    <source src="<?php echo base_url();?>templates/site/assets/materialking.mp4" type="video/mp4"/>
+    <source src="//www.cdn.com/video.ogv" type="video/ogv"/>
+    <source src="//www.cdn.com/video.webm" type="video/webm"/>
+</video>                 
+            
+        <div class="modal-footer">          
+          <button data-dismiss="modal" class="btn btn-default" type="button" onclick="closevideo();">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 
  

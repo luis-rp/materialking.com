@@ -56,6 +56,7 @@ class Admin extends CI_Controller {
 		$this->table->set_empty ( "&nbsp;" );
 		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type', 'User Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
 		$i = 0 + $offset;
+		if(isset($adminusers)) {
 		foreach ( $adminusers as $adminuser )
 		{
 			$this->table->add_row ( ++ $i,
@@ -77,6 +78,7 @@ class Admin extends CI_Controller {
 			    anchor ('admin/admin/changepwd/' . $adminuser->id, '<span class="icon-2x icon-key"></span>', array ('class' => 'update' ) )
 			    . ' ' .
 			    anchor ('admin/admin/delete/' . $adminuser->id, '<span class="icon-2x icon-trash"></span>', array ('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')" ) ) );
+		}	    
 		}
 		$data ['addlink'] = '<a class="btn btn-green" href="add">Add New User</a>';
 		$data ['heading'] = 'User Overview';
