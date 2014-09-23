@@ -575,6 +575,7 @@ class Dashboard extends CI_Controller
 			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
+			log_message('debug',var_export($query,true));
 			$codes = $this->db->query($query)->result();
 			$codearr = array();			
 			foreach($codes as $code2)
