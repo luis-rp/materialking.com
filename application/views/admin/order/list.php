@@ -193,7 +193,7 @@ $(document).ready( function() {
                                             </tr>
                                            <?php $oldorderid = $order->id;  } ?>
                                            
-                                           <tr><td colspan="5"></td><td style="text-align:center;"><strong>Grand Total</strong></td><td style="text-align:center;"><strong>Total Paid</strong></td><td style="text-align:center;"><strong>Total Overdue</strong></td><td colspan="2"></td></tr>
+                                           <tr><td colspan="5"></td><td style="text-align:center;"><strong>Grand Total</strong></td><td style="text-align:center;"><strong>Total Paid</strong></td><td style="text-align:center;"><strong>Total Due</strong></td><td colspan="2"></td></tr>
                                            <tr style="text-align:center;"><td colspan="5"></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaltotal,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finalpaid,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaldue,2);?></strong></td><td colspan="2"></td></tr>
                                            
                                         </tbody>
