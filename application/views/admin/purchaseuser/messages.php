@@ -64,7 +64,7 @@ function endTour(){
 <span class="closeX" id="canceltour"></span></div>
 <?php } ?>
 <section class="row-fluid">
-	<h3 class="box-header" style="display:inline;" id="step1">Messages</h3>
+	<h3 class="box-header" style="display:inline;" ><span id="step1">Messages</span></h3>
 	<?php echo $this->session->flashdata('message'); ?>
 	<div class="box">
 	  <div class="span12">

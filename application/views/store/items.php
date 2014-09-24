@@ -448,7 +448,15 @@ $( document ).tooltip();
                     <?php } }?>
                     <div style="clear:both;"></div>
 <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
-			<?php if($types){?>
+
+			<?php if($types){
+						$band = false;
+						foreach ($types as $type){
+							if ($type->category == 'Manufacturer')
+								$band=true;
+						}
+					if($band){
+				?>
 			<div class="pull-right">
                 <div class="sidebar span3">
                     <div class="widget contact">
@@ -463,7 +471,7 @@ $( document ).tooltip();
 
                           <table cellpadding="4" cellspacing="2">
             			    <?php
-            			        foreach ($types as $type)
+            			        foreach ($types as $type){
                                     if ($type->category == 'Manufacturer') {
                             ?>
                             	<tr>
@@ -477,7 +485,10 @@ $( document ).tooltip();
                                     </a>
                                     </td>
                               </tr>
-                            <?php } ?>
+                            <?php 
+									}
+                                                }
+                                                 ?>
                              </table>
                                     </div>
                                 </div>
@@ -486,7 +497,7 @@ $( document ).tooltip();
                     </div>
                  </div>
                  </div><!--pull right-->
-			<?php } ?>
+			<?php } }?>
 
 
 <div class="pull-right">

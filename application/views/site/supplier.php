@@ -531,6 +531,12 @@ $( document ).tooltip();
                         <?php }?>
                         <?php //if(isset($types[0]->category) && $types[0]->category!="") { 
 								if($types){
+									$band = false;
+									foreach ($types as $type){
+										if ($type->category == 'Manufacturer')
+											$band=true;
+									}
+									if($band){
 							?>
                         <div class="content">
                         
@@ -555,7 +561,7 @@ $( document ).tooltip();
                             <?php } ?>
                             </ul>
                         </div>
-						<?php } ?>
+						<?php } } ?>
 						<?php if($feedbacks){?>
                         <div>
                             <p>&nbsp;</p><br/>
