@@ -437,7 +437,7 @@ $( document ).tooltip();
 
                         </div>
                     </div>
-                  
+                  <?php if(isset($inventory) && count($inventory)>0) {?>
                     <?php if(isset($breadcrumb2) && $breadcrumb2!="") {?>
                 		 <h2>Sub Categories</h2>
                 		   <div class="content_sup" style="height:72px;">
@@ -446,7 +446,7 @@ $( document ).tooltip();
 								<ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
 								</div>
 					      </div>
-					<?php } ?>
+					<?php } } ?>
 			<?php if($types){
 						$band = false;
 						foreach ($types as $type){
