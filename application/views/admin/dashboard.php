@@ -386,6 +386,7 @@
 					  <td>From</td>
 					  <td>To</td>
 					  <td>Sent On</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($msgs as $msg) { // if(strpos($msg->to, '(Admin)') > 0) { ?>
 
@@ -394,6 +395,7 @@
 					  <td><?php echo $msg->from; ?></td>
 					  <td><?php echo $msg->to; ?></td>
 					  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closemessage/'.$msg->id);?>">X</a></td>
 					  </tr>
 
 				<?php // }
@@ -409,12 +411,14 @@
 					  <tr>
 					  <td>Quote</td>
 					  <td>Sent On</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($newquotes as $quote) {?>
 
 					  <tr>
 					  <td><?php echo $quote->ponum; ?></td>
 					  <td><?php $datetime = strtotime($quote->podate); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closequote/'.$quote->id);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -430,12 +434,14 @@
 					  <tr>
 					  <td>Quote</td>
 					  <td>Awarded On</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($awardquotes as $awardquote) { ?>
 
 					  <tr>
 					  <td><?php echo $awardquote->ponum; ?></td>
 					  <td><?php $datetime = strtotime($awardquote->awardedon); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeaward/'.$awardquote->awardid);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -452,13 +458,15 @@
 					  <td>CostCode</td>
 					  <td>Project</td>
 					  <td>Creation Date</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php  foreach($newcostcodes as $costcode) { ?>
 
 					  <tr>
 					  <td><?php echo $costcode->code; ?></td>
 					  <td><?php echo $costcode->title; ?></td>
-					   <td><?php $datetime = strtotime($costcode->creation_date); echo date("m/d/Y", $datetime);?></td>
+					  <td><?php $datetime = strtotime($costcode->creation_date); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closecostcode/'.$costcode->id);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -474,12 +482,14 @@
 					  <tr>
 					  <td>Project</td>
 					  <td>Creation Date</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($newprojects as $project) { ?>
 
 					  <tr>
 					  <td><?php echo $project->title; ?></td>
 					  <td><?php $datetime = strtotime($project->creation_date); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeproject/'.$project->id);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -496,12 +506,14 @@
 					  <tr>
 					  <td>User</td>
 					  <td>Creation Date</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($users as $user) { ?>
 
 					  <tr>
 					  <td><?php echo $user->username; ?></td>
 					  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeusers/'.$user->id);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -517,12 +529,14 @@
 					  <tr>
 					  <td>Company</td>
 					  <td>Accepted On</td>
+					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($networks as $network) { ?>
 
 					  <tr>
 					  <td><?php echo $network->title; ?></td>
 					  <td><?php $datetime = strtotime($network->acceptedon); echo date("m/d/Y", $datetime);?></td>
+					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closenetwork/'.$network->id);?>">X</a></td>
 					  </tr>
 
 				<?php } ?>
@@ -547,12 +561,12 @@
 					  <td>Due Date</td>
 					  </tr>
 				<?php foreach ($invoices as $invoice)
-            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->quote->duedate)) < date('Y-m-d'))
+            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
             { ?>
 
 					  <tr>
 					  <td><?php echo $invoice->invoicenum; ?></td>
-					  <td><?php $datetime = strtotime($invoice->quote->duedate); echo date("m/d/Y", $datetime);?></td>
+					  <td><?php if($invoice->datedue) { $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); }?></td>
 					  </tr>
 
 				<?php } ?>
@@ -619,7 +633,7 @@
 				
 				
 				
-					<div   class="well span3">
+		<!-- <div   class="well span3">
 		<div class="tiles-title extrabox"  style="float:left; width:100%">
 					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
 
@@ -634,10 +648,10 @@
     		</div>
 		</section>
 		 </div>
-	 </div>	
+	 </div>	-->
 		
 
-		<div   class="well span3">
+		<!-- <div   class="well span3">
 		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
 		
 
@@ -658,7 +672,7 @@
 
 				</div>
 		<?php //making error dashboard}?>
-			</div>
+			</div> -->
 
 			<?php }?>	
 							

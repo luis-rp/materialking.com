@@ -139,6 +139,17 @@
     <div class="container">
         <div id="main">
             <div class="row">
+            
+            	<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+
+                            <div class="location control-group">
+                            	<?php $this->load->view('site/catmenu.php');?>
+                            </div>
+               </form>
+            
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h1 class="page-header"><?php echo $page_title;?></h1>
@@ -240,21 +251,21 @@
                 <div class="sidebar span3">
                 	
                                     
-                    <h2>Item Filter</h2>
+                    <!-- <h2>Item Filter</h2>
                     
                     <div>
                         
-                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
-                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php // echo base_url('site/items');?>">
+                            <input type="hidden" name="keyword" value="<?php // echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                            <input type="hidden" id="formcategory" name="category" value="<?php // echo isset($_POST['category'])?$_POST['category']:"";?>"/>
                             
                             <div class="location control-group">
-                            	<?php $this->load->view('site/catmenu.php');?>
+                            	<?php // $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>
                        
-                    </div>
+                    </div> -->
                 </div>
 
             </div>

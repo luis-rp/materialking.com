@@ -269,6 +269,19 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
+            
+				<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
+                 	<input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
+                    <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                    <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                    <div class="location control-group">
+                        <?php $this->load->view('site/catmenu.php');?>
+                    </div>
+            </form>
+            <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
+                    <input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
+            </form>	
+                       
                 <div class="span9">
                    <h3 class="titlebox" style="padding:0px 0px 0px 8px">
                     <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
@@ -424,31 +437,16 @@ $( document ).tooltip();
 
                         </div>
                     </div>
-                  <?php if(isset($inventory) && count($inventory)>0) {?>
-
-                	<?php if(@$categorymenu != '<ul></ul>'){?>
-                    <h2>Item Filter</h2>
-
-                    <div class="content_sup" style=" padding-bottom:35px;">
-                        <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
-                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
-                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                           <!-- <div class="location control-group">-->
-                            	<?php $this->load->view('site/catmenu.php');?>
-                            <!--</div>-->
-                        </form>
-
-                        <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
-                    	<input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
-
-                    </form>
-
-                    </div>
-                    <?php } }?>
-                    <div style="clear:both;"></div>
-<div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
-
+                  
+                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {?>
+                		 <h2>Sub Categories</h2>
+                		   <div class="content_sup" style="height:72px;">
+                   			 <div style="clear:both;"></div>
+								<div class="breadcrumb-pms" style="width:200px;" >
+								<ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
+								</div>
+					      </div>
+					<?php } ?>
 			<?php if($types){
 						$band = false;
 						foreach ($types as $type){

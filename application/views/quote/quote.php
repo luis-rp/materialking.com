@@ -120,7 +120,7 @@ function asktierchange(pa,tier)
 		    });
 	}
 }
-function viewPricelist(itemid, quantityid,priceid, itemcode,itemname,price)
+function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price)
 {
 	$("#pricelist").modal();
 	$("#pricelistitemcode").html(itemcode);
@@ -134,7 +134,8 @@ function viewPricelist(itemid, quantityid,priceid, itemcode,itemname,price)
 	$("#hiddenitemid").val(itemid);
     $("#hiddenprice").val(price);
     $("#hiddenquantityid").val(quantityid);
-    $("#hiddenpriceid").val(priceid);
+    $("#hiddenpriceid").val(priceid);    
+    $("#hiddenpurchaser").val(purchasingadmin);
 }
 
 
@@ -167,8 +168,10 @@ function showqtydiscount(companyid){
  var price = $("#hiddenprice").val();
  var quantityid = $("#hiddenquantityid").val();
  var priceid = $("#hiddenpriceid").val();
+ var purchaser = $("#hiddenpurchaser").val();
  
- var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid;
+ var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid+"&purchaser="+purchaser;
+
  $("#qtypricebox").html("");
  $.ajax({
  type:"post",
@@ -328,7 +331,7 @@ function displaypricemodal(){
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
 							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>');">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>');">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -436,6 +439,7 @@ function displaypricemodal(){
 							    	<input type="hidden" name="hiddenprice" id="hiddenprice" />
 							    	<input type="hidden" name="hiddenquantityid" id="hiddenquantityid" />
 							    	<input type="hidden" name="hiddenpriceid" id="hiddenpriceid" />
+							    	<input type="hidden" name="hiddenpurchaser" id="hiddenpurchaser" />
 							    	
 							    	</form>
 							    	</tbody>

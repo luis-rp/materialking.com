@@ -3605,8 +3605,10 @@ $loaderEmail = new My_Loader();
             ';
 
 
-            require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
-            require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+            if (!class_exists('TCPDF')) {
+            	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+            	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+			}
 
             $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -3897,8 +3899,10 @@ $loaderEmail = new My_Loader();
         //print_r($companies);die;
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
-        require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
-        require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+        if (!class_exists('TCPDF')) {
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+        }
         $this->db->where('id',$this->session->userdata('purchasingadmin'));
         $cpa = $this->db->get('users')->row();
         foreach ($companies as $company) {

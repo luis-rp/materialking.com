@@ -250,12 +250,12 @@
                                         <div class="image span3">
                                             <div class="content">
                                               <div class="sidepan">  <?php if ($item->item_img) { ?>
-                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt=""></div>
+                                                    <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt="">
                                                 <?php } else { ?>
                                                 
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
-
+												</div>
                                                  <?php if(isset($item->hasdiscount)){ if($item->hasdiscount) { ?>
                                                 <div class="price2" style="position:absolute; left:205px; top:6px;">
                                                 <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">

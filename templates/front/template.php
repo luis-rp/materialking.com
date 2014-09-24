@@ -11,6 +11,12 @@
 	{
 		$menu = 'tier';
 	}
+	
+	if($function=='invoice')
+	{
+		$menu = 'invoice';
+	}
+	
 	if($function=='invoices')
 	{
 		$menu = 'invoices';
@@ -212,7 +218,7 @@
 	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i><span class="title">Manage Back Orders</span></a></li>
 	  <li class="<?php if($menu=='order'){echo 'active';}?>"> <a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar02"></i><span class="title">Shopping/Store Sales</span></a></li>
 	  <li class="<?php if($menu=='report'){echo 'active';}?>"> <a href="<?php echo site_url('report');?>"> <i class="fa fa-dollar1N"></i><span class="title">Run Reports</span></a></li>
-	  <li class="<?php if($menu=='invoices'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar2N"></i><span class="title">Manage Invoices</span></a></li>
+	  <li class="<?php if($menu=='invoices' || $menu=='invoice'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar2N"></i><span class="title">Manage Invoices</span></a></li>
 	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive1"></i><span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span></a></li>
 	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search1"></i><span class="title">Sales Analytics & Performance</span></a></li>
 	  <li class="<?php if($menu=='ads'){echo 'active';}?>"> <a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag1"></i><span class="title">Classifieds</span></a></li>

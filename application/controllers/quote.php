@@ -744,7 +744,7 @@ class Quote extends CI_Controller
 		$itemid = $_POST['itemid'];
 		$quantiid = $_POST['quantityid'];
 		$priceid = $_POST['priceid'];		
-		
+		$purchasingadmin = $_POST['purchaser'];
     	$this->db->where('company',$companyid);
     	$this->db->where('itemid',$itemid);
     	$qtyresult = $this->db->get('qtydiscount')->result();
@@ -753,6 +753,36 @@ class Quote extends CI_Controller
     		$selectbutton2 = "";
     		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
+    			
+    			if(isset($purchasingadmin)){
+    				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
+
+
+    				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
+
+    				$istierprice = $this->db->query($sqltier)->row();
+    				if($istierprice){
+    					$istier = $istierprice->tierprice;
+    				}else
+    				$istier = 0;
+
+    				$tier = $this->db->query($sql)->row();
+    				if ($tier && $istier)
+    				{
+    					$tier = $tier->tier;
+    					$this->db->where('company', $_POST['companyid']);
+    					$pt = $this->db->get('tierpricing')->row();
+    					if ($pt)
+    					{
+    						$deviation = $pt->$tier;
+    						$qtyres->price = $qtyres->price + ($qtyres->price * $deviation / 100);
+    						$qtyres->price = number_format($qtyres->price, 2);
+    					}
+    				}
+    			}
+    			
 				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select' data-dismiss='modal'>";
     			$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
