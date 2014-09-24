@@ -583,7 +583,7 @@
 				
 				
 	<!--			<div class="well span4" style="width:100% !important; margin-left:0px; " >-->
-    			<div class="well span3" style="width: 30%;" >
+    			<div class="well span3" style="width: 40%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($backtracks)) { ?>
