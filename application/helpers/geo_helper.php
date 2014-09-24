@@ -60,6 +60,9 @@
                 $ip = '178.254.161.68';
             }
             $details = json_decode(file_get_contents("http://ipinfo.io/" . $ip . "/json"));
+            
+            if($details->loc=="")
+            $details->loc = "33.956419 , -118.442232";
         }
         return $details;
     }
