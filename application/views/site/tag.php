@@ -170,6 +170,7 @@
                                 $item->url = urlencode($item->url);
                                 ?>
                                 <div class="property span9">
+                                 <h2 class="title_top1" style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
                                     <div class="row">
                                         <div class="image span3">
                                             <div class="content">
@@ -191,7 +192,7 @@
                                         <div class="body span6">
                                             <div class="title-price row">
                                                 <div class="title span4">
-                                                    <h2><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                                   
                                                     <p>
                                                         <?php echo $item->notes; ?>
                                                     </p>

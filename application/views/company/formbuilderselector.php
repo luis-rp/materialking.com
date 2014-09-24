@@ -10,13 +10,17 @@ function showOptions(obj)
 }
 </script>
 <div class="content">
-
-  <div class="container">
+  <?php  if(isset($message)) echo $message; else echo ''; ?>
+		<div class="page-title">	
+		
+			<h3>Form Builder</h3>		
+		</div>	
+  <div id="container">
   	<div class="row">
   	  <div class="col-md-12">
          <div class="grid simple ">
             <div class="grid-title no-border">
-              <?php  if(isset($message)) echo $message; else echo ''; ?>
+            
             
             </div>
 

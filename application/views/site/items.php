@@ -326,6 +326,19 @@
                 </div>
 
                 <div class="sidebar span3">
+                
+                <div>
+  				  <?php if(isset($datatags)) { if(!empty($datatags)){?>
+    			
+    				<h1 class="page-header">Tags:</h1>
+    				<ul class="tags">
+    				<?php 
+					   foreach ($datatags as $tag){
+				    	$tag = trim($tag);?>
+				    <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
+				    <?php } ?>
+    				</ul><?php } } ?>
+    			</div>
                 	
                        <?php 
                  //var_dump($breadcrumb2);
@@ -604,9 +617,20 @@
         <div id="main">
             <div class="row">
                 <div class="span9">
-    <?php if(isset($datatags)) { if(!empty($datatags)){?><div><h1 class="page-header">Tags:</h1><ul class="tags"><?php 
-   foreach ($datatags as $tag){
-    	$tag = trim($tag);?>
-    <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
-    <?php } ?></ul><?php } } ?></div>
-    </div></div></div></div></div>
+                <div>
+  				  <?php if(isset($datatags)) { if(!empty($datatags)){?>
+    			
+    				<h1 class="page-header">Tags:</h1>
+    				<ul class="tags">
+    				<?php 
+					   foreach ($datatags as $tag){
+				    	$tag = trim($tag);?>
+				    <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
+				    <?php } ?>
+    				</ul><?php } } ?>
+    			</div>
+    			</div>
+   			 </div>
+   		 </div>
+    </div>
+    </div>

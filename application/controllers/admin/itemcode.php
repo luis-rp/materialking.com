@@ -481,6 +481,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         			 WHERE o.id=od.orderid
         			 AND o.purchasingadmin='" . $this->session->userdata('purchasingadmin')."'
         			 AND od.itemid=" . $id . " GROUP BY od.orderid";
+    	log_message('debug',var_export($sqlOrders,true));
     	$resOrders = $this->db->query($sqlOrders)->result();
     	$i = 0;
     	foreach ($resOrders as $order)
@@ -495,12 +496,28 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			$project = $this->db->query($sql)->result();
     			if(isset($project) && !(empty($project)))
     			{
-    				$order->prjName = "Assigned to " . $project[0]->title;
+    				$order->prjName = "Assigned to " . $project[0]->title."<br/>";
     			}
     		}
     		else
     		{
-    			$order->prjName = "Pending Project Assignment";
+    			$order->prjName = "Pending Project Assignment"."<br/>";
+    		}
+    		
+    		if (! is_null($order->costcode))
+    		{
+    			$sql = "SELECT *
+					FROM " . $this->db->dbprefix('costcode') . " cc
+					WHERE id=" . $order->costcode;
+    			$costcode = $this->db->query($sql)->row();
+    			
+    			if(isset($costcode) && !(empty($costcode)))
+    			{
+    				$order->prjName .= "Assigned to Cost Code  '" . $costcode->code."'";
+    			}
+    			
+    		}else{
+    			$order->prjName .= "Pending Cost Code Assignment";
     		}
     		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
     		$data['orders'][] = $order;
@@ -567,8 +584,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			$sql = "SELECT *
 					FROM " . $this->db->dbprefix('project') . " p
 					WHERE id=" . $order->project;
-    			$project = $this->db->query($sql)->result();
-    			$order->prjName = "Assigned to " . $project[0]->title;
+    			log_message('debug',$sql);
+    			$project = $this->db->query($sql)->row();
+    			$order->prjName = "Assigned to " . $project->title;
     		}
     		else
     		{

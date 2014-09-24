@@ -123,15 +123,15 @@ $( document ).tooltip();
 			$("#requestModalForm").modal();
             });
     	$("#daterequested").datepicker();
-        $("#day").datepicker();
-        $("#time").timepicker({
+        $(".daytd",".request-form").datepicker();
+        $(".timetd",".request-form").timepicker({
             'minTime': '6:00am',
             'maxTime': '11:30pm',
             'showDuration': false
         });
 
-        $("#day-modal-req").datepicker();
-        $("#time-modal-req").timepicker({
+        $(".daytd",".request-modal-form").datepicker();
+        $(".timetd",".request-modal-form").timepicker({
             'minTime': '6:00am',
             'maxTime': '11:30pm',
             'showDuration': false
@@ -207,13 +207,13 @@ $( document ).tooltip();
         $type = $("#requresttype").val();
         if($type=='Request Phone Assistance')
         {
-            $("#daytd").html('Best Day To Call');
-            $("#timetd").html('Best Time To Call');
+            $("#daytd-label").html('Best Day To Call');
+            $("#timetd-label").html('Best Time To Call');
         }
         else
         {
-            $("#daytd").html('Appointment Date Requested');
-            $("#timetd").html('Appointment Time Requested');
+            $("#daytd-label").html('Appointment Date Requested');
+            $("#timetd-label",".request-form").html('Appointment Time Requested');
         }
             
     }
@@ -223,13 +223,13 @@ $( document ).tooltip();
         $type = $("#requresttype-modal-req").val();
         if($type=='Request Phone Assistance')
         {
-            $("#daytd-modal-req").html('Best Day To Call');
-            $("#timetd-modal-req").html('Best Time To Call');
+            $("#daytd-modal-label").html('Best Day To Call');
+            $("#timetd-modal-label").html('Best Time To Call');
         }
         else
         {
-            $("#daytd-modal-req").html('Appointment Date Requested');
-            $("#timetd-modal-req").html('Appointment Time Requested');
+            $("#daytd-modal-label").html('Appointment Date Requested');
+            $("#timetd-modal-label").html('Appointment Time Requested');
         }
             
     }
@@ -826,7 +826,7 @@ $( document ).tooltip();
                         <a name="form"></a>
                         <?php echo $this->session->flashdata('message'); ?>
                         
-        				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>">
+        				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>" class="request-form">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
         					  <div class="newbox"> <table cellpadding="4" cellspacing="4">
         						<tr>
@@ -853,13 +853,13 @@ $( document ).tooltip();
         						</tr>
         						
         						<tr>
-        							<td id="daytd">Best day to call</td>
-        							<td><input type="text" id="day" name="day"/></td>
+        							<td id="daytd-label">Best day to call</td>
+        							<td><input type="text" class="daytd" name="daytd"/></td>
         						</tr>
         						
         						<tr>
-        							<td id="timetd">Best time to call</td>
-        							<td><input type="text" id="time" name="time" value="6:00am"/></td>
+        							<td id="timetd-label">Best time to call</td>
+        							<td><input type="text" class="timetd" name="timetd" value="6:00am"/></td>
         						</tr>
         						
         						<tr>
@@ -1164,7 +1164,7 @@ $( document ).tooltip();
                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
                             <h3 class="modal-title nobottompadding" id="myModalRequestLabel">Request Assistance</h3>
                     </div>
-                   <form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>">
+                   <form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>" class="request-modal-form">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
         					  <div class="newbox"> <table cellpadding="4" cellspacing="4">
         						<tr>
@@ -1191,13 +1191,13 @@ $( document ).tooltip();
         						</tr>
         						
         						<tr>
-        							<td id="daytd-modal-req">Best day to call</td>
-        							<td><input type="text" id="day-modal-req" name="day-modal-req"/></td>
+        							<td id="daytd-modal-label">Best day to call</td>
+        							<td><input type="text" class="daytd" name="daytd"/></td>
         						</tr>
         						
         						<tr>
-        							<td id="timetd-modal-req">Best time to call</td>
-        							<td><input type="text" id="time-modal-req" name="time-modal-req" value="6:00am"/></td>
+        							<td id="timetd-modal-label">Best time to call</td>
+        							<td><input type="text" class="timetd" name="timetd" value="6:00am"/></td>
         						</tr>
         						
         						<tr>

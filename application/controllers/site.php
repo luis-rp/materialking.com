@@ -1723,19 +1723,19 @@ class site extends CI_Controller
 	    }
 		$data['email_body_content'] .= ' Details are:<br/><br/>';
 		//$body .= "Type: ".$_POST['type']."<br/>";
-		$data['email_body_content'] .= "Name: ".$_POST['contactName']."<br/>";
+		$data['email_body_content'] .= "Name: ".$_POST['name']."<br/>";
 		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
-		$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
+		//$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
 		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
 			{
-				$data['email_body_content'] .= "Best day to call: ".$_POST['day']."<br/>";
-				$data['email_body_content'] .= "Best time to call: ".$_POST['time']."<br/>";
+				$data['email_body_content'] .= "Best day to call: ".$_POST['daytd']."<br/>";
+				$data['email_body_content'] .= "Best time to call: ".$_POST['timetd']."<br/>";
 			}else {
-				$data['email_body_content'] .= "Appointment date: ".$_POST['day']."<br/>";
-				$data['email_body_content'] .= "Appointment time: ".$_POST['time']."<br/>";
+				$data['email_body_content'] .= "Appointment date: ".$_POST['daytd']."<br/>";
+				$data['email_body_content'] .= "Appointment time: ".$_POST['timetd']."<br/>";
 			}
 
 		}
