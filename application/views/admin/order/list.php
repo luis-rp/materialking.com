@@ -121,6 +121,9 @@ $(document).ready( function() {
 							              	$total = 0; 
                                             $oldorderid = ""; 
 									    	$i = 0;
+									    	$finaltotal = 0;
+									    	$finalpaid = 0;
+									    	$finaldue = 0;
 									    	foreach($orders as $order)
 									    	{
 									    		$i++;
@@ -141,6 +144,7 @@ $(document).ready( function() {
                                                  <?php
                                                $totalpaid=0;
                                                $totaldue=0;
+                                               $finaltotal += $total+$order->shipping;
                                                foreach($order->details as $detail)
                                                    {
                                                		  if($detail->paymentstatus=='Paid')
@@ -153,6 +157,8 @@ $(document).ready( function() {
                                                				$totaldue +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
                                                			}
                                                    }
+                                                  $finaldue += $totaldue;
+                                                  $finalpaid += $totalpaid; 
                                                   ?>
                                                 <td>$<?php echo $totalpaid; ?></td>
                                                 <td>$<?php echo $totaldue; ?></td>
@@ -186,6 +192,10 @@ $(document).ready( function() {
                                                 </td>
                                             </tr>
                                            <?php $oldorderid = $order->id;  } ?>
+                                           
+                                           <tr><td colspan="5"></td><td style="text-align:center;"><strong>Grand Total</strong></td><td style="text-align:center;"><strong>Total Paid</strong></td><td style="text-align:center;"><strong>Total Overdue</strong></td><td colspan="2"></td></tr>
+                                           <tr style="text-align:center;"><td colspan="5"></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaltotal,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finalpaid,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaldue,2);?></strong></td><td colspan="2"></td></tr>
+                                           
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
