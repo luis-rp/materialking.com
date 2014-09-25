@@ -24,8 +24,7 @@
 	
 	function closevideo(){
 				
-		$("#videopopsrc").remove();
-		$("#videopopsrc").remove();
+		$("#videopopsrc").remove();		
 	}
 	
 </script>
