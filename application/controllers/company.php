@@ -364,6 +364,17 @@ class Company extends CI_Controller {
     	redirect("company/profile");
     	
     }
+    
+    function deleteMember($id){
+    	$company = $this->session->userdata('company');
+    	if (!$company)
+    		redirect('company/login');
+    	$this->db->where('id', $id);
+    	$this->db->where('cid', $company->id);
+    	$this->db->delete('companyteam');
+    	
+    	redirect("company/profile");
+    }
     function editMember(){
     	$company = $this->session->userdata('company');
     	if (!$company)

@@ -311,8 +311,8 @@ function addEmail()
 													<td><img width=200 height=200 src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
 													<td><?php echo $member->phone;?></td>
 													<td><?php echo $member->email;?></td>
-													<td><?php echo $member->linkedin;?></td>
-													<td><a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a></td>
+													<td><a href="http://<?php echo $member->linkedin;?>"><?php echo $member->linkedin;?></a></td>
+													<td><a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a>&nbsp;-&nbsp;<a href="<?php echo base_url("company/deleteMember/".$member->id);?>" onclick="return confirm('Are you sure?')">Delete</a></td>
 													
 												</tr>
 												<?php } ?>
