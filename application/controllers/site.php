@@ -2312,5 +2312,56 @@ class site extends CI_Controller
 
     }
     
+    function sayhello()
+	{
+		$_POST['inputName'];
+		$_POST['inputEmail'];
+		$_POST['inputMessage'];
+
+		if (empty($_POST["inputName"]))
+		{
+			$Err = "Name is required";
+		}
+
+		if (empty($_POST["inputEmail"]))
+		{
+			$Err = "Email is required";
+		}
+		else
+		{
+			$regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+			if (!preg_match($regex,$_POST["inputEmail"]))
+			{
+				$Err ="Invalid email. Please try again.";
+			}
+		}
+
+		if (empty($_POST["inputMessage"]))
+		{
+			$Err = "Message is required";
+		}
+		if(isset($Err))
+		{
+			$this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$Err.'</div></div>');
+			redirect('site');
+		}
+		if(isset($_POST["inputName"]) && isset($_POST["inputEmail"]) && isset($_POST["inputMessage"]))
+		{
+			$mail="info@MaterialKing.com";
+			$this->load->library('email');
+			$this->email->clear(true);
+			$this->email->from($_POST["inputEmail"], $_POST["inputName"]);
+			$this->email->to($mail);
+			$body = "Dear Administrator,<br><br> Following User Has Send You Message.<br><p><strong>Name :</strong> ".$_POST["inputName"]."</p><p><strong>Email : </strong>".$_POST["inputEmail"]."</p><p><strong>Message : </strong></p>". $_POST["inputMessage"] . "<br>";
+			$this->email->subject("Say Hello!");
+			$this->email->message($body);
+			$this->email->set_mailtype("html");
+			$this->email->send();
+			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>');
+			redirect('site');
+		}
+		redirect('site');
+
+	}    
     
 }

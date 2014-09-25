@@ -123,6 +123,7 @@ function asktierchange(pa,tier)
 function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price)
 {
 	$("#pricelist").modal();
+	$("#itemnamebox").html('');
 	$("#pricelistitemcode").html(itemcode);
 	$("#pricelistitemname").html(itemname);
 	price = Number(price);
@@ -136,6 +137,7 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
     $("#hiddenquantityid").val(quantityid);
     $("#hiddenpriceid").val(priceid);    
     $("#hiddenpurchaser").val(purchasingadmin);
+    $("#itemnamebox").html(itemcode+"  /  "+itemname);
 }
 
 
@@ -236,9 +238,9 @@ function displaypricemodal(){
 									<tr>
 										<td>
 										  <strong>
-									      PO#: <?php echo $quote->ponum;?></td><td><span style="margin-left:500px;">Revision History</span></td></tr>
+									      PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
 									      <tr><td>
-									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; ?></span></tr>
+									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
 									      <td>Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>
@@ -528,6 +530,7 @@ function displaypricemodal(){
           <br>
           <i class="icon-credit-card icon-7x"></i>
           <h4 class="semi-bold" id="myModalLabel">
+          <div id="itemnamebox"></div>
            Quantity Discounts          
           </h4>          
         </div>        

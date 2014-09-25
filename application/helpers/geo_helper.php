@@ -81,9 +81,11 @@
         {
             $center = $details->loc;
             $geo_coords = explode(",", $center);
-            if (trim($details->city))
-            {
-                $my_location = $details->city . ", " . $details->country;
+            if(isset($details->city)){
+            	if (trim($details->city))
+            	{
+            		$my_location = $details->city . ", " . $details->country;
+            	}
             }
             else
             {

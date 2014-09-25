@@ -1241,12 +1241,45 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	if($qtyresult){
     		$strput = "";
     		$selectbutton2 = "";
+			$purchasingadmin = $this->session->userdata('purchasingadmin');
     		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
+    			
+    			if(isset($purchasingadmin)){
+    				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $companyid . "'";
+
+
+    				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$itemid."' AND company='" . $companyid . "' AND type = 'Supplier'";
+
+    				$istierprice = $this->db->query($sqltier)->row();
+    				if($istierprice){
+    					$istier = $istierprice->tierprice;
+    				}else
+    				$istier = 0;
+
+    				$tier = $this->db->query($sql)->row();
+    				if ($tier && $istier)
+    				{
+    					$tier = $tier->tier;
+    					$this->db->where('company', $companyid);
+    					$pt = $this->db->get('tierpricing')->row();
+    					if ($pt)
+    					{
+    						$deviation = $pt->$tier;
+    						$qtyres->price = $qtyres->price + ($qtyres->price * $deviation / 100);
+    						$qtyres->price = number_format($qtyres->price, 2);
+    					}
+    				}
+    			}
+    			
 				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select' data-dismiss='modal'>";
     			$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}
+    		if($istier)
+    		$strput .= '<tr><td colspan="3" style="text-align:center;"><strong>Tier Price is applied on top of qty. discount</strong></td></tr>';
     		$strput .= "</table>";
     		return $strput;
     	}

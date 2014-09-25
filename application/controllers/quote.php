@@ -751,6 +751,7 @@ class Quote extends CI_Controller
     	if($qtyresult){
     		$strput = "";
     		$selectbutton2 = "";
+    		$istier = 0;
     		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
     			
@@ -787,9 +788,12 @@ class Quote extends CI_Controller
     			$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}
+    		if($istier)
+    		$strput .= '<tr><td colspan="3" style="text-align:center;"><strong>Tier Price is applied on top of qty. discount</strong></td></tr>';
     		$strput .= "</table>";
     		echo $strput;
-    	}
+    	}else 
+    	echo "No Quantity Discount Available";  	
 
     }
 	
@@ -1461,7 +1465,7 @@ class Quote extends CI_Controller
 					$bidarray['quotenum'] = "";
 			}
 			else 
-				$bidarray['quotenum'] = $_POST['quotenum'].".000";
+				$bidarray['quotenum'] = $_POST['quotenum'];
 		
 				$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 				
@@ -1550,7 +1554,7 @@ class Quote extends CI_Controller
 			}
 			$bidarray = array('quote'=>$invitation->quote,'company'=>$invitation->company,'submitdate'=>date('Y-m-d'));
 			
-			$bidarray['quotenum'] = $_POST['quotenum'].".000";
+			$bidarray['quotenum'] = $_POST['quotenum'];
 			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
 			$bidarray['draft'] = $_POST['draft'];
 			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;

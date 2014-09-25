@@ -163,6 +163,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
             <?php
         }
         ?>
+        <?php echo $this->session->flashdata('message'); ?>
         <?php //print_r($this->session->userdata('site_loggedin'));  ?>
         <title><?php if(isset($page_title))  echo $page_title;  else echo "EZPZP";?></title>
     </head>
@@ -365,14 +366,14 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     </div>
 
                                     <div class="content">
-                                        <form method="post">
+                                        <form id="sayhello" action="<?php echo site_url('site/sayhello'); ?>" method="post">
                                             <div class="control-group">
                                                 <label class="control-label" for="inputName">
                                                     Name
                                                     <span class="form-required" title="This field is required.">*</span>
                                                 </label>
                                                 <div class="controls">
-                                                    <input type="text" id="inputName">
+                                                    <input type="text" id="inputName" name="inputName">
                                                 </div>
                                             </div>
 
@@ -382,7 +383,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                                     <span class="form-required" title="This field is required.">*</span>
                                                 </label>
                                                 <div class="controls">
-                                                    <input type="text" id="inputEmail">
+                                                    <input type="text" id="inputEmail" name="inputEmail">
                                                 </div>
                                             </div>
 
@@ -393,7 +394,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                                 </label>
 
                                                 <div class="controls">
-                                                    <textarea id="inputMessage"></textarea>
+                                                    <textarea id="inputMessage" name="inputMessage"></textarea>
                                                 </div>
                                             </div>
 
