@@ -143,7 +143,7 @@ function fetchItem(codeid)
 				totalprice = Math.round(totalprice * 100) / 100;
 				document.getElementById(totalpriceid).value = totalprice;
 
-				getminpricecompanies(obj.itemid, companyid, '');
+				getminpricecompanies(obj.itemid, companyid, 1, '');
 			}
 		});
 	}else{
@@ -194,12 +194,12 @@ function getminprice(companyid)
     document.getElementById(totalpriceid).value = totalprice;
 }
 
-function getminpricecompanies(itemid, companyid, selected)
+function getminpricecompanies(itemid, companyid, quantity, selected)
 {
     $.ajax({
       type:"post",
       url: '<?php echo base_url()?>admin/itemcode/getminpricecompanies',
-      data: "itemid="+itemid
+      data: "itemid="+itemid+"&quantity="+quantity
     }).done(function(data){
         //alert(data);
         var ophtml = '<option price="0">Select Company</option>';
@@ -564,7 +564,7 @@ function savclose()
 				    		<option value="<?php echo $company->id;?>" <?php if($q->company==$company->id){echo 'selected="selected"';}?>><?php echo $company->title;?></option>
 				    	<?php }?>
 				    	</select>
-				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->company;?>');</script>
+				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>');</script>
 		    		</td>
 		    	</tr>
 		    	<?php }?>

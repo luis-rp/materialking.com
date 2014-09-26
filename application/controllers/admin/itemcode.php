@@ -586,6 +586,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 					WHERE id=" . $order->project;
     			log_message('debug',$sql);
     			$project = $this->db->query($sql)->row();
+    			if(!$project)
+    			$order->prjName = "Project Deleted";
+    			else     			
     			$order->prjName = "Assigned to " . $project->title;
     		}
     		else
@@ -1162,7 +1165,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     function getminpricecompanies()
     {
         $itemid = $_POST['itemid']; //urldecode($itemcode);
-        $item = $this->itemcode_model->get_itemcodes_by_id($itemid);
+        $quantity = $_POST['quantity'];
+        $item = $this->itemcode_model->get_itemcodes_by_id2($itemid, $quantity);
 
         //echo '<pre>';print_r($item);die;
         $ret = array();

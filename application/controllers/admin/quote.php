@@ -167,7 +167,7 @@ class quote extends CI_Controller
                 $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
-                    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status);
+                    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance';
                 }
                 $quote->actions = $quote->awardedbid?'':
                 anchor('admin/quote/items/' . $quote->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view', 'title' => 'view quote items'))
@@ -3396,6 +3396,56 @@ $loaderEmail = new My_Loader();
                     $temp['defaultreceiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);
                     $this->session->set_userdata($temp);
                 }
+                
+                                $invoicearr = array();
+                $invoicearr = explode(",",$_POST['invoicenum' . $key]);
+                
+                if(count($invoicearr)>1) {
+                	foreach($invoicearr as $inv) {
+
+                		$ship = $this->db->select('shipment.*')
+                		->from('shipment')
+                		->where('quote',$quoteid)
+                		->where('awarditem',$item->id)
+                		->where('invoicenum',$inv)
+                		->get()->row();
+                		
+                		
+                		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
+                		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                		$this->quote_model->db->insert('received', $insertarray);
+
+                		$insertarray['id'] = $item->id;
+                		$insertarray['itemname'] = $item->itemname;
+                		$insertarray['companyname'] = $item->companyname;
+                		$insertarray['daterequested'] = $item->daterequested;
+                		$insertarray['unit'] = $item->unit;
+                		$insertarray['ea'] = $item->ea;
+
+                		if (!isset($invoices[$inv])) {
+                			$invoices[$inv] = array();
+                			$invoices[$inv]['invoicenum'] = $inv;
+                			$invoices[$inv]['items'] = array($insertarray);
+                			$invoices[$inv]['invoicenotes'] = $item->companydetails->invoicenote;
+                		} else {
+                			$invoices[$inv]['items'][] = $insertarray;
+                		}
+                		if(isset($credits[$item->company]))
+                		{
+                			$credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
+                			$credits[$item->company]['items'][]=$insertarray;
+                		}
+                		else
+                		{
+                			$credits[$item->company] = array();
+                			$credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
+                			$credits[$item->company]['items'] = array($insertarray);
+                		}
+
+                	}
+                }else {
+                	
+                
                 $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 $this->quote_model->db->insert('received', $insertarray);
@@ -3427,6 +3477,8 @@ $loaderEmail = new My_Loader();
                     $credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
                     $credits[$item->company]['items'] = array($insertarray);
                 }
+                
+              } 
             }
         }
         //print_r($invoices);die;
