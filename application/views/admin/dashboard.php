@@ -552,13 +552,15 @@
 		<div  class="span12">	
 				
 				<!--<div class="well span4" style="width:100% !important;" >-->
-                <div class="well span3" >
+                <div class="well span3"  style="width:30%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($invoices)) { ?>
 					  <tr>
 					  <td>Invoice</td>
 					  <td>Due Date</td>
+					  <td>Payment Status</td>
+                      <td>Verification</td>
 					  </tr>
 				<?php foreach ($invoices as $invoice)
             if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
@@ -567,6 +569,9 @@
 					  <tr>
 					  <td><?php echo $invoice->invoicenum; ?></td>
 					  <td><?php if($invoice->datedue) { $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); }?></td>
+					   <td><?php echo $invoice->paymentstatus;?><br>
+                      <?php //if($i->paymentstatus=='Paid') { $olddate=strtotime($invoice->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
+                      <td><?php echo $invoice->status;?></td>
 					  </tr>
 
 				<?php } ?>
@@ -613,7 +618,7 @@
 			    	</tr>
 			    	<?php }?>
 			    	</table>	
-			    	
+			    	<p style="text-align:right;">*Note Quantity Pending Acknowledgement if Any.</p>
 			    <?php $i++; } ?>					  
 
 				<?php } ?>

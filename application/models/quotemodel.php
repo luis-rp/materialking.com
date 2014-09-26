@@ -476,7 +476,7 @@ class Quotemodel extends Model
 			
 		
 		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
-					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM 
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai

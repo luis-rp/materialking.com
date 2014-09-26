@@ -165,7 +165,8 @@ function invoice(invoicenum)
                                                 			</td>
                                                 			<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
                                                 			<td>$<?php echo $i->totalprice;?></td>
-                                                			<td><?php echo $i->paymentstatus;?></td>
+                                                			<td><?php echo $i->paymentstatus;?><br>
+                                                			<?php if($i->paymentstatus=='Paid') { $olddate=strtotime($i->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
                                                 			<td><?php echo $i->status;?></td>
                                                 			<td>
                                                 			<input type="text" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{echo "No Date Set";} ;?>" class="date" style="width:100px;"

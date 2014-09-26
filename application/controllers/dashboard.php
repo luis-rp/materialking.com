@@ -230,4 +230,12 @@ class Dashboard extends CI_Controller
 		}
 		redirect('dashboard');
 	}
+	
+	function networkdelete($pid)
+	{
+      $cid=$this->session->userdata('company')->id;
+      $this->db->delete('network', array('purchasingadmin' => $pid,'company'=>$cid));
+      $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Company Deleted Successfully From Your Network.</div></div>');
+      redirect('dashboard');
+	}
 }

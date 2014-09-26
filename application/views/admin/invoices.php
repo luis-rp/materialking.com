@@ -204,7 +204,7 @@ function paycc(ptype,idnumber,amount)
                     </form>
                     <?php if (!@$items) echo 'No Invoices Found.'; ?>
             	</div>
-                <div style="height:600px;width:100%;margin-bottom:20px;">
+                <div>
                     <table id="datatable" class="table table-bordered">
                     	<thead>
                     		<tr>

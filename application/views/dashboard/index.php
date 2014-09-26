@@ -44,6 +44,7 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 
 </script>
     <div class="content">
+    <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 			<h3>Dashboard </h3>
 		</div>
@@ -223,7 +224,10 @@ function sendemailalert(invoice,admin,price,datedue, invoiceid){
 						<?php }
 							else{
 							foreach($networkjoinedpurchasers as $njp){?>
-
+							<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('dashboard/networkdelete/'.$njp->purchasingadmin);?>"
+							onclick="javascript:return confirm('Do You Really Want to Delete This Company From Network?');">X</a>
+						    </div>
 							<div class="notification-messages">
 								<div class="message-wrapper">
 									<div class="heading">
