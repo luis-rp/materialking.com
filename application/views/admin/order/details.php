@@ -321,7 +321,7 @@ Send Message:
                                         <thead>
                                             <tr>
                                                 <th style="width:40%">Cost Code</th>
-                                                <th style="width:40%">Cost</th>
+                                                <th style="width:40%">Budget</th>
                                                 <th style="width:20%">Actions</th>
                                             </tr>
                                         </thead>
