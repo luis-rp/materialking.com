@@ -48,20 +48,19 @@ function createPDF($sheet_name, $pdfdata,$headername)
 		//$pdf->SetFont('aealarabiya', '', 16);	
 		 
 		// $pdf->SetXY(230, 5);
-		 $pdf->Rect(227, 6, 55, 15, 'F', array(), array(0,174,239));
-		// $pdf->Rect(227, 6, 55, 15, 'F', array(), array(221,221,221));
-		//$pdf->Image(PDF_HEADER_LOGO, '', '', 50, 12, '', '', 'R', true, 300, '', false, false, 100, false, false, false);
+		 $pdf->Rect(219, 4, 63, 18, 'F', array(), array());		 
 	 		
-		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 230, 7, 50, 13, 'PNG', '', 'T', true, 300, '', false, false, 100, false, false, false);
+		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 220, 6, 60, 15, 'PNG', '', 'T', true, 900, '', false, false, 100, false, false, false);
 		 $pdf->SetXY(15, 5);
 		 $pdf->SetAutoPageBreak(true, 30);
 		  $pdf->SetFont('dejavuserif', 'B', 20);	 
 		$pdf->Write(10, $headername, '', 0, 'L', true, 0, false, false, 0);	
-		$pdf->SetFont('dejavuserif', '', 8);		 
+				 
 		$arr = array($sheet_name=>$pdfdata );		
 		$tbl= '<br/><br/><br/><br/><table  border="0" cellpadding="4" cellspacing="1" width="100%">'; 		 
 		foreach($arr as $wbname=>$rows)
 		{
+		$pdf->SetFont('dejavuserif', '', 10);
 			$rowcount = count($rows);
 			$colcount = count($rows[0]);  
 			//Table Heading
@@ -155,13 +154,10 @@ function createOtherPDF($sheet_name, $pdfdata,$headername)
 		$pdf->AddPage();
 		 
 		 $pdf->SetAutoPageBreak(TRUE, 0);	
-		//$pdf->SetFont('aefurat', 'B', 16);	 
-		// $pdf->SetXY(230, 5);
-		 $pdf->Rect(227, 6, 55, 15, 'F', array(), array(0,174,239));
-		// $pdf->Rect(227, 6, 55, 15, 'F', array(), array(221,221,221));
-		//$pdf->Image(PDF_HEADER_LOGO, '', '', 50, 12, '', '', 'R', true, 300, '', false, false, 100, false, false, false);
+	
+		  $pdf->Rect(219, 4, 63, 18, 'F', array(), array());		 
 	 		
-		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 230, 7, 50, 13, 'PNG', '', 'T', true, 300, '', false, false, 100, false, false, false);
+		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 220, 6, 60, 15, 'PNG', '', 'T', true, 900, '', false, false, 100, false, false, false);
 		 $pdf->SetXY(15, 5);
 		 $pdf->SetAutoPageBreak(true, 30);
 		  $pdf->SetFont('dejavuserif', 'B', 20);	
@@ -278,11 +274,9 @@ function createOtherPDF2($sheet_name, $pdfdata,$headername)
 		 $pdf->SetAutoPageBreak(TRUE, 0);	
 		//$pdf->SetFont('aefurat', 'B', 16);	 
 		// $pdf->SetXY(230, 5);
-		 $pdf->Rect(227, 6, 55, 15, 'F', array(), array(0,174,239));
-		// $pdf->Rect(227, 6, 55, 15, 'F', array(), array(221,221,221));
-		//$pdf->Image(PDF_HEADER_LOGO, '', '', 50, 12, '', '', 'R', true, 300, '', false, false, 100, false, false, false);
+		 $pdf->Rect(219, 4, 63, 18, 'F', array(), array());		 
 	 		
-		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 230, 7, 50, 13, 'PNG', '', 'T', true, 300, '', false, false, 100, false, false, false);
+		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 220, 6, 60, 15, 'PNG', '', 'T', true, 900, '', false, false, 100, false, false, false);
 		 $pdf->SetXY(15, 5);
 		 $pdf->SetAutoPageBreak(true, 30);
 		  $pdf->SetFont('dejavuserif', 'B', 20);	
