@@ -994,7 +994,7 @@ hr {
       
           <table class="wrapper" style="border-collapse: collapse;border-spacing: 0;background-color: #f0f0f0;;width: 100%;min-width: 620px;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;table-layout: fixed">
             <tbody><tr>
-              <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top">
+              <td style="padding-top: 0;padding-bottom: 0;padding-left: 0;padding-right: 0;vertical-align: top;overflow:auto;">
                 <center>
                   <table class="lightest" style="border-collapse: collapse;border-spacing: 0;width: 100%">
                     <tbody><tr>
