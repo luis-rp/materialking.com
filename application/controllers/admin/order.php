@@ -302,7 +302,7 @@ function orders_export()
 		
 			$oldorderid = $order->id;
 		}
-		$headername = "My Purchased Items";
+		$headername = "MY PURCHASED ITEMS";
     	createOtherPDF('orders', $header,$headername);
     	die();		
 
@@ -1003,7 +1003,7 @@ function orders_export()
 	
 	
 		 
-		$headername = "Order Items";
+		$headername = "ORDER ITEMS";
     	createOtherPDF('Orderdetails', $header,$headername);
     	die();
 	
@@ -1578,7 +1578,7 @@ with the transfer#{$tobj->id}.
     			$header[] = array('' , '', '' , '' , '' , ''  );
     			$header[] = array('' , '', '' , '' , '' , ''  );
     
-   		 $headername = "Assign Order to Project";
+   		 $headername = "ASSIGN ORDER TO PROJECT";
     	createOtherPDF('add_to_project', $header,$headername);
     	die();
     				
@@ -1616,7 +1616,7 @@ with the transfer#{$tobj->id}.
     			$header[] = array('<b>Total</b>' , '','' , '$ '.formatPriceNew($gd_tatal_2)  ,  '' , ''  );
     
     		 
-    	$headername = "Assign Order to Project";
+    	$headername = "ASSIGN ORDER TO PROJECT";
     	createPDF('add_to_project', $header,$headername);
     	die();
 			}

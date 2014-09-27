@@ -97,7 +97,7 @@ class Quote extends CI_Controller
 							  $header[] = array($item->itemcode , $item->bidcount,$item->awardcount , $item->performance);
 			}
 			 
-				$headername = "Performance By Item";
+					$headername = "PERFORMANCE BY ITEM";
 				createPDF('performance', $header,$headername);
 				die();
 			 
@@ -1387,8 +1387,8 @@ class Quote extends CI_Controller
 		}	
 				
 		 
-		$headername = "Bid Invitations";
-    	createPDF('bid_invitations', $header,$headername);
+		$headername = "BID INVITATIONS";
+    	createOtherPDF2('bid_invitations', $header,$headername);
     	die();
 		
 		//===============================================================================	
@@ -2051,8 +2051,8 @@ class Quote extends CI_Controller
 				
 		
 		 
-		$headername = "Back Track Order";
-    	createPDF('backtrack_report', $header,$headername);
+		$headername = "BACK TRACK ORDER";
+    	createOtherPDF2('backtrack_report', $header,$headername);
     	die();
 		//===============================================================================
 		
@@ -3836,7 +3836,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$i++;
 			$header[] = array($ai->itemcode , $ai->itemname,$ai->quantity , $ai->unit , '$ '. $ai->ea.chr(160) , '$ '.round($ai->quantity * $ai->ea,2).chr(160),$ai->daterequested);
 		}
-		$headername = "PO Performance";
+		$headername = "PO PERFORMANCE";
     	createOtherPDF('Quote_items_', $header,$headername);
     	die();
 	 

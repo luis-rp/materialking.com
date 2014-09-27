@@ -230,7 +230,7 @@ class itemcode extends CI_Controller
 					    				
     		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $enq_row->specs, $item_price.chr(160)  , $enq_row->awardedon);
     	}
-		$headername = "Item Code Management";
+		$headername = "ITEM CODE MANAGEMENT";
     	createOtherPDF('itemcode', $header,$headername);
     	die();
 
@@ -538,7 +538,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$this->load->view('admin/datagrid', $data);
     }
 
-     function poitems_export ($id)
+    function poitems_export ($id)
     {
     	$item = $this->itemcode_model->get_itemcodes_by_id($id);
     	if (! $item)
@@ -628,13 +628,105 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     	}
     	createXls('poitems_export',$header);
-
     	die();
+    }
+	
+	// PDF
+	function poitems_pdf ($id)
+    {
+    	$item = $this->itemcode_model->get_itemcodes_by_id($id);
+    	if (! $item)
+    		die();
+    	$poitems = $this->itemcode_model->getpoitems($item->id);
+    	//echo '<pre>';print_r($poitems);die;
+    	$count = count($poitems);
+    	$items = array();
+    	if ($count >= 1)
+    	{
+    		foreach ($poitems as $row)
+    		{
+    			$awarded = $this->quote_model->getawardedbid($row->quote);
+    			$row->awardedon = date("m/d/Y", strtotime($row->awardedon));
+    			$row->ea = "$ " . $row->ea;
+    			$row->totalprice = "$ " . $row->totalprice;
+    			$row->status = strtoupper($awarded->status);
+    			$row->actions = //$row->status=='COMPLETE'?'':
+    			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
+    			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
+
+    			$items[] = $row;
+    		}
+    		$data['items'] = $items;
+    	}
+    	else
+    	{
+    		$this->data['message'] = 'No Items';
+    	}
+    	$sqlOrders = "SELECT * FROM " . $this->db->dbprefix('order') . " o,
+        			 " . $this->db->dbprefix('orderdetails') . " od
+        			 WHERE o.id=od.orderid
+        			 AND o.purchasingadmin='" . $this->session->userdata('purchasingadmin')."'
+        			 AND od.itemid=" . $id . " GROUP BY od.orderid";
+    	$resOrders = $this->db->query($sqlOrders)->result();
+    	$i = 0;
+    	foreach ($resOrders as $order)
+    	{
+    		$i++;
+    		$order->sno = $i;
+    		if (! is_null($order->project))
+    		{
+    			$sql = "SELECT *
+					FROM " . $this->db->dbprefix('project') . " p
+					WHERE id=" . $order->project;
+    			log_message('debug',$sql);
+    			$project = $this->db->query($sql)->row();
+    			if(!$project)
+    			$order->prjName = "Project Deleted";
+    			else     			
+    			$order->prjName = "Assigned to " . $project->title;
+    		}
+    		else
+    		{
+    			$order->prjName = "Pending Project Assignment";
+    		}
+    		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
+    		$data['orders'][] = $order;
+    	}
+    	$data['title_orders'] = "Orders with the current Item";
+    	$data['jsfile'] = 'itemcodeitemjs.php';
+    	$data['addlink'] = '';
+    	$data['heading'] = "PO items for '$item->itemcode'";
+    	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
 
 
+    	//  $this->load->view('admin/datagrid', $data);
 
+    	//-----------------------------------------------------------
+
+
+    	//===============================================================================
+
+    	$header[] = array('PO#','Company','Date','Price EA','Quantity','Total price');
+
+
+    	if(isset($data['items']))
+    	{
+    		$items = $data['items'];
+
+
+    		foreach($items as $item)
+    		{
+    		
+				$header[] = array($item->ponum,$item->companyname,$item->daterequested ,formatPriceNew($item->ea),$item->quantity,formatPriceNew($item->totalprice));
+    		}
+
+    	}
+		$headername = "PO ITEMS";
+    	createPDF('poitems_export', $header,$headername);
+    	die();    	
     }
 
+	
     function companyprices ($id)
     {
         $item = $this->itemcode_model->get_itemcodes_by_id($id);

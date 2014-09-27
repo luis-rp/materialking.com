@@ -75,7 +75,7 @@ define ('PDF_HEADER_LOGO', 'logo.png');
 /**
  * Header logo image width in user units.
  */
-define ('PDF_HEADER_LOGO_WIDTH', 50);
+define ('PDF_HEADER_LOGO_WIDTH', 40);
 
 /**
  * Cache directory for temporary files (full path).
@@ -110,12 +110,12 @@ define ('PDF_AUTHOR', 'TCPDF');
 /**
  * Header title.
  */
-define ('PDF_HEADER_TITLE', 'TCPDF Example');
+define ('PDF_HEADER_TITLE', ' ');
 
 /**
  * Header description string.
  */
-define ('PDF_HEADER_STRING', "by Nicola Asuni - Tecnick.com\nwww.tcpdf.org");
+define ('PDF_HEADER_STRING', "");
 
 /**
  * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].
@@ -155,7 +155,7 @@ define ('PDF_MARGIN_RIGHT', 15);
 /**
  * Default main font name.
  */
-define ('PDF_FONT_NAME_MAIN', 'helvetica');
+define ('PDF_FONT_NAME_MAIN', 'dejavusans');
 
 /**
  * Default main font size.
@@ -165,7 +165,7 @@ define ('PDF_FONT_SIZE_MAIN', 10);
 /**
  * Default data font name.
  */
-define ('PDF_FONT_NAME_DATA', 'helvetica');
+define ('PDF_FONT_NAME_DATA', 'dejavusans');
 
 /**
  * Default data font size.
@@ -175,7 +175,7 @@ define ('PDF_FONT_SIZE_DATA', 8);
 /**
  * Default monospaced font name.
  */
-define ('PDF_FONT_MONOSPACED', 'courier');
+define ('PDF_FONT_MONOSPACED', 'dejavusans');
 
 /**
  * Ratio used to adjust the conversion of pixels to user units.

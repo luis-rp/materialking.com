@@ -263,7 +263,7 @@ class costcode extends CI_Controller {
 
     		$header[] = array($item->code , formatPriceNew($item->cost) , formatPriceNew($spent) , $item->budget.chr(160) , $item->manualprogressbar.'%'.chr(160) , $item->status );
     	} 
-		$headername = "Cost Code Management";
+		$headername = "COST CODE MANAGEMENT";
     	createPDF('costcodes', $header,$headername);
     	die();
 

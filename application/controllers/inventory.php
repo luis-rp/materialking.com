@@ -535,7 +535,7 @@ class Inventory extends CI_Controller
 				
 		}
 		 
-		$headername = "Inventory";
+		$headername = "INVENTORY";
 		createPDF('inventory', $header,$headername);
 		die();
 	

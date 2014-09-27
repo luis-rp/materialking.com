@@ -153,7 +153,7 @@ class Order extends CI_Controller
 	
 	
 					 
-					$headername = "Project Statistics";
+					$headername = "PROJECT STATISTICS";
 					createPDF('order', $header,$headername);
 					die(); 
 	
@@ -621,7 +621,7 @@ class Order extends CI_Controller
 		$header[] = array('' , '','' , '' , '' , '' , '<b>Total</b>' ,'$ '.$totalwithtax.chr(160));
 	
 	 
-		$headername = "Order Details";
+		$headername = "ORDER DETAILS";
     	createPDF('order_detail_', $header,$headername);
     	die();	
 		//===============================================================================
