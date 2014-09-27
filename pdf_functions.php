@@ -52,7 +52,7 @@ function createPDF($sheet_name, $pdfdata,$headername)
 		// $pdf->Rect(227, 6, 55, 15, 'F', array(), array(221,221,221));
 		//$pdf->Image(PDF_HEADER_LOGO, '', '', 50, 12, '', '', 'R', true, 300, '', false, false, 100, false, false, false);
 	 		
-		$pdf->Image(PDF_HEADER_LOGO, 230, 7, 50, 13, 'PNG', '', 'T', true, 300, '', false, false, 100, false, false, false);
+		$pdf->Image(K_PATH_IMAGES.PDF_HEADER_LOGO, 230, 7, 50, 13, 'PNG', '', 'T', true, 300, '', false, false, 100, false, false, false);
 		 $pdf->SetXY(15, 5);
 		 $pdf->SetAutoPageBreak(true, 30);
 		  $pdf->SetFont('dejavuserif', 'B', 20);	 
