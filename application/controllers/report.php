@@ -309,7 +309,7 @@ class report extends CI_Controller
 			
 			
 			
-		$headername = "Report";
+		$headername = "REPORT";
     	createPDF('report', $header,$headername);
     	die();	
 			

@@ -230,7 +230,7 @@ class itemcode extends CI_Controller
 					    				
     		$header[] = array($enq_row->id  , $enq_row->itemcode  ,  $enq_row->itemname ,  $enq_row->unit , $enq_row->specs, $item_price.chr(160)  , $enq_row->awardedon);
     	}
-		$headername = "Item Code Management";
+		$headername = "ITEM CODE MANAGEMENT";
     	createOtherPDF('itemcode', $header,$headername);
     	die();
 

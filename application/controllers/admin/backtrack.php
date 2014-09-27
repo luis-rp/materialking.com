@@ -478,7 +478,7 @@ class backtrack extends CI_Controller
 		}// outer foreach
 			
 		 
-			$headername = "Backorder Items";
+		$headername = "BACKORDER ITEMS";
     	createOtherPDF('backtrack', $header,$headername);
     	die();
 	

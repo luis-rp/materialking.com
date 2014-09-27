@@ -469,7 +469,7 @@ class Dashboard extends CI_Controller
 		}
 			
 		 
-		$headername = "Project Statistics";
+		$headername = "PROJECT STATISTICS";
     	createOtherPDF('Statistics', $header,$headername);
     	die();
 	

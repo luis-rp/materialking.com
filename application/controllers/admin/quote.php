@@ -1470,7 +1470,7 @@ class quote extends CI_Controller
 
     	}
     	 
-		$headername = "Bid Placed";
+		$headername = "BID PLACED";
     	createOtherPDF('bids_pdf_'.$qid, $header,$headername);
     	die();
 
@@ -2977,7 +2977,7 @@ class quote extends CI_Controller
     	//--------------------errorLog------------------------------------------------------------
 
     	 
-		$headername = "TRACK Items";
+			$headername = "TRACK ITEMS";
     	createOtherPDF('track_items', $header,$headername);
     	die();
 
