@@ -40,7 +40,7 @@
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">	
 		
-			<h3>Performance By Item 	 <a href="<?php echo site_url('quote/performanceexport'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> </h3>		
+			<h3>Performance By Item 	 <a href="<?php echo site_url('quote/performanceexport'); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> &nbsp;<a href="<?php echo site_url('quote/performancePDF'); ?>" class="btn btn-primary btn-xs btn-mini">View PDF</a> </h3>		
 		</div>		
 	   <div id="container">
 		
