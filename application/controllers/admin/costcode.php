@@ -470,7 +470,81 @@ class costcode extends CI_Controller {
 
     }
 	
+//CUST PDF
+    function custPDF($costcode)
+    {
+    	$costcode = urldecode($costcode);
+    	$costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
+
+    	$count = count($costcodeitems);
+    	$items = array();
+    	if ($count >= 1) {
+    		foreach ($costcodeitems as $row) {
+    			$awarded = $this->quote_model->getawardedbid($row->quote);
+    			$row->ea = "$ " . $row->ea;
+    			$row->totalprice = "$ " . $row->totalprice;
+    			$row->itemname = htmlentities($row->itemname);
+    			$row->status = strtoupper($awarded->status);
+    			$row->actions = //$row->status=='COMPLETE'?'':
+    			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
+    			;
+    			$items[] = $row;
+    		}
+
+    		$data['items'] = $items;
+    	} else {
+    		$this->data['message'] = 'No Items';
+    	}
+
+    	$orders = $this->order_model->get_order_by_costcode($costcode);
+
+    	$data['orders'] = array();
+    	$i = 0;
+    	foreach($orders as $order)
+    	{
+    		$i++;
+    		$order->sno = $i;
+    		if(!is_null($order->project)){
+    			$sql = "SELECT *
+				FROM ".$this->db->dbprefix('project')." p
+				WHERE id=".$order->project;
+    			$project = $this->db->query($sql)->result();
+    			$order->prjName = "assigned to ".$project[0]->title;
+    		}else{
+    			$order->prjName = "Pending Assignment";
+    		}
+    		$data['orders'][]=$order;
+    	}
+
+    	//===============================================================================
+
+    	
+		$poitem_title = 'Items with costcode '.$costcode;
 		
+		$header[] = array('Report type:' , $poitem_title , '' , '' , '' , '' , '' , '' , '' , '');
+		
+						
+		if($this->session->userdata('managedprojectdetails'))
+		{
+				
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');			
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '' , '');
+		}	
+				
+		
+		$header[] = array('ID' , 'PO#' , 'Code' , 'Item Name' , 'Unit' , 'Quantity' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Status');
+
+    	foreach($items  as  $enq_row)
+    	{
+    		$header[] = array($enq_row->id,  $enq_row->ponum ,  $enq_row->itemcode , $enq_row->itemname ,$enq_row->unit ,$enq_row->quantity , formatPriceNew($enq_row->ea) , formatPriceNew($enq_row->totalprice) ,$enq_row->daterequested , $enq_row->status);
+    	}
+		$headername = "ITEMS WITH COSTCODE";
+    	createOtherPDF('costcode'.$costcode, $header,$headername);
+    	die();
+    	 
+
+    }
+			
     function items($costcode) {
     	$costcode = str_replace('%7C', '/', $costcode);
     	$costcode=urldecode($costcode);
@@ -540,7 +614,8 @@ class costcode extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['bottomheading'] = "Store Orders With Costcode '$costcode'";
-        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a>';
+   
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode.'">View PDF</a>';
 
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
