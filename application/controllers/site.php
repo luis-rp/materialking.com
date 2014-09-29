@@ -1726,7 +1726,7 @@ class site extends CI_Controller
 		$data['email_body_content'] .= "Name: ".$_POST['name']."<br/>";
 		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
 		//$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
-		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
+		//$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')

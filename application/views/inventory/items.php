@@ -2,7 +2,7 @@
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
-
+<?php if($tier){?>
 <?php echo '<script>var tier1='.$tier->tier1.';</script>'?>
 
 <?php echo '<script>var tier2='.$tier->tier2.';</script>'?>
@@ -10,7 +10,7 @@
 <?php echo '<script>var tier3='.$tier->tier3.';</script>'?>
 
 <?php echo '<script>var tier4='.$tier->tier4.';</script>'?>
-
+<?php } ?>
 <?php echo '<script>var itemupdateurl="'.site_url('inventory/updateitem').'";</script>'?>
 
 <?php echo '<script>var itemcodeupdateurl="'.site_url('inventory/updateitemcode').'";</script>'?>
