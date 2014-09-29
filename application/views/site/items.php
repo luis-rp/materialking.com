@@ -249,7 +249,7 @@
                                     <div class="row">
                                         <div class="image span3">
                                             <div class="content">
-                                              <div class="sidepan">  <?php if(isset($item->item_img)) { ?>
+                                              <div class="sidepan">  <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) { ?>
                                                     <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/' . $item->item_img) ?>" alt="">
                                                 <?php } else { ?>
                                                 
