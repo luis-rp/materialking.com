@@ -829,7 +829,7 @@ $( document ).tooltip();
                         	<table width="100%" cellpadding="4">
                         		<tr>
                         			<td><b>Newsletter:</b> </td>
-                        			<td><a href="#" class="join-newsletter" id="join-newsletter">Join</a></td>
+                        			<td><h4><a href="#" class="join-newsletter" id="join-newsletter">Join</a></h4></td>
                         		</tr>
                         		<tr>
                         			<td><b>Connection:</b> </td>
@@ -839,11 +839,11 @@ $( document ).tooltip();
                         			<td colspan="2"><b>About Us:</b><br/><?php echo $supplier->shortdetail;?></td>
                         		</tr>
                         		<tr>
-                        			<td><a href="#form">Contact</a></td>
+                        			<td><h4><a href="#form">Contact</a></h4></td>
                         			<td></td>
                         		</tr>
                         		<tr>
-                        			<td><a href="#map">Location</a></td>
+                        			<td><h4><a href="#map">Location</a></h4></td>
                         			<td></td>
                         		</tr>
                         		<?php if(0){?>
@@ -873,7 +873,7 @@ $( document ).tooltip();
                                                 ?>
                                                 <li>
                                                 <a href="javascript:void(0)" onclick="industryitems('<?php echo $type->id;?>')">
-                                                <?php echo $type->title; ?>
+                                                <h4><?php echo $type->title; ?></h4>
                                                 </a>
                                                 </li>
                                         <?php } ?>
@@ -889,7 +889,7 @@ $( document ).tooltip();
                         		<tr>
                         			<td colspan="2">
                             			<a href="<?php echo site_url('store/items/'.$supplier->username);?>">
-                            			Go to Store
+                            			<h4>Go to Store</h4>
                             			<img src="<?php echo site_url('templates/site/assets/img/shopping_cart.png');?>"/>
                             			</a>
                         			</td>

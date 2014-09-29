@@ -618,7 +618,11 @@
 			    	</tr>
 			    	<?php }?>
 			    	</table>	
-			    	<p style="text-align:right;">*Note Quantity Pending Acknowledgement if Any.</p>
+			    	<?php if($item->pendingshipments){?>
+                       <p style="text-align:right;">*Note:-&nbsp;<?php echo $item->pendingshipments;?>&nbsp;Pending Acknowledgement</p>
+                    <?php } else {?>
+                      <p style="text-align:right;">*Note:-&nbsp;No Pending Acknowledgement</p>
+                     <?php } ?>
 			    <?php $i++; } ?>					  
 
 				<?php } ?>

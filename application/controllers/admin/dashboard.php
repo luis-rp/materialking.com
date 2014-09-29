@@ -722,7 +722,14 @@ class Dashboard extends CI_Controller
 						            $checkitemname = false;
 						        }
 						    }
-						    					        
+
+							$pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                             $item->pendingshipments=$pendingshipments;
+						    	        
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{
 								$item->companyname = @$item->companydetails->title;

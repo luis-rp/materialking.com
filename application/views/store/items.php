@@ -410,7 +410,7 @@ $( document ).tooltip();
                                                 ?>
                                                 <li>
                                                 <a href="javascript:void(0)" onclick="industryitems('<?php echo $type->id;?>')">
-                                                <?php echo $type->title; ?>
+                                                <h4><?php echo $type->title; ?></h4>
                                                 </a>
                                                 </li>
 
