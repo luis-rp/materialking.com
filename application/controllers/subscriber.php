@@ -116,4 +116,28 @@ class subscriber extends CI_Controller
 		$this->session->set_flashdata('message', 'The newsletter was sent');
 		redirect("company/mailinglist");
 	}
+	function editSubscriber($id){
+		$this->db->where("CompanyID",$this->session->userdata('company')->id);
+		$data['fields'] = $this->db->get("formsubscription")->result();
+		
+		$this->db->select('*');
+		$this->db->from('newsletter_subscribers');
+		$this->db->join("newsletter_subscribers_data","newsletter_subscribers.id=newsletter_subscribers_data.subscriber_id");
+		$this->db->where("newsletter_subscribers.id",$id);
+		$this->db->where("newsletter_subscribers.cid",$this->session->userdata('company')->id);
+		
+		$data['subscriptor'] =$this->db->get()->result(); 
+		//log_message("debug",var_export($data['subscriptor'],true));
+		$this->load->view("company/editSubscriber",$data);
+	}
+	
+	function deleteSubscriber($id){
+		$this->db->where('subscriber_id', $id);
+		$this->db->delete('newsletter_subscribers_data'); 
+		
+		$this->db->where('id', $id);
+		$this->db->delete('newsletter_subscribers');
+		
+		redirect("company/listsubscribers");
+	}
 }

@@ -1321,7 +1321,7 @@ class Company extends CI_Controller {
 		if(!empty($res)){
 			$data['title'] = $res->title;
 			$data['body'] = $res->body;
-			$data['id'] = $this->session->userdata('company')->id;
+			$data['id'] = $id;//$this->session->userdata('company')->id;
 
 			$this->db->where("CompanyID",$this->session->userdata('company')->id);
 			$data['fields'] = $this->db->get("formsubscription")->result();
