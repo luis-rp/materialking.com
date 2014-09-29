@@ -287,10 +287,15 @@ Send Message:
 		              <?php
 				    	$i = 0;
 				    	foreach($transfers as $item)
-				    	{
+				    	{  
 				    		$i++;
- 				    		//$totamount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2);
- 				    		$totamount = number_format($item->amount + $order->shipping ,2);?> 
+ 				    		  $sql = "SELECT shipping FROM 
+							   ".$this->db->dbprefix('orderdetails')." t
+							   WHERE orderid='$item->orderid' AND company=$item->company";
+ 								$getshipping = $this->db->query($sql)->result();
+ 							
+							//$totamount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2);
+ 				    		$totamount = number_format($item->amount + $getshipping[0]->shipping ,2);?> 
                         <tr>
                             <td><?php echo $item->transferid;?></td>
                             <td><?php echo $item->companyname;?></td>
