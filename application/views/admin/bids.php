@@ -29,7 +29,7 @@
 		$highTotal =array_sum($maximum);
 		$totalsaved =0;
 		if($highTotal > $awardedtotal){
- 			$totalsaved = $highTotal - $awardedtotal ;
+ 			$totalsaved = $highTotal + (($highTotal)*$config['taxpercent']/100) - $awardedtotalwithtax;
 		}
 		
 	}
@@ -268,9 +268,11 @@ $(function() {
 
                    	var save = val.max() - val.min();
                    	save = save.toFixed(2);
-                   	var savepo = val.max() - parseFloat($("#selectedtotal").text());
+                   	//var savepo = val.max() - parseFloat($("#selectedtotal").text());
+                   	<?php $highTotal =array_sum($maximum);?>
+                   	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());                   	
                    	savepo = savepo.toFixed(2);
-                   	var textsubtitle = '*Saving '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   	var textsubtitle = '*HI VS LOW SAVINGS '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
                    }else
                    var textsubtitle = "";
                

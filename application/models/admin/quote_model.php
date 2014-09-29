@@ -835,6 +835,7 @@ class quote_model extends Model {
             'subtotal' => $this->input->post('subtotal'),
             'taxtotal' => $this->input->post('taxtotal'),
             'total' => $this->input->post('total'),
+            'creation_date' => date('Y-m-d'),
         );
         $options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         //print_r($options);exit;

@@ -2134,7 +2134,7 @@ class Quote extends CI_Controller
 				if(isset($q->etalog[$etacount-1]->daterequested) && $q->etalog[$etacount-1]->daterequested!="")
 				$reqdate = $q->etalog[$etacount-1]->daterequested;
 				else 
-				$reqdate = "";
+				$reqdate = $q->quotedaterequested->daterequested;
 				
 				if(isset($_POST['daterequested'.$q->id]))
 				$postdate = $_POST['daterequested'.$q->id];

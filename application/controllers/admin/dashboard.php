@@ -772,7 +772,7 @@ class Dashboard extends CI_Controller
 		
 		
 		$wherequote = "";
-		$wherequote = "and STR_TO_DATE(q.podate,'%m/%d/%Y') between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+		$wherequote = "and creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
 					
 		$quotesql = "SELECT q.* FROM 
 		".$this->db->dbprefix('quote')." q WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and q.isread=0 {$wherequote} ";

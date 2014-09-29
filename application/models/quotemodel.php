@@ -252,6 +252,12 @@ class Quotemodel extends Model
                                 			->where('itemid',$item->itemid)
                                 			->get('etalog')->result();
 							
+                            $item->quotedaterequested = $this->db->select('daterequested')
+					        ->where('purchasingadmin',$item->purchasingadmin)
+					        ->where('quote',$quote->id)
+					        ->where('itemid',$item->itemid)
+					        ->get('quoteitem')->row();       			
+                                			
 							$items[]=$item;
 						}
 					}

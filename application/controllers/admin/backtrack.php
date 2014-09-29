@@ -85,6 +85,12 @@ class backtrack extends CI_Controller
                             			->get('etalog')->result();
 					        }
 					        
+					         $item->quotedaterequested = $this->db->select('daterequested')
+					        ->where('purchasingadmin',$item->purchasingadmin)
+					        ->where('quote',$quote->id)
+					        ->where('itemid',$item->itemid)
+					        ->get('quoteitem')->row();
+					        
 					        $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
 			                        ->from('shipment')
 			                        ->where('quote',$quote->id)->where('company',$item->company)

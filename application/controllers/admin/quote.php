@@ -167,6 +167,10 @@ class quote extends CI_Controller
                 $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
+                    
+                	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
+        			$shipment = $this->db->query($shipmentsquery)->result();
+                	if($shipment)
                     $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance';
                 }
                 $quote->actions = $quote->awardedbid?'':
@@ -3051,6 +3055,13 @@ class quote extends CI_Controller
 				->get('etalog')->result();
 
 				}
+				
+				$item->quotedaterequested = $this->db->select('daterequested')
+				->where('purchasingadmin',$item->purchasingadmin)
+				->where('quote',$qid)
+				->where('itemid',$item->itemid)
+				->get('quoteitem')->row();		
+				
 			}
 		}
 

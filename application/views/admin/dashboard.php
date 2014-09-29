@@ -417,7 +417,7 @@
 
 					  <tr>
 					  <td><?php echo $quote->ponum; ?></td>
-					  <td><?php $datetime = strtotime($quote->podate); echo date("m/d/Y", $datetime);?></td>
+					  <td><?php $datetime = strtotime($quote->creation_date); echo date("m/d/Y", $datetime);?></td>
 					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closequote/'.$quote->id);?>">X</a></td>
 					  </tr>
 
