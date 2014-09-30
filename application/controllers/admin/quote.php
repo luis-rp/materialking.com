@@ -561,7 +561,7 @@ class quote extends CI_Controller
     		$emailitems.= '<tr>';
     		$emailitems.= '<th>Itemcode</th>';
     		$emailitems.= '<th>Itemname</th>';
-    		$emailitems.= '<th>Qty</th>';
+    		$emailitems.= '<th>Qty</th>&nbsp;&nbsp;';
     		$emailitems.= '<th>Price</th>';
     		$emailitems.= '<th>Unit</th>';
     		$emailitems.= '<th>Notes</th>';
@@ -606,7 +606,7 @@ class quote extends CI_Controller
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
-				    ";
+				    <br><br>Thank You,".$c->title."<br>";
 				  	$loaderEmail = new My_Loader();
                     $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');

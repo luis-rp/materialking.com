@@ -196,11 +196,12 @@
 								{
 									$invoiceitem = (array)$invoiceitem;
 									$totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
+									$olddate=strtotime($invoiceitem['receiveddate']); $newdate = date('m/d/Y', $olddate);
 									echo '<tr nobr="true">
 									    <td>'.++$i.'</td>
 									    <td>'.htmlentities($invoiceitem['itemname']).'</td>
 									    <td>'.$invoiceitem['daterequested'].'</td>
-									    <td>'.$invoiceitem['receiveddate'].'</td>
+									    <td>'.$newdate.'</td>
 									    <td>'.$invoiceitem['quantity'].'</td>
 									    <td>'.$invoiceitem['unit'].'</td>
 									    <td align="right">$ '.$invoiceitem['ea'].'</td>

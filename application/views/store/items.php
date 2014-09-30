@@ -429,7 +429,7 @@ $( document ).tooltip();
                         		 <tr>
                         			<td colspan="2">
                             			<a href="<?php echo site_url('site/supplier/'.$company->username);?>">
-                            			Back to Profile
+                            			<h4>Back to Profile</h4>
                             			</a>
                         			</td>
                         		</tr>
