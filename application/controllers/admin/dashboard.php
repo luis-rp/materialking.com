@@ -480,6 +480,7 @@ class Dashboard extends CI_Controller
 		
 	function index() 
 	{
+		$config = $this->settings_model->get_current_settings ();
 		//echo '<pre>';print_r($data);die;
 		$id = $this->session->userdata('id');
 		if(!$id)
@@ -714,7 +715,7 @@ class Dashboard extends CI_Controller
 					        			if ($qi->itemcode == $item->itemcode) {
 					        				$item->originaldate = $qi->daterequested;
 					        			}
-					        		}*/
+					        		}
 					        		$totalprice += $item->totalprice;
 					        		$key = $item->itemcode;
 					        		if (!isset($minimum[$key])) {
@@ -724,7 +725,7 @@ class Dashboard extends CI_Controller
 					        			$minimum[$key] = $item->ea;
 					        		} else if ($maximum[$key] < $item->totalprice) {
 					        			$maximum[$key] = $item->totalprice;
-					        		}
+					        		}*/
 					        	}
 					        	if (!isset($minimum['totalprice']))
 					        	$minimum['totalprice'] = $totalprice;
@@ -740,14 +741,14 @@ class Dashboard extends CI_Controller
 						$awardedtotal+=$ai->quantity * $ai->ea;
 					}
 					$awardedtotal = round($awardedtotal,2);
-					$awardedtax = $awardedtotal * $config['taxpercent'] / 100;
+					$awardedtax = $awardedtotal * $config->taxpercent / 100;
 					$awardedtax = round($awardedtax,2);
 					$awardedtotalwithtax = $awardedtotal + $awardedtax;
 					$awardedtotalwithtax = round($awardedtotalwithtax,2);
 					$highTotal =array_sum($maximum);
 					$totalsaved =0;
 					if($highTotal > $awardedtotal){
-						$totalsaved = $highTotal + (($highTotal)*$config['taxpercent']/100) - $awardedtotalwithtax;
+						$totalsaved = $highTotal + (($highTotal)*$config->taxpercent/100) - $awardedtotalwithtax;
 					}
 					$Totalawardedtotal += $totalsaved;
 					
