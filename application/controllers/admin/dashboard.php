@@ -708,11 +708,13 @@ class Dashboard extends CI_Controller
 
 					        	$totalprice = 0;
 					        	foreach ($bid->items as $item) {
-					        		foreach ($quoteitems as $qi) {
+					        		/*
+					        		 * The $quoteitems is not definied
+					        		 * foreach ($quoteitems as $qi) {
 					        			if ($qi->itemcode == $item->itemcode) {
 					        				$item->originaldate = $qi->daterequested;
 					        			}
-					        		}
+					        		}*/
 					        		$totalprice += $item->totalprice;
 					        		$key = $item->itemcode;
 					        		if (!isset($minimum[$key])) {

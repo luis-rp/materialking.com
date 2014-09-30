@@ -1080,6 +1080,7 @@ function orders_export()
 			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
 			
 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+			$itemdetails->companyName = $this->db->where('id',$itemdetails->company)->get("company")->row()->title;
 			
 			$item->itemdetails = $itemdetails;
 			
@@ -1111,6 +1112,7 @@ function orders_export()
 			    $companyamounts[$item->company]->amount += $item->quantity * $item->price;
 			}
 		}
+		log_message('debug',var_export($data['orderitems'],true));
 		$data['companyamounts'] = $companyamounts;
 		$data['companies'] = $companies;
 		$data['orderid'] = $id;

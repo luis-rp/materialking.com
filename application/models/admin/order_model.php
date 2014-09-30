@@ -13,8 +13,9 @@ class order_model extends Model
 						$this->db->dbprefix('orderdetails')." od, ".
 						$this->db->dbprefix('costcode')." cc".
 						" WHERE o.costcode=cc.id AND o.id=od.orderid".
-	 					" AND	 cc.code='".$costcode."'";
-	log_message("debug",$sql);
+	 					" AND	 cc.code='".$costcode."' ".
+	 					" GROUP BY o.id";
+	
 				$query = $this->db->query ($sql);
 				return $query->result();
 		

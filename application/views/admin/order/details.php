@@ -60,8 +60,9 @@ function paycc(ptype,company, amount)
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th style="width:20%">Item Code</th>
-                            <th style="width:30%">Quantity</th>
+                            <th style="width:10%">Item Code</th>
+                            <th style="width:20%">Quantity</th>
+                            <th style="width:20%">Company</th>
                             <th style="width:20%">Price</th>
                             <th style="width:10%">Total</th>
                             <th style="width:10%">Status</th>
@@ -81,8 +82,9 @@ function paycc(ptype,company, amount)
                         <tr>
                             <td><?php echo $item->itemdetails->itemname;?></td>
                             <td><?php echo $item->quantity;?></td>
+                            <td><?php echo $item->itemdetails->companyName;?></td>
                             <td>$<?php echo $item->price;?></td>
-                            <td><?php echo number_format($total,2);?></td>
+                            <td>$<?php echo number_format($total,2);?></td>
                             <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
                         </tr>
                       <?php } ?>
