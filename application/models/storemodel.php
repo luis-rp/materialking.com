@@ -120,7 +120,7 @@ class Storemodel extends Model
         
         
         
-        $ret .= "</ul>";
+      //  $ret .= "</ul>";
         return $ret;
     }    
     

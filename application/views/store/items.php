@@ -438,7 +438,8 @@ $( document ).tooltip();
                         </div>
                     </div>
                   <?php if(isset($inventory) && count($inventory)>0) {?>
-                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {?>
+                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
+                    	?>
                 		 <h2>Sub Categories</h2>
                 		   <div class="content_sup" style="height:72px;">
                    			 <div style="clear:both;"></div>

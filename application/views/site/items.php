@@ -329,7 +329,7 @@
                 <div class="sidebar span3">
                 
                
-  				  <?php if(isset($datatags)) { if(!empty($datatags)){?>
+  				  <?php /*if(isset($datatags)) { if(!empty($datatags)){?>
     			    <div class="widget contact">
                         <div class="title">
                             <h2 class="block-title">Tags:</h2>
@@ -345,7 +345,7 @@
                         </div>
                         </div>
     				
-    				<?php } } ?>
+    				<?php } } */?>
     			
                 	
                        <?php 
