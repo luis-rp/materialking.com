@@ -223,6 +223,7 @@
     			$("#qtypriceplacer").html("");
     			$("#qtypriceplacer").html(data);
     			$("#htmlqtymessage").html("Quantity-Price details added successfully!");
+    			$(".alert-success").css({display: "block"});
     		}
     	});
     	
@@ -483,7 +484,7 @@ function updatedeal(id)
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);"/>
                                                 	<?php if(@$item->companyitem){?>
-                                                	<a href="javascript: void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname)?>','<?php echo @$item->companyitem->ea?>');">
+                                                	<a href="javascript: void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname)?>','<?php echo @$item->companyitem->ea?>');">
                                                 		<i class="fa fa-search"></i>
                                                 	</a>
                                                 	<?php }?>
@@ -492,11 +493,11 @@ function updatedeal(id)
                   											 onchange="updatecheckprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Call for price&nbsp;
                                                 </td>
                                                 
-                                                 <td class="v-align-middle">
+                                                <td class="v-align-middle">
                                                 	<input type="text"  style="width: 100px;" placeholder="Min Qty"
                                                 	value="<?php echo @$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
-                                                	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname)?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
+                                                	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname)?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
                                                 	<br/>
                                                 	<input type="checkbox" id = 'tierprice' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
                   											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc.
@@ -646,7 +647,7 @@ function updatedeal(id)
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button><div id="htmlqtymessage"></div></div>
+          <div style="display: none;" class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button><div id="htmlqtymessage"></div></div>
           <h4 class="semi-bold" id="myModalLabel">
           Price Details:
           <span id="qtyitemcode"></span>

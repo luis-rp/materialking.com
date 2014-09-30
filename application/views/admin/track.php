@@ -80,7 +80,7 @@ $per .='%';
                     		foreach ($awarded->invoices as $invoice) {
                     			foreach ($invoice->items as $item) {
                     				if($item->awarditem==$q->id){
-                    					$receiveddate =date('m/d/Y', strtotime($item->receiveddate));
+                    					$receiveddate =$item->receiveddate;
                     					if($greaterreceived!=""){
                     						if(strtotime($greaterreceived)<strtotime($receiveddate))
                     						$greaterreceived = $receiveddate;
@@ -536,7 +536,7 @@ function acceptall()
 									foreach ($awarded->invoices as $invoice) {
 										foreach ($invoice->items as $item) {
 											if($item->awarditem==$q->id){
-												$receiveddate = date('m/d/Y', strtotime($item->receiveddate));
+												$receiveddate = $item->receiveddate;
 												if($greaterreceived!=""){
 													if(strtotime($greaterreceived)<strtotime($receiveddate))
 													$greaterreceived = $receiveddate;

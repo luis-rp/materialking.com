@@ -692,12 +692,63 @@ class Dashboard extends CI_Controller
 		$companyarr = array();
 		if ($count >= 1) 
 		{	
+			$Totalawardedtotal = 0;			
+			
 			foreach ($quotes[0] as $quote) 
 			{
 				$awarded = $this->quote_model->getawardedbid($quote->id);
 				$items[$quote->ponum]['quote'] = $quote;
 				if($awarded)
 				{
+					$bids = $this->quote_model->getbids($quote->id);
+					
+					        $maximum = array();
+					        
+					        foreach ($bids as $bid) {
+
+					        	$totalprice = 0;
+					        	foreach ($bid->items as $item) {
+					        		foreach ($quoteitems as $qi) {
+					        			if ($qi->itemcode == $item->itemcode) {
+					        				$item->originaldate = $qi->daterequested;
+					        			}
+					        		}
+					        		$totalprice += $item->totalprice;
+					        		$key = $item->itemcode;
+					        		if (!isset($minimum[$key])) {
+					        			$minimum[$key] = $item->ea;
+					        			$maximum[$key] = $item->totalprice;
+					        		} elseif ($minimum[$key] > $item->ea) {
+					        			$minimum[$key] = $item->ea;
+					        		} else if ($maximum[$key] < $item->totalprice) {
+					        			$maximum[$key] = $item->totalprice;
+					        		}
+					        	}
+					        	if (!isset($minimum['totalprice']))
+					        	$minimum['totalprice'] = $totalprice;
+					        	elseif ($minimum['totalprice'] > $totalprice)
+					        	$minimum['totalprice'] = $totalprice;
+					        }
+					
+					$awardedtotal = 0;
+					if(@$awarded->items)
+					foreach($awarded->items as $ai)
+					{
+						$awardeditemcompany[]=$ai->itemcode . $ai->company;
+						$awardedtotal+=$ai->quantity * $ai->ea;
+					}
+					$awardedtotal = round($awardedtotal,2);
+					$awardedtax = $awardedtotal * $config['taxpercent'] / 100;
+					$awardedtax = round($awardedtax,2);
+					$awardedtotalwithtax = $awardedtotal + $awardedtax;
+					$awardedtotalwithtax = round($awardedtotalwithtax,2);
+					$highTotal =array_sum($maximum);
+					$totalsaved =0;
+					if($highTotal > $awardedtotal){
+						$totalsaved = $highTotal + (($highTotal)*$config['taxpercent']/100) - $awardedtotalwithtax;
+					}
+					$Totalawardedtotal += $totalsaved;
+					
 					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
 					{
 						foreach($awarded->items as $item)
@@ -771,6 +822,8 @@ class Dashboard extends CI_Controller
 		}		
 		
 		//echo "<pre>",print_r($data['backtracks']); die;
+		
+		$data['Totalawardedtotal'] = $Totalawardedtotal;
 		
 		$messagesql = "SELECT m.* FROM 
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.isread=0 and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";

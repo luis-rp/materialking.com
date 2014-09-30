@@ -3359,7 +3359,7 @@ $loaderEmail = new My_Loader();
 	{
 		if(isset($date) && !empty($date))
 		{
-			$time = date('H:m:s');
+			$time = date('H:i:s');
 			$parts = explode('/', $date);
 			$newDate  = "$parts[2]-$parts[0]-$parts[1] $time";
 			return $newDate;

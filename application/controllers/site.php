@@ -30,6 +30,13 @@ class site extends CI_Controller
         //redirect(base_url('site'));
     }
     
+    public function insertuserip(){
+    	if(isset($_POST['ipaddress'])){    	
+    		$datatoadd = array('ip' => $_POST['ipaddress']); 
+    		$this->db->insert('ipaddress',$datatoadd);
+    	}
+    }
+    
     public function index ()
     {
 
@@ -39,13 +46,19 @@ class site extends CI_Controller
     					if ($this->db->get('ipaddress')->result()){
     						$data['videocount'] = 1;
     					}else{					
-    						$datatoadd = array('ip' => $_SERVER['REMOTE_ADDR']);    						
-							$this->db->insert('ipaddress',$datatoadd);
+    						
 							$data['videocount'] = 0;
     					}
 		
 		}else 
 		$data['videocount'] = 0;
+    	
+		if(isset($_SERVER['REMOTE_ADDR'])){
+
+			$data['ipaddress'] = $_SERVER['REMOTE_ADDR'];					
+		}else{
+			$data['ipaddress'] = "";
+		}
     	
     	$details = get_my_address();
     	$center = $details->loc;

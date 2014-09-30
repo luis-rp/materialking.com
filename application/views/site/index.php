@@ -1,3 +1,5 @@
+<?php echo '<script>var ipinserturl="' . site_url('site/insertuserip') . '";</script>' ?>
+
 <?php //var_dump($popups);die;?>
 <script>
 	function getlatlong()
@@ -23,7 +25,23 @@
 	}
 	
 	function closevideo(){
-				
+		
+		url = ipinserturl;
+		
+		if($('#ipaddress').val()!=""){
+			ip = $('#ipaddress').val();
+			$.ajax({
+		      type:"post",
+		      data: "ipaddress="+ip,
+		      sync:false,
+		      url: url
+		    }).done(function(data){
+			   
+		    });
+		}
+		
+		
+		
 		$("#videopopsrc").remove();		
 	}
 	
@@ -678,6 +696,8 @@ P.O. Price Rankings
         </div>
     </div>
 
+    <input type="hidden" id="ipaddress" name="ipaddress" value="<?php echo (@$ipaddress)?$ipaddress:'';?>"/>
+    
     <div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
