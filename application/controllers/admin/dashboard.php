@@ -710,12 +710,12 @@ class Dashboard extends CI_Controller
 					        	$totalprice = 0;
 					        	foreach ($bid->items as $item) {
 					        		/*
-					        		 * The $quoteitems is not definied
+					        		 * The $quoteitems is not definied ,and check the code is causing many problems
 					        		 * foreach ($quoteitems as $qi) {
 					        			if ($qi->itemcode == $item->itemcode) {
 					        				$item->originaldate = $qi->daterequested;
 					        			}
-					        		}*/
+					        		}
 					        		$totalprice += $item->totalprice;
 					        		$key = $item->itemcode;
 					        		if (!isset($minimum[$key])) {
@@ -725,7 +725,7 @@ class Dashboard extends CI_Controller
 					        			$minimum[$key] = $item->ea;
 					        		} else if ($maximum[$key] < $item->totalprice) {
 					        			$maximum[$key] = $item->totalprice;
-					        		}
+					        		}*/
 					        	}
 					        	if (!isset($minimum['totalprice']))
 					        	$minimum['totalprice'] = $totalprice;
@@ -826,8 +826,8 @@ class Dashboard extends CI_Controller
 		
 		//echo "<pre>",print_r($data['backtracks']); die;
 		
-		$data['Totalawardedtotal'] = $Totalawardedtotal;
-		
+		//$data['Totalawardedtotal'] = $Totalawardedtotal;
+		$data['Totalawardedtotal'] = "";
 		$messagesql = "SELECT m.* FROM 
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.isread=0 and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
 		
