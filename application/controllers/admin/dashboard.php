@@ -715,7 +715,7 @@ class Dashboard extends CI_Controller
 					        			if ($qi->itemcode == $item->itemcode) {
 					        				$item->originaldate = $qi->daterequested;
 					        			}
-					        		}
+					        		}*/
 					        		$totalprice += $item->totalprice;
 					        		$key = $item->itemcode;
 					        		if (!isset($minimum[$key])) {
@@ -725,7 +725,7 @@ class Dashboard extends CI_Controller
 					        			$minimum[$key] = $item->ea;
 					        		} else if ($maximum[$key] < $item->totalprice) {
 					        			$maximum[$key] = $item->totalprice;
-					        		}*/
+					        		}
 					        	}
 					        	if (!isset($minimum['totalprice']))
 					        	$minimum['totalprice'] = $totalprice;
