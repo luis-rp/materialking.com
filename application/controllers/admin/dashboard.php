@@ -704,33 +704,28 @@ class Dashboard extends CI_Controller
 					$bids = $this->quote_model->getbids($quote->id);
 					
 					        $maximum = array();
-					        
+					        $minimum = array();
+					        					        
 					        foreach ($bids as $bid) {
 
-					        	$totalprice = 0;
-					        	foreach ($bid->items as $item) {
-					        		/*
-					        		 * The $quoteitems is not definied ,and check the code is causing many problems
-					        		 * foreach ($quoteitems as $qi) {
-					        			if ($qi->itemcode == $item->itemcode) {
-					        				$item->originaldate = $qi->daterequested;
+					        		$totalprice = 0;
+					        		foreach ($bid->items as $item) {
+
+					        			$totalprice += $item->totalprice;
+					        			$key = $item->itemcode;
+					        			if (!isset($minimum[$key])) {
+					        				$minimum[$key] = $item->ea;
+					        				$maximum[$key] = $item->totalprice;
+					        			} elseif ($minimum[$key] > $item->ea) {
+					        				$minimum[$key] = $item->ea;
+					        			} else if ($maximum[$key] < $item->totalprice) {
+					        				$maximum[$key] = $item->totalprice;
 					        			}
 					        		}
-					        		$totalprice += $item->totalprice;
-					        		$key = $item->itemcode;
-					        		if (!isset($minimum[$key])) {
-					        			$minimum[$key] = $item->ea;
-					        			$maximum[$key] = $item->totalprice;
-					        		} elseif ($minimum[$key] > $item->ea) {
-					        			$minimum[$key] = $item->ea;
-					        		} else if ($maximum[$key] < $item->totalprice) {
-					        			$maximum[$key] = $item->totalprice;
-					        		}*/
-					        	}
-					        	if (!isset($minimum['totalprice']))
-					        	$minimum['totalprice'] = $totalprice;
-					        	elseif ($minimum['totalprice'] > $totalprice)
-					        	$minimum['totalprice'] = $totalprice;
+					        		if (!isset($minimum['totalprice']))
+					        		$minimum['totalprice'] = $totalprice;
+					        		elseif ($minimum['totalprice'] > $totalprice)
+					        		$minimum['totalprice'] = $totalprice;
 					        }
 					
 					$awardedtotal = 0;
@@ -826,8 +821,7 @@ class Dashboard extends CI_Controller
 		
 		//echo "<pre>",print_r($data['backtracks']); die;
 		
-		//$data['Totalawardedtotal'] = $Totalawardedtotal;
-		$data['Totalawardedtotal'] = "";
+		$data['Totalawardedtotal'] = $Totalawardedtotal;
 		$messagesql = "SELECT m.* FROM 
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.isread=0 and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
 		

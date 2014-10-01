@@ -370,7 +370,7 @@
 	    		</div>
 
 	    		<?php }?>
-				<?php if(isset($Totalawardedtotal)) echo "<strong>Total Project Savings:".$Totalawardedtotal."</strong>"; ?>
+				<?php if(isset($Totalawardedtotal)) echo "<br/><strong>Total Project Savings: "; echo (@$Totalawardedtotal)?$Totalawardedtotal:''."</strong>"; ?>
 	    	</div>
 			<?php }else{?>
 			<div  class="span8" style="margin-left:1%;">
