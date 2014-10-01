@@ -39,15 +39,25 @@ class backtrack_model extends Model
 		return $ret;	
 	}
 	
-		function get_quoteswithoutprj()
+	function get_quoteswithoutprj($pid="")
 	{
 		$ret = array();
+		
+		if($this->session->userdata('usertype_id')>1)
+		$where = " and purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		
 		$sql2 ="SELECT *
 		FROM
-		".$this->db->dbprefix('project')." 
-		WHERE 
-		purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		".$this->db->dbprefix('project')." where 1=1 {$where}";
 
+		if($pid){
+			
+			$sql2 ="SELECT *
+		FROM
+		".$this->db->dbprefix('project')." 
+		WHERE 1=1 {$where} and id=".$pid;
+		}
+		
 		$query2 = $this->db->query ($sql2);
 		$result = $query2->result ();
 		if ($result)

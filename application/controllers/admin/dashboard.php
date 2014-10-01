@@ -683,6 +683,9 @@ class Dashboard extends CI_Controller
 			$backtracks[]=$bck;
 		}*/
 		$this->load->model('admin/backtrack_model');
+		if(isset($mp->id))
+		$quotes = $this->backtrack_model->get_quoteswithoutprj ($mp->id);
+		else 
 		$quotes = $this->backtrack_model->get_quoteswithoutprj ();
 		//echo "<pre>",print_r($quotes);
 		if(isset($quotes[0]))
@@ -711,6 +714,15 @@ class Dashboard extends CI_Controller
 					        		$totalprice = 0;
 					        		foreach ($bid->items as $item) {
 
+					        			if ($this->session->userdata('usertype_id') == 1) {
+					        				$this->db->where('id', $item->itemid);
+					        				$companyitem = $this->db->get('item')->row();
+					        				if ($companyitem) {
+					        					$item->itemcode = $companyitem->itemcode;
+					        					$item->itemname = $companyitem->itemname;
+					        				}
+					        			}
+					        			
 					        			$totalprice += $item->totalprice;
 					        			$key = $item->itemcode;
 					        			if (!isset($minimum[$key])) {

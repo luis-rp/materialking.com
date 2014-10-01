@@ -405,7 +405,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                 <div class="nav-collapse collapse" >
                     <a href="#" class="logo"><img src="<?php echo base_url(); ?>templates/admin/images/smalllogo.png" alt="EZPZP"></a>
-                    <a class="btn nav-button collapsed" data-toggle="collapse" data-target=".nav-collapse">
+                    <a class="btn nav-button collapsed" data-toggle="collapse" data-target=".nav-collapse" href="<?php echo site_url('store/items/EZPZ-PlumbingSupply'); ?>">
                         <span class="icon-reorder"></span>
                     </a>
                     

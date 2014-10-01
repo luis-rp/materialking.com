@@ -656,6 +656,10 @@ class quote_model extends Model {
                 if ($this->session->userdata('usertype_id') > 1)
                     $sqlmin .= " AND purchasingadmin=" . $this->session->userdata('purchasingadmin');
                 //echo $sqlmin;
+                
+                if($this->session->userdata('usertype_id') == 1)
+                	$sqlmin .= " AND purchasingadmin=" . $biditem->purchasingadmin;	
+                
                 $biditem->minprice = $this->db->query($sqlmin)->row()->minprice;
 
                 $sqlreq = "SELECT ea FROM " . $this->db->dbprefix('quoteitem') . " WHERE quote='" . $quote . "' AND itemid='" . $biditem->itemid . "'";

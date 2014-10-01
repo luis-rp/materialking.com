@@ -557,24 +557,24 @@ class quote extends CI_Controller
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">' . $itemtype . ' Saved</div></div>');
 
             $quoteitems = $this->quote_model->getitems($itemid);
-    		$emailitems = '<table>';
+    		$emailitems = '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';
-    		$emailitems.= '<th>Itemcode</th>';
+    		$emailitems.= '<th> Itemcode  </th>';
     		$emailitems.= '<th>Itemname</th>';
-    		$emailitems.= '<th>Qty</th>&nbsp;&nbsp;';
-    		$emailitems.= '<th>Price</th>';
+    		$emailitems.= '<th>Qty</th>';
     		$emailitems.= '<th>Unit</th>';
+    		$emailitems.= '<th>Price</th>';
     		$emailitems.= '<th>Notes</th>';
     		$emailitems.= '</tr>';
     		foreach($quoteitems as $q)
     		{
     		    $emailitems.= '<tr>';
-        		$emailitems.= '<td>'.$q->itemcode.'</td>';
-        		$emailitems.= '<td>'.$q->itemname.'</td>';
-        		$emailitems.= '<td>'.$q->quantity.'</td>';
-        		$emailitems.= '<td>'.$q->ea.'</td>';
-        		$emailitems.= '<td>'.$q->unit.'</td>';
-        		$emailitems.= '<td>'.$q->notes.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->itemcode.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->quantity.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->unit.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->ea.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->notes.'</td>';
         		$emailitems.= '</tr>';
     		}
     		$emailitems .= '</table>';
@@ -606,7 +606,7 @@ class quote extends CI_Controller
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
-				    <br><br>Thank You,".$c->title."<br>";
+				    <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
 				  	$loaderEmail = new My_Loader();
                     $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
