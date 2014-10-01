@@ -43,6 +43,7 @@ class backtrack_model extends Model
 	{
 		$ret = array();
 		
+		$where = "";
 		if($this->session->userdata('usertype_id')>1)
 		$where = " and purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 		

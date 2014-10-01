@@ -481,6 +481,7 @@ class Dashboard extends CI_Controller
 	function index() 
 	{
 		$config = $this->settings_model->get_current_settings ();
+		$Totalawardedtotal = 0;	
 		//echo '<pre>';print_r($data);die;
 		$id = $this->session->userdata('id');
 		if(!$id)
