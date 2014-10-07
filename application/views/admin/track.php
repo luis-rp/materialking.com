@@ -855,14 +855,17 @@ function acceptall()
                                     </td>
                                 </tr>
                                  <?php
-                                $f_total +=$invoice->totalprice;
+                                $f1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                $f_total +=$f1_total;
                                 if($invoice->paymentstatus=='Paid')
                                 {
-                                   $p_total +=$invoice->totalprice;
+                                   $p1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                   $p_total +=$p1_total;
                                 }
                                  if($invoice->paymentstatus=='Unpaid')
                                 {
-                                     $u_total +=$invoice->totalprice;
+                                	 $u1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                     $u_total +=$u1_total;
                                 }
 
 
