@@ -245,8 +245,14 @@
                                 $item->url = urlencode($item->url);
                                 ?>
                                 <div class="property span9 ">
-                                                                 <h2 class="title_top1"  style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
-                                    <div class="row">
+                                <?php $count=strlen($item->itemcode);
+                               if($count<=20){
+                                 ?>
+                                  <h2 class="title_top1"  style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                   <?php } else {?>
+                                <h2 class="title_top1"  style="word-wrap:break-word;line-height:20px;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                   <?php } ?>
+                                   <div class="row">
                                         <div class="image span3">
                                             <div class="content">
                                               <div class="sidepan">  

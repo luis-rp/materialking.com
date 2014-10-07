@@ -3863,9 +3863,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$items = $this->db->query($query)->result();
 		foreach($items as $item)
 		{
-			$query = "SELECT count(id) as awardcount
-				  FROM ".$this->db->dbprefix('awarditem')." 
-				  WHERE company={$company->id} AND itemid='".$item->itemid."'
+			$query = "SELECT count(ai.id) as awardcount
+				  FROM ".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a, ".$this->db->dbprefix('quote')." q WHERE ai.award = a.id AND a.quote = q.id 
+				  AND ai.company={$company->id} AND itemid='".$item->itemid."'
 				  ";
 			//echo $query.'<br>'.'<br>';
 			$item->awardcount = $this->db->query($query)->row()->awardcount;

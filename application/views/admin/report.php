@@ -123,7 +123,7 @@ $(document).ready(function(){
 			    		<td><?php echo $item->status;?></td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
-			    		<td><?php echo $item->invoicenum;?></td>
+			    		<td><a target="_blank" href="<?php echo site_url('admin/quote/invoices');?>"><?php echo $item->invoicenum;?></a></td>
 			    		<td><?php  if(isset($item->datedue) && $item->datedue!="") { echo date("m/d/Y", strtotime($item->datedue)); } else { echo "No Date Set"; }  ?></td>
 			    		<?php if(0){?>
 			    		<td>

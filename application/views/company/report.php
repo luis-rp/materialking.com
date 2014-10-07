@@ -100,7 +100,23 @@ function submitForm(val)
 
 
                     <div class="grid-body no-border">
-			  		 <div>
+                    <table class="table no-more-tables general">
+			    	<tr>
+			    		<th width="20%">DATE</th>
+			    		<th width="20%">TOTAL QUANTITY</th>
+			    		<th width="20%">TOTAL AMOUNT</th>
+			    		<th width="20%">TOTAL PAID</th>
+			    		<th width="20%">TOTAL REMAINING</th>
+			    	</tr>
+			    	<tr>
+			    		<td>From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?></td>
+			    		<td><span id="totalallquantity"></span></td>
+			    		<td>$<span id="totalallprice"></span></td>
+			    		<td>$<span id="totalallpaid"></span></td>
+			    		<td>$<span id="totalallremaining"></span></td>
+			    	</tr>
+			    	</table>
+			  		 <!-- <div>
 			  		 	<br/><br/>
     			  		<strong>DATE:</strong> From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?>
     			  		<br/>
@@ -111,7 +127,7 @@ function submitForm(val)
     			  		<strong>TOTAL PAID:</strong> $<span id="totalallpaid"></span>
     			  		<br/>
     			  		<strong>TOTAL REMAINING:</strong> $<span id="totalallremaining"></span>
-    			  	</div>
+    			  	</div> -->
            <?php }?>
            <hr/>
 		   <?php
@@ -138,7 +154,27 @@ function submitForm(val)
 			    		$i++;
 		   ?>
 
-    			  <div>
+		   		<table class="table no-more-tables general">
+			    	<tr>
+			    		<th width="20%">DATE</th>
+			    		<th width="20%">TOTAL QUANTITY</th>
+			    		<th width="20%">TOTAL AMOUNT</th>
+			    		<th width="20%">TOTAL PAID</th>
+			    		<th width="20%">TOTAL REMAINING</th>
+			    	</tr>
+
+		             <tr>
+			    		<td><?php echo date('m/d/Y', strtotime( $report->receiveddate));?></td>
+			    		<td><span id="totalquantity<?php echo $i;?>"></span></td>
+			    		<td>$<span id="totalprice<?php echo $i;?>"></span></td>
+			    		<td>$<span id="totalpaid<?php echo $i;?>"></span></td>
+			    		<td>$<span id="totalremaining<?php echo $i;?>"></span></td>
+			    	</tr>
+		    	</table>
+	
+		   
+		   
+    			 <!-- <div>
 
     			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime( $report->receiveddate));?>
     			  		<br/>
@@ -155,7 +191,7 @@ function submitForm(val)
     			  		<span id="totalremaining<?php echo $i;?>">
     			  		    <?php //echo $report->totalprice - $report->totalpaid;?>
     			  		</span>
-    			  </div>
+    			  </div> -->
 
 			    <table class="table no-more-tables general">
 			    	<tr>

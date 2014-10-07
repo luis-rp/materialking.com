@@ -314,7 +314,7 @@ function viewitems(quoteid)
 				    	</tr>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Total: </td>
-				    		<td colspan="5">$ <span class='total-value'><?php echo $grandtotal;?><spa	</td>
+				    		<td colspan="5">$<span class='total-value'><?php echo $grandtotal;?><span></td>
 				    	</tr>
 				    </table>
 			    </div>

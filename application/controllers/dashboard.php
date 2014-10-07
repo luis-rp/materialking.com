@@ -43,7 +43,7 @@ class Dashboard extends CI_Controller
 		}
 		
 		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
-			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id;
+			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc limit 5";
 		$query = $this->db->query($sql);
 			
 		$data['networkjoinedpurchasers'] = $query->result();
@@ -93,26 +93,26 @@ class Dashboard extends CI_Controller
 	}
 
 		function sendemailalert(){
-		
+
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		
-		$settings = (array)$this->quotemodel->getpurchaseremail($_POST['admin']);	
-		
+
+		$settings = (array)$this->quotemodel->getpurchaseremail($_POST['admin']);
+
 		$totalprice = round( (($_POST['price']*$settings['taxrate']/100) + $_POST['price']),2);
-		
+
 		$duedate = $_POST['datedue'];
-		
+
 		if($duedate >= date('Y-m-d')){
-			$datestr =  "due on".$duedate;
-		}else 
-			$datestr =  "overdue since ".$duedate;
-		
+			$datestr =  "due from PO# (".$_POST['ponum'].") on".$duedate;
+		}else
+			$datestr =  "overdue from PO# (".$_POST['ponum'].") since ".$duedate;
+
 		$data['email_body_title'] = "Dear Administrator ";
 		$data['email_body_content'] =	"Your Payment of $ ".$totalprice." against invoice '". $_POST['invoice']."' is ".$datestr." , Please Pay immediately.
 			<br/><br/><br/>
-			Thanks
+			Thanks<br>(".$company->title.")
 			<br><br>";
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -128,9 +128,9 @@ class Dashboard extends CI_Controller
 		$this->email->set_mailtype("html");
 		if($this->email->send())
 		echo "success";
-		else 
+		else
 		echo "fail";
-		//echo "<pre>",print_r($this->email->send()); die;		
+		//echo "<pre>",print_r($this->email->send()); die;
 	}
 	
 	function alertsentdate(){

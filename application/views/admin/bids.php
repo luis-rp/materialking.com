@@ -79,7 +79,8 @@ function refreshtotal()
     var taxtotal = total * tax / 100;
     var grandtotal = total + taxtotal;
 
-	total = Math.round(total*100)/100;
+	total1 = Math.round(total*100)/100;
+	total=total1.toFixed(2);
 	taxtotal = Math.round(taxtotal*100)/100;
 	grandtotal = Math.round(grandtotal*100)/100;
 	
@@ -213,7 +214,7 @@ $(function() {
 		   <span class="poheading"><?php echo $quote->potype=='Direct'?'Direct':'Via Quote';?></span>
 		   <?php if($isawarded){?>
 		   <h4>
-		    Awarded on <?php $olddate=strtotime($awarded->awardedon); $newdate = date('m/d/Y H:i:s', $olddate); echo $newdate; ?>
+		    Awarded on <?php $olddate=strtotime($awarded->awardedon); $newdate = date('m/d/Y', $olddate); echo $newdate; ?>
 		   <a href="<?php echo site_url('admin/quote/track/'.$quote->id);?>">Track</a>
 		   </h4>
 		   <div class="span12">
@@ -230,9 +231,9 @@ $(function() {
 		   <div class="span12">
 		   <table class="table table-bordered span4">
 			   <tr><th colspan="2"><strong>Select items below</strong></th></tr>
-			   <tr><td class="span4">Subtotal:</td><td class="span8"><span id="selectedsubtotal"></span></td>
-			   <tr><td>Tax:</td><td><span id="selectedtax"></span></td>
-			   <tr><td>Total:</td><td><span id="selectedtotal"></span></td>
+			   <tr><td class="span4">Subtotal:</td><td class="span8">$<span id="selectedsubtotal"></span></td>
+			   <tr><td>Tax:</td><td>$<span id="selectedtax"></span></td>
+			   <tr><td>Total:</td><td>$<span id="selectedtotal"></span></td>
 			   <tr><td colspan="2"><input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Award"/></td>
 		   </table>
 		   <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>

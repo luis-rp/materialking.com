@@ -92,6 +92,8 @@ $(document).ready(function(){
 							              <?php
 									    	$i = 0;
 									    	$finaltotal = 0;
+									    	$totalpaid=0;
+									    	$totalunpaid=0;
 									    	foreach($orders as $order)
 									    	{
 									    		$i++;
@@ -112,8 +114,28 @@ $(document).ready(function(){
                                                 	<?php } ?>
                                                 </td>
                                             </tr>
-                                          <?php  $finaltotal += $order->amount;  } ?>
-                                          </tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td> <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                         <?php  $finaltotal += $order->amount;
+
+									    	if($order->paymentstatus=='Paid')
+									    	{
+									    		$totalpaid+= $order->amount;
+									    	}
+
+									    	if($order->paymentstatus=='Unpaid')
+									    	{
+									    		$totalunpaid+= $order->amount;
+									    	}
+
+
+									    	} ?>
+                                          </tr>
+                                          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td>
+                                          <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Paid:</td>
+                                          <td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                          <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Unpaid:</td>
+                                          <td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+
                                         </tbody>
                                     </table>
                                     <br/>

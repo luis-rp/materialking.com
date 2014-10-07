@@ -153,6 +153,9 @@ function invoice(invoicenum)
 									</thead>
 									<tbody>
 							              <?php
+							              $finaltotal = 0;
+							              $totalpaid= 0;
+							              $totalunpaid= 0;
 									    	foreach($invoices as $ponum=>$invs)
 									    	{
 									      			foreach($invs as $i){?>
@@ -174,8 +177,24 @@ function invoice(invoicenum)
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
                                                 			</td>
                                                 		</tr>
-                                                		<?php }?>
+                                                		<?php $finaltotal += $i->totalprice;
+																if($i->paymentstatus=='Paid')
+									    							{
+									    							$totalpaid+= $i->totalprice;
+									    							}
+
+									    						if($i->paymentstatus=='Unpaid')
+									    							{
+									    							$totalunpaid+= $i->totalprice;
+									    							}
+     								      								}?>
                                                 <?php } ?>
+                                                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td>
+                                                <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Paid:</td>
+                                                <td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                                <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Due:</td>
+                                                <td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                         </tbody>
                                     </table>
                             </div>

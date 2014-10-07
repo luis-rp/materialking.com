@@ -22,7 +22,7 @@ class Quotemodel extends Model
 	    return $result [0];
 	}
 	
-	function getnewinvitations($company)
+	/*function getnewinvitations($company)
 	{
 		$this->db->where('company',$company);
 		$invitations = $this->db->get('invitation')->result();
@@ -45,7 +45,131 @@ class Quotemodel extends Model
 			}
 		}
 		return $ret;
+	}*/
+	
+	
+		function getnewinvitations($company){
+		$searchstatus = 'New';
+				$sql = "SELECT i.*,q.ponum FROM 
+		".$this->db->dbprefix('invitation')." i, ".$this->db->dbprefix('quote')." q
+		WHERE i.quote=q.id AND i.company='{$company}' ORDER BY i.senton DESC";
+		$count = $this->db->query($sql)->num_rows;
+		
+		//echo $sql;
+		
+		$invs = $this->db->query($sql)->result();
+		
+		$invitations = array();
+		foreach($invs as $inv)
+		{
+    		$this->db->where('id',$inv->quote);
+    		$inv->quotedetails = $this->db->get('quote')->row();
+    		$this->db->where('quote',$inv->quote);
+    		$this->db->where('company',$company);
+    		$bid = $this->db->get('bid')->row();
+    		$inv->quotenum = @$bid->quotenum;
+    		
+			$awarded = $this->checkbidcomplete($inv->quote);
+			$inv->awardedtothis = false;
+			
+			if($bid){
+				$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
+				$revisionquote = $this->db->query($sqlq)->row();
+				if($revisionquote)
+				$inv->daterequested = $revisionquote->daterequested;
+			}
+			
+			if($awarded)
+			{
+				$complete = true;
+				$noitemsgiven = true;
+				$allawarded = true;
+				$this->db->where('award',$awarded->id);
+				$this->db->where('company',$company);
+				$items = $this->db->get('awarditem')->result();
+				foreach($items as $i)
+				{
+					if($i->received < $i->quantity)
+						$complete = false;
+					if($i->company != $company)
+						$allawarded = false;
+					if($i->received > 0)
+						$noitemsgiven = false;
+				}
+				
+				if(!$noitemsgiven)
+				{
+					if($complete)
+					{
+						$inv->status = 'Completed';
+						$inv->progress = 100;
+						$inv->mark = "progress-bar-success";
+					}
+					else
+					{
+						$inv->status = 'Partially Completed';
+						$inv->progress = 80;
+						$inv->mark = "progress-bar-success";
+					}
+				}
+				else
+				{
+					$awardeditems = $this->getawardeditems($awarded->id,$company);
+					
+					if($awardeditems && !$allawarded)
+					{
+						$inv->status = 'Partially Awarded';
+						$inv->progress = 60;
+						$inv->mark = "progress-bar-success";
+					}
+					else
+					{
+						$inv->status = 'Awarded';
+						$inv->progress = 60;
+						$inv->mark = "progress-bar-success";
+					}
+				}
+				
+				if($this->getawardeditems($awarded->id,$company))
+				{
+					$inv->awardedtothis = true;
+					$inv->award = $awarded->id;
+				}
+				else
+				{
+					$inv->status = 'PO Closed - 0 items won';
+					$inv->progress = 100;
+					$inv->mark = "progress-bar-warning";
+				}
+			}
+			elseif($this->getdraftitems($inv->quote,$inv->company))
+			{
+				$inv->status = 'Processing';
+				$inv->progress = 40;
+				$inv->mark = "progress-bar-warning";
+			}
+			else
+			{
+				$inv->status = 'New';
+				$inv->progress = 20;
+				$inv->mark = "progress-bar-danger";
+			}
+			
+			if(!$searchstatus)
+			{
+				$invitations[]=$inv;
+			}
+			elseif(@$searchstatus == $inv->status)
+			{
+				$invitations[]=$inv;
+			}
+			
+		}
+		
+		return $invitations;
+		
 	}
+	
 	
 	function getinvitation($key)
 	{
@@ -432,12 +556,12 @@ class Quotemodel extends Model
 		if(@$_POST['searchfrom'])
 		{
 			$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-			$searches[] = " STR_TO_DATE(receiveddate, '%m/%d/%Y') >= '$fromdate'";
+			$searches[] = " receiveddate >= '$fromdate'";
 		}
 		if(@$_POST['searchto'])
 		{
 			$todate = date('Y-m-d', strtotime($_POST['searchto']));
-			$searches[] = " STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate'";
+			$searches[] = " receiveddate <= '$todate'";
 		}
 		
 		
@@ -481,15 +605,19 @@ class Quotemodel extends Model
 		
 			
 		
-		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
-					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
-				   FROM 
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate, q.ponum
+				   FROM
 				   ".$this->db->dbprefix('received')." r,
-				   ".$this->db->dbprefix('awarditem')." ai
-				  WHERE r.awarditem=ai.id AND ai.company=$company $search
-				  $pafilter
-				  GROUP BY invoicenum 
-                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				   ".$this->db->dbprefix('awarditem')." ai,
+				   ".$this->db->dbprefix('award')." a,
+				   ".$this->db->dbprefix('quote')." q
+				  WHERE r.awarditem=ai.id
+				  AND ai.award = a.id
+				  AND a.quote = q.id
+				  AND ai.company=$company
+				  AND r.paymentstatus <> 'Paid'
+				  AND r.datedue <= CURDATE()
+				  GROUP BY invoicenum
 				  ";
 		//echo $query;
 		//exit;

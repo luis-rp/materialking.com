@@ -1,3 +1,9 @@
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.dis_td').attr('disabled','disabled');
+});
+ </script>
+
 <?php
 $combocompanies = array();
 $messagecompanies = array();
@@ -467,7 +473,7 @@ function acceptall()
                                 <td><?php echo @$q->companydetails->title; ?></td>
                                 <td><?php echo $q->itemcode; ?></td>
                                 <td><?php echo $q->itemname; ?></td>
-                                <td><div id="topLoader<?php echo $counter_kk; ?>">
+                                <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">
 
       <?php
       //$q->quantity;//100%
@@ -521,7 +527,23 @@ function acceptall()
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
                                 <td>$ <?php echo $q->totalprice; ?></td>
-                                <td><?php echo $q->daterequested;?><br/><?php echo (date('Y-m-d', strtotime( $q->daterequested)) < date('Y-m-d'))? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> </td>
+                                <td><?php echo $q->daterequested;?><br/>
+                                
+                                <?php $greaterreceived = "";
+									foreach ($awarded->invoices as $invoice) {
+										foreach ($invoice->items as $item) {
+											if($item->awarditem==$q->id){
+												$receiveddate = $item->receiveddate;
+												if($greaterreceived!=""){
+													if(strtotime($greaterreceived)<strtotime($receiveddate))
+													$greaterreceived = $receiveddate;
+												}else
+												$greaterreceived = $receiveddate;
+										    }
+									   }
+									}
+                                
+                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> </td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
@@ -814,10 +836,14 @@ function acceptall()
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
-                                <?php foreach ($awarded->invoices as $invoice) {?>
+                                <?php
+								$f_total=0;
+                                $p_total=0;
+                                $u_total=0;
+                                foreach ($awarded->invoices as $invoice) {?>
                                 <tr>
                                     <td><?php echo $invoice->invoicenum; ?></td>
-                                    <td><?php echo $invoice->totalprice; ?></td>
+                                    <td><?php echo "$ ".$invoice->totalprice; ?></td>
                                     <td><?php echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td>
                                     <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";} ?></td>
@@ -828,7 +854,22 @@ function acceptall()
                                         </a>
                                     </td>
                                 </tr>
-                                <?php } ?>
+                                 <?php
+                                $f_total +=$invoice->totalprice;
+                                if($invoice->paymentstatus=='Paid')
+                                {
+                                   $p_total +=$invoice->totalprice;
+                                }
+                                 if($invoice->paymentstatus=='Unpaid')
+                                {
+                                     $u_total +=$invoice->totalprice;
+                                }
+
+
+                                } ?>
+                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                         </table>
                         <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
                             <input type="hidden" id="invoicenum" name="invoicenum"/>
