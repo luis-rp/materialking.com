@@ -605,19 +605,15 @@ class Quotemodel extends Model
 		
 			
 		
-		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate, q.ponum
+		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
-				   ".$this->db->dbprefix('awarditem')." ai,
-				   ".$this->db->dbprefix('award')." a,
-				   ".$this->db->dbprefix('quote')." q
-				  WHERE r.awarditem=ai.id
-				  AND ai.award = a.id
-				  AND a.quote = q.id
-				  AND ai.company=$company
-				  AND r.paymentstatus <> 'Paid'
-				  AND r.datedue <= CURDATE()
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
 				  GROUP BY invoicenum
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
 				  ";
 		//echo $query;
 		//exit;
@@ -729,14 +725,18 @@ class Quotemodel extends Model
 	function getpendinginvoices($company)
 	{
 		
-		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate     
-				   FROM 
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate, q.ponum
+				   FROM
 				   ".$this->db->dbprefix('received')." r,
-				   ".$this->db->dbprefix('awarditem')." ai
-				  WHERE r.awarditem=ai.id 				 
-				  AND ai.company=$company 
+				   ".$this->db->dbprefix('awarditem')." ai,
+				   ".$this->db->dbprefix('award')." a,
+				   ".$this->db->dbprefix('quote')." q
+				  WHERE r.awarditem=ai.id
+				  AND ai.award = a.id
+				  AND a.quote = q.id
+				  AND ai.company=$company
 				  AND r.paymentstatus <> 'Paid'
-				  AND r.datedue <= CURDATE() 
+				  AND r.datedue <= CURDATE()
 				  GROUP BY invoicenum
 				  ";
 		//echo $invoicesql;
