@@ -1275,6 +1275,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     function getcompanypricetable ()
     {
+    	$table = '';
+    	$table2 = '';
         //print_r($_POST);
         $codeid = $_POST['codeid'];
         $itemid = $_POST['id']; //urldecode($itemcode);
@@ -1299,9 +1301,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             echo 'No Company Prices Exist, Please issue a quote for this item';//('No company prices for ' . $item->itemcode);
         }
         else
-        {
-            $table = '';
-            $table2 = '';
+        {            
             $seconds = time() - strtotime($item->lastquoted);
             $days = $seconds / (3600 * 24);
             //if ($days > 30)

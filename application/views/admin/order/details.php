@@ -94,19 +94,19 @@ function paycc(ptype,company, amount)
                     	    $totalwithtax = $tax+$gtotal+$order->shipping;
                       ?>
                         <tr>
-                            <td colspan="3">Total</td>
+                            <td colspan="4">Total</td>
                             <td colspan="2">$<?php echo number_format($gtotal,2);?></td>
                         </tr>
                         <tr>
-                            <td colspan="3">Tax</td>
+                            <td colspan="4">Tax</td>
                             <td colspan="2">$<?php echo number_format($tax,2);?></td>
                         </tr>
                          <tr>
-                            <td colspan="3">shipping Rate</td>
+                            <td colspan="4">shipping Rate</td>
                             <td colspan="2">$<?php echo number_format($order->shipping,2);?></td>
                         </tr>
                         <tr>
-                            <td colspan="3">Total</td>
+                            <td colspan="4">Total</td>
                             <td colspan="2">$<?php echo number_format($totalwithtax,2);?></td>
                         </tr>
                     </tbody>

@@ -411,6 +411,7 @@
 					<?php if(isset($newquotes)) { ?>
 					  <tr>
 					  <td>Quote</td>
+					  <td>Status</td>
 					  <td>Sent On</td>
 					  <td>&nbsp;</td>
 					  </tr>
@@ -418,6 +419,12 @@
 
 					  <tr>
 					  <td><?php echo $quote->ponum; ?></td>
+					  <td><?php
+					 	$quote->invitations = $this->quote_model->getInvitedquote($quote->id);
+                		$quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
+                		$quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
+					  
+	    				$quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS'))); echo $quote->status; ?></td>
 					  <td><?php $datetime = strtotime($quote->creation_date); echo date("m/d/Y", $datetime);?></td>
 					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closequote/'.$quote->id);?>">X</a></td>
 					  </tr>

@@ -2,6 +2,16 @@
 $(document).ready(function(){
 	$('.date').datepicker({dateFormat:'mm/dd/yy'});
 });
+
+function changetier(newval,oldval,id){
+	
+	if(confirm("Are you sure you wish to change company tier level?")){
+		$('#' + id).val(newval);
+	}else
+		$('#' + id).val(oldval);
+	
+}
+
 </script>
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
@@ -137,7 +147,7 @@ $(document).ready(function(){
 								</tr>
 								</table> -->
 								
-								<select name="tier[<?php echo $admin->purchasingadmin;?>]" required>
+								<select onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0') {echo 'selected="SELECTED"';}?> >Tier 0</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier1" <?php if($admin->tier=='tier1') {echo 'selected="SELECTED"';}?> >Tier 1</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier2" <?php if($admin->tier=='tier2') {echo 'selected="SELECTED"';}?> >Tier 2</option>

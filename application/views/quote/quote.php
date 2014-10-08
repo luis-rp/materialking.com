@@ -456,6 +456,60 @@ function displaypricemodal(){
 			
 		</div>
 	  </div> 
+	  
+	  
+	  
+	   <div id="itemmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                      <form id="itemform" action="<?php echo site_url('inventory/updateitem/'.$invitation);?>" method="post">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+                          <br>
+                          <i class="icon-credit-card icon-7x"></i>
+                          <h4 class="semi-bold" id="myModalLabel">
+                          Setup Inventory:
+                          <span id="itemformheading"></span>
+                          <input type="hidden" id="itemformid" name="itemid">
+                          </h4>
+                          <br>
+                        </div>
+                        
+                        <div class="modal-body">
+                          <div class="row form-row">
+                            <div class="col-md-6">
+                              <strong>Item Code:</strong>
+                            </div>
+                            <div class="col-md-6">
+                              <input type="text" id="itemformcodet" name="itemcode" required>
+                            </div>
+                          </div>
+                          <div class="row form-row">
+                            <div class="col-md-6">
+                              <strong>Item Name:</strong>
+                            </div>
+                            <div class="col-md-6">
+                              <input type="text" id="itemformnamet" name="itemname" required>
+                            </div>
+                          </div>
+                          <div class="row form-row">
+                            <div class="col-md-6">
+                              <strong>Item Price:</strong>
+                            </div>
+                            <div class="col-md-6">
+                              <input type="text" id="itemformpricet" name="ea" required>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <input type="submit" class="btn btn-primary" value="Save Change"/>
+                        </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+	  
+	  
   <div id="pricelist" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -546,54 +600,3 @@ function displaypricemodal(){
     </div>
     <!-- /.modal-dialog -->
   </div> 
-	  
-	  
-	  			<div id="itemmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-                    <div class="modal-dialog">
-                      <form id="itemform" action="<?php echo site_url('inventory/updateitem/'.$invitation);?>" method="post">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-                          <br>
-                          <i class="icon-credit-card icon-7x"></i>
-                          <h4 class="semi-bold" id="myModalLabel">
-                          Setup Inventory:
-                          <span id="itemformheading"></span>
-                          <input type="hidden" id="itemformid" name="itemid">
-                          </h4>
-                          <br>
-                        </div>
-                        
-                        <div class="modal-body">
-                          <div class="row form-row">
-                            <div class="col-md-6">
-                              <strong>Item Code:</strong>
-                            </div>
-                            <div class="col-md-6">
-                              <input type="text" id="itemformcodet" name="itemcode" required>
-                            </div>
-                          </div>
-                          <div class="row form-row">
-                            <div class="col-md-6">
-                              <strong>Item Name:</strong>
-                            </div>
-                            <div class="col-md-6">
-                              <input type="text" id="itemformnamet" name="itemname" required>
-                            </div>
-                          </div>
-                          <div class="row form-row">
-                            <div class="col-md-6">
-                              <strong>Item Price:</strong>
-                            </div>
-                            <div class="col-md-6">
-                              <input type="text" id="itemformpricet" name="ea" required>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <input type="submit" class="btn btn-primary" value="Save Change"/>
-                        </div>
-                      </div>
-                      </form>
-                    </div>
-                  </div>

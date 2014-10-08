@@ -2185,6 +2185,7 @@ class Quote extends CI_Controller
 	        	WHERE qu.userid=u.id AND qu.quote=".$quote->id;
         $purchaseusers = $this->db->query($sql)->result();
         $pa = $this->db->where('id',$q->purchasingadmin)->get('users')->row();
+        if($pa)
         $this->email->cc($pa->email);
         foreach($purchaseusers as $pu)
         {
@@ -2300,6 +2301,7 @@ class Quote extends CI_Controller
 		$this->email->to($settings['adminemail']);
 		
 		$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		if($pa)
 		$this->email->cc($pa->email);
 		
 		$this->email->subject('Backorder Update Notification');
@@ -2322,6 +2324,11 @@ or edit your quote.</div></div></div>');
 		$quote = $this->quotemodel->getquotebyid($quoteid);
 		$bid = $this->db->where('quote',$quoteid)->where('company',$company->id)->get('bid')->row();
 		$award = $this->quotemodel->getawardedbid($quoteid);
+		if($bid)
+		{
+			$this->db->where('bid',$bid->id);			
+			$biditems = $this->db->get('biditem')->result();
+		}
 		if($award)
 		{
 			$this->db->where('award',$award->id);
@@ -2330,6 +2337,7 @@ or edit your quote.</div></div></div>');
 		}
 		$itemswon = 0;
 		$itemslost = 0;
+		$data['biditems'] = array();
 		$data['awarditems'] = array();
 		foreach($allawardeditems as $ai)
 		{
@@ -2355,6 +2363,7 @@ or edit your quote.</div></div></div>');
 		$data['itemslost'] = $itemslost;
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
+		$data['biditems'] = $biditems;
 		$data['award'] = $award;
 		$data['quoteid'] = $quoteid;
 		
@@ -2855,6 +2864,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		$this->email->initialize($config);
     		
     		$this->email->from($company->primaryemail);
+    		if($pa)
     		$this->email->to($pa->email);
     		$subject = 'Shipment made by supplier';
     		
@@ -3067,6 +3077,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$config['mailtype'] = 'html';
 		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
+		if($pa)
 		$this->email->to($pa->email);
 		
 		if(isset($_POST['status']) && $_POST['status']!="" && $_POST['status']=="Verified")
@@ -3124,12 +3135,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$config['mailtype'] = 'html';
 		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
+		if($pa){
 		$this->email->to($pa->email);
+		$companyadminname = $pa->companyname;
+		}else{
+			$companyadminname = "";			
+		}
 		$subject = 'Payment requested by supplier';
 		$data['email_body_title'] = "";
-		$data['email_body_content'] = "Supplier {$company->title} has sent payment request for
+		$data['email_body_content'] = "Dear {$companyadminname}, <br> <br> Supplier {$company->title} has sent payment request for
 		Invoice# {$invoicenum}
-		for PO# {$quote->ponum} on ".date('m/d/Y').".";
+		for PO# {$quote->ponum} on ".date('m/d/Y').".  <br> <br> Thank You. <br> {$company->title}";
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		

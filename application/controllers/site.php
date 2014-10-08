@@ -767,7 +767,7 @@ class site extends CI_Controller
         }
         $this->items_model->set_keyword($keyword);
         $items = $this->items_model->find_item();
-        $limit = 6;
+        $limit = 18;
         $this->data['totalcount'] = $items->totalresult;
         $this->data['currentpage'] = $_POST['pagenum'] + 1;
         $this->data['totalpages'] = ceil($this->data['totalcount'] / $limit);
