@@ -1057,7 +1057,10 @@ function orders_export()
 		if(!is_null($order->project)){
 		$this->db->where('id',$order->project);
 		$prj = $this->db->get('project')->row();
+		if($prj)
 		$order->prjName = $prj->title;
+		else 
+		$order->prjName = "";		
 		}
 		$data['order'] = $order;
 		

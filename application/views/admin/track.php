@@ -482,7 +482,7 @@ function acceptall()
 
        <script>
         $(function() {
-          var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : true, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
+          var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : false, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
               $topLoader.setValue(Math.round(<?php echo $q->received;?>));
             }});
 
