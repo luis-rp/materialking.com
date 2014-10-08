@@ -232,7 +232,11 @@ function shownotice(newval,oldval,id){
                     		</tr>
                     	</thead>
                     	<tbody>
-                    		<?php $i=0; foreach($items as $item){ $i++;?>
+                    		<?php $i=0; 
+                    		$finaltotal = 0;
+                    		$totalpaid= 0;
+                    		$totalunpaid= 0;
+                    		foreach($items as $item){ $i++;?>
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
@@ -269,7 +273,22 @@ function shownotice(newval,oldval,id){
                     			<td><?php echo $item->status;?></td>
                     			<td><?php echo $item->actions;?></td>
                     		</tr>
-                    		<?php }?>
+                    		<?php
+                    		$finaltotal += $item->totalprice;
+                    		if($item->paymentstatus=='Paid')
+                    		{
+                    			$totalpaid+= $item->totalprice;
+                    		}
+
+                    		if($item->paymentstatus=='Unpaid')
+                    		{
+                    			$totalunpaid+= $item->totalprice;
+                    		}
+
+                    		}?>
+                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     	</tbody>
                     </table>
                 </div>

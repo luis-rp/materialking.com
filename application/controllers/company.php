@@ -1401,5 +1401,16 @@ class Company extends CI_Controller {
 		redirect("company/profile");
 
 	}
+	
+	function deletepurchasingtier($id)
+    {
+        $company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
+        $this->db->delete('purchasingtier',array('purchasingadmin'=>$id,'company'=>$company->id));
+        $message = 'Purchasing company Deleted Successfully.';
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
+        redirect('company/tier');
+    }
     
 }

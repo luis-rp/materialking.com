@@ -2120,7 +2120,7 @@ class Quote extends CI_Controller
 		
 		$backtrack = $this->quotemodel->getBacktrackDetails($quote,$company->id);
 		$quote = $backtrack['quote'];
-		$emailitems = '<table>';
+		$emailitems = '<table border cellpadding=5>';
 		$emailitems.= '<tr>';
 		$emailitems.= '<th>Item</th>';
 		$emailitems.= '<th>Date</th>';
@@ -2147,9 +2147,9 @@ class Quote extends CI_Controller
 				$postnote = "";
 				
         		$emailitems.= '<tr>';
-        		$emailitems.= '<td>'.$q->itemname.'</td>';
-        		$emailitems.= '<td>changed from '.$reqdate.' to '.$postdate.'</td>';
-        		$emailitems.= '<td>'.$postnote.'</td>';
+        		$emailitems.= '<td style="padding-left:8;">'.$q->itemname.'</td>';
+				$emailitems.= '<td style="padding-left:8;">changed from '.$reqdate.' to '.$postdate.'</td>';
+				$emailitems.= '<td style="padding-left:8;">'.$postnote.'</td>';
         		$emailitems.= '</tr>';
         		
 				$updatearray = array(
@@ -2923,8 +2923,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$gtotal = 0;
 		foreach ($invs as $invoice)
 		{     		
+			$olddate=strtotime($invoice->awardedon); $awarddate = date('m/d/Y', $olddate);
 			$data['email_body_title'] .= 'Dear '.$invoice->username.' ,<br><br>';
-			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' to Due on  '.$invoice->DueDate.'<br><br>';
+			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' from PO# '.$invoice->ponum.', Ordered on '.$awarddate.' to Due on  '.$invoice->DueDate.'<br><br>';
 			$data['email_body_content'] .= 'Please see order details below :<br>';
 			$data['email_body_content'] .= '
 					<table class="table table-bordered span12" border="1">

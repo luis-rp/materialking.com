@@ -659,7 +659,7 @@ class quote extends CI_Controller
                     $link = base_url() . 'home/quote/' . $key;
                     $data['email_body_title'] = "Dear " . $c->title;
 				    $data['email_body_content'] = "This is a reminder email for earlier invitation for the quote.<br><br>
-				  	Please click following link for the quote PO# " . $this->input->post('ponum') . "):  <br><br>
+				  	Please click following link for the quote PO# " . $this->input->post('ponum') . ":  <br><br>
 				    <a href='$link' target='blank'>$link</a>
 				    ";
 				    $loaderEmail = new My_Loader();

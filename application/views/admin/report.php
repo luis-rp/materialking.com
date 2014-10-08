@@ -39,8 +39,7 @@ $(document).ready(function(){
            </form>
            <?php if(@$reports){?>
 
-			  <div>
-
+			  <!-- <div>
 			  		<strong>DATE:</strong> From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <span id="totalallquantity"></span>
@@ -50,7 +49,25 @@ $(document).ready(function(){
 			  		<strong>TOTAL PAID:</strong> $<span id="totalallpaid"></span>
 			  		<br/>
 			  		<strong>TOTAL REMAINING:</strong> $<span id="totalallremaining"></span>
-			  </div>
+			  </div>-->
+			  
+			   <table class="table table-bordered">
+			    	<tr>
+			    		<th width="20%">DATE</th>
+			    		<th width="20%">TOTAL QUANTITY</th>
+			    		<th width="20%">TOTAL AMOUNT</th>
+			    		<th width="20%">TOTAL PAID</th>
+			    		<th width="20%">TOTAL REMAINING</th>
+			    	</tr>
+			    	<tr>
+			    		<td>From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?></td>
+			    		<td><span id="totalallquantity"></span></td>
+			    		<td>$<span id="totalallprice"></td>
+			    		<td>$<span id="totalallpaid"></span></td>
+			    		<td>$<span id="totalallremaining"></span></td>
+			    	</tr>
+			   </table>
+			  
            <?php }?>
            <hr/>
 		   <?php
@@ -73,7 +90,7 @@ $(document).ready(function(){
 			    		$totalallpaid += $report->totalpaid;
 		   ?>
 
-			  <div>
+			  <!--  <div>
 			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime($report->receiveddate));?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <?php echo $report->totalquantity;?>
@@ -83,7 +100,25 @@ $(document).ready(function(){
 			  		<strong>TOTAL PAID:</strong> $<?php echo $report->totalpaid;?>
 			  		<br/>
 			  		<strong>TOTAL REMAINING:</strong> $<?php echo $report->totalprice - $report->totalpaid;?>
-			  </div>
+			  </div>-->
+			  
+			  <table class="table table-bordered">
+			    	<tr>
+			    		<th width="20%">DATE</th>
+			    		<th width="20%">TOTAL QUANTITY</th>
+			    		<th width="20%">TOTAL AMOUNT</th>
+			    		<th width="20%">TOTAL PAID</th>
+			    		<th width="20%">TOTAL REMAINING</th>
+			    	</tr>
+			    	<tr>
+			    		<td><?php echo date('m/d/Y', strtotime($report->receiveddate));?></td>
+			    		<td><?php echo $report->totalquantity;?></td>
+			    		<td>$<?php echo $report->totalprice;?></td>
+			    		<td>$<?php echo $report->totalpaid;?></td>
+			    		<td>$<?php echo $report->totalprice - $report->totalpaid;?></td>
+			    	</tr>
+			 </table>
+			  
 			  <hr/>
 			    <table class="table table-bordered">
 			    	<tr>

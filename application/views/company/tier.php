@@ -97,6 +97,7 @@ function changetier(newval,oldval,id){
 								action="<?php echo site_url('company/savepurchasingtier');?>">
 						<table id="datatable" class="table no-more-tables general">
 							<tr>
+								<th>&nbsp;</th>
 								<th>Company</th>
 								<th>Contact</th>
 								<th>Tier</th>
@@ -115,6 +116,7 @@ function changetier(newval,oldval,id){
 								}
 							?>
 							<tr>
+								<td><a class="remove" href="<?php echo site_url('company/deletepurchasingtier/'.$admin->purchasingadmin);?>" onclick="javascript:return confirm('Do You Really Want to Delete This Company?');">X</a></td>	
 								<td><?php echo $admin->purchasingcompany;?></td>
 								<td><?php echo $admin->purchasingfullname;?></td>
 								<td>
