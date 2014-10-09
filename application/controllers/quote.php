@@ -728,6 +728,7 @@ class Quote extends CI_Controller
 		
 		$this->db->where('id',$invitation->purchasingadmin);
 		$pa = $this->db->get('users')->row();
+		if($pa)
 		$data['purchasingadmin'] = $pa;
 		if($print)
 		{

@@ -254,7 +254,7 @@ function displaypricemodal(){
 											have related to each item. When you are finished, Click the Save Quote <br/>
 											button.<br/><br/>
 											Thank You,<br/>
-											<strong><?php echo $purchasingadmin->companyname?></strong>
+											<strong><?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname?></strong>
 									     	<br/><br/>
 									     </td>
 									 </tr>
@@ -263,7 +263,7 @@ function displaypricemodal(){
 								<br/>
     								Tier Level:
     								<form method="post" action="<?php echo site_url('company/changetier/'.$invitation);?>">
-    								  <input type="hidden" name="purchasingadmin" value="<?php echo $purchasingadmin->id?>"/>
+    								  <input type="hidden" name="purchasingadmin" value="<?php if(isset($purchasingadmin->id)) echo $purchasingadmin->id?>"/>
     				    			  <select name="tier" onchange="this.form.submit()" style="width: auto;padding-top:5px;">
     				    				<option value="tier0" <?php if($patier=='tier0'){echo 'SELECTED';}?>>Tier 0</option>
     				    				<option value="tier1" <?php if($patier=='tier1'){echo 'SELECTED';}?>>Tier 1</option>

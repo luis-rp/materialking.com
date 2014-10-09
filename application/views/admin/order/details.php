@@ -82,7 +82,7 @@ function paycc(ptype,company, amount)
                         <tr>
                             <td><?php echo $item->itemdetails->itemname;?></td>
                             <td><?php echo $item->quantity;?></td>
-                            <td><?php echo $item->itemdetails->companyName;?></td>
+                            <td><?php echo $item->companyName;?></td>
                             <td>$<?php echo $item->price;?></td>
                             <td>$<?php echo number_format($total,2);?></td>
                             <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>

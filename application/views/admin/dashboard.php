@@ -95,11 +95,6 @@
 
 	$(document).ready(function() {
 
-		$("#pid").change(function(){
-			$("#form-selector").submit();
-		});
-
-		
 		$('#calendar').fullCalendar({
 			editable: false,
 			events: "<?php echo base_url(); ?>admin/quote/jsonlist",
@@ -133,6 +128,13 @@
 		});
 
 	});
+	
+	
+	function changeproject(){
+	 		
+		$("#form-selector").submit();
+		
+	}
 
 </script>
 
@@ -223,7 +225,7 @@
 						<strong>Select Your Project</strong>
 						</label>
 						<div class="controls">
-							<select name="pid" id="pid" >
+							<select name="pid" id="pid" onchange="changeproject();">
 								<option value="0">Company Dashboard</option>
 								<?php foreach($projects as $p){?>
 								<option value="<?php echo $p->id;?>" <?php if(@$mp->id==$p->id){echo 'SELECTED';}?>>

@@ -114,9 +114,10 @@ $per .='%';
                     	//echo $days." d"." ".$hours." h".$minutes." m"; ?>
 
 				clock.setTime(<?php echo $greaterseconds;?>);
+				clock.stop();
 				//setTimeout(function() { clock.stop(function() { }) }, 1000);
 			});
-			setTimeout(function() { clock.stop(function() { }) }, 1000);
+			//setTimeout(function() { clock.stop(function() { }) }, 1000);
 </script>
 
 <script>

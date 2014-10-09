@@ -1086,7 +1086,7 @@ function orders_export()
 			$itemdetails->companyName = $this->db->where('id',$itemdetails->company)->get("company")->row()->title;
 			
 			$item->itemdetails = $itemdetails;
-			
+			$item->companyName = $this->db->where('id',$item->company)->get("company")->row()->title;
 			$bankaccount = $this->db->where('company',$item->company)->get('bankaccount')->row();
 			$item->bankaccount = $bankaccount;
 			
