@@ -444,7 +444,7 @@ class Company extends CI_Controller {
                 }
             }
 			
-            if($_FILES['UploadFile']['name'])
+            if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
             	//$target=substr($_SERVER["DOCUMENT_ROOT"], 0).'/uploads/gallery';
@@ -468,8 +468,8 @@ class Company extends CI_Controller {
 
             		//$imagename=implode(",",$AttachmentName);
 
-
-            		$this->db->insert('companyattachment', array('company' => $company->id, 'imagename' => $filename));
+					if(isset($filename) && $filename!=''){
+            		$this->db->insert('companyattachment', array('company' => $company->id, 'imagename' => $filename));}
 
 
             		//echo "<pre>"; print_r($imagename); die;

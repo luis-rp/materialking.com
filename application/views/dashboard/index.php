@@ -232,13 +232,19 @@ function invoice(invoicenum)
 						<?php if(!$networkjoinedpurchasers){?>
 							<span class="label label-important">You have no purchasing companies in your network</span>
 						<?php }
-							else{
-							foreach($networkjoinedpurchasers as $njp){?>
-							<div class="date pull-right">
-								<a class="remove" href="<?php echo site_url('dashboard/networkdelete/'.$njp->purchasingadmin);?>"
-							onclick="javascript:return confirm('Do You Really Want to Delete This Company From Network?');">X</a>
-						    </div>
+							else{ ?>
+							<form id="allcompany" method="POST" action="<?php echo site_url('dashboard');?>">
+							<input type="submit" name="allcompany" class="btn btn-primary btn-xs" value="Show All Companies">
+							</form>
+
+							<?php
+							foreach($networkjoinedpurchasers as $njp){ ?>
+
 							<div class="notification-messages">
+								<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('dashboard/networkdelete/'.$njp->purchasingadmin);?>"
+									onclick="javascript:return confirm('Do You Really Want to Delete This Company From Network?');">X</a>
+						    	</div>
 								<div class="message-wrapper">
 									<div class="heading">
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>

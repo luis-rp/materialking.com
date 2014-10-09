@@ -373,7 +373,8 @@
 
 	    		<?php }?>
 				<?php if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
-					<br><div><strong>Total Project Savings:&nbsp;$<?php echo $Totalawardedtotal; ?></strong></div>
+					<br><div style="margin-right:25px;"><strong>Total Project Savings:&nbsp;$<?php echo $Totalawardedtotal; ?></strong></div>
+
 				<?php } ?>
 				
 	    	</div>

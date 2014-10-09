@@ -42,8 +42,17 @@ class Dashboard extends CI_Controller
 			$data['newrequests'][]=$rq;
 		}
 		
+		if(isset($_POST['allcompany']))
+		{
+		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
+			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc";
+		}
+		else
+		{
 		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
 			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc limit 5";
+		}
+		
 		$query = $this->db->query($sql);
 			
 		$data['networkjoinedpurchasers'] = $query->result();
