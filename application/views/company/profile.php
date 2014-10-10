@@ -308,7 +308,7 @@ function addEmail()
 												<?php  foreach($files as $items)  { ?>
 												<tr>
 													<td><?php echo site_url('uploads/gallery/'.$items->filename);?></td>
-													<td><input type="checkbox" id="file" name="file" value="<?php echo $items->private;?>" <?php if(isset($items->private) && $items->private==1) {echo 'CHECKED';}?>/>
+													<td><input type="checkbox" id="file1" name="file1" value="<?php echo $items->private;?>" <?php if(isset($items->private) && $items->private==1) {echo 'CHECKED';}?>/>
 													<input type="hidden" name="id" value="<?php echo $items->id;?>"/>
 													</td>
 													<td><a class="close"  href="<?php echo base_url("company/deletefile/".$items->id);?>" onclick="return confirm('Are you really want to delete this File?');">&times;</a></td>

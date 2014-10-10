@@ -486,11 +486,11 @@ class Company extends CI_Controller {
             	$count=0;
             	foreach ($_FILES['UploadFile1']['name'] as $filename)
             	{
-            		if(isset($_POST['file']))
+            		if(isset($_POST['file1']))
 					{
-						$_POST['file']=1;
+						$_POST['file1']=1;
 						$this->db->where('id', $_POST['id']);
-						$this->db->update('company_files', array('private' => $_POST['file']));
+						$this->db->update('company_files', array('private' => $_POST['file1']));
 					}
             		$temp=$target;
             		$tmp=$_FILES['UploadFile1']['tmp_name'][$count];
@@ -501,7 +501,7 @@ class Company extends CI_Controller {
             		$temp='';
             		$tmp='';
                     if(isset($filename) && $filename!=''){
-            		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename,'private' => $_POST['file']));}
+            		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename));}
             	}
             }
    
