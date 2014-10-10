@@ -35,11 +35,13 @@ class event_model extends Model {
     }
 
     function get_upcoming_items($company=1) {
-        if ($offset == 0) {
+        /*
+         * These var are not beeing used
+         * if ($offset == 0) {
             $newoffset = 0;
         } else {
             $newoffset = $offset;
-        }
+        }*/
         $sql = "SELECT * FROM " . $this->db->dbprefix('event_company') . "
         	WHERE company='".$company."' and evtdate between curdate() AND DATE_ADD(curdate(), INTERVAL 2 WEEK)";
 
