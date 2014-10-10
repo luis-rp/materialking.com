@@ -831,7 +831,7 @@ function acceptall()
                             <tr>
                                 <th>Invoice #</th>
                                 <th>Total Cost</th>
-                                <th>Tax</th>
+                                <!-- <th>Tax</th> -->
                                 <th>Payment</th>
                                 <th>DUE DATE</th>
                                 <th>Status</th>
@@ -845,7 +845,7 @@ function acceptall()
                                 <tr>
                                     <td><?php echo $invoice->invoicenum; ?></td>
                                     <td><?php echo "$ ".$invoice->totalprice; ?></td>
-                                    <td><?php echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td>
+                                    <!-- <td><?php // echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td> -->
                                     <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";} ?></td>
                                     <td><?php echo $invoice->status; ?></td>
@@ -871,9 +871,9 @@ function acceptall()
 
 
                                 } ?>
-                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                                <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                               <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                         </table>
                         <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
                             <input type="hidden" id="invoicenum" name="invoicenum"/>

@@ -37,6 +37,11 @@
 	{
 		$menu = 'mailinglist';
 	}
+	
+	if($function=='event')
+	{
+		$menu = 'events';
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -225,6 +230,7 @@
 	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i><span class="title">Profile & Settings</span></a></li>
 	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i><span class="title">Form Builder</span></a></li>
 	  <li class="<?php if($menu=='mailinglist'){echo 'active';}?>"> <a href="<?php echo site_url('company/mailinglist');?>"> <i class="fa fa-formmailing"></i><span class="title">Mailing List</span></a></li>
+	  <li class="<?php if($menu=='events'){echo 'active';}?>"> <a href="<?php echo site_url('event');?>"> <i class="fa"></i><span class="title">Manage Events</span></a></li>
     </ul>
     
 	<a href="#" class="scrollup">Scroll</a>

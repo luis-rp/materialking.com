@@ -88,6 +88,17 @@ function addEmail()
 	 	document.getElementById("moreUploads").appendChild(d);
 	 	upload_number++;
 	}
+	
+	var upload_number = 2;
+	function addFileInput1() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile1[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads1").appendChild(d);
+	 	upload_number++;
+	}
                         
 </script>
 
@@ -280,6 +291,30 @@ function addEmail()
 												<?php } ?>
 											</table>
 
+				                      </div>
+				                      
+				                      
+				                      <div class="form-group">
+										<label class="form-label">Add Files</label>
+										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" />
+												<div id="moreUploads1"></div>
+										    <div id="moreUploadsLink1" style="display:none;"><a href="javascript:addFileInput1();">Add another File</a>
+											</div>
+			                              <?php ///echo "<pre>"; print_r($image); die; ?>
+											<table class="table table-striped">
+												<tr>
+													<th>Files</th><th>Is Private</th><th>Delete</th>
+												</tr>
+												<?php  foreach($files as $items)  { ?>
+												<tr>
+													<td><?php echo site_url('uploads/gallery/'.$items->filename);?></td>
+													<td><input type="checkbox" id="file" name="file" value="<?php echo $items->private;?>" <?php if(isset($items->private) && $items->private==1) {echo 'CHECKED';}?>/>
+													<input type="hidden" name="id" value="<?php echo $items->id;?>"/>
+													</td>
+													<td><a class="close"  href="<?php echo base_url("company/deletefile/".$items->id);?>" onclick="return confirm('Are you really want to delete this File?');">&times;</a></td>
+												</tr>
+												<?php } ?>
+											</table>
 				                      </div>
 				                      
 				                      <div class="form-group">

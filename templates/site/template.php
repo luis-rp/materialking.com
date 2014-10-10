@@ -297,7 +297,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
                                         <div class="input-append">
                                             <input type="hidden" name="search_type" id="search_type">
-                                            <select style="width:120px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
+                                            <select style="width:160px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
                                             <option value="suppliers" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="suppliers") echo "selected";  ?>>Suppliers</option>
                                             </select>&nbsp;&nbsp;

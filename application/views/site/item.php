@@ -824,7 +824,7 @@ $( document ).tooltip();
 					   </script>
 		        <h3 class="titlebox1">Request Assistance</h3>
                         <a name="form"></a>
-                        <?php echo $this->session->flashdata('message'); ?>
+                        <?php // echo $this->session->flashdata('message'); ?>
                         
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>" class="request-form">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>

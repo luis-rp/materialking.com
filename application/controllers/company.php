@@ -326,6 +326,7 @@ class Company extends CI_Controller {
 
         //print_r($states);
 		$data['image']=$this->db->get_where('companyattachment',array('company'=>$company->id))->result();
+		$data['files']=$this->db->get_where('company_files',array('company'=>$company->id))->result();
 		$data['members']=$this->db->where('cid',$company->id)->get("companyteam")->result();
         $this->db->where('company', $company->id);
         $emails = $this->db->get('companyemail')->result();
@@ -476,6 +477,34 @@ class Company extends CI_Controller {
             	}
             	//$_POST['lightbox'] = $imagename;
             }
+            
+            
+         	if(isset($_FILES['UploadFile1']['name']))
+        	{
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/filegallery/';
+            	$count=0;
+            	foreach ($_FILES['UploadFile1']['name'] as $filename)
+            	{
+            		if(isset($_POST['file']))
+					{
+						$_POST['file']=1;
+						$this->db->where('id', $_POST['id']);
+						$this->db->update('company_files', array('private' => $_POST['file']));
+					}
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile1']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile1']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+                    if(isset($filename) && $filename!=''){
+            		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename,'private' => $_POST['file']));}
+            	}
+            }
+   
             
          $completeaddress="";
             if($_POST['street'])
@@ -871,6 +900,50 @@ class Company extends CI_Controller {
             redirect('quote/invitation/'.$invitation);
             die;
         }
+        die(1);
+    }
+    
+    
+        function changeitemtier()
+    {
+        $company = $this->session->userdata('company');
+        if (!$company)
+            die;
+
+        if(!@$_POST['purchasingadmin'])
+            die;
+
+        if(!@$_POST['tier'])
+            die;
+
+        if(!@$_POST['itemid'])
+            die;    
+            
+            
+        $this->db->where('company', $company->id);
+        $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+        $this->db->where('itemid', $_POST['itemid']);
+        if($this->db->get('purchasingtier_item')->row())
+        {
+            $update = array('tier'=>strtolower($_POST['tier']));
+
+            $this->db->where('company', $company->id);
+        	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+        	$this->db->where('itemid', $_POST['itemid']);
+            $this->db->update('purchasingtier_item', $update);  
+            echo "Item tier Changed";
+        }
+        else
+        {
+            $insert = array();
+            $insert['tier'] = $_POST['tier'];
+            $insert['company'] = $company->id;
+            $insert['itemid'] = $_POST['itemid'];
+            $insert['purchasingadmin'] = $_POST['purchasingadmin'];
+            $this->db->insert('purchasingtier_item', $insert);
+            echo "Item tier Set";
+        }
+                      
         die(1);
     }
     
@@ -1407,10 +1480,28 @@ class Company extends CI_Controller {
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
-        $this->db->delete('purchasingtier',array('purchasingadmin'=>$id,'company'=>$company->id));
+        $this->db->delete('network',array('purchasingadmin'=>$id,'company'=>$company->id));
         $message = 'Purchasing company Deleted Successfully.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/tier');
     }
+    
+    function deletefile($id)
+	{
+		$rows['file']=$this->db->get_where('company_files',array('id'=>$id))->row();
+		$name=$rows['file']->filename;
+
+		if(file_exists('./uploads/gallery/'.$name) && !is_dir('./uploads/gallery/'.$name))
+		{
+		unlink('./uploads/gallery/'.$name);
+		}
+		$this->db->delete('company_files',array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+	    $res['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		redirect("company/profile");
+
+	}
+
     
 }

@@ -15,6 +15,7 @@ class site extends CI_Controller
         $this->load->model('admin/itemcode_model', '', TRUE);
         $this->load->model('admin/catcode_model', '', TRUE);
         $this->load->model('admin/quote_model', '', TRUE);
+        $this->load->model('event_model', '', TRUE);
 		$this->load->model ('items_model', '', TRUE);
 		$this->load->model('form_model', '', TRUE);
 		$data['banner']=$this->banner_model->display();
@@ -668,7 +669,10 @@ class site extends CI_Controller
    
        	$data['page_title'] = $data["supplier"]->title;
        	$data['page_description'] = character_limiter($data["supplier"]->shortdetail,150);
-       
+
+       	$upcomingevents = $this->event_model->get_upcoming_items();       	
+       	$data['upcomingevents'] = $upcomingevents;
+       	  
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)
@@ -1736,7 +1740,9 @@ class site extends CI_Controller
 	    }
 		$data['email_body_content'] .= ' Details are:<br/><br/>';
 		//$body .= "Type: ".$_POST['type']."<br/>";
+		if(@$_POST['name'])
 		$data['email_body_content'] .= "Name: ".$_POST['name']."<br/>";
+		if(@$_POST['email'])
 		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
 		//$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
 		//$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
@@ -1744,10 +1750,14 @@ class site extends CI_Controller
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
 			{
+				if(@$_POST['daytd'])
 				$data['email_body_content'] .= "Best day to call: ".$_POST['daytd']."<br/>";
+				if(@$_POST['timetd'])
 				$data['email_body_content'] .= "Best time to call: ".$_POST['timetd']."<br/>";
 			}else {
+				if(@$_POST['daytd'])
 				$data['email_body_content'] .= "Appointment date: ".$_POST['daytd']."<br/>";
+				if(@$_POST['timetd'])
 				$data['email_body_content'] .= "Appointment time: ".$_POST['timetd']."<br/>";
 			}
 

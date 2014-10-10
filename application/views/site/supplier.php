@@ -493,7 +493,7 @@ $( document ).tooltip();
                            
                               <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
                            Meet The Team:</h3>
-                           <div class="meet_team">
+                           <div class="meet_team" style="border-bottom-style:none;border-left-style:none;border-right-style:none;">
                             <table>
                             	
                             	<?php $key = 0; foreach($members as $member){?>
@@ -508,10 +508,10 @@ $( document ).tooltip();
     <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
   </tr>
   <tr>
-    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>"/></td>
+    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image"/></td>
   </tr>
   <tr>
-    <td><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
+   <td style="word-wrap: break-word"><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
   </tr>
 </table>
 </td>
@@ -1028,6 +1028,38 @@ $( document ).tooltip();
                     </div>
                  </div>
                 <?php }?>
+                
+                
+                 <?php if(@$upcomingevents){ ?>
+                 <div class="sidebar span3">
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Upcoming Events</h2>
+                        </div>
+                        <div class="content_sup">
+                                <div class="control-group">
+
+                                    <div class="controls">
+                                    	<table cellpadding="5">
+                                    	<?php foreach($upcomingevents as $ri){?>
+                                    		<tr>
+                                    			<td>
+                                    				<b><?php echo date('D, d M ',strtotime($ri->evtdate)); ?></b> 
+                                    			</td>
+                                    			<td>
+                                    				<?php echo $ri->eventstart."&nbsp;&nbsp;".$ri->title."&nbsp;&nbsp;".$ri->notes; ?>
+                                    			</td>
+                                    		</tr>
+                                    	<?php }?>
+                                    	</table>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                 </div>
+                 <?php }?>
+                
                <!-- Start Dialog Form -->  
                <div class="dialog-form" id="dialog-form">
 						

@@ -757,6 +757,10 @@ class Quote extends CI_Controller
     		foreach($qtyresult as $qtyres){
     			
     			if(isset($purchasingadmin)){
+    				
+    				$sql1 = "select tier from " . $this->db->dbprefix('purchasingtier_item') . "
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "' AND itemid='" . $_POST['itemid'] . "' ";
+    				
     				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
 
@@ -770,7 +774,12 @@ class Quote extends CI_Controller
     				}else
     				$istier = 0;
 
+    				$tier1 = $this->db->query($sql1)->row();
+    				if($tier1)
+    				$tier = $tier1;
+    				else
     				$tier = $this->db->query($sql)->row();
+    				    				
     				if ($tier && $istier)
     				{
     					$tier = $tier->tier;

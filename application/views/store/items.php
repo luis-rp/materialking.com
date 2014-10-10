@@ -283,7 +283,7 @@ $( document ).tooltip();
             </form>	
                        
                 <div class="span9">
-                   <h3 class="titlebox" style="padding:0px 0px 0px 8px">
+                   <h3 class="titlebox" style="padding:0px 0px 0px 0px">
                     <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
                     else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="<?php echo $supplier->logo; ?>">&nbsp;
                     Welcome

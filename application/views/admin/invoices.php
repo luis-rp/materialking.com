@@ -174,9 +174,9 @@ function shownotice(newval,oldval,id){
                         Invoice#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>
                             &nbsp;&nbsp;
 
-                        From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom'] ?>" class="datefield" style="width: 70px;"/>
+                         From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
-                        To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto'] ?>" class="datefield" style="width: 70px;"/>
+                        To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         Company:
                         <select id="searchcompany" name="searchbycompany" style="width: 120px;">
