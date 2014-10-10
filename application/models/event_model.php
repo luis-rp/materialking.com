@@ -34,14 +34,14 @@ class event_model extends Model {
         }
     }
 
-    function get_upcoming_items($limit = 10, $offset = 0) {
+    function get_upcoming_items($company=1) {
         if ($offset == 0) {
             $newoffset = 0;
         } else {
             $newoffset = $offset;
         }
         $sql = "SELECT * FROM " . $this->db->dbprefix('event_company') . "
-        	WHERE company='".$this->session->userdata('company')->id."' and evtdate between curdate() AND DATE_ADD(curdate(), INTERVAL 2 WEEK)";
+        	WHERE company='".$company."' and evtdate between curdate() AND DATE_ADD(curdate(), INTERVAL 2 WEEK)";
 
         $query = $this->db->query($sql);
         if ($query->result()) {

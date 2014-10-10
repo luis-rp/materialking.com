@@ -670,7 +670,7 @@ class site extends CI_Controller
        	$data['page_title'] = $data["supplier"]->title;
        	$data['page_description'] = character_limiter($data["supplier"]->shortdetail,150);
 
-       	$upcomingevents = $this->event_model->get_upcoming_items();       	
+       	$upcomingevents = $this->event_model->get_upcoming_items($data['supplier']->id);	
        	$data['upcomingevents'] = $upcomingevents;
        	  
         $this->load->view('site/supplier', $data);
