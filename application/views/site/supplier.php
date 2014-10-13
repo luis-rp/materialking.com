@@ -564,8 +564,8 @@ $( document ).tooltip();
 								   <?php  if(isset($gallery) && count($gallery)>0)  foreach($gallery as $items) { ?>
 								    <div class="thumbnail current">
 								      <div class="thumbnail-inner">
-									      <a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" target="_blank">
-									      <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" alt="" />
+									      <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" target="_blank">
+									      <img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" alt="" />
 									      </a>
 								      </div>
 								    </div>
