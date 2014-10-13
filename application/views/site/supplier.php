@@ -39,6 +39,58 @@ $lat = $supplier->com_lat;
 $long = $supplier->com_lng;
 ?>
 
+
+<style>
+
+		     .gallery-photos {
+					padding: 20px;
+
+				}
+				.gallery-photos .big-photo {
+					display: block;
+					background-color: #ffffff;
+					padding: 3px;
+					border: 1px solid #e7e7e7;
+				}
+				.gallery-photos .big-photo img {
+					display: block;
+					max-width: 100%;
+					height: auto;
+					margin: 0 auto;
+				}
+				.gallery-photos .photo-thumbnails {
+					width: 750px;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail {
+					float: left;
+					box-sizing: border-box;
+					-moz-box-sizing: border-box;
+					-webkit-box-sizing: border-box;
+					width: 120px;
+					height: 80px;
+					cursor: pointer;
+					padding: 3px;
+					border: 1px solid #e7e7e7;
+					margin-left: 3.33333%;
+					margin-bottom: 6px;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail.current {
+					background-color: #ffffff;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail .thumbnail-inner {
+					height: 100%;
+					overflow: hidden;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail img {
+					display: block;
+					width: auto;
+					max-height: 100%;
+					margin: 0 auto;
+					opacity: 1;
+				}
+
+</style>
+
 <style>
 #parent
 {
@@ -375,6 +427,13 @@ $(document).ready(function() {
         });
 
     }
+    
+    function displayeventindetail(eventid){
+    
+    	$("#eventdetails"+eventid).modal();
+    		
+    }
+    
 </script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -384,6 +443,15 @@ $( document ).tooltip();
 });
 </script>
 
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=899376703411658&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
 	<input type="hidden" id="typei" name="typei"/>
@@ -488,6 +556,24 @@ $( document ).tooltip();
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
+                        
+                        <div class="content">
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Gallery</h3>
+							<div class="gallery-photos clearfix">
+								  <div class="photo-thumbnails">
+								   <?php  if(isset($gallery) && count($gallery)>0)  foreach($gallery as $items) { ?>
+								    <div class="thumbnail current">
+								      <div class="thumbnail-inner">
+									      <a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" target="_blank">
+									      <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" alt="" />
+									      </a>
+								      </div>
+								    </div>
+								     <?php }   ?>
+								  </div>
+							</div>
+						</div>
+                        
                         <?php if(@$members){?>
                         <div>
                            
@@ -1047,7 +1133,8 @@ $( document ).tooltip();
                                     				<b><?php echo date('D, d M ',strtotime($ri->evtdate)); ?></b> 
                                     			</td>
                                     			<td>
-                                    				<?php echo $ri->eventstart."&nbsp;&nbsp;".$ri->title."&nbsp;&nbsp;".$ri->notes; ?>
+                                    				<?php echo $ri->eventstart."&nbsp;&nbsp;".$ri->title."&nbsp;&nbsp;".$ri->notes; 
+                                    				echo "&nbsp;&nbsp; <a href='#' onclick='displayeventindetail(".$ri->id."); return false;'>more...</a>" ?>
                                     			</td>
                                     		</tr>
                                     	<?php }?>
@@ -1060,6 +1147,42 @@ $( document ).tooltip();
                  </div>
                  <?php }?>
                 
+                 
+                 <?php if(@$files){ ?>
+                 <div class="sidebar span3">
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 class="block-title">Files</h2>
+                        </div>
+                        <div class="content_sup">
+                                <div class="control-group">
+                                    <div class="controls">
+                                    	<table cellpadding="5">
+                                    	<?php foreach($files as $ri){?>
+                                    		<tr>
+                                    			<td>
+                                    				<b>
+                                    				<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg');?>"/>&nbsp;&nbsp;
+                                    				<?php echo $ri->filename;?></b>
+                                    			</td>
+                                    		</tr>
+                                    	<?php }?>
+                                    	</table>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                 </div>
+                 <?php }?>
+
+                 
+                 
+               <div class="sidebar span3">
+               <div class="widget contact">  
+               <div class="fb-like-box" data-href="https://www.facebook.com/materialkings" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>  
+               </div></div>
+                 
+                 
                <!-- Start Dialog Form -->  
                <div class="dialog-form" id="dialog-form">
 						
@@ -1163,3 +1286,61 @@ $( document ).tooltip();
     <!-- /.modal-dialog -->
   </div>
 
+	
+  <?php foreach($upcomingevents as $event){?>
+  <div id="eventdetails<?php echo $event->id;?>" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      	 <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <br>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel">
+          <div id="itemnamebox"></div>
+           <?php echo $event->title; ?>         
+          </h4>          
+        </div>        
+        <div class="modal-body">
+          
+	  	<table class="table table-bordered  col-lg-10">
+	  		<tr>
+	  			<td><strong>Title</strong></td>
+	  			<td><?php echo $event->title;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Date</strong></td>
+	  			<td><?php echo date("m/d/Y", strtotime( $event->evtdate));?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Start</strong></td>
+	  			<td><?php echo $event->eventstart;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>End</strong></td>
+	  			<td><?php echo $event->eventend;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Location</strong></td>
+	  			<td><?php echo $event->location;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Notes</strong></td>
+	  			<td><?php echo $event->notes;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Contact Name</strong></td>
+	  			<td><?php echo $event->contactname;?></td>
+	  		</tr>
+	  		<tr>
+	  			<td><strong>Contact Phone</strong></td>
+	  			<td><?php echo $event->contactphone;?></td>
+	  		</tr>
+	  	</table>	        
+        
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div> 
+  
+  <?php } ?>

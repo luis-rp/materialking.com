@@ -122,7 +122,7 @@ function asktierchange(pa,tier)
 	}
 }
 
-function setitemtier(tierlevel, itemid,purchasingadmin){
+function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	
 	if(confirm('Do you want to change the tier for this item?'))
 	{
@@ -135,6 +135,8 @@ function setitemtier(tierlevel, itemid,purchasingadmin){
 		    }).done(function(data){
 			    alert(data);
 		    });
+		    
+		     $('#'+$("#hiddenpriceid").val()).val(tierprice);
 	}
 }
 
@@ -146,26 +148,26 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
 	$("#pricelistitemname").html(itemname);
 	price = Number(price);
 	tier0price = price.toFixed(2);
-	var selectbuttondefault = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier0\","+itemid+","+purchasingadmin+")' value='Select'>";
+	var selectbuttondefault = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier0\","+tier0price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelistdefault").html(tier0price+'&nbsp;&nbsp;&nbsp;'+selectbuttondefault);
 	
 	
 	tier1price = Number(price + (tier1 * price/100)).toFixed(2);
-	var selectbuttontier1 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier1\","+itemid+","+purchasingadmin+")' value='Select'>";
+	var selectbuttontier1 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier1\","+tier1price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelisttier1").html(tier1price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier1);
 	
 	tier2price = Number(price + (tier2 * price/100)).toFixed(2);
-	var selectbuttontier2 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier2\","+itemid+","+purchasingadmin+")' value='Select'>";
+	var selectbuttontier2 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier2\","+tier2price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelisttier2").html(tier2price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier2);
 	
 	
 	tier3price = Number(price + (tier3 * price/100)).toFixed(2);
-	var selectbuttontier3 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier3\","+itemid+","+purchasingadmin+")' value='Select'>";
+	var selectbuttontier3 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier3\","+tier3price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelisttier3").html(tier3price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier3);
 	
 	
 	tier4price = Number(price + (tier4 * price/100)).toFixed(2);
-	var selectbuttontier4 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier4\","+itemid+","+purchasingadmin+")' value='Select'>";
+	var selectbuttontier4 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier4\","+tier4price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelisttier4").html(tier4price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier4);
 	
 	
