@@ -679,10 +679,10 @@ class site extends CI_Controller
              $this->db->where('company', $data['supplier']->id);
              if ($this->db->get('network')->result())
                {*/
-        	       $data['files']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id))->result();
+        	       $data['filesprivate']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>1))->result();
                //}
        	 }
-        $data['files']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>0))->result();
+        $data['filespublic']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>0))->result();
 
 
         $data['gallery']=$this->db->get_where('gallery',array('company'=>$data['supplier']->id))->result();

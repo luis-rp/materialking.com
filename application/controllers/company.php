@@ -501,15 +501,17 @@ class Company extends CI_Controller {
             		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename));
                     }
             		
-            		if(isset($_POST['file1']))
-					{
-
-						$_POST['file1']=1;						
-						$this->db->where('id', $_POST['checkid']);
-						$this->db->update('company_files', array('private' => $_POST['file1']));
-					}
-
-            	}
+            		}	
+            			
+            			$file1 = 0;
+						foreach($_POST['checkid'] as $check){
+							$this->db->where('id', $check);
+							if(isset($_POST['file1'][$check]))
+							$file1 = 1;
+							else
+							$file1 = 0;
+							$this->db->update('company_files', array('private' => $file1));
+						}
             }
 
 

@@ -1148,17 +1148,17 @@ $( document ).tooltip();
                  <?php }?>
                 
                  
-                 <?php if(@$files){ ?>
                  <div class="sidebar span3">
                     <div class="widget contact">
+                    <?php if(@$filespublic){ ?>
                     <div class="title">
-                            <h2 class="block-title">Files</h2>
+                            <h2 class="block-title">Public Files</h2>
                         </div>
                         <div class="content_sup">
                                 <div class="control-group">
                                     <div class="controls">
                                     	<table cellpadding="5">
-                                    	<?php foreach($files as $ri){?>
+                                    	<?php foreach($filespublic as $ri){?>
                                     		<tr>
                                     			<td>
                                     				<b>
@@ -1171,9 +1171,33 @@ $( document ).tooltip();
                                     </div>
                                 </div>
                         </div>
+				<?php }?>
+				<?php if(@$filesprivate){ ?>
+                        <div class="title">
+                            <h2 class="block-title">Private Files</h2>
+                        </div>
+                        <div class="content_sup">
+                                <div class="control-group">
+                                    <div class="controls">
+                                    	<table cellpadding="5">
+                                    	<?php foreach($filesprivate as $ri){?>
+                                    		<tr>
+                                    			<td>
+                                    				<b>
+                                    				<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg');?>"/>&nbsp;&nbsp;
+                                    				<?php echo $ri->filename;?></b>
+                                    			</td>
+                                    		</tr>
+                                    	<?php }?>
+                                    	</table>
+                                    </div>
+                                </div>
+                        </div>
+                        <?php }?>
+
                     </div>
                  </div>
-                 <?php }?>
+
 
                  
                  
