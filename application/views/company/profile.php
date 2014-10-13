@@ -99,7 +99,19 @@ function addEmail()
 	 	document.getElementById("moreUploads1").appendChild(d);
 	 	upload_number++;
 	}
-                        
+
+	var upload_number = 2;
+	function addFileInput2() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile2[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads2").appendChild(d);
+	 	upload_number++;
+	}
+
+	
 </script>
 
     <div class="content">  
@@ -295,6 +307,26 @@ function addEmail()
 				                      
 				                      
 				                      <div class="form-group">
+										<label class="form-label">Add Images for Gallery</label>
+										  <input type="file" name="UploadFile2[]" id="UploadFile2" onchange="document.getElementById('moreUploadsLink2').style.display = 'block';" />
+												<div id="moreUploads2"></div>
+										    <div id="moreUploadsLink2" style="display:none;"><a href="javascript:addFileInput2();">Add another Image for Gallery</a>
+											</div>
+											<table class="table table-striped">
+												<tr>
+													<th>Image</th><th>Delete</th>
+												</tr>
+												<?php  foreach($gallery as $items)  { ?>
+												<tr>
+													<td><img src="<?php echo site_url('uploads/imagegallery'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
+													<td><a class="close"  href="<?php echo base_url("company/deletegalleryimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+												</tr>
+												<?php } ?>
+											</table>
+				                      </div>
+				                      
+				                      
+				                      <div class="form-group">
 										<label class="form-label">Add Files</label>
 										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" />
 												<div id="moreUploads1"></div>
@@ -309,7 +341,7 @@ function addEmail()
 												<tr>
 													<td><?php echo site_url('uploads/gallery/'.$items->filename);?></td>
 													<td><input type="checkbox" id="file1" name="file1" value="<?php echo $items->private;?>" <?php if(isset($items->private) && $items->private==1) {echo 'CHECKED';}?>/>
-													<input type="hidden" name="id" value="<?php echo $items->id;?>"/>
+													<input type="hidden" name="checkid" value="<?php echo $items->id;?>"/>
 													</td>
 													<td><a class="close"  href="<?php echo base_url("company/deletefile/".$items->id);?>" onclick="return confirm('Are you really want to delete this File?');">&times;</a></td>
 												</tr>

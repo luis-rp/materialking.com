@@ -673,6 +673,20 @@ class site extends CI_Controller
        	$upcomingevents = $this->event_model->get_upcoming_items($data['supplier']->id);	
        	$data['upcomingevents'] = $upcomingevents;
        	  
+       	if ($this->session->userdata('site_loggedin'))
+       	 {
+       		/* $this->db->where('purchasingadmin', $currentpa);
+             $this->db->where('company', $data['supplier']->id);
+             if ($this->db->get('network')->result())
+               {*/
+        	       $data['files']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id))->result();
+               //}
+       	 }
+        $data['files']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>0))->result();
+
+
+        $data['gallery']=$this->db->get_where('gallery',array('company'=>$data['supplier']->id))->result();
+       	
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)

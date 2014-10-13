@@ -327,6 +327,7 @@ class Company extends CI_Controller {
         //print_r($states);
 		$data['image']=$this->db->get_where('companyattachment',array('company'=>$company->id))->result();
 		$data['files']=$this->db->get_where('company_files',array('company'=>$company->id))->result();
+		$data['gallery']=$this->db->get_where('gallery',array('company'=>$company->id))->result();
 		$data['members']=$this->db->where('cid',$company->id)->get("companyteam")->result();
         $this->db->where('company', $company->id);
         $emails = $this->db->get('companyemail')->result();
@@ -486,12 +487,7 @@ class Company extends CI_Controller {
             	$count=0;
             	foreach ($_FILES['UploadFile1']['name'] as $filename)
             	{
-            		if(isset($_POST['file1']))
-					{
-						$_POST['file1']=1;
-						$this->db->where('id', $_POST['id']);
-						$this->db->update('company_files', array('private' => $_POST['file1']));
-					}
+            		
             		$temp=$target;
             		$tmp=$_FILES['UploadFile1']['tmp_name'][$count];
             		$origionalFile=$_FILES['UploadFile1']['name'][$count];
@@ -500,9 +496,43 @@ class Company extends CI_Controller {
             		move_uploaded_file($tmp,$temp);
             		$temp='';
             		$tmp='';
-                    if(isset($filename) && $filename!=''){
-            		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename));}
+                    if(isset($filename) && $filename!='')
+                    {
+            		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename));
+                    }
+            		
+            		if(isset($_POST['file1']))
+					{
+
+						$_POST['file1']=1;						
+						$this->db->where('id', $_POST['checkid']);
+						$this->db->update('company_files', array('private' => $_POST['file1']));
+					}
+
             	}
+            }
+
+
+
+			  if(isset($_FILES['UploadFile2']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/imagegallery/';
+            	$count=0;
+            	foreach ($_FILES['UploadFile2']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile2']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile2']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+                    if(isset($filename) && $filename!=''){
+            		$this->db->insert('gallery', array('company' => $company->id, 'imagename' => $filename));}
+            	}
+
             }
    
             
@@ -1496,6 +1526,24 @@ class Company extends CI_Controller {
 		unlink('./uploads/gallery/'.$name);
 		}
 		$this->db->delete('company_files',array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+	    $res['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		redirect("company/profile");
+
+	}
+	
+	function deletegalleryimage($id)
+	{
+		$rows['gallery']=$this->db->get_where('gallery',array('id'=>$id))->row();
+		$name=$rows['gallery']->imagename;
+
+		if(file_exists('./uploads/imagegallery/'.$name) && !is_dir('./uploads/imagegallery/'.$name))
+		{
+		unlink('./uploads/imagegallery/'.$name);
+		}
+
+		$this->db->delete('gallery',array('id'=>$id));
 		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
 	    $res['message'] = $message;
 		$this->session->set_flashdata('message', $message);
