@@ -586,6 +586,8 @@ class Company extends CI_Controller {
         }
 
         unset($_POST['_wysihtml5_mode']);
+        unset($_POST['checkid']);
+        unset($_POST['file1']);
         $this->db->where('id', $company->id);
         $this->db->update('company', $_POST);
         
