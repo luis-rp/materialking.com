@@ -504,14 +504,16 @@ class Company extends CI_Controller {
             		}	
             			
             			$file1 = 0;
-						foreach($_POST['checkid'] as $check){
-							$this->db->where('id', $check);
-							if(isset($_POST['file1'][$check]))
-							$file1 = 1;
-							else
-							$file1 = 0;
-							$this->db->update('company_files', array('private' => $file1));
-						}
+            			if(isset($_POST['checkid'])){
+            				foreach($_POST['checkid'] as $check){
+            					$this->db->where('id', $check);
+            					if(isset($_POST['file1'][$check]))
+            					$file1 = 1;
+            					else
+            					$file1 = 0;
+            					$this->db->update('company_files', array('private' => $file1));
+            				}
+            			}
             }
 
 
@@ -586,7 +588,9 @@ class Company extends CI_Controller {
         }
 
         unset($_POST['_wysihtml5_mode']);
+        if(isset($_POST['checkid']))
         unset($_POST['checkid']);
+        if(isset($_POST['file1']))
         unset($_POST['file1']);
         $this->db->where('id', $company->id);
         $this->db->update('company', $_POST);
