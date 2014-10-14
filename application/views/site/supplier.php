@@ -1203,7 +1203,7 @@ $( document ).tooltip();
                  
                <div class="sidebar span3">
                <div class="widget contact">  
-               <div class="fb-like-box" data-href="https://www.facebook.com/materialkings" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>  
+               <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>  
                </div></div>
                  
                  
@@ -1311,7 +1311,7 @@ $( document ).tooltip();
   </div>
 
 	
-  <?php foreach($upcomingevents as $event){?>
+  <?php if(@$upcomingevents) { foreach($upcomingevents as $event){?>
   <div id="eventdetails<?php echo $event->id;?>" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -1367,4 +1367,4 @@ $( document ).tooltip();
     <!-- /.modal-dialog -->
   </div> 
   
-  <?php } ?>
+  <?php } } ?>

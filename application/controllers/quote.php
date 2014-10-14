@@ -576,7 +576,7 @@ class Quote extends CI_Controller
 		//print_r($quoteitems);die;
 		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);
 		$company = $this->quotemodel->getcompanybyid($invitation->company);
-		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
+		$draftitems = $this->quotemodel->getdraftitemswithdefaultitemcode($quote->id,$invitation->company);
 		
 		$sql = "SELECT tier
 				FROM ".$this->db->dbprefix('purchasingtier')." pt 
@@ -715,6 +715,17 @@ class Quote extends CI_Controller
 			//echo $item->tiers['Tier3'];echo '<br/>';
 			$item->tiers['Tier4'] = number_format($price + ($price * $tiers->tier4/100),2);
 			//echo $item->tiers['Tier4'];echo '<br/>';echo '<br/>';echo '<br/>';
+			
+			$this->db->where('company', $company->id);
+        	$this->db->where('purchasingadmin', $quote->purchasingadmin);
+        	$this->db->where('itemid', $item->itemid);
+        	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
+			
+        	if($itemtierresult)
+        	$item->notes = $itemtierresult->notes;
+        	else 
+        	$item->notes = "";
+			
 			$data['quoteitems'][]=$item;
 		}
 		//echo '<pre>';print_r($data['quoteitems']);die;
@@ -755,7 +766,8 @@ class Quote extends CI_Controller
     		$istier = 0;
     		$strput .= "<table class='table table-bordered'>";
     		foreach($qtyresult as $qtyres){
-    			
+    			$notes="";
+    			$notes = "*Given quantity (".$qtyres->qty.") discount price";
     			if(isset($purchasingadmin)){
     				
     				$sql1 = "select tier from " . $this->db->dbprefix('purchasingtier_item') . "
@@ -790,11 +802,17 @@ class Quote extends CI_Controller
     						$deviation = $pt->$tier;
     						$qtyres->price = $qtyres->price + ($qtyres->price * $deviation / 100);
     						$qtyres->price = number_format($qtyres->price, 2);
+    						$notes = "*Given ".$tier." price on top of quantity(".$qtyres->qty.") discount";
     					}
     				}
     			}
     			
-				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\")' value='Select' data-dismiss='modal'>";
+				if(isset($tier))
+    			$tierlvl = $tier;
+    			else 
+    			$tierlvl = "";
+    			
+				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\", \"{$notes}\",\"{$tierlvl}\")' value='Select' data-dismiss='modal'>";
     			$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}

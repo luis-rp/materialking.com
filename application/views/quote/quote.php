@@ -127,20 +127,22 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	if(confirm('Do you want to change the tier for this item?'))
 	{
 		url = changeitemtierurl;
-		
+		var notes = '*Given '+tierlevel+' price';
 		$.ajax({
 		      type:"post",
-		      data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid,
+		      data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes,
 		      url: url
 		    }).done(function(data){
 			    alert(data);
 		    });
 		    
-		     $('#'+$("#hiddenpriceid").val()).val(tierprice);
+		    $('#'+$("#hiddenpriceid").val()).val(tierprice);
+		    
+		    $('#'+$("#hiddennotesid").val()).html(notes);
 	}
 }
 
-function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price)
+function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel)
 {
 	$("#pricelist").modal();
 	$("#itemnamebox").html('');
@@ -177,6 +179,7 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
     $("#hiddenpriceid").val(priceid);    
     $("#hiddenpurchaser").val(purchasingadmin);
     $("#itemnamebox").html(itemcode+"  /  "+itemname);
+    $("#hiddennotesid").val(notelabel);   
 }
 
 
@@ -230,11 +233,23 @@ function showqtydiscount(companyid){
 }
 
 
-function selectquantity(qty, quant, price, priceid)
+function selectquantity(qty, quant, price, priceid,notes,tierlevel)
 { 
  $("#"+quant).val(qty); 
  $("#"+priceid).val(price); 
  $("#pricelist").css('display', 'block');
+ url = changeitemtierurl;
+ var itemid = $("#hiddenitemid").val();
+ var purchasingadmin = $("#hiddenpurchaser").val();
+ $.ajax({
+ 	type:"post",
+ 	data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes,
+ 	url: url
+ }).done(function(data){
+ 	alert(data);
+ });
+ 
+ $('#'+$("#hiddennotesid").val()).html(notes);
 }
 
 
@@ -372,11 +387,11 @@ function displaypricemodal(){
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
 							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>');">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>');">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
-											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/>
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->notes)) echo $q->notes;?></label>
 							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/>
 							    		</td>
 							    		<td>	
@@ -481,6 +496,7 @@ function displaypricemodal(){
 							    	<input type="hidden" name="hiddenquantityid" id="hiddenquantityid" />
 							    	<input type="hidden" name="hiddenpriceid" id="hiddenpriceid" />
 							    	<input type="hidden" name="hiddenpurchaser" id="hiddenpurchaser" />
+							    	<input type="hidden" name="hiddennotesid" id="hiddennotesid" />
 							    	
 							    	</form>
 							    	</tbody>

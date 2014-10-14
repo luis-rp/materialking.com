@@ -394,6 +394,21 @@ function addEmail()
 				                        </div>
 				                      </div>
                     				
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Facebook Page URL:</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control" name="fbpageurl" id="fbpageurl" value="<?php echo $company->fbpageurl;?>">
+				                        </div>
+				                      </div>
+
+				                      <!-- <div class="form-group">
+				                        <label class="form-label">Twitter :</label>
+				                        <div class="controls">
+				                          <input type="text" class="form-control input-sm" name="twitter" id="twitter" value="<?php echo $company->twitter;?>" required>
+				                        </div>
+				                      </div> -->
+				                      
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">

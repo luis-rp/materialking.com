@@ -253,6 +253,18 @@ class Quotemodel extends Model
 		else
 			return array();
 	}
+	
+	function getdraftitemswithdefaultitemcode($quote,$company)
+	{
+		$sql = "SELECT bi.*, i.itemcode as defaultitemcode, i.itemname as defaultitemname FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b, ".$this->db->dbprefix('item')." i 
+			   WHERE bi.bid=b.id AND bi.itemid = i.id AND b.quote='$quote' AND b.company='$company'
+		 	   ";
+		$query = $this->db->query ($sql);
+		if($query->num_rows>0)
+			return $query->result();
+		else
+			return array();
+	}
 
 	function getrevisiondraftitems($quote,$company,$rid="") 
     { 

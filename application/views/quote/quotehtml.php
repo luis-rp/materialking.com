@@ -47,8 +47,8 @@
         		?>
         		<?php $extprice=$bi->quantity * $bi->ea;?>
     		    <tr>
-        		<td><?php echo $bi->itemcode; ?></td>
-        		<td><?php echo $bi->itemname; ?></td>
+        		<td><?php echo ($bi->itemcode)?$bi->itemcode:$bi->defaultitemcode; ?></td>
+        		<td><?php echo ($bi->itemname)?$bi->itemname:$bi->defaultitemname; ?></td>
         		<td><?php echo $bi->quantity; ?></td>
         		<td><?php echo $bi->ea; ?></td>
         		<td><?php echo $bi->unit; ?></td>

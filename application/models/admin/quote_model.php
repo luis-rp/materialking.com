@@ -486,14 +486,14 @@ class quote_model extends Model {
         if (@$_POST['searchfrom'] && @$_POST['searchto']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " (STR_TO_DATE(receiveddate, '%m/%d/%Y') >= '$fromdate'
-						AND STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate')";
+            $searches[] = " (receiveddate >= '$fromdate'
+						AND receiveddate <= '$todate')";
         } elseif (@$_POST['searchfrom']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-            $searches[] = " STR_TO_DATE(receiveddate, '%m/%d/%Y') >= '$fromdate'";
+            $searches[] = " receiveddate >= '$fromdate'";
         } elseif (@$_POST['searchto']) {
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " STR_TO_DATE(receiveddate, '%m/%d/%Y') <= '$todate'";
+            $searches[] = " receiveddate <= '$todate'";
         }
         if ($this->session->userdata('usertype_id') > 1) {
             $searches[] = " r.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";

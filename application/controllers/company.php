@@ -942,7 +942,7 @@ class Company extends CI_Controller {
     }
     
     
-        function changeitemtier()
+    function changeitemtier()
     {
         $company = $this->session->userdata('company');
         if (!$company)
@@ -963,23 +963,30 @@ class Company extends CI_Controller {
         $this->db->where('itemid', $_POST['itemid']);
         if($this->db->get('purchasingtier_item')->row())
         {
+        	if(isset($_POST['tier']))
             $update = array('tier'=>strtolower($_POST['tier']));
-
+			
+            if(isset($_POST['notes']))
+            $update['notes'] = $_POST['notes'];
+            
             $this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         	$this->db->where('itemid', $_POST['itemid']);
             $this->db->update('purchasingtier_item', $update);  
-            echo "Item tier Changed";
+            echo "Item price Changed";
         }
         else
         {
             $insert = array();
+            if(isset($_POST['tier']))
             $insert['tier'] = $_POST['tier'];
+            if(isset($_POST['notes']))
+            $insert['notes'] = $_POST['notes'];
             $insert['company'] = $company->id;
             $insert['itemid'] = $_POST['itemid'];
             $insert['purchasingadmin'] = $_POST['purchasingadmin'];
             $this->db->insert('purchasingtier_item', $insert);
-            echo "Item tier Set";
+            echo "Item price Set";
         }
                       
         die(1);
