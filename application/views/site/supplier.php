@@ -1196,13 +1196,13 @@ $( document ).tooltip();
                                     			<td>
                         <?php $arr=explode('.',$ri->filename); $ext=end($arr);
                                  if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>
-                                 	<a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                 	<a target="_blank" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
                                     	<img width="30" src="<?php echo site_url('uploads/logo/PictureLogo.png');?>"></a>
                         <?php } else { ?>
-                       			    <a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                       			    <a target="_blank" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
                                     	<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg'); ?>" ></a>
 								<?php } ?>
-                        <a style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
+                        <a target="_blank" style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
                                     			</td>
                                     		</tr>
                                     	<?php }?>
@@ -1229,13 +1229,13 @@ $( document ).tooltip();
                                     			<td>
                                     			<?php $arr=explode('.',$ri->filename); $ext=end($arr);
                                  if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>
-                                 	<a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                 	<a target="_blank" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
                                     	<img width="30" src="<?php echo site_url('uploads/logo/PictureLogo.png');?>"></a>
                         <?php } else { ?>
-                       			    <a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                       			    <a target="_blank" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
                                     	<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg'); ?>" ></a>
 								<?php } ?>
-                        <a style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
+                        <a target="_blank" style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
                                     			</td>
                                     		</tr>
                                     	<?php }?>
