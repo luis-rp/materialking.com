@@ -318,7 +318,7 @@ function addEmail()
 												</tr>
 												<?php  foreach($gallery as $items)  { ?>
 												<tr>
-													<td><img src="<?php echo site_url('uploads/imagegallery'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
+													<td><img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
 													<td><a class="close"  href="<?php echo base_url("company/deletegalleryimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>
@@ -339,7 +339,11 @@ function addEmail()
 												</tr>
 												<?php  foreach($files as $items)  { ?>
 												<tr>
-													<td><?php echo site_url('uploads/gallery/'.$items->filename);?></td>
+													<td>
+			<?php $arr1=explode('.',$items->filename); $ext=end($arr1);
+				if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>
+                 <img  src="<?php echo site_url('uploads/filegallery/'.$items->filename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->filename;?>">
+                                                <?php } else { echo $items->filename; } ?></td>
 													<td><input type="checkbox" id="file1[<?php echo $items->id;?>]" name="file1[<?php echo $items->id;?>]" <?php if(isset($items->private) && $items->private==1) {echo "checked='checked'";}?>/>
 													<input type="hidden" name="checkid[]" value="<?php echo $items->id;?>"/>
 													</td>

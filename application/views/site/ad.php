@@ -38,7 +38,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	}
 </style>
 <title><?php if(isset($a_title)) echo $a_title;?></title>
-<?php echo $this->session->flashdata('message'); ?>
+<?php // echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
         
         <div class="container">

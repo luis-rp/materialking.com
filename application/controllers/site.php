@@ -675,12 +675,7 @@ class site extends CI_Controller
        	  
        	if ($this->session->userdata('site_loggedin'))
        	 {
-       		/* $this->db->where('purchasingadmin', $currentpa);
-             $this->db->where('company', $data['supplier']->id);
-             if ($this->db->get('network')->result())
-               {*/
-        	       $data['filesprivate']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>1))->result();
-               //}
+       		$data['filesprivate']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>1))->result();        
        	 }
         $data['filespublic']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>0))->result();
 
@@ -1754,13 +1749,22 @@ class site extends CI_Controller
 	    }
 		$data['email_body_content'] .= ' Details are:<br/><br/>';
 		//$body .= "Type: ".$_POST['type']."<br/>";
+		if(@$_POST['contactName'])
+		$data['email_body_content'] .= "Name: ".$_POST['contactName']."<br/>";
 		if(@$_POST['name'])
 		$data['email_body_content'] .= "Name: ".$_POST['name']."<br/>";
 		if(@$_POST['email'])
 		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
-		//$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
-		//$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
+		if(@$_POST['subject'])
+		$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
+		if(@$_POST['comments'])
+		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
+		if(@$_POST['hiddenad'])
+		$data['email_body_content'] .= "Ad Url: ".site_url($_POST['hiddenad'])."<br/>";
+		if(@$_POST['phone'])
+		$data['email_body_content'] .= "Phone: ".$_POST['phone']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
+		
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
 			{

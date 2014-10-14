@@ -14,6 +14,9 @@
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/jquery.tosrus.min.all.js"></script>
 		<link type="text/css" media="all" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.tosrus.all.css" />
 
+		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/jquery.bxslider.min.js"></script>
+		<link type="text/css" media="all" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.bxslider.css" />
+		
 		<script type="text/javascript" language="javascript">
 			jQuery(function( $ ) {
 
@@ -27,6 +30,15 @@
 			});
 		</script>
 
+		<script type="text/javascript" language="javascript">
+			jQuery(function( $ ) {
+			 $('.bxslider').bxSlider({
+			 adaptiveHeight: true,
+  			 mode: 'fade',
+			});
+			});
+		</script>
+		
 <?php
 /*
   $geocode=file_get_contents("http://maps.google.com/maps/api/geocode/json?address=".urlencode(str_replace("\n",", ",$supplier->address))."&sensor=false");
@@ -40,16 +52,16 @@ $long = $supplier->com_lng;
 ?>
 
 
-<style>
+		<style>
 
 		     .gallery-photos {
-					padding: 20px;
+					padding: 6px;
 
 				}
 				.gallery-photos .big-photo {
 					display: block;
 					background-color: #ffffff;
-					padding: 3px;
+					padding: 1px;
 					border: 1px solid #e7e7e7;
 				}
 				.gallery-photos .big-photo img {
@@ -59,7 +71,7 @@ $long = $supplier->com_lng;
 					margin: 0 auto;
 				}
 				.gallery-photos .photo-thumbnails {
-					width: 750px;
+					width: 800px;
 				}
 				.gallery-photos .photo-thumbnails .thumbnail {
 					float: left;
@@ -69,9 +81,9 @@ $long = $supplier->com_lng;
 					width: 120px;
 					height: 80px;
 					cursor: pointer;
-					padding: 3px;
+					padding: 1px;
 					border: 1px solid #e7e7e7;
-					margin-left: 3.33333%;
+					margin-left: 1.33333%;
 					margin-bottom: 6px;
 				}
 				.gallery-photos .photo-thumbnails .thumbnail.current {
@@ -89,9 +101,10 @@ $long = $supplier->com_lng;
 					opacity: 1;
 				}
 
-</style>
+		</style>
 
 <style>
+
 #parent
 {
 	font-size:17px;
@@ -542,37 +555,57 @@ $( document ).tooltip();
 
                         </div>
                         
-                        <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
+                        <!-- <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
 						<ul>
                            <?php  if(isset($image) && count($image)>0)  foreach($image as $items) { ?>
                           <li style="margin-bottom:3px;">
                          	<a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
 							<img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" width="100%x" class="img-thumbnail"/></a></li>
-                               <?php }   ?>
-                          </ul>
-                          </div>
+                           <?php }   ?>
+                        </ul>
+                      </div>
+-->
+                   <?php  if(isset($image) && count($image)>0) { ?>
+                     <div  style="float:left; height:310px;width:395px;">
+                        <ul class="bxslider">
+						   <?php foreach($image as $items) { ?>
+						  <li>
+						  <a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" target="_blank">
+						  <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" /></a>
+						  </li>
+						  <?php } ?>
+						</ul>
+                      </div>
+                   <?php }   ?>
+                      <br><br><br>
                         
                         
+                          
+                          
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
                         
-                        <div class="content">
+                         <?php  if(isset($gallery) && count($gallery)>0) { ?>
+					 <div class="content">
                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Gallery</h3>
+                          <div id="example-1" class="thumbs">
 							<div class="gallery-photos clearfix">
 								  <div class="photo-thumbnails">
 								   <?php  if(isset($gallery) && count($gallery)>0)  foreach($gallery as $items) { ?>
 								    <div class="thumbnail current">
 								      <div class="thumbnail-inner">
-									      <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" target="_blank">
-									      <img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" alt="" />
+									      <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>">
+									      <img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>"/>
 									      </a>
 								      </div>
 								    </div>
 								     <?php }   ?>
 								  </div>
 							</div>
+							</div>
 						</div>
+						<?php } ?>
                         
                         <?php if(@$members){?>
                         <div>
@@ -1148,30 +1181,41 @@ $( document ).tooltip();
                  <?php }?>
                 
                  
-                 <div class="sidebar span3">
+ <div class="sidebar span3">
                     <div class="widget contact">
-                    <?php if(@$filespublic){ ?>
+                    <?php if(@$filespublic) { ?>
                     <div class="title">
                             <h2 class="block-title">Public Files</h2>
                         </div>
-                        <div class="content_sup">
+                           <div class="content_sup">
                                 <div class="control-group">
                                     <div class="controls">
                                     	<table cellpadding="5">
                                     	<?php foreach($filespublic as $ri){?>
                                     		<tr>
                                     			<td>
-                                    				<b>
-                                    				<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg');?>"/>&nbsp;&nbsp;
-                                    				<?php echo $ri->filename;?></b>
+                        <?php $arr=explode('.',$ri->filename); $ext=end($arr);
+                                 if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>
+                                 	<a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                    	<img width="30" src="<?php echo site_url('uploads/logo/PictureLogo.png');?>"></a>
+                        <?php } else { ?>
+                       			    <a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                    	<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg'); ?>" ></a>
+								<?php } ?>
+                        <a style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
                                     			</td>
                                     		</tr>
                                     	<?php }?>
                                     	</table>
                                     </div>
                                 </div>
-                        </div>
+                            </div>
 				<?php }?>
+				</div>
+                 </div>
+
+                  <div class="sidebar span3">
+                    <div class="widget contact">
 				<?php if(@$filesprivate){ ?>
                         <div class="title">
                             <h2 class="block-title">Private Files</h2>
@@ -1183,9 +1227,15 @@ $( document ).tooltip();
                                     	<?php foreach($filesprivate as $ri){?>
                                     		<tr>
                                     			<td>
-                                    				<b>
-                                    				<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg');?>"/>&nbsp;&nbsp;
-                                    				<?php echo $ri->filename;?></b>
+                                    			<?php $arr=explode('.',$ri->filename); $ext=end($arr);
+                                 if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>
+                                 	<a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                    	<img width="30" src="<?php echo site_url('uploads/logo/PictureLogo.png');?>"></a>
+                        <?php } else { ?>
+                       			    <a href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>">
+                                    	<img width="30" src="<?php echo site_url('uploads/logo/FileLogo.jpg'); ?>" ></a>
+								<?php } ?>
+                        <a style="text-decoration:none;" href="<?php echo site_url('uploads/filegallery/'.$ri->filename);?>"><?php echo $ri->filename;?></a></b>
                                     			</td>
                                     		</tr>
                                     	<?php }?>
@@ -1207,48 +1257,51 @@ $( document ).tooltip();
                </div></div>
                  
                  
-               <!-- Start Dialog Form -->  
+                              <!-- Start Dialog Form -->
                <div class="dialog-form" id="dialog-form">
-						
+
 				            		<form  role="form" method="post" name="form-addsubscriber" id="form-addsubscriber" action="<?php echo base_url();?>subscriber/addsubscriber">
 				                     <div class="col-md-6 col-sm-6 col-xs-6">
 				                     <div class="form-group">
 				    						<label for="label" class="form-label">Name:</label>
-				    						<div class="controls"> 
+				    						<div class="controls">
 				    							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
 				    						</div>
 				                     </div>
-	                     
+
 				                     <div class="form-group">
 				    						<label for="label" class="form-label">Email:</label>
-				    						<div class="controls"> 
+				    						<div class="controls">
 				    							<input type="text" class="form-control" id="email" name="email" placeholder="email" required >
 				    						</div>
 				                     </div>
 				 					<?php  foreach($fields as $key=>$field) { $name_id=trim($field->Label);  ?><br>
 				 					<div class="form-group">
 				    						<label for="label" class="form-label"><?php echo $field->Label ?></label>
-				    						
-				    							<div class="controls">
-				      					<?php if($field->FieldType == 'text' || $field->FieldType == 'email' || $field->FieldType == 'password') {?>
+				    						<div class="controls">
+				      					    <?php if($field->FieldType == 'text' || $field->FieldType == 'email' || $field->FieldType == 'password') {?>
 				      							<?php if($field->FieldType == 'email' ){?>
-				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="email" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>">
+				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="email" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>"><br>
 				      							<?php }else{?>
-				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>">
+				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>"><br>
 				      							<?php } ?>
 				      					<?php  }  ?>
-				
-				      					<?php if($field->FieldType == 'dropdown') { $dropdownValues = explode(",",$field->FieldValue); $k= array_search($field->Value,$dropdownValues); ?> 
-				      					<select id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>"><?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><option value="<?php echo $dropdownValues[$i];?>" <?php if($dropdownValues[$i]==$field->Value) { echo " selected ";} else { echo " "; } ?>><?php echo $dropdownValues[$i];?></option> <?php  } } ?></select>
-				
+
+				      					<?php if($field->FieldType == 'dropdown') { $dropdownValues = explode(",",$field->FieldValue); $k= array_search($field->Value,$dropdownValues); ?>
+				      					<select id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>"><?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><option value="<?php echo $dropdownValues[$i];?>" <?php if($dropdownValues[$i]==$field->Value) { echo " selected ";} else { echo " "; } ?>><?php echo $dropdownValues[$i];?></option> <?php  } } ?></select><br>
+
 				    							<?php   } ?>
-										<?php if($field->FieldType == 'radio') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="radio" name="<?php echo $field->Name; ?>" id="<?php echo $dropdownValues[$i];?>" value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'checked'; ?>><?php echo $dropdownValues[$i];?> <?php  } } ?>
-				
+										<?php if($field->FieldType == 'radio') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?>
+
+										<br><input type="radio" name="<?php echo $field->Name; ?>" id="<?php echo $dropdownValues[$i];?>"
+                                         value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'checked'; ?>>
+										<?php echo $dropdownValues[$i];?> <?php  } } ?>
+
 				 					    		<?php  } ?>
-				 					    <?php if($field->FieldType == 'checkbox') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><input type="checkbox" name="<?php echo $field->Name; ?>" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'selected'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
-				
+				 					    <?php if($field->FieldType == 'checkbox') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><br><input type="checkbox" name="<?php echo $field->Name; ?>" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'selected'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
+
 				 					    		<?php } ?>
-				 					    <?php if($field->FieldType == 'textarea') { ?> <textarea id="<?php echo $name_id;?>" name="<?php echo $field->Name; ?>"><?php echo $field->Value;?></textarea>
+				 					    <?php if($field->FieldType == 'textarea') { ?> <br><textarea id="<?php echo $name_id;?>" name="<?php echo $field->Name; ?>"><?php echo $field->Value;?></textarea>
 				 					    		<?php  }  ?>
 				 					    	</div>
 				 					    </div>
@@ -1262,7 +1315,7 @@ $( document ).tooltip();
 					                    </div>
 				 						 </div>
 									</form>
-				              
+
 				</div><!-- End Dialog Form -->
                 
             </div>

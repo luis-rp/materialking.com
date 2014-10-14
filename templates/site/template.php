@@ -168,9 +168,9 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         <title><?php if(isset($page_title))  echo $page_title;  else echo "EZPZP";?></title>
     </head>
     <body>
-       <div class="free">
- <img src="<?php echo base_url(); ?>templates/site/assets/img/free-trial-slide-banner.png" alt="Home">
- </div>
+       <!-- <div class="free">
+ <img src="<?php // echo base_url(); ?>templates/site/assets/img/free-trial-slide-banner.png" alt="Home">
+ </div> -->
         <div id="wrapper-outer" >
             <div id="wrapper">
                 <div id="wrapper-inner">
