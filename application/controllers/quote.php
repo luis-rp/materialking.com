@@ -576,7 +576,7 @@ class Quote extends CI_Controller
 		//print_r($quoteitems);die;
 		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);
 		$company = $this->quotemodel->getcompanybyid($invitation->company);
-		$draftitems = $this->quotemodel->getdraftitemswithdefaultitemcode($quote->id,$invitation->company);
+		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
 		
 		$sql = "SELECT tier
 				FROM ".$this->db->dbprefix('purchasingtier')." pt 
@@ -1732,7 +1732,7 @@ class Quote extends CI_Controller
 	    if($bid->company != $company->id)
 	        redirect('quote');
 	    $quote = $this->quotemodel->getquotebyid($bid->quote);
-	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company->id);
+	    $biditems = $this->quotemodel->getdraftitemswithdefaultitemcode($bid->quote, $company->id);
 	    
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
 	    $taxpercent = $settings->taxpercent;
