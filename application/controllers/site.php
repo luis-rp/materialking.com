@@ -682,6 +682,10 @@ class site extends CI_Controller
 
         $data['gallery']=$this->db->get_where('gallery',array('company'=>$data['supplier']->id))->result();
        	
+        $bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
+       
+        $data['businesshrs'] = $bhrs;
+        
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)

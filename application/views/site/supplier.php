@@ -1179,7 +1179,63 @@ $( document ).tooltip();
                     </div>
                  </div>
                  <?php }?>
-                
+                                 
+                 
+                 <?php if(@$businesshrs){ ?>
+                 <div class="sidebar span3">
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 align="center" class="block-title"><img style="height:20px;" src="<?php echo base_url(); ?>uploads/logo/time.png"/>&nbsp;Timings</h2>
+                        </div>
+                        <div class="content_sup">
+                                <div class="control-group">
+
+                                    <div class="controls">
+                    <table border="1" cellpadding="7">
+				   <?php $todayhtml=''; $bhtml=''; foreach($businesshrs as $bhrs) { 
+				   	 $bhrs->day = ucfirst($bhrs->day);
+				   $bhtml.='<tr><td>'.$bhrs->day.'</td>';				  
+				   if(date('D') == $bhrs->day)
+				   $todayhtml.='<tr><td>Today</td>';
+				   if($bhrs->isclosed==1){
+						$bhtml.='<td colspan="2">closed</td>';
+						if(date('D') == $bhrs->day)
+						$todayhtml.='<td colspan="2">closed</td>';						
+				   }else{ 
+				   		$bhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';	
+				   		if(date('D') == $bhrs->day)
+				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';		
+				   }		
+				   			
+				   		$current_time = date('H:i a');						   			
+						$date1 = DateTime::createFromFormat('H:i a', $current_time);
+						$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
+						$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
+						if ($date1 > $date2 && $date1 < $date3)
+						{							
+							$bhtml.='<td>&nbsp;</td></tr>';
+							if(date('D') == $bhrs->day)
+							$todayhtml.='<td>&nbsp;</td></tr>';
+						}else {
+						$bhtml.='<td>Closed now</td></tr>';
+				   		if(date('D') == $bhrs->day)
+				   			$todayhtml.='<td>Closed now</td></tr>';
+						}
+				   					   		
+					 }
+					 $todayhtml.='<tr>';
+					 echo $todayhtml.''.$bhtml;
+					 ?>
+					 </table>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                 </div>
+                 <?php }?>
+                 
+                 
                  
  <div class="sidebar span3">
                     <div class="widget contact">

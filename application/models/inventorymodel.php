@@ -41,15 +41,15 @@ class Inventorymodel extends Model
 		    $where .= " AND manufacturer='".$_POST['manufacturer']."' ";
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
 		}
-		
+		$noleftjoin = "LEFT";
 		if(@$_POST['serachmyitem'])
 		{
-		    $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
-		    //$this->db->where('manufacturer', $_POST['manufacturer']);
+			//$where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";		    
+			$noleftjoin = ""; 
 		}
 		
 		$sql = "SELECT $ti.* FROM $ti 
-				LEFT JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
+				{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
 		        $where 
 		        LIMIT $offset, $limit";
 		//$this->db->where('item.instore',1);

@@ -413,6 +413,66 @@ function addEmail()
 				                        </div>
 				                      </div> -->
 				                      
+				                      
+				                      <div class="form-group">
+				                        <label class="form-label">Business Hours:</label>
+				                        <div class="controls">				                           
+				                          <table class="table table-striped">
+												<tr>
+													<th>Day</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>Is Closed?</th>													
+												</tr>												
+												<tr>
+													<td>Monday</td>
+													<td><input type="text" id="monstart" name="monstart" class="span2 time" value="<?php if(isset($businesshrs['monstart'])) echo $businesshrs['monstart']; ?>">&nbsp;(eg: 06:00 am)</td>
+													<td><input type="text" id="monend" name="monend" class="span2 time" value="<?php if(isset($businesshrs['monend']) && $businesshrs['monclosed']==1) echo $businesshrs['monend']; ?>">&nbsp;(eg: 05:00 pm)</td>
+													<td><input type="checkbox" name="monclosed" id="monclosed" <?php if(isset($businesshrs['monclosed'])) echo 'checked = "checked"';?> /></td>			
+												</tr>	
+												<tr>
+													<td>Tuesday</td>
+													<td><input type="text" id="tuestart" name="tuestart" class="span2 time" value="<?php if(isset($businesshrs['tuestart'])) echo $businesshrs['tuestart']; ?>"></td>
+													<td><input type="text" id="tueend" name="tueend" class="span2 time" value="<?php if(isset($businesshrs['tueend'])) echo $businesshrs['tueend']; ?>"></td>
+													<td><input type="checkbox" name="tueclosed" id="tueclosed" <?php if(isset($businesshrs['tueclosed']) && $businesshrs['tueclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Wednesday</td>
+													<td><input type="text" id="wedstart" name="wedstart" class="span2 time" value="<?php if(isset($businesshrs['wedstart'])) echo $businesshrs['wedstart']; ?>"></td>
+													<td><input type="text" id="wedend" name="wedend" class="span2 time" value="<?php if(isset($businesshrs['wedend'])) echo $businesshrs['wedend']; ?>"></td>
+													<td><input type="checkbox" name="wedclosed" id="wedclosed" <?php if(isset($businesshrs['wedclosed']) && $businesshrs['wedclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Thusrday</td>
+													<td><input type="text" id="thustart" name="thustart" class="span2 time" value="<?php if(isset($businesshrs['thustart'])) echo $businesshrs['thustart']; ?>"></td>
+													<td><input type="text" id="thuend" name="thuend" class="span2 time" value="<?php if(isset($businesshrs['thuend'])) echo $businesshrs['thuend']; ?>"></td>
+													<td><input type="checkbox" name="thuclosed" id="thuclosed" <?php if(isset($businesshrs['thuclosed']) && $businesshrs['thuclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Friday</td>
+													<td><input type="text" id="fristart" name="fristart" class="span2 time" value="<?php if(isset($businesshrs['fristart'])) echo $businesshrs['fristart']; ?>"></td>
+													<td><input type="text" id="friend" name="friend" class="span2 time" value="<?php if(isset($businesshrs['friend'])) echo $businesshrs['friend']; ?>"></td>
+													<td><input type="checkbox" name="friclosed" id="friclosed" <?php if(isset($businesshrs['friclosed']) && $businesshrs['friclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Saturday</td>
+													<td><input type="text" id="satstart" name="satstart" class="span2 time" value="<?php if(isset($businesshrs['satstart'])) echo $businesshrs['satstart']; ?>"></td>
+													<td><input type="text" id="satend" name="satend" class="span2 time" value="<?php if(isset($businesshrs['satend'])) echo $businesshrs['satend']; ?>"></td>
+													<td><input type="checkbox" name="satclosed" id="satclosed" <?php if(isset($businesshrs['satclosed']) && $businesshrs['satclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Sunday</td>
+													<td><input type="text" id="sunstart" name="sunstart" class="span2 time" value="<?php if(isset($businesshrs['sunstart'])) echo $businesshrs['sunstart']; ?>"></td>
+													<td><input type="text" id="sunend" name="sunend" class="span2 time" value="<?php if(isset($businesshrs['sunend'])) echo $businesshrs['sunend']; ?>"></td>
+													<td><input type="checkbox" name="sunclosed" id="sunclosed" <?php if(isset($businesshrs['sunclosed']) && $businesshrs['sunclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>											
+											</table>
+				                          
+				                        </div>
+				                      </div>
+				                      
+				                      
+				                      
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">

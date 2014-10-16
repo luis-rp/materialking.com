@@ -175,7 +175,7 @@ class Message extends CI_Controller
         $this->email->to($settings['adminemail'], "Administrator");
         $this->email->from($c->primaryemail, $c->title); 
 			        
-	    $link = base_url().'message/messages/'.$key;
+	    $link = base_url().'admin/message/messages/'.$quote->id;
             
 	    $data['email_body_title']  = "Dear Administrator";
 	    $data['email_body_content'] = "

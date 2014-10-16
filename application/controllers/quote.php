@@ -721,10 +721,10 @@ class Quote extends CI_Controller
         	$this->db->where('itemid', $item->itemid);
         	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
 			
-        	if($itemtierresult)
-        	$item->notes = $itemtierresult->notes;
+        	if(@$itemtierresult)
+        	$item->noteslabel = $itemtierresult->notes;
         	else 
-        	$item->notes = "";
+        	$item->noteslabel = "";
 			
 			$data['quoteitems'][]=$item;
 		}
@@ -807,8 +807,8 @@ class Quote extends CI_Controller
     				}
     			}
     			
-				if(isset($tier))
-    			$tierlvl = $tier;
+				if(isset($tier->tier))
+    			$tierlvl = $tier->tier;
     			else 
     			$tierlvl = "";
     			

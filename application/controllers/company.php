@@ -333,6 +333,21 @@ class Company extends CI_Controller {
         $emails = $this->db->get('companyemail')->result();
         $data['company'] = $company;
         $data['emails'] = $emails;
+        
+        $bhrs = $this->db->get_where('company_business_hours',array('company'=>$company->id))->result();
+        if($bhrs){
+        $businesshrs = array();
+        foreach($bhrs as $dbh){
+        	
+        	$businesshrs[$dbh->day.'start'] = $dbh->start;
+        	$businesshrs[$dbh->day.'end'] = $dbh->end;
+        	$businesshrs[$dbh->day.'closed'] = $dbh->isclosed;
+        	
+        }
+        $data['businesshrs'] = $businesshrs;
+        
+        }
+        
         $this->load->view('company/profile', $data);
     }
     
@@ -587,6 +602,45 @@ class Company extends CI_Controller {
             }
         }
 
+        
+        $dayarray = array('mon','tue','wed','thu','fri','sat','sun');
+        
+        foreach($dayarray as $day){
+        	if(isset($_POST[$day."start"]) || isset($_POST[$day."end"]) || isset($_POST[$day."closed"]) ) {
+        		
+        		if(isset($_POST[$day."start"]))
+        		$start = $_POST[$day."start"];
+        		else 
+        		$start = '';
+        		
+        		if(isset($_POST[$day."end"]))
+        		$end = $_POST[$day."end"];
+        		else 
+        		$end = '';
+        		
+        		if(isset($_POST[$day."closed"]))
+        		$closed = 1;
+        		else 
+        		$closed = 0;        		
+        		
+        		$this->db->where('company =', $company->id);
+        		$this->db->where('day', $day);
+        		if ($this->db->get('company_business_hours')->num_rows > 0) {
+        			$this->db->where('company =', $company->id);
+        			$this->db->where('day', $day);
+        			$this->db->update('company_business_hours', array('start' => $start,'end' => $end,'isclosed' => $closed));
+        		}else{
+        			$this->db->insert('company_business_hours', array('company' => $company->id, 'day' => $day, 'start' => $start,'end' => $end,'isclosed' => $closed));
+        		}
+        	  if(isset($_POST[$day."start"]))	
+			  	unset($_POST[$day."start"]);
+			  if(isset($_POST[$day."end"]))	
+			  	unset($_POST[$day."end"]); 	
+			  if(isset($_POST[$day."closed"]))
+        		unset($_POST[$day."closed"]);
+        	}       	
+        }
+        
         unset($_POST['_wysihtml5_mode']);
         if(isset($_POST['checkid']))
         unset($_POST['checkid']);

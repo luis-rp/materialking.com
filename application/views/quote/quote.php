@@ -358,7 +358,7 @@ function displaypricemodal(){
 							    		'".htmlentities(@$q->companyitem->itemcode)."',
 							    		'".htmlentities(@$q->companyitem->itemname)."',
 							    		'".htmlentities(@$q->companyitem->ea)."',
-							    		'".htmlentities(@$q->orgitem->itemname)."'");?>)">
+							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			<i class="fa fa-edit"></i>
 							    		</a>
 							    		<?php //}?>
@@ -391,7 +391,7 @@ function displaypricemodal(){
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
-											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->notes)) echo $q->notes;?></label>
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
 							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/>
 							    		</td>
 							    		<td>	
