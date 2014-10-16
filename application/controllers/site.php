@@ -1038,10 +1038,11 @@ class site extends CI_Controller
         $items = $items->items;
         foreach ($items as $item)
         {
-            $query = "SELECT MIN(ea) minea, MAX(ea) maxea FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
+            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
             $minmax = $this->db->query($query)->row();
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
+            $item->price = $minmax->price;
             
             $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";            
         	$countofitems = $this->db->query($cquery)->row();
