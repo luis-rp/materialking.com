@@ -19,9 +19,9 @@
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.min.js'></script>
 <script type='text/javascript' src='<?php echo base_url(); ?>templates/classified/assets/js/gmap3.infobox.js'></script>
 
-<script type="text/javascript">
+ <script type="text/javascript">
 $.noConflict();
-</script> 
+ </script>
 
 <script type='text/javascript'>
 /* <![CDATA[ */
@@ -38,24 +38,24 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	}
 </style>
 <title><?php if(isset($a_title)) echo $a_title;?></title>
-<?php // echo $this->session->flashdata('message'); ?>
+<?php //echo $this->session->flashdata('message'); ?>
 	<section id="ad-page-title">
-        
+
         <div class="container">
 
-        	<div class="span9 first"> 
-        		<h2><?php echo $a_title;?></h2> 
+        	<div class="span9 first">
+        		<h2><?php if(isset($a_title)) echo $a_title;?></h2>
 
         	</div>
 
-        	<div class="span3"> <span class="ad-page-price"><h2>$ <?php  echo $a_price; ?></h2></span> </div>
+        	<div class="span3"> <span class="ad-page-price"><h2>$ <?php if(isset($a_price)) echo $a_price; ?></h2></span> </div>
 
         </div>
 
     </section>
 
     <section id="ad-page-header">
-        
+
         <div class="container">
 
         	<div class="span12">
@@ -67,17 +67,17 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 				</script>
 
 				<div class="flexslider">
-					
+
 					<ul class="slides">
-						<?php 
-						
+						<?php
+						if(isset($images))
 						foreach ($images as $img){
 
 						?>
 						<li><img class='flexslider-image' height="560" width="950" src="<?php echo base_url("uploads/ads/".$img); ?>"/></li>
 						<?php } ?>
 					</ul>
-							
+
 				</div>
 
         	</div>
@@ -96,7 +96,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					<?php if(!empty($a_latitude)) {?>
 						    	<div id="single-page-map">
 
-			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php echo $a_address; ?></span></div>
+			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php if(isset($a_address)) echo $a_address; ?></span></div>
 
 					<div id="single-page-main-map"></div>
 
@@ -121,7 +121,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 									,"scaleControl": true
 									,"streetViewControl": true
 									,"zoomControl": true
-									
+
 								}
 							}
 							,marker: {
@@ -132,7 +132,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 								?>
 
 										 	{
-										 	
+
 
 												latLng: [<?php echo $a_latitude; ?>,<?php echo $a_longitude; ?>],
 												options: {
@@ -140,8 +140,8 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 													shadow: "<?php echo base_url() ?>templates/classified/assets/images/shadow.png",
 												},
 												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
-											}	
-									
+											}
+
 								],
 								options:{
 									draggable: false
@@ -243,38 +243,38 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					<tr>
 						<td class="centered-ad-details" style="text-align: center;">
 							<span class="author-avatar">
-				    			<?php 
+				    			<?php
 
-				
+
 
 								if(!empty($c_logo)) {
 
-					
+
 
 									echo "<img class='author-avatar' src='" .base_url("uploads/logo/".$c_logo). "' alt='' />";
 
-								} else { 
+								} else {
 
 							?>
 
-								
+
 								<img class="author-avatar" src="<?php echo base_url("uploads/logo/noavatar.png"); ?>" alt="" />
 
 							<?php } ?>
 				    		</span>
-				    		
-				    		
-							<span class="ad-details-title"><h3><?php echo $c_title; ?></h3></span>
-							<span class="ad-detail-info"><span class="ad-details"><?php echo $c_address; ?></span></span>
-							<span class="ad-detail-info"><span class="ad-details"><?php echo $c_phone; ?></span></span>
-							<span class="ad-detail-info"><span class="ad-details"><a href="<?php echo site_url('site/suppliers/'.$c_title); ?>"><?php echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
-				    	
-			
 
-				    		
+
+							<span class="ad-details-title"><h3><?php if(isset($a_title)) echo $c_title; ?></h3></span>
+							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_address)) echo $c_address; ?></span></span>
+							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_phone)) echo $c_phone; ?></span></span>
+							<span class="ad-detail-info"><span class="ad-details"><a href="<?php if(isset($a_title)) echo site_url('site/suppliers/'.$c_title); ?>"><?php echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
+
+
+
+
 
 							<span class="ad-detail-info">
-								<span class="author-profile-ad-details"><a href="<?php echo base_url('site/supplier/'.$c_username); ?>" class="button-ag large green"><span class="button-inner"><i class="fa fa-user"></i>Author Profile</span></a></span>
+								<span class="author-profile-ad-details"><a href="<?php if(isset($c_username)) echo base_url('site/supplier/'.$c_username); ?>" class="button-ag large green"><span class="button-inner"><i class="fa fa-user"></i>Author Profile</span></a></span>
 							</span>
 
 						</td>
@@ -284,26 +284,26 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 							<span class="ad-detail-info">Category <span class="ad-detail">
 				    			<?php echo isset($catname) ? $catname : '';	?></span>
 							</span>
-				
+
 
 							<span class="ad-detail-info">Added <span class="ad-detail">
-						    	<?php echo $a_published; ?></span>
+						    	<?php if(isset($a_published)) echo $a_published; ?></span>
 							</span>
 
-							
+
 
 							<span class="ad-detail-info">Location <span class="ad-detail">
-						    	<?php echo $a_address; ?></span>
+						    	<?php if(isset($a_address)) echo $a_address; ?></span>
 							</span>
 
-							
+
 
 							<span class="ad-detail-info">Views <span class="ad-detail">
-				    			<?php echo $a_views; ?></span>
+				    			<?php if(isset($a_views)) echo $a_views; ?></span>
 							</span>
 
 
-							
+
 						</td>
 					</tr>
 				</table>
@@ -311,7 +311,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	    		<ul class="links">
 
 					<li class="service-links-pinterest-button">
-						<a href="//www.pinterest.com/pin/create/button/?url=<?php echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+						<a href="//www.pinterest.com/pin/create/button/?url=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
 						<script type="text/javascript" async src="//assets.pinterest.com/js/pinit.js"></script>
 					</li>
 
@@ -324,7 +324,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 							js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=247363645312964";
 							fjs.parentNode.insertBefore(js, fjs);
 							}(document, 'script', 'facebook-jssdk'));</script>
-						<div class="fb-share-button" data-href="<?php echo base_url("site/ad/".$a_id); ?>" data-type="button_count"></div>
+						<div class="fb-share-button" data-href="<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>" data-type="button_count"></div>
 					</li>
 
 					<li class="service-links-google-plus-one last">
@@ -342,24 +342,24 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					</li>
 
 					<li class="service-links-twitter-widget first">
-						<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1384205748.html#_=1384949257081&amp;count=horizontal&amp;counturl=<?php echo base_url("site/ad/".$a_id) ?>&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=<?php echo base_url("site/ad/".$a_id) ?>&amp;size=m&amp;text=<?php echo $a_title ?>&amp;url=<?php echo $a_title; ?>&amp;via=drupads" class="twitter-share-button service-links-twitter-widget twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 107px; height: 20px;"></iframe>
+						<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1384205748.html#_=1384949257081&amp;count=horizontal&amp;counturl=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id) ?>&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=<?php echo base_url("site/ad/".$a_id) ?>&amp;size=m&amp;text=<?php if(isset($a_title)) echo $a_title ?>&amp;url=<?php if(isset($a_title)) echo $a_title; ?>&amp;via=drupads" class="twitter-share-button service-links-twitter-widget twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 107px; height: 20px;"></iframe>
 					</li>
 				</ul>
 
 				<div class="ad-detail-content">
 
-	    			<?php echo $a_description;?>
+	    			<?php if(isset($a_description)) echo $a_description;?>
 
-	    			
+
 
 	    		</div>
 	    		<?php if(!empty($a_tags)){?>
 				<div class="ads-tags">
 
-					<i class="fa fa-tag"></i><span><?php 
+					<i class="fa fa-tag"></i><span><?php
 					$tags = explode(",",$a_tags);
 					foreach($tags as $tag){ $tag = trim($tag);?>
-						<a href="<?php echo site_url("site/tag/".str_replace('%2F', '|', urlencode($tag)));?>" rel="tag"><?php echo $tag;?></a>						
+						<a href="<?php echo site_url("site/tag/".str_replace('%2F', '|', urlencode($tag)));?>" rel="tag"><?php echo $tag;?></a>
 					<?php  } ?></span>
 
 				</div>
@@ -372,24 +372,24 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 						<div class="contact-ad-owner-arrow"></div>
 
-						<form name="contactForm" action="<?php echo base_url("site/sendrequest/".$c_id);?>" id="contact-form" method="post" class="contactform" >
-															
+						<form name="contactForm" action="<?php if(isset($c_id)) echo base_url("site/sendrequest/".$c_id);?>" id="contact-form" method="post" class="contactform" >
+
 							<input type="text" onfocus="if(this.value=='Name*')this.value='';" onblur="if(this.value=='')this.value='Name*';" name="contactName" id="contactName" value="Name*" class="input-textarea" />
-														 
+
 							<input type="text" onfocus="if(this.value=='Email*')this.value='';" onblur="if(this.value=='')this.value='Email*';" name="email" id="email" value="Email*" class="input-textarea" />
 
 							<input type="text" onfocus="if(this.value=='Subject*')this.value='';" onblur="if(this.value=='')this.value='Subject*';" name="subject" id="subject" value="Subject*" class="input-textarea" />
-														 
+
 							<textarea name="comments" id="commentsText" cols="8" rows="5" ></textarea>
-							<input type="hidden" name="hiddenad" id="hiddenad" value="<?php if(isset($a_id)) echo $a_id; ?>" />								
+							<input type="hidden" name="hiddenad" id="hiddenad" value="<?php if(isset($a_id)) echo $a_id; ?>" />
 							<br />
 
-																	
-							<input style="margin-bottom: 0;" name="submitted" type="submit" value="Send Message" class="input-submit"/>	
-														
+
+							<input style="margin-bottom: 0;" name="submitted" type="submit" value="Send Message" class="input-submit"/>
+
 						</form>
 
-						
+
 
 					</div>
 
@@ -403,22 +403,23 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 						<?php if(!empty($related)){?>
 	    						<?php $current = -1; foreach($related as $rel){   $current++;?>
 		    						<div class="span2 <?php if($current%4 == 0) { echo 'first'; } ?>">
-		    							
+
 		    							<span class="field-content">
 
 		    								<div class="ad-image-related">
 		    										<a href="<?php echo base_url("site/ad/".$rel['id']); ?>">
-		    										<?php 
+		    										<?php
 		    										$dis_img;
 		    					$image= explode("|",$rel['image']);
 									if(is_array($image))
 										$dis_img = $image[0];
-									else 
+									else
 										$dis_img = $image;?>
 		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>
+
 													</a>
 		    								</div>
-		    									
+
 		    								<div class="ad-description">
 		    									<span class="title">
 		    										<a href="<?php echo base_url("site/ad/".$rel['id']); ?>">
@@ -427,8 +428,8 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 		    									</span>
 		    									<span class="price"><?php echo $rel['price']?></span>
 		    								</div>
-		    								
-		    							</span> 
+
+		    							</span>
 
 		    						</div>
 								<?php } ?>
@@ -442,7 +443,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 	    		<div id="ad-comments">
 
-	    			
+
 
 	    		</div>
 
@@ -461,14 +462,14 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 		    					$image= explode("|",$pop['image']);
 									if(is_array($image))
 										$dis_img = $image[0];
-									else 
+									else
 										$dis_img = $image;
-		    					?> 
+		    					?>
                             <li class="widget-ad-list">
                             <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$dis_img);?>">
 						    		<span class="widget-ad-list-content">
 						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("site/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
-						    			
+
 										<span class="add-price"><?php echo $pop['price']; ?></span>
 						    		</span>
 								</li>
@@ -481,11 +482,10 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 	    	</div>
 	    	<!-- sidebar end -->
-	    	
-		
+
+
 
 	    </div>
 
     </section>
 
-  

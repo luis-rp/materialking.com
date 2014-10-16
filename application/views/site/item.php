@@ -595,7 +595,7 @@ $( document ).tooltip();
                                                     <h3 class="titlebox1">Featured Seller</h3>
                           <table class="span12">
                               <tr>
-                                  <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?> at $<?php echo $item->featureditem->ea;?></td>
+                                  <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?><?php if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }?></td>
                                  <td>
 
                                       <?php if($item->featureditem->price){?>

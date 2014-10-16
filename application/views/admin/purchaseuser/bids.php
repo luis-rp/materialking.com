@@ -201,7 +201,7 @@ function viewitems(quoteid)
 			      	{
 			      ?>
 			 
-			      	  <div style="color:red">*This company did not some items: <span class="btn btn-mini btn-red" onclick="$('#notbid<?php echo $bid->id;?>').modal();">Show</span></div>
+			      	  <div style="color:red">*This company did not bid some items: <span class="btn btn-mini btn-red" onclick="$('#notbid<?php echo $bid->id;?>').modal();">Show</span></div>
 			      	  
 					  <div id="notbid<?php echo $bid->id;?>" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 					  	<div class="modal-header">

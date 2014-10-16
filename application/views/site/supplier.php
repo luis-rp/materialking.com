@@ -16,6 +16,9 @@
 
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/jquery.bxslider.min.js"></script>
 		<link type="text/css" media="all" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.bxslider.css" />
+
+		<link type="text/css" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.fancybox.css?v=2.1.5" title="Featherlight Styles" />
+		<script src="<?php echo base_url();?>templates/admin/js/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" charset="utf-8"></script>
 		
 		<script type="text/javascript" language="javascript">
 			jQuery(function( $ ) {
@@ -38,6 +41,13 @@
 			});
 			});
 		</script>
+		
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".fancybox").fancybox();
+			});
+		</script>		
 		
 <?php
 /*
@@ -570,7 +580,7 @@ $( document ).tooltip();
                         <ul class="bxslider">
 						   <?php foreach($image as $items) { ?>
 						  <li>
-						  <a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" target="_blank">
+						  <a class="fancybox" rel="group" href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
 						  <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" /></a>
 						  </li>
 						  <?php } ?>
@@ -627,7 +637,7 @@ $( document ).tooltip();
     <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
   </tr>
   <tr>
-    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image"/></td>
+    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image" style="height:225px;width:190px;"/></td>
   </tr>
   <tr>
    <td style="word-wrap: break-word"><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
@@ -830,14 +840,16 @@ $( document ).tooltip();
                                                 <span class="key"><strong>Manufacturer:</strong></span>
                                                 <span class="value"><?php echo $inv->manufacturername; ?></span>
 
+                                                <?php if($inv->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value"><?php echo $inv->partnum ?></span>
+                                                <?php } ?>
                                                 
                                                  <span class="key"><strong>Stock:</strong></span>
                                                 <span class="value"><?php echo $inv->qtyavailable;?></span>
                                                 
                                                 <br/>
-                                                <span class="key"><strong>Availablibility:</strong></span>
+                                                <span class="key"><strong>Availability:</strong></span>
                                                 <span class="value"><?php echo $inv->instock?'Available':'Not Available';?></span>
                                                 
                                                 <span class="key"><strong>Min Order Qty:</strong></span>

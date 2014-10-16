@@ -308,7 +308,9 @@
                                                 <?php if($item->minprice && $item->maxprice){?>
                                                 <div class="price">
                                                 	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>"; ?>
-                                                	$<?php echo $item->minprice; ?> - $<?php echo $item->maxprice; ?> 
+                                                	<?php if($item->price){ echo ' "CALL "';} else { ?>
+                                                	$<?php echo $item->minprice; ?> - $<?php echo $item->maxprice; ?>
+                                                	<?php }?>
                                                 </div>
                                                 <?php }?>
                                                 <?php if($item->hasdeal){?>

@@ -103,8 +103,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 	//if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
                 ?>
 
-                <?php  if(isset($settingtour)) {
-					if($settingtour==1) { ?>
+                <?php  if(isset($pagetour)) {
+					if($pagetour==1) { ?>
 					
                 $(document).ready(function($){
 

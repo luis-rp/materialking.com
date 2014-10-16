@@ -23,9 +23,11 @@ class costcode extends CI_Controller {
 		$setting=$this->settings_model->getalldata($id);
 		if(empty($setting)){
 		$data['settingtour']=$setting;
+		$data['pagetour']=$setting;
 		$data['timezone']='America/Los_Angeles';
 		}else{
-		$data['timezone']=$setting[0]->tour;
+		$data['settingtour']=$setting[0]->tour;
+		$data['pagetour']=$setting[0]->pagetour;
 		$data['timezone']=$setting[0]->timezone;
 		}
         $this->load->model('admin/costcode_model');

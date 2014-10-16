@@ -18,9 +18,11 @@ class Settings extends CI_Controller
 		$setting=$this->settings_model->getalldata($id);
 		if(empty($setting)){
 		$data['settingtour']=$setting;
+		$data['pagetour']=$setting;
 		$data['timezone']='America/Los_Angeles';
 		}else{
-		$data['timezone']=$setting[0]->tour;
+		$data['settingtour']=$setting[0]->tour;
+		$data['pagetour']=$setting[0]->pagetour;
 		$data['timezone']=$setting[0]->timezone;
 		}
 		//$this->load->helper('timezone');
@@ -40,6 +42,7 @@ class Settings extends CI_Controller
 		$this->validation->pricedays = $data->pricedays;
 		$this->validation->pricepercent = $data->pricepercent;
 		$this->validation->tour = $data->tour;
+		$this->validation->pagetour = $data->pagetour;
 		$this->validation->timezone = $data->timezone;
 		$var ['action'] = site_url ('admin/settings/update');
 		$this->load->view ('admin/settings', $var);
@@ -53,6 +56,7 @@ class Settings extends CI_Controller
 		$fields ['pricedays'] = 'pricedays';
 		$fields ['pricepercent']= 'pricepercent';
 		$fields ['tour']= 'tour';
+		$fields ['pagetour']= 'pagetour';
 		$fields ['timezone']= 'timezone';
 		$this->validation->set_fields ($fields);
 	}
@@ -77,6 +81,12 @@ class Settings extends CI_Controller
 		{
 			$_POST['tour']=1;
 		}
+		
+		if(isset($_POST['pagetour']))
+		{
+			$_POST['pagetour']=1;
+		}
+		
 		$id = $this->input->post ('id');
 		if ($this->validation->run () == FALSE) 
 		{

@@ -337,8 +337,10 @@ $( document ).tooltip();
                                                 <span class="key"><strong>Manufacturer:</strong></span>
                                                 <span class="value"> <?php echo $item->manufacturername; ?></span>
 
+                                               <?php if($item->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value"><?php echo $item->partnum; ?></span>
+                                               <?php }?>
                                                 <br/><br/>
 
                                                 <a href="<?php echo site_url('site/item/'.$item->url);?>">View Item</a>
@@ -349,7 +351,7 @@ $( document ).tooltip();
                                                 <span class="pull-right1">
                                                 	<?php echo $item->instock?'Available':'Not Available';?>
                                                 	<br/>
-                                                	Stock: <?php echo $item->qtyavailable;?>
+                                                	Stock: <?php if($item->instock) { echo "Yes ";} echo $item->qtyavailable;?>
                                                 	<br/>
                                                 	Min. Order. Qty.: <?php echo $item->minqty;?>
                                                 </span>

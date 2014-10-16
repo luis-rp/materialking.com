@@ -804,10 +804,11 @@ class site extends CI_Controller
         $items = $items->items;
         foreach ($items as $item)
         {
-            $query = "SELECT MIN(ea) minea, MAX(ea) maxea FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
+            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
             $minmax = $this->db->query($query)->row();
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
+            $item->price = $minmax->price;
             
             $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
             $countofitems = $this->db->query($cquery)->row();
@@ -2073,10 +2074,13 @@ class site extends CI_Controller
     	 
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a, ".$this->db->dbprefix('category')." cat WHERE a.id=".$id." AND a.user_id=c.id AND a.category = cat.id ";
     	$data = $this->db->query($sql)->row_array();
-    	$view = $data['a_views']+1;
+    	if(isset($data["a_views"])){
+    	$view = $data['a_views']+1;}
+    	if(isset($data["a_image"])){
     	$images = explode("|",$data["a_image"]);
     	foreach($images as $image){
     		$data['images'][]=$image;
+    	}
     	}
     	$data['featured_image'] = $data['images'][0];
     	

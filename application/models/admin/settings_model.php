@@ -79,6 +79,7 @@ class settings_model extends Model
           	'pricedays'=>$this->input->post('pricedays'),
           	'pricepercent'=>$this->input->post('pricepercent'),
           	'tour'=>$this->input->post('tour'),
+          	'pagetour'=>$this->input->post('pagetour'),
           	'timezone'=>$this->input->post('timezone')
 		);
 		
