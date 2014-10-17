@@ -631,8 +631,8 @@ $( document ).tooltip();
                             	<?php }?>
                             	
                             	<td style="position:relative;">
-                                
-                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+                             <!--    <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
   </tr>
@@ -641,8 +641,15 @@ $( document ).tooltip();
   </tr>
   <tr>
    <td style="word-wrap: break-word"><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
-  </tr>
-</table>
+  </tr> -->
+  
+  <div>
+  <div style="height:40px;width:200px;"><h1 style="overflow:auto;"><?php echo $member->name;?>&nbsp;<?php echo $member->title;?></h1></div>
+  <div style="height:180px;width:200px;overflow:hidden;"><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image"/></div>
+  <div style="height:40px;width:200px;"><h2 style="overflow:auto;"><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></div>
+  </div>
+  
+<!-- </table> -->
 </td>
                             	
                             	
