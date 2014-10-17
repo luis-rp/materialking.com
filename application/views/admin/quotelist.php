@@ -1,7 +1,9 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
 <?php if(isset($jsfile)) include $this->config->config['base_dir'].'templates/admin/gridfeed/'.$jsfile;?>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <?php echo '<script type="text/javascript">var permissionurl = "'.site_url('admin/purchaseuser/quotepermissions/').'";</script>';?>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+<script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jRating.jquery.js"></script>
 
 	<style type="text/css">
 		.box { padding-bottom: 0; }
@@ -17,7 +19,7 @@
 	</style>
 	
 <script type="text/javascript">
-<!--
+
 $(document).ready(function(){
 	$('.datefield').datepicker();
 });
@@ -111,6 +113,32 @@ function quotepermission(quote, ponum)
 	});
 	
 }
+
+
+$(document).ready(function(){
+	//alert("fdf");
+	setTimeout(function() {
+		$('.fixedrating').jRating({
+			length:5,
+			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
+			nbRates : 3,
+			isDisabled:false,
+			sendRequest: true,
+			canRateAgain : true,
+			decimalLength:1,
+			onClick : function(element,rate) {
+				alert('New Rating Saved');
+			},
+			onError : function(){
+				alert('Error : please retry');
+			},
+			onSuccess : function(response){
+				
+			}
+		});
+	},500);
+});
+
 </script>	
 	
 <section class="row-fluid">

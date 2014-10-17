@@ -513,6 +513,9 @@ class site extends CI_Controller
             if(!$initem->itemname)
             	$initem->itemname = $orgitem->itemname;
             
+            if(!$initem->itemcode)
+            	$initem->itemcode = $orgitem->itemcode;		
+            	
             if(!$initem->image)
             	$initem->image = $orgitem->item_img;
             
@@ -609,7 +612,7 @@ class site extends CI_Controller
                 $di->url = $orgitem->url;
                 if(!$di->image)
                 $di->image = $orgitem->item_img;
-                $di->itemcode = @$cmpitem->itemcode?$cmpitem->itemcode:'';
+                $di->itemcode = @$cmpitem->itemcode?$cmpitem->itemcode:$orgitem->itemcode;
                 if($di->memberonly)
                 {
                     if($this->session->userdata('site_loggedin'))
@@ -2076,14 +2079,20 @@ class site extends CI_Controller
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a, ".$this->db->dbprefix('category')." cat WHERE a.id=".$id." AND a.user_id=c.id AND a.category = cat.id ";
     	$data = $this->db->query($sql)->row_array();
     	if(isset($data["a_views"])){
-    	$view = $data['a_views']+1;}
+    	$view = $data['a_views']+1;
+    	}else 
+    	$view = 0;    	
     	if(isset($data["a_image"])){
     	$images = explode("|",$data["a_image"]);
     	foreach($images as $image){
     		$data['images'][]=$image;
     	}
     	}
+    	
+    	if(isset($data['images'][0]))
     	$data['featured_image'] = $data['images'][0];
+    	else 
+    	$data['featured_image'] = '';
     	
     	$sql_rel =  "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
     	$data['related'] = $this->db->query($sql_rel)->result_array();

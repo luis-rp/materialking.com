@@ -261,6 +261,15 @@ $( document ).tooltip();
 });
 </script>
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=899376703411658&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
 	<input type="hidden" id="typei" name="typei"/>
 </form>
@@ -439,6 +448,57 @@ $( document ).tooltip();
 
                         </div>
                     </div>
+                    
+                    
+                                     <?php if(@$businesshrs){ ?>                 
+                    <div class="widget contact">
+                    <div class="title">
+                            <h2 align="center" class="block-title"><img style="height:20px;" src="<?php echo base_url(); ?>uploads/logo/time.png"/>&nbsp;Business Hours</h2>
+                        </div>
+                    <div class="content_sup">
+                                
+                    <table border="1" cellpadding="7">
+				   <?php $todayhtml=''; $bhtml=''; foreach($businesshrs as $bhrs) { 
+				   	$bhrs->day = ucfirst($bhrs->day);
+				   	$bhtml.='<tr><td>'.$bhrs->day.'</td>';
+				   	if(date('D') == $bhrs->day)
+				   	$todayhtml.='<tr><td>Today</td>';
+				   	if($bhrs->isclosed==1){
+				   		$bhtml.='<td colspan="2">closed</td>';
+				   		if(date('D') == $bhrs->day)
+				   		$todayhtml.='<td colspan="2">closed</td>';
+				   	}else{
+				   		$bhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
+				   		if(date('D') == $bhrs->day)
+				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
+				   	}
+				   	if(date('D') == $bhrs->day)	{				   		
+				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
+				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
+				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
+				   		if ($date1 > $date2 && $date1 < $date3)
+				   		{
+				   			$bhtml.='<td>Open Now</td></tr>';				   			
+				   			$todayhtml.='<td>Open Now</td></tr>';
+				   		}else {
+				   			$bhtml.='<td>Closed Now</td></tr>';				   			
+				   			$todayhtml.='<td>Closed Now</td></tr>';
+				   		}
+
+				   	}else {
+				   		$bhtml.='<td>&nbsp;</td></tr>';
+				   	}
+				   }
+				   $todayhtml.='</tr>';
+				   echo $todayhtml.''.$bhtml;
+					 ?>
+					 </table>
+                                  
+                        </div>
+                    </div>                
+                 <?php }?>
+                 
+                    
                   <?php if(isset($inventory) && count($inventory)>0) {?>
                     <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
                     	?>
@@ -602,6 +662,14 @@ $( document ).tooltip();
                         </div>
                     </div>
                     <?php }?>
+                    
+                    
+               <div class="sidebar span3">
+               <div class="widget contact">
+               <div class="fb-like-box" data-href="<?php if(isset($company->fbpageurl)) echo $company->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
+               </div></div>
+                    
+               
                 </div>
 </div><!--pullright-->
 

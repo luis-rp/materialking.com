@@ -427,8 +427,8 @@ function addEmail()
 												<tr>
 													<td>Monday</td>
 													<td><input type="text" id="monstart" name="monstart" class="span2 time" value="<?php if(isset($businesshrs['monstart'])) echo $businesshrs['monstart']; ?>">&nbsp;(eg: 06:00 am)</td>
-													<td><input type="text" id="monend" name="monend" class="span2 time" value="<?php if(isset($businesshrs['monend']) && $businesshrs['monclosed']==1) echo $businesshrs['monend']; ?>">&nbsp;(eg: 05:00 pm)</td>
-													<td><input type="checkbox" name="monclosed" id="monclosed" <?php if(isset($businesshrs['monclosed'])) echo 'checked = "checked"';?> /></td>			
+													<td><input type="text" id="monend" name="monend" class="span2 time" value="<?php if(isset($businesshrs['monend'])) echo $businesshrs['monend']; ?>">&nbsp;(eg: 05:00 pm)</td>
+													<td><input type="checkbox" name="monclosed" id="monclosed" <?php if(isset($businesshrs['monclosed']) && $businesshrs['monclosed']==1) echo 'checked = "checked"';?> /></td>			
 												</tr>	
 												<tr>
 													<td>Tuesday</td>

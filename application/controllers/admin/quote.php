@@ -116,7 +116,23 @@ class quote extends CI_Controller
         $this->load->library('table');
         $this->table->set_empty("&nbsp;");
         $this->table->set_heading('ID', 'Name', 'Actions');
-
+		// Save rating into award table
+		if(isset($_POST['idBox'])){
+			$pricerank = "";
+			if($_POST['rate'] <=1.4)
+			$pricerank = 'poor';
+			if($_POST['rate'] >=1.5 && $_POST['rate'] <=2.4)
+			$pricerank = 'fair';
+			if($_POST['rate'] >=2.5 && $_POST['rate'] <=3.4)
+			$pricerank = 'good';
+			if($_POST['rate'] >=3.5 && $_POST['rate'] <=5)
+			$pricerank = 'great';
+			$updatearray = array();
+			$updatearray['pricerank'] = $pricerank;
+			$this->quote_model->db->where('quote', $_POST['idBox']);
+			$this->quote_model->db->update('award', $updatearray);
+		}        
+        
         $data['counts'] = count($quotes);
 
         $count = count($quotes);
@@ -158,9 +174,18 @@ class quote extends CI_Controller
                     */
                     if($quote->awardedbid->pricerank)
                     {
-	                    $quote->pricerank = $quote->awardedbid->pricerank;
-	                    $quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
-                	}
+                    	if ($quote->awardedbid->pricerank == 'great')
+                    	$quote->pricerank = 4;
+                    	elseif ($quote->awardedbid->pricerank == 'good')
+                    	$quote->pricerank = 3;
+                    	elseif ($quote->awardedbid->pricerank == 'fair')
+                    	$quote->pricerank = 2;
+                    	else
+                    	$quote->pricerank = 1;
+                    	
+	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
+	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
+                	}    
                 }
                 //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
                 $quote->podate = $quote->podate ? $quote->podate : '';
@@ -332,7 +357,7 @@ class quote extends CI_Controller
                     }
                     $item->quantity = $ai->quantity;
                     $item->received = $ai->received;
-
+					$item->ea = $ai->ea;
                 }
             }
             //$avgprice = $this->itemcode_model->getdaysmeanprice($item->itemcode);
