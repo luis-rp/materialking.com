@@ -845,8 +845,10 @@ $( document ).tooltip();
                                                 <span class="value"><?php echo $inv->partnum ?></span>
                                                 <?php } ?>
                                                 
-                                                 <span class="key"><strong>Stock:</strong></span>
-                                                <span class="value"><?php echo $inv->qtyavailable;?></span>
+                                                <?php if($inv->qtyavailable) { ?>
+										        <span class="key"><strong>Stock:</strong></span>
+										        <span class="value"><?php echo $inv->qtyavailable;?></span>
+										        <?php } ?>
                                                 
                                                 <br/>
                                                 <span class="key"><strong>Availability:</strong></span>
@@ -1087,7 +1089,7 @@ $( document ).tooltip();
                  <?php }?>
                 
                 
-                <?php if(@$dealfeed){?>
+                <?php /* if(@$dealfeed){?>
                  <div class="sidebar span3">
                     <div class="widget contact">
                         <div class="title">
@@ -1140,7 +1142,7 @@ $( document ).tooltip();
                         </div>
                     </div>
                  </div>
-                 <?php }?>
+                 <?php }*/?>
 
                  <?php if(@$similarsuppliers){?>
                  <div class="sidebar span3">

@@ -48,7 +48,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
         	</div>
 
-        	<div class="span3"> <span class="ad-page-price"><h2>$ <?php if(isset($a_price)) echo $a_price; ?></h2></span> </div>
+        	<div class="span3"> <span class="ad-page-price"><h2> <?php if(isset($a_price)) echo "$".$a_price; ?></h2></span> </div>
 
         </div>
 
@@ -264,10 +264,11 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 				    		</span>
 
 
-							<span class="ad-details-title"><h3><?php if(isset($a_title)) echo $c_title; ?></h3></span>
+							<span class="ad-details-title"><h3><?php if(isset($c_title)) echo $c_title; ?></h3></span>
 							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_address)) echo $c_address; ?></span></span>
 							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_phone)) echo $c_phone; ?></span></span>
-							<span class="ad-detail-info"><span class="ad-details"><a href="<?php if(isset($a_title)) echo site_url('site/suppliers/'.$c_title); ?>"><?php echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
+							<span class="ad-detail-info"><span class="ad-details"><a href="<?php if(isset($c_title)) echo site_url('site/suppliers/'.$c_title); ?>"><?php if(isset($c_title)) echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
+
 
 
 
@@ -311,7 +312,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	    		<ul class="links">
 
 					<li class="service-links-pinterest-button">
-						<a href="//www.pinterest.com/pin/create/button/?url=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+						<a href="//www.pinterest.com/pin/create/button/?url=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php if(isset($a_title)) echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
 						<script type="text/javascript" async src="//assets.pinterest.com/js/pinit.js"></script>
 					</li>
 
