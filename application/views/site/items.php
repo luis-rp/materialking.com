@@ -245,12 +245,36 @@
                                 $item->url = urlencode($item->url);
                                 ?>
                                 <div class="property span9 ">
-                                <?php $count=strlen($item->itemcode);
-                               if($count<=20){
+                                                                <?php $count=strlen($item->itemcode);
+                                     if($count<=20){
                                  ?>
-                                  <h2 class="title_top1"  style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                  <h2 class="title_top1"  style="word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>">
+                                  <?php //echo $item->itemcode;
+                                  $arr1="";
+                                  $str="";
+                                    $arr1 = str_split($item->itemcode);
+                                      for($i = 0; $i < count($arr1);$i++)
+                                        {
+										 if ($arr1[$i] == '1' || $arr1[$i] == '2' || $arr1[$i] == '3'  || $arr1[$i] == '4'  || $arr1[$i] == '5'  || $arr1[$i] == '6'  || $arr1[$i] == '7'  || $arr1[$i] == '8'  || $arr1[$i] == '9'  || $arr1[$i] == '0' || $arr1[$i] == '/' || $arr1[$i] == '-'){
+										      $arr1[$i] = "<span style='color:red;'>".$arr1[$i]."</span>";
+										}}
+										$str=implode("",$arr1);
+                                        echo $str;
+                                  ?></a></h2>
                                    <?php } else {?>
-                                <h2 class="title_top1"  style="word-wrap:break-word;line-height:20px;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php echo $item->itemcode; ?></a></h2>
+                                <h2 class="title_top1"  style="word-wrap:break-word;line-height:20px;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php //echo $item->itemcode;
+
+								$arr1="";
+                                  $str="";
+                                    $arr1 = str_split($item->itemcode);
+                                      for($i = 0; $i < count($arr1);$i++)
+                                        {
+										 if ($arr1[$i] == '1' || $arr1[$i] == '2' || $arr1[$i] == '3'  || $arr1[$i] == '4'  || $arr1[$i] == '5'  || $arr1[$i] == '6'  || $arr1[$i] == '7'  || $arr1[$i] == '8'  || $arr1[$i] == '9'  || $arr1[$i] == '0' || $arr1[$i] == '/' || $arr1[$i] == '-'){
+										      $arr1[$i] = "<span style='color:red;'>".$arr1[$i]."</span>";
+										}}
+										$str=implode("",$arr1);
+                                        echo $str;
+                                   ?></a></h2>
                                    <?php } ?>
                                    <div class="row">
                                         <div class="image span3">
@@ -281,7 +305,19 @@
                                                     </p>
                                                     <div class="area">
                                                         <span class="key"><strong>Item Name:</strong></span>
-                                                        <span class="value"> <?php echo $item->itemname; ?></span>
+                                                         <span class="value">
+                                                         <?php //echo $item->itemname;
+                                                         $arr2="";
+                                                         $str2="";
+                                                         $arr2 = str_split($item->itemname);
+                                      						for($i = 0; $i < count($arr2);$i++)
+                                        						{
+										 						if ($arr2[$i] == '1' || $arr2[$i] == '2' || $arr2[$i] == '3'  || $arr2[$i] == '4'  || $arr2[$i] == '5'  || $arr2[$i] == '6'  || $arr2[$i] == '7'  || $arr2[$i] == '8'  || $arr2[$i] == '9'  || $arr2[$i] == '0' || $arr2[$i] == '/' || $arr2[$i] == '-'){
+										      					$arr2[$i] = "<span style='color:red;'>".$arr2[$i]."</span>";
+																}}
+																$str2=implode("",$arr2);
+                                        						echo $str2;                                                                                                                                                   ?>
+                                                         </span>
 
                                                         <span class="key"><strong>Unit:</strong></span>
                                                         <span class="value"><?php echo $item->unit; ?></span>

@@ -312,7 +312,33 @@ $( document ).tooltip();
 
                         <?php foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
-                        <h2 class="title_top1"><?php echo $item->itemcode; ?></h2>
+                        <?php $count=strlen($item->itemcode); if($count<=20){ ?>
+                        <h2 class="title_top1">
+                        <?php //echo $item->itemcode;
+                          $arr1="";
+                          $str="";
+                          $arr1 = str_split($item->itemcode);
+                             for($i = 0; $i < count($arr1);$i++){
+							     if ($arr1[$i] == '1' || $arr1[$i] == '2' || $arr1[$i] == '3'  || $arr1[$i] == '4'  || $arr1[$i] == '5'  || $arr1[$i] == '6'  || $arr1[$i] == '7'  || $arr1[$i] == '8'  || $arr1[$i] == '9'  || $arr1[$i] == '0' || $arr1[$i] == '/' || $arr1[$i] == '-'){
+								    $arr1[$i] = "<span style='color:red;'>".$arr1[$i]."</span>";}}
+								    $str=implode("",$arr1);
+                                    echo $str; ?>
+                         </h2>
+                        <?php } else {?>
+                         <h2 class="title_top1"  style="word-wrap:break-word;line-height:20px;">
+                         <?php //echo $item->itemcode;
+								$arr1="";
+                                  $str="";
+                                    $arr1 = str_split($item->itemcode);
+                                      for($i = 0; $i < count($arr1);$i++)
+                                        {
+										 if ($arr1[$i] == '1' || $arr1[$i] == '2' || $arr1[$i] == '3'  || $arr1[$i] == '4'  || $arr1[$i] == '5'  || $arr1[$i] == '6'  || $arr1[$i] == '7'  || $arr1[$i] == '8'  || $arr1[$i] == '9'  || $arr1[$i] == '0' || $arr1[$i] == '/' || $arr1[$i] == '-'){
+										      $arr1[$i] = "<span style='color:red;'>".$arr1[$i]."</span>";
+										}}
+										$str=implode("",$arr1);
+                                        echo $str;
+                        ?></h2>
+                         <?php } ?>
                             <div class="row">
                                 <div class="image span3">
                                     <div class="content">
@@ -336,7 +362,18 @@ $( document ).tooltip();
                                             <?php } ?>
                                             <div class="area">
                                                 <span class="key"><strong>Item Name:</strong></span>
-                                                <span class="value"> <?php echo $item->itemname; ?></span>
+                                                <span class="value"> <?php // echo $item->itemname;
+                        						$arr2="";
+                                                $str2="";
+                                                $arr2 = str_split($item->itemname);
+                                      			for($i = 0; $i < count($arr2);$i++)
+                                        		{
+												if ($arr2[$i] == '1' || $arr2[$i] == '2' || $arr2[$i] == '3'  || $arr2[$i] == '4'  || $arr2[$i] == '5'  || $arr2[$i] == '6'  || $arr2[$i] == '7'  || $arr2[$i] == '8'  || $arr2[$i] == '9'  || $arr2[$i] == '0' || $arr2[$i] == '/' || $arr2[$i] == '-'){
+										      	$arr2[$i] = "<span style='color:red;'>".$arr2[$i]."</span>";
+												}}
+												$str2=implode("",$arr2);
+                                        		echo $str2;
+												?></span>
 
                                                 <span class="key"><strong>Unit:</strong></span>
                                                 <span class="value"><?php echo $item->unit; ?></span>
