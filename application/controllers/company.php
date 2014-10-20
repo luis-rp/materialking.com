@@ -1011,10 +1011,13 @@ class Company extends CI_Controller {
         if(!@$_POST['itemid'])
             die;    
             
+        if(!@$_POST['quote'])
+            die;                   
             
         $this->db->where('company', $company->id);
         $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         $this->db->where('itemid', $_POST['itemid']);
+        $this->db->where('quote', $_POST['quote']);
         if($this->db->get('purchasingtier_item')->row())
         {
         	if(isset($_POST['tier']))
@@ -1023,9 +1026,15 @@ class Company extends CI_Controller {
             if(isset($_POST['notes']))
             $update['notes'] = $_POST['notes'];
             
+            if(isset($_POST['qty']))
+            $update['qty'] = $_POST['qty'];
+            else 
+            $update['qty'] = 0;
+            
             $this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         	$this->db->where('itemid', $_POST['itemid']);
+        	$this->db->where('quote', $_POST['quote']);
             $this->db->update('purchasingtier_item', $update);  
             echo "Item price Changed";
         }
@@ -1036,8 +1045,15 @@ class Company extends CI_Controller {
             $insert['tier'] = $_POST['tier'];
             if(isset($_POST['notes']))
             $insert['notes'] = $_POST['notes'];
+            
+            if(isset($_POST['qty']))
+            $insert['qty'] = $_POST['qty'];
+            else 
+            $update['qty'] = 0;
+            
             $insert['company'] = $company->id;
             $insert['itemid'] = $_POST['itemid'];
+            $insert['quote'] = $_POST['quote'];
             $insert['purchasingadmin'] = $_POST['purchasingadmin'];
             $this->db->insert('purchasingtier_item', $insert);
             echo "Item price Set";

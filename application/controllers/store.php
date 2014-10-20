@@ -193,7 +193,11 @@ class Store extends CI_Controller
         	 
         }
         $this->data['adforsupplier']=$ads;
-         $this->data['page_title'] = $this->data["company"]->title." Online Store";
+        $this->data['page_title'] = $this->data["company"]->title." Online Store";
+        
+        $bhrs = $this->db->get_where('company_business_hours',array('company'=>$id))->result();      
+        $this->data['businesshrs'] = $bhrs;
+         
         $this->load->view('store/items', $this->data);
 	}
 }

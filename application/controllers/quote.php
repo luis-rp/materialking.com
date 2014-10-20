@@ -701,8 +701,43 @@ class Quote extends CI_Controller
 				$item->showinventorylink = true;
 			}
 			$price = $item->ea;
-			if(!$draftitems)
+			
+			$sql1 = "select tier,qty from " . $this->db->dbprefix('purchasingtier_item') . "
+				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
+			$tier1 = $this->db->query($sql1)->row();
+			if($tier1)
+			{
+				if($tier1->qty){
+					$this->db->where('company',$company->id);
+					$this->db->where('itemid',$item->itemid);
+					$this->db->where('qty',$tier1->qty);
+					$qtyresult = $this->db->get('qtydiscount')->row();
+					$item->ea = $qtyresult->price;
+				}
+				
+				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$item->itemid."' AND company='" . $company->id . "' AND type = 'Supplier'";
+
+				$istierprice = $this->db->query($sqltier)->row();
+				if($istierprice){
+					$istier = $istierprice->tierprice;
+				}else
+				$istier = 0;
+				
+				if($istier){
+					$tier = $tier1->tier;
+					$sql = "SELECT *
+				FROM ".$this->db->dbprefix('tierpricing')." pt 
+				WHERE pt.company='".$company->id."'
+			";
+					$tiers = $this->db->query($sql)->row();
+					$tier = $tiers->$tier;
+				}
+			}
+			
+			if(!$draftitems){
 			    $item->ea = number_format($item->ea + ($item->ea * $tier/100),2);
+			}
 			
 			$item->totalprice = $item->ea * $item->quantity;
 			$item->tiers = array();
@@ -719,6 +754,7 @@ class Quote extends CI_Controller
 			$this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $quote->purchasingadmin);
         	$this->db->where('itemid', $item->itemid);
+        	$this->db->where('quote', $quote->id);
         	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
 			
         	if(@$itemtierresult)
@@ -771,7 +807,7 @@ class Quote extends CI_Controller
     			if(isset($purchasingadmin)){
     				
     				$sql1 = "select tier from " . $this->db->dbprefix('purchasingtier_item') . "
-				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "' AND itemid='" . $_POST['itemid'] . "' ";
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "' AND itemid='" . $_POST['itemid'] . "' AND quote = '".$_POST['quote']."'";
     				
     				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
@@ -809,8 +845,10 @@ class Quote extends CI_Controller
     			
 				if(isset($tier->tier))
     			$tierlvl = $tier->tier;
+    			elseif(isset($tier1->tier))
+    			$tierlvl = $tier1->tier;
     			else 
-    			$tierlvl = "";
+    			$tierlvl = 'tier0';
     			
 				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\", \"{$notes}\",\"{$tierlvl}\")' value='Select' data-dismiss='modal'>";
     			$strput .= '<tr >

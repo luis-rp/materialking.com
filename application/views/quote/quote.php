@@ -128,9 +128,10 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	{
 		url = changeitemtierurl;
 		var notes = '*Given '+tierlevel+' price';
+		var quote = $("#hiddenquoteid").val();
 		$.ajax({
 		      type:"post",
-		      data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes,
+		      data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes+'&quote='+quote,
 		      url: url
 		    }).done(function(data){
 			    alert(data);
@@ -142,7 +143,7 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	}
 }
 
-function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel)
+function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel, quote)
 {
 	$("#pricelist").modal();
 	$("#itemnamebox").html('');
@@ -180,6 +181,7 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
     $("#hiddenpurchaser").val(purchasingadmin);
     $("#itemnamebox").html(itemcode+"  /  "+itemname);
     $("#hiddennotesid").val(notelabel);   
+    $("#hiddenquoteid").val(quote); 
 }
 
 
@@ -213,9 +215,10 @@ function showqtydiscount(companyid){
  var quantityid = $("#hiddenquantityid").val();
  var priceid = $("#hiddenpriceid").val();
  var purchaser = $("#hiddenpurchaser").val();
+ var quote = $("#hiddenquoteid").val();
  
- var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid+"&purchaser="+purchaser;
-
+ var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid+"&purchaser="+purchaser+"&quote="+quote;
+ 
  $("#qtypricebox").html("");
  $.ajax({
  type:"post",
@@ -241,9 +244,11 @@ function selectquantity(qty, quant, price, priceid,notes,tierlevel)
  url = changeitemtierurl;
  var itemid = $("#hiddenitemid").val();
  var purchasingadmin = $("#hiddenpurchaser").val();
+ var quote = $("#hiddenquoteid").val();
+ 
  $.ajax({
  	type:"post",
- 	data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes,
+ 	data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes+'&quote='+quote+'&qty='+qty,
  	url: url
  }).done(function(data){
  	alert(data);
@@ -387,7 +392,7 @@ function displaypricemodal(){
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
 							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>');">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>')">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -497,6 +502,7 @@ function displaypricemodal(){
 							    	<input type="hidden" name="hiddenpriceid" id="hiddenpriceid" />
 							    	<input type="hidden" name="hiddenpurchaser" id="hiddenpurchaser" />
 							    	<input type="hidden" name="hiddennotesid" id="hiddennotesid" />
+							    	<input type="hidden" name="hiddenquoteid" id="hiddenquoteid" />
 							    	
 							    	</form>
 							    	</tbody>

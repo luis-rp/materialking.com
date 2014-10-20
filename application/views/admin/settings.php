@@ -39,7 +39,7 @@
     </div>
     
       <div class="control-group">
-    <label class="control-label">Enable Welcome Tour</label>
+    <label class="control-label">Enable Page Tour</label>
     <div class="controls">
      <?php  $is_checked = ($this->validation->tour) ? $this->validation->tour : $this->input->post('tour');
                 $tour = array('id' => 'tour','checked' => ($is_checked == '1') ? true : false,'name' => 'tour','value' => $is_checked,);?>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="control-group">
-    <label class="control-label">Enable Page Tour</label>
+    <label class="control-label">Enable Welcome Tour</label>
     <div class="controls">
      <?php  $is_checked = ($this->validation->pagetour) ? $this->validation->pagetour : $this->input->post('pagetour');
                 $pagetour = array('id' => 'pagetour','checked' => ($is_checked == '1') ? true : false,'name' => 'pagetour','value' => $is_checked,);?>

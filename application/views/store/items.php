@@ -472,7 +472,8 @@ $( document ).tooltip();
 				   		if(date('D') == $bhrs->day)
 				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
 				   	}
-				   	if(date('D') == $bhrs->day)	{				   		
+				   	if(date('D') == $bhrs->day)	{		
+				   		$current_time = date('H:i a');		   		
 				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
 				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
 				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);

@@ -1918,7 +1918,7 @@ class site extends CI_Controller
         public function classified()
     {    	
     	$data['a_title'] = "Classified area";
-    	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." GROUP BY category)";
+    	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
     	$res = array();
     	foreach($categories as $cat){
@@ -1981,7 +1981,8 @@ class site extends CI_Controller
     	}else
     	$where .= "AND category = {$catid}";
     	
-    	$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}"; 
+    	//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}";
+    	$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id WHERE 1=1 {$where}";
     	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
     	
     	$data['ads'] = $res;
@@ -2041,7 +2042,8 @@ class site extends CI_Controller
     	$where .= " AND itemid = {$_POST['items']}";    	
     	  	
     	foreach($categories as $cat){
-    		$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id']; 
+    		//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id'];
+    		$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id where a.category=".$cat['id']."";
     		$result = $this->db->query($sql_ad)->result_array();
     		if($result)
     		$res[$cat['catname']] = $result;
@@ -2097,7 +2099,8 @@ class site extends CI_Controller
     	$sql_rel =  "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
     	$data['related'] = $this->db->query($sql_rel)->result_array();
     	
-    	$sql_popular = "SELECT * FROM ".$this->db->dbprefix('ads')." ORDER BY views ASC LIMIT 3";
+    	//$sql_popular = "SELECT * FROM ".$this->db->dbprefix('ads')." ORDER BY views ASC LIMIT 3";
+    	$sql_popular = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id ORDER BY views ASC LIMIT 3";
     	$data['popular'] = $this->db->query($sql_popular)->result_array();
     	
     	$this->db->where('id', $id);
