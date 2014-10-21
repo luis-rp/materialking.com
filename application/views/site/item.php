@@ -493,8 +493,9 @@ $( document ).tooltip();
                                     <div class="clearfix">
                                         <div id="imagelist" <?php if($filetype=='video') { ?> style="display:none;" <?php } ?> class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
-                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo site_url('uploads/item/' . $item->images[0]->filename) ?>" data-zoom-image1="<?php echo site_url('uploads/item/' . $item->images[0]->filename); ?>"  style="border: 4px solid #666;with:250px;height:250px">
+                                                <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo (@$item->images[0]->filename && file_exists("./uploads/item/".$item->images[0]->filename))?site_url('uploads/item/' . $item->images[0]->filename):site_url('uploads/item/big.png'); ?>" data-zoom-image1="<?php echo (@$item->images[0]->filename && file_exists("./uploads/item/".$item->images[0]->filename)) ?site_url('uploads/item/' . $item->images[0]->filename):site_url('uploads/item/big.png'); ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
+
                                     	
                                         </div>
                                         <div  id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
@@ -512,7 +513,7 @@ $( document ).tooltip();
                                     		<?php if (isset($img->is_video) && $img->is_video ==1 ) { ?>
                                     		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo $img->filename ?>', 'video');">                             <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/videologo.jpg') ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>         		
                                     		<?php } else { ?>
-                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>', 'image');"> <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/thumbs/' . $img->filename) ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>       <?php } ?> 
+                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>', 'image');"> <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo (@site_url('uploads/item/thumbs/' . $img->filename) && file_exists("./uploads/item/thumbs/".$img->filename))?site_url('uploads/item/thumbs/' . $img->filename):site_url('uploads/item/thumbs/big.png'); ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>       <?php } ?> 
                                     		
                                     		</li>
                                     		<?php }?>
