@@ -1075,7 +1075,7 @@ $( document ).tooltip();
 				   			$bhtml.='<td>&nbsp;</td></tr>';
 				   			$todayhtml.='<td>&nbsp;</td></tr>';
 				   		}else {
-				   			if ($date1 > $date2 && $date1 < $date3)
+				   			if ($date1 >= $date2 && $date1 <= $date3)
 				   			{
 				   				$bhtml.='<td>Open Now</td></tr>';
 				   				$todayhtml.='<td>Open Now</td></tr>';
