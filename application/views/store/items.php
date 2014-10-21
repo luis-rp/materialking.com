@@ -509,20 +509,24 @@ $( document ).tooltip();
 				   		if(date('D') == $bhrs->day)
 				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
 				   	}
-				   	if(date('D') == $bhrs->day)	{		
-				   		$current_time = date('H:i a');		   		
+				   	if(date('D') == $bhrs->day)	{
+				   		$current_time = date('H:i a');
 				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
 				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
 				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
-				   		if ($date1 > $date2 && $date1 < $date3)
-				   		{
-				   			$bhtml.='<td>Open Now</td></tr>';				   			
-				   			$todayhtml.='<td>Open Now</td></tr>';
+				   		if($bhrs->isclosed==1){
+				   			$bhtml.='<td>&nbsp;</td></tr>';
+				   			$todayhtml.='<td>&nbsp;</td></tr>';
 				   		}else {
-				   			$bhtml.='<td>Closed Now</td></tr>';				   			
-				   			$todayhtml.='<td>Closed Now</td></tr>';
+				   			if ($date1 > $date2 && $date1 < $date3)
+				   			{
+				   				$bhtml.='<td>Open Now</td></tr>';
+				   				$todayhtml.='<td>Open Now</td></tr>';
+				   			}else {
+				   				$bhtml.='<td>Closed Now</td></tr>';
+				   				$todayhtml.='<td>Closed Now</td></tr>';
+				   			}
 				   		}
-
 				   	}else {
 				   		$bhtml.='<td>&nbsp;</td></tr>';
 				   	}
@@ -630,7 +634,7 @@ $( document ).tooltip();
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
                                     	<li><img  src="<?php
                                     	$pathinfo = pathinfo($ad->image);
-                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/classified/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
 

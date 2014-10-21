@@ -343,9 +343,12 @@
                                                 </div>
                                                 <?php if($item->minprice && $item->maxprice){?>
                                                 <div class="price">
-                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>"; ?>
-                                                	<?php if($item->price){ echo ' "CALL "';} else { ?>
-                                                	$<?php echo $item->minprice; ?> - $<?php echo $item->maxprice; ?>
+                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>";                	
+                                                	if(isset($item->callminprice)){ if($item->callminprice==1) echo ($item->offercount>1)?' "CALL "':''; else '$'.$item->minprice; } else { ?>
+                                                	$<?php echo $item->minprice; } 
+                                                	
+                                                	if(isset($item->callmaxprice)){ if($item->callmaxprice==1) echo ' "CALL "'; else echo '$'.$item->maxprice; } else { ?>
+                                                	<?php echo '-$'.$item->maxprice; ?>
                                                 	<?php }?>
                                                 </div>
                                                 <?php }?>

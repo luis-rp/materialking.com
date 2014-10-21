@@ -1041,11 +1041,21 @@ class site extends CI_Controller
         $items = $items->items;
         foreach ($items as $item)
         {
-            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
-            $minmax = $this->db->query($query)->row();
-            $item->minprice = $minmax->minea;
-            $item->maxprice = $minmax->maxea;
-            $item->price = $minmax->price;
+            $query = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            $min = $this->db->query($query)->row();
+            if($min){
+            	$item->minprice = $min->minea;
+            	$item->callminprice = $min->price;
+            }
+
+            $query2 = "SELECT ea as maxea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+
+            $max = $this->db->query($query2)->row();
+
+            if($max){
+            	$item->maxprice = $max->maxea;
+            	$item->callmaxprice = $max->price;
+            }
             
             $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";            
         	$countofitems = $this->db->query($cquery)->row();
@@ -2040,7 +2050,8 @@ class site extends CI_Controller
     	
     	if(isset($_POST['items']) && $_POST['items']!="") 
     	$where .= " AND itemid = {$_POST['items']}";    	
-    	  	
+    	 
+    	$res = array(); 	
     	foreach($categories as $cat){
     		//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id'];
     		$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id where a.category=".$cat['id']."";
@@ -2048,9 +2059,10 @@ class site extends CI_Controller
     		if($result)
     		$res[$cat['catname']] = $result;
     	}
-    	    	
-    	
+    	    	    	
+    	if(count($res)>0)
     	$data['ads'] = $res;
+    	
     	if(isset($_POST['category']) && $_POST['category']!="") 
 		$data['category'] = $_POST['category'];
 		if(isset($_POST['items']) && $_POST['items']!="") 

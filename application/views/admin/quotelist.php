@@ -122,7 +122,7 @@ $(document).ready(function(){
 			length:5,
 			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
 			nbRates : 3,
-			isDisabled:false,
+			isDisabled:true,
 			sendRequest: true,
 			canRateAgain : true,
 			decimalLength:1,

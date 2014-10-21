@@ -307,6 +307,10 @@ class Quotemodel extends Model
 		//print_r($arr);die;
 		$this->db->where($arr);
 		$this->db->delete('minprice');
+		
+		$itemname = mysql_real_escape_string($itemname);
+		$itemcode = mysql_real_escape_string($itemcode);
+		
 		$sql = "INSERT INTO ".$this->db->dbprefix('minprice')."
 				SET company='$company', itemid='$itemid', purchasingadmin='$pa', 
 				itemcode='$itemcode', itemname='$itemname', price='$price', 

@@ -678,7 +678,7 @@ class Order extends CI_Controller
 		
 		//echo $id.'-'.$company->id.'-'.$status;die;
 	
-		
+		$data['email_body_title'] = "";		
 		$order = $this->db->where('id',$id)->get('order')->row();
 		$data['email_body_content'] = "Order:".$order->ordernumber;
 		$data['email_body_title'] .= "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
