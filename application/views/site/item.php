@@ -701,7 +701,7 @@ $( document ).tooltip();
                                     <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>
                                     <td style="padding:0px;">
-                                    	<?php echo '$'.$inv->ea; ?>
+                                    	<?php if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;} ?>
                                     	<?php if($inv->ea != $inv->listprice && $inv->listprice != ''){?>
                                     		<br/><strike>$<?php echo $inv->listprice ?></strike>
                                     	<?php }?>

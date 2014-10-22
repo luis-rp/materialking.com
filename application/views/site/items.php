@@ -344,10 +344,10 @@
                                                 <?php if(isset($item->minprice) || isset($item->maxprice)){?>
                                                 <div class="price">
                                                 	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>";                	
-                                                	if(isset($item->callminprice)){ if($item->callminprice==1) echo ($item->offercount>1)?' "CALL "':''; else (isset($item->minprice))?'$'.$item->minprice:''; } else { ?>
+                                                	if(isset($item->callminprice)){ if($item->callminprice==1) echo ($item->offercount>1)?' "CALL"&nbsp;':''; else (isset($item->minprice))?'$'.$item->minprice:''; } else { ?>
                                                 	<?php if(isset($item->minprice)) echo '$'.$item->minprice; } 
                                                 	
-                                                	if(isset($item->callmaxprice)){ if($item->callmaxprice==1) echo ' "CALL "'; else echo (isset($item->maxprice))?'$'.$item->maxprice:''; } else { ?>
+                                                	if(isset($item->callmaxprice)){ if($item->callmaxprice==1) echo ' "CALL"&nbsp;'; else echo (isset($item->maxprice))?'$'.$item->maxprice:''; } else { ?>
                                                 	<?php if(isset($item->maxprice)) echo '-$'.$item->maxprice; ?>
                                                 	<?php }?>
                                                 </div>

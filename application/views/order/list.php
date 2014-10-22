@@ -121,7 +121,7 @@ $(document).ready(function(){
 									    		$totalpaid+= $order->amount;
 									    	}
 
-									    	if($order->paymentstatus=='Unpaid')
+									    	if($order->paymentstatus=='Unpaid' || $order->paymentstatus=='Requested Payment')
 									    	{
 									    		$totalunpaid+= $order->amount;
 									    	}
