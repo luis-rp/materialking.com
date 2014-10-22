@@ -894,9 +894,8 @@ $( document ).tooltip();
   <div>
   <div style="height:40px;width:200px;"><h1 style="overflow:auto;"><?php echo $member->name;?>&nbsp;<?php echo $member->title;?></h1></div>
   <div style="height:180px;width:200px;overflow:hidden;"><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image"/></div>
-  <div style="height:40px;width:200px;"><h2 style="overflow:auto;"><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></div>
-  </div>
-  
+  <div style="height:40px;width:200px;"><h2 style="overflow:auto;font-family: Arial, Helvetica, sans-serif;font-size:15px;"><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></div>
+ </div>  
 <!-- </table> -->
 </td>
 
@@ -1158,7 +1157,7 @@ $( document ).tooltip();
 
                         <a name="form"></a>
                           <h3 class="titlebox" style="padding:0px 0px 0px 8px">Request Assistance</h3>
-                        <?php echo $this->session->flashdata('message'); ?>
+                        <?php // echo $this->session->flashdata('message'); ?>
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$supplier->id);?>">
         					<input type="hidden" name="redirect" value="supplier/<?php echo $supplier->username?>"/>
                             <div class="newbox">
@@ -1186,11 +1185,11 @@ $( document ).tooltip();
         						</tr>
         						<tr>
         							<td id="daytd">Best day to call</td>
-        							<td><input type="text" id="day" name="day"/></td>
+        							<td><input type="text" id="day" name="daytd"/></td>
         						</tr>
         						<tr>
         							<td id="timetd">Best time to call</td>
-        							<td><input type="text" id="time" name="time"/></td>
+        							<td><input type="text" id="time" name="timetd"/></td>
         						</tr>
 
         						<tr>
@@ -1224,7 +1223,8 @@ $( document ).tooltip();
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
                         		<tr>
-                        			<td colspan="2"><b>About Us:</b><br/><?php echo $supplier->shortdetail;?></td>
+                        			<?php if(isset($supplier->shortdetail) && $supplier->shortdetail!="") {?>
+                        			<td colspan="2"><b>About Us:</b><br/><?php echo $supplier->shortdetail;?></td><?php } ?>
                         		</tr>
                         		<tr>
                         			<td><h4><a href="#form">Contact</a></h4></td>
@@ -1250,6 +1250,7 @@ $( document ).tooltip();
                         			</td>
                         		</tr>
                         		<?php }?>
+                        		<?php foreach ($types as $type) if($type->category == 'Industry') {?>
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
@@ -1268,6 +1269,7 @@ $( document ).tooltip();
                                         </ul>
                         			</td>
                         		</tr>
+                        		<?php } ?>
                         		<?php if($rating){?>
                         		<tr>
                         			<td>Reviews: </td>

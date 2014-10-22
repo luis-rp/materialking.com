@@ -445,12 +445,11 @@ $( document ).tooltip();
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
-
+								<?php foreach ($types as $type) if($type->category == 'Industry') {?>		
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
-
-                        		<?php foreach ($types as $type) if($type->category == 'Industry') {?>
+                        		
                         		<tr>
                         			<td colspan="2">
                         			<ul class="inlist">
@@ -467,16 +466,15 @@ $( document ).tooltip();
                                         </ul>
                         			</td>
                         		</tr>
-
+								<?php } ?>
+								<?php if(@$rating) {?>
                         	<tr>
-                        	<?php } ?>
-                        	<?php if(@$rating) {?>
                         			<td colspan="">Reviews:
 
                         			<?php echo $rating;?> <?php echo number_format($ratingvalue,2);?> / 5.00
                         			</td>
                         		</tr>
-							<?php } ?>	
+								<?php } ?>		
                         		 <tr>
                         			<td colspan="2">
                             			<a href="<?php echo site_url('site/supplier/'.$company->username);?>">
