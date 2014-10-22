@@ -487,7 +487,8 @@ $( document ).tooltip();
                     </div>
                     
                     
-                                     <?php if(@$businesshrs){ ?>                 
+                    <?php if(@$businesshrs){ ?>       
+                    <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>                               
                     <div class="widget contact">
                     <div class="title">
                             <h2 align="center" class="block-title"><img style="height:20px;" src="<?php echo base_url(); ?>uploads/logo/time.png"/>&nbsp;Business Hours</h2>
@@ -510,7 +511,7 @@ $( document ).tooltip();
 				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
 				   	}
 				   	if(date('D') == $bhrs->day)	{
-				   		$current_time = date('H:i a');
+				   		$current_time = date('g:i a');
 				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
 				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
 				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
@@ -538,7 +539,7 @@ $( document ).tooltip();
                                   
                         </div>
                     </div>                
-                 <?php }?>
+                 <?php } }?>
                  
                     
                   <?php if(isset($inventory) && count($inventory)>0) {?>

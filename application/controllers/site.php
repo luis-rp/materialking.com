@@ -2436,6 +2436,55 @@ class site extends CI_Controller
 		}
 		redirect('site');
 
-	}    
+	}
+
+	
+	public function savetag(){
+    	
+	 	$id = $_POST['pic_id'];
+	 	$name = $_POST['name'];
+	 	$pic_x = $_POST['pic_x'];
+	 	$pic_y = $_POST['pic_y'];	
+	 	
+    	$datatoadd = array('pic_id' => $_POST['pic_id'],'name' => $_POST['name'], 'pic_x' => $_POST['pic_x'], 'pic_y' => $_POST['pic_y']);
+    	$this->db->insert('image_tag',$datatoadd);
+    	
+    }
+    
+    function taglist()
+    {
+    	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('image_tag')->result();
+
+    	$data['boxes'] = '';
+    	$data['lists'] = '';
+
+    	if ($result){
+    		foreach ($result as $rs){
+
+    			$data['boxes'] .= '<div class="tagview" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
+    			$data['boxes'] .= '<div class="square">';
+    			$data['boxes'] .= '<div style="margin-top:50px;" class="person">' . $rs->name . '</div></div>';
+    			$data['boxes'] .= '</div>';
+
+    			$data['lists'] .= '<li id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)</li>';
+
+    		}
+    	}
+
+    	echo json_encode( $data );
+
+    }
+    
+    
+    function removetag(){
+    	
+    	$id = $_POST['id'];	 		
+	 	
+    	$where = array('id'=>$id);
+    	$query = $this->db->delete('image_tag',$where);    	
+    	
+    }	
     
 }

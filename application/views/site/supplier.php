@@ -19,9 +19,9 @@
 
 		<link type="text/css" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.fancybox.css?v=2.1.5" title="Featherlight Styles" />
 		<script src="<?php echo base_url();?>templates/admin/js/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" charset="utf-8"></script>
-		
+
 		<script type="text/javascript" language="javascript">
-			jQuery(function( $ ) {
+			/*jQuery(function( $ ) {
 
 				$('#example-1 a').tosrus({
 					pagination	: {
@@ -30,7 +30,7 @@
 					}
 				});
 
-			});
+			});*/
 		</script>
 
 		<script type="text/javascript" language="javascript">
@@ -41,14 +41,13 @@
 			});
 			});
 		</script>
-		
-		
+
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".fancybox").fancybox();
+				$(".fancybox").fancybox();				
 			});
-		</script>		
-		
+		</script>
+
 <?php
 /*
   $geocode=file_get_contents("http://maps.google.com/maps/api/geocode/json?address=".urlencode(str_replace("\n",", ",$supplier->address))."&sensor=false");
@@ -138,6 +137,125 @@ padding:5px 0px;
 	color:#06A7EA !important;
 }
 
+ 
+ 
+ #logo
+{
+	width: 505px;
+	margin: 0 auto;
+	text-align: center;
+}
+#pgtitle
+{
+	margin: 0px 0px 20px;
+	font-size: 18pt;
+}
+#container
+{
+	display: block;
+	width: 850px;
+	height: 300px;
+	margin: 0 auto;
+}
+#imgtag
+{
+	position: relative;
+	min-width: 300px;
+	min-height: 300px;
+	float: none;
+	border: 3px solid #FFF;
+	cursor: crosshair;
+	text-align: center;
+}
+.tagview
+{
+	border: 1px solid #F10303;
+	width: 50px;
+	height: 50px;
+	position: absolute;
+/*display:none;*/
+	opacity: 0;
+	color: #FFFFFF;
+	text-align: center;
+}
+.square
+{
+	display: block;
+	height: 79px;
+}
+.person
+{
+	background: #282828;
+	border-top: 1px solid #F10303;
+}
+#tagit
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 240px;
+	border: 1px solid #D7C7C7;
+}
+#tagit .box
+{
+	border: 1px solid #F10303;
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+#tagit .name
+{
+	float: left;
+	background-color: #FFF;
+	width: 127px;
+	height: 92px;
+	padding: 5px;
+	font-size: 10pt;
+}
+#tagit DIV.text
+{
+	margin-bottom: 5px;
+}
+#tagit INPUT[type=text]
+{
+	margin-bottom: 5px;
+}
+#tagit #tagname
+{
+	width: 110px;
+}
+#taglist
+{
+	width: 300px;
+	min-height: 200px;
+	height: auto !important;
+	height: 200px;
+	float: left;
+	padding: 10px;
+	margin-left: 20px;
+	color: #000;
+}
+#taglist OL
+{
+	padding: 0 20px;
+	float: left;
+	cursor: pointer;
+}
+#taglist OL A
+{
+}
+#taglist OL A:hover
+{
+	text-decoration: underline;
+}
+.tagtitle
+{
+	font-size: 14px;
+	text-align: center;
+	width: 100%;
+	float: left;
+}
+ 
 </style>
 
 <!-- <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script> -->
@@ -162,8 +280,8 @@ padding:5px 0px;
         $("#subscribe").click(function(){
 				if(confirm("Are you sure"))
 					$("#form-addsubscriber").submit();
-				
-					
+
+
             });
     });
 
@@ -186,7 +304,7 @@ padding:5px 0px;
             $("#daytd").html('Appointment Date Requested');
             $("#timetd").html('Appointment Time Requested');
         }
-            
+
     }
 
     function InitMap() {
@@ -222,7 +340,7 @@ padding:5px 0px;
                 zIndex: null,
                 closeBoxMargin: "",
                 closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
-                boxStyle: { 
+                boxStyle: {
                     background: "#fff"
                     ,opacity: 1
                    },
@@ -276,12 +394,12 @@ padding:5px 0px;
 </script>
 <script type="text/javascript">
 
-   
+
     function PrintElem(elem)
     {
         PopupPrint($(elem).html());
     }
-    function PopupPrint(data) 
+    function PopupPrint(data)
     {
         var mywindow = window.open('', 'my div', 'height=500,width=500,left=100,top=100');
         mywindow.document.write('<html><head><title>my div</title>');
@@ -299,7 +417,7 @@ padding:5px 0px;
 <script>
 $(document).ready(function() {
 	$("#dialog-form").hide();
-	
+
 	$('.fixedrating').jRating({
 		length:5,
 		bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
@@ -309,13 +427,112 @@ $(document).ready(function() {
 		canRateAgain : false,
 		decimalLength:1,
 		 onClick : function(element,rate) {
-	         
+
 	        },
 		onError : function(){
 			alert('Error : please retry');
 		}
 	});
+	
+	var counter = 0;
+    var mouseX = 0;
+    var mouseY = 0;
+	
+	$("#imgtag img").click(function(e) { // make sure the image is clicked
+  var imgtag = $(this).parent(); // get the div to append the tagging list
+  mouseX = ( e.pageX - $(imgtag).offset().left ) - 50; // x and y axis
+  mouseY = ( e.pageY - $(imgtag).offset().top ) - 50;
+  $( '#tagit' ).remove( ); // remove any tagit div first
+  //insert an input box with save and cancel operations.
+  $( imgtag ).append( '<div id="tagit"><div class="box"></div><div class="name"><div class="text">Type any name or tag</div><input type="text" name="txtname" id="tagname" /><input type="button" name="btnsave" value="Save" id="btnsave" /><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div></div>' );
+  $( '#tagit' ).css({ top:mouseY, left:mouseX });
+   
+  $('#tagname').focus();    
 });
+
+
+$( document ).on( 'click',  '#tagit #btnsave', function(){
+    name = $('#tagname').val();
+var img = $('#imgtag').find( 'img' );
+var id = $( img ).attr( 'id' );
+  $.ajax({
+    type: "POST",
+    url: "<?php echo site_url('site/savetag');?>",
+    data: "pic_id=" + id + "&name=" + name + "&pic_x=" + mouseX + "&pic_y=" + mouseY + "&type=insert",
+    cache: true,
+    success: function(data){
+     // viewtag( id );
+     var img = $('#imgtag').find( 'img' );
+     var id = $( img ).attr( 'id' );
+     //get tags if present
+     viewtag( id );
+      $('#tagit').fadeOut();
+    }
+  });
+    
+});
+
+
+// Cancel the tag box.
+    $( document ).on( 'click', '#tagit #btncancel', function() {
+      $('#tagit').fadeOut();
+    });
+    
+    
+    // mouseover the taglist 
+	$('#taglist').on( 'mouseover', 'li', function( ) {
+      id = $(this).attr("id");
+      $('#view_' + id).css({ opacity: 1.0 });
+    }).on( 'mouseout', 'li', function( ) {
+        $('#view_' + id).css({ opacity: 0.0 });
+    });
+	
+	// mouseover the tagboxes that is already there but opacity is 0.
+	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+		var pos = $( this ).position();
+		$(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+	}).on( 'mouseout', '.tagview', function( ) {
+		$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+	});
+
+	
+	// load the tags for the image when page loads.
+    var img = $('#imgtag').find( 'img' );
+	var id = $( img ).attr( 'id' );
+	   
+    // Remove tags.
+    $( '#taglist' ).on('click', '.remove', function() {
+      id = $(this).parent().attr("id");
+      // Remove the tag
+	  $.ajax({
+        type: "POST", 
+        url: "<?php echo site_url('site/removetag');?>", 
+        data: "id=" + id,
+        success: function(data) {
+			var img = $('#imgtag').find( 'img' );
+			var id = $( img ).attr( 'id' );
+			//get tags if present
+			viewtag( id );
+        }
+      });
+    });
+     
+	
+});
+
+
+// view all tags available on page load
+    
+    function viewtag(pic_id)
+    {
+      // get the tag list with action remove and tag boxes and place it on the image.
+	  $.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id, function( data ) {
+    $('#taglist ol').html(data.lists);
+    $('#tagbox').html(data.boxes);
+}, "json");
+	
+    }
+
 </script>
 
 <script>
@@ -326,7 +543,7 @@ $(document).ready(function() {
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
 		$('#cartqtydiv').html('');
 		$("#cartsavediv").html('');
-		$("#qtypricebox").html('');		
+		$("#qtypricebox").html('');
 		$("#itemnamebox").html('');
        	$("#hiddenprice").val(price);
         $("#cartprice").modal();
@@ -450,13 +667,24 @@ $(document).ready(function() {
         });
 
     }
-    
+
     function displayeventindetail(eventid){
-    
+
     	$("#eventdetails"+eventid).modal();
-    		
+
     }
     
+    
+    function showimagewithtag(imgid,imagsrc){
+    
+    	$("#imgmodaltag").modal();
+    	var img = $('#imgtag').find( 'img' );
+		$( img ).attr( 'id' ,imgid);	
+		$( img ).attr( 'src' , imagsrc);
+		//alert(imgid);
+		viewtag(imgid); 
+    }
+
 </script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -504,6 +732,22 @@ $( document ).tooltip();
                     <div class="carousel property">
                     </div>
 
+                    
+                       
+                   
+                    
+<!-- <div id="container"><div id="imgtag">  
+  <img id="pic1" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" />
+  <div id="tagbox">
+  </div>
+</div>
+<div id="taglist">
+  <ol>
+  </ol>
+</div>
+</div> -->
+                    
+                    
                     <div class="property-detail">
                         <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
@@ -514,7 +758,7 @@ $( document ).tooltip();
                                                 <?php } else {?>
                                                 <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
                                         <?php } ?>
-                                       
+
                                     </p>
                                     <h2 class="name"><?php echo $supplier->title;?>
                                    </h2>
@@ -564,7 +808,7 @@ $( document ).tooltip();
                               </div>
 
                         </div>
-                        
+
                         <!-- <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
 						<ul>
                            <?php  if(isset($image) && count($image)>0)  foreach($image as $items) { ?>
@@ -576,26 +820,23 @@ $( document ).tooltip();
                       </div>
 -->
                    <?php  if(isset($image) && count($image)>0) { ?>
-                     <div  style="float:left; height:310px;width:395px;">
+                     <div style="float:left; height:310px;width:395px;">
                         <ul class="bxslider">
 						   <?php foreach($image as $items) { ?>
 						  <li>
 						  <a class="fancybox" rel="group" href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
-						  <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" /></a>
+						 <img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" /></a>
 						  </li>
 						  <?php } ?>
 						</ul>
                       </div>
                    <?php }   ?>
                       <br><br><br>
-                        
-                        
-                          
-                          
+
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
-                        
+
                          <?php  if(isset($gallery) && count($gallery)>0) { ?>
 					 <div class="content">
                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Gallery</h3>
@@ -605,7 +846,8 @@ $( document ).tooltip();
 								   <?php  if(isset($gallery) && count($gallery)>0)  foreach($gallery as $items) { ?>
 								    <div class="thumbnail current">
 								      <div class="thumbnail-inner">
-									      <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>">
+									      <!-- <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>"> -->
+									      <a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>');">
 									      <img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>"/>
 									      </a>
 								      </div>
@@ -616,20 +858,26 @@ $( document ).tooltip();
 							</div>
 						</div>
 						<?php } ?>
-                        
+
+
+
+
+
+
+
                         <?php if(@$members){?>
                         <div>
-                           
+
                               <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
                            Meet The Team:</h3>
                            <div class="meet_team" style="border-bottom-style:none;border-left-style:none;border-right-style:none;">
                             <table>
-                            	
+
                             	<?php $key = 0; foreach($members as $member){?>
                             	<?php if($key==0){?>
                             	<tr>
                             	<?php }?>
-                            	
+
                             	<td style="position:relative;">
 
                              <!--    <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -651,13 +899,13 @@ $( document ).tooltip();
   
 <!-- </table> -->
 </td>
-                            	
-                            	
-                            	
+
+
+
                             	<?php if($key==4){ $key=0; ?>
                             	</tr>
-                            	
-                            	
+
+
                             	<?php } $key++;?>
                             	<?php }?>
                             	</tr>
@@ -665,7 +913,7 @@ $( document ).tooltip();
                            </div>
                         </div>
                         <?php }?>
-                        <?php //if(isset($types[0]->category) && $types[0]->category!="") { 
+                        <?php //if(isset($types[0]->category) && $types[0]->category!="") {
 								if($types){
 									$band = false;
 									foreach ($types as $type){
@@ -675,13 +923,13 @@ $( document ).tooltip();
 									if($band){
 							?>
                         <div class="content">
-                        
-                         <p>&nbsp;</p>  
-                         
-                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3> 
-                        	
+
+                         <p>&nbsp;</p>
+
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3>
+
                             <ul style="float:left; display:inline-block;list-style-type: none; margin:0px; padding:0px;;text-align:center">
-            			    <?php 
+            			    <?php
             			        foreach ($types as $type)
                                     if ($type->category == 'Manufacturer') {
                             ?>
@@ -717,25 +965,25 @@ $( document ).tooltip();
                             </table>
                         </div>
                         <?php }?>
-                        
-                        	
-                        
+
+
+
                         <?php if(@$dealfeed){?>
                         	<br/>
                             <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Supplier Deals</h3>
-                            
-                            <?php 
+
+                            <?php
                         	foreach($dealfeed as $di)
                         	{
 								$diff = abs(strtotime(date('Y-m-d H:i')) - strtotime($di->dealdate));
-								
+
 								$years = floor($diff / (365*60*60*24)); $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-								
+
 								$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 								$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
 								$minuts = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
 								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
-                                
+
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
                             <div class="supplier_new">
@@ -772,7 +1020,7 @@ $( document ).tooltip();
 
                                                 <span class="key"><strong>Time Remaning:</strong></span>
                                                 <span class="value"><?php echo $remaining;?></span>
-                                                
+
                                                 <br>
                                                 <span class="key"><strong>Minimum Qty:</strong></span>
                                                 <span class="value"><?php echo $di->qtyreqd;?></span>
@@ -783,7 +1031,7 @@ $( document ).tooltip();
                                         </div>
                                         <div class="price">
                                         <span>   $<?php echo $di->dealprice;?> &nbsp; <?php echo $di->unit;?></span>
-                                      
+
                                              <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',1)">
                                     <i class="icon icon-plus"></i> Buy
                                 </a>
@@ -793,11 +1041,11 @@ $( document ).tooltip();
                         </div>
                         </div>
                         <?php } ?>
-                        
-                        	
+
+
                         <?php }?>
-                        
-                        
+
+
                         <?php if ($this->session->userdata('pms_site_cart')) { ?>
                         <div class="pull-right">
                             <a href="<?php echo site_url('cart'); ?>">
@@ -805,18 +1053,18 @@ $( document ).tooltip();
                             </a>
                         </div>
                         <?php } ?>
-                        
+
                         <?php if($inventory){?>
                         	<br/>
                         	  <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Featured Items:</h3>
                         	<?php
                                     foreach ($inventory as $inv)
-                                    if ($inv->ea) 
+                                    if ($inv->ea)
                                     {
                                        $price = $inv->ea;
                                        $inv->qtyreqd = 0;
                                 ?>
-                                
+
                               <div class="supplier_new1">
                                  <h2><a href="<?php echo site_url('site/item/'.$inv->url);?>"><?php echo $inv->itemcode; ?></a></h2>
                             <div class="property">
@@ -833,16 +1081,16 @@ $( document ).tooltip();
                                 <div class="body1 span6">
                                     <div class="title-price row">
                                         <div class="title1 span5">
-                                         
+
                                             <p><?php echo $inv->companynotes; ?></p>
-                                           
+
                                             <div class="area">
                                                 <span class="key"><strong>Item Name:</strong></span>
                                                 <span class="value"><?php echo $inv->itemname ?></span>
 
                                                 <span class="key"><strong>Unit:</strong></span>
                                                 <span class="value">EA</span>
-                                                
+
                                                 <br>
                                                 <span class="key"><strong>Manufacturer:</strong></span>
                                                 <span class="value"><?php echo $inv->manufacturername; ?></span>
@@ -851,25 +1099,25 @@ $( document ).tooltip();
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value"><?php echo $inv->partnum ?></span>
                                                 <?php } ?>
-                                                
-                                                <?php if($inv->qtyavailable) { ?>
+
+                                                 <?php if($inv->qtyavailable) { ?>
 										        <span class="key"><strong>Stock:</strong></span>
 										        <span class="value"><?php echo $inv->qtyavailable;?></span>
 										        <?php } ?>
-                                                
+
                                                 <br/>
                                                 <span class="key"><strong>Availability:</strong></span>
                                                 <span class="value"><?php echo $inv->instock?'Available':'Not Available';?></span>
-                                                
+
                                                 <span class="key"><strong>Min Order Qty:</strong></span>
                                                 <span class="value"><?php echo $inv->minqty ?></span>
-                                                
+
                                                 </div>
-                                              
+
                                         </div>
-                                        
-                                        <div class="price">                                         
-                                          
+
+                                        <div class="price">
+
                                            <?php if($inv->price){?>
                                            <div id="parent">
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price</div>
@@ -887,7 +1135,7 @@ $( document ).tooltip();
                          <?php } ?>
                         <?php }?>
 						<br/>
-                        
+
                        <h3 class="titlebox" style="padding:0px 0px 0px 8px">Map
                         <a name="map" id="map"></a>
                         <?php $addressarray = explode(" ",$supplier->address);
@@ -896,18 +1144,18 @@ $( document ).tooltip();
                         		foreach($addressarray as $add){
                         			if(count($addressarray)>$i)
                         				$addresslink .= $add."+";
-                        			else 
+                        			else
                         				$addresslink .= $add;
-                        			$i++;	
+                        			$i++;
                         		}
-                        		 
+
                         ?>
                         <span style=" color: #fff;float: right;padding: 0 10px 0 8px;"><a target="_blank" style="color:#fff" href="<?php echo 'https://maps.google.com/maps?daddr='.$addresslink; ?>">Driving Directions</a></span></h3>
-						
-						
-						
+
+
+
                         <div id="property-map"></div>
-                        
+
                         <a name="form"></a>
                           <h3 class="titlebox" style="padding:0px 0px 0px 8px">Request Assistance</h3>
                         <?php echo $this->session->flashdata('message'); ?>
@@ -944,7 +1192,7 @@ $( document ).tooltip();
         							<td id="timetd">Best time to call</td>
         							<td><input type="text" id="time" name="time"/></td>
         						</tr>
-        						
+
         						<tr>
         							<td>Regarding</td>
         							<td><textarea name="regarding" rows="5" style="width: 350px;"></textarea>
@@ -996,9 +1244,9 @@ $( document ).tooltip();
                                                 <a href="<?php echo site_url('store/items/'.$supplier->username.'/'.$type->id);?>">
                                                 <?php echo $type->title; ?>
                                                 </a>
-                                                <br/> 
+                                                <br/>
                                         <?php } ?>
-                        			
+
                         			</td>
                         		</tr>
                         		<?php }?>
@@ -1039,9 +1287,11 @@ $( document ).tooltip();
                         </div>
                     </div>
                 </div>
+
                 
                 
-                <?php if(@$businesshrs){ ?>
+                 <?php if(@$businesshrs){ ?>
+                 <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>
                  <div class="sidebar span3">
                     <div class="widget contact">
                     <div class="title">
@@ -1067,7 +1317,7 @@ $( document ).tooltip();
 				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
 				   	}
 				   	if(date('D') == $bhrs->day)	{
-				   		echo 'Current time:'.$current_time = date('H:i a');
+				   		echo 'Current time:'.$current_time = date('g:i a');
 				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
 				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
 				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
@@ -1098,7 +1348,8 @@ $( document ).tooltip();
                         </div>
                     </div>
                  </div>
-                 <?php }?>
+                 <?php } } ?>
+                
                 
                 
                 <?php /* if(@$dealfeed){?>
@@ -1108,23 +1359,23 @@ $( document ).tooltip();
                             <h2 class="block-title">Supplier Deals</h2>
                         </div>
                         <div class="content_sup">
-                      
+
                         	<table>
-                        	<?php 
+                        	<?php
                         	foreach($dealfeed as $di)
                         	{
 								$diff = abs(strtotime(date('Y-m-d H:i')) - strtotime($di->dealdate));
 								$years = floor($diff / (365*60*60*24)); $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-								
+
 								$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 								$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
 								$minuts = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
 								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
-                                
+
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
-                    
-                            
+
+
                               	<tr>
                         		<td  style="text-align:center"><?php if($di->image){?>
                         			<img src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="80" height="80">
@@ -1132,12 +1383,12 @@ $( document ).tooltip();
                         			<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
                         			<?php }?></td>
                         	</tr>
-                            
+
                               	<tr>
                         		<td style="text-align:center"><a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a></td>
                         	</tr>
-                              	
-                            
+
+
                         	<tr>
                         		<td style="text-align:center"> <?php echo $remaining;?> remaining</td>
                         	</tr>
@@ -1154,7 +1405,7 @@ $( document ).tooltip();
                         </div>
                     </div>
                  </div>
-                 <?php }*/?>
+                 <?php } */?>
 
                  <?php if(@$similarsuppliers){?>
                  <div class="sidebar span3">
@@ -1164,7 +1415,7 @@ $( document ).tooltip();
                         </div>
                         <div class="content_sup">
                                 <div class="control-group">
-                                	
+
                                     <div class="controls">
                                     	<table cellpadding="5">
                                     	<?php foreach($similarsuppliers as $ri){?>
@@ -1184,53 +1435,53 @@ $( document ).tooltip();
                                     	</table>
                                     </div>
                                 </div>
-                           
+
                         </div>
                     </div>
                  </div>
                  <?php }?>
-                
+
                 <?php if($adforsupplier){?>
-                    
+
       <script src="<?php echo base_url(); ?>templates/site/assets/js/jquery.bxslider.min.js"></script>
 <!-- bxSlider CSS file -->
 <link href="<?php echo base_url(); ?>templates/site/assets/css/jquery.bxslider.css" rel="stylesheet" />
 
-        <script type="text/javascript">	
+        <script type="text/javascript">
 			$(function() {$('.bxslider').bxSlider({
-				  
+
 				});
 
 			});
 		</script>
-	
+
                     <div class="sidebar span3">
                     <div class="widget contact">
                     <div class="title">
                             <h2 class="block-title">Suppliers Classified Listings</h2>
                         </div>
                         <div class="content_sup">
-                           
+
                                 <div class="control-group">
-                               
+
                                    <div class="controls bxcontainer">
                                    		<ul class="bxslider">
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img  src="<?php 
+                                    	<li><img  src="<?php
                                     	$pathinfo = pathinfo($ad->image);
                                     	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
-                                    	
+
                                      </div>
                                 </div>
-                            
+
                         </div>
                     </div>
                  </div>
                 <?php }?>
-                
-                
+
+
                  <?php if(@$upcomingevents){ ?>
                  <div class="sidebar span3">
                     <div class="widget contact">
@@ -1245,10 +1496,10 @@ $( document ).tooltip();
                                     	<?php foreach($upcomingevents as $ri){?>
                                     		<tr>
                                     			<td>
-                                    				<b><?php echo date('D, d M ',strtotime($ri->evtdate)); ?></b> 
+                                    				<b><?php echo date('D, d M ',strtotime($ri->evtdate)); ?></b>
                                     			</td>
                                     			<td>
-                                    				<?php echo $ri->eventstart."&nbsp;&nbsp;".$ri->title."&nbsp;&nbsp;".$ri->notes; 
+                                    				<?php echo $ri->eventstart."&nbsp;&nbsp;".$ri->title."&nbsp;&nbsp;".$ri->notes;
                                     				echo "&nbsp;&nbsp; <a href='#' onclick='displayeventindetail(".$ri->id."); return false;'>more...</a>" ?>
                                     			</td>
                                     		</tr>
@@ -1261,8 +1512,9 @@ $( document ).tooltip();
                     </div>
                  </div>
                  <?php }?>
-                                 
-                          
+                 
+                 
+                 
  <div class="sidebar span3">
                     <div class="widget contact">
                     <?php if(@$filespublic) { ?>
@@ -1331,14 +1583,14 @@ $( document ).tooltip();
                  </div>
 
 
-                 
-                 
+
+
                <div class="sidebar span3">
-               <div class="widget contact">  
-               <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>  
+               <div class="widget contact">
+               <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
                </div></div>
-                 
-                 
+
+
                               <!-- Start Dialog Form -->
                <div class="dialog-form" id="dialog-form">
 
@@ -1399,7 +1651,7 @@ $( document ).tooltip();
 									</form>
 
 				</div><!-- End Dialog Form -->
-                
+
             </div>
         </div>
     </div>
@@ -1421,7 +1673,7 @@ $( document ).tooltip();
           <div id="unitbox"></div>
         </div>
         <div class="modal-body">
-        
+
         <div id="qtypricebox"></div>
 
         <div>
@@ -1445,7 +1697,7 @@ $( document ).tooltip();
     <!-- /.modal-dialog -->
   </div>
 
-	
+
   <?php if(@$upcomingevents) { foreach($upcomingevents as $event){?>
   <div id="eventdetails<?php echo $event->id;?>" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
@@ -1456,11 +1708,11 @@ $( document ).tooltip();
           <i class="icon-credit-card icon-7x"></i>
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
-           <?php echo $event->title; ?>         
-          </h4>          
-        </div>        
+           <?php echo $event->title; ?>
+          </h4>
+        </div>
         <div class="modal-body">
-          
+
 	  	<table class="table table-bordered  col-lg-10">
 	  		<tr>
 	  			<td><strong>Title</strong></td>
@@ -1494,12 +1746,50 @@ $( document ).tooltip();
 	  			<td><strong>Contact Phone</strong></td>
 	  			<td><?php echo $event->contactphone;?></td>
 	  		</tr>
-	  	</table>	        
-        
+	  	</table>
+
       </div>
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div> 
-  
+  </div>
+
   <?php } } ?>
+  
+  
+  
+  
+  
+  
+
+
+
+        <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:800px;max-height:800px;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>                 
+        </div>
+        <div class="modal-body">
+        <div id="container">
+        <div id="imgtag">  
+  <img id="pic1" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" />
+  <div id="tagbox">
+  </div>
+</div>
+<div id="taglist">
+  <ol>
+  </ol>
+</div>
+</div>
+
+        </div>
+        <div class="modal-footer">          
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
