@@ -450,6 +450,7 @@ $( document ).tooltip();
                         			<td><b>Industry:</b></td>
                         		</tr>
 
+                        		<?php foreach ($types as $type) if($type->category == 'Industry') {?>
                         		<tr>
                         			<td colspan="2">
                         			<ul class="inlist">
@@ -468,12 +469,14 @@ $( document ).tooltip();
                         		</tr>
 
                         	<tr>
+                        	<?php } ?>
+                        	<?php if(@$rating) {?>
                         			<td colspan="">Reviews:
 
                         			<?php echo $rating;?> <?php echo number_format($ratingvalue,2);?> / 5.00
                         			</td>
                         		</tr>
-
+							<?php } ?>	
                         		 <tr>
                         			<td colspan="2">
                             			<a href="<?php echo site_url('site/supplier/'.$company->username);?>">
