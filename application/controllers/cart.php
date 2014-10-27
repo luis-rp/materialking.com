@@ -1168,4 +1168,21 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
         $this->email->send();
         
 	}
+	
+	function checkbankaccount(){
+		
+		$returnval = "false";
+		if(!$_POST['company']){
+			die;
+		}
+		$bankaccount = $this->db->where('company',$_POST['company'])->get('bankaccount')->row();
+		
+		if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+		{
+			if($bankaccount->routingnumber!="" && $bankaccount->accountnumber!="")
+			$returnval = "true";
+		}
+		echo $returnval;
+	}
+
 }

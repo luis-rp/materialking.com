@@ -92,7 +92,7 @@
 
                                         <div class="body1 span6">
                                             <div class="title-price row">
-                                                <div class="title1 span4">
+                                                <div class="title1 span4" style="margin-left:25px;">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
                                                 <?php if (isset($supplier->city) && isset($supplier->state)) { ?>

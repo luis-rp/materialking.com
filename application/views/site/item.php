@@ -1,6 +1,6 @@
 <?php //echo '<pre>'; print_r($inventory);die;?>
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
-
+<?php echo '<script>var checkbankaccount="' . site_url('cart/checkbankaccount') . '";</script>' ?>
 
 <?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 
@@ -351,15 +351,34 @@ $( document ).tooltip();
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
-        //alert(data); return false;
+        
+        var data2 = "company=" + companyid;
+        
         $.ajax({
             type: "post",
-            data: data,
-            url: addtocarturl
+            data: data2,
+            url: checkbankaccount,
+            sync:false
         }).done(function(data) {
-            alert(data);
-            window.location = window.location;
+            if(data!='true'){            	
+            	alert('Supplier has not set bank account settings');
+            	return false;
+            }else{
+
+            	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
+            	//alert(data); return false;
+            	$.ajax({
+            		type: "post",
+            		data: data,
+            		url: addtocarturl,
+            		sync:false
+            	}).done(function(data) {
+            		alert(data);
+            		window.location = window.location;
+            	});
+
+            }
+
         });
 
     }
@@ -596,8 +615,12 @@ $( document ).tooltip();
                                                     <h3 class="titlebox1">Featured Seller</h3>
                           <table class="span12">
                               <tr>
-                                  <td>Sold By:<?php echo $item->featuredsupplierdetails->title;?><?php if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }?></td>
+                                   <td>Sold By:&nbsp;<a href="<?php echo site_url('site/supplier/'.$item->featuredsupplierdetails->username); ?>" target="_blank" style="text-decoration:none;">
+                                  <span style="font-size:18px;font-weight:bolder;font-family: Arial, Helvetica, sans-serif;">
+                                  <?php echo $item->featuredsupplierdetails->title;?></span></a>&nbsp;
+                                  <?php if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }?></td>
                                  <td>
+
 
                                       <?php if($item->featureditem->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>

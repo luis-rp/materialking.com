@@ -182,7 +182,7 @@ function invoice(invoicenum)
 							else{
 							foreach($newrequests as $penreq){?>
 
-							<div class="notification-messages">
+							<div class="notification-messages" style="height:140px; overflow:auto;">
 								<div class="user-profile">
 									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png">
 								</div>
@@ -216,8 +216,7 @@ function invoice(invoicenum)
 									</div>
 								</div>
 
-							</div>
-							</a>
+							</div>							
 
 						<?php } }?>
 					</div>

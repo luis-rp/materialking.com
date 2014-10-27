@@ -2,6 +2,7 @@
 <?php echo '<script>var loginurl = "' . site_url('network/login/users') . '";</script>' ?>
 <?php echo '<script>var joinurl = "' . site_url('network/join') . '";</script>' ?>
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
+<?php echo '<script>var checkbankaccount="' . site_url('cart/checkbankaccount') . '";</script>' ?>
 <?php echo '<script>var itemsurl="' . site_url('site/items') . '";</script>' ?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
@@ -655,15 +656,34 @@ var id = $( img ).attr( 'id' );
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
-        //alert(data); return false;
+        
+         var data2 = "company=" + companyid;
+        
         $.ajax({
             type: "post",
-            data: data,
-            url: addtocarturl
+            data: data2,
+            url: checkbankaccount,
+            sync:false
         }).done(function(data) {
-            alert(data);
-            window.location = window.location;
+            if(data!='true'){            	
+            	alert('Supplier has not set bank account settings');
+            	return false;
+            }else{
+            	
+            	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
+            	//alert(data); return false;
+            	$.ajax({
+            		type: "post",
+            		data: data,
+            		url: addtocarturl,
+            		sync:false
+            	}).done(function(data) {
+            		alert(data);
+            		window.location = window.location;
+            	});
+            	
+            }
+            
         });
 
     }
@@ -1091,8 +1111,10 @@ $( document ).tooltip();
                                                 <span class="value">EA</span>
 
                                                 <br>
-                                                <span class="key"><strong>Manufacturer:</strong></span>
-                                                <span class="value"><?php echo $inv->manufacturername; ?></span>
+                                                <?php if($inv->manufacturername) { ?>
+ 												 <span class="key"><strong>Manufacturer:</strong></span>
+												 <span class="value"><?php echo $inv->manufacturername; ?></span>
+												 <?php } ?>
 
                                                 <?php if($inv->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
@@ -1250,7 +1272,7 @@ $( document ).tooltip();
                         			</td>
                         		</tr>
                         		<?php }?>
-                        		<?php foreach ($types as $type) if($type->category == 'Industry') {?>
+                        		<?php  $i=0;if($types[$i]->category == 'Industry') {?>
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
@@ -1269,7 +1291,7 @@ $( document ).tooltip();
                                         </ul>
                         			</td>
                         		</tr>
-                        		<?php } ?>
+                        		<?php } $i++; ?>
                         		<?php if($rating){?>
                         		<tr>
                         			<td>Reviews: </td>

@@ -1,5 +1,5 @@
 <?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
-
+<?php echo '<script>var checkbankaccount="' . site_url('cart/checkbankaccount') . '";</script>' ?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 
 <?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
@@ -237,16 +237,36 @@ $(document).ready(function() {
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
-        //alert(data); return false;
+        
+        var data2 = "company=" + companyid;
+        
         $.ajax({
             type: "post",
-            data: data,
-            url: addtocarturl
+            data: data2,
+            url: checkbankaccount,
+            sync:false
         }).done(function(data) {
-            alert(data);
-            window.location = window.location;
+            if(data!='true'){            	
+            	alert('Supplier has not set bank account settings');
+            	return false;
+            }else{
+
+            	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
+            	//alert(data); return false;
+            	$.ajax({
+            		type: "post",
+            		data: data,
+            		url: addtocarturl,
+            		sync:false
+            	}).done(function(data) {
+            		alert(data);
+            		window.location = window.location;
+            	});
+
+            }
+
         });
+
 
     }
 
@@ -343,11 +363,11 @@ $( document ).tooltip();
                                 <div class="image span3">
                                     <div class="content">
                                        <div class="sidepan"> <?php if ($item->image) { ?>
-                                            <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt=""></div>
+                                            <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
                                         <?php } else { ?>
                                             <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                         <?php } ?>
-
+										</div>
                                     </div>
                                 </div>
 
@@ -380,8 +400,10 @@ $( document ).tooltip();
 
                                                 <br/>
 
-                                                <span class="key"><strong>Manufacturer:</strong></span>
-                                                <span class="value"> <?php echo $item->manufacturername; ?></span>
+                                                <?php if($item->manufacturername) { ?>
+												<span class="key"><strong>Manufacturer:</strong></span>
+												<span class="value"> <?php echo $item->manufacturername; ?></span>
+												<?php }?>
 
                                                <?php if($item->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
@@ -445,7 +467,7 @@ $( document ).tooltip();
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
-								<?php foreach ($types as $type) if($type->category == 'Industry') {?>		
+								<?php  $i=0;if($types[$i]->category == 'Industry') {?>		
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
@@ -466,7 +488,7 @@ $( document ).tooltip();
                                         </ul>
                         			</td>
                         		</tr>
-								<?php } ?>
+								<?php } $i++; ?>
 								<?php if(@$rating) {?>
                         	<tr>
                         			<td colspan="">Reviews:

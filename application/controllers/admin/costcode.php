@@ -636,8 +636,19 @@ class costcode extends CI_Controller {
 
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
-        $data['parents'] = $this->db->get('costcode')->result();
-
+        
+        $mp = $this->session->userdata('managedprojectdetails');
+        if(@$mp->id){
+        	
+        	$data['parents'] = $mp->id;
+        	
+        }else {
+	        $projectresult = $this->db->get('costcode')->result();
+        	if($projectresult)
+        	$data['parents'] = $projectresult[0]->project;
+        }
+    
+            
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['projects'] = $this->db->get('project')->result();
