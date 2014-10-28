@@ -7,7 +7,7 @@
 <?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
 <?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
-
+<?php echo '<script>var checksubscriberemail="' . site_url('subscriber/checksubscriberemail') . '";</script>' ?>
 
 <!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
@@ -279,8 +279,25 @@ padding:5px 0px;
         	$( "#dialog-form" ).dialog();
             });
         $("#subscribe").click(function(){
-				if(confirm("Are you sure"))
-					$("#form-addsubscriber").submit();
+            	if(confirm("Are you sure")){
+
+            		if($('#email').val() !=""){
+
+            			var data = "email="+$('#email').val();
+
+            			$.ajax({
+            				type:"post",
+            				data: data,
+            				sync: false,
+            				url: checksubscriberemail
+            			}).done(function(data){
+            				if(data!=1){
+            					$("#form-addsubscriber").submit();
+            				}else
+            				alert('Subscriber E-Mail already exists');
+            			});
+            		}	
+				}
 
 
             });

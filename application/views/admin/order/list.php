@@ -149,13 +149,19 @@ $(document).ready( function() {
                                                    {
                                                		  if($detail->paymentstatus=='Paid')
                                                			{
-                                               				$totalpaid +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               				$totalpaid +=round(($order->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
                                                			}
 
                                                		  if($detail->paymentstatus=='Unpaid')
                                                			{
-                                               				$totaldue +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               				$totaldue +=round(($order->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
                                                			}
+                                               			
+                                               			if($detail->paymentstatus=='Requested Payment')
+                                               			{
+                                               				$totaldue +=round(($order->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               			}
+                                               			
                                                    }
                                                   $finaldue += $totaldue;
                                                   $finalpaid += $totalpaid; 

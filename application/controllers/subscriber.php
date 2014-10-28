@@ -140,4 +140,21 @@ class subscriber extends CI_Controller
 		
 		redirect("company/listsubscribers");
 	}
+	
+	function checksubscriberemail(){ 
+
+		if(!$_POST['email']){
+			die;
+		}
+		$emailexists = 0;	
+		$subscribers = $this->db->get("newsletter_subscribers_data")->result();
+		if($subscribers){
+			foreach ($subscribers as $subscribe){
+				if($subscribe->value == $_POST['email'])
+				$emailexists = 1;
+			}
+			
+		}
+		echo $emailexists;
+	}	
 }
