@@ -292,6 +292,15 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                         
                                         </li>
                                         
+                                         <li <?php
+                                            if ($function == 'designbook') {
+                                                echo 'class="current"';
+                                            }
+                                        ?>>
+                                        <a href="<?php echo base_url('site/designbook'); ?>">Design Book</a>
+
+                                        </li>                                     
+                                        
                                     </ul>
 
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">

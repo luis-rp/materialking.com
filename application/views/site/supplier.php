@@ -174,8 +174,7 @@ padding:5px 0px;
 	width: 50px;
 	height: 50px;
 	position: absolute;
-/*display:none;*/
-	opacity: 0;
+/*display:none;*/	
 	color: #FFFFFF;
 	text-align: center;
 }
@@ -183,6 +182,7 @@ padding:5px 0px;
 {
 	display: block;
 	height: 79px;
+	opacity: 1.0;
 }
 .person
 {
@@ -194,20 +194,20 @@ padding:5px 0px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 240px;
+	width: 141px;
 	border: 1px solid #D7C7C7;
 }
 #tagit .box
 {
 	border: 1px solid #F10303;
-	width: 100px;
-	height: 100px;
+	width: 10px;
+	height: 10px;
 	float: left;
 }
 #tagit .name
 {
 	float: left;
-	background-color: #FFF;
+	background-color: #C5C5C5;
 	width: 127px;
 	height: 92px;
 	padding: 5px;
@@ -227,10 +227,10 @@ padding:5px 0px;
 }
 #taglist
 {
-	width: 300px;
+	width: 30px;
 	min-height: 200px;
 	height: auto !important;
-	height: 200px;
+	height: 20px;
 	float: left;
 	padding: 10px;
 	margin-left: 20px;
@@ -257,6 +257,21 @@ padding:5px 0px;
 	float: left;
 }
  
+.tp_circle {
+    background: none repeat scroll 0 0 #000000;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50% 50% 50% 50%;
+    box-shadow: 0 0 10px #000000;
+    color: #FFFFFF;    
+    height: 16px;
+    line-height: 13px;
+    padding-top: 4px;
+    /*position: absolute;
+    text-align: center;*/
+    width: 20px;
+    z-index: 2;
+}
+
 </style>
 
 <!-- <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script> -->
@@ -497,20 +512,24 @@ var id = $( img ).attr( 'id' );
     });
     
     
-    // mouseover the taglist 
+     // mouseover the taglist 
 	$('#taglist').on( 'mouseover', 'li', function( ) {
       id = $(this).attr("id");
-      $('#view_' + id).css({ opacity: 1.0 });
+      $('#view_' + id+'_').css({ opacity: 1.0 });
     }).on( 'mouseout', 'li', function( ) {
-        $('#view_' + id).css({ opacity: 0.0 });
+        $('#view_' + id+'_').css({ opacity: 0.0 });
     });
 	
 	// mouseover the tagboxes that is already there but opacity is 0.
 	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
 		var pos = $( this ).position();
-		$(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+		 id = $(this).attr("id");	
+		 // alert(id);	 
+		//$(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+		$('#' + id+'_').css({ opacity: 1.0 });
 	}).on( 'mouseout', '.tagview', function( ) {
-		$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+		$('#' + id+'_').css({ opacity: 0.0 });
 	});
 
 	

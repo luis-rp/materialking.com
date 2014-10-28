@@ -2463,10 +2463,10 @@ class site extends CI_Controller
     	if ($result){
     		foreach ($result as $rs){
 
-    			$data['boxes'] .= '<div class="tagview" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
-    			$data['boxes'] .= '<div class="square">';
-    			$data['boxes'] .= '<div style="margin-top:50px;" class="person">' . $rs->name . '</div></div>';
-    			$data['boxes'] .= '</div>';
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
+    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/bigbox.png"></div>';
 
     			$data['lists'] .= '<li id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)</li>';
 
@@ -2486,5 +2486,14 @@ class site extends CI_Controller
     	$query = $this->db->delete('image_tag',$where);    	
     	
     }	
+    
+    function designbook()
+    {
+
+        $sql = "SELECT i.*,g.company, g.imagename FROM ".$this->db->dbprefix('image_tag')." i join ".$this->db->dbprefix('gallery')." g on i.pic_id = g.id";
+		$data['gallery'] = $this->db->query($sql)->result();
+    	$this->load->view('site/designbook',$data);
+
+    }
     
 }
