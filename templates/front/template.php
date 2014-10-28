@@ -208,7 +208,7 @@
 	<?php }?>
     <div class="user-info">
       <div class="greeting">Welcome</div>
-      <div class="username"><span class="semi-bold"><?php echo $this->session->userdata('company')->username;?></span></div>
+      <div class="username" style="width:200px"><span class="semi-bold" style="word-wrap:break-word;"><?php echo $this->session->userdata('company')->username;?></span></div>
       <div class="status"></div>
     </div>
    </div>
