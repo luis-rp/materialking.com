@@ -377,7 +377,7 @@ $( document ).tooltip();
 
                                             <?php if(!empty($item->companynotes)){?>
                                             <div class="company-note" style="height:120px;overflow:auto;">
-                                                <?php echo $item->companynotes; ?>
+                                                <section><?php echo $item->companynotes; ?></section>
                                             </div>
                                             <?php } ?>
                                             <div class="area">

@@ -18,6 +18,7 @@ class Company extends CI_Controller {
         $this->load->model('admin/settings_model');
         $this->load->model('admin/catcode_model');
         $this->load->model('admin/itemcode_model');
+        $this->load->model('admin/quote_model');
         $this->load->model('form_model');
         $this->load->model('form_subscription_model');
         $this->load->library("validation");
@@ -32,15 +33,15 @@ class Company extends CI_Controller {
     }
 
     public function index() {
-		
+
         $this->login();
     }
 
-    public function register() 
+    public function register()
     {
         $this->load->template('../../templates/front/register');
         $data['states'] = $this->db->get('state')->result();
-        
+
         $this->load->view('company/register',$data);
     }
 
@@ -76,8 +77,8 @@ class Company extends CI_Controller {
             	$completeaddress.=$_POST['zip'];
             }
 
-        $_POST['address'] = $completeaddress;        
-        
+        $_POST['address'] = $completeaddress;
+
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/register');
@@ -92,13 +93,13 @@ class Company extends CI_Controller {
         redirect('company/register');
     }
 
-    function sendRegistrationEmail($id, $key) 
+    function sendRegistrationEmail($id, $key)
     {
         $c = $this->companymodel->getcompanybyid($id);
 
         $link = base_url() . 'company/complete/' . $key;
         $data['email_body_title'] = "Dear " . $c->title ;
-	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
+	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -135,7 +136,7 @@ class Company extends CI_Controller {
         $this->load->view('company/complete', $data);
     }
 
-    public function savecomplete() 
+    public function savecomplete()
     {
         if (!@$_POST)
             die;
@@ -188,12 +189,12 @@ class Company extends CI_Controller {
         $tierprice['tier3'] = -6;
         $tierprice['tier4'] = -10;
         $this->db->insert('tierpricing', $tierprice);
-        
+
         $c->username = $_POST['username'];
 
         $data['company'] = $c;
         $this->session->set_userdata($data);
-        
+
         $data['email_body_title']  = "Dear " . $c->username;
         $data['email_body_content']  = "Congratulations! <br><br> Thanks for registration, Your registration is complete. You can login in Dashboard.
         <br/><br/>
@@ -216,7 +217,7 @@ class Company extends CI_Controller {
         $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
-        
+
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">You Have Now Successfully Completed Your Registration.</div></div></div>');
         redirect('dashboard');
     }
@@ -226,7 +227,7 @@ class Company extends CI_Controller {
         $this->load->template('../../templates/front/register', $data);
         $this->load->view('company/login', $data);
     }
-	
+
     function checklogin() {
         if (!@$_POST)
             die('Wrong access');
@@ -251,21 +252,21 @@ class Company extends CI_Controller {
 
             $data['comet_user_id'] = $check->id;
             $data['comet_user_email'] = $check->primaryemail;
-			
+
             $this->session->set_userdata($data);
-			
+
 			@session_start();
 			$_SESSION['comet_user_id']=$check->id;
 			$_SESSION['comet_user_email']=$check->primaryemail;
 			$_SESSION['userid']=$check->id;
 			$_SESSION['logintype']='company';
-			
+
 			/*$this->load->helper('cookie');
         	$this->input->set_cookie("comet_user_id", $check->id,time()+3600);
 			$this->input->set_cookie("comet_user_email", $check->primaryemail,time()+3600);
 			$this->input->set_cookie("userid", $check->id,time()+3600);
 			$this->input->set_cookie("logintype", 'company',time()+3600);*/
- 			
+
             redirect('dashboard');
         } else {
             $data['message'] = 'Invalid Login';
@@ -286,18 +287,18 @@ class Company extends CI_Controller {
 		$_SESSION['comet_user_email']='';
 		$_SESSION['userid']='';
 		$_SESSION['logintype']='';
-			
+
         redirect('company/login', 'refresh');
     }
 
-    function profile() 
+    function profile()
     {
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
         $company = $this->db->where('id',$company->id)->get('company')->row();
-        
-        if (!trim(@$company->com_lat) && @$c->address) 
+
+        if (!trim(@$company->com_lat) && @$c->address)
         {
             $geoloc = get_geo_from_address($c->address);
             if(@$geoloc->lat && @$geoloc->long)
@@ -311,12 +312,12 @@ class Company extends CI_Controller {
 
 
         $data['states'] = $this->db->get('state')->result();
-        
+
         $data['types'] = array();
-        $types = $this->db->order_by('title')->get('type')->result();        
+        $types = $this->db->order_by('title')->get('type')->result();
         foreach ($types as $t) {
             $this->db->where(array('companyid' => $company->id, 'typeid' => $t->id));
-            
+
             if ($this->db->get('companytype')->num_rows > 0)
                 $t->checked = 'checked="CHECKED"';
             else
@@ -333,24 +334,24 @@ class Company extends CI_Controller {
         $emails = $this->db->get('companyemail')->result();
         $data['company'] = $company;
         $data['emails'] = $emails;
-        
+
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$company->id))->result();
         if($bhrs){
         $businesshrs = array();
         foreach($bhrs as $dbh){
-        	
+
         	$businesshrs[$dbh->day.'start'] = $dbh->start;
         	$businesshrs[$dbh->day.'end'] = $dbh->end;
         	$businesshrs[$dbh->day.'closed'] = $dbh->isclosed;
-        	
+
         }
         $data['businesshrs'] = $businesshrs;
-        
+
         }
-        
+
         $this->load->view('company/profile', $data);
     }
-    
+
     function addMember(){
     	$company = $this->session->userdata('company');
     	if (!$company)
@@ -369,19 +370,19 @@ class Company extends CI_Controller {
 		{
 			$error = $this->upload->display_errors();
 			$this->session->set_flashdata('message', $error);
-			
+
 		}
 		else
 		{
 			$data = $this->upload->data();
 			$this->session->set_flashdata('message', "");
 			$this->db->insert("companyteam",array("cid"=>$company->id,"name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
-	    	
+
     	}
     	redirect("company/profile");
-    	
+
     }
-    
+
     function deleteMember($id){
     	$company = $this->session->userdata('company');
     	if (!$company)
@@ -389,7 +390,7 @@ class Company extends CI_Controller {
     	$this->db->where('id', $id);
     	$this->db->where('cid', $company->id);
     	$this->db->delete('companyteam');
-    	
+
     	redirect("company/profile");
     }
     function editMember(){
@@ -397,21 +398,21 @@ class Company extends CI_Controller {
     	if (!$company)
     		redirect('company/login');
     	$company = $this->db->where('id',$company->id)->get('company')->row();
-    	
-    	
+
+
     	$config['upload_path'] = './uploads/companyMembers/';
     	$config['allowed_types'] = 'gif|jpg|png';
     	/*$config['max_size']	= '100';
     	 $config['max_width']  = '1024';
     	$config['max_height']  = '768';*/
-    	
+
     	$this->load->library('upload', $config);
-    	
+
     	if ( ! $this->upload->do_upload("memberPicture"))
     	{
     		$error = $this->upload->display_errors();
     		$this->session->set_flashdata('message', $error);
-    			
+
     	}
     	else
     	{
@@ -422,12 +423,12 @@ class Company extends CI_Controller {
     	$this->db->update("companyteam",array("name"=>$this->input->post("memberName"),"email"=>$this->input->post("memberEmail"),"title"=>$this->input->post("memberTitle"),"phone"=>$this->input->post("memberPhone"),"linkedin"=>$this->input->post("memberLinkedin"),"picture"=>$data['file_name']));
     	redirect("company/profile");
     }
-    
+
     function getMemberInfo($id){
     	$company = $this->session->userdata('company');
     	if (!$company)
     		redirect('company/login');
-    	
+
     	$this->db->where("id",$id);
     	$this->db->where("cid",$company->id);
     	$row = $this->db->get("companyteam")->row();
@@ -460,7 +461,7 @@ class Company extends CI_Controller {
                     $_POST['logo'] = $nfn;
                 }
             }
-			
+
             if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
@@ -493,8 +494,8 @@ class Company extends CI_Controller {
             	}
             	//$_POST['lightbox'] = $imagename;
             }
-            
-            
+
+
          	if(isset($_FILES['UploadFile1']['name']))
         	{
             	ini_set("upload_max_filesize","128M");
@@ -502,7 +503,7 @@ class Company extends CI_Controller {
             	$count=0;
             	foreach ($_FILES['UploadFile1']['name'] as $filename)
             	{
-            		
+
             		$temp=$target;
             		$tmp=$_FILES['UploadFile1']['tmp_name'][$count];
             		$origionalFile=$_FILES['UploadFile1']['name'][$count];
@@ -515,9 +516,9 @@ class Company extends CI_Controller {
                     {
             		$this->db->insert('company_files', array('company' => $company->id, 'filename' => $filename));
                     }
-            		
-            		}	
-            			
+
+            		}
+
             			$file1 = 0;
             			if(isset($_POST['checkid'])){
             				foreach($_POST['checkid'] as $check){
@@ -553,8 +554,8 @@ class Company extends CI_Controller {
             	}
 
             }
-   
-            
+
+
          $completeaddress="";
             if($_POST['street'])
             {
@@ -573,9 +574,9 @@ class Company extends CI_Controller {
             	$completeaddress.=$_POST['zip'];
             }
 
-        $_POST['address'] = $completeaddress;    
-            
-            
+        $_POST['address'] = $completeaddress;
+
+
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/profile');
@@ -602,27 +603,27 @@ class Company extends CI_Controller {
             }
         }
 
-        
+
         $dayarray = array('mon','tue','wed','thu','fri','sat','sun');
-        
+
         foreach($dayarray as $day){
         	if(isset($_POST[$day."start"]) || isset($_POST[$day."end"]) || isset($_POST[$day."closed"]) ) {
-        		
+
         		if(isset($_POST[$day."start"]))
         		$start = $_POST[$day."start"];
-        		else 
+        		else
         		$start = '';
-        		
+
         		if(isset($_POST[$day."end"]))
         		$end = $_POST[$day."end"];
-        		else 
+        		else
         		$end = '';
-        		
+
         		if(isset($_POST[$day."closed"]))
         		$closed = 1;
-        		else 
-        		$closed = 0;        		
-        		
+        		else
+        		$closed = 0;
+
         		$this->db->where('company =', $company->id);
         		$this->db->where('day', $day);
         		if ($this->db->get('company_business_hours')->num_rows > 0) {
@@ -632,15 +633,16 @@ class Company extends CI_Controller {
         		}else{
         			$this->db->insert('company_business_hours', array('company' => $company->id, 'day' => $day, 'start' => $start,'end' => $end,'isclosed' => $closed));
         		}
-        	  if(isset($_POST[$day."start"]))	
+        	  if(isset($_POST[$day."start"]))
 			  	unset($_POST[$day."start"]);
-			  if(isset($_POST[$day."end"]))	
-			  	unset($_POST[$day."end"]); 	
+			  if(isset($_POST[$day."end"]))
+			  	unset($_POST[$day."end"]);
 			  if(isset($_POST[$day."closed"]))
         		unset($_POST[$day."closed"]);
-        	}       	
+        	}
         }
-        
+
+
         unset($_POST['_wysihtml5_mode']);
         if(isset($_POST['checkid']))
         unset($_POST['checkid']);
@@ -648,25 +650,25 @@ class Company extends CI_Controller {
         unset($_POST['file1']);
         $this->db->where('id', $company->id);
         $this->db->update('company', $_POST);
-        
-        
+
+
         if($this->input->post('address'))
         {
             $geoloc = get_geo_from_address($this->input->post('address'));
             if($geoloc && @$geoloc->lat && @$geoloc->long)
             {
                 $update_supplier = array();
-                
+
                 $update_supplier['com_lat'] = $geoloc->lat;
                 $update_supplier['com_lng'] = $geoloc->long;
-                
+
                 $this->supplier_model->update_supplier($company->id, $update_supplier);
             }
         }
-        
+
 
         $company = $this->supplier_model->get_supplier($company->id);
-       
+
 
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Your profile has been saved.</div></div></div>');
         redirect('company/profile');
@@ -709,7 +711,7 @@ class Company extends CI_Controller {
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Password changed successfully.</div></div></div>');
         redirect('company/password');
     }
-    
+
     ////////////////////////
     function forgot() {
         $this->load->template('../../templates/front/register');
@@ -726,7 +728,7 @@ class Company extends CI_Controller {
             //print_r($_POST);die;
             $this->db->where('primaryemail', $_POST['email']);
             $check = $this->db->get('company');
-            
+
             if ($check->num_rows == 0) {
                 $errormessage = "Invalid email";
             }
@@ -739,21 +741,21 @@ class Company extends CI_Controller {
         }
 
         $c = $check->row();
-        
+
         if($_POST['type'] == 'username')
         {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success">Your username is - '.$c->username.'</div></div>');
             redirect('company/forgot');
         }
-        
-        
+
+
         $key = md5(uniqid($c->title) . '-' . date('YmdHisu'));
         $this->db->where('id', $c->id);
         $this->db->update('company', array('passkey' => $key));
 
         $link = base_url() . 'company/change/' . $key;
         $data['email_body_title']  = "Dear " . $c->title ;
-	  	$data['email_body_content']  = "Please click following link to change your password:  <br><br>		 
+	  	$data['email_body_content']  = "Please click following link to change your password:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -833,16 +835,16 @@ class Company extends CI_Controller {
         redirect('company/login');
     }
     //////////////////////////////////
-    
-    
+
+
     ////////////////////////
-    function resend() 
+    function resend()
     {
         $this->load->template('../../templates/front/register');
         $this->load->view('company/resend');
     }
 
-    function sendkeyagain() 
+    function sendkeyagain()
     {
         if (!@$_POST)
             die('Wrong access');
@@ -872,7 +874,7 @@ class Company extends CI_Controller {
 
         $link = base_url() . 'company/complete/' . $key;
         $data['email_body_title'] = "Dear " . $c->title ;
-	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
+	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -894,8 +896,8 @@ class Company extends CI_Controller {
         redirect('company/resend');
     }
     //////////////////////////////////
-    
-    
+
+
     function tier() {
         $company = $this->session->userdata('company');
         if (!$company)
@@ -915,7 +917,7 @@ class Company extends CI_Controller {
             $tier = $this->db->get('tierpricing')->row();
         }
 
-        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname, 
+        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
         			   tier, creditlimit, totalcredit, creditfrom, creditto
 				FROM " . $this->db->dbprefix('users') . " u
 				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
@@ -930,10 +932,10 @@ class Company extends CI_Controller {
             $pa = $admin->purchasingadmin;
 		    $settings = $this->settings_model->get_setting_by_admin($pa);
 		    $query = "SELECT
-		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100)) 
-		    			totalunpaid FROM 
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
-						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."' 
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
 						AND ai.purchasingadmin='$pa'";
 		    //echo $query.'<br/>';
 		    $due = $this->db->query($query)->row()->totalunpaid;
@@ -957,7 +959,7 @@ class Company extends CI_Controller {
         $this->load->view('company/tier', $data);
     }
 
-    function savetier() 
+    function savetier()
     {
         $company = $this->session->userdata('company');
         if (!$company)
@@ -969,19 +971,19 @@ class Company extends CI_Controller {
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/tier');
     }
-    
+
     function changetier($invitation='')
     {
         $company = $this->session->userdata('company');
         if (!$company)
             die;
-        
+
         if(!@$_POST['purchasingadmin'])
             die;
-        
+
         if(!@$_POST['tier'])
             die;
-        
+
         $update = array('tier'=>strtolower($_POST['tier']));
         //print_r($company);die;
         $this->db->where('company', $company->id);
@@ -994,8 +996,8 @@ class Company extends CI_Controller {
         }
         die(1);
     }
-    
-    
+
+
     function changeitemtier()
     {
         $company = $this->session->userdata('company');
@@ -1009,11 +1011,11 @@ class Company extends CI_Controller {
             die;
 
         if(!@$_POST['itemid'])
-            die;    
-            
+            die;
+
         if(!@$_POST['quote'])
-            die;                   
-            
+            die;
+
         $this->db->where('company', $company->id);
         $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         $this->db->where('itemid', $_POST['itemid']);
@@ -1022,20 +1024,20 @@ class Company extends CI_Controller {
         {
         	if(isset($_POST['tier']))
             $update = array('tier'=>strtolower($_POST['tier']));
-			
+
             if(isset($_POST['notes']))
             $update['notes'] = $_POST['notes'];
-            
+
             if(isset($_POST['qty']))
             $update['qty'] = $_POST['qty'];
-            else 
+            else
             $update['qty'] = 0;
-            
+
             $this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         	$this->db->where('itemid', $_POST['itemid']);
         	$this->db->where('quote', $_POST['quote']);
-            $this->db->update('purchasingtier_item', $update);  
+            $this->db->update('purchasingtier_item', $update);
             echo "Item price Changed";
         }
         else
@@ -1045,12 +1047,12 @@ class Company extends CI_Controller {
             $insert['tier'] = $_POST['tier'];
             if(isset($_POST['notes']))
             $insert['notes'] = $_POST['notes'];
-            
+
             if(isset($_POST['qty']))
             $insert['qty'] = $_POST['qty'];
-            else 
+            else
             $update['qty'] = 0;
-            
+
             $insert['company'] = $company->id;
             $insert['itemid'] = $_POST['itemid'];
             $insert['quote'] = $_POST['quote'];
@@ -1058,10 +1060,10 @@ class Company extends CI_Controller {
             $this->db->insert('purchasingtier_item', $insert);
             echo "Item price Set";
         }
-                      
+
         die(1);
     }
-    
+
     function changeitemprice()
     {
         $company = $this->session->userdata('company');
@@ -1071,14 +1073,14 @@ class Company extends CI_Controller {
             die;
         if(!@$_POST['price'])
             die;
-        
+
         $this->db->where('type', 'Supplier');
         $this->db->where('company', $company->id);
         $this->db->where('itemid', $_POST['itemid']);
         if($this->db->get('companyitem')->row())
         {
             $update = array('ea'=>strtolower($_POST['price']));
-            
+
             $this->db->where('type', 'Supplier');
             $this->db->where('company', $company->id);
             $this->db->where('itemid', $_POST['itemid']);
@@ -1095,7 +1097,7 @@ class Company extends CI_Controller {
         }
         echo 1; die;
     }
-    
+
     function price()
     {
         $company = $this->session->userdata('company');
@@ -1114,7 +1116,7 @@ class Company extends CI_Controller {
         echo 1; die;
     }
 
-    function savepurchasingtier() 
+    function savepurchasingtier()
     {
         $company = $this->session->userdata('company');
         if (!$company)
@@ -1133,7 +1135,7 @@ class Company extends CI_Controller {
             	$arr['creditfrom'] = date('Y-m-d', strtotime($_POST['creditfrom'][$admin]));
             if($_POST['creditto'][$admin])
             	$arr['creditto'] = date('Y-m-d', strtotime($_POST['creditto'][$admin]));
-            
+
             //print_r($arr);die;
             $this->db->insert('purchasingtier', $arr);
         }
@@ -1142,7 +1144,7 @@ class Company extends CI_Controller {
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/tier');
     }
-    
+
     ///bankaccount
     function bankaccount()
     {
@@ -1158,7 +1160,7 @@ class Company extends CI_Controller {
         $data['bankaccount'] = $bankaccount;
         $this->load->view('company/bankaccount', $data);
     }
-    
+
     function savebankaccount()
     {
         $company = $this->session->userdata('company');
@@ -1187,12 +1189,12 @@ class Company extends CI_Controller {
         if (!$this->image_lib->resize())
             echo $this->image_lib->display_errors();
     }
- 
+
     function ads(){
     	$company = $this->session->userdata('company');
     	if (!$company)
     		redirect('company/login');
-    	
+
     	$this->db->where("user_id",$company->id);
     	$res['ads'] = $this->db->get("ads")->result();
     	$this->load->view('company/ads', $res);
@@ -1201,9 +1203,9 @@ class Company extends CI_Controller {
     	$company = $this->session->userdata('company');
     	if (!$company)
     		redirect('company/login');
-    	
+
      $catcodes = $this->catcode_model->get_categories_tiered();
-     
+
         $categories = array();
         if ($catcodes)
         {
@@ -1220,11 +1222,11 @@ class Company extends CI_Controller {
     }
     function saveAd(){
     	$res = $this->do_upload();
-	    
+
     	//$res = $this->do_upload();
     	if(isset($res['error'])){
     		$this->session->set_flashdata('message',$res['error']);
-    	
+
     	}
     	else {
     		$this->admodel->saveAd($res);
@@ -1235,7 +1237,7 @@ class Company extends CI_Controller {
     {
     $this->load->library('upload');
 
-    	
+
     	$config['upload_path'] = './uploads/ads/';
     	$config['allowed_types'] = '*';
     	//$config['max_size']	= '9000';
@@ -1245,7 +1247,7 @@ class Company extends CI_Controller {
     	if (! $this->upload->do_multi_upload("adfile"))
     	{
     		$error = array('error' => $this->upload->display_errors());
-    
+
     		//$this->load->view('upload_form', $error);
     	}
     	else
@@ -1257,7 +1259,7 @@ class Company extends CI_Controller {
     	} //var_dump($error); exit;
     	return $error;
     }
-  
+
   	// List Items of the selected Categories
   	 function get_items($categoryId){
 
@@ -1274,17 +1276,17 @@ class Company extends CI_Controller {
 
         $companyId = $this->session->userdata('company')->id;
         $this->load->view('company/formbuilderselector');
-    
+
     }
     public function createformnetwork()
     {
     	$company = $this->session->userdata('company');
     	if (!$company)
     		redirect('company/login');
-    
+
     	$companyId = $this->session->userdata('company')->id;
     	$this->load->view('company/formnetworkbuilder');
-    
+
     }
 
     public function createformdata()
@@ -1299,7 +1301,7 @@ class Company extends CI_Controller {
 		$data['message'] = $message;
 		$this->load->view('company/formnetworkbuilder',$data);
     }
-    
+
     public function createformsubscriptions(){
     	$company = $this->session->userdata('company');
     	if (!$company)
@@ -1307,14 +1309,14 @@ class Company extends CI_Controller {
 
     	$this->load->view('company/formsubscriptionsbuilder');
     }
-    
+
     public function insertformsubscriptions(){
     	$companyId = $this->session->userdata('company')->id;
     	$result = $this->form_subscription_model->create_field($_POST,$companyId);
     	//$data['result'] = $this->form_model->view_field($companyId);
-    	
+
     	$path=base_url() . 'company/formview';
-    	
+
     	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Form fields are created Successfully.<a href='.$path.' target="_self">View Form</a></div></div></div>';
     	$data['message'] = $message;
     	 	$this->load->view('company/formsubscriptionsbuilder');
@@ -1326,11 +1328,11 @@ class Company extends CI_Controller {
 
 		$this->load->view('company/formview',$data);
     }
-    
+
      public function formsubscriptionsview(){
      	$companyId = $this->session->userdata('company')->id;
      	$data['result'] = $this->form_subscription_model->view_field($companyId);
-     	
+
      	$this->load->view('company/formsubscriptionsview',$data);
      }
 
@@ -1344,13 +1346,13 @@ class Company extends CI_Controller {
 		$this->session->set_flashdata('message', $message);
 		$this->load->view('company/formview',$data);
     }
-    
+
     public function deleteformdata($id)
     {
 		$data['result'] = $this->form_model->delete_field($id);
 		$this->load->view('company/formnetworkbuilder',$data);
     }
-    
+
     public function deleteformsubscriptionsdata($id)
     {
     	$data['result'] = $this->form_subscription_model->delete_field($id);
@@ -1363,12 +1365,12 @@ class Company extends CI_Controller {
 		$data['result'] = $this->form_model->delete_allfield($companyId);
 		$this->load->view('company/formnetworkbuilder',$data);
     }
-    
-    
+
+
     function updatead($id)
-	{		
+	{
 		$this->db->where("id",$id);
-    	$res['ads'] = $this->db->get("ads")->result();		
+    	$res['ads'] = $this->db->get("ads")->result();
     	$catcodes = $this->catcode_model->get_categories_tiered();
      	$itemcodes = $this->itemcode_model->get_itemcodes();
         $categories = array();
@@ -1382,30 +1384,30 @@ class Company extends CI_Controller {
         $res['categories'] = $categories;
         $res['items'] = $itemcodes;
         $res['adsid'] = $id;
-        
+
         if(isset($_POST['add']))
         {
 			$res = $_POST;
 	    	$res = $this->do_upload();
-		    
+
 	    	//$res = $this->do_upload();
-	    
+
 	    	if(isset($res['error'])){
 	    		$this->session->set_flashdata('message',$res['error']);
 	    		redirect("company/ads");
 	    	}
-	    	
+
 	    		$this->admodel->updateAd($res);
-	    		
+
 	    	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
 			$res['message'] = $message;
 			$this->session->set_flashdata('message', $message);
 			redirect("company/ads");
         }
 		$this->load->view('company/updatead',$res);
-		
+
 	}
-	
+
 	function deletead($id)
 	{
             $result=$this->admodel->deleteAd($id);
@@ -1415,7 +1417,7 @@ class Company extends CI_Controller {
 			redirect("company/ads");
 
 	}
-	
+
 	function formsubmission()
 	{
 	    $companyId = $this->session->userdata('company')->id;
@@ -1436,72 +1438,72 @@ class Company extends CI_Controller {
             	$this->load->view('company/formsubmission',$data);
             }
 	}
-	
+
 	function mailinglist(){
 		$this->load->view('company/mailinglist');
-		
+
 	}
-	
+
 	function listsubscribers(){
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		
+
 		$this->db->where("cid",$company->id);
 		$subscribers = $this->db->get("newsletter_subscribers")->result();
-		
+
 		$data = array();
 		foreach( $subscribers as $subscriptor){
-			
+
 			$this->db->where("subscriber_id",$subscriptor->id);
-			
+
 			$data['subscribers'][$subscriptor->id] = $this->db->get("newsletter_subscribers_data")->result_array();
-			
+
 		}
 		$this->load->view('company/listsubscribers',$data);
 	}
-	
+
 	function listtemplates(){
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		
+
 		/*$this->db->where("cid",$company->id);
 		$data['templates']  = $this->db->get("newsletter_template")->result();*/
-		
+
 		$this->db->select("*");
 		$this->db->from("newsletter_template");
 		$this->db->join("newsletter_analytics","newsletter_template.id=newsletter_analytics.tid");
 		$this->db->where("cid",$company->id);
 		$data['templates']  = $this->db->get()->result();
-		
+
 		$this->load->view('company/listtemplates',$data);
-		
+
 	}
-	
+
 	function listpretemplates(){
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-	
-		
+
+
 		$data['templates']  = $this->db->get("newsletter_predefined_template")->result();
-	
+
 		$this->load->view('company/listpretemplates',$data);
-	
+
 	}
-	
+
 	function newtemplate(){
-		
+
 		$data['action'] = "new";
 		$data["cid"] = $this->session->userdata('company')->id;
 		$this->db->where("CompanyID",$this->session->userdata('company')->id);
 		$data['fields'] = $this->db->get("formsubscription")->result();
 		$this->load->view('company/newnewslettertemplate',$data);
 	}
-	
+
 	function edittemplate($id){
-		
+
 		$data['action'] = "update";
 		$this->db->where("id",$id);
 		$this->db->where("cid",$this->session->userdata('company')->id);
@@ -1513,75 +1515,75 @@ class Company extends CI_Controller {
 
 			$this->db->where("CompanyID",$this->session->userdata('company')->id);
 			$data['fields'] = $this->db->get("formsubscription")->result();
-			
+
 			$this->load->view('company/newnewslettertemplate',$data);
 		}else{
 			$this->session->set_flashdata('message', 'The template doesnt exist');
 			redirect("company/mailinglist");
 		}
 	}
-	
+
 	function editpretemplate($id){
-	
+
 		$data['action'] = "update";
 		$this->db->where("id",$id);
 		$res = $this->db->get("newsletter_predefined_template")->row();
 		if(!empty($res)){
 			$data['title'] = $res->title;
 			$data['body'] = $res->body;
-			
+
 			$this->load->view('company/newnewsletterpretemplate',$data);
 		}else{
 			$this->session->set_flashdata('message', 'The template doesnt exist');
 			redirect("company/mailinglist");
 		}
 	}
-	
+
 	function addtemplate(){
-		
+
 		$title = $this->input->post("title");
 		$body = $this->input->post("body");
 		$cid  = $this->input->post("cid");
-		
+
 		$this->db->insert("newsletter_template",array("cid"=>$cid, "title"=>$title,"body"=>$body));
 		$this->db->insert("newsletter_analytics",array("tid"=>$this->db->insert_id(),"numSent"=>0,"numErrors"=>0));;
 		$this->session->set_flashdata('message', 'The template was created');
 			redirect("company/mailinglist");
 	}
 	function addpretemplate(){
-	
+
 		$title = $this->input->post("title");
 		$body = $this->input->post("body");
 		$cid  = $this->session->userdata('company')->id;
-	
+
 		$this->db->insert("newsletter_template",array("cid"=>$cid, "title"=>$title,"body"=>$body));
-	
+
 		$this->session->set_flashdata('message', 'The template was created');
 		redirect("company/mailinglist");
 	}
-	
+
 	function updatetemplate($id){
-	
+
 		$title = $this->input->post("title");
 		$body = $this->input->post("body");
-		
+
 		$this->db->where("id",$id);
 		$this->db->update("newsletter_template",array("title"=>$title,"body"=>$body));
-		
+
 		$this->session->set_flashdata('message', 'The template was updated');
 		redirect("company/mailinglist");
 	}
-	
+
 	function deleteimage($id)
 	{
 		$rows['image']=$this->db->get_where('companyattachment',array('id'=>$id))->row();
 		$name=$rows['image']->imagename;
-				
+
 		if(file_exists('./uploads/gallery/'.$name) && !is_dir('./uploads/gallery/'.$name))
 		{
 		unlink('./uploads/gallery/'.$name);
 		}
-		
+
 		$this->db->delete('companyattachment',array('id'=>$id));
 		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
 	    $res['message'] = $message;
@@ -1589,7 +1591,7 @@ class Company extends CI_Controller {
 		redirect("company/profile");
 
 	}
-	
+
 	function deletepurchasingtier($id)
     {
         $company = $this->session->userdata('company');
@@ -1600,7 +1602,7 @@ class Company extends CI_Controller {
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/tier');
     }
-    
+
     function deletefile($id)
 	{
 		$rows['file']=$this->db->get_where('company_files',array('id'=>$id))->row();
@@ -1617,7 +1619,7 @@ class Company extends CI_Controller {
 		redirect("company/profile");
 
 	}
-	
+
 	function deletegalleryimage($id)
 	{
 		$rows['gallery']=$this->db->get_where('gallery',array('id'=>$id))->row();
@@ -1636,5 +1638,131 @@ class Company extends CI_Controller {
 
 	}
 
+	function designbook()
+	{
+		$company = $this->session->userdata('company');
+        $data['design']=$this->db->get_where('designbook',array('company'=>$company->id))->result();
+        $this->load->view('company/designbook',$data);
+	}
+
+
+	function designbook1()
+	{
+       $company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
+
+        $errormessage = '';
+        $message='';
+		   if(isset($_FILES['UploadFile']['name']))
+            {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/designbook/';
+            	$count=0;
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	 {
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+                    if(isset($filename) && $filename!='')
+                      {
+            		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename));
+                      }
+            	 }
+            	$message='Images Uploaded Succesfully.';
+             }
+		   $file = 0;
+           if(isset($_POST['publishid']))
+           {
+              foreach($_POST['publishid'] as $check)
+              {
+
+            	 if(isset($_POST['file'][$check]))
+            	   {
+            		 $file = 1;
+            	   }
+            	 else
+            	   {
+            		$file = 0;
+            	   }
+            		$this->db->where('id', $check);
+            		$this->db->update('designbook', array('publish' => $file));
+               }
+           }
+
+           if(isset($_POST['nameid']))
+           {
+              foreach($_POST['nameid'] as $check1)
+              {
+            	 if(isset($_POST['designname'][$check1]))
+            	 {
+            	    $name = $_POST['designname'][$check1];
+            	    $this->db->where('id', $check1);
+            		$this->db->update('designbook', array('name' => $name));
+            	 }
+               }
+           }
+           else
+            {
+             $errormessage = 'Please Enter Name for Image.';
+            }
+           $message="Data Updated successfully.";
+			if ($errormessage)
+			 {
+            $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
+              }
+
+
+            if ($message)
+			 {
+               $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">' . $message . '</div></div></div>');
+			 }
+
+       redirect('company/designbook');
+	}
+
+	 function deletedesignfile($id)
+	{
+		$rows['design']=$this->db->get_where('designbook',array('id'=>$id))->row();
+		$name=$rows['design']->imagename;
+		if(file_exists('./uploads/designbook/'.$name) && !is_dir('./uploads/designbook/'.$name))
+		{
+		unlink('./uploads/designbook/'.$name);
+		}
+		$this->db->delete('designbook',array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+		$this->session->set_flashdata('message', $message);
+		redirect("company/designbook");
+
+	}
+
+	function getitembycode()
+    {
+        $code = $_POST['code'];
+        
+        $item = $this->quote_model->finditembycode($code);		
+        
+        $this->db->where('itemid',$item->itemid);
+		$this->db->where('type','Supplier');
+		$this->db->where('company',$this->session->userdata('company')->id);
+		$companyitem = $this->db->get('companyitem')->row();
+        //print_r($companyitem);
+
+		if($companyitem)
+		{			
+			$item->ea = $companyitem->ea;
+			if($companyitem->itemname!="")
+			$item->itemname = $companyitem->itemname;
+			if($companyitem->itemcode!="")
+			$item->itemcode = $companyitem->itemcode;
+		}
+        
+        echo json_encode($item); // die;
+    }    
     
 }
