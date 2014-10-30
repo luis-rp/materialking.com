@@ -280,7 +280,7 @@ function shownotice(newval,oldval,id){
                     			$totalpaid+= $item->totalprice;
                     		}
 
-                    		if($item->paymentstatus=='Unpaid')
+                    		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
                     		{
                     			$totalunpaid+= $item->totalprice;
                     		}

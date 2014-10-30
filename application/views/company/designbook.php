@@ -423,7 +423,7 @@ $(function() {
 				   <tr>
 				     <td>
 			           <?php $arr1=explode('.',$items->imagename); $ext=end($arr1);
-				             if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='jpeg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>      <a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/designbook/'.$items->imagename);?>');">                    <img  src="<?php echo site_url('uploads/designbook/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->filename;?>"></a>
+				             if($ext=='gif' || $ext=='tif' || $ext=='jpg' || $ext=='jpeg' || $ext=='png' || $ext=='GIF' || $ext=='TIF' || $ext=='JPG' || $ext=='PNG') { ?>      <a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/designbook/'.$items->imagename);?>');">                    <img  src="<?php echo site_url('uploads/designbook/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->name;?>"></a>
                             <?php } else { echo $items->name; } ?>
                      </td>
                      <td><input type="text" class="form-control" name="designname[<?php echo $items->id;?>]" id="designname[<?php echo $items->id;?>]" value="<?php echo $items->name;?>" required>
@@ -465,7 +465,7 @@ $(function() {
         <div class="modal-body">
         <div id="container2">
         <div id="imgtag">  
-  <img id="pic1" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" />
+  <img id="pic1"  />
   <input type="hidden" name="taghidid" id="taghidid"/>
   <input type="hidden" id="pictureid" name="pictureid"/> 
   <div id="tagbox">

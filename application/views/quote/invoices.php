@@ -183,7 +183,7 @@ function invoice(invoicenum)
 									    							$totalpaid+= $i->totalprice;
 									    							}
 
-									    						if($i->paymentstatus=='Unpaid')
+									    						if($i->paymentstatus=='Unpaid' || $i->paymentstatus=='Requested Payment')
 									    							{
 									    							$totalunpaid+= $i->totalprice;
 									    							}
