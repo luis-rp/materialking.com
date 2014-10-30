@@ -87,7 +87,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					values: [
 
 
-							<?php	foreach($ads as $ad) { 
+							<?php if(@$ads) {	foreach($ads as $ad) { 
 										foreach($ad as $ad_item){ if($ad_item['latitude']!="" && $ad_item['longitude']!="") {
 							?>
 							 	{
@@ -102,7 +102,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 								}
 							,
 
-					<?php } } }?>	
+					<?php } } } } ?>	
 						
 					],
 					options:{

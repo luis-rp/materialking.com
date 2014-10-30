@@ -1137,7 +1137,11 @@ $( document ).tooltip();
                                     <div class="title-price row">
                                         <div class="title1 span5">
 
-                                            <p><?php echo $inv->companynotes; ?></p>
+                                            <?php if(!empty($inv->companynotes)){?>
+                                            <div class="company-note" style="height:120px;overflow:auto;">
+                                                <section><?php echo $inv->companynotes; ?></section>
+                                            </div>
+                                            <?php } ?>
 
                                             <div class="area">
                                                 <span class="key"><strong>Item Name:</strong></span>

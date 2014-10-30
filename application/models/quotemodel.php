@@ -565,8 +565,11 @@ class Quotemodel extends Model
 		{
 			$searches[] = " r.status='{$_POST['searchstatus']}'";
 		}
-        if (@$_POST['searchpaymentstatus']) 
+        if (@$_POST['searchpaymentstatus'])
         {
+        	if($_POST['searchpaymentstatus'] == "Unpaid")
+        	$searches[] = " (r.paymentstatus = 'Unpaid' || r.paymentstatus = 'Requested Payment') ";
+        	else
             $searches[] = " r.paymentstatus = '{$_POST['searchpaymentstatus']}' ";
         }
 		if(@$_POST['searchfrom'])

@@ -2659,8 +2659,10 @@ or edit your quote.</div></div></div>');
 			</table>';
 		//die($pdfhtml);
     	
-		require_once($config['base_dir'].'application/libraries/tcpdf/config/lang/eng.php');
-    	require_once($config['base_dir'].'application/libraries/tcpdf/tcpdf.php');
+		if (!class_exists('TCPDF')) {
+			require_once($config['base_dir'].'application/libraries/tcpdf/config/lang/eng.php');
+			require_once($config['base_dir'].'application/libraries/tcpdf/tcpdf.php');
+		}
     	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     	
     	$pdf->SetCreator(PDF_CREATOR);

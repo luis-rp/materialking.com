@@ -91,7 +91,7 @@ tr.still-due td
 
     <div class="content">
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title"> <a href="<?php echo site_url('quote/track_export').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp; <a href="<?php echo site_url('quote/track_pdf').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">View PDF</a><br />
+		<div class="page-title"> <a href="<?php echo site_url('quote/track_export').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp; <a href="<?php echo site_url('quote/track_pdf').'/'.$quoteid.'/'.$award; ?>" class="btn btn-green">View PDF</a>&nbsp; &nbsp; <a href="<?php echo site_url('quote/getawardedpdf').'/'.$quoteid; ?>" class="btn btn-green">View P.O.</a><br />
 			<h3>
 			Items for the PO# <?php echo $quote->ponum;?>
 			<?php if(@$bid->quotenum){?>
