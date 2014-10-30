@@ -221,7 +221,7 @@ var id = $( img ).attr( 'id' );
     data: "pic_id=" + id + "&name=" + name + "&description=" + description + "&pic_x=" + mouseX + "&pic_y=" + mouseY + "&type=insert",
     cache: true,
     success: function(data){
-    $('#taghidid').val(data);
+    //$('#taghidid').val(data);
      var img = $('#imgtag').find( 'img' );
      var id = $( img ).attr( 'id' );
      //get tags if present
@@ -267,6 +267,7 @@ var id = $( img ).attr( 'id' );
     // Remove tags.
     $( '#taglist' ).on('click', '.remove', function() {
       id = $(this).parent().attr("id");
+      console.log($(this));
       // Remove the tag
 	  $.ajax({
         type: "POST", 
@@ -329,9 +330,32 @@ function viewtag(pic_id)
 	$('#pictureid').val(pic_id);
 	// get the tag list with action remove and tag boxes and place it on the image.
 	$.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id, function( data ) {
-		$('#taglist ol').html(data.lists);
+		$('#taglist').html(data.lists);
 		$('#tagbox').html(data.boxes);
 	}, "json");
+	
+	$. ajax ({
+		type: "POST",
+		dataType: 'json',
+		data: {"pic_id" : pic_id},
+		url: "<?php echo site_url('site/populatetags')?>",
+		success: function (data) {
+			if(data){
+
+				$('#tagcombo').empty();
+				$('#tagcombo').append( new Option("Choose","") );
+				$.each(data, function( index, value ) {
+
+					$('#tagcombo').append( new Option(value.name,value.id) );
+
+				});
+
+			}
+		},
+		error: function(x,y,z){
+			alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+		}
+	});
 
 }
 
@@ -351,7 +375,13 @@ $(function() {
     {
     	var itemcode = document.getElementById(codeid).value;
     	
-    	if(itemcode!=""){
+    	if($('#taghidid').val()=="")
+    		alert("Please select any tag first");
+    		
+    	if(itemcode =="")
+    		alert("Please select any itemcode first");
+    			
+    	if(itemcode!="" && $('#taghidid').val()!=""){
     		var url = '<?php echo base_url()?>/company/getitembycode';
     		$('#itemcodedetails').html('');
     		$.ajax({
@@ -363,6 +393,7 @@ $(function() {
     			console.log(obj);
     			if(obj.itemname !== undefined)
     			{
+    				$('#itemcodedetails').css('display:block');
     				$('#itemcodedetails').html('<table style="width:100px;"><tr><td>Itemcode:'+obj.itemcode+'</td></tr><tr><td>Itemname:'+obj.itemname+'</td></tr><tr><td>Price:'+obj.ea+'</td></tr><tr><td><a target="blank" href="<?php echo base_url()?>site/item/'+obj.url+'">ViewItem</a></td></tr><tr><td><input type="button" value="Save" onclick="saveitemtotag('+obj.id+');" /></td></tr></table>');    				
     			}
     		});
@@ -384,6 +415,12 @@ $(function() {
     		}
     	});
     	
+    }
+    
+    function sethiddentag(tagobj){
+    	
+    	 var tagid = $(tagobj).val();
+    	 $('#taghidid').val(tagid);
     }
     
 </script>
@@ -471,14 +508,13 @@ $(function() {
   <div id="tagbox">
   </div>
   <br/><br/>
-  Select Item Code:<input pre type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" />   
+  Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
+  Select Item Code:<input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" />   
   <div id="itemcodedetails">
   </div>
 </div>
 <div id="taglist">
-  <ol>
-  </ol>
-</div>
+  </div>
 
 </div>
 

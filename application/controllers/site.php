@@ -2457,7 +2457,7 @@ class site extends CI_Controller
 
     	$data['boxes'] = '';
     	$data['lists'] = '';
-
+		$margin = 0;
     	if ($result){
     		foreach ($result as $rs){
 
@@ -2488,13 +2488,14 @@ class site extends CI_Controller
     				}
 
     				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';					
-    				$data['lists'] .= '<li id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</li>';
+    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
 
     			}else 
-    			$data['lists'] .= '<li id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</li>';
+    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
     			
-
+				$margin +=150;
     		}
+    		
     	}
 
     	echo json_encode( $data );
@@ -2514,7 +2515,7 @@ class site extends CI_Controller
     function designbook()
     {
 
-    	$sql = "SELECT i.*,g.company, g.imagename FROM ".$this->db->dbprefix('image_tag')." i join ".$this->db->dbprefix('gallery')." g on i.pic_id = g.id";
+    	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.publish=1";
 		$data['gallery'] = $this->db->query($sql)->result();
 		$totalresult = $this->db->query($sql)->num_rows();
     	$limit = 18;
@@ -2543,6 +2544,14 @@ class site extends CI_Controller
     	$this->db->update('image_tag',$datatoadd);    	
     	
     }
-
+    
+    function populatetags()
+	{
+		$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('image_tag')->result();		
+		
+		echo json_encode($result);		
+	}
 
 }

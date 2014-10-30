@@ -28,7 +28,170 @@
 </style>
 
 
+<style>
 
+#parent
+{
+	font-size:17px;
+	color:white;
+	text-align:center;
+	font-weight:bold;
+}
+.supplier_new1 .price {
+padding:5px 0px;
+}
+
+ .ui-tooltip {
+	padding: 8px;
+	font-size:19px !important;
+	font-weight:bold !important;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+	color:#06A7EA !important;
+}
+
+ 
+ 
+ #logo
+{
+	width: 505px;
+	margin: 0 auto;
+	text-align: center;
+}
+#pgtitle
+{
+	margin: 0px 0px 20px;
+	font-size: 18pt;
+}
+#container2
+{
+	display: block;
+	width: 850px;
+	height: 300px;
+	margin: 0 auto;
+}
+#imgtag
+{
+	position: relative;
+	min-width: 300px;
+	min-height: 300px;
+	float: none;
+	border: 3px solid #FFF;
+	cursor: crosshair;
+	text-align: center;
+}
+.tagview
+{
+	border: 1px solid #F10303;
+	width: 50px;
+	height: 50px;
+	position: absolute;
+/*display:none;*/	
+	color: #FFFFFF;
+	text-align: center;
+}
+.square
+{
+	display: block;
+	height: 79px;
+	opacity: 1.0;
+}
+.person
+{
+	background: #282828;
+	border-top: 1px solid #F10303;
+}
+#tagit
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 288px;
+	border: 1px solid #D7C7C7;
+}
+#tagit .box
+{
+	border: 1px solid #F10303;
+	width: 10px;
+	height: 10px;
+	float: left;
+}
+#tagit .name
+{
+	float: left;
+	background-color: #C5C5C5;
+	width: 280px;
+	height: 180px;
+	padding: 5px;
+	font-size: 10pt;
+}
+#tagit DIV.text
+{
+	margin-bottom: 5px;
+}
+#tagit INPUT[type=text]
+{
+	margin-bottom: 5px;
+}
+#tagit #tagname
+{
+	width: 110px;
+}
+#taglist
+{
+	width: 30px;
+	min-height: 200px;
+	height: auto !important;
+	height: 20px;
+	float: left;
+	padding: 10px;
+	margin-left: 20px;
+	color: #000;
+}
+#taglist OL
+{
+	padding: 0 20px;
+	float: left;
+	cursor: pointer;
+}
+#taglist OL A
+{
+}
+#taglist OL A:hover
+{
+	text-decoration: underline;
+}
+.tagtitle
+{
+	font-size: 14px;
+	text-align: center;
+	width: 100%;
+	float: left;
+}
+ 
+.tp_circle {
+    background: none repeat scroll 0 0 #000000;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50% 50% 50% 50%;
+    box-shadow: 0 0 10px #000000;
+    color: #FFFFFF;    
+    height: 16px;
+    line-height: 13px;
+    padding-top: 4px;
+    /*position: absolute;
+    text-align: center;*/
+    width: 20px;
+    z-index: 2;
+}
+
+.ui-autocomplete {
+  z-index:2147483647;
+}
+
+</style>
 
 
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
@@ -69,6 +232,30 @@
     $(document).ready(function() {
         InitChosen();
         $("#daterequested").datepicker();
+        
+         <?php if($gallery) { foreach($gallery as $gall) { ?>
+        // get the tag list with action remove and tag boxes and place it on the image.
+	$.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + <?php echo $gall->id;?>, function( data ) {
+		//$('#taglist_<?php echo $gall->id;?>').html(data.lists);
+		$('#tagbox_<?php echo $gall->id;?>').html(data.boxes);
+	}, "json");
+        
+    <?php } } ?>
+    
+    
+    	// mouseover the tagboxes that is already there but opacity is 0.
+	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+		var pos = $( this ).position();
+		 id = $(this).attr("id");	
+		 // alert(id);	 
+		//$(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
+		$('#' + id+'_').css({ opacity: 1.0 });
+	}).on( 'mouseout', '.tagview', function( ) {
+		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
+		$('#' + id+'_').css({ opacity: 0.0 });
+	});
+    
+        
     });
 
 
@@ -207,18 +394,6 @@
         return true;
     }
 </script>
-<script>
-function showimagewithtag(imgid,imagsrc){
-
-    	$("#imgmodaltag").modal();
-    	var img = $('#imgtag').find( 'img' );
-		$( img ).attr( 'id' ,imgid);
-		$( img ).attr( 'src' , imagsrc);
-		viewtag(imgid);
-    }
-</script>
-
-
 
 <div id="content">
     <div class="container">
@@ -258,12 +433,14 @@ function showimagewithtag(imgid,imagsrc){
                                    <div class="body span6">
                                      <div class="title-price row">
                                         <div class="title span4">
-                                      <?php if(isset($item->imagename) && $item->imagename!= "" && file_exists("./uploads/imagegallery/".$item->imagename)) { ?>
+                                      <?php if(isset($item->imagename) && $item->imagename!= "" && file_exists("./uploads/designbook/".$item->imagename)) { ?>
 
-               <img style="height:200px;width:220px; max-height:210px;padding: 10px;" height="120" width="120" src="<?php echo site_url('uploads/imagegallery/'.$item->imagename);?>" alt="">
+               <img style="height:200px;width:220px; max-height:210px;padding: 10px;" height="120" width="120" src="<?php echo site_url('uploads/designbook/'.$item->imagename);?>" alt="">
                                                 <?php } else { ?>
                                     <img style="height:200px;width:220px;max-height: 120px; padding: 20px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
+                                                <!-- <div id="tagbox_<?php echo $item->id;?>"></div> -->												
+												<!-- <div id="taglist_<?php echo $item->id;?>"></div> -->
                                              </div>
 
                                                 <div class="price">
