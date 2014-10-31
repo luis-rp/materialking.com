@@ -22,7 +22,7 @@
 		<script src="<?php echo base_url();?>templates/admin/js/jquery.fancybox.pack.js?v=2.1.5" type="text/javascript" charset="utf-8"></script>
 
 		<script type="text/javascript" language="javascript">
-			/*jQuery(function( $ ) {
+			jQuery(function( $ ) {
 
 				$('#example-1 a').tosrus({
 					pagination	: {
@@ -31,7 +31,7 @@
 					}
 				});
 
-			});*/
+			});
 		</script>
 
 		<script type="text/javascript" language="javascript">
@@ -902,8 +902,8 @@ $( document ).tooltip();
 								   <?php  if(isset($gallery) && count($gallery)>0)  foreach($gallery as $items) { ?>
 								    <div class="thumbnail current">
 								      <div class="thumbnail-inner">
-									      <!-- <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>"> -->
-									      <a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>');">
+									      <a href="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>">
+									      <!-- <a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>');"> -->
 									      <img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>"/>
 									      </a>
 								      </div>
@@ -916,8 +916,26 @@ $( document ).tooltip();
 						<?php } ?>
 
 
-
-
+						 <?php  if(isset($designbook) && count($designbook)>0) { ?>
+					 <div class="content">
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Design Book</h3>
+                          <div class="thumbs">
+							<div class="gallery-photos clearfix">
+								  <div class="photo-thumbnails">
+								   <?php  if(isset($designbook) && count($designbook)>0)  foreach($designbook as $items) { ?>
+								    <div class="thumbnail current">
+								      <div class="thumbnail-inner">
+			<a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/designbook/'.$items->imagename);?>');">
+									      <img src="<?php echo site_url('uploads/designbook/'.$items->imagename);?>"/>
+									      </a>
+								      </div>
+								    </div>
+								     <?php }   ?>
+								  </div>
+							</div>
+							</div>
+						</div>
+						<?php } ?>
 
 
 

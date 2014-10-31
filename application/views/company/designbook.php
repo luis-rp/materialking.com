@@ -1,10 +1,10 @@
        
-        <script src="<?php echo base_url(); ?>templates/admin/js/jquery.js" type="text/javascript"></script>              
+        <!-- <script src="<?php echo base_url(); ?>templates/admin/js/jquery.js" type="text/javascript"></script>              
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>          
 
-		<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">
+		<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">-->
 		<!-- <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css"> -->		
-		<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
+		<!-- <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script> -->
 		<script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 
 <style>
@@ -152,7 +152,7 @@ padding:5px 0px;
 }
  
 .tp_circle {
-    background: none repeat scroll 0 0 #000000;
+    background: none repeat scroll 0 0 #ACC70A;
     border: 2px solid rgba(255, 255, 255, 0.75);
     border-radius: 50% 50% 50% 50%;
     box-shadow: 0 0 10px #000000;
@@ -196,11 +196,13 @@ $(document).ready(function() {
 	var counter = 0;
     var mouseX = 0;
     var mouseY = 0;
+	var mouseXactual = 0;
 	
 	$("#imgtag img").click(function(e) { // make sure the image is clicked
   var imgtag = $(this).parent(); // get the div to append the tagging list
   mouseX = ( e.pageX - $(imgtag).offset().left ); // x and y axis
   mouseY = ( e.pageY - $(imgtag).offset().top );
+  mouseXactual = ( e.pageX - $(img).offset().left );
   $( '#tagit' ).remove( ); // remove any tagit div first
   //insert an input box with save and cancel operations.
   $( imgtag ).append( '<div id="tagit"><!-- <div class="box"></div>--><div class="name"><table><tr><td colspan="2">Tag Name</td></tr><tr><td  colspan="2"><input type="text" name="txtname" id="tagname" style="width:200px;" /></td></tr><tr><td  colspan="2">Tag Description</td></tr><tr><td  colspan="2"><textarea name="tagdesc" id="tagdesc"></textarea></td></tr><tr><td><input type="button" name="btnsave" value="Save" id="btnsave" /></td><td><input type="button" name="btncancel" value="Cancel" id="btncancel" /></td></tr></table></div></div>' );
@@ -218,7 +220,7 @@ var id = $( img ).attr( 'id' );
   $.ajax({
     type: "POST",
     url: "<?php echo site_url('site/savetag');?>",
-    data: "pic_id=" + id + "&name=" + name + "&description=" + description + "&pic_x=" + mouseX + "&pic_y=" + mouseY + "&type=insert",
+    data: "pic_id=" + id + "&name=" + name + "&description=" + description + "&pic_x=" + mouseX + "&pic_y=" + mouseY + "&type=insert" + "&pic_xactual=" + mouseXactual,
     cache: true,
     success: function(data){
     //$('#taghidid').val(data);
@@ -471,7 +473,7 @@ $(function() {
 					 </td>
 					 <td><a class="close"  href="<?php echo base_url("company/deletedesignfile/".$items->id);?>" onclick="return confirm('Are you really want to delete this Image?');">&times;</a></td>
 					</tr>
-				    <?php } ?>
+				    <?php } ?>				    
 				   <tbody>
 			    </table>
                <?php } ?>
@@ -492,14 +494,14 @@ $(function() {
 
 
 
-  <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:800px;max-height:800px;">
-    <div class="modal-dialog">
+  <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog" style="width:92%;">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>                 
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="width:30%;padding:12px;">
         <div id="container2">
         <div id="imgtag">  
   <img id="pic1"  />
@@ -509,7 +511,7 @@ $(function() {
   </div>
   <br/><br/>
   Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
-  Select Item Code:<input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" />   
+  Select Item Code:<input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" />
   <div id="itemcodedetails">
   </div>
 </div>
@@ -520,7 +522,7 @@ $(function() {
 
         </div>        
         <div class="modal-footer">          
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          <!-- <button data-dismiss="modal" class="btn btn-default" type="button">Close</button> -->
         </div>
       </div>
       <!-- /.modal-content -->

@@ -173,7 +173,7 @@ padding:5px 0px;
 }
  
 .tp_circle {
-    background: none repeat scroll 0 0 #000000;
+    background: none repeat scroll 0 0 #ACC70A;
     border: 2px solid rgba(255, 255, 255, 0.75);
     border-radius: 50% 50% 50% 50%;
     box-shadow: 0 0 10px #000000;
@@ -427,7 +427,7 @@ padding:5px 0px;
                                   <?php } else { ?>
                                   <h2 class="title_top1" style="height:40px;font-variant:small-caps;">
                                   <?php } ?>
-                                  <a href="" style="text-decoration:none;"><?php echo $name;?></a>
+                                   <a href="<?php echo site_url('site/designbookdetail/'.$item->id); ?>" style="text-decoration:none;"><?php echo $name;?></a>
                                   </h2>
                                   <div class="row">
                                    <div class="body span6">

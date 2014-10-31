@@ -684,6 +684,8 @@ class site extends CI_Controller
 
         $data['gallery']=$this->db->get_where('gallery',array('company'=>$data['supplier']->id))->result();
 
+        $data['designbook']=$this->db->get_where('designbook',array('company'=>$data['supplier']->id))->result();
+        
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
 
         $data['businesshrs'] = $bhrs;
@@ -2444,9 +2446,9 @@ class site extends CI_Controller
 	 	$pic_x = $_POST['pic_x'];
 	 	$pic_y = $_POST['pic_y'];
 
-    	$datatoadd = array('pic_id' => $_POST['pic_id'],'name' => $_POST['name'], 'description' => $description, 'pic_x' => $_POST['pic_x'], 'pic_y' => $_POST['pic_y']);
+    	$datatoadd = array('pic_id' => $_POST['pic_id'],'name' => $_POST['name'], 'description' => $description, 'pic_x' => $_POST['pic_x'], 'pic_y' => $_POST['pic_y'],  'pic_xactual' => $_POST['pic_xactual'],);
     	$this->db->insert('image_tag',$datatoadd);
-    	echo $lastid = $this->db->insert_id();			
+    	echo $lastid = $this->db->insert_id();
     }
 
     function taglist()
@@ -2465,19 +2467,19 @@ class site extends CI_Controller
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
     			$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/bigbox.png"></div>';
-    			
+
     			$itemdata = "";
     			if($rs->itemid!=""){
-    				
+
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-    				
+
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$this->session->userdata('company')->id);
     				$companyitem = $this->db->get('companyitem')->row();
-    				//print_r($companyitem);   				
-    				
+    				//print_r($companyitem);
+
     				if($companyitem)
     				{
     					$item->ea = $companyitem->ea;
@@ -2487,15 +2489,15 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';					
+    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';
     				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
 
-    			}else 
+    			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
-    			
+
 				$margin +=150;
     		}
-    		
+
     	}
 
     	echo json_encode( $data );
@@ -2503,6 +2505,87 @@ class site extends CI_Controller
     }
 
 
+    
+    function taglistofdetail()
+    {
+    	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('image_tag')->result();
+
+    	$data['boxes'] = '';
+    	$data['lists'] = '';
+		$margin = 0;
+    	if ($result){
+    		foreach ($result as $rs){
+
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
+    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
+    			
+    			
+    			if($rs->itemid!=""){
+
+    				$this->db->where('id',$rs->itemid);
+        			$item = $this->db->get('item')->row();
+
+    				$this->db->where('itemid',$rs->itemid);
+    				$this->db->where('type','Supplier');
+    				$this->db->where('company',$_POST[ 'company' ]);
+    				$companyitem = $this->db->get('companyitem')->row();
+    				
+    				if($companyitem)
+    				{
+    					$item->ea = $companyitem->ea;
+    					if($companyitem->itemname!="")
+    					$item->itemname = $companyitem->itemname;
+    					if($companyitem->itemcode!="")
+    					$item->itemcode = $companyitem->itemcode;    					
+    				}
+
+    				$itemdata = '<table cellpadding="5" cellspacing="5"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table>';
+    				$data['boxes'] .= '<div style="margin-top:20px;width:300px;height:700px;color:black;" class="person">'.$itemdata.'</div></div>';
+
+    			}else 
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			
+    			$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/bigbox.png"></div>';
+
+    			$itemdata = "";
+    			if($rs->itemid!=""){
+
+    				$this->db->where('id',$rs->itemid);
+        			$item = $this->db->get('item')->row();
+
+    				$this->db->where('itemid',$rs->itemid);
+    				$this->db->where('type','Supplier');
+    				$this->db->where('company',$_POST['company']);
+    				$companyitem = $this->db->get('companyitem')->row();
+    				//print_r($companyitem);
+
+    				if($companyitem)
+    				{
+    					$item->ea = $companyitem->ea;
+    					if($companyitem->itemname!="")
+    					$item->itemname = $companyitem->itemname;
+    					if($companyitem->itemcode!="")
+    					$item->itemcode = $companyitem->itemcode;
+    				}
+
+    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';
+    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+
+    			}else
+    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+
+				$margin +=150;
+    		}
+
+    	}
+
+    	echo json_encode( $data );
+
+    }
+    
+    
     function removetag(){
 
     	$id = $_POST['id'];
@@ -2517,6 +2600,7 @@ class site extends CI_Controller
 
     	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.publish=1";
 		$data['gallery'] = $this->db->query($sql)->result();
+		//echo "<pre>"; print_r($data['gallery']);die;
 		$totalresult = $this->db->query($sql)->num_rows();
     	$limit = 18;
     	$data['totalcount'] = $totalresult;
@@ -2528,30 +2612,38 @@ class site extends CI_Controller
         $data['submiturl'] = 'site/designbook';
         $data['submitmethod'] = 'POST';
         $data['pagingfields'] = $_POST;
-        $data['page_titile'] = "Design Book";   	
-        
+        $data['page_titile'] = "Design Book";
     	$this->load->view('site/designbook',$data);
 
     }
 
     function saveitemtotag(){
-    	
+
     	$id = $_POST['id'];
 	 	$itemid = $_POST['itemid'];
-	 	
+
     	$datatoadd = array('itemid' => $_POST['itemid']);
     	$this->db->where('id', $_POST['id']);
-    	$this->db->update('image_tag',$datatoadd);    	
-    	
+    	$this->db->update('image_tag',$datatoadd);
+
     }
-    
+
     function populatetags()
 	{
 		$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
-    	$result = $this->db->get('image_tag')->result();		
-		
-		echo json_encode($result);		
+    	$result = $this->db->get('image_tag')->result();
+
+		echo json_encode($result);
 	}
+
+
+	function designbookdetail($id)
+    {
+    	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.id=".$id."";
+		$data['details'] = $this->db->query($sql)->row();
+    	$this->load->view('site/designbookdetail',$data);
+    }
+
 
 }
