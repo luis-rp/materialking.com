@@ -419,7 +419,7 @@ class site extends CI_Controller
         redirect(base_url('site/supplier/' . $id));
     }
 
-    public function supplier ($username)
+    public function supplier ($username=NULL)
     {
     	$this->load->helper('text');
     	$this->load->library('image_lib');
