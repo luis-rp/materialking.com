@@ -331,7 +331,7 @@ function viewtag(pic_id)
 {
 	$('#pictureid').val(pic_id);
 	// get the tag list with action remove and tag boxes and place it on the image.
-	$.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id, function( data ) {
+	$.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id + "&view=admin", function( data ) {
 		$('#taglist').html(data.lists);
 		$('#tagbox').html(data.boxes);
 	}, "json");
@@ -376,7 +376,7 @@ $(function() {
     function fetchItem(codeid)
     {
     	var itemcode = document.getElementById(codeid).value;
-    	
+    	$('#itemcodedetails').css('display:block');
     	if($('#taghidid').val()=="")
     		alert("Please select any tag first");
     		
@@ -396,7 +396,7 @@ $(function() {
     			if(obj.itemname !== undefined)
     			{
     				$('#itemcodedetails').css('display:block');
-    				$('#itemcodedetails').html('<table style="width:100px;"><tr><td>Itemcode:'+obj.itemcode+'</td></tr><tr><td>Itemname:'+obj.itemname+'</td></tr><tr><td>Price:'+obj.ea+'</td></tr><tr><td><a target="blank" href="<?php echo base_url()?>site/item/'+obj.url+'">ViewItem</a></td></tr><tr><td><input type="button" value="Save" onclick="saveitemtotag('+obj.id+');" /></td></tr></table>');    				
+    				$('#itemcodedetails').html('<table style="width:100px;"><tr><td>Itemcode:'+obj.itemcode+'</td></tr><tr><td>Itemname:'+obj.itemname+'</td></tr><tr><td>Price:'+obj.ea+'</td></tr><tr><td><a target="blank" href="<?php echo base_url()?>site/item/'+obj.url+'">ViewItem</a></td></tr><tr><td><input type="button" value="Save" onclick="saveitemtotag('+obj.id+');" /></td></tr></table>');    							$('#itemcodedetails').css('display:block');
     			}
     		});
     	}
@@ -501,7 +501,7 @@ $(function() {
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>                 
         </div>
-        <div class="modal-body" style="width:30%;padding:12px;">
+        <div class="modal-body"  style="width:30%;padding:12px;">
         <div id="container2">
         <div id="imgtag">  
   <img id="pic1"  />

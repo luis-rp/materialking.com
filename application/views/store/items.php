@@ -515,6 +515,18 @@ $( document ).tooltip();
                     </div>
                     
                     
+                    <?php if(isset($inventory) && count($inventory)>0) {?>
+                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
+                    	?>
+                		 <h2>Sub Categories</h2>
+                		   <div class="content_sup" style="height:72px;">
+                   			 <div style="clear:both;"></div>
+								<div class="breadcrumb-pms" style="width:200px;" >
+								<ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
+								</div>
+					      </div>
+					<?php } } ?><br>
+                    
                     <?php if(@$businesshrs){ ?>       
                     <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>                               
                     <div class="widget contact">
@@ -568,19 +580,8 @@ $( document ).tooltip();
                         </div>
                     </div>                
                  <?php } }?>
-                 
-                    
-                  <?php if(isset($inventory) && count($inventory)>0) {?>
-                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
-                    	?>
-                		 <h2>Sub Categories</h2>
-                		   <div class="content_sup" style="height:72px;">
-                   			 <div style="clear:both;"></div>
-								<div class="breadcrumb-pms" style="width:200px;" >
-								<ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
-								</div>
-					      </div>
-					<?php } } ?>
+                                    
+                  
 			<?php if($types){
 						$band = false;
 						foreach ($types as $type){

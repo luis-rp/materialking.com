@@ -8,7 +8,10 @@
 <?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
 <?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 <?php echo '<script>var checksubscriberemail="' . site_url('subscriber/checksubscriberemail') . '";</script>' ?>
+<?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
+<?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
 
+<script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
 		<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/FlameViewportScale.js"></script>
@@ -151,11 +154,11 @@ padding:5px 0px;
 	margin: 0px 0px 20px;
 	font-size: 18pt;
 }
-#container
+#container2
 {
 	display: block;
-	width: 850px;
-	height: 300px;
+	width: 1236px;
+	height: 100px;
 	margin: 0 auto;
 }
 #imgtag
@@ -194,7 +197,7 @@ padding:5px 0px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 141px;
+	width: 288px;
 	border: 1px solid #D7C7C7;
 }
 #tagit .box
@@ -208,8 +211,8 @@ padding:5px 0px;
 {
 	float: left;
 	background-color: #C5C5C5;
-	width: 127px;
-	height: 92px;
+	width: 280px;
+	height: 180px;
 	padding: 5px;
 	font-size: 10pt;
 }
@@ -258,7 +261,7 @@ padding:5px 0px;
 }
  
 .tp_circle {
-    background: none repeat scroll 0 0 #000000;
+    background: none repeat scroll 0 0 #ACC70A;
     border: 2px solid rgba(255, 255, 255, 0.75);
     border-radius: 50% 50% 50% 50%;
     box-shadow: 0 0 10px #000000;
@@ -272,7 +275,20 @@ padding:5px 0px;
     z-index: 2;
 }
 
+#tableinnerid {
+	background: none repeat scroll 0 0 #F5F5F5;
+    border-collapse: separate;
+    box-shadow: 0 1px 0 #FFFFFF inset;
+    font-size: 12px;
+    line-height: 24px;
+    margin: 0 auto;
+    text-align: left;
+
+}
+
+
 </style>
+
 
 <!-- <script type="text/javascript" src="https://api.github.com/repos/twbs/bootstrap?callback=callback"></script> -->
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
@@ -471,48 +487,8 @@ $(document).ready(function() {
     var mouseX = 0;
     var mouseY = 0;
 	
-	$("#imgtag img").click(function(e) { // make sure the image is clicked
-  var imgtag = $(this).parent(); // get the div to append the tagging list
-  mouseX = ( e.pageX - $(imgtag).offset().left ) - 50; // x and y axis
-  mouseY = ( e.pageY - $(imgtag).offset().top ) - 50;
-  $( '#tagit' ).remove( ); // remove any tagit div first
-  //insert an input box with save and cancel operations.
-  $( imgtag ).append( '<div id="tagit"><div class="box"></div><div class="name"><div class="text">Type any name or tag</div><input type="text" name="txtname" id="tagname" /><input type="button" name="btnsave" value="Save" id="btnsave" /><input type="button" name="btncancel" value="Cancel" id="btncancel" /></div></div>' );
-  $( '#tagit' ).css({ top:mouseY, left:mouseX });
-   
-  $('#tagname').focus();    
-});
 
-
-$( document ).on( 'click',  '#tagit #btnsave', function(){
-    name = $('#tagname').val();
-var img = $('#imgtag').find( 'img' );
-var id = $( img ).attr( 'id' );
-  $.ajax({
-    type: "POST",
-    url: "<?php echo site_url('site/savetag');?>",
-    data: "pic_id=" + id + "&name=" + name + "&pic_x=" + mouseX + "&pic_y=" + mouseY + "&type=insert",
-    cache: true,
-    success: function(data){
-     // viewtag( id );
-     var img = $('#imgtag').find( 'img' );
-     var id = $( img ).attr( 'id' );
-     //get tags if present
-     viewtag( id );
-      $('#tagit').fadeOut();
-    }
-  });
-    
-});
-
-
-// Cancel the tag box.
-    $( document ).on( 'click', '#tagit #btncancel', function() {
-      $('#tagit').fadeOut();
-    });
-    
-    
-     // mouseover the taglist 
+    // mouseover the taglist 
 	$('#taglist').on( 'mouseover', 'li', function( ) {
       id = $(this).attr("id");
       $('#view_' + id+'_').css({ opacity: 1.0 });
@@ -563,8 +539,8 @@ var id = $( img ).attr( 'id' );
     function viewtag(pic_id)
     {
       // get the tag list with action remove and tag boxes and place it on the image.
-	  $.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id, function( data ) {
-    $('#taglist ol').html(data.lists);
+	  $.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id + "&view=profile", function( data ) {
+    $('#taglist').html(data.lists);
     $('#tagbox').html(data.boxes);
 }, "json");
 	
@@ -737,10 +713,69 @@ var id = $( img ).attr( 'id' );
     	var img = $('#imgtag').find( 'img' );
 		$( img ).attr( 'id' ,imgid);	
 		$( img ).attr( 'src' , imagsrc);
-		//alert(imgid);
+		$('.fb-like').data('href', '2');
+		//alert('<?php echo base_url(); ?>site/designbookdetail/'+imgid);
 		viewtag(imgid); 
     }
 
+    
+    function openrfqpopup(){ 
+    	$('#imgmodaltag').modal('hide');
+    	$('#createmodal').modal();
+    	
+    }
+    
+    
+    function addtopo(itemid)
+	{
+		$('#imgmodaltag').modal('hide');
+		$("#addform").trigger("reset");
+		$("#additemid").val(itemid);
+		//$('#additemproject').attr('selectedIndex',0);
+		//$('#additemproject option:first-child').attr("selected", "selected");
+		//document.getElementById('additemproject').value=2;
+		$('#additemqty').val('');
+		$("#additempo").html('<select name="quote" required></select>');
+		$('#additemcostcode').html('<select name="costcode" required></select>');
+		getquotecombo();
+		getcostcodecombo()
+		$("#addtoquotemodal").modal();
+	}
+    
+	function getquotecombo()
+    {
+    	var pid = $("#additemproject").val();
+    	d = "pid="+pid;
+    	$.ajax({
+            type: "post",
+            url: quoteurl,
+            data: d
+        }).done(function(data) {
+            $("#additempo").html(data);
+        	//document.getElementById("additempo").innerHTML = data;
+        });
+
+    }
+	
+    function getcostcodecombo()
+    {
+    	var pid = $("#additemproject").val();
+    	d = "pid="+pid;
+    	$.ajax({
+            type: "post",
+            url: costcodeurl,
+            data: d
+        }).done(function(data) {
+            $("#additemcostcode").html(data);
+        });
+    }
+    
+    
+    function showimgmodal(){
+    	
+    	$('#imgmodaltag').modal();   	
+    }
+    
 </script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -750,6 +785,18 @@ $( document ).tooltip();
 });
 </script>
 
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<HEAD>		
+		<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+		<meta http-equiv="cache-control" content="no-cache"> <!-- tells browser not to cache -->
+		<meta http-equiv="expires" content="0"> <!-- says that the cache expires 'now' -->
+		<meta http-equiv="pragma" content="no-cache"> <!-- says not to use cached stuff, if there is any -->
+		<meta property="fb:app_id" content="899376703411658"/> <!-- Facebook App ID for comment system  -->		
+		<meta property="og:image" content="<?php if(isset($designbook[0]->imagename)) echo site_url('uploads/designbook/'.$designbook[0]->imagename);?>"/>		
+	</HEAD>	
+	<BODY>
 
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -1854,16 +1901,15 @@ $( document ).tooltip();
           <i class="icon-credit-card icon-7x"></i>                 
         </div>
         <div class="modal-body">
-        <div id="container">
+        <div id="container2">
         <div id="imgtag">  
-  <img id="pic1" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" />
+  <img id="pic1" src="" />
   <div id="tagbox">
   </div>
 </div>
-<div id="taglist">
-  <ol>
-  </ol>
+<div id="taglist">  
 </div>
+<div class="fb-like" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 </div>
 
         </div>
@@ -1875,3 +1921,78 @@ $( document ).tooltip();
     </div>
     <!-- /.modal-dialog -->
   </div>
+  
+  
+  
+   <!-- Modal -->
+        <div class="modal hide fade" id="addtoquotemodal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title nobottompadding" id="myModalLabel">Request for quote</h3>
+                    </div>
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" onsubmit="rfqformsubmit(); return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                            <h4>Select Project</h4>
+                            <select id="additemproject" onchange="getquotecombo();getcostcodecombo();">
+                                <option value="">Select</option>
+                                <?php foreach($projects as $up){?>
+                                	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>
+                                <?php }?>
+                            </select>
+
+                            <h4>Select PO</h4>
+                            <span id="additempo">
+                            <select name="quote" required>
+                                <?php if(0)foreach($userquotes as $uq){?>
+                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
+                                <?php }?>
+                            </select>
+                            </span>
+
+                            <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
+
+                            <h4>Quantity</h4>
+                            <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+                            <h4>Costcode</h4>
+                            <span id="additemcostcode">
+                            <select name="costcode" required>
+                                <?php if(0)foreach($userquotes as $uq){?>
+                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
+                                <?php }?>
+                            </select>
+                            </span>
+
+                            <h4>Date Requested</h4>
+                            <input type="text" id="daterequested" name="daterequested"/>
+
+                            <br/><br/>
+                            <div>
+                            <button type="button" class="btn btn-primary" onclick="showimgmodal();" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="rfqformsubmit();">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal hide fade" id="addtoquotemodal1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                        <div id="modalhtm">
+
+                        </div>
+                        </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

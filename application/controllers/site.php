@@ -2489,9 +2489,20 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';
+    				$itemdata .= '<table id="tableinnerid" style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				
+    				if($_POST['view']=='profile'){
+    				
+    				if ($this->session->userdata('site_loggedin')){
+                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
+                    }else{
+                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
+    				}
+    				
+                    $itemdata .='</table>';
+    				
     				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
-
+			
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
 
@@ -2542,7 +2553,7 @@ class site extends CI_Controller
     				}
 
     				$itemdata = '<table cellpadding="5" cellspacing="5"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table>';
-    				$data['boxes'] .= '<div style="margin-top:20px;width:300px;height:700px;color:black;" class="person">'.$itemdata.'</div></div>';
+    				$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
 
     			}else 
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';

@@ -261,7 +261,29 @@ function viewtag(pic_id,company)
 
 </script>
 
-<div id="content">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<HEAD>		
+		<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+		<meta http-equiv="cache-control" content="no-cache"> <!-- tells browser not to cache -->
+		<meta http-equiv="expires" content="0"> <!-- says that the cache expires 'now' -->
+		<meta http-equiv="pragma" content="no-cache"> <!-- says not to use cached stuff, if there is any -->
+		<meta property="fb:app_id" content="899376703411658"/> <!-- Facebook App ID for comment system  -->		
+		<meta property="og:image" content="<?php if(isset($details->imagename)) echo site_url('uploads/designbook/'.$details->imagename);?>"/>		
+	</HEAD>	
+	<BODY>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=899376703411658&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+<!-- <div id="content">
     <div class="container">
         <div id="main">
             <div class="row">
@@ -284,9 +306,10 @@ function viewtag(pic_id,company)
                                          <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>
                                    		 <div id="tagbox"></div>
                                          </div>
-                                         <div class="price">
+                                         <div class="price"> -->
                                             <!-- <p>LIKES <br> COMMENTS</p>-->
-                                         </div>
+                                         <!-- </div>
+                                         <div class="fb-like" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
                                       </div>
                                     </div>
                                   </div>
@@ -311,9 +334,72 @@ function viewtag(pic_id,company)
             </div>
         </div>
     </div>
+</div> -->
+
+
+
+                                         
+                                         <div id="content">
+    <div class="container">
+        <div id="main">
+            <div class="row">
+
+               <div class="span9" style="width:100%">
+                    <div class="properties-rows">
+                       <div class="row">
+                            <?php if (isset($details)) { ?>
+                                <div class="property span9" style="width:100%">
+                                  <h2 class="title_top1" style="height:40px;font-variant:small-caps;"><?php echo $details->name;?> </h2>
+                                </div>
+                             <?php }  ?>    
+                       </div>
+                    </div>
+               </div> <br>
+               
+               <?php if (isset($details)) { ?>
+               <div id="imgtag2" class="title span6" style="width:100%">
+                   <?php if(isset($details->imagename) && $details->imagename!= "" && file_exists("./uploads/designbook/".$details->imagename)) { ?>
+                        <img id="<?php echo $details->id;?>" src="<?php echo site_url('uploads/designbook/'.$details->imagename);?>" style="padding:10px;">
+                    <?php } else { ?>
+                         <img id="<?php echo $details->id;?>" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" style="padding:20px;"  alt="">
+                    <?php } ?>
+                         <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>
+                         <div id="tagbox"></div>
+                </div>
+                 <?php }  ?>   
+               
+               <div class="span9" style="width:100%;padding-top:100px;">
+                    <div class="properties-rows">
+                       <div class="row">
+                            <?php if (isset($details)) { ?>
+                                <div class="property span9" style="width:100%">                                         
+                                  <div class="row">
+                                   <!-- <div class="body span6">-->
+                                     <div class="title-price row">
+                                         <div class="price">
+                                            <div class="fb-like" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+                                         </div>
+                                          
+                                      </div>
+                                    <!-- </div> -->
+                                  </div>
+                                </div>
+                                <?php }  else { ?>
+                                <div class="alert alert-error" style="margin-left:30px;">
+                                    <button data-dismiss="alert" class="close" type="button">X</button>
+                                    <strong>No Records Found</strong>
+                                </div>
+                                <?php   }  ?>
+
+                          </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-
-
-
+</BODY>
+</HTML>
