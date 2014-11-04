@@ -23,15 +23,14 @@
                             <div class="span3">
                                 <h3 class="call-us">Call us</h3>
                                 <p class="content-icon-spacing">
-                                    000-000-0000<br>
-                                    000-000-0000
+                                    310-466-1956
                                 </p>
                             </div>
                             <div class="span3">
                                 <h3 class="email">Email</h3>
                                 <p class="content-icon-spacing">
-                                    <a href="mailto:info@ezpzp.com">Contact Management</a><br>
-                                    <a href="mailto:info@ezpzp.com">Contact Support</a>
+                                    <a href="mailto:info@MaterialKing.com">Contact Management</a><br>
+                                    <a href="mailto:info@MaterialKing.com">Contact Support</a>
                                 </p>
                             </div>
                         </div>
@@ -39,7 +38,7 @@
                         <h2>We'd love to hear from you. Say us Hello!</h2>
 
                         <form method="post" class="contact-form" action="?">
-                            <div class="name control-group">
+                            <div class="name control-group" style="background:none;padding:0px;color:#808080;text-align:left;">
                                 <label class="control-label" for="inputContactName">
                                     Name
                                     <span class="form-required" title="This field is required.">*</span>

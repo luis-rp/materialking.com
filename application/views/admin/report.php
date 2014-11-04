@@ -3,10 +3,9 @@
 	$tax = $settings->taxpercent;
 ?>
 <script type="text/javascript">
-<!--
-$(document).ready(function(){
-	$('.datefield').datepicker();
-});
+ $(document).ready(function() {
+        $('.datefield').datepicker();
+    });
 </script>
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?> <a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('admin/report/reportpdf'); ?>" class="btn btn-green">View PDF</a></h3>
@@ -14,11 +13,17 @@ $(document).ready(function(){
 		<div class="span12">
 		<br />
 		   <br/>
-
 		   <form class="form-inline" action="<?php echo site_url('admin/report')?>" method="post">
-                From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
-                &nbsp;&nbsp;
-                To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
+		   
+           <?php if(isset($_POST['searchfrom'])) {  $olddate=strtotime($_POST['searchfrom']); $fromdate = date('m/d/Y', $olddate); }
+		   else { $fromdate=date('m/d/Y', strtotime("now -30 days") ); }
+		   if(isset($_POST['searchto'])) { $olddate1=strtotime($_POST['searchto']); $todate = date('m/d/Y', $olddate1);}  
+		   else { $todate=date('m/d/Y'); } ?>
+		   
+                    </tr>
+                From: <input type="text" name="searchfrom" value="<?php echo $fromdate;?>" class="datefield"  style="width: 70px;"/>
+                        &nbsp;&nbsp;
+                        To: <input type="text" name="searchto" value="<?php echo $todate;?>" class="datefield" style="width: 70px;"/>
                 &nbsp;&nbsp;
                 Company:
 				<select id="searchcompany" name="searchcompany">

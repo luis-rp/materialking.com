@@ -219,7 +219,7 @@
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
                             
-                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
+                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%;">
                             	<?php $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>
@@ -400,7 +400,7 @@
                       if(isset($breadcrumb2) && $breadcrumb2!="") {?>             
                     <h2>Sub Categories</h2>
                     
-                    <div class="content_sup" style="height:72px;">
+                      <div class="content_sup" style="height:72px;overflow:auto;">
                         
                        <?php /*?> <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>

@@ -121,6 +121,10 @@ $(document).ready(function() {
 
     function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
     {
+    	if(itemcode=="")
+    	{
+    		itemcode=itemname;
+    	}
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
@@ -332,7 +336,8 @@ $( document ).tooltip();
 
                         <?php foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
-                        <?php $count=strlen($item->itemcode); if($count<=20){ ?>
+                       <?php if(isset($item->itemcode)) {
+                        $count=strlen($item->itemcode); if($count<=20){ ?>
                         <h2 class="title_top1">
                         <?php //echo $item->itemcode;
                           $arr1="";
@@ -358,7 +363,7 @@ $( document ).tooltip();
 										$str=implode("",$arr1);
                                         echo $str;
                         ?></h2>
-                         <?php } ?>
+                       <?php } } else { ?>  <h2 class="title_top1" style="word-wrap:break-word;"><?php echo  $item->itemname; } ?></h2>
                             <div class="row">
                                 <div class="image span3">
                                     <div class="content">

@@ -93,7 +93,8 @@ class items_model extends Model {
             }
             else
             {
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                 <span style='white-space:pre-wrap;'>" . $item->catname."<span></a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
             $ret .= "</li>";

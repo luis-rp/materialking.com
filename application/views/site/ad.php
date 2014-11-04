@@ -267,12 +267,13 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 							<span class="ad-details-title"><h3><?php if(isset($c_title)) echo $c_title; ?></h3></span>
 							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_address)) echo $c_address; ?></span></span>
 							<span class="ad-detail-info"><span class="ad-details"><?php if(isset($c_phone)) echo $c_phone; ?></span></span>
-							<span class="ad-detail-info"><span class="ad-details"><a href="<?php if(isset($c_title)) echo site_url('site/suppliers/'.$c_title); ?>"><?php if(isset($c_title)) echo site_url('site/suppliers/'.$c_title); ?></a></span></span>
-
-
-
-
-
+							<span class="ad-detail-info">
+							  <span class="ad-details">
+							      <a href="<?php if(isset($c_username)) { echo site_url('site/supplier/'.$c_username);} else {
+							      	echo site_url('site/supplier/EZPZ-PlumbingSupply'); } ?>">
+							          <?php if(isset($c_title)) echo site_url('site/supplier/'.$c_title); ?></a>
+							  </span>
+							</span>
 
 							<span class="ad-detail-info">
 								<span class="author-profile-ad-details"><a href="<?php if(isset($c_username)) echo base_url('site/supplier/'.$c_username); ?>" class="button-ag large green"><span class="button-inner"><i class="fa fa-user"></i>Author Profile</span></a></span>

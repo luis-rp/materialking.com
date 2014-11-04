@@ -769,7 +769,7 @@ class quote_model extends Model {
     function finditemcode($key) {
         $key = urldecode($key);
         $sql = "SELECT * FROM " . $this->db->dbprefix('item')
-                . " WHERE itemcode LIKE '%" . $key . "%'";
+                . " WHERE itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%'";      
         /*
           if($this->session->userdata('usertype_id')>1)
           {
