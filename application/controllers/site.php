@@ -2466,7 +2466,7 @@ class site extends CI_Controller
     			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
-    			$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/bigbox.png"></div>';
+    			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
 
     			$itemdata = "";
     			if($rs->itemid!=""){
@@ -2551,14 +2551,25 @@ class site extends CI_Controller
     					if($companyitem->itemcode!="")
     					$item->itemcode = $companyitem->itemcode;    					
     				}
-
-    				$itemdata = '<table cellpadding="5" cellspacing="5"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table>';
-    				$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
-
+                    if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
+                    {
+                    	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
+                    }
+                    else 
+                    {
+                    	$src=base_url().'templates/site/assets/img/default/big.png';
+                    }
+                                       
+    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
+    				//$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div>';
+    				//$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
+    				
+    				
+    				$data['boxes'] .= $itemdata;
     			}else 
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
     			
-    			$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/bigbox.png"></div>';
+    			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
 
     			$itemdata = "";
     			if($rs->itemid!=""){
@@ -2653,6 +2664,20 @@ class site extends CI_Controller
     {
     	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.id=".$id."";
 		$data['details'] = $this->db->query($sql)->row();
+		$cid=$data['details']->company;
+	
+		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where id=".$cid."";		
+		$data['supplier']=$this->db->query($sql11)->row();
+
+		
+		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d  where d.id <".$id." order by d.id desc";
+		$data['previd'] = $this->db->query($sql)->row();
+    	
+		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d  where d.id >".$id."";
+		$data['nextid'] = $this->db->query($sql)->row();
+		
+		
+		
     	$this->load->view('site/designbookdetail',$data);
     }
 

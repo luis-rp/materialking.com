@@ -339,7 +339,7 @@ function viewtag(pic_id,company)
 
 
                                          
-                                         <div id="content">
+  <div id="content">
     <div class="container">
         <div id="main">
             <div class="row">
@@ -355,7 +355,7 @@ function viewtag(pic_id,company)
                        </div>
                     </div>
                </div> <br>
-               
+               <div class="pull-left">
                <?php if (isset($details)) { ?>
                <div id="imgtag2" class="title span6" style="width:100%">
                    <?php if(isset($details->imagename) && $details->imagename!= "" && file_exists("./uploads/designbook/".$details->imagename)) { ?>
@@ -363,10 +363,54 @@ function viewtag(pic_id,company)
                     <?php } else { ?>
                          <img id="<?php echo $details->id;?>" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" style="padding:20px;"  alt="">
                     <?php } ?>
-                         <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>
-                         <div id="tagbox"></div>
+                    <div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark"></div>
+                    <br/>
+                    <div id="tagbox"></div>                        
                 </div>
-                 <?php }  ?>   
+                 <?php }  ?>  
+                 </div>
+                 
+                  
+                 <div class="pull-right">
+                  <?php if(isset($supplier)) { ?>        
+                                <div class="span9 category-box">
+                                 <span><strong>Design Book Created By:</strong></span>
+ 									<h2 class="supplier_new_sa">
+ 										<a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
+                                    	<div class="row">
+                                    	
+                                        <div class="image span3">
+                                            <div class="content">
+                                                <?php if ($supplier->logo) { ?>
+                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/'.$supplier->logo) ?>" alt="">
+                                                <?php } else { ?>
+                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="body_home span6">
+                                            <div class="title-price row">                                      
+                                                <div class="price">
+                                                    <?php echo $supplier->address; ?>
+                                                </div>
+                                            </div>                                           
+                                        </div>
+                                        
+                                    </div>                                    
+                                  </div><br>
+                            <?php } ?>      
+                            <?php $maindesignurl = "<a href = '".site_url('site/designbook')."' >Go to Main Design Book</a>" ?>
+		                    <?php if(isset($previd->id)) { ?><a href="<?php echo site_url('site/designbookdetail/'.$previd->id); ?>">< View Previous</a>
+		                    <?php } else { echo $maindesignurl; $maindesignurl=""; } ?>
+		                    &nbsp; &nbsp; &nbsp;     
+		                    <?php if(isset($nextid->id)) { ?><a href="<?php echo site_url('site/designbookdetail/'.$nextid->id); ?>">View Next ></a>  	
+		                    <?php } else echo $maindesignurl; ?>                                          
+		                    <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>             
+                    </div>
+                    
+                    <div style="clear:both;"></div>     
+                 
                
                <div class="span9" style="width:100%;padding-top:100px;">
                     <div class="properties-rows">
@@ -390,7 +434,7 @@ function viewtag(pic_id,company)
                                     <strong>No Records Found</strong>
                                 </div>
                                 <?php   }  ?>
-
+      
                           </div>
                     </div>
                     

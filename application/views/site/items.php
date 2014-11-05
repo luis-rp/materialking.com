@@ -9,26 +9,26 @@
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/fg.menu.js"></script>
 
 <style type="text/css">
-	
+
 	#menuLog { font-size:1.0em; margin:10px 20px 20px; }
 	.hidden { position:absolute; top:0; left:-9999px; width:1px; height:1px; overflow:hidden; }
-	
+
 	.fg-button { clear:left; margin:0 4px 40px 0px; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
 	.fg-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
 	a.fg-button { float:left;  }
 	button.fg-button { width:auto; overflow:visible; } /* removes extra button width in IE */
-	
+
 	.fg-button-icon-left { padding-left: 2.1em; }
 	.fg-button-icon-right { padding-right: 2.1em; }
 	.fg-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
 	.fg-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
-	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */	
-	
+	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
+
 	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
 </style>
 
 
- 
+
 
 
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
@@ -47,7 +47,7 @@
             $("#additempo").html(data);
         	//document.getElementById("additempo").innerHTML = data;
         });
-        	
+
     }
 
     function getcostcodecombo()
@@ -64,7 +64,7 @@
     }
 
 </script>
-	
+
 <script>
     $(document).ready(function() {
         InitChosen();
@@ -79,21 +79,21 @@
     }
 
 </script>
-    
-<script type="text/javascript">    
+
+<script type="text/javascript">
     $(function(){
     	// BUTTONS
     	$('.fg-button').hover(
     		function(){ $(this).removeClass('ui-state-default').addClass('ui-state-focus'); },
     		function(){ $(this).removeClass('ui-state-focus').addClass('ui-state-default'); }
     	);
-    	
-    	// MENUS    	
+
+    	// MENUS
 		$('#hierarchy').menu({
 			content: $('#hierarchy').next().html(),
 			crumbDefaultText: ' '
 		});
-		
+
 		$('#hierarchybreadcrumb').menu({
 			content: $('#hierarchybreadcrumb').next().html(),
 			backLink: false
@@ -116,7 +116,7 @@
 		getcostcodecombo()
 		$("#addtoquotemodal").modal();
 	}
-	
+
 	function addtopo1(quote)
 	{
 		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
@@ -126,12 +126,12 @@
 		$("#addtoquotemodal1").modal();
 
 	}
-	
+
 	function rfqformsubmit()
 	{
 		var d = $("#addtoquoteform").serialize();
-		var quote = $('[name="quote"]').val();	
-        
+		var quote = $('[name="quote"]').val();
+
         $.ajax({
             type: "post",
             url: rfqurl,
@@ -218,14 +218,14 @@
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                            
+
                             <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%;">
                             	<?php $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>
-                       
+
                 <div class="span9">
-                <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?> 
+                <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?>
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><?php echo $page_titile;?></h3>
 
@@ -245,7 +245,7 @@
                                 $item->url = urlencode($item->url);
                                 ?>
                                 <div class="property span9 ">
-                                                                <?php $count=strlen($item->itemcode);
+                                <?php $count=strlen($item->itemcode);
                                      if($count<=20){
                                  ?>
                                   <h2 class="title_top1"  style="height:40px;word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>">
@@ -279,7 +279,7 @@
                                    <div class="row">
                                         <div class="image span3">
                                             <div class="content">
-                                              <div class="sidepan">  
+                                              <div class="sidepan">
                                               <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) { ?>
                                                  <img style="max-height: 120px; padding: 20px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
                                                 <?php } else { ?>
@@ -292,20 +292,20 @@
                                                 <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">
                                                 </div>
                                                 <?php } } ?>
-                                                
+
                                             </div>
                                         </div>
 
                                         <div class="body span6">
                                             <div class="title-price row">
                                                 <div class="title span4">
-                   
+
                                                     <p>
                                                         <?php echo $item->notes; ?>
                                                     </p>
                                                     <div class="area">
                                                         <span class="key"><strong>Item Name:</strong></span>
-                                                         <span class="value">
+                                                        <span class="value">
                                                          <?php //echo $item->itemname;
                                                          $arr2="";
                                                          $str2="";
@@ -341,12 +341,12 @@
                                                     </a>
                                                 <?php } ?>
                                                 </div>
-                                                <?php if(isset($item->minprice) || isset($item->maxprice)){?>
+                                                 <?php if(isset($item->minprice) || isset($item->maxprice)){?>
                                                 <div class="price">
-                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>";                	
+                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>";
                                                 	if(isset($item->callminprice)){ if($item->callminprice==1) echo ($item->offercount>1)?' "CALL"&nbsp;':''; else (isset($item->minprice))?'$'.$item->minprice:''; } else { ?>
-                                                	<?php if(isset($item->minprice)) echo '$'.$item->minprice; } 
-                                                	
+                                                	<?php if(isset($item->minprice)) echo '$'.$item->minprice; }
+
                                                 	if(isset($item->callmaxprice)){ if($item->callmaxprice==1) echo ' "CALL"&nbsp;'; else echo (isset($item->maxprice))?'$'.$item->maxprice:''; } else { ?>
                                                 	<?php if(isset($item->maxprice)) echo '-$'.$item->maxprice; ?>
                                                 	<?php }?>
@@ -357,7 +357,7 @@
                                                 <img src="<?php echo base_url(); ?>templates/site/assets/img/specialoffer.png" alt="" width="55" height="55">
                                                 </div>
                                                 <?php }?>
-                                                
+
 
                                             </div>
                                         </div>
@@ -374,8 +374,8 @@
                 </div>
 
                 <div class="sidebar span3">
-                
-               
+
+
   				  <?php /*if(isset($datatags)) { if(!empty($datatags)){?>
     			    <div class="widget contact">
                         <div class="title">
@@ -383,7 +383,7 @@
                         </div>
                         <div class="content_sup">
 		                        <ul class="tags">
-		    				<?php 
+		    				<?php
 							   foreach ($datatags as $tag){
 						    	$tag = trim($tag);?>
 						    <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
@@ -391,33 +391,20 @@
 		    				</ul>
                         </div>
                         </div>
-    				
+
     				<?php } } */?>
-    			
-                	
-                       <?php 
-                 //var_dump($breadcrumb2);
-                      if(isset($breadcrumb2) && $breadcrumb2!="") {?>             
+
+
+                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {?>
                     <h2>Sub Categories</h2>
-                    
-                      <div class="content_sup" style="height:72px;overflow:auto;">
-                        
-                       <?php /*?> <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
-                            <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
-                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                            
-                            <div class="location control-group" style="margin:0px;">
-                            	<?php $this->load->view('site/catmenu.php');?>
-                            </div>
-                        </form>
-                       <?php */?>
-                        <div style="clear:both;"></div>
-                     <div class="breadcrumb-pms" style="width:200px;" ><ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul></div>
+                    <div class="content_sup">
+                         <div style="clear:both;"></div>
+                     <div class="breadcrumb-pms">
+                    	 <ul><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
+                     </div>
                     </div>
-                    
                    <?php } ?>
-                   
+
                 </div>
 
             </div>
@@ -442,7 +429,7 @@
                                 	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>
                                 <?php }?>
                             </select>
-                            
+
                             <h4>Select PO</h4>
                             <span id="additempo">
                             <select name="quote" required>
@@ -451,9 +438,9 @@
                                 <?php }?>
                             </select>
                             </span>
-                            
+
                             <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
-                            
+
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
                             <h4>Costcode</h4>
@@ -464,22 +451,22 @@
                                 <?php }?>
                             </select>
                             </span>
-                            
+
                             <h4>Date Requested</h4>
                             <input type="text" id="daterequested" name="daterequested"/>
-                            
+
                             <br/><br/>
                             <div>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" onclick="rfqformsubmit();">Add</button>
                             </div>
-                            
+
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        
+
         <div class="modal hide fade" id="addtoquotemodal1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -488,8 +475,8 @@
                         <input type="hidden" id="additemid" name="itemid" value=""/>
                         <div class="modal-body">
                         <div id="modalhtm">
-                        
-                        </div>                              
+
+                        </div>
                         </div>
 
                         </div>
@@ -497,14 +484,14 @@
                 </div>
             </div>
         </div>
-        
-        
-        
-        
-        
-        
-        
-        <?php if(isset($data2)) { ?>       
+
+
+
+
+
+
+
+        <?php if(isset($data2)) { ?>
      <div id="content">
     <div class="container">
         <div id="main">
@@ -579,7 +566,7 @@
                     <div class="property-filter widget">
                         <div class="content">
                             <form id="searchform" method="post" action="" onsubmit="return getlatlong()">
-                            
+
                             	<input type="hidden" id="latitude" name="lat"/>
                             	<input type="hidden" id="longitude" name="lng"/>
                                 <input type="hidden" id="get_by" name="get_by" value="<?php echo isset($_POST['get_by'])? $_POST['get_by'] : "" ?>" />
@@ -664,9 +651,9 @@
 
 </div>
     <?php } ?>
-    
-    
-    
+
+
+
      <div id="content">
     <div class="container">
         <div id="main">
@@ -674,10 +661,10 @@
                 <div class="span9">
                 <div>
   				  <?php if(isset($datatags)) { if(!empty($datatags)){?>
-    			
+
     				<h1 class="page-header">Tags:</h1>
     				<ul class="tags">
-    				<?php 
+    				<?php
 					   foreach ($datatags as $tag){
 				    	$tag = trim($tag);?>
 				    <li><a class="tag" target="_blank" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>

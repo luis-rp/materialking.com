@@ -71,6 +71,10 @@ class Store extends CI_Controller
             $orgitem = $this->db->get('item')->row();
             if(!$item->itemname)
                 $item->itemname = $orgitem->itemname;
+            
+            if(!$item->itemcode)
+                $item->itemcode = $orgitem->itemcode;        
+                
             $item->unit = $orgitem->unit;
             
             $this->db->where('id',$item->manufacturer);
@@ -193,11 +197,12 @@ class Store extends CI_Controller
         	 
         }
         $this->data['adforsupplier']=$ads;
+        
         $this->data['page_title'] = $this->data["company"]->title." Online Store";
         
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$id))->result();      
         $this->data['businesshrs'] = $bhrs;
-         
+        
         $this->load->view('store/items', $this->data);
 	}
 }

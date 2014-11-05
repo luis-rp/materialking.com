@@ -120,11 +120,7 @@ $(document).ready(function() {
 
 
     function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
-    {
-    	if(itemcode=="")
-    	{
-    		itemcode=itemname;
-    	}
+    {    	
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
@@ -241,16 +237,17 @@ $(document).ready(function() {
             alert('Minimum quantity to order is '+ minqty);
             return false;
         }
-        
+
+
         var data2 = "company=" + companyid;
-        
+
         $.ajax({
             type: "post",
             data: data2,
             url: checkbankaccount,
             sync:false
         }).done(function(data) {
-            if(data!='true'){            	
+            if(data!='true'){
             	alert('Supplier has not set bank account settings');
             	return false;
             }else{
@@ -272,6 +269,7 @@ $(document).ready(function() {
         });
 
 
+
     }
 
 </script>
@@ -285,6 +283,7 @@ $( document ).tooltip();
 });
 </script>
 
+
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -294,6 +293,7 @@ $( document ).tooltip();
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
 
+
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
 	<input type="hidden" id="typei" name="typei"/>
 </form>
@@ -302,7 +302,7 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-            
+
 				<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
                  	<input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                     <input type="hidden" id="breadcrumb" name="breadcrumb"/>
@@ -313,8 +313,8 @@ $( document ).tooltip();
             </form>
             <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
                     <input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
-            </form>	
-                       
+            </form>
+
                 <div class="span9">
                    <h3 class="titlebox" style="padding:0px 0px 0px 0px">
                     <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
@@ -336,7 +336,7 @@ $( document ).tooltip();
 
                         <?php foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
-                       <?php if(isset($item->itemcode)) {
+                        <?php if(isset($item->itemcode)) {
                         $count=strlen($item->itemcode); if($count<=20){ ?>
                         <h2 class="title_top1">
                         <?php //echo $item->itemcode;
@@ -363,7 +363,7 @@ $( document ).tooltip();
 										$str=implode("",$arr1);
                                         echo $str;
                         ?></h2>
-                       <?php } } else { ?>  <h2 class="title_top1" style="word-wrap:break-word;"><?php echo  $item->itemname; } ?></h2>
+                        <?php } } ?> 
                             <div class="row">
                                 <div class="image span3">
                                     <div class="content">
@@ -385,20 +385,21 @@ $( document ).tooltip();
                                                 <section><?php echo $item->companynotes; ?></section>
                                             </div>
                                             <?php } ?>
+
                                             <div class="area">
                                                 <span class="key"><strong>Item Name:</strong></span>
                                                 <span class="value"> <?php // echo $item->itemname;
-                        						$arr2="";
-                                                $str2="";
-                                                $arr2 = str_split($item->itemname);
-                                      			for($i = 0; $i < count($arr2);$i++)
-                                        		{
-												if ($arr2[$i] == '1' || $arr2[$i] == '2' || $arr2[$i] == '3'  || $arr2[$i] == '4'  || $arr2[$i] == '5'  || $arr2[$i] == '6'  || $arr2[$i] == '7'  || $arr2[$i] == '8'  || $arr2[$i] == '9'  || $arr2[$i] == '0' || $arr2[$i] == '/' || $arr2[$i] == '-'){
-										      	$arr2[$i] = "<span style='color:red;'>".$arr2[$i]."</span>";
-												}}
-												$str2=implode("",$arr2);
-                                        		echo $str2;
-												?></span>
+							                    $arr2="";
+							                    $str2="";
+							                    $arr2 = str_split($item->itemname);
+							                    for($i = 0; $i < count($arr2);$i++)
+							                    {
+							                    if ($arr2[$i] == '1' || $arr2[$i] == '2' || $arr2[$i] == '3'  || $arr2[$i] == '4'  || $arr2[$i] == '5'  || $arr2[$i] == '6'  || $arr2[$i] == '7'  || $arr2[$i] == '8'  || $arr2[$i] == '9'  || $arr2[$i] == '0' || $arr2[$i] == '/' || $arr2[$i] == '-'){
+							                    $arr2[$i] = "<span style='color:red;'>".$arr2[$i]."</span>";
+							                    }}
+							                    $str2=implode("",$arr2);
+							                    echo $str2;
+											    ?></span>
 
                                                 <span class="key"><strong>Unit:</strong></span>
                                                 <span class="value"><?php echo $item->unit; ?></span>
@@ -410,10 +411,10 @@ $( document ).tooltip();
 												<span class="value"> <?php echo $item->manufacturername; ?></span>
 												<?php }?>
 
-                                               <?php if($item->partnum) { ?>
+                                                <?php if($item->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value"><?php echo $item->partnum; ?></span>
-                                               <?php }?>
+                                                 <?php }?>
                                                 <br/><br/>
 
                                                 <a href="<?php echo site_url('site/item/'.$item->url);?>">View Item</a>
@@ -421,14 +422,17 @@ $( document ).tooltip();
                                                 	&nbsp;&nbsp;<a href="<?php echo site_url('uploads/item/'.$item->filename);?>" target="_blank">View Attachment</a>
                                                 <?php }?>
                                             </div>
+
                                                 <span class="pull-right1">
                                                 	<?php echo $item->instock?'Available':'Not Available';?>
                                                 	<br/>
+
                                                 	Stock: <?php if($item->instock) { echo "Yes ";} echo $item->qtyavailable;?>
                                                 	<br/>
                                                 	Min. Order. Qty.: <?php echo $item->minqty;?>
                                                 </span>
                                         </div>
+
                                         <div class="price">
 
                                             <?php if($item->price){?>
@@ -472,11 +476,12 @@ $( document ).tooltip();
                         			<td><b>Connection:</b> </td>
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
-								<?php  $i=0;if($types[$i]->category == 'Industry') {?>		
+
+                        		<?php  $i=0;if($types[$i]->category == 'Industry') {?>
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
-                        		
+
                         		<tr>
                         			<td colspan="2">
                         			<ul class="inlist">
@@ -495,13 +500,13 @@ $( document ).tooltip();
                         		</tr>
 								<?php } $i++; ?>
 								<?php if(@$rating) {?>
-                        	<tr>
+                        		<tr>
                         			<td colspan="">Reviews:
 
                         			<?php echo $rating;?> <?php echo number_format($ratingvalue,2);?> / 5.00
                         			</td>
                         		</tr>
-								<?php } ?>		
+								<?php } ?>
                         		 <tr>
                         			<td colspan="2">
                             			<a href="<?php echo site_url('site/supplier/'.$company->username);?>">
@@ -515,7 +520,7 @@ $( document ).tooltip();
                     </div>
                     
                     
-                    <?php if(isset($inventory) && count($inventory)>0) {?>
+                     <?php if(isset($inventory) && count($inventory)>0) {?>
                     <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
                     	?>
                 		 <h2>Sub Categories</h2>
@@ -526,17 +531,18 @@ $( document ).tooltip();
 								</div>
 					      </div>
 					<?php } } ?><br>
-                    
-                    <?php if(@$businesshrs){ ?>       
-                    <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>                               
+
+
+                 <?php if(@$businesshrs){ ?>
+                 <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>
                     <div class="widget contact">
                     <div class="title">
                             <h2 align="center" class="block-title"><img style="height:20px;" src="<?php echo base_url(); ?>uploads/logo/time.png"/>&nbsp;Business Hours</h2>
                         </div>
                     <div class="content_sup">
-                                
+
                     <table border="1" cellpadding="7">
-				   <?php $todayhtml=''; $bhtml=''; foreach($businesshrs as $bhrs) { 
+				   <?php $todayhtml=''; $bhtml=''; foreach($businesshrs as $bhrs) {
 				   	$bhrs->day = ucfirst($bhrs->day);
 				   	$bhtml.='<tr><td>'.$bhrs->day.'</td>';
 				   	if(date('D') == $bhrs->day)
@@ -576,12 +582,13 @@ $( document ).tooltip();
 				   echo $todayhtml.''.$bhtml;
 					 ?>
 					 </table>
-                                  
+
                         </div>
-                    </div>                
-                 <?php } }?>
-                                    
-                  
+                    </div>
+                 <?php } } ?>
+
+
+                 
 			<?php if($types){
 						$band = false;
 						foreach ($types as $type){
@@ -618,7 +625,7 @@ $( document ).tooltip();
                                     </a>
                                     </td>
                               </tr>
-                            <?php 
+                            <?php
 									}
                                                 }
                                                  ?>
@@ -734,14 +741,15 @@ $( document ).tooltip();
                         </div>
                     </div>
                     <?php }?>
-                    
-                    
+
+
+
                <div class="sidebar span3">
                <div class="widget contact">
                <div class="fb-like-box" data-href="<?php if(isset($company->fbpageurl)) echo $company->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
                </div></div>
-                    
-               
+
+
                 </div>
 </div><!--pullright-->
 

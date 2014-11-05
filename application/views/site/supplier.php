@@ -713,7 +713,7 @@ $(document).ready(function() {
     	var img = $('#imgtag').find( 'img' );
 		$( img ).attr( 'id' ,imgid);	
 		$( img ).attr( 'src' , imagsrc);
-		$('.fb-like').data('href', '2');
+		$('.fb-like').attr('data-href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
 		//alert('<?php echo base_url(); ?>site/designbookdetail/'+imgid);
 		viewtag(imgid); 
     }
@@ -1909,9 +1909,8 @@ $( document ).tooltip();
 </div>
 <div id="taglist">  
 </div>
-<div class="fb-like" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 </div>
-
+<div class="fb-like" style="z-index: 9999;" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
         </div>
         <div class="modal-footer">          
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
