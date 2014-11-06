@@ -2516,8 +2516,7 @@ class site extends CI_Controller
     }
 
 
-    
-    function taglistofdetail()
+    function taglistsupplier()
     {
     	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
@@ -2529,7 +2528,7 @@ class site extends CI_Controller
     	if ($result){
     		foreach ($result as $rs){
 
-    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			
     			
@@ -2560,7 +2559,109 @@ class site extends CI_Controller
                     	$src=base_url().'templates/site/assets/img/default/big.png';
                     }
                                        
-    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
+    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
+    				//$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div>';
+    				//$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
+    				
+    				
+    				$data['boxes'] .= $itemdata;
+    			}else 
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			
+    			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
+
+    			$itemdata = "";
+    			if($rs->itemid!=""){
+
+    				$this->db->where('id',$rs->itemid);
+        			$item = $this->db->get('item')->row();
+
+    				$this->db->where('itemid',$rs->itemid);
+    				$this->db->where('type','Supplier');
+    				$this->db->where('company',$_POST['company']);
+    				$companyitem = $this->db->get('companyitem')->row();
+    				//print_r($companyitem);
+
+    				if($companyitem)
+    				{
+    					$item->ea = $companyitem->ea;
+    					if($companyitem->itemname!="")
+    					$item->itemname = $companyitem->itemname;
+    					if($companyitem->itemcode!="")
+    					$item->itemcode = $companyitem->itemcode;
+    				}
+
+    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				    				
+    				if ($this->session->userdata('site_loggedin')){
+                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
+                    }else{
+                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
+    				
+    				
+                    $itemdata .='</table>';
+    				
+    				
+    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+
+    			}else
+    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+
+				$margin +=150;
+    		}
+
+    	}
+
+    	echo json_encode( $data );
+
+    }
+    
+    
+    
+    function taglistofdetail()
+    {
+    	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('image_tag')->result();
+
+    	$data['boxes'] = '';
+    	$data['lists'] = '';
+		$margin = 0;
+    	if ($result){
+    		foreach ($result as $rs){
+
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
+    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
+    			
+    			
+    			if($rs->itemid!=""){
+
+    				$this->db->where('id',$rs->itemid);
+        			$item = $this->db->get('item')->row();
+
+    				$this->db->where('itemid',$rs->itemid);
+    				$this->db->where('type','Supplier');
+    				$this->db->where('company',$_POST[ 'company' ]);
+    				$companyitem = $this->db->get('companyitem')->row();
+    				
+    				if($companyitem)
+    				{
+    					$item->ea = $companyitem->ea;
+    					if($companyitem->itemname!="")
+    					$item->itemname = $companyitem->itemname;
+    					if($companyitem->itemcode!="")
+    					$item->itemcode = $companyitem->itemcode;    					
+    				}
+                    if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
+                    {
+                    	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
+                    }
+                    else 
+                    {
+                    	$src=base_url().'templates/site/assets/img/default/big.png';
+                    }
+                                       
+    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
     				//$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div>';
     				//$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
     				

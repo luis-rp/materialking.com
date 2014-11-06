@@ -227,7 +227,7 @@ var id = $( img ).attr( 'id' );
     });
     
    	// mouseover the tagboxes that is already there but opacity is 0.
-	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+	/*$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
 		var pos = $( this ).position();
 		 id = $(this).attr("id");	
 		 // alert(id);	 
@@ -236,7 +236,7 @@ var id = $( img ).attr( 'id' );
 	}).on( 'mouseout', '.tagview', function( ) {
 		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
 		$('#' + id+'_').css({ opacity: 0.0 });
-	});
+	});*/
 
 	
 	// load the tags for the image when page loads.
@@ -247,7 +247,16 @@ var id = $( img ).attr( 'id' );
 	viewtag(id,company);
 });
 
+function viewtagdescription(id){
+	
+	$('#' + id+'_').css({ opacity: 1.0 });
+}
 
+
+function hidetagdescription(id){
+	
+	$('#' + id+'_').css({ opacity: 0.0 });
+}
 
 function viewtag(pic_id,company)
 {	

@@ -286,6 +286,18 @@ padding:5px 0px;
 
 }
 
+.modal{
+left:22%;
+width:92%;
+}
+
+
+.btn-green {
+background-color: #ACC70A;
+background-image: linear-gradient(to bottom, #BACF0B, #98BA09);
+background-repeat: repeat-x;
+border-color: #7C9710
+}
 
 </style>
 
@@ -487,17 +499,8 @@ $(document).ready(function() {
     var mouseX = 0;
     var mouseY = 0;
 	
-
-    // mouseover the taglist 
-	$('#taglist').on( 'mouseover', 'li', function( ) {
-      id = $(this).attr("id");
-      $('#view_' + id+'_').css({ opacity: 1.0 });
-    }).on( 'mouseout', 'li', function( ) {
-        $('#view_' + id+'_').css({ opacity: 0.0 });
-    });
-	
 	// mouseover the tagboxes that is already there but opacity is 0.
-	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+	/*$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
 		var pos = $( this ).position();
 		 id = $(this).attr("id");	
 		 // alert(id);	 
@@ -506,45 +509,38 @@ $(document).ready(function() {
 	}).on( 'mouseout', '.tagview', function( ) {
 		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
 		$('#' + id+'_').css({ opacity: 0.0 });
-	});
+	});*/
 
 	
 	// load the tags for the image when page loads.
     var img = $('#imgtag').find( 'img' );
-	var id = $( img ).attr( 'id' );
-	   
-    // Remove tags.
-    $( '#taglist' ).on('click', '.remove', function() {
-      id = $(this).parent().attr("id");
-      // Remove the tag
-	  $.ajax({
-        type: "POST", 
-        url: "<?php echo site_url('site/removetag');?>", 
-        data: "id=" + id,
-        success: function(data) {
-			var img = $('#imgtag').find( 'img' );
-			var id = $( img ).attr( 'id' );
-			//get tags if present
-			viewtag( id );
-        }
-      });
-    });
-     
+	var id = $( img ).attr( 'id' );	
+	var company = $('#company').val();	
+	viewtag(id,company);   
 	
 });
 
 
-// view all tags available on page load
-    
-    function viewtag(pic_id)
-    {
-      // get the tag list with action remove and tag boxes and place it on the image.
-	  $.post( "<?php echo site_url('site/taglist');?>" ,  "pic_id=" + pic_id + "&view=profile", function( data ) {
-    $('#taglist').html(data.lists);
-    $('#tagbox').html(data.boxes);
-}, "json");
+function viewtagdescription(id){
 	
-    }
+	$('#' + id+'_').css({ opacity: 1.0 });
+}
+
+
+function hidetagdescription(id){
+	
+	$('#' + id+'_').css({ opacity: 0.0 });
+}
+
+   
+function viewtag(pic_id,company)
+{	
+	// get the tag list with action remove and tag boxes and place it on the image.
+	$.post( "<?php echo site_url('site/taglistsupplier');?>" ,  "pic_id=" + pic_id + "&company=" + company, function( data ) {
+		$('#taglist').html(data.lists);
+		$('#tagbox').html(data.boxes);
+	}, "json");	
+}
 
 </script>
 
@@ -707,15 +703,18 @@ $(document).ready(function() {
     }
     
     
-    function showimagewithtag(imgid,imagsrc){
+    function showimagewithtag(imgid,imagsrc,imagename){
     
     	$("#imgmodaltag").modal();
     	var img = $('#imgtag').find( 'img' );
 		$( img ).attr( 'id' ,imgid);	
 		$( img ).attr( 'src' , imagsrc);
+		$('#headimagename').html('<h3>'+imagename+'</h3>');
 		$('.fb-like').attr('data-href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
 		//alert('<?php echo base_url(); ?>site/designbookdetail/'+imgid);
-		viewtag(imgid); 
+		var company = $('#company').val();	
+		viewtag(imgid,company);   
+		//viewtag(imgid); 
     }
 
     
@@ -962,8 +961,7 @@ $( document ).tooltip();
 						</div>
 						<?php } ?>
 
-
-						 <?php  if(isset($designbook) && count($designbook)>0) { ?>
+ <?php  if(isset($designbook) && count($designbook)>0) { ?>
 					 <div class="content">
                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Design Book</h3>
                           <div class="thumbs">
@@ -972,13 +970,18 @@ $( document ).tooltip();
 								   <?php  if(isset($designbook) && count($designbook)>0)  foreach($designbook as $items) { ?>
 								    <div class="thumbnail current">
 								      <div class="thumbnail-inner">
-			<a onclick="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/designbook/'.$items->imagename);?>');">
-									      <img src="<?php echo site_url('uploads/designbook/'.$items->imagename);?>"/>
-									      </a>
+			<!--<a id="image" onclick="showimagewithtag('<?php //echo $items->id;?>','<?php e//cho site_url('uploads/designbook/'.$items->imagename);?>');">-->
+										<a href="<?php echo site_url('site/designbookdetail/'.$items->id); ?>" target="_blank">
+									      <img src="<?php echo site_url('uploads/designbook/'.$items->imagename);?>" alt="nothing"/>
+									    </a>									   								      
 								      </div>
+								      <a id="image" href="#" onmouseover="showimagewithtag('<?php echo $items->id;?>','<?php echo site_url('uploads/designbook/'.$items->imagename);?>','<?php echo htmlspecialchars(addslashes($items->name));?>');">
+                                        <span class="zoom" title="Click here to zoom the image"><i class="icon-search"></i></span></a>					      			
 								    </div>
+								    
 								     <?php }   ?>
 								  </div>
+								  <input type="hidden" name="company" id="company" value="<?php echo $supplier->id;?>"/> 
 							</div>
 							</div>
 						</div>
@@ -1893,26 +1896,27 @@ $( document ).tooltip();
 
 
 
-        <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:800px;max-height:800px;">
+        <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>                 
+        <div style="text-align:center;" id="headimagename"></div>          
         </div>
-        <div class="modal-body">
+        <div class="modal-body">        
         <div id="container2">
         <div id="imgtag">  
-  <img id="pic1" src="" />
+  <img id="pic1" src="" style="margin-right:30%;"/>
   <div id="tagbox">
   </div>
 </div>
 <div id="taglist">  
 </div>
 </div>
-<div class="fb-like" style="z-index: 9999;" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
         </div>
         <div class="modal-footer">          
+        <div class="fb-like" style="z-index: 9999;" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>

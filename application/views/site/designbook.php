@@ -399,20 +399,19 @@ padding:5px 0px;
     <div class="container">
         <div id="main">
             <div class="row">
-             <!--<form id="categorysearchform" name="categorysearchform" method="post" action="<?php //echo base_url('site/items');?>">
-                            <input type="hidden" name="keyword" value="<?php //echo isset($keyword)?$keyword:"";?>"/>
-                            <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php //echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-
-                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
-                            	<?php //$this->load->view('site/catmenu.php');?>
-                            </div>
-                        </form>-->
+             <form id="categorysearchform" name="categorysearchform" method="post" action="<?php //echo base_url('site/items');?>">
+                   <input type="hidden" name="keyword" value="<?php //echo isset($keyword)?$keyword:"";?>"/>
+                   <input type="hidden" id="breadcrumb" name="breadcrumb"/>
+                   <input type="hidden" id="formcategory" name="category" value="<?php //echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+				      <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
+                            <?php //$this->load->view('site/catmenu.php');?>
+                        </div>
+                        </form>
 
                <div class="span9">
                 <?php //if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?>
                 	<!--<div class="breadcrumb-pms"><ul class="breadcrumb"><?php //echo $breadcrumb;?></ul></div>-->
-                    <h3 class="titlebox" style="padding:0px 0px 0px 8px">Kitchen Design Book</h3>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px">Design Book</h3>
 
                     <div class="properties-rows">
                         <div class="row">
@@ -422,12 +421,12 @@ padding:5px 0px;
                             	foreach ($gallery as $item) {
                             	$i++; ?>
                                 <div class="property span9">
-                                  <?php $name="photo-book&nbsp;-".$item->name; $count=strlen($name); if($count>=20){ ?>
+                                  <?php $count=strlen($item->name); if($count>=20){ ?>
                                   <h2 class="title_top1" style="height:40px;word-wrap:break-word;font-variant:small-caps;overflow:hidden;">
                                   <?php } else { ?>
                                   <h2 class="title_top1" style="height:40px;font-variant:small-caps;">
                                   <?php } ?>
-                                   <a href="<?php echo site_url('site/designbookdetail/'.$item->id); ?>" style="text-decoration:none;"><?php echo $name;?></a>
+                                   <a href="<?php echo site_url('site/designbookdetail/'.$item->id); ?>" style="text-decoration:none;"><?php echo $item->name;?></a>
                                   </h2>
                                   <div class="row">
                                    <div class="body span6">

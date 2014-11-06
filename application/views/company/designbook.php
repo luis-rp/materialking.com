@@ -5,8 +5,12 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">-->
 		<!-- <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css"> -->		
 		<!-- <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script> -->
-		<script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
-
+		<!-- <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script> -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/select2.css" type="text/css" id="color-variant-default">
+<script src="<?php echo base_url(); ?>templates/site/assets/js/select2.js" type="text/javascript"></script>    
+ <script type="text/javascript">
+$.noConflict();
+ </script>       
 <style>
 
 #parent
@@ -312,6 +316,8 @@ var id = $( img ).attr( 'id' );
         }
         
     });	
+    
+    $("#e1").select2();
 	
 });
 
@@ -374,8 +380,8 @@ $(function() {
 
 
     function fetchItem(codeid)
-    {
-    	var itemcode = document.getElementById(codeid).value;
+    {    	
+    	var itemcode = $(codeid).val();
     	$('#itemcodedetails').css('display:block');
     	if($('#taghidid').val()=="")
     		alert("Please select any tag first");
@@ -511,7 +517,12 @@ $(function() {
   </div>
   <br/><br/>
   Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
-  Select Item Code:<input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" />
+  Select Item Code:<!-- <input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" /> -->
+   <select id="e1" onchange="fetchItem(this);">        
+        <?php foreach($itemids as $item) { ?>
+        <option value="<?php echo $item['value']; ?>"><?php echo $item['label']; ?></option>
+        <?php } ?>
+    </select>
   <div id="itemcodedetails">
   </div>
 </div>
@@ -523,6 +534,9 @@ $(function() {
         </div>        
         <div class="modal-footer">          
           <!-- <button data-dismiss="modal" class="btn btn-default" type="button">Close</button> -->
+        </div>
+        <div style="margin-left:85%;margin-bottom:10px;">          
+           <button data-dismiss="modal" class="btn btn-primary" type="button">Save Changes & Close</button> 
         </div>
       </div>
       <!-- /.modal-content -->

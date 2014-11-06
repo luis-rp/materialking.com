@@ -1642,6 +1642,17 @@ class Company extends CI_Controller {
 	{
 		$company = $this->session->userdata('company');
         $data['design']=$this->db->get_where('designbook',array('company'=>$company->id))->result();
+        
+       	$codes = $this->db->get('item')->result();        
+        $items = array();
+        foreach ($codes as $code) {
+            $item = array();
+            $item['value'] = $code->itemcode;
+            $item['label'] = '<!--<font color="#990000">-->'.$code->itemcode.'<!--</font>--> - '.$code->itemname;           
+            $itemids[] = $item;           
+        }        
+    	$data['itemids'] = $itemids;
+        
         $this->load->view('company/designbook',$data);
 	}
 

@@ -17,20 +17,8 @@ class items_model extends Model {
     {
     	$this->db->order_by('catname','asc');
         $this->db->where('parent_id',$parentid);
-        $menus = $this->db->get('category')->result();
-       
-	   
-	   
-	    $ret = "<ul>";
-       
-	   
-	   
-	   
-	   
-	   
-	   
-	   
-	   
+        $menus = $this->db->get('category')->result();	   
+	    $ret = "<ul>";	   
 	    foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
@@ -93,7 +81,7 @@ class items_model extends Model {
             }
             else
             {
-               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
                  <span style='white-space:pre-wrap;'>" . $item->catname."<span></a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
@@ -200,7 +188,7 @@ class items_model extends Model {
             }
             else
             {
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>" . $item->catname."</a>";
+               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."</span></a>";
             }
             $ret .= "</li>";
         }
@@ -288,7 +276,7 @@ class items_model extends Model {
            
             
         }
-     //  $ret .= "</ul>";
+    //    $ret .= "</ul>";
         return $ret;
     }
     
