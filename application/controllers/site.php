@@ -2680,6 +2680,10 @@ class site extends CI_Controller
 		
     	$this->load->view('site/designbookdetail',$data);
     }
-
+	public function price_check ()
+    {
+       $data = ""; 
+       $this->load->view('site/priceCheck', $data);
+    }
 
 }
