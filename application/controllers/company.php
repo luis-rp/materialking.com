@@ -1662,7 +1662,7 @@ class Company extends CI_Controller {
        $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
-
+		$this->load->library('image_lib');	
         $errormessage = '';
         $message='';
 		   if(isset($_FILES['UploadFile']['name']))
@@ -1682,6 +1682,19 @@ class Company extends CI_Controller {
             		$tmp='';
                     if(isset($filename) && $filename!='')
                       {
+                      	if(isset($_POST['selectresize']) && $_POST['selectresize']!=""){
+                      		$config['image_library'] = 'gd2';
+                      		$config['source_image'] = 'uploads/designbook/'.$filename;
+                      		//$config['create_thumb'] = TRUE;
+                      		$config['maintain_ratio'] = FALSE;
+                      		$sizes = explode("*",$_POST['selectresize']);
+                      		$config['width']     = $sizes[0];
+                      		$config['height']   = $sizes[1];
+
+                      		$this->image_lib->clear();
+                      		$this->image_lib->initialize($config);
+                      		$this->image_lib->resize();
+                      	}
             		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename));
                       }
             	 }

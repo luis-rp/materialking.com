@@ -10,6 +10,7 @@
 <?php echo '<script>var checksubscriberemail="' . site_url('subscriber/checksubscriberemail') . '";</script>' ?>
 <?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
+<?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
@@ -322,7 +323,7 @@ border-color: #7C9710
         	$( "#dialog-form" ).dialog();
             });
         $("#subscribe").click(function(){
-            	if(confirm("Are you sure")){
+            	if(confirm("Please confirm you wish to subscribe to this users newsletter.")){
 
             		if($('#email').val() !=""){
 
@@ -344,6 +345,8 @@ border-color: #7C9710
 
 
             });
+            
+       $("#daterequested").datepicker();     
     });
 
     function industryitems(id)
@@ -711,7 +714,13 @@ function viewtag(pic_id,company)
 		$( img ).attr( 'src' , imagsrc);
 		$('#headimagename').html('<h3>'+imagename+'</h3>');
 		$('.fb-like').attr('data-href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
-		//alert('<?php echo base_url(); ?>site/designbookdetail/'+imgid);
+		$('.fb-like').attr('href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
+		var frame = $('#fbshareandlike').find('iframe');		
+		var str = $( frame ).attr('src');
+		var res = str.split("href=");
+		var res2 = res[1].split("&layout=");
+		var res3 = res2[0].split("designbookdetail%2F");
+		$( frame ).attr('src',res[0]+"href="+res3[0]+"designbookdetail%2F"+imgid+"&layout="+res2[1]);		
 		var company = $('#company').val();	
 		viewtag(imgid,company);   
 		//viewtag(imgid); 
@@ -769,11 +778,45 @@ function viewtag(pic_id,company)
         });
     }
     
+    function addtopo1(quote)
+	{
+		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+
+		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("admin/quote/update/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
+		$("#modalhtm").html(string);
+		$("#addtoquotemodal1").modal();
+
+	}
+    
     
     function showimgmodal(){
     	
     	$('#imgmodaltag').modal();   	
     }
+    
+    
+    function rfqformsubmit()
+	{
+		var d = $("#addtoquoteform").serialize();
+		var quote = $('[name="quote"]').val();
+
+        $.ajax({
+            type: "post",
+            url: rfqurl,
+            data: d
+        }).done(function(data) {
+            if (data == 'Success')
+            {
+               addtopo1(quote);
+            }
+            else
+            {
+                alert(data);
+            }
+            $("#addtoquotemodal").modal('hide');
+        });
+        return false;
+	}
     
 </script>
 
@@ -1179,7 +1222,7 @@ $( document ).tooltip();
 
                         <?php if($inventory){?>
                         	<br/>
-                        	  <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Featured Items:</h3>
+                        	  <h3 class="titlebox2" style="padding:0px 0px 0px 8px">Featured Items</h3>
                         	<?php
                                     foreach ($inventory as $inv)
                                     if ($inv->ea)
@@ -1916,7 +1959,7 @@ $( document ).tooltip();
 </div>
         </div>
         <div class="modal-footer">          
-        <div class="fb-like" style="z-index: 9999;" data-href="" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
+        <div class="fb-like" id="fbshareandlike" style="z-index: 9999;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $designbook[0]->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>

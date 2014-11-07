@@ -8,9 +8,9 @@
 		<!-- <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script> -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/select2.css" type="text/css" id="color-variant-default">
 <script src="<?php echo base_url(); ?>templates/site/assets/js/select2.js" type="text/javascript"></script>    
- <script type="text/javascript">
+<script type="text/javascript">
 $.noConflict();
- </script>       
+ </script>    
 <style>
 
 #parent
@@ -448,7 +448,14 @@ $(function() {
                  <div class="col-md-10 col-sm-10 col-xs-10">
 				    <div class="form-group">
 					   <label class="form-label">Add Images</label>
-						  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+						  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /> <table>
+						  <tr><td>recommended sizes:</td>
+						  <td>convert image to size: 
+						  <select name="selectresize"><option value="">Select Size</option>
+						  <option value="400*300">400*300</option>
+						  <option value="500*400">500*400</option>
+						  <option value="600*500">600*500</option>
+						  </select></td> </tr></table>
 							<div id="moreUploads"></div>
 								<div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a></div>
 					 </div>

@@ -8,7 +8,9 @@
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery.timepicker.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
-
+<?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
+<?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
+<?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 
 <style>
 
@@ -245,6 +247,8 @@ var id = $( img ).attr( 'id' );
 	var companyid = 'company_'+id;
 	var company = $('#'+companyid).val();	
 	viewtag(id,company);
+	
+	 $("#daterequested").datepicker();    
 });
 
 function viewtagdescription(id){
@@ -263,10 +267,96 @@ function viewtag(pic_id,company)
 	$('#pictureid').val(pic_id);
 	// get the tag list with action remove and tag boxes and place it on the image.
 	$.post( "<?php echo site_url('site/taglistofdetail');?>" ,  "pic_id=" + pic_id + "&company=" + company, function( data ) {
-		//$('#taglist').html(data.lists);
+		$('#taglist').html(data.lists);
 		$('#tagbox').html(data.boxes);
 	}, "json");	
 }
+
+
+
+    function openrfqpopup(){ 
+    	$('#imgmodaltag').modal('hide');
+    	$('#createmodal').modal();
+    	
+    }
+
+    function addtopo(itemid)
+	{
+		$('#imgmodaltag').modal('hide');
+		$("#addform").trigger("reset");
+		$("#additemid").val(itemid);
+		//$('#additemproject').attr('selectedIndex',0);
+		//$('#additemproject option:first-child').attr("selected", "selected");
+		//document.getElementById('additemproject').value=2;
+		$('#additemqty').val('');
+		$("#additempo").html('<select name="quote" required></select>');
+		$('#additemcostcode').html('<select name="costcode" required></select>');
+		getquotecombo();
+		getcostcodecombo()
+		$("#addtoquotemodal").modal();
+	}
+    
+	function getquotecombo()
+    {
+    	var pid = $("#additemproject").val();
+    	d = "pid="+pid;
+    	$.ajax({
+            type: "post",
+            url: quoteurl,
+            data: d
+        }).done(function(data) {
+            $("#additempo").html(data);
+        	//document.getElementById("additempo").innerHTML = data;
+        });
+
+    }
+	
+    function getcostcodecombo()
+    {
+    	var pid = $("#additemproject").val();
+    	d = "pid="+pid;
+    	$.ajax({
+            type: "post",
+            url: costcodeurl,
+            data: d
+        }).done(function(data) {
+            $("#additemcostcode").html(data);
+        });
+    }
+    
+    function addtopo1(quote)
+	{
+		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+
+		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("admin/quote/update/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
+		$("#modalhtm").html(string);
+		$("#addtoquotemodal1").modal();
+
+	}
+   
+    
+    function rfqformsubmit()
+	{
+		var d = $("#addtoquoteform").serialize();
+		var quote = $('[name="quote"]').val();
+
+        $.ajax({
+            type: "post",
+            url: rfqurl,
+            data: d
+        }).done(function(data) {
+            if (data == 'Success')
+            {
+               addtopo1(quote);
+            }
+            else
+            {
+                alert(data);
+            }
+            $("#addtoquotemodal").modal('hide');
+        });
+        return false;
+	}
 
 </script>
 
@@ -292,61 +382,6 @@ function viewtag(pic_id,company)
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
 
-<!-- <div id="content">
-    <div class="container">
-        <div id="main">
-            <div class="row">
-
-               <div class="span9">
-                    <div class="properties-rows">
-                       <div class="row">
-                            <?php if (isset($details)) { //echo "<pre>123"; print_r($details->imagename); die; ?>
-                                <div class="property span9" style="width:90%;">
-                                  <h2 class="title_top1" style="height:40px;font-variant:small-caps;"><?php echo $details->name;?> </h2>
-                                  <div class="row">
-                                   <div class="body span6">
-                                     <div class="title-price row">
-                                        <div id="imgtag2" class="title span6">
-                                  <?php if(isset($details->imagename) && $details->imagename!= "" && file_exists("./uploads/designbook/".$details->imagename)) { ?>
-                                        <img id="<?php echo $details->id;?>" src="<?php echo site_url('uploads/designbook/'.$details->imagename);?>" style="padding:10px;">
-                                   <?php } else { ?>
-                                         <img id="<?php echo $details->id;?>" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" style="padding:20px;"  alt="">
-                                   <?php } ?>
-                                         <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>
-                                   		 <div id="tagbox"></div>
-                                         </div>
-                                         <div class="price"> -->
-                                            <!-- <p>LIKES <br> COMMENTS</p>-->
-                                         <!-- </div>
-                                         <div class="fb-like" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <?php }  else { ?>
-                                <div class="alert alert-error" style="margin-left:30px;">
-                                    <button data-dismiss="alert" class="close" type="button">X</button>
-                                    <strong>No Records Found</strong>
-                                </div>
-                                <?php   }  ?>
-
-                          </div>
-                    </div>
-                </div>
-                <div class="sidebar span3">
-                    <div class="widget contact">
-                        <div class="title"><h2 class="block-title">Main Menu</h2></div>
-                        <div class="content_sup"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-
                                          
   <div id="content">
     <div class="container">
@@ -364,77 +399,83 @@ function viewtag(pic_id,company)
                        </div>
                     </div>
                </div> <br>
-               <div class="pull-left">
+               
+               <div class="pull-left" style="height:100%;width:55%;overflow:auto;">
                <?php if (isset($details)) { ?>
-               <div id="imgtag2" class="title span6" style="width:100%">
+               	 <div id="imgtag2" class="title span6" style="width:100%">
                    <?php if(isset($details->imagename) && $details->imagename!= "" && file_exists("./uploads/designbook/".$details->imagename)) { ?>
                         <img id="<?php echo $details->id;?>" src="<?php echo site_url('uploads/designbook/'.$details->imagename);?>" style="padding:10px;">
                     <?php } else { ?>
                          <img id="<?php echo $details->id;?>" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" style="padding:20px;"  alt="">
-                    <?php } ?>
-                    <div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark"></div>
-                    <br/>
+                    <?php } ?>                  
                     <div id="tagbox"></div>                        
-                </div>
-                 <?php }  ?>  
                  </div>
-                 
-                  
-                 <div class="pull-right">
-                  <?php if(isset($supplier)) { ?>        
-                                <div class="span9 category-box">
-                                 <span><strong>Design Book Created By:</strong></span>
- 									<h2 class="supplier_new_sa">
- 										<a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
+                <?php }  ?>
+                </div>
+                <br>
+                 <div class="pull-right">  <br>             	
+                 	<div class="pull-left"> 
+                 		<div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark">This is Comment</div> 
+                	</div>
+                                
+                 	<div class="pull-right">
+                       <?php if(isset($supplier)) { ?>        
+                           <div class="span9 category-box">
+                               <span><strong>Design Book Created By:</strong></span>
+ 								   <h2 class="supplier_new_sa">
+ 									  <a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                     	<div class="row">
                                     	
-                                        <div class="image span3">
-                                            <div class="content">
-                                                <?php if ($supplier->logo) { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/'.$supplier->logo) ?>" alt="">
-                                                <?php } else { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
-                                                <?php } ?>
-                                            </div>
-                                        </div>
+	                                        <div class="image span3">
+	                                            <div class="content">
+	                                                <?php if ($supplier->logo) { ?>
+	                        <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/'.$supplier->logo) ?>" alt="">
+	                                                <?php } else { ?>
+	                        <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+	                                                <?php } ?>
+	                                            </div>
+	                                        </div>
 
-                                        <div class="body_home span6">
-                                            <div class="title-price row">                                      
-                                                <div class="price">
-                                                    <?php echo $supplier->address; ?>
-                                                </div>
-                                            </div>                                           
-                                        </div>
+	                                        <div class="body_home span6">
+	                                            <div class="title-price row">                                      
+	                                                <div class="price">
+	                                                    <?php echo $supplier->address; ?>
+	                                                </div>
+	                                            </div>                                           
+	                                        </div>
                                         
                                     </div>                                    
                                   </div><br>
-                            <?php } ?>      
+                                  
+                            <?php } ?> 
+                            <div style="text-align:right">     
                             <?php $maindesignurl = "<a href = '".site_url('site/designbook')."' >Go to Main Design Book</a>" ?>
 		                    <?php if(isset($previd->id)) { ?><a href="<?php echo site_url('site/designbookdetail/'.$previd->id); ?>">< View Previous</a>
 		                    <?php } else { echo $maindesignurl; $maindesignurl=""; } ?>
 		                    &nbsp; &nbsp; &nbsp;     
 		                    <?php if(isset($nextid->id)) { ?><a href="<?php echo site_url('site/designbookdetail/'.$nextid->id); ?>">View Next ></a>  	
 		                    <?php } else echo $maindesignurl; ?>                                          
-		                    <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>             
-                    </div>
-                    
-                    <div style="clear:both;"></div>     
-                 
-               
+		           <input type="hidden" name="company_<?php echo $details->id;?>" id="company_<?php echo $details->id;?>" value="<?php echo $details->company;?>"/>
+		                   </div>             
+                    </div>                 
+                  <div style="clear:both;"></div>    
+                  <br> 
+               </div>
+               </div>
+               <div id="taglist"></div>     
+             
+              
                <div class="span9" style="width:100%;padding-top:100px;">
                     <div class="properties-rows">
                        <div class="row">
                             <?php if (isset($details)) { ?>
                                 <div class="property span9" style="width:100%">                                         
                                   <div class="row">
-                                   <!-- <div class="body span6">-->
                                      <div class="title-price row">
                                          <div class="price">
                                             <div class="fb-like" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
-                                         </div>
-                                          
-                                      </div>
-                                    <!-- </div> -->
+                                         </div>                                          
+                                      </div>                                
                                   </div>
                                 </div>
                                 <?php }  else { ?>
@@ -445,14 +486,93 @@ function viewtag(pic_id,company)
                                 <?php   }  ?>
       
                           </div>
+                              
+                    </div>  
+                              
+                </div>
+                
+            </div>
+            
+       <!-- </div>-->
+        
+    </div>
+     
+</div>
+
+
+
+<!-- Modal -->
+        <div class="modal hide fade" id="addtoquotemodal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title nobottompadding" id="myModalLabel">Request for quote</h3>
                     </div>
-                    
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" onsubmit="rfqformsubmit(); return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                            <h4>Select Project</h4>
+                            <select id="additemproject" onchange="getquotecombo();getcostcodecombo();">
+                                <option value="">Select</option>
+                                <?php foreach($projects as $up){?>
+                                	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>
+                                <?php }?>
+                            </select>
+
+                            <h4>Select PO</h4>
+                            <span id="additempo">
+                            <select name="quote" required>
+                                <?php if(0)foreach($userquotes as $uq){?>
+                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
+                                <?php }?>
+                            </select>
+                            </span>
+
+                            <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
+
+                            <h4>Quantity</h4>
+                            <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+                            <h4>Costcode</h4>
+                            <span id="additemcostcode">
+                            <select name="costcode" required>
+                                <?php if(0)foreach($userquotes as $uq){?>
+                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
+                                <?php }?>
+                            </select>
+                            </span>
+
+                            <h4>Date Requested</h4>
+                            <input type="text" id="daterequested" name="daterequested"/>
+
+                            <br/><br/>
+                            <div>
+                            <button type="button" class="btn btn-primary" onclick="showimgmodal();" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="rfqformsubmit();">Add</button>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
+        <div class="modal hide fade" id="addtoquotemodal1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                        <div id="modalhtm">
+
+                        </div>
+                        </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 </BODY>
 </HTML>

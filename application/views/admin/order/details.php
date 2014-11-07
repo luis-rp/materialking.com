@@ -302,7 +302,7 @@ Send Message:
                             <td><?php echo $item->transferid;?></td>
                             <td><?php echo $item->companyname;?></td>
                             <td>$<?php echo $totamount;?></td>
-                            <td><?php echo $item->status;?></td>
+                            <td><?php echo ucfirst($item->status); ?></td>
                         </tr>
                       <?php } ?>
                     </tbody>

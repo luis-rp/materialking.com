@@ -689,6 +689,24 @@ class site extends CI_Controller
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
 
         $data['businesshrs'] = $bhrs;
+        
+        $data['userquotes'] = array();
+        $data['projects'] = array();
+        $data['costcodes'] = array();
+        if ($this->session->userdata('site_loggedin'))
+        {
+            $pa = $this->session->userdata('site_loggedin')->purchasingadmin;
+            $userquotes = $this->db->where('purchasingadmin',$pa)->where('potype','Bid')->get('quote')->result();
+            foreach($userquotes as $uq)
+            {
+                if(!$this->db->where('quote',$uq->id)->get('invitation')->row())
+                    $data['userquotes'][]=$uq;
+            }
+            $data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
+            $data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
+        }
+        
+        
         $this->load->view('site/supplier', $data);
     }
     public function prevsupplier ($id)
@@ -1274,6 +1292,9 @@ class site extends CI_Controller
             $orgitem = $this->db->get('item')->row();
             if(!$initem->itemname)
                 $initem->itemname = $orgitem->itemname;
+            if(!$initem->itemcode)
+                $initem->itemcode = $orgitem->itemcode;   
+                    
             $initem->unit = $orgitem->unit;
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
@@ -2559,7 +2580,7 @@ class site extends CI_Controller
                     	$src=base_url().'templates/site/assets/img/default/big.png';
                     }
                                        
-    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
+    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
     				//$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div>';
     				//$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
     				
@@ -2591,16 +2612,16 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
                     }else{
-                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
     				
     				
-                    $itemdata .='</table>';
-    				
+                    $itemdata .='</table></div>';
+
     				
     				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
@@ -2661,14 +2682,14 @@ class site extends CI_Controller
                     	$src=base_url().'templates/site/assets/img/default/big.png';
                     }
                                        
-    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img class="thumbnail" src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
+    				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
     				//$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;"><tr><td style="margin-top:1opx;text-align:left;"><h2>'.$rs->name.'</h2></td><td><img style="width:100px;height:100px;"text-align:right;" src="'.base_url().'uploads/item/thumbs/'.$item->item_img.'"></td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemcode.'</td></tr><tr><td style="text-align:left;" colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2" style="text-align:left;">'.$rs->description.'</td></tr><tr><td>&nbsp;</td><td style="text-align:right;">$'.$item->ea.'&nbsp;&nbsp;&nbsp;<a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div>';
     				//$data['boxes'] .= '<div style="margin-top:20px;width:-moz-fit-content;height:auto;color:black;" class="person">'.$itemdata.'</div></div>';
     				
     				
     				$data['boxes'] .= $itemdata;
     			}else 
-    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person"><strong>' . $rs->name . '</strong></div></div>';
     			
     			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
 
@@ -2693,11 +2714,20 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr></table>';
-    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+    				$itemdata = '<table class="table table-bordered;" style="background-color:white;"><tr><td><strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr><tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'"><strong>ViewItem</strong></a></td></tr>';
+    				
+    				if ($this->session->userdata('site_loggedin')){
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
+                    }else{
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
+    				
+    				
+                    $itemdata .='</table>&nbsp;&nbsp;&nbsp;&nbsp;';
+    				
+    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
     			}else
-    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
 				$margin +=150;
     		}
@@ -2777,7 +2807,21 @@ class site extends CI_Controller
 		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d  where d.id >".$id."";
 		$data['nextid'] = $this->db->query($sql)->row();
 		
-		
+		$data['userquotes'] = array();
+        $data['projects'] = array();
+        $data['costcodes'] = array();
+        if ($this->session->userdata('site_loggedin'))
+        {
+            $pa = $this->session->userdata('site_loggedin')->purchasingadmin;
+            $userquotes = $this->db->where('purchasingadmin',$pa)->where('potype','Bid')->get('quote')->result();
+            foreach($userquotes as $uq)
+            {
+                if(!$this->db->where('quote',$uq->id)->get('invitation')->row())
+                    $data['userquotes'][]=$uq;
+            }
+            $data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
+            $data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
+        }
 		
     	$this->load->view('site/designbookdetail',$data);
     }

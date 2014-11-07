@@ -305,7 +305,7 @@
                                                     </p>
                                                     <div class="area">
                                                         <span class="key"><strong>Item Name:</strong></span>
-                                                        <span class="value">
+                                                        <span class="value" style='word-break:break-all;'>
                                                          <?php //echo $item->itemname;
                                                          $arr2="";
                                                          $str2="";
