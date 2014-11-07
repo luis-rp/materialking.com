@@ -2786,5 +2786,11 @@ class site extends CI_Controller
        $data = ""; 
        $this->load->view('site/priceCheck', $data);
     }
+    public function submit_list ()
+    {
+    	$data = "";
+    	$this->load->view('site/submitlist', $data);
+    }
+    
 
 }

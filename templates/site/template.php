@@ -301,7 +301,10 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                             }
                                         ?>>
                                         <a href="<?php echo base_url('site/designbook'); ?>">Design Book</a>
-
+										</li>
+										<li>
+											<a href="<?php echo base_url('site/submitlist'); ?>">Submit A List</a>
+										</li>
                                         	
                                         
                                     </ul>
