@@ -1475,7 +1475,8 @@ background-color:#333745}
     -moz-border-radius:0px;
     border-radius:0px;
     border-right:0px;
-    width:146px;
+    /*width:146px;*/
+    width:116px;
     height:26px;
 	padding:6px;
     margin-left:5px;
