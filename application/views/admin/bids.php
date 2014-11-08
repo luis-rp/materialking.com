@@ -260,6 +260,7 @@ $(function() {
                    });
 				var ser = new Array();
                for(var index=0;index<cat.length;index++){
+               	   val[index] = val[index].replace(",","");
             	   myfloat = parseFloat(val[index]);
 				ser[index] = {"name":cat[index],"data":[myfloat]};
                    }

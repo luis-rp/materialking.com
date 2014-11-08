@@ -1,4 +1,17 @@
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<HEAD>		
+	    <link rel="image_src" href="<?php if(isset($details->imagename)) echo site_url('uploads/designbook/'.$details->imagename);?>" />
+		<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
+		<meta http-equiv="cache-control" content="no-cache"> <!-- tells browser not to cache -->
+		<meta http-equiv="expires" content="0"> <!-- says that the cache expires 'now' -->
+		<meta http-equiv="pragma" content="no-cache"> <!-- says not to use cached stuff, if there is any -->
+		<meta property="fb:app_id" content="899376703411658"/> <!-- Facebook App ID for comment system  -->
+		<meta property="og:url" content="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>"/>		
+		<meta property="og:image" content="<?php if(isset($details->imagename)) echo site_url('uploads/designbook/'.$details->imagename);?>"/>		
+	</HEAD>	
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -361,17 +374,6 @@ function viewtag(pic_id,company)
 </script>
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<HEAD>		
-		<META HTTP-EQUIV="imagetoolbar" CONTENT="no">
-		<meta http-equiv="cache-control" content="no-cache"> <!-- tells browser not to cache -->
-		<meta http-equiv="expires" content="0"> <!-- says that the cache expires 'now' -->
-		<meta http-equiv="pragma" content="no-cache"> <!-- says not to use cached stuff, if there is any -->
-		<meta property="fb:app_id" content="899376703411658"/> <!-- Facebook App ID for comment system  -->		
-		<meta property="og:image" content="<?php if(isset($details->imagename)) echo site_url('uploads/designbook/'.$details->imagename);?>"/>		
-	</HEAD>	
-	<BODY>
 
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -381,7 +383,7 @@ function viewtag(pic_id,company)
   js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=899376703411658&version=v2.0";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-
+	<BODY>
                                          
   <div id="content">
     <div class="container">
@@ -462,7 +464,9 @@ function viewtag(pic_id,company)
                   <br> 
                </div>
                </div>
-               <div id="taglist"></div>     
+               <div style="width:50%;height:300px;overflow:auto;">
+               <div id="taglist"></div>
+               </div> 
              
               
                <div class="span9" style="width:100%;padding-top:100px;">

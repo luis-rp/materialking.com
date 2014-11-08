@@ -23,6 +23,9 @@ $(document).ready( function() {
 	 $('.dataTables_length').hide();
 });      
 </script>
+ <script type="text/javascript">
+$.noConflict();
+ </script>
 <script type="text/javascript">
 <!--
 $(document).ready(function(){

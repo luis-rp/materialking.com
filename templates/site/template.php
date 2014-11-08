@@ -10,6 +10,7 @@ if (!$function || $function == 'index')
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
+    <link rel="image_src" href="<?php if(isset($details->imagename)) echo site_url('uploads/designbook/'.$details->imagename);?>" />
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script>
 $(function(){

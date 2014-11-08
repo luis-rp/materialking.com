@@ -919,7 +919,16 @@ class site extends CI_Controller
         		$this->data['data2'] = $this->data2;
         	}
         	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
-        	$this->data['datatags'] = $this->items_model->find_tags($keyword);
+        	$tagarray = $this->items_model->find_tags($keyword);
+        	
+        	if($tagarray){
+        		$tagarray2 = array();
+        		foreach($tagarray as $tag)
+        		$tagarray2[] = trim(strtolower($tag));
+        		$tagarray2 = array_unique($tagarray2);
+        		$this->data['datatags'] = $tagarray2;
+        	}else
+        	$this->data['datatags'] = $tagarray;
         }
         if(isset($_POST['searchfor']))
         $this->data['searchfor'] = $_POST['searchfor'];
@@ -1200,7 +1209,12 @@ class site extends CI_Controller
         $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->get('itemarticle')->result();
         $item->images = $this->db->where('itemid',$item->id)->get('itemimage')->result();
         $cat_data = $this->db->where('id',$item->category)->get('category')->result();
+        if($cat_data)        
         $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
+        else{
+        	$cat_data = $this->db->where('catname','Unassigned')->get('category')->result();
+        	$data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
+        }
 
         if(isset($cat_data['0']->title) && $cat_data['0']->title!=""){
         	$data['cat_title'] = $cat_data['0']->title;
@@ -1293,8 +1307,8 @@ class site extends CI_Controller
             if(!$initem->itemname)
                 $initem->itemname = $orgitem->itemname;
             if(!$initem->itemcode)
-                $initem->itemcode = $orgitem->itemcode;   
-                    
+                $initem->itemcode = $orgitem->itemcode;    
+                
             $initem->unit = $orgitem->unit;
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
@@ -2510,19 +2524,20 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata .= '<table id="tableinnerid" style="width:100px;"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
     				
     				if($_POST['view']=='profile'){
     				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
                     }else{
-                            $itemdata .= '<tr><td><a class="btn btn-primary" style="margin-left:30px;" href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
     				}
     				
-                    $itemdata .='</table>';
+                    $itemdata .='</table><br>';
     				
-    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+    				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
+    				$data['lists'] .= '<div>'.$itemdata.'</div>';
 			
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
@@ -2612,7 +2627,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2623,7 +2638,8 @@ class site extends CI_Controller
                     $itemdata .='</table></div>';
 
     				
-    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+    				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+    				$data['lists'] .= '<div>'.$itemdata.'</div>';
 
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
@@ -2714,7 +2730,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table class="table table-bordered;" style="background-color:white;"><tr><td><strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr><tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'"><strong>ViewItem</strong></a></td></tr>';
+    				$itemdata = '<table class="table table-bordered;" style="background-color:white;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td><strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr><tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'"><strong>ViewItem</strong></a></td></tr>';
     				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2722,9 +2738,10 @@ class site extends CI_Controller
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
     				
     				
-                    $itemdata .='</table>&nbsp;&nbsp;&nbsp;&nbsp;';
+                    $itemdata .='</table>';
     				
-    				$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+    				$data['lists'] .= '<div>'.$itemdata.'</div>';
+    				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';

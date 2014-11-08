@@ -2955,6 +2955,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(!$company)
 			redirect('company/login');
 		
+		if(!@$_POST)
+		{
+			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+			$_POST['searchto'] = date('m/d/Y');
+		}	
+			
 		$invs = $this->quotemodel->getinvoices($company->id);
 		$invoices = array();
 		foreach($invs as $i)

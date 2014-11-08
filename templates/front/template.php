@@ -123,7 +123,59 @@
 <!-- BEGIN CORE TEMPLATE JS --> 
 <script src="<?php echo base_url();?>templates/front/assets/js/core.js" type="text/javascript"></script> 
 <script src="<?php echo base_url();?>templates/front/assets/js/demo.js" type="text/javascript"></script> 
+<link href="../templates/admin/css/bootstrap-tour.min.css" rel="stylesheet"></link>
+<script src="../templates/admin/js/jquery.js"></script>
+<script src="../templates/admin/js/bootstrap.min.js"></script>
+<script src="../templates/admin/js/bootstrap-tour.min.js"></script>
+<script type="text/javascript">
+	 $(document).ready(function(){
+		tourCompany = new Tour({
+			  steps: [
+			  {
+				element: ".tour1D",
+				title: "Welcome",
+				content: "Welcome to your Company Dashboard, This Welcome tour will guide you through a few steps to get your company set up on our website.",
+				placement: "left"
+			  },
+			  {
+				element: ".tour2D",
+				title: "",
+				content: "First, you will want to set up your companies profile, click the Profile & Settings menu option."
+			  },
+			  {
+				element: ".tour3D",
+				path: "/company/profile"
+				//title: "",
+				//content: "First, you will want to set up your companies profile, click the Profile & Settings menu option."
+			  }
+			]
+			});
 
+			$("#tourcontrols").remove();
+			tourCompany.restart();
+			// Initialize the tour
+			tourCompany.init();
+			start();
+			
+	 });
+	$('#canceltour').live('click',endTour);
+	 function start(){
+		  
+			// Start the tour
+				tourCompany.start();
+			 }
+	 function endTour(){
+
+		 $("#tourcontrols").remove();
+		 tourCompany.end();
+			}
+			
+	function userquickoptions(){
+		
+		$("#quickoptions").addClass("open");
+	}
+			
+ </script>
 </head>
 
 <body class="">
@@ -153,7 +205,7 @@
             </ul>
     	  </div>
     	  
-          <div class="pull-right"> 
+          <div class="pull-right tour1D"> 
     		<div class="chat-toggler">	
     				
 					<div class="user-details"> 
@@ -180,7 +232,7 @@
     			
     		 <ul class="nav quick-section ">
     		 <li class="quicklinks"> <span class="h-seperate"></span></li> 
-    			<li class="quicklinks"> 
+    			<li id="quickoptions" onclick="userquickoptions();" class="quicklinks"> 
     				<a data-toggle="dropdown" class="dropdown-toggle  pull-right " href="#" id="user-options">						
     					<div class="iconset top-settings-dark "></div> 	
     				</a>
@@ -232,7 +284,7 @@
 	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive1"></i><span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span></a></li>
 	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search1"></i><span class="title">Sales Analytics & Performance</span></a></li>
 	  <li class="<?php if($menu=='ads'){echo 'active';}?>"> <a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag1"></i><span class="title">Classifieds</span></a></li>
-	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i><span class="title">Profile & Settings</span></a></li>
+	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i><span class="title tour2D">Profile & Settings</span></a></li>
 	  <li class="<?php if($menu=='designbook'){echo 'active';}?>"> <a href="<?php echo site_url('company/designbook');?>"> <i class="fa fa-male1"></i><span class="title">Design Book</span></a></li>
 	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i><span class="title">Form Builder</span></a></li>
 	  <li class="<?php if($menu=='mailinglist'){echo 'active';}?>"> <a href="<?php echo site_url('company/mailinglist');?>"> <i class="fa fa-formmailing"></i><span class="title">Mailing List</span></a></li>

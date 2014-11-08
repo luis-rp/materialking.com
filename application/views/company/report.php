@@ -1,4 +1,7 @@
 <?php $tax = 0;?>
+ <script type="text/javascript">
+$.noConflict();
+ </script>
 <script type="text/javascript">
 <!--
 $(document).ready(function(){

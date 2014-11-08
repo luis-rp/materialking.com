@@ -514,31 +514,35 @@ $(function() {
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>                 
         </div>
-        <div class="modal-body"  style="width:30%;padding:12px;">
+        <div class="modal-body"  style="height:100%;width:30%;padding:12px;">
         <div id="container2">
-        <div id="imgtag">  
-  <img id="pic1"  />
-  <input type="hidden" name="taghidid" id="taghidid"/>
-  <input type="hidden" id="pictureid" name="pictureid"/> 
-  <div id="tagbox">
-  </div>
-  <br/><br/>
-  Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
-  Select Item Code:<!-- <input type="text" id="itemcode" name="itemcode" class="itemcode" onblur="fetchItem('itemcode');" /> -->
-   <select id="e1" onchange="fetchItem(this);">        
-        <?php foreach($itemids as $item) { ?>
-        <option value="<?php echo $item['value']; ?>"><?php echo $item['label']; ?></option>
-        <?php } ?>
-    </select>
-  <div id="itemcodedetails">
-  </div>
+        
+        <div id="imgtag" style="float:left;">  
+			<img id="pic1"  style="margin-left:27%;"/>
+			  <input type="hidden" name="taghidid" id="taghidid"/>
+			  <input type="hidden" id="pictureid" name="pictureid"/> 
+			 <div id="tagbox"></div>
+		</div> 
+		
+		<div  style="width:500px;height:300px;overflow-y:scroll;padding-left:150px;">
+			<div id="taglist"></div>
+		</div>
+		<div style="clear:both;"></div>
+	
+		<div>	
+	   Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
+		Select Item Code:
+			   <select id="e1" onchange="fetchItem(this);">        
+			        <?php foreach($itemids as $item) { ?>
+			        <option value="<?php echo $item['value']; ?>"><?php echo $item['label']; ?></option>
+			        <?php } ?>
+			    </select>
+		</div>	    
+			 <div id="itemcodedetails"></div>
+			 
+	</div>
 </div>
-<div id="taglist">
-  </div>
-
-</div>
-
-        </div>        
+       
         <div class="modal-footer">          
           <!-- <button data-dismiss="modal" class="btn btn-default" type="button">Close</button> -->
         </div>
