@@ -25,7 +25,7 @@
 	max-width: 640px;
 	margin: 0 auto;
 }
- 
+
  object {
 position:absolute;
 top:0px;
@@ -41,8 +41,8 @@ left:0px;}
 	-webkit-box-shadow: 0 0 5px #aaa;
 	box-shadow: 0 0 5px #aaa;
 	color:#06A7EA !important;
- }	
- 
+ }
+
 </style>
 
 
@@ -64,17 +64,17 @@ $( document ).tooltip();
             preloadImages: false,
             alwaysOn:false
         });*/
-		    
+
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#contentimage").elevateZoom();  <?php } ?>
-		 $("#bigimage").elevateZoom(); 
-		 
+		 $("#bigimage").elevateZoom();
+
 	});
 	function setmiles(miles)
 	{
 		$("#radirange").val(miles);
 		$("#searchform").submit();
 	}
-	
+
 	function getExtension(filename) {
 		var parts = filename.split('.');
 		return parts[parts.length - 1];
@@ -99,20 +99,20 @@ $( document ).tooltip();
 		}
 		return false;
 	}
-	
+
 	function changeimage(source, srctype)
 	{
 		if(srctype == 'video'){
 			$('#videolist').css({display: "block"});
 			$('#imagelist').css({display: "none"});
-			
+
 			$('embed').replaceWith($('embed').clone().attr('src','http://www.youtube.com/v/'+source));
     		document.getElementById('loading').style.display = 'none';
 		}else {
 		$('#imagelist').css({display: "block"});
 		$('#videolist').css({display: "none"});
 		$("#bigimage").attr('src',source);
-        $("#bigimage").attr('data-zoom-image1',source); 
+        $("#bigimage").attr('data-zoom-image1',source);
         $("#bigimage").elevateZoom();
 		}
 	}
@@ -136,7 +136,7 @@ $( document ).tooltip();
             'maxTime': '11:30pm',
             'showDuration': false
         });
-        
+
     	$('#datatable').dataTable( {
     		"sPaginationType": "full_numbers",
     		"aaSorting": [[ 8, "asc" ]],
@@ -158,45 +158,45 @@ $( document ).tooltip();
     		} );
 
     	var validChars = "$��c" + "0123456789" + ".-,'";
-        
+
         // Init the regex just once for speed - it is "closure locked"
         var str = jQuery.fn.dataTableExt.oApi._fnEscapeRegex( validChars ), re = new RegExp('[^'+str+']');
-          
-          
+
+
         jQuery.fn.dataTableExt.aTypes.unshift(
              function ( data )
                 {
                         if ( typeof data !== 'string' || re.test(data) ) {
                                 return null;
                         }
-          
+
                         return 'currency';
                 }
         );
-         
+
         jQuery.extend( jQuery.fn.dataTableExt.oSort, {
                 "currency-pre": function ( a ) {
                         a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
                         return parseFloat( a );
                 },
-          
+
                 "currency-asc": function ( a, b ) {
                         return a - b;
                 },
-          
+
                 "currency-desc": function ( a, b ) {
                         return b - a;
                 }
         } );
-	
-   	
-     	 
+
+
+
    	 	 $('.dataTables_length').hide();
       	 $('#datatable_filter').hide();
       	 $('#datatable_paginate').hide();
     	 $('#datatable_info').hide();
     })
-                       
+
 </script>
 
 <script>
@@ -215,7 +215,7 @@ $( document ).tooltip();
             $("#daytd-label").html('Appointment Date Requested');
             $("#timetd-label",".request-form").html('Appointment Time Requested');
         }
-            
+
     }
 
     function setlabelReqModal()
@@ -231,9 +231,9 @@ $( document ).tooltip();
             $("#daytd-modal-label").html('Appointment Date Requested');
             $("#timetd-modal-label").html('Appointment Time Requested');
         }
-            
+
     }
-    
+
     function addtocart(itemid, companyid, price, minqty, unit, itemcode,itemname, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
@@ -403,7 +403,7 @@ $( document ).tooltip();
             $("#additempo").html(data);
         	//document.getElementById("additempo").innerHTML = data;
         });
-        	
+
     }
 
     function getcostcodecombo()
@@ -440,7 +440,7 @@ $( document ).tooltip();
 	{
 		var d = $("#addtoquoteform").serialize();
 
-        
+
         $.ajax({
             type: "post",
             url: rfqurl,
@@ -458,6 +458,19 @@ $( document ).tooltip();
         });
         return false;
 	}
+	
+	
+	function changetab(tabname){
+		if(tabname == 'pricetab'){
+			$('.property-detail').css('display','none');
+			$('#iframes').css('display','block');
+		}else{
+			$('.property-detail').css('display','block');
+			$('#iframes').css('display','none');
+		}
+		
+	}
+	
 </script>
 
 <div id="content">
@@ -468,15 +481,18 @@ $( document ).tooltip();
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                             <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                            
+
                             <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
                             	<?php $this->load->view('site/catmenu.php');?>
                             </div>
                         </form>
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
+                	
+                	<div class="title" onclick="changetab('pricetab');"><h2 style="cusrsor:pointer;" class="block-title"><?php echo "Price Check";?></h2></div>
+                	
                     <h3 class="titlebox">
-                	 <div class="span4"><h2 class="page-header"><b><?php echo $item->itemcode;?></b></h2></div>
+                	 <div class="span4" onclick="changetab('itemtab');"><h2 class="page-header"><b><?php echo $item->itemcode;?></b></h2></div>
                             	<!-- AddThis Button BEGIN -->
                     <div class="span4"><div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -487,18 +503,18 @@ $( document ).tooltip();
                  <!-- AddThis Button END -->
               </div>
                     </h3>
-           
-               
+
+
 
                     <div class="property-detail">
                              <div class="Quotedetail">
-                         <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com 
+                         <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com
                     </div>
                         <?php  if(isset($cat_image) && $cat_image!= "" && file_exists("./uploads/category-banners/".$cat_image)) { ?>
                         <div class="category-image" style="margin: 0px 0px 5px;">
                         <?php if(isset($cat_title))  { ?>
 	                        <div style="position: absolute;margin-top: 39px;margin-left: 20px;">
-								<div style="background:#007BC3;color:#FFFFFF;font-weight:bold!important;width:385px;height:23px;margin-left: 20px; padding:8px;"><?php if(isset($cat_title)) { echo $cat_title;} ?> </div>	
+								<div style="background:#007BC3;color:#FFFFFF;font-weight:bold!important;width:385px;height:23px;margin-left: 20px; padding:8px;"><?php if(isset($cat_title)) { echo $cat_title;} ?> </div>
 								<div style="background:#2A2A2A;opacity:.80;color:#FFFFFF;width:385px;height:45px;margin-left: 20px;padding:8px;"><?php if(isset($cat_text)) { echo $cat_text;} ?> </div>
 							</div>
 						<?php } ?>
@@ -508,32 +524,31 @@ $( document ).tooltip();
                         <div class="pull-left overview">
                             <div class="row">
                                 <div class="span3" style="text-align: center">
-                                
+
                                     <div class="clearfix">
                                         <div id="imagelist" <?php if($filetype=='video') { ?> style="display:none;" <?php } ?> class="clearfix">
                                             <a href="javascript:void(0);" rel='gal1'>
                                                 <img id="bigimage" alt="<?php echo $item->item_img_alt_text;?>" src="<?php echo (@$item->images[0]->filename && file_exists("./uploads/item/".$item->images[0]->filename))?site_url('uploads/item/' . $item->images[0]->filename):site_url('uploads/item/big.png'); ?>" data-zoom-image1="<?php echo (@$item->images[0]->filename && file_exists("./uploads/item/".$item->images[0]->filename)) ?site_url('uploads/item/' . $item->images[0]->filename):site_url('uploads/item/big.png'); ?>"  style="border: 4px solid #666;with:250px;height:250px">
                                             </a>
 
-                                    	
                                         </div>
                                         <div  id="videolist" <?php if($filetype=='video') { ?> style="display:block;" <?php } else { ?> style="display:none;" <?php } ?> class="clearfix">
-                                        <embed class="youtube-player" type="text/html" width="260" height="280" src="">     
+                                        <embed class="youtube-player" type="text/html" width="260" height="280" src="">
                                         <div id="loading" style="float:left; width:100%; height:100%; text-align:center;">
         									<span style="background-color:Yellow; font-size:xx-large">Please Wait while loading</span>
    										</div>
                                         </div>
                                     	<br/>
-                                        
+
                                     	<div class="clearfix" >
                                     	<ul id="thumblist" class="clearfix" >
                                     		<?php foreach($item->images as $img){?>
                                     		<li>
                                     		<?php if (isset($img->is_video) && $img->is_video ==1 ) { ?>
-                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo $img->filename ?>', 'video');">                             <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/videologo.jpg') ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>         		
+                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo $img->filename ?>', 'video');">                             <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo site_url('uploads/item/videologo.jpg') ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>
                                     		<?php } else { ?>
-                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>', 'image');"> <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo (@site_url('uploads/item/thumbs/' . $img->filename) && file_exists("./uploads/item/thumbs/".$img->filename))?site_url('uploads/item/thumbs/' . $img->filename):site_url('uploads/item/thumbs/big.png'); ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>       <?php } ?> 
-                                    		
+                                    		<a class="zoomThumbActive" href='javascript:void(0);'  onclick="changeimage('<?php echo site_url('uploads/item/' . $img->filename) ?>', 'image');"> <img style="width:50px;height:45px;margin-right:3px;"  src='<?php echo (@site_url('uploads/item/thumbs/' . $img->filename) && file_exists("./uploads/item/thumbs/".$img->filename))?site_url('uploads/item/thumbs/' . $img->filename):site_url('uploads/item/thumbs/big.png'); ?>'  alt="<?php echo $item->item_img_alt_text;?>"></a>       <?php } ?>
+
                                     		</li>
                                     		<?php }?>
                                     	</ul>
@@ -547,7 +562,7 @@ $( document ).tooltip();
                             <p><?php echo $item->listinfo; ?></p>
                         </div>
                         <br/>
-						
+
 
                        <div>
                             <?php $newStr = '';
@@ -568,22 +583,23 @@ $( document ).tooltip();
                             	}
                             	else
                             	$alt = "";
-                           	
+
                            $newWiki = $item->wiki;
                            $newStr = str_replace($src,'',$newWiki);
-                       ?> 
-                       <p><?php echo $newStr.'<img id="contentimage" data-zoom-image3="'.$src.'" src="'.$src.'" alt="'.$alt.'" >'; ?></p> 
-                        <?php } else { ?> 
-                        <p><?php echo $item->wiki;?> </p> 
+                       ?>
+                       <p><?php echo $newStr.'<img id="contentimage" data-zoom-image3="'.$src.'" src="'.$src.'" alt="'.$alt.'" >'; ?></p>
+                        <?php } else { ?>
+                        <p><?php echo $item->wiki;?> </p>
                         <?php } ?>
                         </div>
 
-                        
+
                         <div class="tabbable"> <!-- Only required for left/right tabs -->
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#tab1" data-toggle="tab">Overview</a></li>
                                 <li><a href="#tab2" data-toggle="tab">Description</a></li>
                                 <li><a href="#tab3" data-toggle="tab">Details</a></li>
+                                <li><a href="#tab4" data-toggle="tab">Files</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab1">
@@ -591,11 +607,11 @@ $( document ).tooltip();
                                         <strong> Item Name:</strong> <?php echo $item->itemname; ?>
                                         <br/>
                                         <strong>Unit:</strong> <?php echo $item->unit; ?>
-                                        <div><strong>Tags:</strong><?php if(!empty($item->tags)){?><ul class="tags"><?php 
+                                        <div><strong>Tags:</strong><?php if(!empty($item->tags)){?><ul class="tags"><?php
                                         $tags = explode(",",$item->tags);
                                         foreach ($tags as $tag){
 										$tag = trim($tag);
-										
+
 										?>
                                          <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
                                         <?php } ?></ul><?php } ?></div>
@@ -607,20 +623,45 @@ $( document ).tooltip();
                                 <div class="tab-pane" id="tab3">
                                     <p><?php echo nl2br($item->details); ?></p>
                                 </div>
+                                 <div class="tab-pane" id="tab4">
+                                   <?php if(isset($item->files) && $item->files!="") 
+                                           {
+                                           	$files=explode(",",$item->files);
+                                            $filecount=count($files); 
+                                            if(isset($item->filename) && $item->filename!="") 
+                                                {
+                                                	$filename=explode(",",$item->filename);
+                                                    $filenamecount=count($filename); 	
+                                                } ?>
+                                            
+                                            <ul>     
+                                            <?php if($filecount==$filenamecount) 
+                                                 {
+                                                 	for ($x=0; $x<=$filecount; $x++)
+                                                 	 {
+                                                 	 	 if(file_exists("./uploads/item/".$files[$x]))
+                                                 	 	  { ?>  
+                                                 	
+   <li class="active"><a href="<?php echo site_url('uploads/item/'.$files[$x]) ?>" target="_blank"><?php echo $filename[$x];?></a></li>
+                                                 	
+                                                 	<?php } } }?>
+                                                 	</ul>
+                                                 	<?php }  else { echo "No Files For This Item."; }  ?>
+                                  	
+                                </div>
                             </div>
-                        </div>                        
+                        </div>
                           <?php if(@$item->featureditem){ if($item->featuredsupplierdetails->saleitemdata==0){ ?>
                           <br/>
                           <div class="newbox">
-                                                    <h3 class="titlebox1">Featured Seller</h3>
+                          <h3 class="titlebox1">Featured Seller</h3>
                           <table class="span12">
                               <tr>
-                                   <td>Sold By:&nbsp;<a href="<?php echo site_url('site/supplier/'.$item->featuredsupplierdetails->username); ?>" target="_blank" style="text-decoration:none;">
+                                  <td>Sold By:&nbsp;<a href="<?php echo site_url('site/supplier/'.$item->featuredsupplierdetails->username); ?>" target="_blank" style="text-decoration:none;">
                                   <span style="font-size:18px;font-weight:bolder;font-family: Arial, Helvetica, sans-serif;">
                                   <?php echo $item->featuredsupplierdetails->title;?></span></a>&nbsp;
                                   <?php if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }?></td>
                                  <td>
-
 
                                       <?php if($item->featureditem->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>
@@ -639,11 +680,11 @@ $( document ).tooltip();
                           </table>
                       </div>
                           <?php } } ?>
-	
+
                             <?php
                             if ($filtermanufacturer) {
                             ?>
-                        
+
                             <div class="newbox" style="margin-top:12px;">
                               <h3 class="titlebox1">View By Manufacturer</h3>
                               <table width="90%">
@@ -659,11 +700,11 @@ $( document ).tooltip();
                                 </tr>
                               </table>
                             </div>
-                           
-						   
+
+
 						    <?php }?>
                             <div class="pull-right" style="margin:10px 0px;">
-                       
+
                             <?php if ($this->session->userdata('site_loggedin')){?>
                         		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
                                     <i class="icon icon-plus"></i> <br/>Add to RFQ
@@ -692,7 +733,7 @@ $( document ).tooltip();
                             <?php }?>
                             </div>
                             <div class="newbox">
-  
+
                             <table id="datatable newtable" class="table table-bordered smallfont ">
                             	<thead>
                                 <tr>
@@ -710,12 +751,12 @@ $( document ).tooltip();
                                 </thead>
                                 <tbody>
                                 <?php
+
                                     if($inventory)
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
-                                   
                                         $price = $inv->ea;
-                                        
+
                                 ?>
                                 <tr>
                                     <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.$inv->companydetails->username);?>"><?php echo $inv->companydetails->title . $inv->joinstatus; ?></a> </td>
@@ -733,7 +774,7 @@ $( document ).tooltip();
                                     <td style="padding:0px;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?>
-                                    
+
                                     </td>
                                     <td style="padding:0px;" class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
@@ -752,7 +793,7 @@ $( document ).tooltip();
                             </table>
 </div>
                         <?php if($amazon){ ?>
-                       <div class="newbox"> 
+                       <div class="newbox">
                         <table class="table table-bordered">
                             <tr>
                                 <th>Amazon Item Name</th>
@@ -760,7 +801,7 @@ $( document ).tooltip();
                                 <th>Link to Product</th>
                             </tr>
                             <tr>
-                                
+
                                 <td><?php echo $amazon->amazon_name; ?></td>
                                 <td>$<?php echo $amazon->amazon_price; ?></td>
                                 <td><a target="_blank" href="<?php echo $amazon->amazon_url; ?>">Click here</a></td>
@@ -768,18 +809,18 @@ $( document ).tooltip();
 
                         </table>
 </div>
-                        <?php } ?> 
+                        <?php } ?>
                         <?php if(count($inventory)!=0){?>
                          <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
 					    <script type="text/javascript">
-					    
+
 					   $(function () {
 						   var dataChart = new Array;
 						   var suppliers =new Array();
 						   var ser = new Array();
 						   var total = 0;
-						<?php 
-						
+						<?php
+
 						foreach ($inventory as $inv)
 						if ($inv->ea)
 						{
@@ -787,11 +828,11 @@ $( document ).tooltip();
 							?>
 							ser.push({name:"<?php echo $inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
 							total = total + <?php echo $price;?>;
-							<?php 
+							<?php
 						}
 						?>
 			          var totalSuppliers = <?php echo count($inventory);?>;
-			    
+
 					        $('#container-highchart').highcharts({
 					            chart: {
 					                type: 'column'
@@ -837,7 +878,7 @@ $( document ).tooltip();
 				                           }
 				                       }
 				                   },
-					            
+
 					            credits: {
 					                enabled: false
 					            },
@@ -848,8 +889,8 @@ $( document ).tooltip();
 					   </script>
 		        <h3 class="titlebox1">Request Assistance</h3>
                         <a name="form"></a>
-                        <?php // echo $this->session->flashdata('message'); ?>
-                        
+                        <?php //echo $this->session->flashdata('message'); ?>
+
         				<form method="post" action="<?php echo site_url('site/sendrequest/'.$item->id);?>" class="request-form">
         					<input type="hidden" name="redirect" value="item/<?php echo $item->url?>"/>
         					  <div class="newbox"> <table cellpadding="4" cellspacing="4">
@@ -870,22 +911,22 @@ $( document ).tooltip();
         							<td>Email</td>
         							<td><input type="email" name="email" required/></td>
         						</tr>
-        						
+
         						<tr>
         							<td>Phone</td>
         							<td><input type="text" name="phone" required/></td>
         						</tr>
-        						
+
         						<tr>
         							<td id="daytd-label">Best day to call</td>
         							<td><input type="text" class="daytd" name="daytd"/></td>
         						</tr>
-        						
+
         						<tr>
         							<td id="timetd-label">Best time to call</td>
         							<td><input type="text" class="timetd" name="timetd" value="6:00am"/></td>
         						</tr>
-        						
+
         						<tr>
         							<td>Regarding</td>
         							<td><textarea name="regarding" rows="5" style="width: 350px;"></textarea>
@@ -897,14 +938,17 @@ $( document ).tooltip();
         					</table> </div>
         				</form>
                     </div>
-                </div>
-               
-			   
-			    <div class="sidebar span3">
-                
                     
-                     
-				  
+                    <iframe id="iframes" src="<?php echo @$searchquery;?>" style="height: 1085px; margin-left: 15px; margin-bottom: -20px; display:none" frameborder="0"></iframe>
+                    
+                </div>
+
+
+			    <div class="sidebar span3">
+
+
+
+
 				    <div class="widget contact">
                         <div class="title">
                             <h2 class="block-title">Search Supplier</h2>
@@ -947,7 +991,7 @@ $( document ).tooltip();
                             </form>
                         </div>
                     </div>
-                
+
                     <?php if($item->articles){?>
                     <div class="widget contact">
                         	<label class="control-label" for="radirange">
@@ -956,14 +1000,14 @@ $( document ).tooltip();
                         <div class="content_sup">
                             <form>
                                 <div class="control-group">
-                            
+
                                     <div class="controls">
-                                    	
+
                                     	<?php foreach($item->articles as $article){?>
                                     		<a href="<?php echo site_url('site/article/'.$article->url);?>"><?php echo $article->title?></a><br/>
                                     	<?php }?>
                                     </div>
-                                    
+
                                 </div>
                             </form>
                         </div>
@@ -978,7 +1022,7 @@ $( document ).tooltip();
                         <div class="content_sup">
                             <form>
                                 <div class="control-group">
-                                
+
                                     <div class="controls">
                                     	<table>
                                     	<?php foreach($relateditems as $ri){?>
@@ -1002,34 +1046,34 @@ $( document ).tooltip();
                         </div>
                     </div>
                     <?php }?>
-                    
-                    
+
+
                     <?php if(@$dealfeed){//NOT USED NOW?>
                     <div class="widget contact">
                     <label for="radirange" class="control-label">
                                 <h5 class="block-title">Supplier Deals</h5>
                             </label>
                         <div class="content_sup">
-                       
+
                         	<table style="font-size: 12px;">
-                        	<?php 
+                        	<?php
                         	foreach($dealfeed as $di)
                         	{
 								$diff = abs(strtotime(date('Y-m-d H:i')) - strtotime($di->dealdate));
 								$years = floor($diff / (365*60*60*24)); $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-								
+
 								$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 								$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
 								$minuts = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60);
 								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
-                                
+
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
                         	<tr>
                         		<td style="text-align:center">
                         		<a href="<?php echo site_url("site/supplier/".$di->companyusername);?>"><?php echo $di->companyname?></a>
                         		</td></tr>
-                        	 
+
                         	<tr>
                         		<td style="text-align:center">
                         		<?php if($di->image) {?>
@@ -1038,15 +1082,15 @@ $( document ).tooltip();
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
                         		<?php }?>
                         		</td></tr>
-                                
+
                                 <tr>
                         		<td style="text-align:center">
                         		<a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
-                        	
+
                         		</td>
                                 </tr>
-                                
-                                 
+
+
                         	<tr style="text-align:center">
                         		<td  style="text-align:center"><?php echo $remaining;?> remaining</td>
                         	</tr>
@@ -1058,14 +1102,14 @@ $( document ).tooltip();
                                     <i class="icon icon-plus"></i>
                                 </a></td>
                             </tr>
-                        	 
+
                         	<?php }?>
                         	</table>
-                            
+
                         </div>
                     </div>
                     <?php }?>
-                
+
                     <div class="widget contact">
                     	<label class="control-label" for="radirange">
                                     	<h5>Free Professional Assistance</h5>
@@ -1073,7 +1117,7 @@ $( document ).tooltip();
                         <div class="content_sup">
                             <form>
                                 <div class="control-group">
-                                
+
                                     <div class="controls">
                                     	We are construction procurement professionals and are happy to help.
                                     </div>
@@ -1081,7 +1125,7 @@ $( document ).tooltip();
                                 </div>
                             </form>
                         </div>
-                    </div>            
+                    </div>
                     <?php  if($adforitem){?>
                     <div class="widget contact">
                        	<label class="control-label" for="radirange">
@@ -1090,7 +1134,7 @@ $( document ).tooltip();
                         <div class="content_sup">
                             <form>
                                 <div class="control-group">
-                             
+
                                     <div class="controls">
                                     	<?php foreach($adforitem as $ad){?>
                                     	<div>
@@ -1106,12 +1150,12 @@ $( document ).tooltip();
                                     	</div>
                                     	<?php } ?>
                                     </div>
-                                  
+
                                 </div>
                             </form>
                         </div>
-                    </div>   
-                    <?php } ?>  
+                    </div>
+                    <?php } ?>
                 </div>
             </div>
 
@@ -1122,7 +1166,7 @@ $( document ).tooltip();
     </div>
 </div>
 </div>
-	  
+
 
         <!-- Modal -->
         <div class="modal hide fade" id="addtoquotemodal">
@@ -1141,7 +1185,7 @@ $( document ).tooltip();
                                 	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>
                                 <?php }?>
                             </select>
-                            
+
                             <h4>Select PO</h4>
                             <span id="additempo">
                             <select name="quote" required>
@@ -1150,9 +1194,9 @@ $( document ).tooltip();
                                 <?php }?>
                             </select>
                             </span>
-                            
+
                             <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
-                            
+
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
                             <h4>Costcode</h4>
@@ -1163,16 +1207,16 @@ $( document ).tooltip();
                                 <?php }?>
                             </select>
                             </span>
-                            
+
                             <h4>Date Requested</h4>
                             <input type="text" id="daterequested" name="daterequested"/>
-                            
+
                             <br/><br/>
                             <div>
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" onclick="rfqformsubmit();">Add</button>
                             </div>
-                            
+
                         </div>
                     </form>
                 </div>
@@ -1184,7 +1228,7 @@ $( document ).tooltip();
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                       
+
                            <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
                             <h3 class="modal-title nobottompadding" id="myModalRequestLabel">Request Assistance</h3>
                     </div>
@@ -1208,22 +1252,22 @@ $( document ).tooltip();
         							<td>Email</td>
         							<td><input type="email" name="email" required/></td>
         						</tr>
-        						
+
         						<tr>
         							<td>Phone</td>
         							<td><input type="text" name="phone" required/></td>
         						</tr>
-        						
+
         						<tr>
         							<td id="daytd-modal-label">Best day to call</td>
         							<td><input type="text" class="daytd" name="daytd"/></td>
         						</tr>
-        						
+
         						<tr>
         							<td id="timetd-modal-label">Best time to call</td>
         							<td><input type="text" class="timetd" name="timetd" value="6:00am"/></td>
         						</tr>
-        						
+
         						<tr>
         							<td>Regarding</td>
         							<td><textarea name="regarding" rows="5" style="width: 350px;"></textarea>
@@ -1238,42 +1282,42 @@ $( document ).tooltip();
             </div>
         </div>
         <!-- End Modal Form -->
-        
+
         <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          
+
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
-          <br> Select Quantity  
+          <br> Select Quantity
           </h4>
           <br>
           <div id="unitbox"></div>
         </div>
         <div class="modal-body">
 
-        <div id="qtypricebox"></div>  
-          
+        <div id="qtypricebox"></div>
+
         <div>
-            <div id="cartqtydiv" class="col-md-8">             
+            <div id="cartqtydiv" class="col-md-8">
             </div>
             <div class="col-md-4">
               <span id="qtylistprice"></span>
             </div>
-          </div>  
-        
-        <div id="cartsavediv"></div>   
-          
+          </div>
+
+        <div id="cartsavediv"></div>
+
         </div>
         <div class="modal-footer">
-          <input type="hidden" name="hiddenprice" id="hiddenprice" />	
+          <input type="hidden" name="hiddenprice" id="hiddenprice" />
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div> 
+  </div>

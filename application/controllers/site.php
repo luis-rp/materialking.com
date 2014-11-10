@@ -1628,6 +1628,9 @@ class site extends CI_Controller
 
 	    //echo '<pre>'; print_r($data['relateditems']);die;
 	    $data['page_title'] = $data["item"]->itemname;
+	    
+	    $data['searchquery'] = 'http://supplyspy.net';
+	    
         $this->load->view('site/item', $data);
     }
     public function tag($tag){

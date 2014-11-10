@@ -15,9 +15,9 @@ class itemcode_model extends Model {
         $ti = $this->db->dbprefix('item');
         $ta = $this->db->dbprefix('award');
         $tai = $this->db->dbprefix('awarditem');
-        
+
         $pa = $this->session->userdata('purchasingadmin');
-        
+
         $where = " WHERE 1=1 ";
         if(@$_POST['searchitemname'])
             $where .= " AND i.itemname LIKE '%{$_POST['searchitemname']}%' OR i.itemcode LIKE '%{$_POST['searchitemname']}%'";
@@ -25,24 +25,24 @@ class itemcode_model extends Model {
             $where .= " AND i.category = '{$_POST['searchcategory']}'";
         //$where .= " AND ai.purchasingadmin='$pa'";
         $sql = "SELECT i.*, MAX(a.awardedon) awardedon, sum(ai.totalprice) totalpurchase
-                FROM 
-                $ti i 
+                FROM
+                $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
                 LEFT JOIN $ta a ON ai.award=a.id AND ai.purchasingadmin='$pa'
-                $where 
-                GROUP BY i.id 
+                $where
+                GROUP BY i.id
                 ORDER BY awardedon DESC";
         //echo $sql;
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
             $ret = array();
-            foreach ($result as $item) 
+            foreach ($result as $item)
             {
                 $item->poitems = $this->getpoitems($item->id);
                 $item->minprices = $this->getminimumprices($item->id);
                 $item->tierprices = $this->gettierprices($item->id);
-                
+
                 //if($item->poitems && @$item->poitems[0])
                     //$item->awardedon = $item->poitems[0]->awardedon;
 
@@ -51,18 +51,18 @@ class itemcode_model extends Model {
                     foreach ($item->poitems as $po) {
                         $item->totalpoprice += $po->totalprice;
                     }
-                    
-                    $sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
-		    	 totalprice2 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od 
-                WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";    
-                    $query2 = $this->db->query($sql2);
-                    if ($query2->result()) {
-                    	$result2 = $query2->result();
-                    	if(isset($result2[0]->totalprice2))
-                    	$item->totalpoprice += $result2[0]->totalprice2;
-                    }
-                        
-               // $item->minprices = $this->getminimumprices($item->itemcode);
+
+                $sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	 totalprice2 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";
+                $query2 = $this->db->query($sql2);
+                 if ($query2->result()) {
+            		$result2 = $query2->result();
+                	if(isset($result2[0]->totalprice2))
+                	$item->totalpoprice += $result2[0]->totalprice2;
+                 }
+
+                //$item->minprices = $this->getminimumprices($item->itemcode);
                 $ret[] = $item;
             }
             //print_r($ret);die;
@@ -72,7 +72,7 @@ class itemcode_model extends Model {
         }
     }
 
-    function get_itemcodescatcode($subcatid) 
+    function get_itemcodescatcode($subcatid)
     {
         if ($offset == 0) {
             $newoffset = 0;
@@ -90,7 +90,7 @@ class itemcode_model extends Model {
             $ret = array();
             foreach ($result as $item) {
                 $item->poitems = $this->getpoitems($item->id);
-                
+
                 $item->minprices = $this->getminimumprices($item->id);
 
                 $item->totalpoprice = 0;
@@ -113,14 +113,14 @@ class itemcode_model extends Model {
         $query = $this->db->count_all_results('item');
         return $query;
     }
-    
+
     function getcategories()
     {
-        $sql = "SELECT * FROM " . $this->db->dbprefix('category') . " 
+        $sql = "SELECT * FROM " . $this->db->dbprefix('category') . "
         		WHERE id NOT IN (SELECT distinct(parent_id) FROM " . $this->db->dbprefix('category') . ")";
         $leaves = $this->db->query($sql)->result();
         $ret = array();
-        
+
         foreach($leaves as $leaf)
         {
             $parent = $leaf->parent_id;
@@ -143,30 +143,30 @@ class itemcode_model extends Model {
         //echo '<pre>'; print_r($ret);//die;
         $this->aasort($ret, 'catname');
         //echo '<pre>'; print_r($ret);die;
-		
+
         return $ret;
-        
+
     }
-	function aasort (&$array, $key) 
+	function aasort (&$array, $key)
 	{
 	    $sorter=array();
 	    $ret=array();
 	    reset($array);
-	    foreach ($array as $ii => $va) 
+	    foreach ($array as $ii => $va)
 	    {
 	        $sorter[$ii]=$va->$key;
 	    }
 	    $sortflag = 14;//SORT_NATURAL ^ SORT_FLAG_CASE;
-	    
+
 	    asort($sorter, $sortflag );
-	    foreach ($sorter as $ii => $va) 
+	    foreach ($sorter as $ii => $va)
 	    {
 	        $ret[$ii]=$array[$ii];
 	    }
 	    $array=$ret;
 	}
-    
-    function getpoitems($itemid) 
+
+    function getpoitems($itemid)
     {
         $projectwhere = '';
         $mp = $this->session->userdata('managedprojectdetails');
@@ -174,7 +174,7 @@ class itemcode_model extends Model {
             $projectwhere = " AND q.pid='".$mp->id."'";
         $sql = "SELECT ai.*, c.title companyname, q.ponum, a.awardedon, a.quote
 			   	FROM
-				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a, 
+				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('company') . " c
 				WHERE
 				ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' AND
@@ -194,11 +194,12 @@ class itemcode_model extends Model {
                     $ret[] = $item;
                 }
             }
+            
             return $ret;
         }
         return NULL;
     }
-    
+
     function getpoitems2($itemid)
     {
     	$projectwhere = '';
@@ -207,15 +208,15 @@ class itemcode_model extends Model {
     	$projectwhere = " AND q.pid='".$mp->id."'";
     	$sql = "SELECT sum(ai.totalprice) as totalprice, ai.company, ai.ea, ai.daterequested as daterequested, c.title companyname, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, a.awardedon, a.quote
 			   	FROM
-				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a, 
+				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('company') . " c
 				WHERE
 				ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' AND
 				ai.award=a.id AND a.quote=q.id AND ai.company=c.id AND ai.itemid='$itemid'
 				$projectwhere
-        		group by ai.daterequested 
+        		group by ai.daterequested
 				ORDER BY ai.daterequested DESC
-				
+
 				";
     	//echo $sql;
     	$query = $this->db->query($sql);
@@ -234,14 +235,14 @@ class itemcode_model extends Model {
     	return NULL;
     }
 
-    function getminimumprices($itemid) 
+    function getminimumprices($itemid)
     {
         $sql = "SELECT c.title companyname, m.*
 			   	FROM
-				" . $this->db->dbprefix('minprice') . " m, 
+				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c
 				WHERE
-				m.company=c.id AND m.itemid='$itemid' 
+				m.company=c.id AND m.itemid='$itemid'
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         //echo $sql; die;
@@ -261,32 +262,32 @@ class itemcode_model extends Model {
         return NULL;
     }
 
-    function gettierprices($itemid) 
+    function gettierprices($itemid)
     {
         $pa = $this->session->userdata('purchasingadmin');
-        $sql = "select c.id companyid, c.title companyname, ci.ea listprice 
-				FROM " . $this->db->dbprefix('company') . " c, 
-				" . $this->db->dbprefix('companyitem') . " ci, 
+        $sql = "select c.id companyid, c.title companyname, ci.ea listprice
+				FROM " . $this->db->dbprefix('company') . " c,
+				" . $this->db->dbprefix('companyitem') . " ci,
 				" . $this->db->dbprefix('network') . " n
-				WHERE c.id=ci.company AND c.id=n.company AND 
-				n.purchasingadmin='" . $pa . "' 
+				WHERE c.id=ci.company AND c.id=n.company AND
+				n.purchasingadmin='" . $pa . "'
 				AND ci.itemid='" . $itemid . "' AND ci.ea != 0";
         //echo $sql;//die;
         $recs = $this->db->query($sql)->result();
         $ret = array();
-        foreach ($recs as $rec) 
+        foreach ($recs as $rec)
         {
             $rec->price = $rec->listprice;
-            $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . " 
+            $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$pa' AND company='" . $rec->companyid . "'";
-            
+
             $tier = $this->db->query($sql)->row();
-            if ($tier) 
+            if ($tier)
             {
                 $tier = $tier->tier;
                 $this->db->where('company', $rec->companyid);
                 $pt = $this->db->get('tierpricing')->row();
-                if ($pt) 
+                if ($pt)
                 {
                     $deviation = $pt->$tier;
                     $price = $rec->listprice + ($rec->listprice * $deviation / 100);
@@ -294,53 +295,53 @@ class itemcode_model extends Model {
                     $rec->price = $price;
                 }
             }
-            
+
             $ret[] = $rec;
         }
         return $ret;
     }
-    
-        function gettierpriceswithqtydiscount($itemid,$quantity) 
+
+        function gettierpriceswithqtydiscount($itemid,$quantity)
     {
         $pa = $this->session->userdata('purchasingadmin');
-        $sql = "select c.id companyid, c.title companyname, ci.ea listprice 
-				FROM " . $this->db->dbprefix('company') . " c, 
-				" . $this->db->dbprefix('companyitem') . " ci, 
+        $sql = "select c.id companyid, c.title companyname, ci.ea listprice
+				FROM " . $this->db->dbprefix('company') . " c,
+				" . $this->db->dbprefix('companyitem') . " ci,
 				" . $this->db->dbprefix('network') . " n
-				WHERE c.id=ci.company AND c.id=n.company AND 
-				n.purchasingadmin='" . $pa . "' 
+				WHERE c.id=ci.company AND c.id=n.company AND
+				n.purchasingadmin='" . $pa . "'
 				AND ci.itemid='" . $itemid . "' AND ci.ea != 0";
         //echo $sql;//die;
         $recs = $this->db->query($sql)->result();
         $ret = array();
-        foreach ($recs as $rec) 
+        foreach ($recs as $rec)
         {
         	$discountedquantityprice = $this->getnewprice($itemid,$rec->companyid, $quantity);
         	if($discountedquantityprice>0){
         		$rec->price = $discountedquantityprice;
         		$rec->listprice = $discountedquantityprice;
-        	}else        	
+        	}else
            	    $rec->price = $rec->listprice;
-            
-            $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . " 
+
+            $sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$pa' AND company='" . $rec->companyid . "'";
-            
-            $sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . " 
+
+            $sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
 				    where itemid='$itemid' AND company='" . $rec->companyid . "' AND type = 'Supplier'";
-            
+
             $istierprice = $this->db->query($sqltier)->row();
             if($istierprice){
             	$istier = $istierprice->tierprice;
-            }else 
+            }else
             	$istier = 0;
-            
+
             $tier = $this->db->query($sql)->row();
-            if ($tier && $istier) 
+            if ($tier && $istier)
             {
                 $tier = $tier->tier;
                 $this->db->where('company', $rec->companyid);
                 $pt = $this->db->get('tierpricing')->row();
-                if ($pt) 
+                if ($pt)
                 {
                     $deviation = $pt->$tier;
                     $price = $rec->listprice + ($rec->listprice * $deviation / 100);
@@ -348,14 +349,14 @@ class itemcode_model extends Model {
                     $rec->price = $price;
                 }
             }
-            
+
             $ret[] = $rec;
         }
         return $ret;
     }
 
     function getnewprice($itemid,$companyid, $quantity){
-    	
+
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$companyid}' and itemid = '{$itemid}' and qty <= '{$quantity}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
@@ -365,12 +366,14 @@ class itemcode_model extends Model {
     	}die;
 
     }
-    
-    function SaveItemcode() {
+
+    function SaveItemcode() {   	
+    	$name=implode(",",$_FILES['UploadFile']['name']);
+    	$filename=implode(",",$_POST['filename']);   
     	$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
-    
-    	
+     
+    	$primarycategory = $_POST['category'][0];
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -380,7 +383,7 @@ class itemcode_model extends Model {
             'ea' => $this->input->post('ea'),
             'notes' => $this->input->post('notes'),
             'keyword' => $this->input->post('keyword'),
-            'category' => $this->input->post('category'), //$this->input->post('catid'),
+            'category' => $primarycategory, //$this->input->post('catid'),
             'item_img' => $_FILES["userfile"]["name"],
             'external_url' => $this->input->post('external_url'),
         	'length' => $this->input->post('length'),
@@ -392,12 +395,21 @@ class itemcode_model extends Model {
             'wiki' => $this->input->post('wiki'),
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
-	        'tags' => $tag
+	        'tags' => $tag,
+	        'files' => $name,
+	        'filename' => $filename
         );
 
         $this->db->insert('item', $options);
         $id = $this->db->insert_id();
-
+		
+        foreach ($_POST['category'] as $category){
+        	$options2 = array();
+        	$options2['itemid'] = $id;
+        	$options2['categoryid'] = $category;
+        	$this->db->insert('item_category', $options2);
+        }
+        
         $categories = $this->input->post('catid');
         if ($categories !== false) {
             if ($id) {
@@ -427,17 +439,23 @@ class itemcode_model extends Model {
         return $this->db->where('product_id', $id)->join($this->db->dbprefix('category'), 'category_id = category.id')->get($this->db->dbprefix('category_products'))->result();
     }
 
-   
 
-// updating cost code 
+
+// updating cost code
     function updateItemcode($id) {
+    	
+    	$name=implode(",",$_FILES['UploadFile']['name']);
+    	$filename=implode(",",$_POST['filename']);  
+    	
     	$zoom;
 		if(@$this->input->post('zoom') == "on")
     		$zoom = 1;
-    	else 
+    	else
     		$zoom = 0;
 		$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
+    	
+    	$primarycategory = $_POST['category'][0];
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -447,7 +465,7 @@ class itemcode_model extends Model {
             'ea' => $this->input->post('ea'),
             'notes' => $this->input->post('notes'),
             'keyword' => $this->input->post('keyword'),
-            'category' => $this->input->post('category'),
+            'category' => $primarycategory,
             //'item_img' => $_FILES["userfile"]["name"],
             'external_url' => $this->input->post('external_url'),
         		'length' => $this->input->post('length'),
@@ -461,11 +479,13 @@ class itemcode_model extends Model {
             'url' => $this->input->post('url'),
             'listinfo' => $this->input->post('listinfo'),
             'item_img_alt_text' => $this->input->post('item_img_alt_text'),
-        	'tags' => $tag
+        	'tags' => $tag,
+        	'files' => $name,
+	        'filename' => $filename
         );
         if(@$_FILES['userfile']['name'])
-            $options['item_img'] = $_FILES["userfile"]["name"]; 
-        
+            $options['item_img'] = $_FILES["userfile"]["name"];
+
 
         $oldcoderow = $this->get_itemcodes_by_id($this->input->post('id'));
         $oldcode = $oldcoderow->itemcode;
@@ -473,6 +493,17 @@ class itemcode_model extends Model {
 
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('item', $options);
+
+        $this->db->where('itemid', $this->input->post('id'));        
+        $this->db->delete('item_category');
+
+        foreach ($_POST['category'] as $category){
+        	$options2 = array();
+        	$options2['itemid'] = $this->input->post('id');
+        	$options2['categoryid'] = $category;
+        	$this->db->insert('item_category', $options2);
+        }
+        
         
         if(!$options['instore'])
         {
@@ -543,13 +574,13 @@ class itemcode_model extends Model {
 
 
             // LAST QUOTED DATE
-            $lastsql = "SELECT a.awardedon lastdate 
+            $lastsql = "SELECT a.awardedon lastdate
 				FROM " . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a
 				WHERE a.id=ai.award AND ai.itemcode='" . $ret->itemcode . "' AND ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
 				ORDER BY b.submitdate DESC LIMIT 0,1
 				";
-            
-            $lastsql = "SELECT b.submitdate lastdate 
+
+            $lastsql = "SELECT b.submitdate lastdate
 				FROM " . $this->db->dbprefix('biditem') . " bi, " . $this->db->dbprefix('bid') . " b
 				WHERE b.id=bi.bid AND bi.itemcode='" . $ret->itemcode . "' AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
 				ORDER BY b.submitdate DESC LIMIT 0,1
@@ -563,7 +594,7 @@ class itemcode_model extends Model {
 
 
             // TARGET PRICE
-            $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . " 
+            $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . "
 						WHERE itemcode='" . $ret->itemcode . "' AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
             $minprice = $this->db->query($sqlmin)->row()->minprice;
             $sqlconfig = "SELECT * FROM " . $this->db->dbprefix('settings') . " WHERE id='1'";
@@ -580,9 +611,9 @@ class itemcode_model extends Model {
         return NULL;
     }
 
-    
-    
-    function get_itemcodes_by_id2($id, $quantity) {
+
+
+     function get_itemcodes_by_id2($id, $quantity) {
         $this->db->where('id', $id);
         $query = $this->db->get('item');
         if ($query->num_rows > 0) {
@@ -593,13 +624,13 @@ class itemcode_model extends Model {
 
 
             // LAST QUOTED DATE
-            $lastsql = "SELECT a.awardedon lastdate 
+            $lastsql = "SELECT a.awardedon lastdate
 				FROM " . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a
 				WHERE a.id=ai.award AND ai.itemcode='" . $ret->itemcode . "' AND ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
 				ORDER BY b.submitdate DESC LIMIT 0,1
 				";
-            
-            $lastsql = "SELECT b.submitdate lastdate 
+
+            $lastsql = "SELECT b.submitdate lastdate
 				FROM " . $this->db->dbprefix('biditem') . " bi, " . $this->db->dbprefix('bid') . " b
 				WHERE b.id=bi.bid AND bi.itemcode='" . $ret->itemcode . "' AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
 				ORDER BY b.submitdate DESC LIMIT 0,1
@@ -613,7 +644,7 @@ class itemcode_model extends Model {
 
 
             // TARGET PRICE
-            $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . " 
+            $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . "
 						WHERE itemcode='" . $ret->itemcode . "' AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
             $minprice = $this->db->query($sqlmin)->row()->minprice;
             $sqlconfig = "SELECT * FROM " . $this->db->dbprefix('settings') . " WHERE id='1'";
@@ -641,7 +672,7 @@ class itemcode_model extends Model {
             $ret->tierprices = $this->gettierprices($ret->id);
 
             // LAST QUOTED DATE
-            $lastsql = "SELECT b.submitdate lastdate 
+            $lastsql = "SELECT b.submitdate lastdate
 				FROM " . $this->db->dbprefix('biditem') . " bi, " . $this->db->dbprefix('bid') . " b
 				WHERE b.id=bi.bid AND bi.itemcode='" . $ret->itemcode . "' bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
 				ORDER BY b.submitdate DESC LIMIT 0,1
@@ -671,12 +702,12 @@ class itemcode_model extends Model {
     function getdaysmeanprice($itemid, $potype = 'Bid') {
         $pricedays = $this->db->get('settings')->row()->pricedays;
         $sql = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a
-			  WHERE ai.itemid='$itemid' AND ai.award=a.id AND DATEDIFF(NOW(),a.awardedon) <=$pricedays 
+			  WHERE ai.itemid='$itemid' AND ai.award=a.id AND DATEDIFF(NOW(),a.awardedon) <=$pricedays
               AND ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
-        
-        $sql = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi, 
+
+        $sql = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
         		" . $this->db->dbprefix('bid') . " b
-			  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND DATEDIFF(NOW(),b.submitdate) <=$pricedays 
+			  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND DATEDIFF(NOW(),b.submitdate) <=$pricedays
               AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
         //echo $sql.'<br>';
         $row = $this->db->query($sql)->row();

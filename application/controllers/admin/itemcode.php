@@ -275,6 +275,7 @@ class itemcode extends CI_Controller
     function index ()
     {
         $itemcodes = $this->itemcode_model->get_itemcodes();
+      
         $count = count($itemcodes);
         $items = array();
         if ($count >= 1)
@@ -941,6 +942,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
     function add_itemcode ()
     {
+    	//echo "<pre>modaltop-"; print_r($_POST['filename']); die;
+    	//echo "<pre>modal-"; print_r($_FILES["userfile"]["name"]); die;
         $data['heading'] = 'Add New Itemcode';
         $data['action'] = site_url('admin/itemcode/add_itemcode');
         //$data['category'] = $this->itemcode_model->getCategoryList();
@@ -980,6 +983,24 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }
         else
         {
+        	 if(isset($_FILES['UploadFile']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/item/';
+            	$count=0;           	
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            	}
+
+            }
             $this->do_upload();
             $itemid = $this->itemcode_model->SaveItemcode();
             $this->session->set_flashdata('message',
@@ -993,6 +1014,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     {
         $this->_set_fields();
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
+        
+        $this->db->where('id',$id);
+        $itemcategoriesresult = $this->db->get('vw_item_category')->row();       
+        $itemcategories = explode(",",$itemcategoriesresult->categories); 
+        
         $this->validation->id = $id;
         $this->validation->itemcode = $item->itemcode;
         $this->validation->itemname = $item->itemname;
@@ -1004,7 +1030,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->keyword = $item->keyword;
         $this->validation->lastquoted = $item->lastquoted;
         $this->validation->targetprice = $item->targetprice;
-        $this->validation->category = $item->category;
+        //$this->validation->category = $item->category;
+        $this->validation->category = $itemcategories;
         $this->validation->item_img = $item->item_img;
         $this->validation->external_url = $item->external_url;
         $this->validation->featuredsupplier = $item->featuredsupplier;
@@ -1019,6 +1046,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->height = $item->height;
         $this->validation->weight = $item->weight;
         $this->validation->tags = $item->tags;
+        $this->validation->files = $item->files;
+        $this->validation->filename = $item->filename;
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();
@@ -1187,6 +1216,26 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             }
 
             $this->do_upload();
+            
+             if(isset($_FILES['UploadFile']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/item/';
+            	$count=0;           	
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            	}
+
+            }
+                      
             $this->itemcode_model->updateItemcode($itemid);
             if ($item->minprices)
                 foreach ($item->minprices as $mp)
@@ -1236,6 +1285,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['width'] = 'width';
         $fields['height'] = 'height';
         $fields['weight'] = 'weight';
+        $fields['files'] = 'files';
+        $fields['filename'] = 'filename';
         $this->validation->set_fields($fields);
     }
 
@@ -1246,7 +1297,6 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
         $rules['weight'] = 'trim|required';
-
         //$rules['keyword'] = 'trim|required';
         $rules['url'] = 'trim|required';
         $this->validation->set_rules($rules);
@@ -1301,7 +1351,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             echo 'No Company Prices Exist, Please issue a quote for this item';//('No company prices for ' . $item->itemcode);
         }
         else
-        {            
+        {         
             $seconds = time() - strtotime($item->lastquoted);
             $days = $seconds / (3600 * 24);
             //if ($days > 30)

@@ -103,6 +103,23 @@ $(document).ready(function(){
 
         window.open(url, 'amazonlookup', 'width=1200,height=800,menubar=no,scrollbars=yes');
     }
+    
+    var upload_number = 2;
+	function addFileInput() {
+	 	var d = document.createElement("div");
+	 	var abc= document.createElement("div");
+	 	var file = document.createElement("input");
+	 	var file1 = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file1.setAttribute("type", "text");
+	 	file.setAttribute("name", "UploadFile[]");
+	 	file1.setAttribute("name", "filename[]");
+	 	d.appendChild(file);
+	 	abc.appendChild(file1);
+	 	document.getElementById("moreUploads").appendChild(d);
+	 	document.getElementById("moreUploads").appendChild(abc);
+	 	upload_number++;
+	}
 
 </script>
 
@@ -122,11 +139,11 @@ $(document).ready(function(){
                     <br/>
 
                     <div class="control-group">
-                        <label class="control-label">Category</label>
+                        <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
                         <div class="controls">
-                            <select id="category" name="category">
+                            <select style="width:400px;" multiple id="category[]" name="category[]">
                             	<?php foreach($categories as $cat){?>
-                            	<option value="<?php echo $cat->id;?>" <?php if($this->validation->category==$cat->id){echo 'selected';}?>><?php echo $cat->catname;?></option>
+                            	<option title="<?php echo $cat->catname;?>" value="<?php echo $cat->id;?>" <?php if(in_array($cat->id,$this->validation->category)){echo 'selected';}?>><?php echo $cat->catname;?></option>
                             	<?php }?>
                             </select>
                         </div>
@@ -273,11 +290,53 @@ $(document).ready(function(){
                         	<?php if ($this->session->userdata('usertype_id') == 1) { ?>
                             <input type="file" name="userfile" size="20"  />
                             <?php }?>
-                            <a href="<?php echo site_url('uploads/item') . '/' . @$this->validation->item_img; ?>" target="_blank">  <?php echo @$this->validation->item_img; ?>
+                            <a href="<?php echo site_url('uploads/item') . '/' . @$this->validation->item_img; ?>" target="_blank"> 
+                             <?php echo @$this->validation->item_img; ?>
                             </a> 
                             <label>Alternate Text for Image</label><input type="text" name="item_img_alt_text" id="item_img_alt_text" value="<?php if(isset($this->validation->item_img_alt_text)) echo $this->validation->item_img_alt_text; else echo "";?>" class="span10">
                         </div>
                     </div>
+                    
+                    
+                     <div class="control-group">
+						<label class="control-label">Add Files</label>
+						 <div class="controls">
+							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
+						    <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+						    <?php }?>
+						    
+						      <?php //echo "<pre>"; print_r(@$this->validation->files); die; ?>
+                             <?php if(@$this->validation->files)
+                                       { 
+                                       	$files=explode(',',@$this->validation->files);
+                                       	$filecount=count($files); 
+                                       	   if(@$this->validation->filename)
+                                       	   {
+                                       	     $filename=explode(',',@$this->validation->filename);
+                                       	     $filenamecount=count($filename); 	
+                                       	   }
+                                       	    if($filecount==$filenamecount) 
+                                                 {
+                                                   for ($x=0; $x<=$filecount; $x++)
+                                                     {                                        
+                                                       if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
+                                    <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $filename[$x]; ?></a>  
+                                              <?php    } } } }?>                          
+						    
+					         <label>File Name</label>
+						    <input type="text" name="filename[]" id="filename"  class="span10" required>
+						    
+							<div id="moreUploads">												
+							</div>
+							<div id="moreUploadsLink" style="display:none;">
+							
+							<a href="javascript:addFileInput();">Add another File</a>
+							
+							
+							</div>
+						</div>
+					</div>
+                                        
                     <div class="control-group">
                         <label class="control-label">Wiki</label>
                         <div class="controls">
