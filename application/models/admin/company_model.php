@@ -85,7 +85,7 @@ class company_model extends Model {
     	{
     		$completeaddress.=$_POST['zip'];
     	}
-
+		$_POST['regdate'] = date('Y-m-d');
     	$_POST['address'] = $completeaddress;
     	
         $address = ($this->input->post('address'));

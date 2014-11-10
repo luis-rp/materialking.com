@@ -397,7 +397,9 @@ class itemcode_model extends Model {
             'listinfo' => $this->input->post('listinfo'),
 	        'tags' => $tag,
 	        'files' => $name,
-	        'filename' => $filename
+	        'filename' => $filename,
+	        'searchquery' => $this->input->post('searchquery')
+
         );
 
         $this->db->insert('item', $options);
@@ -466,7 +468,7 @@ class itemcode_model extends Model {
             'notes' => $this->input->post('notes'),
             'keyword' => $this->input->post('keyword'),
             'category' => $primarycategory,
-            //'item_img' => $_FILES["userfile"]["name"],
+            'item_img' => $_FILES["userfile"]["name"],
             'external_url' => $this->input->post('external_url'),
         		'length' => $this->input->post('length'),
         		'width' => $this->input->post('width'),
@@ -481,7 +483,8 @@ class itemcode_model extends Model {
             'item_img_alt_text' => $this->input->post('item_img_alt_text'),
         	'tags' => $tag,
         	'files' => $name,
-	        'filename' => $filename
+	        'filename' => $filename,
+	        'searchquery' => $this->input->post('searchquery')
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"];

@@ -329,7 +329,7 @@ class items_model extends Model {
         {
             $slist = $this->getSubCategores($_POST['category']);
             $inclause = implode(',', $slist);
-            $where[]=" category IN ($inclause)";
+            $where[]=" (category IN ($inclause) OR ic.categoryid IN ($inclause) )";
             //$where[] = " category='{$_POST['category']}'";
         }
         
@@ -347,11 +347,11 @@ class items_model extends Model {
             }
         }
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . $where;
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid ".$where;
         
         $return->totalresult = $this->db->query($query)->num_rows();
         
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " $where LIMIT $start, $limit";
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid $where LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
         return $return;

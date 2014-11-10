@@ -261,7 +261,7 @@
 
 	   			<tr>
 	   			<td>2.</td>
-	   			<td>Number of Cost Code:</td>
+	   			<td>Number of Cost Code</td>
 	   			<td><span class="badge"><?php echo count($costcodes);?></span> </td>
 	   			</tr>
 

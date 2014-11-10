@@ -941,9 +941,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
 
     function add_itemcode ()
-    {
-    	//echo "<pre>modaltop-"; print_r($_POST['filename']); die;
-    	//echo "<pre>modal-"; print_r($_FILES["userfile"]["name"]); die;
+    {    	
         $data['heading'] = 'Add New Itemcode';
         $data['action'] = site_url('admin/itemcode/add_itemcode');
         //$data['category'] = $this->itemcode_model->getCategoryList();
@@ -1048,6 +1046,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->tags = $item->tags;
         $this->validation->files = $item->files;
         $this->validation->filename = $item->filename;
+        $this->validation->searchquery = $item->searchquery;
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();
@@ -1287,6 +1286,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['weight'] = 'weight';
         $fields['files'] = 'files';
         $fields['filename'] = 'filename';
+        $fields['searchquery'] = 'searchquery';
         $this->validation->set_fields($fields);
     }
 
@@ -1296,8 +1296,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
-        $rules['weight'] = 'trim|required';
-        //$rules['keyword'] = 'trim|required';
+        $rules['weight'] = 'trim|required';        
         $rules['url'] = 'trim|required';
         $this->validation->set_rules($rules);
         $this->validation->set_message('required', '* required');

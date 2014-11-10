@@ -463,9 +463,15 @@ $( document ).tooltip();
 	function changetab(tabname){
 		if(tabname == 'pricetab'){
 			$('.property-detail').css('display','none');
+			$("#button").css("background-color","#00bbe4"); 
+			$(".titlebox").css("background-color","#00bbe4"); 
+			$(".page-header").css("background-color","#00bbe4"); 
 			$('#iframes').css('display','block');
 		}else{
 			$('.property-detail').css('display','block');
+			$("#button").css("background-color","#06a7ea"); 
+			$(".titlebox").css("background-color","#06a7ea"); 
+			$(".page-header").css("background-color","#06a7ea"); 
 			$('#iframes').css('display','none');
 		}
 		
@@ -489,10 +495,17 @@ $( document ).tooltip();
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                 	
-                	<div class="title" onclick="changetab('pricetab');"><h2 style="cusrsor:pointer;" class="block-title"><?php echo "Price Check";?></h2></div>
+                	<div>
+	                  <button type="button" id="button" class="btn btn-primary btn-lg" onclick="changetab('pricetab');" style="border-radius: 10px;">
+	                   <strong>Price Check</strong></button>	                	
+                 	</div>
                 	
                     <h3 class="titlebox">
-                	 <div class="span4" onclick="changetab('itemtab');"><h2 class="page-header"><b><?php echo $item->itemcode;?></b></h2></div>
+                	 <div class="span4">
+                	 	<a href="#" onclick="changetab('itemtab');">
+                	 		<h2 class="page-header"><b><?php echo $item->itemcode;?></b></h2>
+                	 	</a>
+                	 </div>
                             	<!-- AddThis Button BEGIN -->
                     <div class="span4"><div class="addthis_toolbox addthis_default_style ">
                             	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
