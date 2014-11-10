@@ -143,8 +143,8 @@ $(document).ready(function(){
                         <div class="controls">
                             <select style="width:400px;" multiple id="category[]" name="category[]">
                             	<?php foreach($categories as $cat){?>
-                            	<option title="<?php echo $cat->catname;?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';}?>><?php echo $cat->catname;?></option>
-                            	<?php } } ?>
+                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
+                            	<?php  } ?>
                             </select>
                         </div>
                     </div>
@@ -317,7 +317,7 @@ $(document).ready(function(){
                                        	   }
                                        	    if($filecount==$filenamecount) 
                                                  {
-                                                   for ($x=0; $x<=$filecount; $x++)
+                                                   for ($x=0; $x<$filecount; $x++)
                                                      {                                        
                                                        if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
                                     <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $filename[$x]; ?></a>  
@@ -364,14 +364,15 @@ $(document).ready(function(){
                             <input type="text" class="span10"  id="tags" name="tags" value="<?php echo @$this->validation->tags; ?>" data-role="tagsinput">
                         </div>
                     </div>
+                   
                     
-                    
-                    <div class="control-group">
+                     <div class="control-group">
                         <label class="control-label">Price Check Setting<br/>Set Item Search URL</label>
                         <div class="controls"><span>http://supplyspy.net/</span>
                             <input type="text" class="span10"  id="searchquery" name="searchquery" value="<?php echo @$this->validation->searchquery; ?>">
                         </div>
                     </div>
+                    
                     
                     <?php if ($this->session->userdata('usertype_id') == 1) { ?>
                         <div class="control-group">

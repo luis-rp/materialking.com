@@ -650,7 +650,7 @@ $( document ).tooltip();
                                             <ul>     
                                             <?php if($filecount==$filenamecount) 
                                                  {
-                                                 	for ($x=0; $x<=$filecount; $x++)
+                                                 	for ($x=0; $x<$filecount; $x++)
                                                  	 {
                                                  	 	 if(file_exists("./uploads/item/".$files[$x]))
                                                  	 	  { ?>  
