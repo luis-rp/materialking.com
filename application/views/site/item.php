@@ -833,10 +833,11 @@ $( document ).tooltip();
 						   var ser = new Array();
 						   var total = 0;
 						<?php
-
+						$invcnt = 0;
 						foreach ($inventory as $inv)
-						if ($inv->ea)
+						if ($inv->ea && $inv->ea>0)
 						{
+							$invcnt++;
 							$price = $inv->ea;
 							?>
 							ser.push({name:"<?php echo $inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
@@ -844,7 +845,7 @@ $( document ).tooltip();
 							<?php
 						}
 						?>
-			          var totalSuppliers = <?php echo count($inventory);?>;
+			          var totalSuppliers = <?php echo $invcnt; ?>;
 
 					        $('#container-highchart').highcharts({
 					            chart: {

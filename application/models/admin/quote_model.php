@@ -768,8 +768,10 @@ class quote_model extends Model {
     // for autocomplete
     function finditemcode($key) {
         $key = urldecode($key);
-        $sql = "SELECT * FROM " . $this->db->dbprefix('item')
-                . " WHERE itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%'";      
+          $sql = "SELECT * FROM " . $this->db->dbprefix('item')
+                . " WHERE itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%'";        
+                
+                
         /*
           if($this->session->userdata('usertype_id')>1)
           {
@@ -840,6 +842,7 @@ class quote_model extends Model {
             'taxtotal' => $this->input->post('taxtotal'),
             'total' => $this->input->post('total'),
             'creation_date' => date('Y-m-d'),
+            'contracttype' => $this->input->post('contracttype')
         );
         $options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         //print_r($options);exit;
@@ -861,6 +864,7 @@ class quote_model extends Model {
             'taxtotal' => $this->input->post('taxtotal'),
             'total' => $this->input->post('total'),
             'itemchk' => $this->input->post('itemchk'),
+            'contracttype' => $this->input->post('contracttype'),
         );
         //print_r($_POST);exit;
         $this->db->where('id', $this->input->post('id'));

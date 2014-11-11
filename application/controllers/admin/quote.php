@@ -100,7 +100,7 @@ class quote extends CI_Controller
     }
 
     function index($pid)
-    {
+    {    	
         $temp['managedproject'] = $data['pid'] = $pid;
         //$this->load->model('admin/project_model');
         $temp['managedprojectdetails'] = $this->project_model->get_projects_by_id($pid);
@@ -131,15 +131,15 @@ class quote extends CI_Controller
 			$updatearray['pricerank'] = $pricerank;
 			$this->quote_model->db->where('quote', $_POST['idBox']);
 			$this->quote_model->db->update('award', $updatearray);
-		}        
-        
+		}
+		
         $data['counts'] = count($quotes);
 
         $count = count($quotes);
         $items = array();
         $companyarr = array();
         if ($count >= 1) {
-	
+			
             foreach ($quotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
                 $quote->invitations = $this->quote_model->getInvitedquote($quote->id);
                 $quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
@@ -185,14 +185,14 @@ class quote extends CI_Controller
                     	
 	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
 	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
-                	}    
+                	}                	
                 }
                 //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
                 $quote->podate = $quote->podate ? $quote->podate : '';
                 $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
-                    
+
                 	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
         			$shipment = $this->db->query($shipmentsquery)->result();
                 	if($shipment)
@@ -239,7 +239,7 @@ class quote extends CI_Controller
                             ' <a href="javascript: void(0)" onclick="quotepermission(' . $quote->id . ',\'' . $quoteponum . '\')"><span class="icon-2x icon-key"></span></a>';
                     ;
                 }
-                
+
                 if(isset($quote->awardedbid->items)) {
                 	foreach ($quote->awardedbid->items as $item) {
 
@@ -248,14 +248,14 @@ class quote extends CI_Controller
                 		}
                 	}
                 }
-                
+
                 if (@$_POST['searchcompany']) {
-                	
-					if(count($companyarr)>0){	
+
+					if(count($companyarr)>0){
 						if(!in_array($_POST['searchcompany'],$companyarr)){
 							continue;
 						}
-					}else 
+					}else
 					continue;
 
                 }
@@ -272,22 +272,23 @@ class quote extends CI_Controller
         } else {
             $this->data['message'] = 'No Records';
         }
-               
+
         if(count($companyarr)>1){
         	$companyimplode = implode(",",$companyarr);
         	$companystr = "AND c.id in (".$companyimplode.")";
-        }else 
+        }else
         	$companystr = "";
-        
+
         $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
         		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
         $data['companies'] = $this->db->query($query)->result();
-                
+
         $data ['addlink'] = '';
         $data ['heading'] = "Quote &amp; Purchase Order Management - " . $this->session->userdata('managedprojectdetails')->title;
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '">Add Quote</a>&nbsp;';
-        $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>';
+        $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>&nbsp;';
+        $data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
         $mess= $this->session->flashdata('message');
         if(isset($mess) && $this->session->flashdata('message')!=""){
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');
@@ -430,7 +431,7 @@ class quote extends CI_Controller
         $this->_set_fields();
         $data['pid'] = $pid;
         $data['potype'] = $potype;
-        $data ['heading'] = $potype == "Bid" ? 'Add New Quote' : "Add New Purchase Order";
+        $data ['heading'] = $potype == "Bid" ? 'Add New Quote' : ($potype == "Direct"?"Add New Purchase Order":"Add New Contract Quote");
         $data ['message'] = '';
         $data['companylist'] = $this->quote_model->getcompanylist();
         $data['quoteitems'] = array();
@@ -441,8 +442,10 @@ class quote extends CI_Controller
         $this->validation->potype = $potype;
         if ($potype == 'Bid')
             $this->load->view('admin/quote', $data);
-        else
+        elseif($potype == 'Direct')
             $this->load->view('admin/direct', $data);
+        else 
+        	$this->load->view('admin/contract', $data);    
     }
 
     function add_quote($pid, $potype = "Bid")
@@ -450,7 +453,7 @@ class quote extends CI_Controller
         if (!@$data)
             $data = array();
         $data = array_merge($data, $_POST);
-        $data ['heading'] = $potype == "Bid" ? 'Add New Quote' : "Add New Purchase Order";
+        $data ['heading'] = $potype == "Bid" ? 'Add New Quote' : ($potype == "Direct"?"Add New Purchase Order":"Add New Contract Quote");
         $data ['action'] = site_url('admin/quote/add_quote/' . $pid . '/' . $potype);
         $data['companylist'] = $this->quote_model->getcompanylist();
         $data['quoteitems'] = array();
@@ -467,8 +470,10 @@ class quote extends CI_Controller
             //$this->load->view ('admin/quote', $data);
             if ($potype == 'Bid')
                 $this->load->view('admin/quote', $data);
-            else
+            elseif($potype == 'Direct')
                 $this->load->view('admin/direct', $data);
+            else 
+              $this->load->view('admin/contract', $data);     
         }
         else {
             if ($this->input->post('makedefaultdeliverydate') == '1') {
@@ -476,7 +481,7 @@ class quote extends CI_Controller
                 $this->session->set_userdata($temp);
             }
             $itemid = $this->quote_model->SaveQuote();
-            $itemtype = $potype == "Bid" ? 'Quote' : 'Purchase Order';
+            $itemtype = $potype == "Bid" ? 'Quote' : ($potype == "Direct"?'Purchase Order':'Contract Quote');
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">' . $itemtype . ' Added Successfully , Please add items below</div></div>');
             redirect('admin/quote/update/' . $itemid);
         }
@@ -505,7 +510,7 @@ class quote extends CI_Controller
         $this->validation->itemchk = $item->itemchk;
         $this->validation->deliverydate = $item->deliverydate;
         $this->validation->subtotal = $this->quote_model->getsubtotal($id);
-
+		$this->validation->contracttype = $item->contracttype;
         $this->validation->taxtotal = $this->validation->subtotal * $config['taxpercent'] / 100;
         $this->validation->total = $this->validation->subtotal + $this->validation->taxtotal;
 
@@ -529,7 +534,7 @@ class quote extends CI_Controller
         $data['awarded'] = $this->quote_model->getawardedbid($id);
         $data['bids'] = $this->quote_model->getbids($id);
 
-        $data ['heading'] = $data['potype'] == "Bid" ? 'Update Quote Item' : 'Update Purchase Order Item';
+        $data ['heading'] = $data['potype'] == "Bid" ? 'Update Quote Item' : ($data['potype'] == "Direct" ?'Update Purchase Order Item':'Update Contract IItem');
         $data['categorymenu'] = $this->items_model->getCategoryMenu();
         $data['categorymenuitems'] = $this->items_model->getCategoryMenuItems();
         $data ['message'] = '';
@@ -538,8 +543,12 @@ class quote extends CI_Controller
 
 	    if ($data['potype'] == 'Bid')
             $this->load->view('admin/quote', $data);
-        else
+        elseif($data['potype'] == 'Direct')
             $this->load->view('admin/direct', $data);
+        else{
+        	$data ['action'] = site_url('admin/quote/updatecontractquote');
+            $this->load->view('admin/contract', $data);    
+        }
     }
 
     function updatequote()
@@ -578,7 +587,7 @@ class quote extends CI_Controller
             $this->quote_model->updateQuote($itemid);
             $data ['message'] = '<div class="success">Quote has been updated.</div>';
 
-            $itemtype = $this->input->post('potype') == "Bid" ? 'Quote' : 'Purchase Order';
+            $itemtype = $this->input->post('potype') == "Bid" ? 'Quote' : ($this->input->post('potype') == "Direct"?'Purchase Order':'Contract');
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">' . $itemtype . ' Saved</div></div>');
 
             $quoteitems = $this->quote_model->getitems($itemid);
@@ -631,7 +640,7 @@ class quote extends CI_Controller
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
-				    <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
+				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
 				  	$loaderEmail = new My_Loader();
                     $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
                     //$this->load->model('admin/settings_model');
@@ -643,6 +652,7 @@ class quote extends CI_Controller
                     $this->email->from($settings['adminemail'], "Administrator");
 
                     $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
+
                     /* $emails = explode(',',$c->email);
                       if($emails)
                       foreach($emails as $email)
@@ -779,6 +789,61 @@ class quote extends CI_Controller
         }
     }
 
+    
+    function updatecontractquote()
+    {   //echo "<pre>",print_r($_POST); die;
+        $data ['heading'] = 'Update Contract Item';
+        $data ['action'] = site_url('message/updatecontractquote');
+        $this->_set_fields();
+        $this->_set_rules();
+
+        $itemid = $this->input->post('id');
+        $pid = $this->input->post('pid');
+        $data['costcodes'] = $this->db->where('project',$pid)->get('costcode')->result();
+
+        if ($this->validation->run() == FALSE) {
+            $data['quoteitems'] = $this->quote_model->getitems($itemid);
+            $data['companylist'] = $this->quote_model->getcompanylist();
+            $data['pid'] = $this->input->post('pid');
+            $data ['action'] = site_url('admin/quote/updatecontractquote');
+            $this->load->view('admin/contract', $data);
+        }
+        else
+        {            
+            $pid = $this->input->post('pid');
+            $this->quote_model->updateQuote($itemid);
+            $data ['message'] = '<div class="success">Contract has been updated.</div>';
+
+            $itemtype = $this->input->post('potype') == "Bid" ? 'Quote' : ($this->input->post('potype') == "Direct"?'Purchase Order':'Contract');
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">' . $itemtype . ' Saved</div></div>');
+
+            /*$quoteitems = $this->quote_model->getitems($itemid);
+    		$emailitems = '<table BORDER CELLPADDING="12">';
+    		$emailitems.= '<tr>';
+    		$emailitems.= '<th> Itemcode  </th>';
+    		$emailitems.= '<th>Itemname</th>';
+    		$emailitems.= '<th>Qty</th>';
+    		$emailitems.= '<th>Unit</th>';
+    		$emailitems.= '<th>Price</th>';
+    		$emailitems.= '<th>Notes</th>';
+    		$emailitems.= '</tr>';
+    		foreach($quoteitems as $q)
+    		{
+    		    $emailitems.= '<tr>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->itemcode.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->quantity.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->unit.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->ea.'</td>';
+        		$emailitems.= '<td style="padding-left:5;">'.$q->notes.'</td>';
+        		$emailitems.= '</tr>';
+    		}
+    		$emailitems .= '</table>';*/    
+    		
+            redirect('admin/quote/update/' . $itemid);            
+        }
+    }
+    
     function assignpo()
     {
         $post = $this->input->post();
@@ -988,6 +1053,41 @@ class quote extends CI_Controller
         }
         redirect('admin/quote/update/' . $qid);
     }
+    
+    
+    
+    function updatecontractitems($qid)
+    {
+
+        $items = $this->quote_model->getitems($qid);        
+        //echo '<pre>';print_r($_POST);die;
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id'))
+        {
+        	redirect('admin/dashboard', 'refresh');
+        }
+        
+        foreach ($items as $item)
+        {
+        	 $updatearray = array();
+                        	
+            if(is_uploaded_file($_FILES['attach'.$item->id]['tmp_name']))
+        	{        	
+        	if(move_uploaded_file($_FILES['attach'.$item->id]['tmp_name'], "uploads/quote/".$_FILES['attach'.$item->id]['name']))
+        	{        		
+		        $updatearray['attach'] = $_FILES['attach'.$item->id]['name'];
+        	}
+        	}
+            
+            $updatearray['itemname'] = $_POST['itemname'.$item->id];
+            $updatearray['costcode'] = $_POST['costcode'.$item->id];
+           			
+            $this->quote_model->db->where('id', $item->id);
+            $this->quote_model->db->update('quoteitem', $updatearray);            
+            
+        }
+        redirect('admin/quote/update/' . $qid);
+    }
+    
 
     function do_upload1($qid)
     {
@@ -1075,6 +1175,36 @@ class quote extends CI_Controller
         }
         redirect('admin/quote/update/' . $qid);
     }
+    
+    
+    function addcontractitem($qid)
+    {
+        //print_r($_POST);die;    	
+        $_POST['attach'] = $_FILES['attach']['name'];
+        $_POST['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        $quote = $this->quote_model->get_quotes_by_id($qid);
+        
+        $this->quote_model->db->insert('quoteitem', $_POST);        
+        
+        if(is_uploaded_file($_FILES['attach']['tmp_name']))
+        {//echo 'uploaded';        	
+        	if(move_uploaded_file($_FILES['attach']['tmp_name'], "uploads/quote/".$_FILES['attach']['name']))
+        	{        		
+		        $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
+			<div class="msgBox">File uploaded successfully.</div></div>');
+        	}
+        }
+        else
+        {
+
+        	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
+			<div class="msgBox">File could not uploaded.</div></div>');
+
+        }
+        
+        redirect('admin/quote/update/' . $qid);
+    }
+    
 
     function deleteitem($itemid, $qid) {
         $this->quote_model->deleteitem($itemid, $qid);
@@ -1083,7 +1213,7 @@ class quote extends CI_Controller
 			<div class="msgBox">Item Deleted Sucessfully.</div></div>');
 
         redirect('admin/quote/update/' . $qid);
-    }
+    }    
 
      function bids_export($qid)
     {
@@ -1187,12 +1317,12 @@ class quote extends CI_Controller
 
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );			
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );
 			$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
-		}	
-		
-		
-		
+		}
+
+
+
     	$alltotal=0;
 
 
@@ -1201,7 +1331,7 @@ class quote extends CI_Controller
 
     		$alltotal = '';
 			$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
-    		
+
 			$header[] = array('PO #:',$quote->ponum , 'Company:' , $bid->companyname , 'Submitted:' , date('m/d/Y', strtotime($bid->submitdate)) , '','','', '','', '' );
 
     		$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
@@ -1294,7 +1424,7 @@ class quote extends CI_Controller
 
 
     }
-	
+
 	//BID PDF
 	function bids_pdf($qid)
     {
@@ -1398,12 +1528,12 @@ class quote extends CI_Controller
 
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );			
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '','','', '','', '' );
 			//$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
-		}	
-		
-		
-		
+		}
+
+
+
     	$alltotal=0;
 
 
@@ -1412,7 +1542,7 @@ class quote extends CI_Controller
 
     		$alltotal = '';
 		//	$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
-    		
+
 			$header[] = array('<b>PO #:</b>',$quote->ponum , '<b>Company:</b>' , $bid->companyname , '<b>Submitted:</b>' , date('m/d/Y', strtotime($bid->submitdate)) , '','','', '','', '' );
 
     		$header[] = array('','' , '' , '' , '' , '' , '','','', '','', '' );
@@ -1498,7 +1628,7 @@ class quote extends CI_Controller
     		}
 
     	}
-    	 
+
 		$headername = "BID PLACED";
     	createOtherPDF('bids_pdf_'.$qid, $header,$headername);
     	die();
@@ -1507,8 +1637,8 @@ class quote extends CI_Controller
 
 
     }
-	
-	
+
+
 
     function bids($qid)
     {
@@ -1939,7 +2069,7 @@ class quote extends CI_Controller
  function export()
     {
     	$invoices = $this->quote_model->getinvoices();
-    	
+
 		$count = count($invoices);
         $items = array();
 		 if ($count >= 1)
@@ -2018,17 +2148,17 @@ class quote extends CI_Controller
         	$data['items'] = array();
             $data['message'] = 'No Records';
         }
-		
-		
-		
+
+
+
     	//===============================================================================
-	
-		$header[] = array('Report type' , 'Invoices' , '' , '' , '' , '' , '' );	
-		
+
+		$header[] = array('Report type' , 'Invoices' , '' , '' , '' , '' , '' );
+
 		if($this->session->userdata('managedprojectdetails'))
-		{			
-			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			$header[] = array('' , '' , '' , '' , '' , '' , '' );		
-		}	
+		{
+			$header[] = array('Project Title', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			$header[] = array('' , '' , '' , '' , '' , '' , '' );
+		}
 
     	$header[] = array('PO Number' , 'Invoice' , 'Received On' , 'Total Cost' , 'Payment' , 'Verification' , 'Date Due' );
     	foreach($invoices as $i)
@@ -2043,17 +2173,17 @@ class quote extends CI_Controller
     		{
     			$total_price = '$ '.$i->totalprice;
     		}
-				
-			
+
+
 			//----------------------------------------------------------
 			$p_status = $i->paymentstatus;
-			
+
 			if($i->status == 'Verified')
 			{
 				$p_status.= '/'.$i->paymenttype.'/'.$i->refnum;
 			}
 			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
-			{       				
+			{
                $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
 			}
 			//-----------------------------------------------------------
@@ -2070,7 +2200,7 @@ class quote extends CI_Controller
 	 function invoicepdf()
     {
     	$invoices = $this->quote_model->getinvoices();
-    	
+
 		$count = count($invoices);
         $items = array();
 		 if ($count >= 1)
@@ -2149,18 +2279,18 @@ class quote extends CI_Controller
         	$data['items'] = array();
             $data['message'] = 'No Records';
         }
-		
-		
-		
+
+
+
     	//===============================================================================
-	
-		$header[] = array('Report type:' , 'Invoices' , '' , '' , '' , '' , '' );	
-		
+
+		$header[] = array('Report type:' , 'Invoices' , '' , '' , '' , '' , '' );
+
 		if($this->session->userdata('managedprojectdetails'))
-		{			
-			$header[] = array('<b>Project Title</b>', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );			
-			//$header[] = array('' , '' , '' , '' , '' , '' , '' );		
-		}	
+		{
+			$header[] = array('<b>Project Title</b>', $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' );
+			//$header[] = array('' , '' , '' , '' , '' , '' , '' );
+		}
 
     	$header[] = array('<b>PO Number</b>' , '<b>Invoice</b>' , '<b>Received On</b>' , '<b>Total Cost</b>' , '<b>Payment</b>' , '<b>Verification</b>' , '<b>Date Due</b>' );
     	foreach($invoices as $i)
@@ -2175,30 +2305,30 @@ class quote extends CI_Controller
     		{
     			$total_price = '$ '.$i->totalprice;
     		}
-				
-			
+
+
 			//----------------------------------------------------------
 			$p_status = $i->paymentstatus;
-			
+
 			if($i->status == 'Verified')
 			{
 				$p_status.= '/'.$i->paymenttype.'/'.$i->refnum;
 			}
 			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
-			{       				
+			{
                $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
 			}
 			//-----------------------------------------------------------
 
     		$header[] = array($i->quote->ponum,  $i->invoicenum,  $i->receiveddate , $total_price.chr(160) , $p_status ,$i->quote->status ,$dddate );
     	}
-		
+
 		$headername = "INVOICES";
     	createOtherPDF('invoices', $header,$headername);
     	die();
- 
+
     }
-	
+
 
 
 
@@ -2338,8 +2468,8 @@ class quote extends CI_Controller
         $this->load->view('admin/invoice', $data);
     }
 
- 
- 
+
+
 
   function trackexport($qid)
     {
@@ -2398,17 +2528,17 @@ class quote extends CI_Controller
 
     	//=========================================================================================
     	$quote = $data['quote'];
-		
+
 		$header[] = array('Report type' , 'Order Tracking', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
     	if($this->session->userdata('managedprojectdetails'))
-		{		
+		{
 			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title, '' , '' , '' , '' , '' , '' , '' , '' , '' );
-		}			
-		
+		}
+
 		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 		$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
-		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );	
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
     	$header[] = array('Company' , 'Item Code' , 'Item Name' , 'Qty.' , 'Unit' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Cost Code' , 'Notes' , 'Still Due' );
 
@@ -2470,13 +2600,13 @@ class quote extends CI_Controller
     		$alltotal+=$q->totalprice;
 
     		$still_due = $q->quantity - $q->received;
-    		
+
 			$green_icon_value = '';
 			if($q->received != '0.00' && $q->received != '')
 			{
                $green_icon_value = '( received:'.$q->received.')';
-			}		
-			
+			}
+
 			$header[] = array(@$q->companydetails->title , $q->itemcode , $q->itemname , $q->quantity.$green_icon_value , $q->unit, '$ '.formatPriceNew($q->ea) , '$ '.formatPriceNew($q->totalprice) , $q->daterequested , $q->costcode , $q->notes , $still_due );
 
     	}
@@ -2675,7 +2805,7 @@ class quote extends CI_Controller
 
 
     }
-	
+
 	// TRACK PDF
 
  function trackpdf($qid)
@@ -2735,17 +2865,17 @@ class quote extends CI_Controller
 
     	//=========================================================================================
     	$quote = $data['quote'];
-		
+
 		$header[] = array('Report type:' , 'Order Tracking', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
     	if($this->session->userdata('managedprojectdetails'))
-		{		
+		{
 			$header[] = array('<b>Project Title</b>' , $this->session->userdata('managedprojectdetails')->title, '' , '' , '' , '' , '' , '' , '' , '' , '' );
-		}			
-		
+		}
+
 		//$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 		$header[] = array('<b>PO #</b>' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
-		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );	
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
 
     	$header[] = array('<b>Company</b>' , '<b>Item Code</b>' , '<b>Item Name</b>' , '<b>Qty.</b>' , '<b>Unit</b>' , '<b>Price EA</b>' , '<b>Total Price</b>' , '<b>Date Requested</b>' , '<b>Cost Code</b>' , '<b>Notes</b>' , '<b>Still Due</b>' );
 
@@ -2807,13 +2937,13 @@ class quote extends CI_Controller
     		$alltotal+=$q->totalprice;
 
     		$still_due = $q->quantity - $q->received;
-    		
+
 			$green_icon_value = '';
 			if($q->received != '0.00' && $q->received != '')
 			{
                $green_icon_value = '( received:'.$q->received.')';
-			}		
-			
+			}
+
 			$header[] = array(@$q->companydetails->title , $q->itemcode , $q->itemname , $q->quantity.$green_icon_value , $q->unit, '$ '.formatPriceNew($q->ea) , '$ '.formatPriceNew($q->totalprice) , $q->daterequested , $q->costcode , $q->notes , $still_due );
 
     	}
@@ -3005,7 +3135,7 @@ class quote extends CI_Controller
 
     	//--------------------errorLog------------------------------------------------------------
 
-    	 
+
 			$headername = "TRACK ITEMS";
     	createOtherPDF('track_items', $header,$headername);
     	die();
@@ -3069,8 +3199,8 @@ class quote extends CI_Controller
 		             ->where('quote',$qid)->get()->result();
 
 		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
-        $shipments2 = $this->db->query($shipmentsquery)->result();                      
-		             
+        $shipments2 = $this->db->query($shipmentsquery)->result();
+
 		if($awarded){
 			foreach($awarded->items as $item) {
 				if($item->company){
@@ -3080,13 +3210,13 @@ class quote extends CI_Controller
 				->get('etalog')->result();
 
 				}
-				
+
 				$item->quotedaterequested = $this->db->select('daterequested')
 				->where('purchasingadmin',$item->purchasingadmin)
 				->where('quote',$qid)
 				->where('itemid',$item->itemid)
-				->get('quoteitem')->row();		
-				
+				->get('quoteitem')->row();
+
 			}
 		}
 
@@ -3102,7 +3232,7 @@ class quote extends CI_Controller
         $data['adquoteid'] = $qid;
         $this->load->view('admin/track', $data);
     }
-    
+
     function sendautolateemail($id){
     	$quotearr = $this->quote_model->getallawardedqtyduebids();
     	//echo "<pre>",print_r($quotearr); die;
@@ -3126,7 +3256,7 @@ class quote extends CI_Controller
 					 $loaderEmail = new My_Loader();
     				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     				/*$settings = (array)$this->settings_model->get_current_settings ();*/
-    			
+
     				$this->email->clear();
     				//$this->email->from($settings['adminemail'], "Administrator");
     				$this->email->from('email.jonrubin@gmail.com',"Administrator");
@@ -3388,9 +3518,9 @@ $loaderEmail = new My_Loader();
 			$parts = explode('/', $date);
 			$newDate  = "$parts[2]-$parts[0]-$parts[1] $time";
 			return $newDate;
-		}	
+		}
 	}
-    
+
     function savetrack($quoteid,$ajax=0)
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
@@ -3432,10 +3562,10 @@ $loaderEmail = new My_Loader();
                     $temp['defaultreceiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);
                     $this->session->set_userdata($temp);
                 }
-                
+
                                 $invoicearr = array();
                 $invoicearr = explode(",",$_POST['invoicenum' . $key]);
-                
+
                 if(count($invoicearr)>1) {
                 	foreach($invoicearr as $inv) {
 
@@ -3445,8 +3575,8 @@ $loaderEmail = new My_Loader();
                 		->where('awarditem',$item->id)
                 		->where('invoicenum',$inv)
                 		->get()->row();
-                		
-                		
+
+
                 		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 		$this->quote_model->db->insert('received', $insertarray);
@@ -3480,8 +3610,8 @@ $loaderEmail = new My_Loader();
 
                 	}
                 }else {
-                	
-                
+
+
                 $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 $this->quote_model->db->insert('received', $insertarray);
@@ -3513,8 +3643,8 @@ $loaderEmail = new My_Loader();
                     $credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
                     $credits[$item->company]['items'] = array($insertarray);
                 }
-                
-              } 
+
+              }
             }
         }
         //print_r($invoices);die;
@@ -3900,7 +4030,7 @@ $loaderEmail = new My_Loader();
             $config['charset'] = 'utf-8';
             $config['mailtype'] = 'html';
             $this->email->initialize($config);
-            	
+
             $this->email->from($settings['adminemail'], "Administrator");
 
             $toemail = $settings['adminemail'] . ',' . $c->primaryemail;
@@ -4429,13 +4559,13 @@ $loaderEmail = new My_Loader();
             ;
         }
     }
-    
+
     function sendduedatealert()
     {
     	$SQL = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c WHERE c.id=".$_POST['companyid'];
     	$qry = $this->db->query($SQL);
     	$result = $qry->result_array();
-    	
+
     	$settings = (array)$this->settings_model->get_current_settings ();
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
@@ -4443,25 +4573,25 @@ $loaderEmail = new My_Loader();
 		$this->email->initialize($config);
 		$this->email->clear(true);
 	    $this->email->from($settings['adminemail'], "Administrator");
-	        
+
         $toemail = isset($result[0]['primaryemail']) ? $result[0]['primaryemail'] : '';
-          
-        $this->email->to($toemail); 
-	   
+
+        $this->email->to($toemail);
+
 		$data['email_body_title'] = "Dear ".$result[0]['title'];
 		$data['email_body_content'] = "Please set due date for PO#  {$_POST['ponum']}<br><br><br>";
-		    
+
    		$data['email_body_content'].= site_url('quote/track/'.$_POST['quote'].'/'.$_POST['award']);
    		$loaderEmail = new My_Loader();
    		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->email->subject("Request to Set Due Date");
-		$this->email->message($send_body);	
+		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->send();
-	
-	
+
+
 		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Request due date alert sent via email.</div></div>');
-      	
+
       die;
     }
 

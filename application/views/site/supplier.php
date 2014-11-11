@@ -1939,34 +1939,36 @@ $( document ).tooltip();
 
 
 
-        <div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <i class="icon-credit-card icon-7x"></i>                 
-        <div style="text-align:center;" id="headimagename"></div>          
-        </div>
-        <div class="modal-body">        
-        <div id="container2">
-        <div id="imgtag">  
-  <img id="pic1" src="" style="margin-right:30%;"/>
-  <div id="tagbox">
-  </div>
-</div>
-<div id="taglist">  
-</div>
-</div>
-        </div>
-        <div class="modal-footer">          
-        <div class="fb-like" id="fbshareandlike" style="z-index: 9999;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $designbook[0]->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
+	<div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+		 <div class="modal-dialog">
+		     <div class="modal-content">
+		      
+		        <div class="modal-header">
+		        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button><i class="icon-credit-card icon-7x"></i>                 
+		        	<div style="text-align:center;" id="headimagename"></div>          
+		        </div>
+		        
+		        <div class="modal-body">        
+		          <div id="container2">		            
+				        <div id="imgtag" style="float:left;">  
+				  			<img id="pic1" src="" style="margin-left:27%;"/>
+				 		    <div id="tagbox"></div>
+						</div>								
+					<div  style="width:400px;height:300px;overflow-y:scroll;padding-left:150px;">
+						<div id="taglist"></div>
+					</div>
+					<div style="clear:both;"></div>			
+				  </div>
+		        </div>
+		        
+		        <div class="modal-footer">          
+		        	<div class="fb-like" id="fbshareandlike" style="z-index: 9999;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $designbook[0]->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
+		          	<button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+		        </div>
+		        
+		     </div>
+		  </div>
+	 </div>
   
   
   
