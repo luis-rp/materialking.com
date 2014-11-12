@@ -41,11 +41,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <title>EZPZP Purchasing User Administration</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-  
+
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo-init.min.js" type="text/javascript"></script>
 <?php if ($_SERVER['SERVER_NAME'] != 'localhost' || 0) { ?>
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
 <?php } ?>
+
+		<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+		<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
          <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
@@ -57,8 +60,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-          <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script> 
-	    
+          <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+
         <style type="text/css">
             #theme_switcher
             {
@@ -77,7 +80,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         var helpTour;
             $(document).ready(function() {
 
-             
+
                 $('.myLink').click(function(e) {
                     e.preventDefault();
                     $("#searchfrm").attr("action", this.href);
@@ -93,19 +96,19 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 $('#tab-users a').tooltip();
 				// commented code as call to tour was giving error while fetching graph
 				//Boostratp tour only available on these pages :dashboard,projects,project,costcodelist,costcode
-				<?php 
+				<?php
 				//if(isset($viewname) && ($viewname=="dashboard" || $viewname=="projects" || $viewname=="project" || $viewname=="costcodelist" || $viewname=="costcode" )){
-				/*if($this->session->userdata('usertype_id') != 3){ 
-				
+				/*if($this->session->userdata('usertype_id') != 3){
+
 				}else{
                */
-				
+
                 	//if(($this->session->userdata('usertype_id') != 3)  && ($this->session->userdata('tour') == "unfinished")){
                 ?>
 
                 <?php  if(isset($pagetour)) {
 					if($pagetour==1) { ?>
-					
+
                 $(document).ready(function($){
 
 					var field;
@@ -120,12 +123,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 		  		    	    element: "#step2",
 		  		    	    title: "Step 2",
 		  		    	    content: "All of your Quotes, Purchase Orders, Invoices and Items you buy are assigned to a Project and a Cost Code for easy tracking, budgeting and reporting. Let’s add your first Project and Cost Code.",
-		  		    	    
+
 		  		    	  },
 		  		    	  {
 		  			    	    element: "#step3",
 		  			    	    title: "Step 3",
-		  			    	    content: "The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.", 
+		  			    	    content: "The Manage tab will help you manage many things, including Projects and Cost Codes. Please Click the Manage tab and let’s get going.",
 		  			    	    reflex:true,
 		  			    		  onNext:function(tour){
 		  							$("#step3 a").click();
@@ -136,7 +139,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 		    			    	    title: "Step 4",
 		    			    	    reflex:true,
 		    			    	    content: "Please Click on the Projects tab.",
-		    			    	   
+
 		    			   },
 		    			   {
 		        			   	path:"/admin/project",
@@ -144,7 +147,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 					    	    title: "Step 5",
 					    	    content: "Please Click the Add Project button.",
 					    	    reflex:true,
-					    	 
+
 		    			   },
 		    			   {
 		        			   	  path:"/admin/project/add",
@@ -152,40 +155,40 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 		    				      title: "Step 6",
 		    				      content: "Fill out the form and click Save Project.",
 		    				      reflex:true,
-		    				     
+
 		    				      onNext: function(tour){
-		        				  
+
 		    				    	  $("#form-add-prj").submit();
 		        				      }
-		    				   
+
 					  		 },
 					  		 {
 					  			 path:"/admin/project",
 						    	    element: "#step7",
 						    	    title: "Step 7",
-						    	    
+
 						    	    content: "Congratulations - You have created your first project. Now let's create a Cost Code.",
 
 							 },
 					  		 {
-						  		   
+
 						    	    element: "#step3",
 						    	    title: "Step 8",
 						    	    content: "Click the Manage tab.",
 						    	    reflex:true,
-						    	 
+
 						    		  onNext:function(tour){
 				  							$("#step3 a").click();
 				    	  		    	    }
 
 							 },
 					  		 {
-						  		   
+
 						    	    element: "#step9",
 						    	    title: "Step 9",
 						    	    content: "Click the Cost Code option.",
 						    	    reflex:true,
-						    	    
+
 
 							 },
 					  		 {
@@ -194,7 +197,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						    	    title: "Step 10",
 						    	    content: "Click Add Cost Code.",
 						    	    reflex:true,
-						    	    
+
 
 							 },
 							 {
@@ -203,19 +206,19 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						    	    title: "Step 11",
 						    	    content: "Fill out the form and click Update Cost Code.",
 						    	    reflex:true,
-						    	  
+
 
 							 },
 							 {
-						  		   
+
 						    	    element: "#step12",
 						    	    title: "Step 12",
 						    	    prev:-1,
 						    	    content: "Bravo - You have just set up your first Project and created a Cost Code to track and monitor your spending.",
 
 							 },
-					  		 
-					    	  
+
+
 		  		    	],
 						onEnd:function(tour){
 								$.ajax({
@@ -223,7 +226,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 									});
 							}
 		  		    	});
-	  		    	
+
 	                <?php  if(isset($viewname) && $viewname=="dashboard"){?>
 	                tourMain.restart();
 	               <?php } ?>
@@ -233,31 +236,31 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 	  		    	// Start the tour
 	  		    	tourMain.start();
 
-	  		    	
+
 	  		  /*  	$("#step6").click(function(e){
 						if(!$("#title").val()){
 							alert("Please fill out Title Field");
 							return false;
 						}
 	  	  		    });*/
-	  		    	
+
 	  		     $("#pages-dropdown","#step3").click(function(e){
-	  	  	
+
 	  	  		    	//alert(tour.getCurrentStep());
-	  	  		    	 
+
 	  	  		    	if(e.hasOwnProperty('originalEvent') && (tourMain.getCurrentStep()==2 || tourMain.getCurrentStep()==7)){
 	  	  		    	tourMain.next();
 	  	  		    	}
 	  	  		    });
-	                    
+
                 });
-                  	  		
+
 
   	  		    <?php } } ?>
-  	  		    
-  	  		   
-				//	} 
-              
+
+
+				//	}
+
             });
         </script>
 <?php } ?>
@@ -394,12 +397,12 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     alert('date');
                 });
             }
-        </script>	
- 
+        </script>
+
     </head>
 
     <body>
- 	
+
         <header class="navbar navbar-fixed-top" id="main-navbar">
             <div class="navbar-inner">
 
@@ -408,7 +411,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     <a class="btn nav-button collapsed" data-toggle="collapse" data-target=".nav-collapse" href="<?php echo site_url('site/items'); ?>">
                         <span class="icon-reorder"></span>
                     </a>
-                    
+
                      <?php if (@$mp->id) { ?>
                     <ul class="nav">
                     <li class="divider-vertical"></li>
@@ -421,8 +424,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						</li>
 					</ul>
 					<?php } ?>
-					
-                    
+
+
 
                     <div style="float: right;padding-top:0px;padding-right:10px;">
                         <ul class="messages">
@@ -431,7 +434,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     <i class="icon-calendar"></i>PO Calendar
                                 </a>
                             </li>
-                            
+
                             <?php if ($this->session->userdata('usertype_id') > 1) { ?>
                             <li>
                             	<a href="<?php echo base_url(); ?>admin/event"><span class="icon-calendar"></span>Events</a>
@@ -444,7 +447,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li>
                                     <a><?php echo $mp->title; ?></a>
                                 </li>
-                               
+
                                 <?php
                                 }
                                 ?>
@@ -469,7 +472,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             <li>
                                 <a href="#"><i class="icon-time"></i><?php $time =  null;  if(isset($timezone)) { $date = new DateTime($time, new DateTimeZone('America/Los_Angeles')); $date->setTimezone(new DateTimeZone($timezone)); echo $time= $date->format('D, d M Y h:i A'); } else { echo date('D, d M Y h:i A'); } ?><span class="responsive-text"> </span></a>
                             </li>
-                            
+
                             <li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<img alt="User" src="<?php echo base_url(); ?>templates/admin/images/avatar.png" height="23px" width="23px">
@@ -485,7 +488,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						</li>
                         </ul>
                     </div>
-                    
+
                     <div class="input-append"  style="float: right;padding-right: 20px;">
                         <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
                             <input type="text" style="width:150px;"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
@@ -517,23 +520,23 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <nav id="left-panel" >
             <div id="left-panel-content" style="padding-top: 0px;">
                 <ul>
-                    <li  <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a></li>
-                    
+                   <li  <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>>
+                   		<a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a>
+                   </li>
+
                         <?php if ($this->session->userdata('usertype_id') < 3) {
-						 $menu = trim($menu);
-						 ?>                               
+						 $menu = trim($menu);  ?>						
               <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
-                           
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
-                            <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
-                            	
+                               <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
+
                             	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">
                                 	<a href="<?php echo base_url(); ?>admin/project" >
                                     	<i class="icon-check"></i>
                                     	Projects
                                 	</a>
                             	</li>
-                            	
+
                                 <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?> id="step9">
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/costcode"><i class="icon-money"></i>&nbsp;&nbsp;Cost Codes</a>
                                 </li>
@@ -572,34 +575,35 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                         </a>
                                     </li>
                                 <?php } ?>
-                              
+
                             	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
                                 	<a href="<?php echo base_url(); ?>admin/admin/index">
                                 		<i class="icon-user"></i>
                                 		Manage Users
                                 	</a>
                             	</li>
-                            
+
                             	<li <?php if ($menu == 'event') { ?>class="active"<?php } ?>>
                                 	<a href="<?php echo base_url(); ?>admin/event">
                                 		<i class="icon-user"></i>
                                 		Events
                                 	</a>
                             	</li>
-                            	
                             </ul>
                         </li>
+
+                        
                         
                          <?php if ($mp) { ?>
                             <li <?php if ($menu == 'quote') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/quote/index/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
-                                    <span class="icon-legal"></span>QUOTE/PO MANAGEMENT 
+                                    <span class="icon-legal"></span>QUOTE/PO MANAGEMENT
                                 </a>
                             </li>
                             <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
                             <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
                             <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
-                      
+
                         <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/') ?>">
@@ -607,6 +611,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                             </li>
                         <?php } else { ?>
+
+
+
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/order/allorders') ?>">
                                     <span class="icon-reorder"></span>PURCHASE REPORT
@@ -617,11 +624,16 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <li <?php if ($menu == 'settings') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
+                        
+                        <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
+                        	<a href="<?php echo base_url(); ?>admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
+                        </li>
+                        
                           <?php } else { ?>
                             <?php if ($mp) { ?>
                             <li <?php if ($menu == 'purchaseuser' && $function == 'quotes') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/purchaseuser/quotes/') ?>">
-                                    <span class="icon-reorder"></span>QUOTE/PO MANAGEMENT 
+                                    <span class="icon-reorder"></span>QUOTE/PO MANAGEMENT
                                 </a>
                             </li>
                             <li <?php if ($menu == 'purchaseuser' && $function == 'messages') { ?>class="active"<?php } ?>>
@@ -645,7 +657,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
         <section class="container">
             <?php echo $content; ?>
-            	
+
             <footer id="main-footer">
 
                 <a href="#" class="pull-right" id="on-top-link">On Top&nbsp;<i class="icon-chevron-up"></i>
@@ -654,9 +666,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         </section>
         <!-- <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>-->
-        
-       
-        
-        
+
+
+
+
     </body>
 </html>

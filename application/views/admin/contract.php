@@ -346,6 +346,10 @@ function selectquantity(qty, quant, price, priceid)
 	}
 }
 
+function defaultcategory(categoryid){
+	
+	$('#categoryinvitees').val(categoryid);
+}
 
 </script>
 
@@ -430,6 +434,7 @@ function savclose()
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <input type="hidden" id="reminders" name="reminders" value=""/>
 		   <input type="hidden" id="revisions" name="revisions" value=""/>
+		   <input type="hidden" id="categoryinvitees" name="categoryinvitees" value=""/>
 		   <br/>
 		    
 		    <div class="control-group">
@@ -555,7 +560,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    	<tr>
 		    		<td>			    							    		
 			    		<input type="file" name="attach<?php echo $q->id;?>" />	
-			    			<?php if(@$q->attach){?>
+			    			<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
                         	<br>
                         	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
                         	View File
@@ -665,7 +670,14 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 	    	<?php if($this->validation->id && $quoteitems && !$awarded){?>
 		    	<div class="row span12">
 				    <div class="control-group span4">
-					   
+					<select onchange="defaultcategory(this.value)" id="purchasercategory" name="purchasercategory" class="costcode">
+		    				<?php if(count($purchasercategories)>0) { foreach($purchasercategories as $cat){?>
+		    				<option value="<?php echo $cat->id;?>" 
+		    				<?php // if($q->category==$cat->id){echo 'SELECTED';}?>>
+		    				<?php echo $cat->catname;?>
+		    				</option>
+		    				<?php } }?>
+		    		</select>   
 				    </div>
 				   
 				    

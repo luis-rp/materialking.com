@@ -21,6 +21,7 @@ class quote extends CI_Controller
         $this->load->library(array('table', 'validation', 'session'));
         $this->load->helper('form', 'url');
         $this->load->model('admin/quote_model');
+        $this->load->model('quotemodel');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data ['title'] = "Administrator";
@@ -522,7 +523,9 @@ class quote extends CI_Controller
         $data['reminder'] = $this->quote_model->getInvitedButNotBid($id);
 
         $data['costcodes'] = $this->db->where('project',$item->pid)->get('costcode')->result();
-
+		
+        $data['purchasercategories'] = $this->quote_model->getallCategories();		
+        	
         $this->db->where('quote', $id);
         $invitations = $this->db->get('invitation')->result();
 
@@ -534,7 +537,7 @@ class quote extends CI_Controller
         $data['awarded'] = $this->quote_model->getawardedbid($id);
         $data['bids'] = $this->quote_model->getbids($id);
 
-        $data ['heading'] = $data['potype'] == "Bid" ? 'Update Quote Item' : ($data['potype'] == "Direct" ?'Update Purchase Order Item':'Update Contract IItem');
+        $data ['heading'] = $data['potype'] == "Bid" ? 'Update Quote Item' : ($data['potype'] == "Direct" ?'Update Purchase Order Item':'Update Contract Item');
         $data['categorymenu'] = $this->items_model->getCategoryMenu();
         $data['categorymenuitems'] = $this->items_model->getCategoryMenuItems();
         $data ['message'] = '';
@@ -809,7 +812,7 @@ class quote extends CI_Controller
             $this->load->view('admin/contract', $data);
         }
         else
-        {            
+        {             
             $pid = $this->input->post('pid');
             $this->quote_model->updateQuote($itemid);
             $data ['message'] = '<div class="success">Contract has been updated.</div>';
@@ -817,31 +820,487 @@ class quote extends CI_Controller
             $itemtype = $this->input->post('potype') == "Bid" ? 'Quote' : ($this->input->post('potype') == "Direct"?'Purchase Order':'Contract');
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">' . $itemtype . ' Saved</div></div>');
 
-            /*$quoteitems = $this->quote_model->getitems($itemid);
+            $quoteitems = $this->quote_model->getitems($itemid);
+            $emailattachments[] = array();
     		$emailitems = '<table BORDER CELLPADDING="12">';
-    		$emailitems.= '<tr>';
-    		$emailitems.= '<th> Itemcode  </th>';
-    		$emailitems.= '<th>Itemname</th>';
-    		$emailitems.= '<th>Qty</th>';
-    		$emailitems.= '<th>Unit</th>';
-    		$emailitems.= '<th>Price</th>';
-    		$emailitems.= '<th>Notes</th>';
+    		$emailitems.= '<tr>';    		
+    		$emailitems.= '<th>Itemname</th>';    		
+    		$emailitems.= '<th>File Name</th>';
     		$emailitems.= '</tr>';
     		foreach($quoteitems as $q)
     		{
-    		    $emailitems.= '<tr>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->itemcode.'</td>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->quantity.'</td>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->unit.'</td>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->ea.'</td>';
-        		$emailitems.= '<td style="padding-left:5;">'.$q->notes.'</td>';
+    		    $emailitems.= '<tr>';        		
+        		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';        		
+        		$emailitems.= '<td style="padding-left:5;">'.$q->attach.'</td>';
         		$emailitems.= '</tr>';
+        		if(@$q->attach && file_exists("./uploads/quote/".$q->attach))
+        		$emailattachments[] = site_url('uploads/quote').'/'.$q->attach;
     		}
-    		$emailitems .= '</table>';*/    
+    		$emailitems .= '</table>';    
+    	
+    		    if (@$_POST['categoryinvitees']) {
+                $companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
+                $companynames = array();
+                
+                foreach ($companies as $c)
+                {	
+                    $companynames[] = (@$c->companyname)?$c->companyname:$c->username;
+                    $key = md5($c->id . '-' . $itemid . '-' . date('YmdHisu'));
+                    $insertarray = array(
+                        'quote' => $itemid,
+                        'company' => $c->id,
+                        'senton' => date('Y-m-d'),
+                        'invitation' => $key,
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+                        'invite_type' => 'contract'                        
+                    );
+
+                    $this->quote_model->db->insert('invitation', $insertarray);
+
+                    $link = base_url() . 'admin/quote/invitation/' . $key;
+                    $data['email_body_title']= "Dear " . (@$c->companyname)?$c->companyname:$c->username;
+
+				  	$data['email_body_content'] = "Please click following link for the Contract quote " . $this->input->post('ponum') . " :  <br><br>
+				    <a href='$link' target='blank'>$link</a>.<br><br/>
+				    Please find the details below:<br/><br/>
+		  	        $emailitems
+				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
+				  	$loaderEmail = new My_Loader();
+                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+                   
+                    $settings = (array) $this->settings_model->get_current_settings();
+                    $this->load->library('email');
+                    $config['charset'] = 'utf-8';
+                    $config['mailtype'] = 'html';
+                    $this->email->initialize($config);
+                    $this->email->from($settings['adminemail'], "Administrator");
+
+                    $this->email->to($settings['adminemail'] . ',' . $c->email);
+                
+                    $this->email->subject('Request for Contract Quote Proposal ' . $this->input->post('ponum'));
+                    $this->email->message($send_body);
+                    $this->email->set_mailtype("html");
+                    /*foreach($emailattachments as $eattach)
+                    $this->email->attach($eattach);*/
+                    $this->email->send();
+
+                    $notification = array(
+                        'quote' => $itemid,
+                        'company' => $c->id,
+                        'ponum' => $this->input->post('ponum'),
+                        'category' => 'Invitation',
+                        'senton' => date('Y-m-d H:i'),
+                        'isread' => '0',
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+                        'notify_type' => 'contract'      
+                    );
+                    $this->db->insert('notification', $notification);
+                }
+                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Contract Quote Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
+            }
     		
+    			
             redirect('admin/quote/update/' . $itemid);            
         }
+    }
+    
+    
+    public function invitation($key,$print='')
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		$invitation = $this->quotemodel->getinvitation($key);
+		if(!$invitation)
+		{
+			$message = 'Quote Already Submitted for Review, Thank You.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('admin/quote/contractbids');
+		}
+		if($company != $invitation->company)
+		{
+			$message = 'Wrong Access.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('admin/quote/contractbids');
+		}
+		
+		$quote = $this->quotemodel->getquotebyid($invitation->quote);
+		if($this->quotemodel->checkbidcomplete($quote->id))
+		{
+			$message = 'Bid Already Completed, Thank You.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('admin/quote/contractbids');
+		}
+		
+		
+        $sql = "SELECT tier FROM " . $this->db->dbprefix('purchasingtier') . " pt
+        		WHERE pt.purchasingadmin='".$quote->purchasingadmin."' AND pt.company='" . $company . "'
+			";
+        $data['patier'] = @$this->db->query($sql)->row()->tier;
+		
+		
+		$quoteitems = $this->quotemodel->getquoteitems($quote->id);
+		//print_r($quoteitems);die;
+		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);
+		$purchaser = $this->quote_model->getpurchaseuserbyid($invitation->company);
+		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
+		
+		$sql = "SELECT tier
+				FROM ".$this->db->dbprefix('purchasingtier')." pt 
+				WHERE pt.company='".$company."' AND pt.purchasingadmin='".$quote->purchasingadmin."'
+			";
+		$tier = $this->db->query($sql)->row();
+		if($tier)
+		{
+			$tier = $tier->tier;
+			$sql = "SELECT *
+				FROM ".$this->db->dbprefix('tierpricing')." pt 
+				WHERE pt.company='".$company."'
+			";
+			$tiers = $this->db->query($sql)->row();
+			$tier = $tiers->$tier;
+		}
+		else
+		{
+			$tier = 0;
+		}
+		//die($tier);
+		//echo $sql;
+		$admins = $this->db->query($sql)->result();
+		
+		
+		foreach($originalitems1 as $q)
+		{
+			$originalitems[$q->itemid] = $q;
+		}
+		$data['originalitems'] = $originalitems;
+		//echo '<pre>'; print_r($originalitems);
+		
+		$this->db->where('company',$company);
+		$tiers = $this->db->get('tierpricing')->row();
+		//print_r($tiers);die;
+		$data['tiers'] = $tiers;
+		$data['invitation'] = $key;
+		$data['quote'] = $quote;
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$bid = $this->db->get('bid')->row();
+	    $data['quotenum'] = $bid?$bid->quotenum:'';
+	    $data['quotefile'] = $bid?$bid->quotefile:'';
+	    $data['expire_date'] = $bid?$bid->expire_date:'';
+	     if($bid){
+	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+	    	$revisionquote = $this->db->query($sqlq)->row();
+	    	if($revisionquote)
+	    	$data['revisionno'] = $revisionquote->revisionid;
+	    	
+	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$revisiondate = $this->db->query($sqlq)->result();
+	    	foreach($revisiondate as $revisedate){	    		
+	    		$revisionsid = $revisedate->revisionid;
+	    		$bid->$revisionsid = $revisedate->daterequested;
+	    	}
+	    	
+	    }
+	   	$data['bid'] = $bid; 
+	    
+		$items = $draftitems?$draftitems:$quoteitems;
+		$data['quoteitems'] = array();
+		//echo '<pre>';print_r($items);//die;
+
+		$sqlq = "SELECT itemcheck
+				FROM ".$this->db->dbprefix('invitation')." iv 
+				WHERE company='".$company."' AND purchasingadmin='".$quote->purchasingadmin."' AND invitation='".$key."'
+			";
+		$quoteinvite = $this->db->query($sqlq)->row();
+
+		if($quoteinvite){
+			$quoteitemck = $quoteinvite->itemcheck;
+		}else
+			$quoteitemck = 0;
+		$quoteitemck = 1; // Assigned itemcheck value as 1 by default
+		foreach($items as $item)
+		{
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			
+			$item->companyitem = $companyitem;
+			
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
+			
+			$item->orgitem = $orgitem;
+			
+    	    //if($bid && $quoteitemck)
+    	    if($quoteitemck)
+    	    {
+    			$this->db->where('itemid',$item->itemid);
+    			$this->db->where('type','Purchasing');
+    			$this->db->where('company',$quote->purchasingadmin);
+    			$paitem = $this->db->get('companyitem')->row();
+    			
+    			if($paitem)
+    			    $item->attachment = $paitem->filename;
+    			else
+    			    $item->attachment = '';
+    	    }
+			else
+			{
+			    $item->attachment = '';
+			}
+			//print_r($companyitem);
+			if($companyitem)
+			{
+				$item->itemcode = $companyitem->itemcode;
+				$item->itemname = $companyitem->itemname;
+				if(!$draftitems) $item->ea = $companyitem->ea;
+				$item->showinventorylink = false;
+				
+			}
+			else
+			{
+			    if(!$item->itemcode){
+			    	if($orgitem)
+			        $item->itemcode = $orgitem->itemcode;
+			    }  
+			    if(!$item->itemname)
+			        $item->itemname = $orgitem->itemname;
+				$item->showinventorylink = true;
+			}
+			$price = $item->ea;
+			
+			$sql1 = "select tier,qty from " . $this->db->dbprefix('purchasingtier_item') . "
+				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
+			$tier1 = $this->db->query($sql1)->row();
+			if($tier1)
+			{
+				if($tier1->qty){
+					$this->db->where('company',$company);
+					$this->db->where('itemid',$item->itemid);
+					$this->db->where('qty',$tier1->qty);
+					$qtyresult = $this->db->get('qtydiscount')->row();
+					$item->ea = $qtyresult->price;
+				}
+				
+				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
+				    where itemid='".$item->itemid."' AND company='" . $company . "' AND type = 'Supplier'";
+
+				$istierprice = $this->db->query($sqltier)->row();
+				if($istierprice){
+					$istier = $istierprice->tierprice;
+				}else
+				$istier = 0;
+				
+				if($istier){
+					$tier = $tier1->tier;
+					$sql = "SELECT *
+				FROM ".$this->db->dbprefix('tierpricing')." pt 
+				WHERE pt.company='".$company."'
+			";
+					$tiers = $this->db->query($sql)->row();
+					$tier = $tiers->$tier;
+				}
+			}
+			
+			if(!$draftitems){
+			    $item->ea = number_format($item->ea + ($item->ea * $tier/100),2);
+			}
+			$item->totalprice = $item->ea * $item->quantity;
+			/*$item->tiers = array();
+			$item->tiers['Tier0'] = number_format($price,2);
+			$item->tiers['Tier1'] = number_format($price + ($price * $tiers->tier1/100),2);*/
+			//echo $item->tiers['Tier1'];echo '<br/>';
+			//$item->tiers['Tier2'] = number_format($price + ($price * $tiers->tier2/100),2);
+			//echo $item->tiers['Tier2'];echo '<br/>';
+			//$item->tiers['Tier3'] = number_format($price + ($price * $tiers->tier3/100),2);
+			//echo $item->tiers['Tier3'];echo '<br/>';
+			//$item->tiers['Tier4'] = number_format($price + ($price * $tiers->tier4/100),2);
+			//echo $item->tiers['Tier4'];echo '<br/>';echo '<br/>';echo '<br/>';
+			
+			$this->db->where('company', $company);
+        	$this->db->where('purchasingadmin', $quote->purchasingadmin);
+        	$this->db->where('itemid', $item->itemid);
+        	$this->db->where('quote', $quote->id);
+        	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
+			
+        	if(@$itemtierresult)
+        	$item->noteslabel = $itemtierresult->notes;
+        	else 
+        	$item->noteslabel = "";
+			
+			$data['quoteitems'][]=$item;
+		}
+		//echo '<pre>';print_r($data['quoteitems']);die;
+		
+		$data['draft'] = $draftitems?1:0;
+		
+		$data['company'] = $purchaser; 
+		
+		//for export link
+		$data['invitekey'] = $key;
+		
+		$this->db->where('id',$invitation->purchasingadmin);
+		$pa = $this->db->get('users')->row();
+		if($pa)
+		$data['purchasingadmin'] = $pa;
+		if($print)
+		{
+			$this->load->template ( '../../templates/front/blank', $data);
+			$this->load->view('quote/printquote',$data);
+		}
+		else
+			$this->load->view('admin/contractbid',$data);
+	}
+    
+    
+    function contractbids(){
+    	
+    	$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		$pafilter = '';		
+		if(@$_POST['searchpurchasingadmin'])
+		{
+			$pafilter = " AND i.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+			$this->db->where('purchasingadmin',$_POST['searchpurchasingadmin']);
+			$projects = $this->db->get('project')->result();
+			$data['projects'] = array();
+			foreach($projects as $project)
+			{
+				$sql = "SELECT * FROM ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b
+					WHERE b.quote=q.id AND q.pid=".$project->id;
+				if($this->db->query($sql)->result())
+				{
+					$data['projects'][]=$project;
+				}
+			}
+		}
+		
+		$sql = "SELECT i.*,q.ponum FROM 
+		".$this->db->dbprefix('invitation')." i, ".$this->db->dbprefix('quote')." q
+		WHERE i.quote=q.id AND i.company='{$company}' AND i.invite_type='contract' $pafilter ORDER BY i.senton DESC";
+		$count = $this->db->query($sql)->num_rows;
+		
+		//echo $sql;
+		
+		$invs = $this->db->query($sql)->result();
+		
+		$invitations = array();
+		foreach($invs as $inv)
+		{
+    		$this->db->where('id',$inv->quote);
+    		$inv->quotedetails = $this->db->get('quote')->row();
+    		$this->db->where('quote',$inv->quote);
+    		$this->db->where('company',$company);
+    		$bid = $this->db->get('bid')->row();
+    		$inv->quotenum = @$bid->quotenum;
+    		
+			$awarded = $this->quotemodel->checkbidcomplete($inv->quote);
+			$inv->awardedtothis = false;
+			
+			if($bid){
+				$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
+				$revisionquote = $this->db->query($sqlq)->row();
+				if($revisionquote)
+				$inv->daterequested = $revisionquote->daterequested;
+			}
+			
+			if($awarded)
+			{
+				$complete = true;
+				$noitemsgiven = true;
+				$allawarded = true;
+				$this->db->where('award',$awarded->id);
+				$this->db->where('company',$company->id);
+				$items = $this->db->get('awarditem')->result();
+				foreach($items as $i)
+				{
+					if($i->received < $i->quantity)
+						$complete = false;
+					if($i->company != $company->id)
+						$allawarded = false;
+					if($i->received > 0)
+						$noitemsgiven = false;
+				}
+				
+				if(!$noitemsgiven)
+				{
+					if($complete)
+					{
+						$inv->status = 'Completed';
+						$inv->progress = 100;
+						$inv->mark = "progress-bar-success";
+					}
+					else
+					{
+						$inv->status = 'Partially Completed';
+						$inv->progress = 80;
+						$inv->mark = "progress-bar-success";
+					}
+				}
+				else
+				{
+					$awardeditems = $this->quotemodel->getawardeditems($awarded->id,$company->id);
+					
+					if($awardeditems && !$allawarded)
+					{
+						$inv->status = 'Partially Awarded';
+						$inv->progress = 60;
+						$inv->mark = "progress-bar-success";
+					}
+					else
+					{
+						$inv->status = 'Awarded';
+						$inv->progress = 60;
+						$inv->mark = "progress-bar-success";
+					}
+				}
+				
+				if($this->quotemodel->getawardeditems($awarded->id,$company->id))
+				{
+					$inv->awardedtothis = true;
+					$inv->award = $awarded->id;
+				}
+				else
+				{
+					$inv->status = 'PO Closed - 0 items won';
+					$inv->progress = 100;
+					$inv->mark = "progress-bar-warning";
+				}
+			}
+			elseif($this->quotemodel->getdraftitems($inv->quote,$inv->company))
+			{
+				$inv->status = 'Processing';
+				$inv->progress = 40;
+				$inv->mark = "progress-bar-warning";
+			}
+			else
+			{
+				$inv->status = 'New';
+				$inv->progress = 20;
+				$inv->mark = "progress-bar-danger";
+			}
+			
+			if(!@$_POST['searchstatus'])
+			{
+				$invitations[]=$inv;
+			}
+			elseif(@$_POST['searchstatus'] == $inv->status)
+			{
+				$invitations[]=$inv;
+			}
+			
+		}
+		/*$this->db->select($this->db->dbprefix('users.').'*');
+		$this->db->where('usertype_id',2);
+		$this->db->from('users')->join('network',"users.id=network.purchasingadmin")->where('network.company',$company->id);
+		$data['purchasingadmins'] = $this->db->get()->result();*/
+		$data['company'] = $company;
+		$data['invitations'] = $invitations;
+		$this->load->view('admin/invitations',$data);
+    	
     }
     
     function assignpo()
@@ -1089,6 +1548,299 @@ class quote extends CI_Controller
     }
     
 
+    
+    public function placecontractbid()
+	{
+		$revisionid=1;
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!$_POST)
+			die;
+		//echo '<pre>'; print_r($_POST); print_r($_FILES);die;
+		$invitation = $this->quotemodel->getinvitation($_POST['invitation']);
+		
+		if(!$invitation)
+		{
+			die('Quote Already Submitted for Review, Thank You.');
+		}
+		$quote = $this->quotemodel->getquotebyid($invitation->quote);
+		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
+		if($draftitems)
+		{
+			$zeroerror = false;
+			$nobids = true;
+			foreach($draftitems as $item)
+			{
+			    $bidid = $item->bid;
+				$key = $item->id;
+				$postkey = 'ea'.$key;
+				if(@$_POST['substitute'.$key] == 1)
+					$postkey = 's_'.$postkey;
+				if(@$_POST['nobid'.$key] != 1 && @$_POST[$postkey] == 0)
+					$zeroerror = true;
+				if(@$_POST['nobid'.$key] != 1)
+					$nobids = false;
+			}
+			if($nobids)
+			{	
+				$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">You Cannot place a bid without any items</div></div></div>');	
+				redirect('quote/invitation/'.$_POST['invitation']);
+				die;
+			}
+			if($zeroerror)
+			{
+				$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">You Cannot bid with price 0.</div></div></div>');
+				redirect('quote/invitation/'.$_POST['invitation']);
+				die;
+			}
+			
+			$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$invitation->purchasingadmin."' order by id desc limit 1";
+			$revisionquote = $this->db->query($sqlq)->row();
+			if($revisionquote)
+			$revisionid = $revisionquote->revisionid+1;
+			else
+			$revisionid = 1;
+			
+			if($revisionid > 1){			
+				if(isset($_POST['quotenum'])){
+					$quotearr = explode(".",$_POST['quotenum']);
+					if(count($quotearr)>1){
+					$number = sprintf('%03d',$quotearr[1]+1);
+					$bidarray['quotenum'] = $quotearr[0].".".$number;
+					}else {
+						$bidarray['quotenum'] = "";
+					}
+				}else
+					$bidarray['quotenum'] = "";
+			}
+			else 
+				$bidarray['quotenum'] = $_POST['quotenum'];
+		
+				$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
+				
+    		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
+    		{
+    			$ext = end(explode('.', $_FILES['quotefile']['name']));
+    			$nfn = md5(date('u').uniqid()).'.'.$ext;
+    			if(move_uploaded_file($_FILES['quotefile']['tmp_name'], "uploads/quotefile/".$nfn))
+    			{
+    				$bidarray['quotefile'] = $nfn;
+    			}
+    		}
+    		//echo $bidid.'-'.$quote->id.'<pre>'; print_r($bidarray);die;
+			$this->db->where('id', $bidid);
+			$this->db->update('bid',$bidarray);
+						
+			foreach($draftitems as $item)
+			{
+				$bidid = $item->bid;
+				$updatearray = array();
+				$key = $item->id;
+				while(list($k,$v) = each($item))
+				{
+					if($k != 'invitation' && $k != 'id' && $k != 'bid' && $k != 'substitute' && $k != 'received' && $k != 'purchasingadmin')
+					{
+						$postkey = $k.$key;
+						if(@$_POST['substitute'.$key] == 1 && $k != 'substitute')
+							$postkey = 's_'.$postkey;
+						$updatearray[$k] = @$_POST[$postkey];
+					}
+				}
+				$item = (array)$item;
+				$updatearray['totalprice'] = $updatearray['quantity'] * $updatearray['ea'];
+				$updatearray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;
+				
+				$this->quotemodel->db->where('id',$key);
+				if(@$_POST['nobid'.$key])
+				{
+					$this->quotemodel->db->delete('biditem');
+				}
+				else
+				{
+					$this->quotemodel->db->update('biditem',$updatearray);
+					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
+					
+					if($revisionquote){ 
+						 $updatearray['daterequested'] = date('m/d/Y');	
+                         $updatearray['purchasingadmin'] = $invitation->purchasingadmin; 
+                         $updatearray['bid'] = $bidid; 
+                         $updatearray['revisionid'] = $revisionid; 
+                         $this->quotemodel->db->insert('quoterevisions',$updatearray); 
+                          
+                     } 
+				}
+			}
+		}
+		else
+		{
+			$items = $this->quotemodel->getquoteitems($quote->id);
+			//echo '<pre>'; print_r($items);die;
+			//echo '<pre>';
+			$zeroerror = false;
+			$nobids = true;
+			foreach($items as $item)
+			{
+				$key = $item->id;
+				$postkey = 'ea'.$key;
+				if(@$_POST['substitute'.$key] == 1)
+					$postkey = 's_'.$postkey;
+				if(@$_POST['nobid'.$key] != 1 && @$_POST[$postkey] == 0)
+					$zeroerror = true;
+				if(@$_POST['nobid'.$key] != 1)
+					$nobids = false;
+			}
+			if($nobids)
+			{
+				$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">You Cannot place a bid without any items.</div></div></div>');
+				redirect('quote/invitation/'.$_POST['invitation']);
+				die;
+			}
+			if($zeroerror)
+			{
+				$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">You Cannot bid with price 0.</div></div></div>');
+				redirect('quote/invitation/'.$_POST['invitation']);
+				die;
+			}
+			$bidarray = array('quote'=>$invitation->quote,'company'=>$invitation->company,'submitdate'=>date('Y-m-d'));
+			
+			$bidarray['quotenum'] = $_POST['quotenum'];
+			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
+			$bidarray['draft'] = $_POST['draft'];
+			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;
+    		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
+    		{
+    			$ext = end(explode('.', $_FILES['quotefile']['name']));
+    			$nfn = md5(date('u').uniqid()).'.'.$ext;
+    			if(move_uploaded_file($_FILES['quotefile']['tmp_name'], "uploads/quotefile/".$nfn))
+    			{
+    				$bidarray['quotefile'] = $nfn;
+    			}
+    		}
+    		//echo '<pre>'; print_r($bidarray);
+			$this->db->insert('bid',$bidarray);
+			$bidid = $this->db->insert_id();
+			
+			foreach($items as $item)
+			{
+			
+				$insertarray = array();
+				$insertarray['bid'] = $bidid;
+				
+				$key = $item->id;
+				while(list($k,$v) = each($item))
+				{
+					if($k != 'invitation' && $k != 'id' && $k != 'quote' && $k != 'company'&& $k != 'purchasingadmin')
+					{
+						$postkey = $k.$key;
+						if(@$_POST['substitute'.$key] == 1 && $k != 'substitute')
+							$postkey = 's_'.$postkey;
+						
+						$insertarray[$k] = $_POST[$postkey];
+					}
+				}
+				$item = (array)$item;
+				$insertarray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;
+				$insertarray['totalprice'] = $insertarray['quantity'] * $insertarray['ea'];
+				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
+				$insertarray['ismanual'] = @$_POST['ismanual'.$key]?@$_POST['ismanual'.$key]:0;
+				if(!@$_POST['nobid'.$key])
+				{
+				    
+					//print_r($insertarray);//die;
+					$this->quotemodel->db->insert('biditem',$insertarray);
+					
+					//if(!$insertarray['substitute'])
+					//{
+						$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$insertarray['itemid'],$insertarray['itemcode'],$insertarray['itemname'],$insertarray['ea'],$insertarray['substitute']);
+					//}
+					$insertarray['revisionid']=1; 
+                    $this->quotemodel->db->insert('quoterevisions',$insertarray); 
+				}
+			}
+			//echo($bidid.'<br/>');
+		}
+		
+		if($bidid)
+		{
+    	    $bid = $this->db->where('id',$bidid)->get('bid')->row();
+    	    //print_r($bid);print_r($company);die;
+    	    
+    	    if(!$bid)
+    	        redirect('quote');
+    	    if($bid->company != $company->id)
+    	        redirect('quote');
+            if($bid->quotefile !="" && (file_exists('./uploads/quotefile/'.$bid->quotefile) && !is_dir('./uploads/quotefile/'.$bid->quotefile)))
+            {
+                $attachment = "uploads/quotefile/".$bid->quotefile;
+            }
+            
+    	    $quote = $this->quotemodel->getquotebyid($bid->quote);
+    	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company->id);
+    	    
+    	    $sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bidid."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+			$revisionquote = $this->db->query($sqlq)->row();
+			if($revisionquote)
+			$revisionid = $revisionquote->revisionid+1;
+			else
+			$revisionid = 1;
+    	    
+    	    $biditems2 = $this->quotemodel->getrevisiondraftitems($bid->quote, $company->id,$revisionid);
+    	    
+    	    if(@$biditems2){
+    	    	$bid->submitdate = $biditems2[0]->daterequested;
+    	    }
+    	    
+    	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+    	    $taxpercent = $settings->taxpercent;
+    	    
+    		ob_start();
+    	   	include $this->config->config['base_dir'].'application/views/quote/quotehtml.php';
+    	   	$html = ob_get_clean();
+		    
+    		$settings = (array)$this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+    	    $this->load->library('email');
+
+    	    $config['charset'] = 'utf-8';
+    	    $config['mailtype'] = 'html';
+    	    $this->email->initialize($config);
+    		//$this->email->clear(true);
+            $to = array();
+            $this->email->from($company->primaryemail);
+    		$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+            $to[] = $pa->email;
+            $to[] = $settings['adminemail'];
+            $sql = "SELECT u.email FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu
+    	        	WHERE qu.userid=u.id AND qu.quote=".$quote->id;
+            $purchaseusers = $this->db->query($sql)->result();
+            foreach($purchaseusers as $pu)
+            {
+            	$to[] = $pu->email;
+            }
+            $to = implode(',',$to);
+            $this->email->to($to); 
+            $data['email_body_title'] = "Dear Admin";
+    		$data['email_body_content'] = "This is a notification of bid details by ".$company->title." for PO# ".$quote->ponum.".<br/><br/>
+    		  	Please find the details below:<br/><br/>
+    		  	$html
+    		    ";
+    		$loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+    		//echo($to.'<br/>');
+    		//echo $body;
+           	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$company->title);
+            $this->email->message($send_body);	
+            if(isset($attachment)) { 
+                $this->email->attach($attachment);
+            }
+            $this->email->set_mailtype("html");
+            $this->email->send();
+		}
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Quote Submitted to Company. Pending Award. You can return at any time before winner is awarded to edit your quote.</div></div></div>');
+		redirect('quote/invitations','refresh');
+	}
+    
+    
     function do_upload1($qid)
     {
         //$this->load->helper(array('form', 'url'));

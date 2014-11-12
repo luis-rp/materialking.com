@@ -96,6 +96,14 @@ class quote_model extends Model {
         return $ret;
     }
 
+    function getallCategories () 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',0);
+        $menus = $this->db->get('category')->result();
+        return $menus;
+    }    
+    
     function getcompanylistbyids($ids) {
         $sql = "SELECT *
 		FROM
@@ -105,6 +113,89 @@ class quote_model extends Model {
         $ret = $query->result();
         return $ret;
     }
+    
+    function getpurchaserlistbycategory($category) {
+        $sql = "SELECT u.* FROM " . $this->db->dbprefix('users') . " u where u.category=" . $category;
+        $query = $this->db->query($sql);
+        $ret = $query->result();
+        return $ret;
+    }
+    
+    
+    function getnewcontractnotifications()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		log_message("debug",var_export($company,true));
+		if(!$company)
+			return array();
+		$this->db->where('isread',0);
+		$this->db->where('notify_type','contract');
+		$this->db->where('company',$company);
+		$this->db->order_by('senton','desc');
+		$this->db->limit(5,0);
+		$nots = $this->db->get('notification')->result();
+		log_message("debug",var_export($nots,true));
+		$ret = array();
+		foreach($nots as $not)
+		{
+			$not->tago = $this->tago(strtotime($not->senton));
+			$this->db->where('id',$not->purchasingadmin);
+			$purchasingadmin = $this->db->get('users')->row();
+			if($purchasingadmin) {
+			
+			if($not->category=='Invitation')
+			{
+				$this->db->where('invite_type','contract');
+				$this->db->where('company',$company);
+				$this->db->where('quote',$not->quote);
+				$invitation = @$this->db->get('invitation')->row()->invitation;
+				$not->class='info';
+				$not->message =  "You have received a new bid request from $purchasingadmin->companyname, $purchasingadmin->fullname, for the Contract# $not->ponum";
+				$this->db->where('quote',$not->quote);
+				$not->submessage = $this->db->count_all_results('quoteitem') . " bid items requested.";
+				
+				$not->link = site_url('admin/quote/invitation/'.$invitation);
+			}
+			
+			
+			$ret[]=$not;
+		  }	
+		}
+		if(!$ret)
+			return array();
+		return $ret;
+	}
+	
+	
+	function tago($time)
+    {
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $lengths = array("60","60","24","7","4.35","12","10");
+        
+        $now = time();
+        $difference     = $now - $time;
+        $tense         = "ago";
+        
+        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+         $difference /= $lengths[$j];
+        }
+        $difference = round($difference);
+        
+        if($difference != 1) {
+         $periods[$j].= "s";
+        }
+        return "$difference $periods[$j] ago ";
+    }
+    
+    function getpurchaseuserbyid($id)
+	{
+		$this->db->where('id',$id);
+		$query = $this->db->get('users');
+		if($query->num_rows>0)
+			return $query->row();
+		else
+			return NULL;
+	}
 
     function getInvited($id) {
         $this->db->where('quote', $id);

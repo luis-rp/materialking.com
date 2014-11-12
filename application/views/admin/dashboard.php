@@ -1,4 +1,4 @@
-
+<?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <?php if($this->session->userdata('managedprojectdetails')){?>
 
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
@@ -92,9 +92,9 @@
 <script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.js'></script>
 <script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
 <script>
-
+	
 	$(document).ready(function() {
-
+	
 		$('#calendar').fullCalendar({
 			editable: false,
 			events: "<?php echo base_url(); ?>admin/quote/jsonlist",
@@ -128,14 +128,14 @@
 		});
 
 	});
-	
+
 	
 	function changeproject(){
 	 		
 		$("#form-selector").submit();
 		
 	}
-
+	
 </script>
 
 <style>
@@ -195,6 +195,20 @@
 		 $("#tourcontrols").remove();
 		 tour4.end();
 			}
+			
+			
+	function readnotification(id)
+	{
+				$.ajax({
+					type:"post",
+					url: readnotifyurl,
+					data: "id="+id
+				}).done(function(data){
+					//alert(data);
+				});
+				return true;
+	}
+		
  </script>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -384,6 +398,43 @@
 
 			<div class="well span4" style=" margin-top:15px; width:100%;" >
 					<h3 class=" box-header" >Activity Feed</h3>
+					
+					 <div style="overflow:auto;">
+					  <div class="tiles-body">
+						<div class="controller">
+							<a class="reload" href="javascript:;"></a>
+							<a class="remove" href="javascript:;"></a>
+						</div>
+						<div class="tiles-title">
+							NOTIFICATIONS
+						</div>					 
+						<?php if(!$newcontractnotifications){?>
+							<span class="label label-important">No New Notifications</span>
+						<?php }?>
+						<?php foreach($newcontractnotifications as $newnote){?>
+
+						<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
+						  </div>
+							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
+							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
+								<div class="user-profile">
+									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/alert.png">
+								</div>
+								<div class="message-wrapper">
+									<div class="heading">
+										<?php echo $newnote->message;?>
+									</div>
+									<div class="description">
+										<?php echo $newnote->submessage;?> / <?php echo $newnote->tago;?>
+									</div>
+								</div>
+							</div>
+							</a>
+						<?php }?>
+					</div></div>
+					
+					
 					<h5>Recent Messages</h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($msgs)) { ?>

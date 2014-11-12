@@ -22,6 +22,7 @@ $(document).ready(function(){
     <div class="controls">
     <select name="usertype_id">
 	<?php
+	
 		foreach($userarrays as $userarray) {
 		echo '<option value="'.$userarray['id'].'" ';
 		echo $this->validation->usertype_id == $userarray['id'] ? ' selected="selected"' : '';
@@ -36,6 +37,18 @@ $(document).ready(function(){
     <input type="hidden" name="purchasingadmin" value="<?php echo $this->session->userdata('id');?>"/>
     <?php }?>
     
+    
+    <div class="control-group">
+    <label class="control-label" for="category" required>Category</label>
+    <div class="controls">
+    <select name="category">
+	 <?php foreach($categories as $cat){?>
+	  <option value='<?php echo $cat->id;?>' <?php if($this->validation->category==$cat->id){ echo 'SELECTED'; }?>><?php echo $cat->catname;?></option>
+     <?php }?>
+	</select>
+    </div>
+    </div>
+        
     <div class="control-group">
     <label class="control-label" for="username">User Name *</label>
     <div class="controls">

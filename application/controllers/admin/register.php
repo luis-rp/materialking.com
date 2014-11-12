@@ -21,7 +21,7 @@ class Register extends CI_Controller
 	
 	function form() 
 	{
-		$this->load->view ('admin/register/form');
+		$this->load->view ('admin/register/form',$data);
 	}
 	
 	function saveregister()
@@ -291,6 +291,9 @@ class Register extends CI_Controller
 			die('Invalid Key');
 		
 		$data['user'] = $u;
+		$this->db->order_by('catname', 'ASC');
+		$parent=0;
+        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
 		$this->load->template ( '../../templates/admin/register', $data);
 		$this->load->view('admin/register/complete',$data);
 	}
@@ -322,6 +325,7 @@ class Register extends CI_Controller
             }
 
         $_POST['address'] = $completeaddress;
+        $_POST['category'] = $_POST['category'];
 		
 		$regkey = $_POST['regkey'];
 		$this->db->where('regkey',$regkey);

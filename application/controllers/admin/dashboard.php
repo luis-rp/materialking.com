@@ -1,5 +1,5 @@
 <?php
-class Dashboard extends CI_Controller 
+class Dashboard extends CI_Controller
 {
 	function Dashboard() {
 		parent::__construct ();
@@ -19,7 +19,7 @@ class Dashboard extends CI_Controller
 		$this->load->model('admin/project_model');
 		$this->load->model('admin/settings_model');
 		//$this->load->helper('timezone');
-		//date_default_timezone_set(bd_time());		
+		//date_default_timezone_set(bd_time());
 		$id = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($id);
 		if(empty($setting)){
@@ -34,11 +34,11 @@ class Dashboard extends CI_Controller
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
-	
-		
+
+
 	function export()
 	{
-	
+
 		$id = $this->session->userdata('id');
 		if(!$id)
 		{
@@ -53,9 +53,9 @@ class Dashboard extends CI_Controller
 		if($mp)
 			$this->db->where('project',$mp->id);
 		$data['costcodes'] = $this->db->get('costcode')->result();
-	
+
 		$data['itemcodes'] = $this->db->get('item')->result();
-	
+
 		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
 		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
 		$invited = 0;
@@ -71,11 +71,11 @@ class Dashboard extends CI_Controller
 			if($this->quote_model->getawardedbid($quote->id))
 				$awarded++;
 		}
-	
+
 		$data['invited'] = $invited;
 		$data['pending'] = $pending;
 		$data['awarded'] = $awarded;
-			
+
 		$data['networkjoinedcompanies'] = array();
 		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
 			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
@@ -85,7 +85,7 @@ class Dashboard extends CI_Controller
 		$id = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($id);
 
-		 
+
 		foreach($netcomps as $nc)
 		{
 			$pa = $this->session->userdata('purchasingadmin');
@@ -121,13 +121,13 @@ class Dashboard extends CI_Controller
 			$manualdue = round($manualdue,2);
 			//echo $manualdue.' <br/> ';
 			$nc->due += $manualdue;
-	
+
 			$data['networkjoinedcompanies'][] = $nc;
 		}
-	
+
 		if($this->session->userdata('managedprojectdetails'))
 		{
-				
+
 			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
@@ -144,10 +144,10 @@ class Dashboard extends CI_Controller
 						$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
 					else
 						$where = "";
-	
+
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
-	
+
 					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
 							".$this->db->dbprefix('orderdetails')." od
@@ -157,8 +157,8 @@ class Dashboard extends CI_Controller
 					GROUP BY o.costcode";
 					$queryOrder = $this->db->query($sqlOrders);
 					if($queryOrder->result()){
-							
-							
+
+
 						$totalOrder = $queryOrder->row();
 						$c->data += $totalOrder->sumT;
 					}
@@ -168,98 +168,98 @@ class Dashboard extends CI_Controller
 					$costcodesjson[]=$c;
 				}
 			}
-	
+
 			$data['costcodesjson'] = $costcodesjson;
 		}
-	
-	
+
+
 		//===============================================================================
-	
-		
-		
-		
-		
-		
-		
-		$report_title = 'Project Statistics';		
+
+
+
+
+
+
+
+		$report_title = 'Project Statistics';
 		$header[] = array('Report type' , $report_title , '' , '' , '' , '' , '' , '' );
-		
+
 		if($this->session->userdata('managedprojectdetails'))
-		{			
-			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );		
-			
+		{
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );
+
 		}
 		else
 		{
-		
+
 			$projects_arr = array();
 			foreach($data['projects'] as $prj)
-			{			
-				
+			{
+
 				$projects_arr[] =  $prj->title;
 			}
-			
-			
-			
-			$projects_string = implode(", ",$projects_arr);	
-			
-			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );	
-		
-		}	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-				
+
+
+
+			$projects_string = implode(", ",$projects_arr);
+
+			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );
+
+		}
+
+
+
+
+
+
+
+
+
+
 		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
-	
-			
+
+
 		//---------------------------------------------------------------------------
-			
-	
+
+
 		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' );
-			
-	
+
+
 		$companies = '';
 		if($this->session->userdata('usertype_id') == 1)
 		{
 			//$companies = count($data['companies']);
 		}
-	
+
 		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded']);
-	
-	
+
+
 		//--------------------------
-	
+
 		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
 		{
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
-	
+
 			$header[] = array('Company' , 'Credit Limit' , 'Credit Remaining' , 'Amount Due' , '' , '' , '' , '');
-	
+
 			foreach($data['networkjoinedcompanies'] as $njc)
 			{
 				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' );
 			}
 		}
-			
+
 		createXls('Statistics', $header);
 		die();
-	
+
 		//===============================================================================
-	
-	}	
-	
+
+	}
+
 	//Dashboard PDF
 	function dashboard_pdf()
 	{
-	
+
 		$id = $this->session->userdata('id');
 		if(!$id)
 		{
@@ -274,9 +274,9 @@ class Dashboard extends CI_Controller
 		if($mp)
 			$this->db->where('project',$mp->id);
 		$data['costcodes'] = $this->db->get('costcode')->result();
-	
+
 		$data['itemcodes'] = $this->db->get('item')->result();
-	
+
 		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
 		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
 		$invited = 0;
@@ -292,11 +292,11 @@ class Dashboard extends CI_Controller
 			if($this->quote_model->getawardedbid($quote->id))
 				$awarded++;
 		}
-	
+
 		$data['invited'] = $invited;
 		$data['pending'] = $pending;
 		$data['awarded'] = $awarded;
-			
+
 		$data['networkjoinedcompanies'] = array();
 		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
 			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
@@ -306,7 +306,7 @@ class Dashboard extends CI_Controller
 		$id = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($id);
 
-		 
+
 		foreach($netcomps as $nc)
 		{
 			$pa = $this->session->userdata('purchasingadmin');
@@ -342,13 +342,13 @@ class Dashboard extends CI_Controller
 			$manualdue = round($manualdue,2);
 			//echo $manualdue.' <br/> ';
 			$nc->due += $manualdue;
-	
+
 			$data['networkjoinedcompanies'][] = $nc;
 		}
-	
+
 		if($this->session->userdata('managedprojectdetails'))
 		{
-				
+
 			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
@@ -365,10 +365,10 @@ class Dashboard extends CI_Controller
 						$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
 					else
 						$where = "";
-	
+
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
-	
+
 					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
 							".$this->db->dbprefix('orderdetails')." od
@@ -378,8 +378,8 @@ class Dashboard extends CI_Controller
 					GROUP BY o.costcode";
 					$queryOrder = $this->db->query($sqlOrders);
 					if($queryOrder->result()){
-							
-							
+
+
 						$totalOrder = $queryOrder->row();
 						$c->data += $totalOrder->sumT;
 					}
@@ -389,101 +389,102 @@ class Dashboard extends CI_Controller
 					$costcodesjson[]=$c;
 				}
 			}
-	
+
 			$data['costcodesjson'] = $costcodesjson;
 		}
-	
-	
+
+
 		//===============================================================================
-	
-		
-		
-		
-		
-		
-		
-		$report_title = 'Project Statistics';		
+
+
+
+
+
+
+
+		$report_title = 'Project Statistics';
 		$header[] = array('Report type:' , $report_title , '' , '' , '' , '' , '' , '' );
-		
+
 		if($this->session->userdata('managedprojectdetails'))
-		{			
-			$header[] = array('<b>Project Title</b>' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );		
-			
+		{
+			$header[] = array('<b>Project Title</b>' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );
+
 		}
 		else
 		{
-		
+
 			$projects_arr = array();
 			foreach($data['projects'] as $prj)
-			{			
-				
+			{
+
 				$projects_arr[] =  $prj->title;
 			}
-			
-			
-			
-			$projects_string = implode(", ",$projects_arr);	
-			
-			$header[] = array('<b>Project Title</b>' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );	
-		
-		}	
-		
-		
-		
-		
-		
-		
-		
-		
-		
-				
+
+
+
+			$projects_string = implode(", ",$projects_arr);
+
+			$header[] = array('<b>Project Title</b>' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );
+
+		}
+
+
+
+
+
+
+
+
+
+
 		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
-	
-			
+
+
 		//---------------------------------------------------------------------------
-			
-	
+
+
 		$header[] = array('<b>Number of Project</b>' , '<b>Number of Cost Code</b>' , '<b>Number of Item Codes</b>' , '<b>Total Number of Direct Orders</b>' , '<b>Total Number of Quotes</b>' , '<b>Total Number of Quotes Requested</b>' , '<b>Total Number of Quotes Pending</b>' , '<b>Total Number of Awarded Quotes</b>' );
-			
-	
+
+
 		$companies = '';
 		if($this->session->userdata('usertype_id') == 1)
 		{
 			//$companies = count($data['companies']);
 		}
-	
+
 		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded']);
-	
-	
+
+
 		//--------------------------
-	
+
 		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
 		{
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
-	
+
 			$header[] = array('<b>Company</b>' , '<b>Credit Limit</b>' , '<b>Credit Remaining</b>' , '<b>Amount Due</b>' , '' , '' , '' , '');
-	
+
 			foreach($data['networkjoinedcompanies'] as $njc)
 			{
 				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' );
 			}
 		}
-			
-		 
+
+
 		$headername = "PROJECT STATISTICS";
     	createOtherPDF('Statistics', $header,$headername);
     	die();
-	
+
 		//===============================================================================
-	
-	}	
-	
-		
-	function index() 
+
+	}
+
+
+	function index()
 	{
+		ini_set('display_errors', 1); error_reporting(E_ALL ^ E_NOTICE);
 		$config = $this->settings_model->get_current_settings ();
-		$Totalawardedtotal = 0;	
+		$Totalawardedtotal = 0;
 		//echo '<pre>';print_r($data);die;
 		$id = $this->session->userdata('id');
 		if(!$id)
@@ -491,6 +492,9 @@ class Dashboard extends CI_Controller
 			redirect ( 'admin/login/index');
 			die;
 		}
+		
+		$data['newcontractnotifications'] = $this->quote_model->getnewcontractnotifications();
+		// echo "<pre>",print_r($data['newcontractnotifications']); die;
 		$mp = $this->session->userdata('managedprojectdetails');
 		$data['projects']  = $this->statmodel->getProjects();
 		$data['companies'] = $this->db->get('company')->result();
@@ -499,9 +503,9 @@ class Dashboard extends CI_Controller
 	    if($mp)
 	        $this->db->where('project',$mp->id);
 		$data['costcodes'] = $this->db->get('costcode')->result();
-		
+
 		$data['itemcodes'] = $this->db->get('item')->result();
-		
+
 		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
 		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
 		$invited = 0;
@@ -517,14 +521,14 @@ class Dashboard extends CI_Controller
 			if($this->quote_model->getawardedbid($quote->id))
 				$awarded++;
 		}
-		
+
 		$data['invited'] = $invited;
 		$data['pending'] = $pending;
 		$data['awarded'] = $awarded;
-		
+
 		//$data['allcompanies'] = $this->db->where('username !=', '')->get('company')->result();
-		
-		
+
+
 		$data['networkjoinedcompanies'] = array();
 		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
 			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
@@ -533,7 +537,7 @@ class Dashboard extends CI_Controller
 	    $settings = $this->settings_model->get_current_settings();
 	    $id = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($id);
-	    
+
 		foreach($netcomps as $nc)
 		{
 		    $pa = $this->session->userdata('purchasingadmin');
@@ -551,10 +555,10 @@ class Dashboard extends CI_Controller
 		        $nc->totalcredit = '';
 		    }
 		    $query = "SELECT
-		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100)) 
-		    			totalunpaid FROM 
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
-						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."' 
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
 						AND ai.purchasingadmin='$pa'";
 		    //echo $query.'<br>';
 		    $nc->due = $this->db->query($query)->row()->totalunpaid;
@@ -569,48 +573,48 @@ class Dashboard extends CI_Controller
 		    $manualdue = round($manualdue,2);
 		    //echo $manualdue.' <br/> ';
 		    $nc->due += $manualdue;
-		    
+
 		    $data['networkjoinedcompanies'][] = $nc;
 		}
-		
+
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			
+
 			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
 			log_message('debug',var_export($query,true));
 			$codes = $this->db->query($query)->result();
-			$codearr = array();			
+			$codearr = array();
 			foreach($codes as $code2)
 			$codearr[] = $code2->label;
-						
+
 			$where2 = "";
-			
+
 			if(count($codearr)>0){
 				$codestr = "'" .implode("', '", $codearr) . "'";
 				$where2 = "AND code not in ({$codestr})";
 			}
-			
+
 			$sql ="SELECT *	FROM ".$this->db->dbprefix('costcode')." WHERE 1=1 {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
-		
+
 			if($this->session->userdata('usertype_id')>1)
 			{
 				$sql ="SELECT *
 			FROM
-			".$this->db->dbprefix('costcode')." 
+			".$this->db->dbprefix('costcode')."
 			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
 			}
-		
+
 		$query = $this->db->query ($sql);
 		$cnt = count($codearr);
-		if ($query->result ()) 
+		if ($query->result ())
 		{
 			$result = $query->result();
 			$ret = array();
 			foreach($result as $item)
 			{
-			
+
 			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
 					AND o.costcode = cc.id
@@ -619,17 +623,17 @@ class Dashboard extends CI_Controller
 			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
 			if(isset($result[0])){
-			  if (!isset($codes[$cnt])) 
-    			$codes[$cnt] = new stdClass();	
+			  if (!isset($codes[$cnt]))
+    			$codes[$cnt] = new stdClass();
 			$codes[$cnt]->label = $result[0]->label;
 			$codes[$cnt]->data = $result[0]->data;
 			$codes[$cnt]->type = "new";
 			$cnt++;
 			}
-			
+
 			}
-		}		
-			
+		}
+
 			$costcodesjson = array();
 			foreach($codes as $c)
 			{
@@ -645,9 +649,9 @@ class Dashboard extends CI_Controller
 
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
-						
+
 					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
-					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
 							".$this->db->dbprefix('orderdetails')." od
 					WHERE cc.code =  '".$c->label."'
 					AND o.costcode = cc.id
@@ -655,7 +659,7 @@ class Dashboard extends CI_Controller
 					GROUP BY o.costcode";
 					$queryOrder = $this->db->query($sqlOrders);
 					if($queryOrder->result() && (!isset($c->type))){
-					
+
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
 					}
@@ -675,10 +679,10 @@ class Dashboard extends CI_Controller
 			//print_r($costcodesjson);die;
 			$data['costcodesjson'] = $costcodesjson;
 		}
-		
+
 		$invoices = $this->quote_model->getinvoices();
 		//$invoicespay = $this->quote_model->getpaymentrequestedorders($this->session->userdata('purchasingadmin'));
-		
+
 		/*$bcks = $this->quote_model->getBacktracks($this->session->userdata('purchasingadmin'));
 		$backtracks = array();
 		foreach($bcks as $bck)
@@ -688,61 +692,58 @@ class Dashboard extends CI_Controller
 		$this->load->model('admin/backtrack_model');
 		if(isset($mp->id))
 		$quotes = $this->backtrack_model->get_quoteswithoutprj ($mp->id);
-		else 
+		else
 		$quotes = $this->backtrack_model->get_quoteswithoutprj ();
 		//echo "<pre>",print_r($quotes);
 		if(isset($quotes[0]))
-		$count = count ($quotes[0]);		
-		else 
-		$count = 0;	
+		$count = count ($quotes[0]);
+		else
+		$count = 0;
 		$items = array();
 		$companyarr = array();
-		if ($count >= 1) 
-		{	
-			$Totalawardedtotal = 0;			
-			
-			foreach ($quotes[0] as $quote) 
+		if ($count >= 1)
+		{
+			foreach ($quotes[0] as $quote)
 			{
 				$awarded = $this->quote_model->getawardedbid($quote->id);
 				$items[$quote->ponum]['quote'] = $quote;
 				if($awarded)
 				{
 					$bids = $this->quote_model->getbids($quote->id);
-					
+
 					        $maximum = array();
 					        $minimum = array();
-					        					        
 					        foreach ($bids as $bid) {
 
-					        		$totalprice = 0;
-					        		foreach ($bid->items as $item) {
+					        	$totalprice = 0;
+					        	foreach ($bid->items as $item) {
 
-					        			if ($this->session->userdata('usertype_id') == 1) {
-					        				$this->db->where('id', $item->itemid);
-					        				$companyitem = $this->db->get('item')->row();
-					        				if ($companyitem) {
-					        					$item->itemcode = $companyitem->itemcode;
-					        					$item->itemname = $companyitem->itemname;
-					        				}
-					        			}
-					        			
-					        			$totalprice += $item->totalprice;
-					        			$key = $item->itemcode;
-					        			if (!isset($minimum[$key])) {
-					        				$minimum[$key] = $item->ea;
-					        				$maximum[$key] = $item->totalprice;
-					        			} elseif ($minimum[$key] > $item->ea) {
-					        				$minimum[$key] = $item->ea;
-					        			} else if ($maximum[$key] < $item->totalprice) {
-					        				$maximum[$key] = $item->totalprice;
+					        		if ($this->session->userdata('usertype_id') == 1) {
+					        			$this->db->where('id', $item->itemid);
+					        			$companyitem = $this->db->get('item')->row();
+					        			if ($companyitem) {
+					        				$item->itemcode = $companyitem->itemcode;
+					        				$item->itemname = $companyitem->itemname;
 					        			}
 					        		}
-					        		if (!isset($minimum['totalprice']))
-					        		$minimum['totalprice'] = $totalprice;
-					        		elseif ($minimum['totalprice'] > $totalprice)
-					        		$minimum['totalprice'] = $totalprice;
+
+					        		$totalprice += $item->totalprice;
+					        		$key = $item->itemcode;
+					        		if (!isset($minimum[$key])) {
+					        			$minimum[$key] = $item->ea;
+					        			$maximum[$key] = $item->totalprice;
+					        		} elseif ($minimum[$key] > $item->ea) {
+					        			$minimum[$key] = $item->ea;
+					        		} else if ($maximum[$key] < $item->totalprice) {
+					        			$maximum[$key] = $item->totalprice;
+					        		}
+					        	}
+					        	if (!isset($minimum['totalprice']))
+					        	$minimum['totalprice'] = $totalprice;
+					        	elseif ($minimum['totalprice'] > $totalprice)
+					        	$minimum['totalprice'] = $totalprice;
 					        }
-					
+
 					$awardedtotal = 0;
 					if(@$awarded->items)
 					foreach($awarded->items as $ai)
@@ -761,7 +762,7 @@ class Dashboard extends CI_Controller
 						$totalsaved = $highTotal + (($highTotal)*$config->taxpercent/100) - $awardedtotalwithtax;
 					}
 					$Totalawardedtotal += $totalsaved;
-					
+
 					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
 					{
 						foreach($awarded->items as $item)
@@ -769,12 +770,12 @@ class Dashboard extends CI_Controller
 							if(date('Y-m-d', strtotime( $item->daterequested)) < date('Y-m-d')) {
 						    $checkcompany = true;
 						    $checkitemname = true;
-						    
+
 						    if(@$_POST['searchcompany'])
 						    {
 						        $checkcompany = $item->company == @$_POST['searchcompany'];
 						    }
-						    
+
 						    if(@$_POST['searchitem'])
 						    {
 						        if(strpos($item->itemname, @$_POST['searchitem'])!== FALSE)
@@ -793,7 +794,7 @@ class Dashboard extends CI_Controller
 			                        ->where('itemid',$item->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
                              $item->pendingshipments=$pendingshipments;
-						    	        
+
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{
 								$item->companyname = @$item->companydetails->title;
@@ -804,16 +805,16 @@ class Dashboard extends CI_Controller
 								if(!isset($items[$quote->ponum]['items']))
 									$items[$quote->ponum]['items'] = array();
 								$items[$quote->ponum]['items'][]=$item;
-									
+
 							}
-						  }	
+						  }
 						}
-						
+
 					}
 				}
 			}
-			
-		
+
+
     		if($this->session->userdata('usertype_id')==3)
     		{
     			$data['backtracks'] = array();
@@ -832,80 +833,80 @@ class Dashboard extends CI_Controller
     		{
 		        $data['backtracks'] = $items;
     		}
-		}		
-		
+		}
+
 		//echo "<pre>",print_r($data['backtracks']); die;
-		
+
 		$data['Totalawardedtotal'] = $Totalawardedtotal;
-		$messagesql = "SELECT m.* FROM 
+		$messagesql = "SELECT m.* FROM
 		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.isread=0 and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
-		
+
 		$msgs = $this->db->query($messagesql)->result();
-		
-		
+
+
 		$wherequote = "";
 		$wherequote = "and creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
-					
-		$quotesql = "SELECT q.* FROM 
+
+		$quotesql = "SELECT q.* FROM
 		".$this->db->dbprefix('quote')." q WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and q.isread=0 {$wherequote} ";
-		
+
 		$newquotes = $this->db->query($quotesql)->result();
-		
-		
+
+
 		$whereawardquote = "";
 		$whereawardquote = "and a.awardedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
-					
-		$awarquotesql = "SELECT q.*,a.awardedon, a.id as awardid FROM 
+
+		$awarquotesql = "SELECT q.*,a.awardedon, a.id as awardid FROM
 		".$this->db->dbprefix('quote')." q join ".$this->db->dbprefix('award')." a on q.id = a.quote and q.purchasingadmin = a.purchasingadmin WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and a.isread=0 {$whereawardquote} ";
-		
+
 		$awardquotes = $this->db->query($awarquotesql)->result();
-				
-		
-		
+
+
+
 		$wherecostcode = "";
 		$wherecostcode .= "and c.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
-					
-		$costcodesql = "SELECT c.*, p.title FROM 
+
+		$costcodesql = "SELECT c.*, p.title FROM
 		".$this->db->dbprefix('costcode')." c left join ".$this->db->dbprefix('project')." p on c.project = p.id  WHERE c.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and c.isread=0 {$wherecostcode} ";
-		
+
 		$newcostcodes = $this->db->query($costcodesql)->result();
-		
-		
-		
+
+
+
 		$whereproject = "";
 		$whereproject = "and p.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
-					
-		$projectsql = "SELECT p.title, p.creation_date, p.id FROM 
+
+		$projectsql = "SELECT p.title, p.creation_date, p.id FROM
 		".$this->db->dbprefix('project')." p WHERE p.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and p.isread=0 {$whereproject} ";
-		
+
 		$newprojects = $this->db->query($projectsql)->result();
-		
-		
+
+
 		$whereusers = "";
 		$whereusers = "and created_date between DATE_SUB(now(), INTERVAL 1 WEEK) AND now() and  purchasingadmin='{$this->session->userdata('purchasingadmin')}' and u.isread=0 ";
-					
-		$userssql = "SELECT username, created_date, id FROM 
+
+		$userssql = "SELECT username, created_date, id FROM
 		".$this->db->dbprefix('users')." u WHERE 1=1 {$whereusers} ";
-		
+
 		$users = $this->db->query($userssql)->result();
-			
-		
+
+
 		$wherenetwork = "";
 		$wherenetwork = "and n.acceptedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
-					
-		$networksql = "SELECT n.*, c.title FROM 
+
+		$networksql = "SELECT n.*, c.title FROM
 		".$this->db->dbprefix('network')." n left join ".$this->db->dbprefix('company')." c on n.company = c.id  WHERE n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and n.isread=0 {$wherenetwork} ";
-	
-		$networks = $this->db->query($networksql)->result();		
-		
+
+		$networks = $this->db->query($networksql)->result();
+
 		if($invoices)
 		$data['invoices'] = $invoices;
 		/*if($invoicespay)
 		$data['invoicespay'] = $invoicespay;
 		if($backtracks)
-		$data['backorders'] = $backtracks;*/	
+		$data['backorders'] = $backtracks;*/
 		if($msgs)
-		$data['msgs'] = $msgs;		
+		$data['msgs'] = $msgs;
 		if($newquotes)
 		$data['newquotes'] = $newquotes;
 		if($awardquotes)
@@ -922,61 +923,61 @@ class Dashboard extends CI_Controller
 		$data['settingtour']=$setting;
 		else
 		$data['settingtour']=$setting[0]->tour;
-		
+
 		$data['viewname'] = 'dashboard';
-		
+
 		$this->load->view ('admin/dashboard', $data);
 	}
-	
+
 	function closequote($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('quote',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closeaward($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('award',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closecostcode($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('costcode',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closeproject($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('project',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closeusers($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('users',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closenetwork($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('network',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function closemessage($id)
-	{		
-		$this->db->where('id',$id);		
+	{
+		$this->db->where('id',$id);
 		$this->db->update('message',array('isread'=>1));
 		redirect('admin/dashboard');
 	}
-	
+
 	function acceptreq($id)
 	{
 		$userid = $this->session->userdata('id');
@@ -997,7 +998,7 @@ class Dashboard extends CI_Controller
 			$this->db->where('toid',$this->session->userdata('id'));
 			$this->db->where('status','Pending');
 			$this->db->update('joinrequest',array('status'=>'Accepted'));
-			
+
 			$insert = array();
 			$insert['company'] = $row->fromid;
 			$insert['purchasingadmin'] = $this->session->userdata('id');
@@ -1008,7 +1009,7 @@ class Dashboard extends CI_Controller
 		}
 		redirect('admin/dashboard');
 	}
-	
+
 	function rejectreq($id)
 	{
 		$userid = $this->session->userdata('id');
@@ -1032,7 +1033,7 @@ class Dashboard extends CI_Controller
 		}
 		redirect('admin/dashboard');
 	}
-	
+
 	function payall()
 	{
 		$userid = $this->session->userdata('id');
@@ -1048,16 +1049,16 @@ class Dashboard extends CI_Controller
 		}
 		$company = $_POST['company'];
 		$pa = $this->session->userdata('purchasingadmin');
-		$query = "UPDATE ".$this->db->dbprefix('received')." r SET paymentstatus='Paid' 
+		$query = "UPDATE ".$this->db->dbprefix('received')." r SET paymentstatus='Paid'
 				  WHERE r.awarditem IN (SELECT id FROM ".$this->db->dbprefix('awarditem')." WHERE company='$company')
 				";
 		//echo $query;
 		$this->db->query($query);
 	    $this->session->set_flashdata('message', 'Company due paid successfully');
 		redirect('admin/dashboard');
-		
+
 	}
-	
+
 	function project()
 	{
 		$userid = $this->session->userdata('id');
@@ -1068,7 +1069,7 @@ class Dashboard extends CI_Controller
 		}
 		if($this->input->post('pid') != 0)
 		{
-		    
+
 			$pid = $this->input->post('pid');
 			$temp['managedproject'] = $pid;
 			$temp['managedprojectdetails'] = $this->project_model->get_projects_by_id($pid);
@@ -1091,7 +1092,7 @@ class Dashboard extends CI_Controller
 			redirect('admin/dashboard');
 		}
 	}
-	
+
 	function application()
 	{
 		$userid = $this->session->userdata('id');
@@ -1110,12 +1111,12 @@ class Dashboard extends CI_Controller
 	    }
 	    $sql = "SELECT * FROM ".$this->db->dbprefix('applicationattachment')." WHERE purchasingadmin=".$this->session->userdata('purchasingadmin');
 	    $qry = $this->db->query($sql);
-	    $attachmentData = $qry->result_array();	    
+	    $attachmentData = $qry->result_array();
 	    $data['attachmentdata'] = $attachmentData;
 	    $data['appl'] = $appl;
 	    $this->load->view ('admin/application', $data);
 	}
-	
+
 	function saveappl()
 	{
 		$userid = $this->session->userdata('id');
@@ -1124,11 +1125,11 @@ class Dashboard extends CI_Controller
 			redirect ( 'admin/login/index');
 			die;
 		}
-				
+
 		if(isset($_FILES['UploadFile']['name']))
-		{        
+		{
 	        $count=0;
-	        foreach ($_FILES['UploadFile']['name'] as $filename) 
+	        foreach ($_FILES['UploadFile']['name'] as $filename)
 	        {
 	            if(isset($_FILES['UploadFile']['tmp_name'][$count]))
 				if(is_uploaded_file($_FILES['UploadFile']['tmp_name'][$count]))
@@ -1141,7 +1142,7 @@ class Dashboard extends CI_Controller
 										  'attachmentname'=>$nfn,
 										  'attachmentpath'=> "uploads/attachments/"
 										 );
-										
+
 						$this->db->insert('applicationattachment',$savedata);
 					}
 					 $count=$count + 1;
@@ -1154,26 +1155,26 @@ class Dashboard extends CI_Controller
 	    $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button event="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Form saved successfully.</div>');
 		redirect('admin/dashboard/application');
 	}
-	
+
 	function tago($time)
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60","60","24","7","4.35","12","10");
-        
+
         $now = time();
         $difference     = $now - $time;
         $tense         = "ago";
-        
+
         for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
          $difference /= $lengths[$j];
         }
         $difference = round($difference);
-        
+
         if($difference != 1) {
          $periods[$j].= "s";
         }
         return "$difference $periods[$j] ago ";
     }
-	
+
 }
 ?>

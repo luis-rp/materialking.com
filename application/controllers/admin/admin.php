@@ -57,9 +57,9 @@ class Admin extends CI_Controller {
 		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type', 'User Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
 		$i = 0 + $offset;
 		if(isset($adminusers)) {
-		foreach ( $adminusers as $adminuser )
+		foreach ($adminusers as $adminuser)
 		{
-			$this->table->add_row ( ++ $i,
+				$this->table->add_row ( ++ $i,
 			    $adminuser->fullname,
 			    $adminuser->userType,
 			    $adminuser->username,
@@ -78,7 +78,7 @@ class Admin extends CI_Controller {
 			    anchor ('admin/admin/changepwd/' . $adminuser->id, '<span class="icon-2x icon-key"></span>', array ('class' => 'update' ) )
 			    . ' ' .
 			    anchor ('admin/admin/delete/' . $adminuser->id, '<span class="icon-2x icon-trash"></span>', array ('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')" ) ) );
-		}	    
+		}
 		}
 		$data ['addlink'] = '<a class="btn btn-green" href="add">Add New User</a>';
 		$data ['heading'] = 'User Overview';
@@ -126,6 +126,9 @@ class Admin extends CI_Controller {
 		$data ['action'] = site_url ( 'admin/admin/addAdminuser' );
 		$data ['link_back'] = anchor ( 'admin/admin/index/', 'Back To List', array ('class' => 'back' ) );
 		$data ['userarrays'] = $this->adminmodel->getUserType ();
+		$this->db->order_by('catname', 'ASC');
+		$parent=0;
+        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
 		$this->load->view ( 'admin/adminEdit', $data );
 	}
 
@@ -220,7 +223,13 @@ $loaderEmail = new My_Loader();
 		$data ['title'] = 'Update Admin User';
 		$data ['message'] = '';
 		$data ['action'] = site_url ('admin/admin/updateAdminuser' );
+		//$this->db->select('category');
+		//$cat = $this->db->get_where('users',array('id'=>$id));
+		$this->db->order_by('catname', 'ASC');
+		$parent=0;
+        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
 		$data ['link_back'] = anchor ('admin/admin/index/', 'Back to list of User List', array ('class' => 'back' ) );
+		//echo "<pre>"; print_r($cat); die;
 		$this->load->view ('admin/adminEdit', $data );
 	}
 
@@ -233,6 +242,7 @@ $loaderEmail = new My_Loader();
 		}
 
 		$adminuser = $this->adminmodel->get_by_id ( $this->input->post ( 'id' ) )->row ();
+		
 		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('id'))
 		{
 			redirect('admin/dashboard', 'refresh');
@@ -374,6 +384,7 @@ $loaderEmail = new My_Loader();
 		$fileds['labels'] = 'Lables';
 		$fileds['newpassword'] = 'newpassword';
 		$fileds['rnewpassword'] = 'rnewpassword';
+		$fileds['category'] = 'category';
 		$this->validation->set_fields ($fields);
 	}
 
