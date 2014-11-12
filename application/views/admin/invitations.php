@@ -126,7 +126,7 @@
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
                                                 		<?php if($inv->quotedetails->potype=='Contract'){?>
-                                                    	<a href="<?php echo site_url('admin/quote/invitation/'.$inv->invitation);?>">
+                                                    	<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
     										    			<span class="label label-success">BID</span>
     										    		</a>    										    		
 										    		<?php }elseif($inv->awardedtothis){?>
@@ -147,7 +147,7 @@
                                         </tbody>
                                     </table>
                                                  
-                <?php } else { ?>              
+                <?php } } else { ?>              
                     <div class="errordiv">
       				 <div class="alert alert-info"><button data-dismiss="alert" class="close"></button>
                          <div class="msgBox"> No Quotations Detected on System. </div>                                         
