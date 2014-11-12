@@ -118,22 +118,17 @@
                                                 	<?php echo $inv->ponum;?>
                                                 <?php }?>
                                                 </td>
-                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->duedate));?></td>
+                                                <td class="v-align-middle"><?php // echo date('m/d/Y',strtotime($inv->duedate));?></td>
                                                 <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->senton));?></td>
                                                 <td class="v-align-middle"><?php // echo date('m/d/Y',strtotime($inv->senton));?></td>
                                                 <td class="v-align-middle"><?php if(isset($inv->daterequested)) echo date('m/d/Y',strtotime($inv->daterequested));?></td>
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
-                                                		<?php if($inv->quotedetails->potype=='Bid'){?>
-                                                    	<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
+                                                		<?php if($inv->quotedetails->potype=='Contract'){?>
+                                                    	<a href="<?php echo site_url('admin/quote/invitation/'.$inv->invitation);?>">
     										    			<span class="label label-success">BID</span>
-    										    		</a>
-    										    		<?php }elseif($inv->quotedetails->potype=='Direct'){?>
-                                                    	<a href="<?php echo site_url('quote/direct/'.$inv->invitation);?>">
-    										    			<span class="label label-success">REVIEW</span>
-    										    		</a>
-    										    		<?php }?>
+    										    		</a>    										    		
 										    		<?php }elseif($inv->awardedtothis){?>
                                                 	<a href="<?php echo site_url('quote/track/'.$inv->quote.'/'.$inv->award);?>">
 										    			<span class="label label-success">TRACK</span>

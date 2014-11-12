@@ -399,7 +399,7 @@
 			<div class="well span4" style=" margin-top:15px; width:100%;" >
 					<h3 class=" box-header" >Activity Feed</h3>
 					
-					 <div style="overflow:auto;">
+					 <div>
 					  <div class="tiles-body">
 						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
