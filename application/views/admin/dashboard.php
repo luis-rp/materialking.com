@@ -414,7 +414,7 @@
 						<?php foreach($newcontractnotifications as $newnote){?>
 
 						<div class="date pull-right">
-								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
+								<a class="remove" href="<?php echo site_url('admin/dashboard/close/'.$newnote->id);?>">X</a>
 						  </div>
 							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
