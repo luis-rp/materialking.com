@@ -74,6 +74,13 @@ function changeparent(projectid){
     </div>
     
     <div class="control-group">
+    <label class="control-label">Contract Cost Code:</label>
+    <div class="controls">
+       <input type="checkbox" name="forcontract" id="forcontract" <?php echo @$this->validation->forcontract?'checked="CHECKED"':''?>" /> 
+    </div>
+    </div>
+    
+    <div class="control-group">
     <label class="control-label">Budget *:</label>
     <div class="controls">
       $ &nbsp;<input type="text" id="cost" name="cost" class="span2" 

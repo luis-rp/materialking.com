@@ -355,7 +355,7 @@ $(function() {
 			    <div class="controls">
                 <h3 class="box-header"><strong>PO #:<?php echo $quote->ponum; ?>
 			      &nbsp; &nbsp;
-			      Company:   <span class="company-name"><?php echo $bid->project->purchasingadmin;?></span> &nbsp; &nbsp;
+			      Company:   <span class="company-name"><?php echo $bid->companyname;?></span> &nbsp; &nbsp;
 			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp;
 			      <?php if($bid->quotefile){?>
 			      	<a href="<?php echo site_url('uploads/quotefile/'.$bid->quotefile);?>" target="_blank">View Attachment</a>
@@ -427,42 +427,41 @@ $(function() {
 				    		<?php if(!$isawarded){?>
 				    		<th>Select</th>
 				    		<?php }?>
-				    		<th>File Description</th>
-				    		<!--<th>Item Name</th>
-				    		<th>Qty.</th>
-				    		<th>Unit</th>
-				    		<th>60 day Low. Price</th>-->
+				    		<th>Files</th>	
+				    		<th>Item Description</th>				    		
 				    		<th>Price EA</th>
 				    		<!--<th>Price Requested</th>-->
 				    		<th>Total Price</th>
-				    		<th>Date Available</th>
+				    		<!-- <th>Date Available</th> -->
 				    		<th>Cost Code</th>
 				    		<!--<th>Notes</th>
 				    		<th>Compare</th>-->
 				    		<th>Del</th>
 				    	</tr>
-				    	<?php $alltotal=0; //foreach($bid->items as $q) if($q->itemcode){?>
+<?php $alltotal=0; foreach($bid->items as $q) { // if($q->itemcode){?>
 				    	<?php $alltotal += $q->quantity * $q->ea;?>
 		    			<?php
 							$key = $q->itemcode;
 		    				$diff = $q->ea - $minimum[$key];
 		    				$diff = number_format($diff,2);
 		    			?>
-	<tr class="<?php if(in_array($q->itemcode.$bid->company, $awardeditemcompany)){echo 'awarded-item';} elseif($q->substitute){echo 'substitute-item';}?>">
+				    	<tr class="<?php if(in_array($q->itemcode.$bid->company, $awardeditemcompany)){echo 'awarded-item';} elseif($q->substitute){echo 'substitute-item';}?>">
 				    		<td><?php echo $sn++;?></td>
 				    		<?php if(!$isawarded){?>
 				    		<td>
 				    			<input type="radio" id="selection<?php echo $q->id;?>" class="selection-item" value="<?php echo $q->id;?>" name="<?php echo $key;?>" <?php if($diff==0 && !isset($checkedarray[$key])){ echo 'checked';$checkedarray[$key]='1'; }?>/>
 				    		</td>
 				    		<?php }?>
-				    		<td><a href="<?php echo site_url('uploads/quotefile/'.$bid->quotefile);?>" target="_blank">View Attachment</a>
-				    			<?php echo $q->substitute?$q->itemcode: "<a href='javascript:void(0)' onclick=\"viewitems('$q->itemid')\">$q->itemcode</a>"; ?>
-				    			<?php if($q->substitute){?><small><span class="label label-red">Substitute</span></small><?php }?>
+				    		<td>
+				    			<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
+				                        	<br>
+				                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
+				                        	View File
+				                          	</a>
+				                <?php }?>
 				    		</td>
-				    		<!--<td><?php //echo $q->itemname;?></td>
-				    		<td><input class="span12" type="text" id="quantity<?php //echo $q->id;?>" value="<?php //echo $q->quantity;?>" onblur="updateqty('<?php //echo $q->id;?>')" <?php //if($isawarded){echo 'readonly';}?>></td>
-				    		<td><?php // echo $q->unit;?></td>
-				    		<td><?php //echo $q->minprice;?></td>-->
+				    		<td><?php echo $q->itemname;?></td>				    		
+				    		<!-- <td><?php echo $q->minprice;?></td> -->
 				    		<td>
 				    			<?php if($diff=='0'){echo '<span class="label label-success">';}?>
 				    			$ <span id="ea<?php echo $q->id;?>"><?php echo $q->ea;?></span>
@@ -472,7 +471,7 @@ $(function() {
 				    			<br/>*New Low Price
 				    			<?php }?>
 				    		</td>
-				    		<!--<td><?php
+				    		<td><?php
 									echo $q->reqprice;
 									if($q->reqprice > 0)
 									{
@@ -487,12 +486,12 @@ $(function() {
 									{
 									    echo ' (RFQ)';
 									}
-							?></td>-->
-				    		<td>$<span id="itemtotal<?php echo $q->id;?>"><?php echo number_format($q->quantity * $q->ea,2);?></span></td>
-				    		<td>
+							?></td>
+				    		<!-- <td>$<span id="itemtotal<?php echo $q->id;?>"><?php echo number_format($q->quantity * $q->ea,2);?></span></td> -->
+				    		<!-- <td>
 				    			<?php echo $q->daterequested;?>
 				    			<?php if(@$q->originaldate) if(@$q->originaldate != $q->daterequested){ echo '<br/><span style="color:red">Req:'.$q->originaldate.'</span>';}?>
-				    		</td>
+				    		</td> -->
 				    		<td>
 				    			<?php if($isawarded){ echo $q->costcode;} else {?>
 				    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')">
@@ -505,15 +504,15 @@ $(function() {
 		    					</select>
 				    			<?php }?>
 				    		</td>
-				    		<!--<td><?php echo $q->notes;?>&nbsp;</td>-->
-				    		<!--<td <?php if($diff==0){ echo 'class="minimum"';}?>><?php echo ($diff==0?'<span class="label label-success">'.$diff==0?'Lowest Unit Price':$diff.'</span>':($diff<0?'- $':'+ $'.$diff));?></td>-->
+				    		<!-- <td><?php echo $q->notes;?>&nbsp;</td>
+				    		<td <?php if($diff==0){ echo 'class="minimum"';}?>><?php echo ($diff==0?'<span class="label label-success">'.$diff==0?'Lowest Unit Price':$diff.'</span>':($diff<0?'- $':'+ $'.$diff));?></td>-->
 				    		<td>
 					    		<a href="<?php echo site_url('admin/quote/delbiditem/'.$q->id.'/'.$quote->id);?>">
 					    		<span class="icon icon-trash"></span>
 					    		</a>
-				    		</td>
+				    		</td> 
 				    	</tr>
-				    	<?php //}?>
+				    	<?php }?>
 				    	<?php
 				    		$alltotal = round($alltotal,2);
 							$taxtotal = $alltotal * $config['taxpercent'] / 100;

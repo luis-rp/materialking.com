@@ -156,8 +156,8 @@ class costcode extends CI_Controller {
 
     }
 
-	// PDF 
-	
+	// PDF
+
     function costcodepdf($mpid= 0)
     {
     	$offset = 0;
@@ -255,7 +255,7 @@ class costcode extends CI_Controller {
     	//=========================================================================================
 
     	$header[] = array('Code' , 'Budget','$ Spent' , 'Budget % Allocated' , 'Task Progress % Complete' , 'Status' );
-		
+
     	$taxrate = 	$data['taxrate'];
 
     	foreach( $data['items'] as $item)
@@ -264,7 +264,7 @@ class costcode extends CI_Controller {
     		$spent = "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100)),2 );
 
     		$header[] = array($item->code , formatPriceNew($item->cost) , formatPriceNew($spent) , $item->budget.chr(160) , $item->manualprogressbar.'%'.chr(160) , $item->status );
-    	} 
+    	}
 		$headername = "COST CODE MANAGEMENT";
     	createPDF('costcodes', $header,$headername);
     	die();
@@ -397,9 +397,9 @@ class costcode extends CI_Controller {
 
         $this->load->view('admin/costcodelist', $data);
     }
-  
-       
-	
+
+
+
     function export($costcode)
     {
     	$costcode = urldecode($costcode);
@@ -447,20 +447,20 @@ class costcode extends CI_Controller {
 
     	//===============================================================================
 
-    	
+
 		$poitem_title = 'Items with costcode '.$costcode;
-		
+
 		$header[] = array('Report type' , $poitem_title , '' , '' , '' , '' , '' , '' , '' , '');
-		
-						
+
+
 		if($this->session->userdata('managedprojectdetails'))
 		{
-				
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');			
+
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '' , '');
-		}	
-				
-		
+		}
+
+
 		$header[] = array('ID' , 'PO#' , 'Code' , 'Item Name' , 'Unit' , 'Quantity' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Status');
 
     	foreach($items  as  $enq_row)
@@ -471,7 +471,7 @@ class costcode extends CI_Controller {
     	die();
 
     }
-	
+
 //CUST PDF
     function custPDF($costcode)
     {
@@ -520,20 +520,20 @@ class costcode extends CI_Controller {
 
     	//===============================================================================
 
-    	
+
 		$poitem_title = 'Items with costcode '.$costcode;
-		
+
 		$header[] = array('Report type:' , $poitem_title , '' , '' , '' , '' , '' , '' , '' , '');
-		
-						
+
+
 		if($this->session->userdata('managedprojectdetails'))
 		{
-				
-			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');			
+
+			$header[] = array('Project Title',$this->session->userdata('managedprojectdetails')->title  , '' , '' , '' , '' , '' , '' , '' , '');
 			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '' , '');
-		}	
-				
-		
+		}
+
+
 		$header[] = array('ID' , 'PO#' , 'Code' , 'Item Name' , 'Unit' , 'Quantity' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Status');
 
     	foreach($items  as  $enq_row)
@@ -543,15 +543,15 @@ class costcode extends CI_Controller {
 		$headername = "ITEMS WITH COSTCODE";
     	createOtherPDF('costcode'.$costcode, $header,$headername);
     	die();
-    	 
+
 
     }
-			
+
     function items($costcode) {
     	$costcode = str_replace('%7C', '/', $costcode);
     	$costcode=urldecode($costcode);
         $costcode = urldecode($costcode);
-        
+
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode);
 
@@ -616,7 +616,7 @@ class costcode extends CI_Controller {
         $data ['addlink'] = '';
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['bottomheading'] = "Store Orders With Costcode '$costcode'";
-   
+
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode.'">View PDF</a>';
 
         $uid = $this->session->userdata('id');
@@ -636,7 +636,7 @@ class costcode extends CI_Controller {
 
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
-        
+       
         $mp = $this->session->userdata('managedprojectdetails');
         if(@$mp->id){
         	
@@ -647,8 +647,7 @@ class costcode extends CI_Controller {
         	if($projectresult)
         	$data['parents'] = $projectresult[0]->project;
         }
-    
-            
+        		
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['projects'] = $this->db->get('project')->result();
@@ -671,13 +670,14 @@ class costcode extends CI_Controller {
     }
 
     function getcostcodefromproject(){
-    	       
-        $resultcostcode = $this->costcode_model->listHeirarchicalCombo($_POST['projectid']);    
-              
+
+        $resultcostcode = $this->costcode_model->listHeirarchicalCombo($_POST['projectid']);
+
     	echo $resultcostcode; die;
     }
-    
+
     function add_costcode() {
+    	//echo "<pre>"; print_r($_POST); die;
         $data ['heading'] = 'Add New Costcode';
         $data ['action'] = site_url('admin/costcode/add_costcode');
 
@@ -719,6 +719,7 @@ class costcode extends CI_Controller {
         $this->validation->cost = $item->cost;
         $this->validation->cdetail = $item->cdetail;
         $this->validation->parent = $item->parent;
+        $this->validation->forcontract = $item->forcontract;
 
         $this->db->where('id !=', $id);
         if ($this->session->userdata('usertype_id') > 1)
@@ -788,6 +789,7 @@ class costcode extends CI_Controller {
         $fields ['id'] = 'id';
         $fields ['code'] = 'code';
         $fields ['cost'] = 'cost';
+        $fields ['forcontract'] = 'forcontract';
         $fields ['cdetail'] = 'cdetail';
         $fields ['parent'] = 'Parent';
         $fields ['project'] = 'Project';

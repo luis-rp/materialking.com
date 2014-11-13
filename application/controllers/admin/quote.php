@@ -1807,7 +1807,7 @@ class quote extends CI_Controller
 	    if($bid->company != $company)
 	        redirect('admin/quote/contractbids');
 	    $quote = $this->quotemodel->getquotebyid($bid->quote);
-	    $biditems = $this->quotemodel->getdraftitemswithdefaultitemcode($bid->quote, $company);
+	    $biditems = $this->quotemodel->getdraftitems($bid->quote, $company);
 	    $purchaser = $this->quote_model->getpurchaseuserbyid($company);
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
 	    $taxpercent = $settings->taxpercent;

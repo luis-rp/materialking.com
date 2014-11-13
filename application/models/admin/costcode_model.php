@@ -205,13 +205,19 @@ class costcode_model extends Model
 	
 	function SaveCostcode()
 	{
+		$forcontract="";
+		if(@$this->input->post('forcontract') == "on")
+    		$forcontract = 1;
+    		else 
+    		$forcontract = 0;
 		$options = array(
 			'code'=>$this->input->post('code'),
 			'cost'=>$this->input->post('cost'),
 			'cdetail'=>$this->input->post('cdetail'),
 			'parent'=>$this->input->post('parent'),
 			'project'=>$this->input->post('project'),
-			'creation_date' => date('Y-m-d')
+			'creation_date' => date('Y-m-d'),
+			'forcontract' => $forcontract
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('costcode', $options);
@@ -221,12 +227,18 @@ class costcode_model extends Model
 	// updating cost code 
 	function updateCostcode($id)
 	{
+		$forcontract="";
+		if(@$this->input->post('forcontract') == "on")
+    		$forcontract = 1;
+    		else 
+    		$forcontract = 0;
 		$options = array(
 			'code'=>$this->input->post('code'),
 			'cost'=>$this->input->post('cost'),
 			'cdetail'=>$this->input->post('cdetail'),
 			'parent'=>$this->input->post('parent'),
-			'project'=>$this->input->post('project')
+			'project'=>$this->input->post('project'),
+			'forcontract' => $forcontract
 		);
 		$oldcoderow = $this->get_costcodes_by_id($this->input->post('id'));
 		$oldcode = $oldcoderow->code;
