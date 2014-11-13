@@ -47,8 +47,6 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
 <?php } ?>
 
-		<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-		<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
          <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">

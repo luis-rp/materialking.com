@@ -245,6 +245,19 @@ function displaypricemodal(){
 
 </script>-->
 
+
+<script type="text/javascript">
+
+function calculatetotalprice(id)
+{	
+	var eaid = 'ea'+id;
+	var totalpriceid = 'totalprice'+id;
+	document.getElementById(totalpriceid).value = document.getElementById(eaid).value;
+}
+
+
+</script>
+
 <section class="row-fluid">
    <!-- <div class="content"> 
     	<?php echo $this->session->flashdata('message'); ?>
@@ -281,8 +294,8 @@ function displaypricemodal(){
 									      Contact: <?php echo $company->username;?>
 									      </strong>
 									      </td><td>
-									      <!-- <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									       <?php if(isset($bid->id)) { $quotearr = explode(".",$bid->quotenum);  ?> <a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">Quote #: &nbsp;<?php echo $quotearr[0].".000"; ?></a>&nbsp; Date: <?php if(isset($bid->submitdate)) echo date("m/d/Y", strtotime($bid->submitdate)); else echo ''; ?><br><?php } ?>
-									     <?php  if(isset($revisionno)) { $quotearr = explode(".",$bid->quotenum);  for($i=2;$i<=$revisionno;$i++) { ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; Date: <?php if(isset($bid->$i)) echo date("m/d/Y", strtotime($bid->$i)); else echo ''; ?> <br><?php } } ?> </td></tr>
+									      <!-- <a target="_blank" href="<?php echo site_url('admin/quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									       <?php if(isset($bid->id)) { $quotearr = explode(".",$bid->quotenum);  ?> <a href="<?php echo site_url('admin/quote/viewbid/'.$bid->id);?>">Quote #: &nbsp;<?php echo $quotearr[0].".000"; ?></a>&nbsp; Date: <?php if(isset($bid->submitdate)) echo date("m/d/Y", strtotime($bid->submitdate)); else echo ''; ?><br><?php } ?>
+									     <?php  if(isset($revisionno)) { $quotearr = explode(".",$bid->quotenum);  for($i=2;$i<=$revisionno;$i++) { ?><a href="<?php echo site_url('admin/quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; Date: <?php if(isset($bid->$i)) echo date("m/d/Y", strtotime($bid->$i)); else echo ''; ?> <br><?php } } ?> </td></tr>
 									      <td colspan="2">   
 									      	<br/><br/>
 									      	Please review the contract below and submit your bid. <br/>
@@ -293,20 +306,8 @@ function displaypricemodal(){
 									     	<br/><br/>
 									     </td>
 									 </tr>
-								</table>
+								</table>								
 								
-								<br/>
-    								Tier Level:
-    								<form method="post" action="<?php echo site_url('company/changetier/'.$invitation);?>">
-    								 <input type="hidden" name="purchasingadmin" value="<?php if(isset($purchasingadmin->id)) echo $purchasingadmin->id?>"/>
-    				    			  <select name="tier" onchange="this.form.submit()" style="width: auto;padding-top:5px;">
-    				    				<option value="tier0" <?php if($patier=='tier0'){echo 'SELECTED';}?>>Tier 0</option>
-    				    				<option value="tier1" <?php if($patier=='tier1'){echo 'SELECTED';}?>>Tier 1</option>
-    				    				<option value="tier2" <?php if($patier=='tier2'){echo 'SELECTED';}?>>Tier 2</option>
-    				    				<option value="tier3" <?php if($patier=='tier3'){echo 'SELECTED';}?>>Tier 3</option>
-    				    				<option value="tier4" <?php if($patier=='tier4'){echo 'SELECTED';}?>>Tier 4</option>
-    				    			  </select>
-    				    			</form>
     			    			<br/>
 						
 							    <table class="table no-more-tables general">
@@ -315,67 +316,40 @@ function displaypricemodal(){
 							    		<th>File</th>	
 							    		<th>Item Description</th>							    		
 							    		<th>Price</th>
-							    		<th>Total</th>		    									    					    		
+							    		<th>Total</th>		 
+							    		<th>NO BID</th>	   									    					    		
 							    	</tr>
 							    	</thead>
 							    	<tbody>
 							    	
-							    	<form id="olditemform"  method="post" action="<?php echo site_url('quote/placecontractbid'); ?>" enctype="multipart/form-data"> 
+							    	<form id="olditemform"  method="post" action="<?php echo site_url('admin/quote/placecontractbid'); ?>" enctype="multipart/form-data"> 
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
 									<input type="hidden" id="draft" name="draft" value=""/>
 									<?php foreach($quoteitems as $q){?>									
 							    	<tr>
-							    		<td>		    			
+							    		<td>	
+							    			<input type="hidden" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>	    			
 							    			<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
 				                        	<br>
 				                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
 				                        	View File
 				                          	</a>
 				                          	<?php }?>
+				                          	<input type="hidden" name="attach<?php echo $q->id;?>" id="attach<?php echo $q->id;?>" value="<?php echo $q->attach;?>"/>
 		    							</td>						    		
 							    		<td>
+							    		<input type="hidden" name="itemname<?php echo $q->id;?>" id="itemname<?php echo $q->id;?>" value="<?php echo $q->itemname;?>"/>
 			    							<?php echo htmlentities($q->itemname);?></td>						    		
-							    		<td><?php // echo $originalitems[$q->itemid]->ea;?></td>
-							    		
-							    		<td><?php // echo round($originalitems[$q->itemid]->ea * $originalitems[$q->itemid]->quantity,2);?></td>   		
-							    		
-							    	</tr>
-							    	
-							    		<tr>
-							    		<td>&nbsp;</td>
-							    		<td>
-							    			<input type="hidden" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>
-								    		<textarea id="itemname<?php echo $q->id;?>" style="width: 150px" name="itemname<?php echo $q->id;?>" required><?php echo htmlspecialchars_decode($q->itemname, ENT_COMPAT);//htmlentities($q->itemname);?></textarea>
-							    		</td>							    		
-							    		<td>
-							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>')">
-							    				<i class="fa fa-search"></i>
-							    			</a>
-							    			<?php }?>
-											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
-							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/>
+							    		<td>							    			
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange=" calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/>							    			
 							    		</td>
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>"/>
-							    		</td>							    			    		
-							    	</tr>
-							    	
-							    	<tr id="substituterow<?php echo $q->id;?>" class="substituterow">
-							    		<td>&nbsp;</td>
-							    		<td>								    		
-							    			<input type="hidden" class="costcode nopad" name="s_costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>							    			
-							    			<textarea style="width: 150px" id="s_itemname<?php echo $q->id;?>" name="s_itemname<?php echo $q->id;?>" required></textarea>
-							    		</td>
+							    		</td>	
 							    		
-							    		<td>
-											<input type="text" class="highlight nopad width50 input-sm" id="s_ea<?php echo $q->id;?>" name="s_ea<?php echo $q->id;?>" onblur="s_calculatetotalprice('<?php echo $q->id?>')"/>						    			
-							    			
-							    		</td>
-							    		<td>
-											<input type="text" id="s_totalprice<?php echo $q->id;?>" name="s_totalprice<?php echo $q->id;?>" class="price nopad width50 input-sm"/>
-							    		</td>					    		
-							    	</tr>
+							    		<td><input type="checkbox" name="nobid<?php echo $q->id;?>" value="1" class="checkbox nopad"/></td>
+							    	</tr>						    			    	
+							    	
 							    	<?php }?>
 							    	
 							    	
@@ -418,8 +392,7 @@ function displaypricemodal(){
                                                                
 							    	<tr>
 							    		<td colspan="5">
-											<!-- <input type="button" value="Save Quote" class="btn btn-primary" onclick="$('#draft').val('Yes');$('#olditemform').submit();"/> -->
-							    		</td>
+											<input type="button" value="Save Quote" class="btn btn-primary" onclick="$('#draft').val('Yes');$('#olditemform').submit();"/>							    		</td>
 							    	</tr>
 							    	
 							    	<input type="hidden" name="hiddenitemid" id="hiddenitemid" />

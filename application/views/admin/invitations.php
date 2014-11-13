@@ -5,7 +5,8 @@
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery.price_format.js"></script>
 <script type="text/javascript" src="<?php // echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 
-
+<!--<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>-->
+		<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
 
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/fg.menu.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/ui.all.css" type="text/css" id="color-variant-default">
@@ -42,7 +43,7 @@
 	  <div class="box">
 	    <div class="span12">    
 
-	      <form class="form-inline" action="<?php echo site_url('quote') ?>" method="post">
+	      <form class="form-inline" action="<?php echo site_url('admin/quote/contractbids') ?>" method="post">
 	      
               <!-- <div class="form-group">-->
                    <label class="form-label">Select Status</label>
@@ -104,6 +105,7 @@
                                         <tbody>
 							              <?php
 									    	$i = 0;
+									    	
 									    	foreach($invitations as $inv)
 									    	{
 									    		$i++;
@@ -118,10 +120,9 @@
                                                 	<?php echo $inv->ponum;?>
                                                 <?php }?>
                                                 </td>
-                                                <td class="v-align-middle"><?php // echo date('m/d/Y',strtotime($inv->duedate));?></td>
-                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->senton));?></td>
-                                                <td class="v-align-middle"><?php // echo date('m/d/Y',strtotime($inv->senton));?></td>
-                                                <td class="v-align-middle"><?php if(isset($inv->daterequested)) echo date('m/d/Y',strtotime($inv->daterequested));?></td>
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->duedate));?></td>                                      <td class="v-align-middle"><?php if(isset($inv->senton)) echo date('m/d/Y',strtotime($inv->senton));?></td>
+                                                <td class="v-align-middle"><?php if(isset($inv->daterequested))   echo date('m/d/Y',strtotime($inv->daterequested));?></td>
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                                
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
