@@ -527,8 +527,9 @@ class quote extends CI_Controller
         $data['companylist'] = $this->quote_model->getcompanylist();
         $data['invited'] = $this->quote_model->getInvited($id);
         $data['reminder'] = $this->quote_model->getInvitedButNotBid($id);
-
-        $data['costcodes'] = $this->db->where('project',$item->pid)->get('costcode')->result();
+        $data['costcodes'] = $this->db->where('project',$item->pid)->get('costcode')->result();        
+       	$sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$item->pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
 		
         $data['purchasercategories'] = $this->quote_model->getallCategories();		
         	
@@ -570,6 +571,8 @@ class quote extends CI_Controller
         $itemid = $this->input->post('id');
         $pid = $this->input->post('pid');
         $data['costcodes'] = $this->db->where('project',$pid)->get('costcode')->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
 
         if ($this->validation->run() == FALSE) {
             $data['quoteitems'] = $this->quote_model->getitems($itemid);
@@ -800,7 +803,7 @@ class quote extends CI_Controller
 
     
     function updatecontractquote()
-    {   //echo "<pre>",print_r($_POST); die;
+    {   
         $data ['heading'] = 'Update Contract Item';
         $data ['action'] = site_url('message/updatecontractquote');
         $this->_set_fields();
@@ -809,6 +812,8 @@ class quote extends CI_Controller
         $itemid = $this->input->post('id');
         $pid = $this->input->post('pid');
         $data['costcodes'] = $this->db->where('project',$pid)->get('costcode')->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();               
 
         if ($this->validation->run() == FALSE) {
             $data['quoteitems'] = $this->quote_model->getitems($itemid);
@@ -828,7 +833,8 @@ class quote extends CI_Controller
 
             $quoteitems = $this->quote_model->getitems($itemid);
             $emailattachments[] = array();
-    		$emailitems = '<table BORDER CELLPADDING="12">';
+            $emailitems = @$_POST['ponum'].'&nbsp; - &nbsp'.date('m/d/Y', strtotime(@$_POST['duedate'])).'&nbsp; - &nbsp'.date('m/d/Y', strtotime(@$_POST['podate'])).'<br><br>';
+    		$emailitems .= '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';    		
     		$emailitems.= '<th>Itemname</th>';    		
     		$emailitems.= '<th>File Name</th>';
@@ -842,7 +848,7 @@ class quote extends CI_Controller
         		if(@$q->attach && file_exists("./uploads/quote/".$q->attach))
         		$emailattachments[] = site_url('uploads/quote').'/'.$q->attach;
     		}
-    		$emailitems .= '</table>';    
+    		$emailitems .= '</table>';
     	
     		    if (@$_POST['categoryinvitees']) {
                 $companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
@@ -1712,7 +1718,7 @@ class quote extends CI_Controller
     	    $taxpercent = $settings->taxpercent;
     	    
     		ob_start();
-    	   	include $this->config->config['base_dir'].'application/views/quote/quotehtml.php';
+    	   	include $this->config->config['base_dir'].'application/views/admin/quotehtml.php';
     	   	$html = ob_get_clean();
 		    
     		$settings = (array)$this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
@@ -2442,6 +2448,8 @@ class quote extends CI_Controller
         $data['minimum'] = $minimum;
         $data['maximum'] = $maximum;
         $data['costcodes'] = $this->db->where('project',$quote->pid)->get('costcode')->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$quote->pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();           
         $data['heading'] = $data['quote']->potype == 'Bid' ? "Bids Placed" : "PO Review";
         if($data['quote']->potype == 'Bid')
             $this->load->view('admin/bids', $data);
@@ -2457,7 +2465,7 @@ class quote extends CI_Controller
     	//echo "<pre>"; print_r($qid); die;
         if ($this->session->userdata('usertype_id') == 3)
             redirect('admin/purchasingadmin/bids/' . $qid);
-        $bids = $this->quote_model->getbids($qid);
+        $bids = $this->quote_model->getcontractbids($qid);
         $quoteitems = $this->quote_model->getitems($qid);
         $awarded = $this->quote_model->getawardedbid($qid);
         $quote = $this->quote_model->get_quotes_by_id($qid);
@@ -2522,6 +2530,9 @@ class quote extends CI_Controller
         $data['minimum'] = $minimum;
         $data['maximum'] = $maximum;
         $data['costcodes'] = $this->db->where('project',$quote->pid)->get('costcode')->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$quote->pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();               
+
         $data['heading'] = $data['quote']->potype == 'Contract' ? "Bids Placed" : "PO Review";
         
        // echo "<pre>"; print_r($data); die;
@@ -2794,6 +2805,145 @@ class quote extends CI_Controller
         $this->sendawardemail($_POST['quote']);
     }
 
+    
+    
+    function awardcontractbid()
+    {
+        if ($_POST['bid'])
+        {
+        	$this->awardbidbycontractid();
+            $bid = $this->quote_model->getcontractbidbyid($_POST['bid']);
+            $quote = $this->quote_model->get_quotes_by_id($bid->quote);
+        }
+        elseif ($_POST['itemids'])
+        {
+            $this->awardbidbycontractitems();
+            $quote = $this->quote_model->get_quotes_by_id($_POST['quote']);
+        }
+        if($quote)
+        {
+        	$quote->awardedbid = $this->quote_model->getawardedbid($quote->id);
+
+        	if(@$quote->awardedbid->items)
+        	{
+		        $totalcount = count($quote->awardedbid->items);
+		        $lowcount = 0;
+		        foreach ($quote->awardedbid->items as $ai)
+		        {
+		        	$itemlowest = $this->itemcode_model->getlowestquoteprice($ai->itemid);
+
+		        	if ($ai->ea <= $itemlowest)
+		        		$lowcount++;
+		        }
+
+		        if ($lowcount >= ($totalcount * 0.8))
+		        	$quote->pricerank = 'great';
+		        elseif ($lowcount >= ($totalcount * 0.7))
+		        	$quote->pricerank = 'good';
+		        elseif ($lowcount >= ($totalcount * 0.5))
+		        	$quote->pricerank = 'fair';
+		        else
+		        	$quote->pricerank = 'poor';
+		        $this->db->where('id',$quote->awardedbid->id)->update('award',array('pricerank'=>$quote->pricerank));
+
+        	}
+        }
+        $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bid awarded to the selected supplier(s).</div></div>');
+        redirect('admin/quote/index/' . $quote->pid);
+    }
+
+    function awardbidbycontractid()
+    {
+        $bid = $this->quote_model->getcontractbidbyid($_POST['bid']);
+        if ($this->session->userdata('usertype_id') == 2 && $bid->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }
+        //echo '<pre>';print_r($bid);die;
+        if (!$bid) {
+            die;
+        }
+        $awardarray = array();
+        $awardarray['quote'] = $bid->quote;
+        $awardarray['shipto'] = $_POST['shipto'];
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
+        $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        $this->quote_model->db->insert('award', $awardarray);
+        $awardid = $this->quote_model->db->insert_id();
+
+        foreach ($bid->items as $item) {
+            $item = (array) $item;
+            $itemarray = array();
+            $itemarray['award'] = $awardid;
+            $itemarray['company'] = $bid->company;           
+            $itemarray['itemname'] = $item['itemname'];
+            $itemarray['quantity'] = $item['quantity'];            
+            $itemarray['ea'] = $item['ea'];
+            $itemarray['totalprice'] = $item['totalprice'];
+            $itemarray['daterequested'] = $item['daterequested'];
+            $itemarray['costcode'] = $item['costcode'];
+            //$itemarray['notes'] = $item['notes'];
+            $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+
+            $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);            
+        }
+        $this->quote_model->db->where('quote', $bid->quote);
+        $this->quote_model->db->update('bid', array('complete' => 'Yes'));
+        $this->sendawardemail($bid->quote,'contract');
+    }
+
+    function awardbidbycontractitems()
+    {
+        $quote = $this->quote_model->get_quotes_by_id($_POST['quote']);
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }
+        $itemids = $_POST['itemids'];
+        //echo '<pre>';print_r($bid);die;
+        if (!$itemids) {
+            die;
+        }
+
+        $items = $this->quote_model->getbiditemsbyids($itemids);
+        //print_r($items);die;
+        if (!$items)
+            die;
+        $awardarray = array();
+        $awardarray['quote'] = $_POST['quote'];
+        $awardarray['shipto'] = $_POST['shipto'];
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
+        $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        $this->quote_model->db->insert('award', $awardarray);
+        $awardid = $this->quote_model->db->insert_id();
+
+        foreach ($items as $item) {
+            $item = (array) $item;
+            $itemarray = array();
+            $itemarray['award'] = $awardid;
+            $itemarray['company'] = $item['company'];           
+            $itemarray['itemname'] = $item['itemname'];           
+            $itemarray['ea'] = $item['ea'];
+            $itemarray['totalprice'] = $item['totalprice'];            
+            $itemarray['costcode'] = $item['costcode'];
+            //$itemarray['notes'] = $item['notes'];
+            $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+
+            $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);
+
+            $this->db->where('itemid',$item['itemid']);
+            $this->db->where('company',$item['company']);
+            $this->db->where('type', 'Supplier');
+            $companyitem = $this->db->get('companyitem')->row();
+            if($companyitem){
+            	$bd['qtyavailable'] = $companyitem->qtyavailable-$item['quantity'];
+            	$this->db->where('id',$companyitem->id);
+            	$this->db->update('companyitem',$bd);
+            }
+        }
+        $this->quote_model->db->where('quote', $_POST['quote']);
+        $this->quote_model->db->update('bid', array('complete' => 'Yes'));
+        $this->sendawardemail($_POST['quote'],'contract');
+    }
+    
     function getminprice($companyid)
     {
         //print_r($_POST);die;
@@ -4872,8 +5022,11 @@ $loaderEmail = new My_Loader();
         }
     }
 
-    function sendawardemail($quoteid)
+    function sendawardemail($quoteid,$contract='')
     {
+    	if($contract=='contract')
+    	$awarded = $this->quote_model->getawardedcontractbid($quoteid);
+    	else 
         $awarded = $this->quote_model->getawardedbid($quoteid);
         $quote = $awarded->quotedetails;
         if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
@@ -4910,20 +5063,27 @@ $loaderEmail = new My_Loader();
         $this->email->set_mailtype("html");
         $this->email->send();
 
-        //print_r($awarded);die;
+        //echo "<pre>",print_r($awarded);die;
         $companies = array();
         foreach ($awarded->items as $item) {
-            if (!isset($companies[$item->companydetails->id])) {
-                $companies[$item->companydetails->id] = array();
-                $companies[$item->companydetails->id]['id'] = $item->companydetails->id;
-                $companies[$item->companydetails->id]['title'] = $item->companydetails->title;
-                $companies[$item->companydetails->id]['primaryemail'] = $item->companydetails->primaryemail;
-                $companies[$item->companydetails->id]['contact'] = $item->companydetails->contact;
-                $companies[$item->companydetails->id]['invoicenote'] = $item->companydetails->invoicenote;
-                $companies[$item->companydetails->id]['items'] = array($item);
-            } else {
-                $companies[$item->companydetails->id]['items'][] = $item;
-            }
+        	if (!isset($companies[$item->companydetails->id])) {
+        		$companies[$item->companydetails->id] = array();
+        		if($contract!='contract'){
+        			$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
+        			$companies[$item->companydetails->id]['title'] = $item->companydetails->title;
+        			$companies[$item->companydetails->id]['primaryemail'] = $item->companydetails->primaryemail;
+        			$companies[$item->companydetails->id]['contact'] = $item->companydetails->contact;
+        			$companies[$item->companydetails->id]['invoicenote'] = $item->companydetails->invoicenote;
+        		}else {
+        			$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
+        			$companies[$item->companydetails->id]['title'] = $item->companydetails->companyname;
+        			$companies[$item->companydetails->id]['email'] = $item->companydetails->email;
+        			$companies[$item->companydetails->id]['contact'] = $item->companydetails->username;        			
+        		}
+        		$companies[$item->companydetails->id]['items'] = array($item);
+        	} else {
+        		$companies[$item->companydetails->id]['items'][] = $item;
+        	}
         }
         //print_r($companies);die;
         $config = (array) $this->settings_model->get_current_settings();
@@ -5081,9 +5241,9 @@ $loaderEmail = new My_Loader();
                 $pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
-					    <td style="border: 1px solid #000000;">' . ($item->willcall?'For Pickup/Will Call':$item->daterequested) . '</td>
-					    <td style="border: 1px solid #000000;">' . $item->quantity . '</td>
-					    <td style="border: 1px solid #000000;">' . $item->unit . '</td>
+					    <td style="border: 1px solid #000000;">' . (@$item->willcall)?'For Pickup/Will Call':@$item->daterequested . '</td>
+					    <td style="border: 1px solid #000000;">' . (@$item->quantity?$item->quantity:"") . '</td>
+					    <td style="border: 1px solid #000000;">' . (@$item->unit?$item->unit:"") . '</td>
 					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->ea . '</td>
 					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
 					  </tr>
@@ -5099,9 +5259,12 @@ $loaderEmail = new My_Loader();
             <td colspan="5" rowspan="3">
             <div style="width:70%">
             <br/>
-            <h4 class="semi-bold">Terms and Conditions</h4>
-             <p>'.$companies[$item->companydetails->id]['invoicenote'].'</p>
-            <h5 class="text-right semi-bold">Thank you for your business</h5>
+            <h4 class="semi-bold">Terms and Conditions</h4>';
+            
+            if($contract !='contract')
+            	$pdfhtml.='<p>'.$companies[$item->companydetails->id]['invoicenote'].'</p>';
+            
+            $pdfhtml.='<h5 class="text-right semi-bold">Thank you for your business</h5>
             </div>
             </td>
             <td align="right">Subtotal</td>
@@ -5158,7 +5321,7 @@ $loaderEmail = new My_Loader();
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
 
-            $toemail = $settings['adminemail'] . ',' . $company['primaryemail'];
+            $toemail = $settings['adminemail'] . ',' . ($contract=="contract")?$company['email']:$company['primaryemail'];
             $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
 	        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
             $purchaseusers = $this->db->query($sql)->result();

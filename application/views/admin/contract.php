@@ -532,7 +532,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                      <hr/>
 		  <?php if($this->validation->id && !$awarded){?>
 			  <div class="pull-right">
-			  	<?php if(!$costcodes){?>
+			  	<?php if(!$contractcostcodes){?>
 			  	<font color="red">No costcodes exist for this project.</font>
 			  	<?php }?>
 			  	<a href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>
@@ -547,12 +547,12 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		  <div class="control-group">
 		    <table class="table table-bordered">
 		    	<tr>
-		    		<th>File</th>
-		    		<th>Item Description</th>		    		
-		    		<th>Cost Code</th>		    		
-		    		<th>Delete</th>
+		    		<th style="width:20%;">File</th>
+		    		<th style="width:50%;">Item</th>		    		
+		    		<th style="width:20%;">Cost Code</th>		    		
+		    		<th style="width:10%;">Delete</th>
 		    	</tr>
-		    	<?php if($quoteitems){?>
+		    	<?php if($quoteitems){  ?>
 		    	<form id="olditemform" class="form-horizontal" method="post" enctype="multipart/form-data" 
 		    	action="<?php echo base_url(); ?>admin/quote/updatecontractitems/<?php echo $this->validation->id;?>"> 
 			  	<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
@@ -565,15 +565,15 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                         	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
                         	View File
                           	</a>
-                          	<?php }?>
+                          	<?php }?>                          	
 		    		</td>
 		    		<td>
-			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
+			    		<textarea style="width:90%;" id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('purchasingadmin') != $q->purchasingadmin){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
 		    		
 		    		<td>
 		    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="costcode" onchange="defaultcostcode(this.value)">
-		    				<?php foreach($costcodes as $costcode){?>
+		    				<?php foreach($contractcostcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($q->costcode==$costcode->code){echo 'SELECTED';}?>>
 		    				<?php echo $costcode->code;?>
@@ -606,11 +606,11 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    			<input type="file" name="attach" id="attach"/> 
                     </td>
 		    		<td>
-		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
+		    			<textarea style="width:90%;" id="itemname" name="itemname" required <?php if ($this->session->userdata('purchasingadmin') != $quote->purchasingadmin){echo 'readonly';}?>></textarea>
 		    		</td>		    		
-		    		<td>
+		    		<td>	
 		    			<select id="costcode" name="costcode" class="costcode" onchange="defaultcostcode(this.value)">
-		    				<?php foreach($costcodes as $costcode){?>
+		    				<?php foreach($contractcostcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($this->session->userdata('defaultcostcode')==$costcode->code){echo 'SELECTED';}?>>
 		    				<?php echo $costcode->code;?>

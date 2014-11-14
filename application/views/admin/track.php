@@ -81,6 +81,8 @@ $per .='%';
 				<?php $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
                     	 if(($q->quantity - $q->received) >0)
                     	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
+                    	elseif ($q->quantity=="")
+						$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));
                     	else {
                     		$greaterreceived = "";
                     		foreach ($awarded->invoices as $invoice) {
@@ -478,7 +480,10 @@ function acceptall()
 
       <?php
       //$q->quantity;//100%
-    $new_pr_value = (($q->received * 100) / $q->quantity)/100;
+      if(@$q->quantity)
+    	$new_pr_value = (($q->received * 100) / $q->quantity)/100;
+      else 
+      $new_pr_value = 0;	
    //   $new_pr_value = ($q->received/100) *10; ?>
 
        <script>
@@ -554,6 +559,8 @@ function acceptall()
 						<?php } $seconds = "";
 								if(($q->quantity - $q->received) >0)
 								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
+								elseif ($q->quantity=="")
+								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));
 								else {
 									$greaterreceived = "";
 									foreach ($awarded->invoices as $invoice) {
@@ -954,7 +961,7 @@ function acceptall()
             			<th>Rating</th>
             			<th>Feedback</th>
             			<th></th>
-            		</tr><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?>
+            		</tr><?php if(@$item->receiveddate) echo date('m/d/Y', strtotime($item->receiveddate)); ?>
                 	<?php
                 	    foreach($messagecompanies as $combocompany)
                 	    {
@@ -963,13 +970,13 @@ function acceptall()
                 	        else
                 	            $rating = '';
                 	?>
-            		<tr>
-            			<td><?php echo $combocompany['label'];?></td>
+            		<tr><?php $companylabel = is_string($combocompany['label'])?$combocompany['label']:''; ?>
+            			<td><?php echo $companylabel;?></td>
             			<td><?php echo $rating;?></td>
             			<td><?php echo isset($feedbacks[$combocompany['id']]) ? $feedbacks[$combocompany['id']]->feedback : '';?></td>
             			<th>
             				<?php if(!isset($feedbacks[$combocompany['id']])){?>
-            					<a href="javascript:void(0)" onclick="showfeedbackform('<?php echo $combocompany['id'];?>','<?php echo $combocompany['label'];?>')"><i class="icon icon-edit"></i></a>
+            					<a href="javascript:void(0)" onclick="showfeedbackform('<?php echo $combocompany['id'];?>','<?php echo $companylabel;?>')"><i class="icon icon-edit"></i></a>
             				<?php }?>
             			</th>
             		</tr>

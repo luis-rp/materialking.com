@@ -67,13 +67,10 @@ function refreshtotal()
 	var total = 0;
 	$('.selection-item:checked').each(function(obj) {
 		var selectionid = $(this).attr('id');
-		var quantityid = selectionid.replace('selection','quantity');
 		var eaid = selectionid.replace('selection','ea');
-
-		var quantity = Number($("#"+quantityid).val());
+		
 		var ea = Number($("#"+eaid).html());
-
-		total += quantity*ea;
+		total += ea;
 		//alert(total);
     });
     var taxtotal = total * tax / 100;
@@ -439,7 +436,7 @@ $(function() {
 				    		<th>Del</th>
 				    	</tr>
 <?php $alltotal=0; foreach($bid->items as $q) { // if($q->itemcode){?>
-				    	<?php $alltotal += $q->quantity * $q->ea;?>
+				    	<?php $alltotal += $q->totalprice;?>
 		    			<?php
 							$key = $q->itemcode;
 		    				$diff = $q->ea - $minimum[$key];
@@ -471,7 +468,7 @@ $(function() {
 				    			<br/>*New Low Price
 				    			<?php }?>
 				    		</td>
-				    		<td><?php
+				    		<!-- <td><?php
 									echo $q->reqprice;
 									if($q->reqprice > 0)
 									{
@@ -486,9 +483,8 @@ $(function() {
 									{
 									    echo ' (RFQ)';
 									}
-							?></td>
-				    		<!-- <td>$<span id="itemtotal<?php echo $q->id;?>"><?php echo number_format($q->quantity * $q->ea,2);?></span></td> -->
-				    		<!-- <td>
+							?></td> -->
+				    		<td>$<span id="itemtotal<?php echo $q->id;?>"><?php echo number_format($q->totalprice,2);?></span></td> 				    		<!-- <td>
 				    			<?php echo $q->daterequested;?>
 				    			<?php if(@$q->originaldate) if(@$q->originaldate != $q->daterequested){ echo '<br/><span style="color:red">Req:'.$q->originaldate.'</span>';}?>
 				    		</td> -->
@@ -546,7 +542,7 @@ $(function() {
 				    <?php if(!$isawarded){?>
 				    <div align="right">
 					    <form method="post" action="<?php echo site_url('admin/quote/awardbid')?>">
-					    <input type="button" value="Accept <?php echo $bid->purchasingadmin;?>" onclick="awardbidbyid('<?php echo $bid->id;?>')" class="btn btn-primary"/>
+					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>')" class="btn btn-primary"/>
 					    </form>
 				    </div>
 				    <?php }?>
@@ -658,8 +654,8 @@ $(function() {
 	    <?php }?>
     </div>
 </section>
-        <!--<div id="awardmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-        	<form id="editform" class="stylemoduleform" method="post" action="<?php echo site_url('admin/quote/awardbid');?>">
+        <div id="awardmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	<form id="editform" class="stylemoduleform" method="post" action="<?php echo site_url('admin/quote/awardcontractbid');?>">
 			<input type="hidden" id="awardbid" name="bid">
             <input type="hidden" id="quoteid" name="quote" value="<?php echo $quote->id;?>">
             <input type="hidden" id="pid" name="pid" value="<?php echo $quote->pid;?>">
@@ -696,4 +692,4 @@ $(function() {
         	<div class="modal-body" id="quoteitems">
         	</div>
 
-        </div>-->
+        </div>

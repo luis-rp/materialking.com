@@ -403,6 +403,102 @@ class quote_model extends Model {
         return $item;
     }
     
+    
+        function getawardedcontractbid($quote) {
+        $this->db->where('quote', $quote);
+        $query = $this->db->get('award');
+
+        $item = $query->row();
+        if (!$item)
+            return false;
+        //foreach($result as $item)
+        //{
+
+        $this->db->where('id', $item->quote);
+        $query = $this->db->get('quote');
+        if ($query->result()) {
+            $item->quotedetails = $query->row();
+
+            $this->db->where('award', $item->id);
+            $query = $this->db->get('awarditem');
+            $awarditems = array();
+            foreach ($query->result() as $awarditem) {
+                $this->db->where('id', $awarditem->company);
+                $query = $this->db->get('users');
+                $awarditem->companyname = $query->row('companyname');
+                $awarditem->companydetails = $query->row();
+
+
+                $this->db->where('id', $awarditem->itemid);
+                $companyitem = $this->db->get('item')->row();
+
+                if ($companyitem) {
+                    $awarditem->itemcode = $companyitem->itemcode;
+                    $awarditem->itemname = $companyitem->itemname;
+                }
+                //print_r($companyitem);die;
+                $awarditems[] = $awarditem;
+            }
+            //log_message('debug',var_export($awarditems,true));
+            $item->items = $awarditems;
+            /*
+              $invoicesql = "SELECT r.*, ai.itemname
+              FROM
+              ".$this->db->dbprefix('received')." r,
+              ".$this->db->dbprefix('awarditem')." ai
+              WHERE r.awarditem=ai.id AND ai.award='".$item->id."' ORDER BY id DESC";
+              $invoicequery = $this->db->query($invoicesql);
+              $invoices = $invoicequery->result();
+             */
+            $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
+            				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,  
+            				   ROUND(SUM(ai.ea * r.quantity),2) totalprice
+							   FROM 
+							   " . $this->db->dbprefix('received') . " r,
+							   " . $this->db->dbprefix('awarditem') . " ai
+							  WHERE r.awarditem=ai.id AND ai.award='" . $item->id . "'
+							  GROUP BY invoicenum
+							  ";
+            //echo $invoicesql;
+            $invoicequery = $this->db->query($invoicesql);
+            $invoicenums = $invoicequery->result();
+            $invoices = array();
+            foreach ($invoicenums as $invoicenum) {
+                $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea 
+							  FROM 
+							  " . $this->db->dbprefix('received') . " r, 
+							  " . $this->db->dbprefix('awarditem') . " ai
+							  WHERE r.awarditem=ai.id AND r.invoicenum='{$invoicenum->invoicenum}'";
+                $itemquery = $this->db->query($itemsql);
+                $invoiceitems = $itemquery->result();
+                $invoicenum->items = array();
+                foreach ($invoiceitems as $invoiceitem) {
+                    $this->db->where('id', $invoiceitem->itemid);
+                    $companyitem = $this->db->get('item')->row();
+
+                    if ($companyitem) {
+                        $invoiceitem->itemcode = $companyitem->itemcode;
+                        $invoiceitem->itemname = $companyitem->itemname;
+                    }
+                    $invoicenum->items[] = $invoiceitem;
+                }
+                $invoices[] = $invoicenum;
+            }
+            $item->invoices = $invoices;
+
+            $status = 'complete';
+            foreach ($item->items as $it) {
+                if ($it->quantity > $it->received) {
+                    $status = 'incomplete';
+                }
+            }
+            $item->status = $status;
+        }
+        //}
+        //echo '<pre>';print_r($item);die;
+        return $item;
+    }
+    
             function getallawardedqtyduebids() {
         
         $query = $this->db->get('award');
@@ -540,6 +636,29 @@ class quote_model extends Model {
             $query = $this->db->get('company');
             $item->companydetails = $query->row();
             $item->companyname = $item->companydetails->title;
+
+            return $item;
+        }
+        return NULL;
+    }
+    
+    function getcontractbidbyid($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('bid');
+        if ($query->num_rows > 0) {
+            $item = $query->row();
+            $this->db->where('id', $item->quote);
+            $query = $this->db->get('quote');
+            $item->quotedetails = $query->row();
+
+            $this->db->where('bid', $item->id);
+            $query = $this->db->get('biditem');
+            $item->items = $query->result();
+
+            $this->db->where('id', $item->company);
+            $query = $this->db->get('users');
+            $item->companydetails = $query->row();
+            $item->companyname = $item->companydetails->companyname;
 
             return $item;
         }
@@ -782,6 +901,62 @@ class quote_model extends Model {
         return $ret;
     }
 
+    
+        function getcontractbids($quote) {
+        $this->db->where('quote', $quote);
+        $query = $this->db->get('bid');
+
+        $ret = array();
+        $result = $query->result();
+
+        foreach ($result as $item) {
+            $messagesql = "SELECT * FROM " . $this->db->dbprefix('message') . " WHERE quote='{$quote}' AND company='{$item->company}' ORDER BY senton ASC";
+            $item->messages = $this->db->query($messagesql)->result();
+            $this->db->where('bid', $item->id);
+            $query = $this->db->get('biditem');
+            $biresult = $query->result();
+            $biditems = array();
+            //$sqlItem = "SELECT id FROM ". $this->db->dbprefix('item') ." WHERE itemcode = ?"; 
+            foreach ($biresult as $biditem) {
+                $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . " WHERE ea > 0 AND attach='" . $biditem->attach . "' ";
+                if ($this->session->userdata('usertype_id') > 1)
+                    $sqlmin .= " AND purchasingadmin=" . $this->session->userdata('purchasingadmin');
+                //echo $sqlmin;
+                
+                if($this->session->userdata('usertype_id') == 1)
+                	$sqlmin .= " AND purchasingadmin=" . $biditem->purchasingadmin;	
+                
+                $biditem->minprice = $this->db->query($sqlmin)->row()->minprice;
+
+                $sqlreq = "SELECT ea FROM " . $this->db->dbprefix('quoteitem') . " WHERE quote='" . $quote . "' AND attach='" . $biditem->attach . "'";
+                $rowreqprice = $this->db->query($sqlreq)->row();
+                $biditem->reqprice = @$rowreqprice->ea ? $rowreqprice->ea : '';
+                //$itemid = $this->db->query($sqlItem, array($biditem->itemcode))->row();
+                //$biditem->itemid = isset($itemid->id)?$itemid->id:'';
+
+                /*if ($this->session->userdata('usertype_id') > 1) {
+                    $this->db->where('id', $biditem->itemid);
+                    $companyitem = $this->db->get('item')->row();
+                    if ($companyitem) {
+                        $biditem->itemcode = $companyitem->itemcode;
+                        $biditem->itemname = $companyitem->itemname;
+                    }
+                }*/
+
+                $biditems[] = $biditem;
+            }
+            $item->items = $biditems;
+
+            $this->db->where('id', $item->company);
+            $query = $this->db->get('users');
+            $item->companyname = $query->row('companyname');
+
+            $ret[] = $item;
+        }
+        //echo '<pre>';print_r($ret);die;
+        return $ret;
+    }
+    
     function getbidsquote($quote) {
         $this->db->where('quote', $quote);
         $query = $this->db->get('bid');

@@ -406,7 +406,7 @@
 							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
-							NOTIFICATIONS
+							<?php if($newcontractnotifications[0]->notify_type=='contract') echo "Contract Notifications"; else echo "Notifications"?>		
 						</div>					 
 						<?php if(!$newcontractnotifications){?>
 							<span class="label label-important">No New Notifications</span>

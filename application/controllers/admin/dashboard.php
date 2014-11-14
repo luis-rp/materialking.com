@@ -1182,8 +1182,9 @@ class Dashboard extends CI_Controller
 		$this->db->where('id',$id);
 		$this->db->where('company',$company);
 		$this->db->update('notification',array('isread'=>1));
-		redirect('dashboard');
+		redirect('admin/dashboard');
 	}
+	
 
 }
 ?>
