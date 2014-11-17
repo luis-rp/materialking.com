@@ -139,6 +139,86 @@ class message extends CI_Controller
 		}
 	}
 	
+	
+	
+	
+	function sendcontractmessage($quote,$return='bids',$filterquote='')
+	{
+		if(!$_POST)
+			die;
+		//print_r($_POST);die;
+		$ponum = $_POST['ponum'];
+		unset($_POST['ponum']);
+		$c = $this->company_model->get_purchasecompanys_by_id ($_POST['company']);
+		//print_r($c);die;
+		$key = md5($c->id.'-'.$quote.'-'.date('YmdHisu'));
+		$_POST['messagekey'] = $key;
+		$_POST['senton'] = date('Y-m-d H:i');
+		$_POST['adminid'] = $this->session->userdata('id');
+		$_POST['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+		if($this->session->userdata('usertype_id')==3)
+		{
+			str_replace('(Admin)', '(User)', $_POST['from']);
+		}
+		$this->db->insert('message',$_POST);
+       
+        $settings = (array)$this->settings_model->get_current_settings ();
+         
+	    $this->load->library('email');
+		//$this->email->clear(true);
+
+	    $config['charset'] = 'utf-8';
+	    $config['mailtype'] = 'html';
+	    $this->email->initialize($config);
+        $this->email->from($settings['adminemail'], "Administrator");
+        
+        $this->email->to($c->email); 
+			        
+		$link = base_url().'admin/message/messages/'.$quote;
+		
+	    $data['email_body_title']  = "Dear ".$c->companyname;
+    	$data['email_body_content']  = "You have got a new message regarding PO# $ponum.<br><br>
+    	'{$_POST['message']}'
+    	<br><br>
+  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
+    	<a href='$link' target='blank'>$link</a>
+	    ";
+    	$loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+        $this->email->subject("New Message");
+        $this->email->message($send_body);	
+        $this->email->set_mailtype("html");
+        $this->email->send();
+        
+        $err=  $this->do_upload1($key);
+        
+		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Message sent to '.$_POST['to'].' successfully</div></div>');
+		if($return=='backtrack')
+		{
+			redirect('admin/backtrack');
+		}
+		elseif($return=='contracttrack')
+		{
+		    if($this->session->userdata('usertype_id')==3)
+		        redirect('admin/purchaseuser/track/'.$quote);
+		    else
+			    redirect('admin/quote/contracttrack/'.$quote);
+		}
+		elseif($return=='messages')
+		{
+			//redirect('admin/purchaseuser/messages/'.$filterquote);
+			redirect('admin/message/messages/'.$filterquote);
+		}
+		else
+		{
+		    if($this->session->userdata('usertype_id')==3)
+		        redirect('admin/purchaseuser/'.$return.'/'.$quote); 
+		    else
+			    redirect('admin/quote/'.$return.'/'.$quote); 
+		}
+	}
+	
+	
 	function senderror($quote)
 	{
 		if(!$_POST)

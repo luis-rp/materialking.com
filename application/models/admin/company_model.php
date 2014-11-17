@@ -66,7 +66,7 @@ class company_model extends Model {
          */
     }
 
-    function SaveCompany() 
+    function SaveCompany()
     {
     	$completeaddress="";
     	if($_POST['street'])
@@ -85,16 +85,17 @@ class company_model extends Model {
     	{
     		$completeaddress.=$_POST['zip'];
     	}
-		$_POST['regdate'] = date('Y-m-d');
+
+    	$_POST['regdate'] = date('Y-m-d');
     	$_POST['address'] = $completeaddress;
-    	
+		
         $address = ($this->input->post('address'));
         if($address)
             $geoloc = $this->getLatLong($address);
         $_POST['pwd1'] = $_POST['password'];
         $_POST['password'] = md5($_POST['password']);
-        $_POST['pwd'] = $_POST['password'];   
-            
+        $_POST['pwd'] = $_POST['password'];
+
         $options = $this->input->post();
         $address = ($this->input->post('address'));
         if($address)
@@ -119,7 +120,7 @@ class company_model extends Model {
     }
 
     // updating pricing column
-    function updateCompany($id) 
+    function updateCompany($id)
     {
         //
         //$address = ($this->input->post('address')) ? $this->input->post('address') : $this->input->post('contact');
@@ -142,7 +143,7 @@ class company_model extends Model {
         }
 
         $_POST['address'] = $completeaddress;
-        
+
         $options = $this->input->post();
         $address = ($this->input->post('address'));
         if($address)
@@ -151,7 +152,7 @@ class company_model extends Model {
             $options['com_lat'] = @$geoloc['lat'];
             $options['com_lng'] = @$geoloc['lng'];
         }
-        
+
         if($options['password'])
         {
             $options['password'] = md5($options['password']);
@@ -168,7 +169,7 @@ class company_model extends Model {
         $cid = $this->input->post('id');
         $this->db->where('id', $cid);
         $this->db->update('company', $options);
-        
+
         $this->db->where('companyid', $cid);
         $this->db->delete('companytype');
         if (isset($_POST['types']))
@@ -246,6 +247,18 @@ class company_model extends Model {
     function get_companys_by_id($id) {
         $this->db->where('id', $id);
         $query = $this->db->get('company');
+        if ($query->num_rows > 0) {
+            $ret = $query->row();
+            return $ret;
+        } else {
+            return NULL;
+        }
+    }
+    
+    
+    function get_purchasecompanys_by_id($id) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('users');
         if ($query->num_rows > 0) {
             $ret = $query->row();
             return $ret;

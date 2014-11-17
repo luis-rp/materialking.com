@@ -317,6 +317,7 @@ function calculatetotalprice(id)
 							    		<th>Item Description</th>							    		
 							    		<th>Price</th>
 							    		<th>Total</th>		 
+							    		<th>Notes</th>
 							    		<th>NO BID</th>	   									    					    		
 							    	</tr>
 							    	</thead>
@@ -346,7 +347,7 @@ function calculatetotalprice(id)
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>"/>
 							    		</td>	
-							    		
+							    		<td><textarea style="width: 150px" id="s_notes<?php echo $q->id;?>" name="s_notes<?php echo $q->id;?>" class="highlight"><?php if(isset($q->notes)) echo $q->notes; ?></textarea></td>
 							    		<td><input type="checkbox" name="nobid<?php echo $q->id;?>" value="1" class="checkbox nopad"/></td>
 							    	</tr>						    			    	
 							    	

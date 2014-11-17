@@ -555,7 +555,7 @@ class Dashboard extends CI_Controller
 		        $nc->totalcredit = '';
 		    }
 		    $query = "SELECT
-		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    		 IF(IFNULL(r.quantity,0)=0,(SUM(ai.ea) + (SUM(ai.ea) * ".$settings->taxpercent." / 100)),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100)))	
 		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
@@ -564,7 +564,7 @@ class Dashboard extends CI_Controller
 		    $nc->due = $this->db->query($query)->row()->totalunpaid;
 		    $nc->due = round($nc->due,2);
 		    //echo $nc->due.' - ';
-		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (SUM(od.price) + (SUM(od.price) * o.taxpercent / 100)), (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)) )
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
@@ -580,7 +580,7 @@ class Dashboard extends CI_Controller
 		if($this->session->userdata('managedprojectdetails'))
 		{
 
-			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
+			$query = "SELECT ai.costcode label, IF(IFNULL(ai.quantity,0)=0, sum(ai.ea), sum(ai.quantity*ai.ea) ) data FROM pms_awarditem ai, pms_award a, pms_quote q
             	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
             	GROUP by label";
 			log_message('debug',var_export($query,true));
@@ -620,6 +620,16 @@ class Dashboard extends CI_Controller
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
+			
+			if($item->forcontract==1){
+				
+				$query2 = "SELECT cc.code label, SUM( od.price) data
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+			}
+			
 			$result = $this->db->query($query2)->result();
 			//echo "<pre>",print_r($result); die;
 			if(isset($result[0])){

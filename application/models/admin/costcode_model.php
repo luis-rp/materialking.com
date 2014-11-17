@@ -43,6 +43,18 @@ class costcode_model extends Model
 				".$this->db->dbprefix('award')." a
 				WHERE
 				ai.award=a.id AND ai.costcode='".$item->code."'";
+				
+				if($item->forcontract==1){
+					
+				$sql ="SELECT SUM(ai.ea) totalcost
+				FROM
+				".$this->db->dbprefix('awarditem')." ai, 
+				".$this->db->dbprefix('award')." a
+				WHERE
+				ai.award=a.id AND ai.costcode='".$item->code."'";
+					
+				}
+				
 				if($this->session->userdata('usertype_id')>1)
 					$sql .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 				
@@ -56,6 +68,18 @@ class costcode_model extends Model
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
+						
+					if($item->forcontract==1){
+							
+							$sql2 = "SELECT SUM( od.price) sumT, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.id =  ".$item->id."
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+							
+					}	
+						
 						$query2 = $this->db->query ($sql2);
 						
 						if($query2->result()){

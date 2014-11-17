@@ -738,7 +738,6 @@ class Quote extends CI_Controller
 			if(!$draftitems){
 			    $item->ea = number_format($item->ea + ($item->ea * $tier/100),2);
 			}
-			
 			$item->totalprice = $item->ea * $item->quantity;
 			$item->tiers = array();
 			$item->tiers['Tier0'] = number_format($price,2);
@@ -821,13 +820,13 @@ class Quote extends CI_Controller
     					$istier = $istierprice->tierprice;
     				}else
     				$istier = 0;
-
+					
     				$tier1 = $this->db->query($sql1)->row();
     				if($tier1)
     				$tier = $tier1;
     				else
     				$tier = $this->db->query($sql)->row();
-    				    				
+    				
     				if ($tier && $istier)
     				{
     					$tier = $tier->tier;
@@ -843,7 +842,7 @@ class Quote extends CI_Controller
     				}
     			}
     			
-				if(isset($tier->tier))
+    			if(isset($tier->tier))
     			$tierlvl = $tier->tier;
     			elseif(isset($tier1->tier))
     			$tierlvl = $tier1->tier;
@@ -1652,6 +1651,7 @@ class Quote extends CI_Controller
 						if(@$_POST['substitute'.$key] == 1 && $k != 'substitute')
 							$postkey = 's_'.$postkey;
 						
+						if(isset($_POST[$postkey]))	
 						$insertarray[$k] = $_POST[$postkey];
 					}
 				}
@@ -2658,7 +2658,6 @@ or edit your quote.</div></div></div>');
 			  </tr>
 			</table>';
 		//die($pdfhtml);
-    	
 		if (!class_exists('TCPDF')) {
 			require_once($config['base_dir'].'application/libraries/tcpdf/config/lang/eng.php');
 			require_once($config['base_dir'].'application/libraries/tcpdf/tcpdf.php');
@@ -2959,7 +2958,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		{
 			$_POST['searchfrom'] = date("m/d/Y", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
 			$_POST['searchto'] = date('m/d/Y');
-		}	
+		}		
 			
 		$invs = $this->quotemodel->getinvoices($company->id);
 		$invoices = array();

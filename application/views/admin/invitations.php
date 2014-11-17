@@ -39,7 +39,7 @@
 
 <section class="row-fluid">
 <?php echo $this->session->flashdata('message'); ?>
-	<h3 class="box-header">Bid Invitations</h3>
+	<h3 class="box-header">Bid</h3>
 	  <div class="box">
 	    <div class="span12">    
 
@@ -104,25 +104,27 @@
                                         
                                         <tbody>
 							              <?php
-									    	$i = 0;
-									    	
+									    	$i = 0;									    	
 									    	foreach($invitations as $inv)
 									    	{
+									    		//echo "<pre>"; print_r($invitations); die;
 									    		$i++;
 									      ?>
                                             <tr>
+                                            
                                                 <td class="v-align-middle">
                                                 <?php if(!($inv->status == 'New'||$inv->status == 'Processing')){?>
-	                                                <a href="<?php echo site_url('quote/items/'.$inv->quote);?>">
+	                                                <a href="<?php echo site_url('admin/quote/contractitems/'.$inv->quote);?>">
 	                                                	<?php echo $inv->ponum;?>
 	                                                </a>
                                                 <?php }else{?>
                                                 	<?php echo $inv->ponum;?>
                                                 <?php }?>
                                                 </td>
-                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->duedate));?></td>                                      <td class="v-align-middle"><?php if(isset($inv->senton)) echo date('m/d/Y',strtotime($inv->senton));?></td>
-                                                <td class="v-align-middle"><?php if(isset($inv->daterequested))   echo date('m/d/Y',strtotime($inv->daterequested));?></td>
-                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                                
+                                                
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->duedate));?></td>                                      								<td class="v-align-middle"><?php if(isset($inv->senton)) echo date('m/d/Y',strtotime($inv->senton));?></td>
+                                          <td class="v-align-middle"><?php if(isset($inv->daterequested))   echo date('m/d/Y',strtotime($inv->daterequested));?></td>
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                        
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
@@ -134,7 +136,7 @@
                                                 	<a href="<?php echo site_url('quote/track/'.$inv->quote.'/'.$inv->award);?>">
 										    			<span class="label label-success">TRACK</span>
 										    		</a>
-										    		<?php }?>
+										    		<?php } } ?>
 										    		<span class="label label-important"><?php echo $inv->status?></span>
 										    	</td>
                                                 <td class="v-align-middle">
@@ -148,7 +150,7 @@
                                         </tbody>
                                     </table>
                                                  
-                <?php } } else { ?>              
+                <?php }  else { ?>              
                     <div class="errordiv">
       				 <div class="alert alert-info"><button data-dismiss="alert" class="close"></button>
                          <div class="msgBox"> No Quotations Detected on System. </div>                                         

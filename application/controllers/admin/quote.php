@@ -223,9 +223,16 @@ class quote extends CI_Controller
                     //$quote->actions.= ' ' .
                     //anchor ( 'admin/quote/bids/' . $quote->id, '<span class="icon-2x icon-search"></span> ', array ('class' => 'view','alt' => 'awarded bid','title' => 'awarded bid' ) )
                     //;
-                    $quote->actions.= ' ' .
-                            anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view', 'alt' => 'awarded bid', 'title' => 'awarded bid'))
+                    
+                    if($quote->potype=='Contract'){
+                		$quote->actions.= ' ' .
+                            anchor('admin/quote/contracttrack/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view', 'alt' => 'awarded bid', 'title' => 'awarded bid'))
                     ;
+                	}else {
+                    
+                    $quote->actions.= ' ' .
+                            anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view', 'alt' => 'awarded bid', 'title' => 'awarded bid'));
+                	} 
                 }
                 //echo "<pre>id-"; print_r($quote->id); die;
                 $quote->recived = '';
@@ -309,6 +316,28 @@ class quote extends CI_Controller
         if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
             redirect('admin/dashboard', 'refresh');
         }
+        //echo '<pre>';print_r($quote);die;
+        if (!$quote) {
+            die;
+        }
+        $quoteitems = $this->quote_model->getitems($id);
+        $data['quote'] = $quote;
+        $data['quoteitems'] = $quoteitems;
+        //$this->load->model('admin/project_model');
+        $data['project'] = $this->project_model->get_projects_by_id($data['quote']->pid);
+        $data['config'] = (array) $this->settings_model->get_current_settings();
+        $data['heading'] = "Original quote items: ".$quote->ponum;
+       
+        $this->load->view('admin/quotedetails', $data);
+    }
+    
+    
+    function contractitems($id)
+    {	//echo $this->session->userdata('usertype_id'); die;
+        $quote = $this->quote_model->get_quotes_by_id($id);
+       /* if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }*/
         //echo '<pre>';print_r($quote);die;
         if (!$quote) {
             die;
@@ -1444,11 +1473,12 @@ class quote extends CI_Controller
     {
 
         $items = $this->quote_model->getitems($qid);        
-        //echo '<pre>';print_r($_POST);die;
-        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id'))
+        $quote = $this->quote_model->get_quotes_by_id($qid);
+       //echo '<pre>';print_r($_POST);die;
+        /*if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id'))
         {
         	redirect('admin/dashboard', 'refresh');
-        }
+        }*/
         
         foreach ($items as $item)
         {
@@ -1583,6 +1613,7 @@ class quote extends CI_Controller
 				}
 				else
 				{
+					$updatearray['notes'] = @$_POST['s_notes'.$key]?@$_POST['s_notes'.$key]:'';
 					$this->quotemodel->db->update('biditem',$updatearray);
 					/*$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);*/
 					
@@ -1666,6 +1697,8 @@ class quote extends CI_Controller
 				$insertarray['totalprice'] = $_POST['totalprice'.$key];
 				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
 				$insertarray['ismanual'] = @$_POST['ismanual'.$key]?@$_POST['ismanual'.$key]:0;
+				$insertarray['notes'] = @$_POST['s_notes'.$key]?@$_POST['s_notes'.$key]:'';
+				
 				if(!@$_POST['nobid'.$key])
 				{
 				    
@@ -1677,6 +1710,7 @@ class quote extends CI_Controller
 					// commented below line as this fuction requires unique itemid for each row, which is not available in case of contract bid 
 						//$this->quote_model->saveminimum($invitation->company,$invitation->purchasingadmin,$insertarray['itemname'],$insertarray['ea'],$insertarray['substitute']);
 					//}
+					$insertarray['daterequested'] = date('m/d/Y');	
 					$insertarray['revisionid']=1; 
                     $this->quotemodel->db->insert('quoterevisions',$insertarray); 
 				}
@@ -1717,14 +1751,14 @@ class quote extends CI_Controller
     	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
     	    $taxpercent = $settings->taxpercent;
     	    
+    	    $purchaser = $this->quote_model->getpurchaseuserbyid($company);
+    	    
     		ob_start();
     	   	include $this->config->config['base_dir'].'application/views/admin/quotehtml.php';
     	   	$html = ob_get_clean();
 		    
     		$settings = (array)$this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
-    		
-    		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
-    		
+    				
     	    $this->load->library('email');
 
     	    $config['charset'] = 'utf-8';
@@ -2881,7 +2915,8 @@ class quote extends CI_Controller
             $itemarray['totalprice'] = $item['totalprice'];
             $itemarray['daterequested'] = $item['daterequested'];
             $itemarray['costcode'] = $item['costcode'];
-            //$itemarray['notes'] = $item['notes'];
+            $itemarray['attach'] = $item['attach'];
+            $itemarray['notes'] = $item['notes'];
             $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 
             $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);            
@@ -2924,7 +2959,8 @@ class quote extends CI_Controller
             $itemarray['ea'] = $item['ea'];
             $itemarray['totalprice'] = $item['totalprice'];            
             $itemarray['costcode'] = $item['costcode'];
-            //$itemarray['notes'] = $item['notes'];
+            $itemarray['attach'] = $item['attach'];
+            $itemarray['notes'] = $item['notes'];
             $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 
             $awarditemid = $this->quote_model->db->insert('awarditem', $itemarray);
@@ -4193,7 +4229,433 @@ class quote extends CI_Controller
         $data['adquoteid'] = $qid;
         $this->load->view('admin/track', $data);
     }
+    
+    
+    
+    function contracttrack($qid)
+    {
+        if ($this->session->userdata('usertype_id') == 3)
+            redirect('admin/purchasinguser/bids/' . $qid);
+        $awarded = $this->quote_model->getawardedcontractbid($qid);
+        // echo "<pre>",print_r($awarded); die;
+        if (!$awarded)
+            redirect('admin/quote/bids/' . $qid);
+        if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }
+        //echo '<pre>';print_r($awarded);die;
+        /*
+        $this->db->select('shippingdoc.*, company.title');
+        $this->db->from('shippingdoc')->join('company','shippingdoc.company=company.id');
+		$this->db->where('quote',$qid);
+		$this->db->order_by('uploadon','DESC');
+		*/
+		$query = "SELECT s.*, c.title companyname FROM ".$this->db->dbprefix('shippingdoc')." s,
+				 ".$this->db->dbprefix('company')." c WHERE s.company=c.id AND s.quote='$qid' ORDER BY uploadon DESC";
+	    //echo $query;
+		$docs = $this->db->query($query)->result();
+		$data['shippingdocs'] = $docs;
+		//echo '<pre>';print_r($docs);die;
 
+        $messagesql = "SELECT * FROM " . $this->db->dbprefix('message') . " WHERE quote='{$qid}' ORDER BY senton ASC";
+        $msgresult = $this->db->query($messagesql)->result();
+        $messages = array();
+        foreach ($msgresult as $msg) {
+            $messages[$msg->company]['companydetails'] = $this->company_model->get_purchasecompanys_by_id($msg->company);
+            $messages[$msg->company]['messages'][] = $msg;
+        }
+
+		if($awarded->status == 'complete')
+		{
+		    $this->db->where('quote',$qid);
+		    $feedbacks = $this->db->get('quotefeedback')->result();
+
+		    $data['feedbacks'] = array();
+		    foreach($feedbacks as $feedback)
+		    {
+		        if($feedback->company)
+		            $data['feedbacks'][$feedback->company] = $feedback;
+		    }
+		}
+
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->where('quote',$qid)->get()->result();
+
+		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
+        $shipments2 = $this->db->query($shipmentsquery)->result();
+
+		if($awarded){
+			foreach($awarded->items as $item) {
+				if($item->company){
+				$item->etalog = $this->db->where('company',$item->company)
+				->where('quote',$qid)
+				->where('itemid',$item->itemid)
+				->get('etalog')->result();
+
+				}
+
+				$item->quotedaterequested = $this->db->select('daterequested')
+				->where('purchasingadmin',$item->purchasingadmin)
+				->where('quote',$qid)
+				->where('itemid',$item->itemid)
+				->get('quoteitem')->row();
+
+			}
+		}
+
+        $data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote);
+        $data['quote'] = $this->quote_model->get_quotes_by_id($awarded->quote);
+        $data['project'] = $this->project_model->get_projects_by_id($data['quote']->pid);
+        $data['config'] = (array) $this->settings_model->get_current_settings();
+        $data['messages'] = $messages;
+        $data['awarded'] = $awarded;
+        $data['shipments'] = $shipments;
+        $data['shipments2'] = $shipments2;
+        $data['heading'] = "TRACK Items";
+        $data['adquoteid'] = $qid;
+        $this->load->view('admin/contracttrack', $data);
+    }
+
+    
+    
+    
+  function contracttrackexport($qid)
+    {
+    	/*if ($this->session->userdata('usertype_id') == 3)
+    		redirect('admin/purchasinguser/bids/' . $qid);*/
+    	$awarded = $this->quote_model->getawardedcontractbid($qid);
+    	if (!$awarded)
+    		redirect('admin/quote/bids/' . $qid);
+    	/*if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
+    		redirect('admin/dashboard', 'refresh');
+    	}*/
+
+    	$query = "SELECT u.companyname companyname FROM ".$this->db->dbprefix('users')." u";
+
+    	$docs = $this->db->query($query)->result();
+    	$data['shippingdocs'] = $docs;
+    	$messagesql = "SELECT * FROM " . $this->db->dbprefix('message') . " WHERE quote='{$qid}' ORDER BY senton ASC";
+    	$msgresult = $this->db->query($messagesql)->result();
+    	$messages = array();
+    	foreach ($msgresult as $msg) {
+    		$messages[$msg->company]['companydetails'] = $this->company_model->get_purchasecompanys_by_id($msg->company);
+    		$messages[$msg->company]['messages'][] = $msg;
+    	}
+
+    	if($awarded->status == 'complete')
+    	{
+    		$this->db->where('quote',$qid);
+    		$feedbacks = $this->db->get('quotefeedback')->result();
+
+    		$data['feedbacks'] = array();
+    		foreach($feedbacks as $feedback)
+    		{
+    			if($feedback->company)
+    				$data['feedbacks'][$feedback->company] = $feedback;
+    		}
+    	}
+
+    	$shipments = $this->db->select('shipment.*, item.itemname')
+    	->from('shipment')->join('item','shipment.itemid=item.id')
+    	->where('quote',$qid)->get()->result();
+
+    	$data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote);
+    	$data['quote'] = $this->quote_model->get_quotes_by_id($awarded->quote);
+    	$data['project'] = $this->project_model->get_projects_by_id($data['quote']->pid);
+    	$data['config'] = (array) $this->settings_model->get_current_settings();
+    	$data['messages'] = $messages;
+    	$data['awarded'] = $awarded;
+    	$data['shipments'] = $shipments;
+    	$data['heading'] = "TRACK Items";
+
+    	$data['adquoteid'] = $qid;
+
+
+    	//$this->load->view('admin/track', $data);
+
+    	//=========================================================================================
+    	$quote = $data['quote'];
+
+		$header[] = array('Report type' , 'Order Tracking', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    	if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title, '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		}
+
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		$header[] = array('PO #' , $quote->ponum, '' , '' , '' , '' , '' , '' , '' , '' , '' );
+		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    	$header[] = array('Company' , 'Item Name' , 'Price EA' , 'Total Price' , 'Date Requested' , 'Cost Code' , 'Notes' , 'Still Due' );
+
+    	//-------------------------------------------
+
+    	$config   = $data['config'];
+    	$project  = $data['project'];
+    	$quote    = $data['quote'];
+    	$errorLog = $data['errorLog'];
+    	$shippingdocs = $data['shippingdocs'] ;
+
+    	if(isset($data['feedbacks']))
+    	{
+    		$feedbacks    = $data['feedbacks'];
+    	}
+
+
+    	$combocompanies = array();
+    	$messagecompanies = array();
+    	$recsum = 0;
+    	$qntsum = 0;
+    	foreach ($awarded->items as $q) {
+    		$recsum = $recsum + $q->received;
+    		$qntsum = $qntsum + $q->quantity;
+    		if ($q->received < $q->quantity) {
+    			if (isset($combocompanies[$q->company])) {
+    				$combocompanies[$q->company]['value'][] = $q->id;
+    			} else {
+    				$combocompanies[$q->company] = array();
+    				$combocompanies[$q->company]['value'] = array($q->id);
+    				$combocompanies[$q->company]['id'] = $q->company;
+    				$combocompanies[$q->company]['label'] = $q->companyname;
+    			}
+    		}
+
+    		if (isset($messagecompanies[$q->company])) {
+    			$messagecompanies[$q->company]['value'][] = $q->id;
+    		} else {
+    			$messagecompanies[$q->company] = array();
+    			$messagecompanies[$q->company]['value'] = array($q->id);
+    			$messagecompanies[$q->company]['id'] = $q->company;
+    			$messagecompanies[$q->company]['label'] = $q->companyname;
+    		}
+    	}
+
+    	if ($qntsum) {
+    		$per = number_format(($recsum / $qntsum) * 100, 2);
+    	}else{
+    		$per = 0;
+    	}
+    	$per .='%';
+
+
+    	//-------------------------------------------
+
+    	$alltotal = 0;
+    	foreach ($awarded->items as $q)
+    	{
+    		$alltotal+=$q->totalprice;
+
+    		$still_due = $q->quantity - $q->received;
+
+			$green_icon_value = '';
+			if($q->received != '0.00' && $q->received != '')
+			{
+               $green_icon_value = '( received:'.$q->received.')';
+			}
+
+			$header[] = array(@$q->companydetails->companyname , $q->itemname , '$ '.formatPriceNew($q->ea) , '$ '.formatPriceNew($q->totalprice) , $q->daterequested , $q->costcode , $q->notes , $still_due );
+
+    	}
+
+    	$taxtotal = $alltotal * $config['taxpercent'] / 100;
+    	$grandtotal = $alltotal + $taxtotal;
+
+
+    	$header[] = array('Subtotal:' , '$ '.formatPriceNew(round($alltotal, 2)) , '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	$header[] = array('Tax:' ,  '$ '.formatPriceNew(round($taxtotal, 2)) , '' , '' , '' , '' , '' , '' , '' , '', ''  );
+    	$header[] = array('Total:' , '$ '.formatPriceNew(round($grandtotal, 2)) , '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    	$header[] = array('Received:' , $per.chr(160) , '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+
+    	$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+
+
+    	//---------shipments-----------------------------------------------
+
+    	if (@$shipments)
+    	{
+    		$header[] = array('Shipments:' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    		$canacceptall = false;
+    		$shipitemids = array();
+    		foreach($shipments as $cs)
+    		{
+    			if($cs->accepted == 0)
+    			{
+    				$canacceptall = true;
+    			}
+    		}
+    		foreach($shipments as $cs)
+    		{
+    			if(isset($shipitemids[$cs->awarditem]))
+    			{
+    				$canacceptall = false;
+    				break;
+    			}
+    			$shipitemids[$cs->awarditem] = 1;
+    		}
+
+    		$header[] = array('Item' , 'Quantity', 'Reference #' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    		foreach($shipments as $s)
+    		{
+    			$header[] = array($s->itemname , $s->quantity , $s->invoicenum , '' , '' , '' , '' , '' , '' , '' , '' );
+    		}
+    	}
+
+    	//------------messages---------------------------------------
+
+
+    	if (@$messages)
+    	{
+    		foreach ($messages as $c)
+    		{
+    			if (@$c['messages'])
+    			{
+    				$message_for = 'Messages for '. $c['companydetails']->companyname.' regarding PO# '. $quote->ponum;
+
+    				$header[] = array($message_for , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    				$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    				$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+
+    				$header[] = array('From' , 'To', 'Message' , 'Date/Time' , '' , '' , '' , '' , '' , '' , '' );
+
+    				foreach ($c['messages'] as $msg)
+    				{
+    					$header[] = array($msg->from , $msg->to, $msg->message, date("m/d/Y h:i A", strtotime($msg->senton)) , '' , '' , '' , '' , '' , '' , '' );
+
+    				}
+
+    			}
+    		}
+    	}
+    	$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+
+    	//------------shipmentdoc---------------------------------------
+
+    	if($shippingdocs)
+    	{
+    		$header[] = array('Shipping Documents' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('Company' , 'Date', 'Reference#' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    		foreach($shippingdocs as $sd)
+    		{
+    			if(@$sd->uploadon && @$sd->invoicenum)
+    			$header[] = array($sd->companyname, date("m/d/Y", strtotime($sd->uploadon)), $sd->invoicenum , '' , '' , '' , '' , '' , '' , '' , '' );
+    		}
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	}
+
+
+    	//-------------------invoices-----------------------------------------------------------------
+
+    	if ($awarded->invoices)
+    	{
+    		$header[] = array('Existing Invoices ' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('Invoice #' , 'Total Cost', 'Tax' , 'Payment' ,  'Status' , '' , '' , '' , '' , '','' );
+
+    		foreach ($awarded->invoices as $invoice)
+    		{
+    			$header[] = array($invoice->invoicenum , '$ '.formatPriceNew($invoice->totalprice), number_format($invoice->totalprice * $config['taxpercent'] / 100, 2) , $invoice->paymentstatus ,   $invoice->status , '' , '' , '' , '' , '','' );
+    		}
+    	}
+
+
+
+    	//--------------Time Line---------------------------------------------------------------
+
+
+
+    	if ($awarded->invoices)
+    	{
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('Time Line ' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('PO #' , 'Date', '' , '' ,  '' , '' , '' , '' , '' , '','' );
+    		$header[]  = array($quote->ponum , date('m/d/Y', strtotime($awarded->awardedon)) ,'' , '',  '' , '' , '' , '' , '' , '','' );
+    		//-----------------------------------------
+
+    		foreach ($awarded->invoices as $invoice)
+    		{
+
+    			$header[] = array($invoice->invoicenum , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    			foreach ($invoice->items as $item)
+    			{
+    				$header[] = array($item->receiveddate, $item->itemname, $item->quantity.' Received' , '' , '' , '' , '' , '' , '' , '' , '' );
+    			}
+
+    		}
+    	}
+
+
+    	//--------------------Feedbacks------------------------------------------------------------
+
+    	if ($awarded->status == 'complete')
+    	{
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('Feedbacks' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('Company' , 'Rating', 'Feedback' , '' ,  '' , '' , '' , '' , '' , '','' );
+
+    		foreach($messagecompanies as $combocompany)
+    		{
+    			if(isset($feedbacks[$combocompany['id']]))
+    				$rating = '<div class="fixedrating" data-average="'.$feedbacks[$combocompany['id']]->rating.'" data-id="1"></div>';
+    			else
+    				$rating = '';
+    			$feedback = isset($feedbacks[$combocompany['id']]) ? $feedbacks[$combocompany['id']]->feedback : '';
+    			$header[] = array($combocompany['label'] , $rating, $feedback , '' ,  '' , '' , '' , '' , '' , '','' );
+    		}
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+
+    	}
+
+
+    	//--------------------errorLog------------------------------------------------------------
+
+    	if(!empty($errorLog))
+    	{
+
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('ERROR LOG' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('company' , 'Error', 'Item' , 'Qty' ,  'Invoice#' , 'Date' , '' , '' , '' , '','' );
+
+    		foreach($errorLog as $error)
+    		{
+    			$inv_date = (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";
+    			$header[] = array($error->title , $error->error, $error->itemcode , $error->quantity ,  $error->invoicenum , $inv_date , '' , '' , '' , '','' );
+    		}
+
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    		$header[] = array('' , '', '' , '' , '' , '' , '' , '' , '' , '' , '' );
+    	}
+
+
+    	//--------------------errorLog------------------------------------------------------------
+
+    	createXls('contract_track_items', $header);
+    	die();
+
+    	//===============================================================================
+
+
+    }   
+    
+    
     function sendautolateemail($id){
     	$quotearr = $this->quote_model->getallawardedqtyduebids();
     	//echo "<pre>",print_r($quotearr); die;
@@ -5068,24 +5530,27 @@ $loaderEmail = new My_Loader();
         foreach ($awarded->items as $item) {
         	if (!isset($companies[$item->companydetails->id])) {
         		$companies[$item->companydetails->id] = array();
-        		if($contract!='contract'){
+        		if($contract =='contract'){
+        			
+        			$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
+        			$companies[$item->companydetails->id]['title'] = $item->companydetails->companyname;
+        			$companies[$item->companydetails->id]['email'] = $item->companydetails->email;
+        			$companies[$item->companydetails->id]['contact'] = $item->companydetails->username;        			        			
+        			
+        		}else {
+        			
         			$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
         			$companies[$item->companydetails->id]['title'] = $item->companydetails->title;
         			$companies[$item->companydetails->id]['primaryemail'] = $item->companydetails->primaryemail;
         			$companies[$item->companydetails->id]['contact'] = $item->companydetails->contact;
         			$companies[$item->companydetails->id]['invoicenote'] = $item->companydetails->invoicenote;
-        		}else {
-        			$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
-        			$companies[$item->companydetails->id]['title'] = $item->companydetails->companyname;
-        			$companies[$item->companydetails->id]['email'] = $item->companydetails->email;
-        			$companies[$item->companydetails->id]['contact'] = $item->companydetails->username;        			
         		}
         		$companies[$item->companydetails->id]['items'] = array($item);
         	} else {
         		$companies[$item->companydetails->id]['items'][] = $item;
         	}
         }
-        //print_r($companies);die;
+        // echo "<pre>",print_r($companies); echo "conractval=".$contract;
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
         if (!class_exists('TCPDF')) {
@@ -5320,8 +5785,11 @@ $loaderEmail = new My_Loader();
             $this->email->initialize($config);
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
-
-            $toemail = $settings['adminemail'] . ',' . ($contract=="contract")?$company['email']:$company['primaryemail'];
+			if(isset($company['email']))
+				$emailid = $company['email'];
+			else 
+				$emailid = $company['primaryemail'];
+            $toemail = $settings['adminemail'] . ',' . $emailid;
             $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
 	        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
             $purchaseusers = $this->db->query($sql)->result();
