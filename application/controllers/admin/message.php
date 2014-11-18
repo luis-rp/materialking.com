@@ -142,7 +142,7 @@ class message extends CI_Controller
 	
 	
 	
-	function sendcontractmessage($quote,$return='bids',$filterquote='')
+	function sendcontractmessage($quote,$return='conbids',$filterquote='')
 	{
 		if(!$_POST)
 			die;

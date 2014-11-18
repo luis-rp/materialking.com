@@ -21,7 +21,7 @@ class Register extends CI_Controller
 	
 	function form() 
 	{
-		$this->load->view ('admin/register/form',$data);
+		$this->load->view ('admin/register/form');
 	}
 	
 	function saveregister()
@@ -292,8 +292,7 @@ class Register extends CI_Controller
 		
 		$data['user'] = $u;
 		$this->db->order_by('catname', 'ASC');
-		$parent=0;
-        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
+        $data['categories'] = $this->db->get('contractcategory')->result();
 		$this->load->template ( '../../templates/admin/register', $data);
 		$this->load->view('admin/register/complete',$data);
 	}

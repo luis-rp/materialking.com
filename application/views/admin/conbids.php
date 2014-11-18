@@ -586,7 +586,7 @@ $(function() {
 
 
 				    <div class="well">
-					    <form method="post" class="form-horizontal" enctype="multipart/form-data" action="<?php echo site_url('admin/message/sendmessage/'.$bid->quote)?>">
+					    <form method="post" class="form-horizontal" enctype="multipart/form-data" action="<?php echo site_url('admin/message/sendcontractmessage/'.$bid->quote)?>">
 					    	<input type="hidden" name="quote" value="<?php echo $bid->quote;?>"/>
 					    	<input type="hidden" name="company" value="<?php echo $bid->company;?>"/>
 					    	<input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname')?> (Admin)"/>

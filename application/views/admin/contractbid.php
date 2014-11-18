@@ -21,6 +21,7 @@
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+<link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
 
 
 <!--<script type="text/javascript">
@@ -310,6 +311,77 @@ function calculatetotalprice(id)
 								
     			    			<br/>
 						
+    			    			<?php if($invitations) {  ?> 		   
+                                     <table id="datatable" class="table table-bordered datagrid">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:10%">Title</th>
+                                                <th style="width:10%">Date Due</th>
+                                                <th style="width:10%">Date Received</th>
+                                                <th style="width:10%">Date Sent</th>
+                                                <th style="width:10%">Award Date</th>
+                                                <th style="width:20%">Status</th>
+                                                <th style="width:15%">Bid</th>
+                                                <th style="width:30%">Bid Progress</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+							              <?php
+									    	$i = 0;									    	
+									    	foreach($invitations as $inv)
+									    	{
+									    		//echo "<pre>"; print_r($invitations); die;
+									    		$i++;
+									      ?>
+                                            <tr>
+                                            
+                                                <td class="v-align-middle">
+                                                <?php if(!($inv->status == 'New'||$inv->status == 'Processing')){?>
+	                                                <a href="<?php echo site_url('admin/quote/contractitems/'.$inv->quote);?>">
+	                                                	<?php echo $inv->ponum;?>
+	                                                </a>
+                                                <?php }else{?>
+                                                	<?php echo $inv->ponum;?>
+                                                <?php }?>
+                                                </td>
+                                                
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->duedate));?></td>                                      								<td class="v-align-middle"><?php if(isset($inv->senton)) echo date('m/d/Y',strtotime($inv->senton));?></td>
+                                          <td class="v-align-middle"><?php if(isset($inv->daterequested))   echo date('m/d/Y',strtotime($inv->daterequested));?></td>
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                        
+                                                <td class="v-align-middle"><?php echo $inv->status;?></td>
+                                                <td>
+                                                	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
+                                                		<?php if($inv->quotedetails->potype=='Contract'){?>
+                                                    	<a href="<?php echo site_url('admin/quote/invitation/'.$inv->invitation);?>">
+    										    			<span class="label label-success">BID</span>
+    										    		</a>    										    		
+										    		<?php }elseif($inv->awardedtothis){?>
+                                                	<a href="<?php echo site_url('quote/track/'.$inv->quote.'/'.$inv->award);?>">
+										    			<span class="label label-success">TRACK</span>
+										    		</a>
+										    		<?php } } ?>
+										    		<span class="label label-important"><?php echo $inv->status?></span>
+										    	</td>
+                                                <td class="v-align-middle">
+                                                    <div class="progress progress-striped active progress-large">
+                      									<div class="progress-bar <?php echo $inv->mark; ?>" style="width: <?php echo $inv->progress?>%;" data-percentage="<?php echo $inv->progress?>%"><?php echo $inv->progress?>% </div>
+                   									</div>
+                    
+                                                </td>
+                                            </tr>
+                                          <?php } ?>
+                                        </tbody>
+                                    </table>
+                                                 
+                <?php }  else { ?>              
+                    <div class="errordiv">
+      				 <div class="alert alert-info"><button data-dismiss="alert" class="close"></button>
+                         <div class="msgBox"> No Quotations Detected on System. </div>                                         
+                     </div>
+      				</div>
+                <?php }?>
+    			    			
 							    <table class="table no-more-tables general">
 							    	<thead>
 							    	<tr>

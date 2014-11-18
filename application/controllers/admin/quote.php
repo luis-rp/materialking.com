@@ -152,6 +152,8 @@ class quote extends CI_Controller
                     $quote->pricerank = '-';
                 elseif (!@$quote->awardedbid->items)
                     $quote->pricerank = '-';
+                elseif (@$quote->awardedbid->quotedetails->potype == "Contract")
+                    $quote->pricerank = '-';
                 else {
                     $quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
 					/*
@@ -332,26 +334,86 @@ class quote extends CI_Controller
     }
     
     
-    function contractitems($id)
-    {	//echo $this->session->userdata('usertype_id'); die;
+    /*function contractitems($id)
+    {	
         $quote = $this->quote_model->get_quotes_by_id($id);
-       /* if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
-            redirect('admin/dashboard', 'refresh');
-        }*/
-        //echo '<pre>';print_r($quote);die;
+       
         if (!$quote) {
             die;
         }
         $quoteitems = $this->quote_model->getitems($id);
         $data['quote'] = $quote;
         $data['quoteitems'] = $quoteitems;
-        //$this->load->model('admin/project_model');
+        
         $data['project'] = $this->project_model->get_projects_by_id($data['quote']->pid);
         $data['config'] = (array) $this->settings_model->get_current_settings();
         $data['heading'] = "Original quote items: ".$quote->ponum;
        
         $this->load->view('admin/quotedetails', $data);
-    }
+    }*/
+    
+    function contractitems($quoteid)
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		$bid = $this->db->where('quote',$quoteid)->where('company',$company)->get('bid')->row();
+		$award = $this->quotemodel->getawardedbid($quoteid);
+		if($bid)
+		{
+			$this->db->where('bid',$bid->id);			
+			$biditems = $this->db->get('biditem')->result();
+		}
+		if($award)
+		{
+			$this->db->where('award',$award->id);
+			$this->db->order_by('company');
+			$allawardeditems = $this->db->get('awarditem')->result();
+		}
+		$itemswon = 0;
+		$itemslost = 0;
+		$data['biditems'] = array();
+		$data['awarditems'] = array();
+		foreach($allawardeditems as $ai)
+		{
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+			    if($companyitem->itemcode)
+				    $ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+				    $ai->itemname = $companyitem->itemname;
+			}
+			$data['allawardeditems'][] = $ai;
+			if($ai->company == $company)
+				$itemswon++;
+			else
+				$itemslost++;
+		}
+		//print_r($allawardeditems);die;
+		$data['itemswon'] = $itemswon;
+		$data['itemslost'] = $itemslost;
+		$data['quote'] = $quote;
+		$data['bid'] = $bid;
+		$data['biditems'] = $biditems;
+		$data['award'] = $award;
+		$data['quoteid'] = $quoteid;
+		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+		$data['company'] = $purchaser;
+		
+		$messagesql = "SELECT * FROM ".$this->db->dbprefix('message')." WHERE quote='{$quoteid}'";
+		$message = $this->db->query($messagesql)->row();		
+		if($message){
+			$data['messagekey'] = $message->messagekey;
+		}
+		
+		$this->load->view('admin/contractitems',$data);
+	}
 
     function getitemsajax()
     {
@@ -501,7 +563,7 @@ class quote extends CI_Controller
         $this->_set_rules();
         if ($this->validation->run() == FALSE) {
             $this->load->view('admin/quote', $data);
-        } elseif ($this->quote_model->checkDuplicatePonum($this->input->post('ponum'), 0)) {
+        } elseif ($this->quote_model->checkDuplicatePonum($this->input->post('ponum'), 0,$pid)) {
             $data ['message'] = 'Duplicate PO#';
             //$this->load->view ('admin/quote', $data);
             if ($potype == 'Bid')
@@ -561,7 +623,7 @@ class quote extends CI_Controller
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
 		
         $data['purchasercategories'] = $this->quote_model->getallCategories();		
-        	
+        $data['purchasercategories1'] = $this->db->get('contractcategory')->result();	
         $this->db->where('quote', $id);
         $invitations = $this->db->get('invitation')->result();
 
@@ -862,10 +924,13 @@ class quote extends CI_Controller
 
             $quoteitems = $this->quote_model->getitems($itemid);
             $emailattachments[] = array();
-            $emailitems = @$_POST['ponum'].'&nbsp; - &nbsp'.date('m/d/Y', strtotime(@$_POST['duedate'])).'&nbsp; - &nbsp'.date('m/d/Y', strtotime(@$_POST['podate'])).'<br><br>';
+            $emailitems = '<table CELLPADDING="12">';
+    		$emailitems.= '<tr>';    		
+            $emailitems = '<th> Contract Title:</th> <th> Bid Due Date: </th> <th> Contract Award Date: </th></tr>';
+            $emailitems = '<tr><td>'.@$_POST['ponum'].'</td><td>'.date('m/d/Y', strtotime(@$_POST['duedate'])).'</td><td>'.date('m/d/Y', strtotime(@$_POST['podate'])).'</td></tr> </table> <br><br>';
     		$emailitems .= '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';    		
-    		$emailitems.= '<th>Itemname</th>';    		
+    		$emailitems.= '<th>Description</th>';    		
     		$emailitems.= '<th>File Name</th>';
     		$emailitems.= '</tr>';
     		foreach($quoteitems as $q)
@@ -1104,8 +1169,125 @@ class quote extends CI_Controller
 			$this->load->template ( '../../templates/front/blank', $data);
 			$this->load->view('quote/printquote',$data);
 		}
-		else
+		else {
+
+			$sql = "SELECT i.*,q.ponum FROM
+		".$this->db->dbprefix('invitation')." i, ".$this->db->dbprefix('quote')." q
+		WHERE i.quote=q.id AND i.company='{$company}' AND i.invite_type='contract' and i.quote = {$quote->id} ORDER BY i.senton DESC";
+
+			$invs = $this->db->query($sql)->result();
+
+			$invitations = array();
+			foreach($invs as $inv)
+			{
+				$this->db->where('id',$inv->quote);
+				$inv->quotedetails = $this->db->get('quote')->row();
+				$this->db->where('quote',$inv->quote);
+				$this->db->where('company',$company);
+				$bid = $this->db->get('bid')->row();
+				$inv->quotenum = @$bid->quotenum;
+
+				$awarded = $this->quotemodel->checkbidcomplete($inv->quote);
+				$inv->awardedtothis = false;
+
+				if($bid){
+					$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
+					$revisionquote = $this->db->query($sqlq)->row();
+					if($revisionquote)
+					$inv->daterequested = $revisionquote->daterequested;
+				}
+
+				if($awarded)
+				{
+					$complete = true;
+					$noitemsgiven = true;
+					$allawarded = true;
+					$this->db->where('award',$awarded->id);
+					$this->db->where('company',$company);
+					$items = $this->db->get('awarditem')->result();
+					foreach($items as $i)
+					{
+						if($i->received < $i->quantity)
+						$complete = false;
+						if($i->company != $company)
+						$allawarded = false;
+						if($i->received > 0)
+						$noitemsgiven = false;
+					}
+
+					if(!$noitemsgiven)
+					{
+						if($complete)
+						{
+							$inv->status = 'Completed';
+							$inv->progress = 100;
+							$inv->mark = "progress-bar-success";
+						}
+						else
+						{
+							$inv->status = 'Partially Completed';
+							$inv->progress = 80;
+							$inv->mark = "progress-bar-success";
+						}
+					}
+					else
+					{
+						$awardeditems = $this->quotemodel->getawardeditems($awarded->id,$company);
+
+						if($awardeditems && !$allawarded)
+						{
+							$inv->status = 'Partially Awarded';
+							$inv->progress = 60;
+							$inv->mark = "progress-bar-success";
+						}
+						else
+						{
+							$inv->status = 'Awarded';
+							$inv->progress = 60;
+							$inv->mark = "progress-bar-success";
+						}
+					}
+
+					if($this->quotemodel->getawardeditems($awarded->id,$company))
+					{
+						$inv->awardedtothis = true;
+						$inv->award = $awarded->id;
+					}
+					else
+					{
+						$inv->status = 'PO Closed - 0 items won';
+						$inv->progress = 100;
+						$inv->mark = "progress-bar-warning";
+					}
+				}
+				elseif($this->quotemodel->getdraftitems($inv->quote,$inv->company))
+				{
+					$inv->status = 'Processing';
+					$inv->progress = 40;
+					$inv->mark = "progress-bar-warning";
+				}
+				else
+				{
+					$inv->status = 'New';
+					$inv->progress = 20;
+					$inv->mark = "progress-bar-danger";
+				}
+
+				if(!@$_POST['searchstatus'])
+				{
+					$invitations[]=$inv;
+				}
+				elseif(@$_POST['searchstatus'] == $inv->status)
+				{
+					$invitations[]=$inv;
+				}
+
+			}
+
+			$data['invitations'] = $invitations;
+
 			$this->load->view('admin/contractbid',$data);
+		}
 	}
     
     
@@ -1780,7 +1962,7 @@ class quote extends CI_Controller
             $to = implode(',',$to);
             $this->email->to($to); 
             $data['email_body_title'] = "Dear Admin";
-    		$data['email_body_content'] = "This is a notification of bid details by ".$purchaser->companyname." for PO# ".$quote->ponum.".<br/><br/>
+    		$data['email_body_content'] = "This is a notification of bid details by ".$purchaser->companyname." for Contract ".$quote->ponum.".<br/><br/>
     		  	Please find the details below:<br/><br/>
     		  	$html
     		    ";
@@ -1788,7 +1970,7 @@ class quote extends CI_Controller
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
     		//echo($to.'<br/>');
     		//echo $body;
-           	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$purchaser->companyname);
+           	$this->email->subject('Bid Notification for Contract '.$quote->ponum. " by ".$purchaser->companyname);
             $this->email->message($send_body);	
             if(isset($attachment)) { 
                 $this->email->attach($attachment);
@@ -4240,9 +4422,9 @@ class quote extends CI_Controller
         // echo "<pre>",print_r($awarded); die;
         if (!$awarded)
             redirect('admin/quote/bids/' . $qid);
-        if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
+        /*if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
             redirect('admin/dashboard', 'refresh');
-        }
+        }*/
         //echo '<pre>';print_r($awarded);die;
         /*
         $this->db->select('shippingdoc.*, company.title');
@@ -5584,10 +5766,10 @@ $loaderEmail = new My_Loader();
 				    <td width="65%" align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contract":"Purchase Order".' Information</strong></font></th>
 			          </tr>
 				      <tr>
-				        <td width="33%" valign="top">PO#</td>
+				        <td width="33%" valign="top">'.($contract=="contract")?"Title":"PO#".'</td>
 				        <td width="7%" valign="top">&nbsp;</td>
 				        <td width="60%" valign="top">' . $quote->ponum . '</td>
 				      </tr>
@@ -5597,7 +5779,7 @@ $loaderEmail = new My_Loader();
 				        <td valign="top">' . $quote->subject . '</td>
 				      </tr>
 				      <tr>
-				        <td valign="top">PO# Date</td>
+				        <td valign="top">'.($contract=="contract")?"Award":"PO#".' Date</td>
 				        <td valign="top">&nbsp;</td>
 				        <td valign="top">' . $quote->podate . '</td>
 				      </tr>
@@ -5644,7 +5826,7 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Supplier</strong></font></td>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contractor":"Supplier".'</strong></font></td>
 				      </tr>
 				      <tr>
 				        <td width="33%" valign="top">Contact</td>
@@ -5667,7 +5849,7 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contractor":"Ship to".'</strong></font></td>
 				      </tr>
 				      <tr>
 				        <td>' . $awarded->shipto . '</td>
@@ -5681,13 +5863,26 @@ $loaderEmail = new My_Loader();
 
 				<table width="100%" cellspacing="0" cellpadding="4">
 				  <tr>
-	              <td>PO Details:</td>
+	              <td>'.($contract=="contract")?"Contract":"PO".' Details:</td>
 	              </tr>
 	             </table>
 
-	             <br/>
-
-				<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+	             <br/>';
+				if($contract=="contract") {
+				
+					$pdfhtml .='<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				  <thead>
+				  <tr>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Filename</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>				   
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
+				  </tr>
+				  </thead>';						
+				
+				}else {
+					
+					$pdfhtml .='<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				  <thead>
 				  <tr>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
@@ -5700,10 +5895,28 @@ $loaderEmail = new My_Loader();
 				  </tr>
 				  </thead>
 				  ';
+					
+				}
             $i = 0;
             $totalprice = 0;
-            foreach ($company['items'] as $item) {
+            
+            if($contract=="contract") {
+            
+            	foreach ($company['items'] as $item) {
                 $pdfhtml.='<tr nobr="true">
+					    <td style="border: 1px solid #000000;">' . $item->attach . '</td>
+					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>					    
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->ea . '</td>
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
+					  </tr>
+					  ';
+                	$totalprice += $item->totalprice;
+            	}            
+            
+            }else{
+            	
+            	foreach ($company['items'] as $item) {
+            		$pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
 					    <td style="border: 1px solid #000000;">' . (@$item->willcall)?'For Pickup/Will Call':@$item->daterequested . '</td>
@@ -5713,8 +5926,10 @@ $loaderEmail = new My_Loader();
 					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
 					  </tr>
 					  ';
-                $totalprice += $item->totalprice;
+            		$totalprice += $item->totalprice;
+            	}
             }
+            
             $config = (array) $this->settings_model->get_current_settings();
             $config = array_merge($config, $this->config->config);
             $taxtotal = $totalprice * $config['taxpercent'] / 100;
@@ -5756,7 +5971,9 @@ $loaderEmail = new My_Loader();
 
             $pdf->setPrintFooter(false);
             $pdf->setPrintHeader(true);
-
+			if($contract=='contract')
+            $pdf->SetHeaderData('', '', $cpa->companyname . '', 'Contract Award');
+            else 
             $pdf->SetHeaderData('', '', $cpa->companyname . '', 'Purchase Order');
 
             $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
@@ -6036,7 +6253,465 @@ $loaderEmail = new My_Loader();
 
       die;
     }
+    
+    
+    // ITEM PDF
+	/*function items_pdf($quoteid)
+	{
+		$company =  $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+	
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		$bid = $this->db->where('quote',$quoteid)->where('company',$company)->get('bid')->row();
+		$award = $this->quote_model->getawardedcontractbid($quoteid);
+		if($award)
+		{
+			$this->db->where('award',$award->id);
+			$this->db->order_by('company');
+			$allawardeditems = $this->db->get('awarditem')->result();
+		}
+		$itemswon = 0;
+		$itemslost = 0;
+		$data['awarditems'] = array();
+		foreach($allawardeditems as $ai)
+		{
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+				if($companyitem->itemcode)
+					$ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+					$ai->itemname = $companyitem->itemname;
+			}
+			$data['allawardeditems'][] = $ai;
+			if($ai->company == $company)
+				$itemswon++;
+			else
+				$itemslost++;
+		}
+		
+		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+		$data['itemswon'] = $itemswon;
+		$data['itemslost'] = $itemslost;
+		$data['quote'] = $quote;
+		$data['bid'] = $bid;
+		$data['award'] = $award;
+		$data['company'] = $purchaser;
+			
+		$quote = $data['quote'];
+	
+		//=========================================================================================
+		$customer_name = '';
+		
+		$allawardeditems_for_c = $allawardeditems;
+		foreach($allawardeditems_for_c as $ai)
+		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			break;
+		}		
+				
+		$header[] = array('<b>Customer</b>' , $customer_name ,'' , '' , '' , '', '');
+		
+		$header[] = array('<b>Report Type:</b>' , 'PO Performance','' , '' , '' , '', '');
+		
+		$header[] = array('' , '','' , '' , '' , '', '');	
+		$header[] = array('<b>PO Performance :</b>' , $quote->ponum,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('<b>Items Won :</b>' , $itemswon,'' , '' , '' , '', '');
+		$header[] = array('<b>Items Lost :</b>' , $itemslost,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+	
+		$header[] = array('<b>Files</b>' , '<b>Description</b>','<b>Price</b>' , '<b>Total</b>' , '<b>Requested</b>');
+			
+		$i = 0;
+		
+		foreach($allawardeditems as $ai)
+		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			
+			
+			
+			
+			
+			//--------------------------------------------------------------
+			$i++;
+			$header[] = array($ai->attach , $ai->itemname,'$ '. $ai->ea.chr(160) , '$ '.round($ai->totalprice,2).chr(160),$ai->daterequested);
+		}
+		$headername = "BID PERFORMANCE";
+    	createOtherPDF('Contract_Quote_items_', $header,$headername);
+    	die();
+	 
+	
+		//===============================================================================
+	
+	}*/
+	
+	function items_pdf($quoteid)
+	{
+	
+	
+    	$awarded = $this->quote_model->getawardedcontractbid($quoteid);
+    	
+        $quote = $awarded->quotedetails;
+        
+        $project = $this->project_model->get_projects_by_id($quote->pid);
 
+        //echo "<pre>",print_r($awarded);die;
+        $companies = array();
+        foreach ($awarded->items as $item) {
+        	if (!isset($companies[$item->companydetails->id])) {
+        		$companies[$item->companydetails->id] = array();
+
+        		$companies[$item->companydetails->id]['id'] = $item->companydetails->id;
+        		$companies[$item->companydetails->id]['title'] = $item->companydetails->companyname;
+        		$companies[$item->companydetails->id]['email'] = $item->companydetails->email;
+        		$companies[$item->companydetails->id]['contact'] = $item->companydetails->username;
+
+
+        		$companies[$item->companydetails->id]['items'] = array($item);
+        	} else {
+        		$companies[$item->companydetails->id]['items'][] = $item;
+        	}
+        }
+        // echo "<pre>",print_r($companies); echo "conractval=".$contract;
+        $config = (array) $this->settings_model->get_current_settings();
+        $config = array_merge($config, $this->config->config);
+        if (!class_exists('TCPDF')) {
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+        }
+        $this->db->where('id',$this->session->userdata('purchasingadmin'));
+        $cpa = $this->db->get('users')->row();
+        foreach ($companies as $company) {
+            $pdfhtml2 = '
+				<table width="100%" cellspacing="2" cellpadding="2">
+				  <tr>
+				    <td width="33%" align="left" valign="top">
+				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
+				        </tr>
+				      <tr>
+				        <td width="33%" valign="top">Project Title</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $project->title . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $project->address . '</td>
+				      </tr>
+				    </table>
+				    </td>
+				    <td width="10" align="left" valign="top">&nbsp;</td>
+				    <td width="65%" align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Contract Information</strong></font></th>
+			          </tr>
+				      <tr>
+				        <td width="33%" valign="top">Title</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $quote->ponum . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Subject</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->subject . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Award Date</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->podate . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td width="33%" valign="top">Contact</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">'.$cpa->fullname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Company</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->companyname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->address.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Phone</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->phone.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Fax</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->fax.'</td>
+				      </tr>
+				    </table></td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Contractor</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td width="33%" valign="top">Contact</td>
+				        <td width="2%" valign="top">&nbsp;</td>
+				        <td width="65%" valign="top">' . $company['title'] . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Company</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $company['contact'] . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Contractor</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td>' . $awarded->shipto . '</td>
+				      </tr>
+				    </table></td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+
+			</table>
+
+				<table width="100%" cellspacing="0" cellpadding="4">
+				  <tr>
+	              <td>Contract Details:</td>
+	              </tr>
+	             </table>
+
+	             <br/>
+
+				<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				  <thead>
+				  <tr>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Filename</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>				   
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
+				  </tr>
+				  </thead>
+				  ';
+            $pdfhtml = "";
+            $i = 0;
+            $totalprice = 0;
+            foreach ($company['items'] as $item) {
+                $pdfhtml2 .='<tr nobr="true">
+					    <td style="border: 1px solid #000000;">' . $item->attach . '</td>
+					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>					    
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->ea . '</td>
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
+					  </tr>
+					  ';
+                $totalprice += $item->totalprice;
+            }
+            $config = (array) $this->settings_model->get_current_settings();
+            $config = array_merge($config, $this->config->config);
+            $taxtotal = $totalprice * $config['taxpercent'] / 100;
+            $grandtotal = $totalprice + $taxtotal;
+
+            $pdfhtml2.='<tr>
+            <td colspan="2" rowspan="3">
+            <div style="width:70%">
+            <br/>
+            <h4 class="semi-bold">Terms and Conditions</h4>';
+                    
+            $pdfhtml2.='<h5 class="text-right semi-bold">Thank you for your business</h5>
+            </div>
+            </td>
+            <td align="right">Subtotal</td>
+            <td align="right">$ ' . number_format($totalprice, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Tax</td>
+            <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Total</td>
+            <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
+            </tr></table>
+            ';
+
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('');
+            $pdf->SetTitle('');
+            $pdf->SetSubject('');
+
+            $pdf->setHeaderFont(Array('helvetica', '', PDF_FONT_SIZE_MAIN));
+
+            $pdf->setPrintFooter(false);
+            $pdf->setPrintHeader(true);
+
+            $pdf->SetHeaderData('', '', $cpa->companyname . '', 'Contract Award');
+
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->AddPage('L', 'LETTER');
+
+            $pdf->SetFont('helvetica', '', 8, '', true);
+            $pdf->writeHTML($pdfhtml2, true, 0, true, true);
+            //$pdf->AddPage();
+
+            $pdf->lastPage();
+            $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_' . $company['id'] . '_BID PERFORMANCE.pdf';
+            $pdf->Output($pdfname, 'I');
+            //$pdfname = "BID PERFORMANCE";
+            //createOtherPDF('Contract_Quote_items_', $pdfhtml,$pdfname);
+        }
+	}
+	
+	
+	function items_export($quoteid)
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+	
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		$bid = $this->db->where('quote',$quoteid)->where('company',$company)->get('bid')->row();
+		$award = $this->quote_model->getawardedcontractbid($quoteid);
+		if($award)
+		{
+			$this->db->where('award',$award->id);
+			$this->db->order_by('company');
+			$allawardeditems = $this->db->get('awarditem')->result();
+		}
+		$itemswon = 0;
+		$itemslost = 0;
+		$data['awarditems'] = array();
+		foreach($allawardeditems as $ai)
+		{
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+				if($companyitem->itemcode)
+					$ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+					$ai->itemname = $companyitem->itemname;
+			}
+			$data['allawardeditems'][] = $ai;
+			if($ai->company == $company)
+				$itemswon++;
+			else
+				$itemslost++;
+		}
+		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+		$data['itemswon'] = $itemswon;
+		$data['itemslost'] = $itemslost;
+		$data['quote'] = $quote;
+		$data['bid'] = $bid;
+		$data['award'] = $award;
+		$data['company'] = $purchaser;
+			
+		$quote = $data['quote'];
+	
+		//=========================================================================================
+		$customer_name = '';
+		
+		$allawardeditems_for_c = $allawardeditems;
+		foreach($allawardeditems_for_c as $ai)
+		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			break;
+		}		
+				
+		$header[] = array('Customer' , $customer_name ,'' , '' , '' , '', '');
+		
+		$header[] = array('Report Type' , 'BID Performance','' , '' , '' , '', '');
+		
+		$header[] = array('' , '','' , '' , '' , '', '');	
+		$header[] = array('BID Performance :' , $quote->ponum,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('Items Won :' , $itemswon,'' , '' , '' , '', '');
+		$header[] = array('Items Lost :' , $itemslost,'' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+		$header[] = array('' , '','' , '' , '' , '', '');
+	
+		$header[] = array('File Name' , 'Description','Price' , 'Total');
+			
+		$i = 0;
+		
+		foreach($allawardeditems as $ai)
+		{
+						
+			$customer = $this->db->select('users.*')
+				 ->from('users')				
+				 ->where('id',$ai->purchasingadmin)
+				 ->get()->row();
+			$customer_name = $customer->companyname;
+			
+			
+			
+			
+			
+			//--------------------------------------------------------------
+			$i++;
+			$header[] = array($ai->attach , $ai->itemname, '$ '. $ai->ea.chr(160) , '$ '.round($ai->totalprice,2).chr(160));
+		}
+		createXls('Contract_Quote_items_'.$quoteid, $header);
+		die();
+	
+		//===============================================================================
+	
+	}
+	
+		
     // End
 }
 

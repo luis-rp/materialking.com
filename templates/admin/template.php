@@ -18,6 +18,7 @@ foreach ($pendingbids as $pending) {
         $pendingquotes[$pending->quote]['id'] = $pending->quote;
         $pendingquotes[$pending->quote]['count'] = 1;
         $pendingquotes[$pending->quote]['ponum'] = $pending->quotedetails->ponum;
+        $pendingquotes[$pending->quote]['potype'] = $pending->quotedetails->potype;
     } else {
         $pendingquotes[$pending->quote]['count'] ++;
     }
@@ -47,6 +48,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
             <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
 <?php } ?>
 
+		
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
          <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
@@ -458,7 +460,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     <ul class="dropdown-menu">
                                     <?php foreach ($pendingquotes as $pq) { ?>
                                             <li>
+                                            	<?php if ($pq['potype'] == 'Contract') { ?>
+                                            	<a href="<?php echo base_url(); ?>admin/quote/conbids/<?php echo $pq['id'] ?>">
+                                            	<?php } else { ?>
                                                 <a href="<?php echo base_url(); ?>admin/quote/bids/<?php echo $pq['id'] ?>">
+                                                <?php } ?>
                                                     <?php echo $pq['ponum']; ?> - <?php echo $pq['count']; ?>
                                                 </a>
                                             </li>
@@ -524,7 +530,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);  ?>						
-              <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                                <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
 
@@ -550,6 +556,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </li>
                                 <li <?php if ($menu == 'catcode') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
+                                </li>
+                                 <li <?php if ($menu == 'contractcatcode') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractcatcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Contract Category</a>
                                 </li>
                                 <li <?php if ($menu == 'type') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>

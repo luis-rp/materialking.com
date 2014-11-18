@@ -128,7 +128,8 @@ class Admin extends CI_Controller {
 		$data ['userarrays'] = $this->adminmodel->getUserType ();
 		$this->db->order_by('catname', 'ASC');
 		$parent=0;
-        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
+        //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
+        $data['categories'] = $this->db->get('contractcategory')->result();
 		$this->load->view ( 'admin/adminEdit', $data );
 	}
 
@@ -227,7 +228,8 @@ $loaderEmail = new My_Loader();
 		//$cat = $this->db->get_where('users',array('id'=>$id));
 		$this->db->order_by('catname', 'ASC');
 		$parent=0;
-        $data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
+        //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
+        $data['categories'] = $this->db->get('contractcategory')->result();
 		$data ['link_back'] = anchor ('admin/admin/index/', 'Back to list of User List', array ('class' => 'back' ) );
 		//echo "<pre>"; print_r($cat); die;
 		$this->load->view ('admin/adminEdit', $data );

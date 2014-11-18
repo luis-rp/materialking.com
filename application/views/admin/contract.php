@@ -671,7 +671,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    	<div class="row span12">
 				    <div class="control-group span4">
 					<select onchange="defaultcategory(this.value)" id="purchasercategory" name="purchasercategory" class="costcode">
-		    				<?php if(count($purchasercategories)>0) { foreach($purchasercategories as $cat){?>
+		    				<?php if(count($purchasercategories1)>0) { foreach($purchasercategories1 as $cat){?>
 		    				<option value="<?php echo $cat->id;?>" 
 		    				<?php // if($q->category==$cat->id){echo 'SELECTED';}?>>
 		    				<?php echo $cat->catname;?>

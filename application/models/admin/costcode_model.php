@@ -78,7 +78,7 @@ class costcode_model extends Model
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
 							
-					}	
+					}
 						
 						$query2 = $this->db->query ($sql2);
 						
@@ -311,17 +311,20 @@ class costcode_model extends Model
 		return NULL;
 	}
 	
-	function checkDuplicateCode($code, $edit_id = 0)
+	function checkDuplicateCode($code, $edit_id = 0,$project)
 	{
 		if($edit_id > 0)
 		{
+			
 		    $this->db->where(array('id !='=> $edit_id,'code'=>$code,'purchasingadmin'=> $this->session->userdata('purchasingadmin') ));
 		}
 		else
 		{
-			$this->db->where(array('purchasingadmin'=> $this->session->userdata('purchasingadmin'),'code'=>$code));
+			
+			$this->db->where(array('purchasingadmin'=> $this->session->userdata('purchasingadmin'),'code'=>$code,'project'=>$project));
 		}
 		$query = $this->db->get ('costcode' );
+		
 		$result = $query->result ();
 		
 	    if($query->num_rows>0)

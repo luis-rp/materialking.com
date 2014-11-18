@@ -759,6 +759,9 @@ class Dashboard extends CI_Controller
 					foreach($awarded->items as $ai)
 					{
 						$awardeditemcompany[]=$ai->itemcode . $ai->company;
+						if($ai->quantity==0 || $ai->quantity="")
+						$awardedtotal+=$ai->ea;
+						else
 						$awardedtotal+=$ai->quantity * $ai->ea;
 					}
 					$awardedtotal = round($awardedtotal,2);

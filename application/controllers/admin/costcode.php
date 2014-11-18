@@ -630,14 +630,14 @@ class costcode extends CI_Controller {
 
     function add() {
         $this->_set_fields();
-        $data ['heading'] = 'Add New Costcode';
+        $data ['heading'] = 'Add New Costcode First';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/costcode/add_costcode');
-
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
        
         $mp = $this->session->userdata('managedprojectdetails');
+       
         if(@$mp->id){
         	
         	$data['parents'] = $mp->id;
@@ -683,7 +683,8 @@ class costcode extends CI_Controller {
 
         $this->_set_fields();
         $this->_set_rules();
-
+       
+       
         if ($this->validation->run() == FALSE) {
             $data ['message'] = $this->validation->error_string;
             if ($this->session->userdata('usertype_id') > 1)
@@ -693,11 +694,10 @@ class costcode extends CI_Controller {
             if ($this->session->userdata('usertype_id') > 1)
                 $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
             $data['projects'] = $this->db->get('project')->result();
-
             $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
             $this->load->view('admin/costcode', $data);
         }
-        elseif ($this->costcode_model->checkDuplicateCode($this->input->post('code'), 0)) {
+        elseif ($this->costcode_model->checkDuplicateCode($this->input->post('code'), 0,$this->input->post('project'))) {       	
             $data ['message'] = 'Duplicate Costcode';
             $data['parents'] = $this->db->get('costcode')->result();
             $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
@@ -714,6 +714,8 @@ class costcode extends CI_Controller {
     function update($id) {
         $this->_set_fields();
         $item = $this->costcode_model->get_costcodes_by_id($id);
+        
+        
         $this->validation->id = $id;
         $this->validation->code = $item->code;
         $this->validation->cost = $item->cost;
@@ -730,8 +732,7 @@ class costcode extends CI_Controller {
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['projects'] = $this->db->get('project')->result();
 
-        $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, $item->parent);
-
+        $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo(0, 0, $item->parent);
         $data ['heading'] = 'Update Cost Code';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/costcode/updatecostcode');
@@ -743,7 +744,7 @@ class costcode extends CI_Controller {
         $data ['action'] = site_url('message/updatecostcode');
         $this->_set_fields();
         $this->_set_rules();
-
+      
         $itemid = $this->input->post('id');
 
         if ($this->validation->run() == FALSE) {

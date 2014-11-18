@@ -1204,13 +1204,13 @@ class quote_model extends Model {
           return NULL;
 
     }
-    function checkDuplicatePonum($ponum, $edit_id = 0) 
+    function checkDuplicatePonum($ponum, $edit_id = 0,$pid) 
     {
         $pa = $this->session->userdata('purchasingadmin');
         if ($edit_id > 0) {
             $this->db->where(array('id !=' => $edit_id,'purchasingadmin' => $pa, 'ponum' => $ponum));
         } else {
-            $this->db->where(array('purchasingadmin' => $pa, 'ponum' => $ponum));
+            $this->db->where(array('purchasingadmin' => $pa, 'ponum' => $ponum,'pid'=>$pid));
         }
         $query = $this->db->get('quote');
         $result = $query->result();

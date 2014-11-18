@@ -17,7 +17,7 @@
 		<td>Contact: <?php // echo $company->contact;?></td>
 	</tr> -->
 	<tr>
-		<td>Quote Date: <?php echo $quote->podate;?></td>
+		<td>Award Date: <?php echo $quote->podate;?></td>
 	</tr>
 	<tr>
 		<td>Due Date: <?php echo $quote->duedate;?></td>
@@ -32,7 +32,7 @@
 			<table>
         		<tr>       
         			<th>Filename</th>     		
-            		<th>Itemname</th>            		
+            		<th>Description</th>            		
             		<th>Price</th>            		
         		</tr>
         		<?php
