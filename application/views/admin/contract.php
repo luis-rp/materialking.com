@@ -34,6 +34,7 @@ $(document).ready(function(){
 	$('#deliverydate').datepicker();
 	$('#podate').datepicker();
 	$('#duedate').datepicker();
+	$('#startdate').datepicker();
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();
 	//$('.price').priceFormat({prefix: '$ ', centsSeparator: '.',thousandsSeparator: ','});
@@ -465,9 +466,9 @@ function savclose()
 			      <input type="text" id="duedate" name="duedate" class="input small span2"
 			      	value="<?php echo $this->validation->duedate; ?>" data-date-format="mm/dd/yyyy">
 			      &nbsp; &nbsp; &nbsp; &nbsp; 
-		      Project Start Date: &nbsp; &nbsp; 
-		      <input type="text" id="startdate" name="startdate" class="input small span2"
-		      value="<?php echo $this->validation->startdate; ?>" data-date-format="mm/dd/yyyy"> &nbsp; &nbsp; &nbsp; &nbsp; 
+		          Project Start Date: &nbsp; &nbsp; 
+		      <input type="text" id="startdate" name="startdate" class="input small span2" value="<?php echo $this->validation->startdate; ?>" 
+			      	data-date-format="mm/dd/yyyy">
 			      <input name="add" type="button" class="btn btn-primary" value="Save &amp; Continue" onclick="$('#mainform').submit();"/>
 			    </div>
 			    <div class="controls">
