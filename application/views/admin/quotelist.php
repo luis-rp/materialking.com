@@ -21,7 +21,7 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
-	$('.datefield').datepicker();
+	$('.datefield').datepicker();	
 });
 </script>
 
@@ -64,7 +64,21 @@ $(document).ready(function(){
 			//$("#quoteitemdetailsm").modal();
 		});
 	}
-
+	
+	function viewcontractitems(quoteid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/quote/getcontractitemsajax/';		
+		//alert(serviceurl);
+		$.ajax({
+		      type:"post",
+		      url: serviceurl,
+		      data: "quote="+quoteid
+		    }).done(function(data){
+		        $("#quotecontractitems").html(data);
+		        $("#contractitemsmodal").modal();
+		    });
+	}
+	
 	function closepop(){
 		$("#quoteitemdetails").html('');
 		$("#quoteitemdetails").css({display: "none"});
@@ -139,6 +153,7 @@ $(document).ready(function(){
 	},500);
 });
 
+
 </script>	
 	
 <section class="row-fluid">
@@ -192,8 +207,9 @@ $(document).ready(function(){
 							<?php if(isset($company->title) && $company->title!="") echo $company->title?>
 						</option>
 					 <?php } }?>
-				    </select>     
+				    </select>                	
                 	&nbsp;&nbsp;
+                	
                 	<input type="submit" value="Filter" class="btn btn-primary"/>
                 </form>
                 
@@ -265,6 +281,20 @@ $(document).ready(function(){
             
         </div>
 
+        
+        <div id="contractitemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            	<h3>Contract Items<span id="minpriceitemcode"></span></h3>
+        	</div>
+        	<div class="modal-body" id="quotecontractitems">
+        	
+        	</div>
+            
+        </div>
+        
+        
         <div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
         	
             <div class="modal-header">

@@ -152,10 +152,14 @@ class quote extends CI_Controller
                     $quote->pricerank = '-';
                 elseif (!@$quote->awardedbid->items)
                     $quote->pricerank = '-';
-                elseif (@$quote->awardedbid->quotedetails->potype == "Contract")
-                    $quote->pricerank = '-';
+                /*elseif (@$quote->awardedbid->quotedetails->potype == "Contract")
+                    $quote->pricerank = '-';*/
                 else {
-                    $quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+                	
+                	if(@$quote->awardedbid->quotedetails->potype == "Contract")
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+                    else 
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
 					/*
                     $totalcount = count($quote->awardedbid->items);
                     $lowcount = 0;
@@ -175,7 +179,7 @@ class quote extends CI_Controller
                     else
                         $quote->pricerank = 'poor';
                     */
-                    if($quote->awardedbid->pricerank)
+                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
                     {
                     	if ($quote->awardedbid->pricerank == 'great')
                     	$quote->pricerank = 4;
@@ -481,6 +485,76 @@ class quote extends CI_Controller
         echo $ret;
     }
 
+    
+    
+    function getcontractitemsajax()
+    {
+        $id = $_POST['quote'];
+        $quote = $this->quote_model->get_quotes_by_id($id);
+        //echo '<pre>';print_r($quote);die;
+        if (!$quote) {
+            die;
+        }
+        $quoteitems = $this->quote_model->getitems($id);
+        if (!$quoteitems) {
+            die('No items');
+        }
+        //$this->load->model('admin/project_model');
+        $awarded = $this->quote_model->getawardedbid($id);
+        $awardeditems = array();
+        if ($awarded) {
+            if ($awarded->items) {
+                $awardeditems = $awarded->items;
+            }
+        }
+        $ret = '<h5>Title:' . $quote->ponum . '&nbsp; &nbsp;' . anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view')) . '</h5>';
+        $ret .= '<table class="table table-bordered">';
+        $ret .= '<tr><th>Filename</th><th>Price Ea</th><th>% Complete</th><th>% Due</th><th>Status</th></tr>';
+        foreach ($quoteitems as $item)
+        {
+            $awarded = false;
+            $status = '-';
+            $paidprice = '';
+            foreach ($awardeditems as $ai)
+            {
+                if ($ai->itemcode == $item->itemcode)
+                {
+                    $awarded = true;
+                    $paidprice = $ai->ea;
+                    $status = 'Not Complete';
+                    if ($ai->quantity == $ai->received)
+                    {
+                        $status = 'Complete';
+                    }
+                    $item->quantity = $ai->quantity;
+                    $item->received = $ai->received;
+					$item->ea = $ai->ea;
+                }
+            }
+            //$avgprice = $this->itemcode_model->getdaysmeanprice($item->itemcode);
+            $lowestprice = $this->itemcode_model->getlowestquoteprice($item->itemid);
+            if ($lowestprice < $paidprice)
+                $ps = 'high';
+            elseif ($lowestprice > $paidprice)
+                $ps = 'good1';
+            else
+                $ps = 'equal';
+            //$ps = 'paid-'.$paidprice. $ps.' avg for 120 days-'. $avgprice;
+             if($awarded)
+             {
+             	if($item->received == '')
+             		$received = 0;
+             	else
+             		$received = $item->received;
+                $ret .= '<tr><td><!-- <a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">-->'.$item->attach.'</a></td><td>'.$item->ea.'</td><td>' . $received. '</td><td>100</td><td>' . $status . '</td></tr>';
+             }
+        }
+        $ret .= '</table>';
+        echo $ret;
+    }
+    
+    
+    
     function duplicate()
     {
         $post = $this->input->post();
@@ -602,6 +676,7 @@ class quote extends CI_Controller
         $this->validation->ponum = $item->ponum;
         $this->validation->podate = $item->podate;
         $this->validation->duedate = $item->duedate;
+        $this->validation->startdate = $item->startdate;
         $this->validation->subject = $item->subject;
         $this->validation->company = $item->company;
         $this->validation->quoteattachment = $item->quoteattachment;
@@ -3140,6 +3215,7 @@ class quote extends CI_Controller
             $itemarray['itemname'] = $item['itemname'];           
             $itemarray['ea'] = $item['ea'];
             $itemarray['totalprice'] = $item['totalprice'];            
+            $itemarray['daterequested'] = $item['daterequested'];
             $itemarray['costcode'] = $item['costcode'];
             $itemarray['attach'] = $item['attach'];
             $itemarray['notes'] = $item['notes'];
@@ -5765,12 +5841,21 @@ $loaderEmail = new My_Loader();
 				    <td width="10" align="left" valign="top">&nbsp;</td>
 				    <td width="65%" align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
-				      <tr>
-				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contract":"Purchase Order".' Information</strong></font></th>
-			          </tr>
-				      <tr>
-				        <td width="33%" valign="top">'.($contract=="contract")?"Title":"PO#".'</td>
-				        <td width="7%" valign="top">&nbsp;</td>
+				      <tr>';
+            		   if($contract=="contract")
+				       $pdfhtml .= '<th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Contract Information</strong></font></th>';
+				       else
+				       $pdfhtml .= '<th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>';
+				       
+			          $pdfhtml .= '</tr>
+				      <tr>';
+
+			           if($contract=="contract")
+				       $pdfhtml .= '<td width="33%" valign="top">Title</td>';
+				       else 
+				       $pdfhtml .= '<td width="33%" valign="top">PO#</td>';
+				       
+				       $pdfhtml .= '<td width="7%" valign="top">&nbsp;</td>
 				        <td width="60%" valign="top">' . $quote->ponum . '</td>
 				      </tr>
 				      <tr>
@@ -5778,9 +5863,14 @@ $loaderEmail = new My_Loader();
 				        <td valign="top">&nbsp;</td>
 				        <td valign="top">' . $quote->subject . '</td>
 				      </tr>
-				      <tr>
-				        <td valign="top">'.($contract=="contract")?"Award":"PO#".' Date</td>
-				        <td valign="top">&nbsp;</td>
+				      <tr>';
+				       
+				      if($contract=="contract")
+				      $pdfhtml .= ' <td valign="top">Award Date</td>';
+				      else 
+				      $pdfhtml .= ' <td valign="top">PO# Date</td>';
+				      
+				      $pdfhtml .= '<td valign="top">&nbsp;</td>
 				        <td valign="top">' . $quote->podate . '</td>
 				      </tr>
 				    </table></td>
@@ -5825,9 +5915,14 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">&nbsp;</td>
 				    <td align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
-				      <tr>
-				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contractor":"Supplier".'</strong></font></td>
-				      </tr>
+				      <tr>';
+				      
+				    if($contract=="contract")
+				      $pdfhtml .= '<td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Contractor</strong></font></td>';
+				    else 
+				      $pdfhtml .= '<td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Supplier</strong></font></td>';
+				      
+				      $pdfhtml .= '</tr>
 				      <tr>
 				        <td width="33%" valign="top">Contact</td>
 				        <td width="2%" valign="top">&nbsp;</td>
@@ -5848,9 +5943,14 @@ $loaderEmail = new My_Loader();
 				  <tr>
 				    <td align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
-				      <tr>
-				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>'.($contract=="contract")?"Contractor":"Ship to".'</strong></font></td>
-				      </tr>
+				      <tr>';
+				      
+				    if($contract=="contract")
+				      $pdfhtml .= '<td bgcolor="#000033"><font color="#FFFFFF"><strong>Contractor</strong></font></td>';
+				    else 
+				      $pdfhtml .= '<td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>';
+				      
+				      $pdfhtml .=' </tr>
 				      <tr>
 				        <td>' . $awarded->shipto . '</td>
 				      </tr>
@@ -5859,15 +5959,22 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">&nbsp;</td>
 				  </tr>
 
-			</table>
-
-				<table width="100%" cellspacing="0" cellpadding="4">
+			</table>';
+				
+				if($contract=="contract") {
+					$pdfhtml .='<table width="100%" cellspacing="0" cellpadding="4">
 				  <tr>
-	              <td>'.($contract=="contract")?"Contract":"PO".' Details:</td>
+	              <td>Contract Details:</td>
 	              </tr>
-	             </table>
-
-	             <br/>';
+	             </table>';
+				} else {
+					$pdfhtml .='<table width="100%" cellspacing="0" cellpadding="4">
+				  <tr>
+	              <td>PO Details:</td>
+	              </tr>
+	             </table>';
+				}
+	             $pdfhtml .='<br/>';
 				if($contract=="contract") {
 				
 					$pdfhtml .='<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
@@ -5936,7 +6043,7 @@ $loaderEmail = new My_Loader();
             $grandtotal = $totalprice + $taxtotal;
 
             $pdfhtml.='<tr>
-            <td colspan="5" rowspan="3">
+            <td colspan="2" rowspan="3">
             <div style="width:70%">
             <br/>
             <h4 class="semi-bold">Terms and Conditions</h4>';
@@ -6141,6 +6248,7 @@ $loaderEmail = new My_Loader();
         $fields ['ponum'] = 'ponum';
         $fields ['podate'] = 'PO Date';
         $fields ['duedate'] = 'Due Date';
+        $fields ['startdate'] = 'startdate';
         $fields ['company'] = 'company';
         $fields ['subject'] = 'subject';
         $fields ['deliverydate'] = 'delivery date';
@@ -6709,6 +6817,720 @@ $loaderEmail = new My_Loader();
 	
 		//===============================================================================
 	
+	}
+	
+	
+	
+	
+	function trackpurchaser($quoteid,$award='')
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		
+		$awardeditems = $this->quotemodel->getawardeditems($award,$company);
+		if(!$awardeditems)
+			redirect('admin/quote/items/'.$quoteid);
+		$data['awarditems'] = array();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$bid = $this->db->get('bid')->row();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$this->db->order_by('uploadon','DESC');
+		$docs = $this->db->get('shippingdoc')->result();
+		
+		$data['shippingdocs'] = $docs;
+		
+		$complete = true;
+		$noitemsgiven = true;
+		$allawarded = true;
+		foreach($awardeditems as $ai)
+		{
+		
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+			    if($companyitem->itemcode)
+				    $ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+				    $ai->itemname = $companyitem->itemname;
+			}
+			
+			if($ai->received < $ai->quantity)
+				$complete = false;
+			if($ai->company != $company)
+				$allawarded = false;
+			if($ai->received > 0)
+				$noitemsgiven = false;
+			
+			$ai->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+			
+			$data['awarditems'][] = $ai;
+		}
+		if(!$noitemsgiven)
+		{
+			if($complete)
+			{
+				$quote->status = 'Completed';
+				$quote->progress = 100;
+				$quote->mark = "progress-bar-success";
+			}
+			else
+			{
+				$quote->status = 'Partially Completed';
+				$quote->progress = 80;
+				$quote->mark = "progress-bar-success";
+			}
+		}
+		else
+		{
+			$quote->status = 'Awarded';
+			$quote->progress = 60;
+			$quote->mark = "progress-bar-success";
+		}
+		
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->where('quote',$quoteid)->where('company',$company)
+		             ->get()->result();
+		
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+		
+		$invs = $this->quotemodel->getinvoices($company);
+		$invoices = array();
+		
+		foreach($invs as $i)
+		{		   
+		    if(isset($i) && isset($i->quote) && isset($i->quote->id) && $i->quote->id == $quoteid)			
+			    $invoices[]=$i;
+		}
+		//print_r($invoices);die;
+		$data['quote'] = $quote;
+		$data['award'] = $award;
+		$data['invoices'] = $invoices;
+		$data['settings'] = $settings;
+		$data['shipments'] = $shipments;
+		
+		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		
+		$messagesql = "SELECT * FROM ".$this->db->dbprefix('message')." WHERE quote='{$quoteid}'";
+		$message = $this->db->query($messagesql)->row();		
+		if($message){
+			$data['messagekey'] = $message->messagekey;
+		}
+		
+		//for export link
+		$data['quoteid'] = $quoteid;
+		$data['award']   = $award;
+								
+		$this->load->view('admin/trackpurchaser',$data);
+	}
+	
+	
+	
+	function shipitems($quoteid,$awardid)
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+			
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+	    $awardeditems = $this->quotemodel->getawardeditems($awardid,$company);
+	    
+	    //first check if any item is trying to ship with quantity more than due.
+	    foreach($awardeditems as $ai)
+	    {
+	        
+		    $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+			if(isset($_POST['quantity'.$ai->id]))                            
+	        $quantity = $_POST['quantity'.$ai->id];
+	        else 
+	        $quantity = 0;
+	        
+	        $invoicenum = $_POST['invoicenum'.$ai->id];
+	        if( $quantity && $invoicenum && $quantity + $pendingshipments > ($ai->quantity - $ai->received) )
+	        {
+	            //you cannot ship more than due quantity.
+	            $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">
+You cannot ship more than due quantity, including pending shipments.</div></div></div>');
+		        redirect('quote/track/'.$quoteid.'/'.$awardid,'refresh');
+	        }
+	    }
+	    $shipitems = '';
+            $shippingDocInvouceNum = $_POST['invoicenum'.$awardeditems[0]->id];
+	    foreach($awardeditems as $ai)
+	    {
+                $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+            if(isset($_POST['quantity'.$ai->id]))    
+	        $quantity = $_POST['quantity'.$ai->id];
+	        else 
+	        $quantity = 0;
+	        
+	        $invoicenum = $_POST['invoicenum'.$ai->id];
+	        if( $quantity && $invoicenum && $quantity <= $ai->quantity - $ai->received )
+	        {
+	            $arr = array();
+	            $arr['quantity'] = $quantity;
+	            $arr['invoicenum'] = $invoicenum;
+	            $arr['purchasingadmin'] = $quote->purchasingadmin;
+	            $arr['quote'] = $quote->id;
+	            $arr['company'] = $company;
+	            $arr['awarditem'] = $ai->id;
+	            $arr['itemid'] = $ai->itemid;
+	            $arr['shipdate'] = date('Y-m-d');
+	            $arr['accepted'] = 0;
+	            //print_r($arr);
+	            $this->db->insert('shipment',$arr);
+	            
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$pendingshipments." Pending Acknowledgement )</td></tr>";
+	        }
+	    }
+	    
+		if(is_uploaded_file($_FILES['filename']['tmp_name']))
+		{
+			$ext = end(explode('.', $_FILES['filename']['name']));
+			$nfn = md5(date('u').uniqid()).'.'.$ext;
+			if(move_uploaded_file($_FILES['filename']['tmp_name'], "uploads/shippingdoc/".$nfn))
+			{
+			    $insert = array();
+			    $insert['purchasingadmin'] = $_POST['purchasingadmin'];
+			    $insert['quote'] = $_POST['quote'];
+				$insert['filename'] = $nfn;
+				$insert['company'] = $company;
+				$insert['invoicenum'] = $shippingDocInvouceNum;
+				$insert['uploadon'] = date('Y-m-d');
+				
+				$this->db->insert('shippingdoc',$insert);
+			}
+		}
+		if($shipitems)
+		{
+			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
+    	    $settings = (array)$this->homemodel->getconfigurations ();
+    		$this->load->library('email');
+    		$config['charset'] = 'utf-8';
+    		$config['mailtype'] = 'html';
+    		$this->email->initialize($config);
+    		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+    		$this->email->from($purchaser->email);
+    		if($pa)
+    		$this->email->to($pa->email);
+    		$subject = 'Shipment made by supplier';
+    		
+    		$data['email_body_title']  = "Supplier {$purchaser->compayname} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
+    		$data['email_body_content'] = "<br><br>Details:".$shipitems;
+    		$loaderEmail = new My_Loader();
+    		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+    		$this->email->subject($subject);
+    		$this->email->message($send_body);
+    		$this->email->set_mailtype("html");
+    		$this->email->reply_to($purchaser->email);
+    		$this->email->send();
+		}
+		redirect('admin/quote/trackpurchaser/'.$quoteid.'/'.$awardid);
+	}
+	
+	
+	
+	function track_purchase_export($quoteid,$award='')
+	{
+				
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		
+		$awardeditems = $this->quotemodel->getawardeditems($award,$company);
+		if(!$awardeditems)
+			redirect('admin/quote/contractitems/'.$quoteid);
+		$data['awarditems'] = array();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$bid = $this->db->get('bid')->row();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$this->db->order_by('uploadon','DESC');
+		$docs = $this->db->get('shippingdoc')->result();
+		
+		$data['shippingdocs'] = $docs;
+		
+		$complete = true;
+		$noitemsgiven = true;
+		$allawarded = true;
+		foreach($awardeditems as $ai)
+		{
+		
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+			    if($companyitem->itemcode)
+				    $ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+				    $ai->itemname = $companyitem->itemname;
+			}
+			
+			if($ai->received < $ai->quantity)
+				$complete = false;
+			if($ai->company != $company)
+				$allawarded = false;
+			if($ai->received > 0)
+				$noitemsgiven = false;
+			
+			$ai->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+			
+			$data['awarditems'][] = $ai;
+		}
+		if(!$noitemsgiven)
+		{
+			if($complete)
+			{
+				$quote->status = 'Completed';
+				$quote->progress = 100;
+				$quote->mark = "progress-bar-success";
+			}
+			else
+			{
+				$quote->status = 'Partially Completed';
+				$quote->progress = 80;
+				$quote->mark = "progress-bar-success";
+			}
+		}
+		else
+		{
+			$quote->status = 'Awarded';
+			$quote->progress = 60;
+			$quote->mark = "progress-bar-success";
+		}
+		
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->where('quote',$quoteid)->where('company',$company)
+		             ->get()->result();
+		
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+		
+		$invs = $this->quotemodel->getinvoices($company);
+		$invoices = array();
+		foreach($invs as $i)
+		{		   
+		    if(isset($i) && isset($i->quote) && isset($i->quote->id) && $i->quote->id == $quoteid)			
+			    $invoices[]=$i;
+		}
+				
+		//print_r($invoices);die;
+		$data['quote'] = $quote;
+		$data['award'] = $award;
+		$data['invoices'] = $invoices;
+		$data['settings'] = $settings;
+		$data['shipments'] = $shipments;
+		
+		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		
+		//  $this->load->view('quote/track',$data);
+		
+		//--------------------------------------------------------------------------
+		
+		$shippingdocs = $data['shippingdocs'];
+		
+		
+		$purchasingadmin = $data['purchasingadmin'];
+		
+		$header[] = array('Report Type','Quote Performance','','','','','','','');
+				
+		if(isset($quote->podate))
+		{ 
+			$order_date = $quote->podate; 
+			$header[] = array('Award Date',$order_date ,'','','','','','','');
+		}
+			
+		if(isset($purchasingadmin->companyname))
+		{
+			$companyname_name =  $purchasingadmin->companyname;
+			$header[] = array('Company',$companyname_name ,'','','','','','','');
+		}
+				
+		$header[] = array('','' ,'','','','','','','');
+		$header[] = array('Contract Progress',$quote->progress.'%'.chr(160) ,'','','','','','','');
+		
+		$header[] = array('','' ,'','','','','','','');
+		
+		
+		
+		
+		
+		
+		
+		$header[] = array('File','Description','Price','Total','Requested','Notes','Shipped','Due');
+		
+		$awarditems = $data['awarditems'];
+			
+		$i = 0;
+		foreach($awarditems as $ai)
+		{
+
+
+
+			$i++;
+										
+			$itemname = '';
+			if(trim($ai->itemname) != '')
+			{			
+				$itemname = '('.$ai->itemname.')';
+			}
+			
+			//$due = $ai->quantity - $ai->received;
+			$due = '100%';
+			
+			if($ai->pendingshipments)
+			{
+                 $due.=  $ai->pendingshipments.'(Pending Acknowledgement)';
+            }
+						
+			$header[] = array($ai->attach,$ai->itemname, '$'.$ai->ea.chr(160) ,'$'.round($ai->totalprice,2).chr(160),$ai->daterequested,$ai->notes,$ai->received,$due);							
+										
+		}								
+										
+										
+		if($shippingdocs)
+		{		
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Existing Documents','' ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');								
+		
+			
+			
+			$header[] = array('Date','REF#' ,'','','','','','','');	
+		
+			foreach($shippingdocs as $sd)
+			{
+				$header[] = array(date("m/d/Y",  strtotime($sd->uploadon)),$sd->invoicenum ,'','','','','','','');		
+			}
+			$header[] = array('','' ,'','','','','','','');				
+		}
+		
+		
+		
+		if($shipments)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Shipments Made For PO#', $quote->ponum ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');	
+		
+		
+			$header[] = array('Ref#','Item' ,'Quantity','Sent On','Status','','','','');	
+		
+			foreach($shipments as $s)
+			{
+				$ship_status = $s->accepted?'Accepted':'Pending';
+				$header[] = array($s->invoicenum,$s->itemname ,$s->quantity,date('m/d/Y',strtotime($s->shipdate)), $ship_status ,'','','','');
+			}				
+		}
+		
+		
+		
+		if($invoices)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('Existing Invoices For PO#',  $quote->ponum ,'','','','','','','');
+			
+			$header[] = array('Invoice#','Status' ,'Received On','Total Cost','Payment Status','Due Date','','','');	
+			
+			foreach($invoices as $i)
+			{
+				$amount = $i->totalprice;
+				$amount = $amount + ($amount*$settings->taxpercent/100);
+				$amount = number_format($amount,2);
+
+				$verify_status = '';
+				if($i->status=='Verified')
+				{
+	                 $verify_status = '('.$i->paymenttype.'/'.$i->refnum.')';
+	            }
+
+				$header[] = array($i->invoicenum,$i->status ,$i->receiveddate,'$'.$amount.chr(160),$i->paymentstatus.$verify_status,date('m/d/Y',strtotime($i->datedue)),'','','');				
+			}
+		}
+										
+		createXls('Contract_performance', $header);  			
+		die();	
+		
+		//===============================================================================
+		
+	}
+	
+	// TRACK PDF
+	function track_purchase_pdf($quoteid,$award='')
+	{
+				
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		
+		$quote = $this->quotemodel->getquotebyid($quoteid);
+		
+		$awardeditems = $this->quotemodel->getawardeditems($award,$company);
+		if(!$awardeditems)
+			redirect('admin/quote/contractitems/'.$quoteid);
+		$data['awarditems'] = array();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$bid = $this->db->get('bid')->row();
+		
+		$this->db->where('quote',$quote->id);
+		$this->db->where('company',$company);
+		$this->db->order_by('uploadon','DESC');
+		$docs = $this->db->get('shippingdoc')->result();
+		
+		$data['shippingdocs'] = $docs;
+		
+		$complete = true;
+		$noitemsgiven = true;
+		$allawarded = true;
+		foreach($awardeditems as $ai)
+		{
+		
+			$this->db->where('itemid',$ai->itemid);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$company);
+			$companyitem = $this->db->get('companyitem')->row();
+			if($companyitem)
+			{
+			    if($companyitem->itemcode)
+				    $ai->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
+				    $ai->itemname = $companyitem->itemname;
+			}
+			
+			if($ai->received < $ai->quantity)
+				$complete = false;
+			if($ai->company != $company)
+				$allawarded = false;
+			if($ai->received > 0)
+				$noitemsgiven = false;
+			
+			$ai->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+			
+			$data['awarditems'][] = $ai;
+		}
+		if(!$noitemsgiven)
+		{
+			if($complete)
+			{
+				$quote->status = 'Completed';
+				$quote->progress = 100;
+				$quote->mark = "progress-bar-success";
+			}
+			else
+			{
+				$quote->status = 'Partially Completed';
+				$quote->progress = 80;
+				$quote->mark = "progress-bar-success";
+			}
+		}
+		else
+		{
+			$quote->status = 'Awarded';
+			$quote->progress = 60;
+			$quote->mark = "progress-bar-success";
+		}
+		
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->where('quote',$quoteid)->where('company',$company)
+		             ->get()->result();
+		
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+		
+		$invs = $this->quotemodel->getinvoices($company);
+		$invoices = array();
+		foreach($invs as $i)
+		{		   
+		    if(isset($i) && isset($i->quote) && isset($i->quote->id) && $i->quote->id == $quoteid)			
+			    $invoices[]=$i;
+		}
+				
+		//print_r($invoices);die;
+		$data['quote'] = $quote;
+		$data['award'] = $award;
+		$data['invoices'] = $invoices;
+		$data['settings'] = $settings;
+		$data['shipments'] = $shipments;
+		
+		$data['purchasingadmin'] = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		
+		//  $this->load->view('quote/track',$data);
+		
+		//--------------------------------------------------------------------------
+		
+		$shippingdocs = $data['shippingdocs'];
+		
+		
+		$purchasingadmin = $data['purchasingadmin'];
+		
+		$header[] = array('Report Type:','Quote Performance','','','','','','','');
+				
+		if(isset($quote->podate))
+		{ 
+			$order_date = $quote->podate; 
+			$header[] = array('<b>Award Date</b>',$order_date ,'','','','','','','');
+		}
+			
+		if(isset($purchasingadmin->companyname))
+		{
+			$companyname_name =  $purchasingadmin->companyname;
+			$header[] = array('<b>Company</b>',$companyname_name ,'','','','','','','');
+		}
+				
+		$header[] = array('','' ,'','','','','','','');
+		$header[] = array('<b>Contract Progress</b>',$quote->progress.'%'.chr(160) ,'','','','','','','');
+		
+		$header[] = array('','' ,'','','','','','','');
+		
+		
+		
+		
+		
+		
+		
+		$header[] = array('<b>File</b>','<b>Description</b>','<b>Price</b>','<b>Total</b>','<b>Requested</b>','<b>Notes</b>','<b>Shipped</b>','<b>Due</b>');
+		
+		$awarditems = $data['awarditems'];
+			
+		$i = 0;
+		foreach($awarditems as $ai)
+		{
+
+
+
+			$i++;
+										
+			$itemname = '';
+			if(trim($ai->itemname) != '')
+			{			
+				$itemname = '('.$ai->itemname.')';
+			}
+			
+			//$due = $ai->quantity - $ai->received;
+			$due = '100%';
+			
+			if($ai->pendingshipments)
+			{
+                 $due.=  $ai->pendingshipments.'(Pending Acknowledgement)';
+            }
+						
+			$header[] = array($ai->attach,$ai->itemname, '$'.$ai->ea.chr(160) ,'$'.round($ai->totalprice,2).chr(160), $ai->daterequested, $ai->notes, $ai->received,$due);								
+										
+		}								
+										
+										
+		if($shippingdocs)
+		{		
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('<b>Existing Documents</b>','' ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');								
+		
+			
+			
+			$header[] = array('<b>Date</b>','<b>REF#</b>' ,'','','','','','','');	
+		
+			foreach($shippingdocs as $sd)
+			{
+				$header[] = array(date("m/d/Y",  strtotime($sd->uploadon)),$sd->invoicenum ,'','','','','','','');		
+			}
+			$header[] = array('','' ,'','','','','','','');				
+		}
+		
+		
+		
+		if($shipments)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('<b>Shipments Made For PO#</b>', $quote->ponum ,'','','','','','','');	
+			$header[] = array('','' ,'','','','','','','');	
+		
+		
+			$header[] = array('<b>Ref#</b>','<b>Item</b>' ,'<b>Quantity</b>','<b>Sent On</b>','<b>Status</b>','','','','');	
+		
+			foreach($shipments as $s)
+			{
+				$ship_status = $s->accepted?'Accepted':'Pending';
+				$header[] = array($s->invoicenum,$s->itemname ,$s->quantity,date('m/d/Y',strtotime($s->shipdate)), $ship_status ,'','','','');
+			}				
+		}
+		
+		
+		
+		if($invoices)
+		{
+			$header[] = array('','' ,'','','','','','','');							
+			$header[] = array('','' ,'','','','','','','');	
+			$header[] = array('<b>Existing Invoices For PO#</b>',  $quote->ponum ,'','','','','','','');
+			
+			$header[] = array('<b>Invoice#</b>','<b>Status</b>' ,'<b>Received On</b>','<b>Total Cost</b>','<b>Payment Status</b>','<b>Due Date</b>','','','');	
+			
+			foreach($invoices as $i)
+			{
+				$amount = $i->totalprice;
+				$amount = $amount + ($amount*$settings->taxpercent/100);
+				$amount = number_format($amount,2);
+
+				$verify_status = '';
+				if($i->status=='Verified')
+				{
+	                 $verify_status = '('.$i->paymenttype.'/'.$i->refnum.')';
+	            }
+
+				$header[] = array($i->invoicenum,$i->status ,$i->receiveddate,'$'.$amount.chr(160),$i->paymentstatus.$verify_status,date('m/d/Y',strtotime($i->datedue)),'','','');				
+			}
+		}
+										
+		 	
+		$headername = "TRACK";
+    	createOtherPDF('po_performance', $header,$headername);
+    	die();
+		//===============================================================================
+		
 	}
 	
 		

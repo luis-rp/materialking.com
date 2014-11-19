@@ -19,7 +19,7 @@
 		foreach($awarded->items as $ai)
 		{
 			$awardeditemcompany[]=$ai->itemcode . $ai->company;
-			$awardedtotal+=$ai->quantity * $ai->ea;
+			$awardedtotal+=$ai->ea;
  		}
  		$awardedtotal = round($awardedtotal,2);
  		$awardedtax = $awardedtotal * $config['taxpercent'] / 100;

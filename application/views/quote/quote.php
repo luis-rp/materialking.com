@@ -180,7 +180,7 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
     $("#hiddenpriceid").val(priceid);    
     $("#hiddenpurchaser").val(purchasingadmin);
     $("#itemnamebox").html(itemcode+"  /  "+itemname);
-    $("#hiddennotesid").val(notelabel);   
+    $("#hiddennotesid").val(notelabel);  
     $("#hiddenquoteid").val(quote); 
 }
 
@@ -218,7 +218,7 @@ function showqtydiscount(companyid){
  var quote = $("#hiddenquoteid").val();
  
  var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid+"&purchaser="+purchaser+"&quote="+quote;
- 
+
  $("#qtypricebox").html("");
  $.ajax({
  type:"post",
@@ -262,6 +262,7 @@ function displaypricemodal(){
  
  $("#pricelist").css('display', 'block');
 }
+
 //-->
 </script>
 
@@ -322,7 +323,7 @@ function displaypricemodal(){
 								<br/>
     								Tier Level:
     								<form method="post" action="<?php echo site_url('company/changetier/'.$invitation);?>">
-    								  <input type="hidden" name="purchasingadmin" value="<?php if(isset($purchasingadmin->id)) echo $purchasingadmin->id?>"/>
+    								 <input type="hidden" name="purchasingadmin" value="<?php if(isset($purchasingadmin->id)) echo $purchasingadmin->id?>"/>
     				    			  <select name="tier" onchange="this.form.submit()" style="width: auto;padding-top:5px;">
     				    				<option value="tier0" <?php if($patier=='tier0'){echo 'SELECTED';}?>>Tier 0</option>
     				    				<option value="tier1" <?php if($patier=='tier1'){echo 'SELECTED';}?>>Tier 1</option>
@@ -352,7 +353,7 @@ function displaypricemodal(){
 							    	<form id="olditemform"  method="post" action="<?php echo site_url('quote/placebid'); ?>" enctype="multipart/form-data"> 
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
 									<input type="hidden" id="draft" name="draft" value=""/>
-									<?php foreach($quoteitems as $q)if(@$q->itemid){//print_r($q);?>
+									<?php foreach($quoteitems as $q)if(@$q->itemid){ //echo "<pre>"; print_r($q); die;?>
 									<?php if(@$originalitems[$q->itemid]){?>
 							    	<tr>
 							    		<td>
@@ -413,10 +414,10 @@ function displaypricemodal(){
 							    		</td>
 							    		<td><textarea style="width: 150px" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>
 							    		<td><input type="checkbox" name="nobid<?php echo $q->id;?>" value="1" class="checkbox nopad"/></td>
-							    		<td><input type="checkbox" id="substitute<?php echo $q->id;?>" name="substitute<?php echo $q->id;?>" value="1" onchange="checksubstitute('<?php echo $q->id;?>');" class="checkbox nopad"/></td>
-							    	</tr>
-							    	
-							    	<tr id="substituterow<?php echo $q->id;?>" class="substituterow">
+							    		<td><input type="checkbox" id="substitute<?php echo $q->id;?>" name="substitute<?php echo $q->id;?>" 
+							    			value="1" onchange="checksubstitute('<?php echo $q->id;?>');" class="checkbox nopad"/></td>
+							    	</tr>							 
+							    	<tr id="substituterow<?php echo $q->id;?>" class="substituterow" style="display:none;">
 							    		<td>
 								    		<input type="hidden" name="s_itemid<?php echo $q->id;?>" value="<?php echo $q->itemid;?>"/>
 							    			<input type="hidden" class="costcode nopad" name="s_costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>
@@ -446,7 +447,7 @@ function displaypricemodal(){
 							    		<td></td>
 							    		<td></td>
 							    	</tr>
-							    	<?php }?>
+							    	<?php  }?>
 							    	<tr>
 							    		<td>
 											Quote#
@@ -488,7 +489,7 @@ function displaypricemodal(){
 							    	</tr>
                                                                 <tr>
                                                                     <td> Expire Date</td>
-                                                                     <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):date("m/d/Y");?>"/>&nbsp; &nbsp; &nbsp; <a href="javascript:void(0)" onclick="setExpDate(30);">+30days</a>, <a href="javascript:void(0)" onclick="setExpDate(60);">+60Days</a>, <a href="javascript:void(0)" onclick="setExpDate(90);">+90Days</a></td>
+                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):date("m/d/Y");?>"/>&nbsp; &nbsp; &nbsp; <a href="javascript:void(0)" onclick="setExpDate(30);">+30days</a>, <a href="javascript:void(0)" onclick="setExpDate(60);">+60Days</a>, <a href="javascript:void(0)" onclick="setExpDate(90);">+90Days</a></td>
                                                                 </tr>
 							    	<tr>
 							    		<td colspan="11">
@@ -520,7 +521,7 @@ function displaypricemodal(){
 	  
 	  
 	  
-	   <div id="itemmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+	  <div id="itemmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
                     <div class="modal-dialog">
                       <form id="itemform" action="<?php echo site_url('inventory/updateitem/'.$invitation);?>" method="post">
                       <div class="modal-content">
@@ -588,7 +589,7 @@ function displaypricemodal(){
         <div class="modal-body">
           <div class="row form-row">
             <div class="col-md-8">
-              List Price: 
+              List  Price: 
             </div>
             <div class="col-md-4">
               <span id="pricelistdefault"></span>
@@ -628,7 +629,7 @@ function displaypricemodal(){
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-default" style="float: left;" type="button" onclick="showqtydiscount(<?php echo $company->id; ?>);" >View available qty. discounts</button> <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+         <button class="btn btn-default" style="float: left;" type="button" onclick="showqtydiscount(<?php echo $company->id; ?>);" >View available qty. discounts</button> <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -661,3 +662,6 @@ function displaypricemodal(){
     </div>
     <!-- /.modal-dialog -->
   </div> 
+  
+	  
+	  			

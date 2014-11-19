@@ -177,10 +177,10 @@ class message extends CI_Controller
 		$link = base_url().'admin/message/messages/'.$quote;
 		
 	    $data['email_body_title']  = "Dear ".$c->companyname;
-    	$data['email_body_content']  = "You have got a new message regarding PO# $ponum.<br><br>
+    	$data['email_body_content']  = "You have got a new message regarding Contract: $ponum.<br><br>
     	'{$_POST['message']}'
     	<br><br>
-  		Please click following link to reply (PO# ".$this->input->post('ponum')."):  <br><br>		 
+  		Please click following link to reply Contract: (".$ponum."):  <br><br>		 
     	<a href='$link' target='blank'>$link</a>
 	    ";
     	$loaderEmail = new My_Loader();
@@ -352,7 +352,7 @@ class message extends CI_Controller
 		{
 			$whrMessage .= " AND q.ponum LIKE '%".trim($_POST['ponumsearch'])."%'";
 		}
-		if(isset($_POST['sortby']) && $_POST['sortby'] != '')
+		/*if(isset($_POST['sortby']) && $_POST['sortby'] != '')
 		{
 			if($_POST['sortby'] == 'date')
 			{
@@ -370,7 +370,28 @@ class message extends CI_Controller
 		else 
 		{
 			$orderBy .= " ORDER BY m.senton ASC" ;
+		}*/
+		
+		if(isset($_POST['sortby']) && $_POST['sortby'] != '')
+		{
+			if($_POST['sortby'] == 'date')
+			{
+				$orderBy .= " ORDER BY senton ASC" ;
+			}
+			if($_POST['sortby'] == 'ponumber')	
+			{
+				$orderBy .= "  ORDER BY ponum ASC" ;
+			}
+			if($_POST['sortby'] == 'company')	
+			{
+				$orderBy .= "  ORDER BY companyname ASC" ;
+			}
 		}
+		else 
+		{
+			$orderBy .= " ORDER BY senton ASC" ;
+		}
+		
 		
 		if($this->session->userdata('usertype_id')!=2)
 		{
@@ -393,9 +414,18 @@ class message extends CI_Controller
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('users')." u
 		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c.id AND m.adminid=u.id		
-		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con $orderBy";
+		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
 		
-		$msgs = $this->db->query($messagesql)->result();
+		
+		$messagesql2 = "SELECT m.*,q.id quoteid, q.ponum, c2.companyname companyname, c2.email companyemail, u.email adminemail, b.complete FROM 
+		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
+		".$this->db->dbprefix('users')." c2, ".$this->db->dbprefix('users')." u
+		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c2.id AND m.adminid=u.id		
+		AND m.company='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
+		
+		$finalmessagequery = $messagesql." Union ".$messagesql2." ".$orderBy;
+		
+		$msgs = $this->db->query($finalmessagequery)->result();
 		$messages = array();
 		foreach($msgs as $msg)
 		{

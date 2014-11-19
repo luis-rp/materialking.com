@@ -31,48 +31,61 @@
 {
 	color: red;
 }
+
+h3 {
+	background: none repeat scroll 0 0 #000;
+    border-radius: 6px 6px 0 0;
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0.5% 0 0.5% 1%;
+    position: relative;
+    top: 10px;
+    width: 100%;
+}
+
+label
+{
+display:none;
+}
 </style> 
-    <div class="content">  
+    <div class="content"> 
     	<?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 			
-			<h3>BID Performance : <?php echo $quote->ponum;?> <font color="green">Items Won : <?php echo $itemswon;?></font> 	 <a href="<?php echo site_url('admin/quote/items_export/'.$quoteid); ?>" class="btn btn-primary btn-xs btn-mini">Export</a> 	&nbsp;&nbsp; <a href="<?php echo site_url('admin/quote/items_pdf/'.$quoteid); ?>" class="btn btn-primary btn-xs btn-mini">View PDF</a> 
-				&nbsp;&nbsp;&nbsp;
-				<font color="red">Items Lost : <?php echo $itemslost;?></font>
+			<h3>Contract Performance : <?php echo $quote->ponum;?> <font color="green">Items Won : <?php echo $itemswon;?></font> 	 
+			<a href="<?php echo site_url('admin/quote/items_export/'.$quoteid); ?>" class="btn btn-success btn-xs btn-mini">Export</a> 	&nbsp;&nbsp;
+		    <a href="<?php echo site_url('admin/quote/items_pdf/'.$quoteid); ?>" class="btn btn-success btn-xs btn-mini">View PDF</a> &nbsp;&nbsp;&nbsp;
+			<font color="red">Items Lost : <?php echo $itemslost;?></font>
 				<?php if($award && $itemswon && @$award->id){?>
-				<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('admin/quote/contracttrack/'.$quote->id.'/'.$award->id);?>">Track</a>
+					<a class="btn btn-success btn-xs btn-mini" href="<?php echo site_url('admin/quote/trackpurchaser/'.$quote->id.'/'.$award->id);?>">Track</a>
 				<?php }?>
 						 
-			<?php if($bid){?>
-				<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('admin/quote/viewbid/'.$bid->id); ?>">View Bid as HTML</a>
-			<?php }?> </h3>
-			<h4>
-				
-			</h4>
-	
-		</div>		
-	   <div id="container">
-		<?php 
-		    	if($allawardeditems)
-		    	{
-		    ?>
+				<?php if($bid){?>
+					<a class="btn btn-success btn-xs btn-mini" href="<?php echo site_url('admin/quote/viewbid/'.$bid->id); ?>">View Bid as HTML</a>
+				<?php }?> </h3>
+					
+		</div>	
+			 
+ <?php  if($allawardeditems) { ?>
+	<div id="container" style="width:100%;margin-left:15px;margin-top:-55px;"> 
 		<div class="row">
-                    <div class="col-md-12">
-
-                        <div class="grid simple ">
-                            <div class="grid-title no-border">
+           <div class="col-md-12">
+                 <div class="grid simple">
+                      <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-                            </div>
-                            <div class="grid-body no-border">
-                                    <table id="datatable" class="table no-more-tables general">
+                       </div>
+                       <div class="grid-body no-border">
+                                    <table id="datatable" class="table no-more-tables general" style="width:99%;">
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Files</th>
-                                                <th style="width:25%">Description</th>                                                
+                                                <th style="width:30%">Description</th>                                                
                                                 <th style="width:10%">Price</th>
                                                 <th style="width:10%">Total</th>
                                                 <!-- <th style="width:10%">Requested</th> -->
-                                                <th style="width:25%">Notes</th>
+                                                <th style="width:30%">Notes</th>
                                             </tr>
                                         </thead>
                                         
