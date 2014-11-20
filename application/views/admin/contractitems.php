@@ -98,12 +98,19 @@ display:none;
 									      ?>
                                             <tr class="<?php echo $ai->company == $company->id?'awarded-to-me':'not-awarded-to-me';?>">
                                                 <td class="v-align-middle">
-                                                <?php if(@$ai->attach && file_exists("./uploads/quote/".$ai->attach)){?>
+                                               <!-- <?php if(@$ai->attach && file_exists("./uploads/quote/".$ai->attach)){?>
 				                        		<br>
 				                        		<a href="<?php echo site_url('uploads/quote').'/'.@$ai->attach ;?>" target="_blank">  &nbsp;
 				                        		View File
 				                          		</a>
-				                				<?php }?>
+				                				<?php }?>-->
+                                               <?php if(@$ai->attach){ $files=""; $files=explode(',',@$ai->attach); foreach ($files as $file) {?>
+								    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
+					                        	<br>
+					                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
+					                        	View File
+					                          	</a>
+					                          	<?php } } }?>    
                                                 </td>
                                                 <td class="v-align-middle"><?php echo $ai->itemname;?></td>                                         
                                                 <!-- <td class="v-align-middle">$<?php foreach($biditems as $biditem) {  if($biditem->itemid == $ai->itemid) { echo $biditem->ea; $bidea = $biditem->ea; } } ?></td>

@@ -472,12 +472,20 @@ function acceptall()
 					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->companyname; ?></td>
-                                <td><?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
+                                <td>
+                                <!--<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
 				                        	<br>
 				                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
 				                        	View File
 				                          	</a>
-				                          	<?php }?>
+				                          	<?php }?>-->
+                                <?php if(@$q->attach){ $files=""; $files=explode(',',@$q->attach); foreach ($files as $file) {?>
+				    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
+	                        	<br>
+	                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
+	                        	View File
+	                          	</a>
+	                          	<?php } } }?>    
 				                </td>
                                 <td><?php echo $q->itemname; ?></td>
                                 <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">

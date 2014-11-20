@@ -151,6 +151,30 @@ $(document).ready(function(){
 			}
 		});
 	},500);
+	
+	$(document).on("click", ".table th", function () {
+setTimeout(function() {
+		$('.fixedrating').jRating({
+			length:5,
+			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
+			nbRates : 3,
+			isDisabled:true,
+			sendRequest: true,
+			canRateAgain : true,
+			decimalLength:1,
+			onClick : function(element,rate) {
+				alert('New Rating Saved');
+			},
+			onError : function(){
+				alert('Error : please retry');
+			},
+			onSuccess : function(response){
+				
+			}
+		});
+	},500);
+});   
+	
 });
 
 

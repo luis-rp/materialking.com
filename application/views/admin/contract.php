@@ -564,13 +564,14 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    	<?php foreach($quoteitems as $q){?>
 		    	<tr>
 		    		<td>			    							    		
-			    		<input type="file" name="attach<?php echo $q->id;?>" />	
-			    			<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
+			    		<!--<input type="file" name="attach<?php //echo $q->id;?>" />	-->
+			    		<?php if(@$q->attach){ $files=""; $files=explode(',',@$q->attach); foreach ($files as $file) {?>
+			    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
                         	<br>
-                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
+                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
                         	View File
                           	</a>
-                          	<?php }?>                          	
+                          	<?php } } }?>                          	
 		    		</td>
 		    		<td>
 			    		<textarea style="width:90%;" id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('purchasingadmin') != $q->purchasingadmin){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
@@ -607,8 +608,12 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			  	
 		    	<tr>
 		    		<td>
-		    			
-		    			<input type="file" name="attach" id="attach"/> 
+		    			<input type="file" name="attach[]" id="attach"/><br>
+						<input type="file" name="attach[]" id="attach"/><br>   	
+						<input type="file" name="attach[]" id="attach"/><br>   	
+						<input type="file" name="attach[]" id="attach"/><br>   	
+						<input type="file" name="attach[]" id="attach"/><br>   	 
+		    			<!--<input type="file" name="attach" id="attach"/> -->
                     </td>
 		    		<td>
 		    			<textarea style="width:90%;" id="itemname" name="itemname" required <?php if ($this->session->userdata('purchasingadmin') != $quote->purchasingadmin){echo 'readonly';}?>></textarea>

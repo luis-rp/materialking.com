@@ -68,7 +68,8 @@ class reportmodel extends Model
 					   ".$this->db->dbprefix('project')." p
 					  WHERE r.awarditem=ai.id AND ai.company='".$company->id."'
 					  AND ai.award=a.id AND a.quote=q.id AND
-					  p.purchasingadmin=q.purchasingadmin 
+					  p.purchasingadmin=q.purchasingadmin AND
+					  p.id=q.pid  
 					  $filter
 					  GROUP BY receiveddate
 					  $search
@@ -100,6 +101,7 @@ class reportmodel extends Model
 					  u.id=q.purchasingadmin AND
 					  s.purchasingadmin=q.purchasingadmin AND
 					  p.purchasingadmin=q.purchasingadmin AND
+					  p.id=q.pid AND 
 					  r.receiveddate='{$sepdate->receiveddate}'
 					  $filter
 					  ";

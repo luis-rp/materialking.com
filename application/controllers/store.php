@@ -103,7 +103,15 @@ class Store extends CI_Controller
                     }
                 }
             }
-            
+            $hasdiscount = $this->db
+                            ->where('itemid',$item->itemid)
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount)
+              $item->hasdiscount = true;
+            else
+             $item->hasdiscount = false;            
             $this->data['inventory'][] = $item;
         }
         

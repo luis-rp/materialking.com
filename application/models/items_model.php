@@ -75,7 +75,8 @@ class items_model extends Model {
             if ($submenus) 
             {
                  //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
-                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."</b></a>";
+                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                 <span style='white-space:pre-wrap;'><b>" . $item->catname."</b><span></a>";
 			   	   
 			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
             }

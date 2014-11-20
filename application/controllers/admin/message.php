@@ -410,14 +410,14 @@ class message extends CI_Controller
 		}
 		
 		
-		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail, b.complete FROM 
+		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, q.potype, c.title companyname, c.email companyemail, u.email adminemail, b.complete FROM 
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('users')." u
 		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c.id AND m.adminid=u.id		
 		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
 		
 		
-		$messagesql2 = "SELECT m.*,q.id quoteid, q.ponum, c2.companyname companyname, c2.email companyemail, u.email adminemail, b.complete FROM 
+		$messagesql2 = "SELECT m.*,q.id quoteid, q.ponum, q.potype, c2.companyname companyname, c2.email companyemail, u.email adminemail, b.complete FROM 
 		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
 		".$this->db->dbprefix('users')." c2, ".$this->db->dbprefix('users')." u
 		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c2.id AND m.adminid=u.id		
@@ -440,6 +440,7 @@ class message extends CI_Controller
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
 			$messages[$msg->ponum]['quote']['complete']=$msg->complete;
+			$messages[$msg->ponum]['quote']['potype']=$msg->potype;
 		}
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;
@@ -449,6 +450,7 @@ class message extends CI_Controller
 		$data['ponumsearch']  = (isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '') ? $_POST['ponumsearch'] : " ";
 		$uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
+		
 		if($setting){
 			$data['settingtour']=$setting[0]->tour;
 		}

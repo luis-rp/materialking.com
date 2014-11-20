@@ -402,12 +402,20 @@ function calculatetotalprice(id)
 							    	<tr>
 							    		<td>	
 							    			<input type="hidden" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>	    			
-							    			<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
+							    			<!--<?php //if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
 				                        	<br>
-				                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
+				                        	<a href="<?php //echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
 				                        	View File
 				                          	</a>
-				                          	<?php }?>
+				                          	<?php //}?>-->
+							    			
+							    			<?php if(@$q->attach){ $files=""; $files=explode(',',@$q->attach); foreach ($files as $file) {?>
+							    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
+				                        	<br>
+				                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
+				                        	View File
+				                          	</a>
+				                          	<?php } } }?>   
 				                          	<input type="hidden" name="attach<?php echo $q->id;?>" id="attach<?php echo $q->id;?>" value="<?php echo $q->attach;?>"/>
 		    							</td>						    		
 							    		<td>

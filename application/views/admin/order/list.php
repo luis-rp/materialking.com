@@ -19,22 +19,22 @@ $(document).ready( function() {
 		        		null,
 		        		null,
 		        		{ "bSortable": false}
-		
+
 			]
 		} );
 	 $('.dataTables_length').hide();
 	 $('#datatable_filter').hide();
-});      
+});
 </script>
 <section class="row-fluid">
 	<h3 class="box-header">My Purchased Items <a href="<?php echo site_url('admin/order/orders_export'); ?>" class="btn btn-green">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('admin/order/orders_pdf'); ?>" class="btn btn-green">View PDF</a></h3>
-		
+
 	<div class="box">
 	  <div class="span12">
-	
+
 	   <?php echo $this->session->flashdata('message'); ?>
 		   <br/>
-		   
+
 		   <form class="form-inline" action="<?php echo site_url('admin/order')?>" method="post">
                 From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
                 &nbsp;&nbsp;
@@ -42,7 +42,7 @@ $(document).ready( function() {
                 &nbsp;&nbsp;
                 Order #:
 				<input type="text" name="ordernumber" value="<?php echo @$_POST['ordernumber']?>" style="width: 70px;"/>
-                &nbsp;&nbsp;
+				&nbsp;&nbsp;
                     Company:
 				    <select id="searchcompany" name="searchcompany" style="width: 150px;">
 					 <option value=''>All Companies</option>
@@ -98,7 +98,7 @@ $(document).ready( function() {
                 </a>
                 </div>
            </form>
-	    
+
 			<div>
 				<?php if($orders) { ?>
                                     <table id="datatable" class="table table-bordered">
@@ -118,8 +118,8 @@ $(document).ready( function() {
                                         </thead>
                                         <tbody>
 							              <?php
-							              	$total = 0; 
-                                            $oldorderid = ""; 
+							              	$total = 0;
+                                            $oldorderid = "";
 									    	$i = 0;
 									    	$finaltotal = 0;
 									    	$finalpaid = 0;
@@ -127,21 +127,21 @@ $(document).ready( function() {
 									    	foreach($orders as $order)
 									    	{
 									    		$i++;
-									    		if($order->id != $oldorderid){ 
-                                                $total = 0; 
-                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
-                                            }else{ 
-                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100; 
-                                            } 
+									    		if($order->id != $oldorderid){
+                                                $total = 0;
+                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100;
+                                            }else{
+                                                $total +=  ($order->totalprice) + ($order->totalprice)*$order->taxpercent/100;
+                                            }
 									      ?>
                                             <tr>
                                                 <td><?php echo $order->ordernumber;?></td>
                                                 <td><?php echo date('m/d/Y',strtotime($order->purchasedate)); ?> </td>
                                                 <td><?php if(isset($order->prjName)) echo $order->prjName.",";?> <?php if(isset($order->codeName)) echo $order->codeName;?></td>
                                                 <td><?php echo $order->type;?></td>
-                                               <td><?php echo $order->txnid?$order->txnid:$order->paymentnote;?></td>
-                                                <td><?php echo "$ ".round($total+$order->shipping,2);?></td> 
-                                                 <?php
+                                                <td><?php echo $order->txnid?$order->txnid:$order->paymentnote;?></td>
+                                                <td><?php echo "$ ".round($total+$order->shipping,2);?></td>
+                                                <?php
                                                $totalpaid=0;
                                                $totaldue=0;
                                                $finaltotal += $total+$order->shipping;
@@ -164,7 +164,7 @@ $(document).ready( function() {
                                                			
                                                    }
                                                   $finaldue += $totaldue;
-                                                  $finalpaid += $totalpaid; 
+                                                  $finalpaid += $totalpaid;
                                                   ?>
                                                 <td>$<?php echo $totalpaid; ?></td>
                                                 <td>$<?php echo $totaldue; ?></td>
@@ -176,14 +176,16 @@ $(document).ready( function() {
                                                 			<th>Order Status</th>
                                                             <th>Tax</th>
                                                             <th>Shipping</th>
-                                                			<th>Total</th>
+                                                			<!--<th>Total</th>-->
                                                 		</tr>
                                                 		<?php foreach($order->details as $detail){?>
                                                 		<tr>
                                                 			<td><?php echo $detail->company;?></td>
                                                 			<td><?php echo $detail->paymentstatus;?></td>
                                                 			<td><?php if($detail->status=="Void") echo "Declined"; else echo $detail->status;?></td>
-     <td><?php echo $detail->taxpercent;?>%</td><td>$<?php echo $detail->shipping;?></td>                                           			<td>$<?php echo round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td> 
+     														<td><?php echo $detail->taxpercent;?>%</td>
+     														<td>$<?php echo $detail->shipping;?></td>                                           			
+     									<!--	<td>$<?php //echo round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);?></td>-->
                                                 		</tr>
                                                 		<?php }?>
                                                 	</table>
@@ -198,7 +200,6 @@ $(document).ready( function() {
                                                 </td>
                                             </tr>
                                            <?php $oldorderid = $order->id;  } ?>
-                                           
                                            <tr><td colspan="5"></td><td style="text-align:center;"><strong>Grand Total</strong></td><td style="text-align:center;"><strong>Total Paid</strong></td><td style="text-align:center;"><strong>Total Due</strong></td><td colspan="2"></td></tr>
                                            <tr style="text-align:center;"><td colspan="5"></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaltotal,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finalpaid,2);?></strong></td><td style="text-align:center;"><strong><?php echo "$ ".round($finaldue,2);?></strong></td><td colspan="2"></td></tr>
                                            

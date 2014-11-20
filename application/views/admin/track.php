@@ -603,6 +603,9 @@ function acceptall()
 
                     	<div style="clear:left;"></div>
                     </div>
+                    			<?php if(@$q->pendingshipments){?>
+                                <br/><?php echo $q->pendingshipments;?> Pending Acknowledgement
+                                <?php }?>
 								</td>
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"

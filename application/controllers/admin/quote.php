@@ -449,7 +449,7 @@ class quote extends CI_Controller
             $paidprice = '';
             foreach ($awardeditems as $ai)
             {
-                if ($ai->itemcode == $item->itemcode)
+                if ($ai->itemid == $item->itemid)
                 {
                     $awarded = true;
                     $paidprice = $ai->ea;
@@ -507,7 +507,7 @@ class quote extends CI_Controller
                 $awardeditems = $awarded->items;
             }
         }
-        $ret = '<h5>Title:' . $quote->ponum . '&nbsp; &nbsp;' . anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view')) . '</h5>';
+        $ret = '<h5>Title:' . $quote->ponum . '&nbsp; &nbsp;' . anchor('admin/quote/contracttrack/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view')) . '</h5>';
         $ret .= '<table class="table table-bordered">';
         $ret .= '<tr><th>Filename</th><th>Price Ea</th><th>% Complete</th><th>% Due</th><th>Status</th></tr>';
         foreach ($quoteitems as $item)
@@ -517,7 +517,7 @@ class quote extends CI_Controller
             $paidprice = '';
             foreach ($awardeditems as $ai)
             {
-                if ($ai->itemcode == $item->itemcode)
+                if ($ai->itemid == $item->itemid)
                 {
                     $awarded = true;
                     $paidprice = $ai->ea;
@@ -2208,16 +2208,38 @@ class quote extends CI_Controller
     }
     
     
-    function addcontractitem($qid)
-    {
-        //print_r($_POST);die;    	
-        $_POST['attach'] = $_FILES['attach']['name'];
+     function addcontractitem($qid)
+    {   	 
+        if(isset($_FILES['attach']['name']) && $_FILES['attach']['name']!="")
+            {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/quote/';
+            	$count=0;
+            	foreach ($_FILES['attach']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['attach']['tmp_name'][$count];
+            		$origionalFile=$_FILES['attach']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            	}
+            	 $_POST['attach'] = implode(",",$_FILES['attach']['name']);
+            }
+            else 
+            {
+            	$_POST['attach'] ="";
+            }
+           
+       
         $_POST['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         $quote = $this->quote_model->get_quotes_by_id($qid);
         
         $this->quote_model->db->insert('quoteitem', $_POST);        
         
-        if(is_uploaded_file($_FILES['attach']['tmp_name']))
+        /*if(is_uploaded_file($_FILES['attach']['tmp_name']))
         {//echo 'uploaded';        	
         	if(move_uploaded_file($_FILES['attach']['tmp_name'], "uploads/quote/".$_FILES['attach']['name']))
         	{        		
@@ -2231,11 +2253,10 @@ class quote extends CI_Controller
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
 			<div class="msgBox">File could not uploaded.</div></div>');
 
-        }
+        }*/
         
         redirect('admin/quote/update/' . $qid);
     }
-    
 
     function deleteitem($itemid, $qid) {
         $this->quote_model->deleteitem($itemid, $qid);
@@ -4464,6 +4485,11 @@ class quote extends CI_Controller
 				->where('itemid',$item->itemid)
 				->get('etalog')->result();
 
+				$item->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$qid)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;				
 				}
 
 				$item->quotedaterequested = $this->db->select('daterequested')
@@ -4471,7 +4497,7 @@ class quote extends CI_Controller
 				->where('quote',$qid)
 				->where('itemid',$item->itemid)
 				->get('quoteitem')->row();
-
+				
 			}
 		}
 

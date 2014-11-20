@@ -94,9 +94,11 @@ function endTour(){
 			{
 				foreach ($messages as $po)
 				{
-			?>
+					if($po['quote']['potype'] == "Contract"){?>
+				<h3 class="box-header" style="display:inline;"">Contract:<?php echo $po['quote']['ponum'];?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/conbids/'.$po['quote']['id'];?>">View Bids Page</a> - &nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/contracttrack/'.$po['quote']['id'] ;?>">View Tracking Page</a> 
+					<?php }else {?>
             <h3 class="box-header" style="display:inline;"">PO#:<?php echo $po['quote']['ponum'];?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/'.$po['quote']['id'];?>">View Bids Page</a> - &nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/track/'.$po['quote']['id'] ;?>">View Tracking Page</a> 
-			
+			<?php } ?>
 			<?php if($po['quote']['complete'] == 'Yes'){?>
 	 				<a class="btn btn-green"  href="<?php echo site_url('admin/message/archivemessage/'.$po['quote']['id']);?>"> Archive </a>
 			<?php }?>			</h3>
