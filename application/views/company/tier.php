@@ -170,7 +170,7 @@ function changetier(newval,oldval,id){
 									<input  style="width:70px" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 
 									value="<?php echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy"/>
 								</td>
-								<td>123
+								<td>
 									<input  style="width:70px" type="text" name="creditto[<?php echo $admin->purchasingadmin;?>]" 
 									value="<?php echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy"/>
 								</td>
