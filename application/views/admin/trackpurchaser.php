@@ -92,6 +92,7 @@ $(document).ready(function(){
 			v=slideEvt.value;
 			d = "id="+id+"&manualprogress="+v;
 			$("#progress"+id +" .tooltip-inner").text(v);
+			$("#progresslabel"+id).html(v+'%');
 			$('#quantity'+id).val(v);
 			//alert(d);
 			/*$.ajax({
