@@ -555,7 +555,7 @@ function acceptall()
                                 echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> </td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
-                                <td><span id="due<?php echo $q->id; ?>"><?php echo '100%'; // echo $q->quantity - $q->received; ?></span></td>
+                                <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
                                 <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
 							    				<i class="icon"></i><p style="padding-left:36px;">View</p>
 							    			</a>
