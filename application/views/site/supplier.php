@@ -857,7 +857,10 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-                <div class="span9">
+                <div class="span9">              
+               <div style="background-color:#dff0d8;color:black;font-weight:bolder;border-radius:8px;text-align:center;">
+                <p style="line-height:40px;font-family:Helvetica;">
+                Existing & New Customers - Join our Business to Business Network for seamless quotes,ordering and account solutions.</p></div>
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>

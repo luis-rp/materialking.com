@@ -46,6 +46,8 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
             {
             	margin-right: 10px;
 			}
+            
+           
         </style>
 		
 		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
@@ -311,7 +313,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     </ul>
 
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
-                                        <div class="input-append"  style="margin-right:-35px;">
+                                        <div class="input-append" style="margin-right:-35px;">
                                             <input type="hidden" name="search_type" id="search_type">
                                             <select style="width:160px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
@@ -500,6 +502,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                         <div class="modal-body">
                             <h4>Wish to Apply?</h4>
                             <input type="checkbox" name="wishtoapply" value="1"/>
+                            <p>*This will send your Credit Application for review to the company you are requesting.</p>
                         </div>
                         <div class="paddingleft">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

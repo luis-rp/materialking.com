@@ -9,10 +9,11 @@ $combocompanies = array();
 $messagecompanies = array();
 $recsum = 0;
 $qntsum = 0;
+
 foreach ($awarded->items as $q) {
     $recsum = $recsum + $q->received;
-    $qntsum = $qntsum + $q->quantity;
-    if ($q->received < $q->quantity) {
+    $qntsum = $qntsum + 100;
+    if ($q->received < 100) {
         if (isset($combocompanies[$q->company])) {
             $combocompanies[$q->company]['value'][] = $q->id;
         } else {
@@ -454,7 +455,7 @@ function acceptall()
                         <?php }*/ ?>
                     </tr>
                         <?php if ($awarded->status == 'incomplete') { ?>
-                        <form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
+                        <form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savecontracttrack/<?php echo $quote->id; ?>">
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
@@ -493,7 +494,7 @@ function acceptall()
       <?php
       //$q->quantity;//100%
       if(@$q->quantity)
-    	$new_pr_value = (($q->received * 100) / $q->quantity)/100;
+    	$new_pr_value = (($q->received * 100) / 100)/100;
       else 
       $new_pr_value = 0;	
    //   $new_pr_value = ($q->received/100) *10; ?>
@@ -606,26 +607,16 @@ function acceptall()
                     	<div style="clear:left;"></div>
                     </div>
 								</td>
-                                <?php /* if ($awarded->status == 'incomplete') { ?>
-                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"
-                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
+                                <?php  if ($awarded->status == 'incomplete') { ?>
+                                    <input type="hidden" name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>"
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"';
-                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
-                                               value="<?php //if($this->session->userdata('defaultinvoicenum')) echo $this->session->userdata('defaultinvoicenum'); ?>"
-                                               onchange="defaultinvoicenum('<?php echo $q->id; ?>');"/>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" ';
-                                               else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
-                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
-                                               data-date-format="mm/dd/yyyy"/>
-                                    </td>
-                                    <td>
+                                    
+                                    <input type="hidden" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>" />
+                                    
+                                    <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
+                                              
+                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>" data-date-format="mm/dd/yyyy"/>                                    
+                                    <!-- <td>
                                         <?php if ($q->quantity > $q->received) { ?>
                                             <input type="checkbox" id="select<?php echo $q->id ?>" value="<?php echo $q->id ?>" class="select-for-complete" />
                                         <?php } ?>
@@ -638,11 +629,11 @@ function acceptall()
                                             <option value='<?php echo $q->id ?>-Revise PO Qty'>Revise PO Qty</option>
                                             <option value='<?php echo $q->id ?>-Revise Received Qty'>Revise Received Qty</option>
                                         </select>
-                                    </td>
-                            <?php } */?>
+                                    </td> -->
+                            <?php } ?>
                             </tr>
                         <?php } ?>
-                        <?php if ($awarded->status == 'incomplete') { ?>
+                        <?php /* if ($awarded->status == 'incomplete') { ?>
                             <tr>
                                 <td colspan="<?php echo $awarded->status == 'incomplete' ? 11 : 7//14:10; ?>" style="text-align:right"></td>
                                 <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
@@ -651,7 +642,7 @@ function acceptall()
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
                         </form>
-                    <?php } ?>
+                    <?php } */ ?>
                     <?php
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;
@@ -987,7 +978,7 @@ function acceptall()
                 	?>
             	</table>
             	<div id="feedbackformwrapper">
-            		<form method="post" action="<?php echo site_url('admin/quote/savefeedback');?>" onsubmit="return checkfeedback();">
+            	<form method="post" action="<?php echo site_url('admin/quote/savecontractfeedback');?>" onsubmit="return checkfeedback();">
             			<input type="hidden" name="quote" value="<?php echo $quote->id;?>">
             			<input type="hidden" id="feedbackcompany" name="company">
             			<input type="hidden" id="feedbackrating" name="rating">

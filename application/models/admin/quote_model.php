@@ -488,7 +488,7 @@ class quote_model extends Model {
 
             $status = 'complete';
             foreach ($item->items as $it) {
-                if ($it->quantity > $it->received) {
+                if (100 > $it->received) {
                     $status = 'incomplete';
                 }
             }

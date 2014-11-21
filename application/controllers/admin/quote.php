@@ -22,6 +22,7 @@ class quote extends CI_Controller
         $this->load->helper('form', 'url');
         $this->load->model('admin/quote_model');
         $this->load->model('quotemodel');
+        $this->load->model('homemodel');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data ['title'] = "Administrator";
@@ -404,7 +405,8 @@ class quote extends CI_Controller
 		$data['itemslost'] = $itemslost;
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
-		$data['biditems'] = $biditems;
+		if(isset($biditems)){
+		$data['biditems'] = $biditems;}
 		$data['award'] = $award;
 		$data['quoteid'] = $quoteid;
 		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
@@ -1001,8 +1003,8 @@ class quote extends CI_Controller
             $emailattachments[] = array();
             $emailitems = '<table CELLPADDING="12">';
     		$emailitems.= '<tr>';    		
-            $emailitems = '<th> Contract Title:</th> <th> Bid Due Date: </th> <th> Contract Award Date: </th></tr>';
-            $emailitems = '<tr><td>'.@$_POST['ponum'].'</td><td>'.date('m/d/Y', strtotime(@$_POST['duedate'])).'</td><td>'.date('m/d/Y', strtotime(@$_POST['podate'])).'</td></tr> </table> <br><br>';
+            $emailitems.= '<th> Contract Title:</th> <th> Bid Due Date: </th> <th> Contract Award Date: </th></tr>';
+            $emailitems.= '<tr><td>'.@$_POST['ponum'].'</td><td>'.date('m/d/Y', strtotime(@$_POST['duedate'])).'</td><td>'.date('m/d/Y', strtotime(@$_POST['podate'])).'</td></tr> </table> <br><br>';
     		$emailitems .= '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';    		
     		$emailitems.= '<th>Description</th>';    		
@@ -1020,6 +1022,7 @@ class quote extends CI_Controller
     		$emailitems .= '</table>';
     	
     		    if (@$_POST['categoryinvitees']) {
+    		    $this->session->set_userdata('forcat', $_POST['categoryinvitees']);
                 $companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
                 $companynames = array();
                 
@@ -1737,17 +1740,26 @@ class quote extends CI_Controller
         	redirect('admin/dashboard', 'refresh');
         }*/
         
-        foreach ($items as $item)
+       foreach ($items as $item)
         {
         	 $updatearray = array();
                         	
-            if(is_uploaded_file($_FILES['attach'.$item->id]['tmp_name']))
+           /* if(is_uploaded_file($_FILES['attach'.$item->id]['tmp_name']))
         	{        	
         	if(move_uploaded_file($_FILES['attach'.$item->id]['tmp_name'], "uploads/quote/".$_FILES['attach'.$item->id]['name']))
         	{        		
 		        $updatearray['attach'] = $_FILES['attach'.$item->id]['name'];
         	}
-        	}
+        	}*/
+           
+          if(isset( $item->attach))
+          {
+          $updatearray['attach']=$item->attach;
+          }
+          else 
+          {
+          	 $updatearray['attach']="";
+          }
             
             $updatearray['itemname'] = $_POST['itemname'.$item->id];
             $updatearray['costcode'] = $_POST['costcode'.$item->id];
@@ -1756,6 +1768,7 @@ class quote extends CI_Controller
             $this->quote_model->db->update('quoteitem', $updatearray);            
             
         }
+
         redirect('admin/quote/update/' . $qid);
     }
     
@@ -1861,7 +1874,7 @@ class quote extends CI_Controller
 				}
 				$item = (array)$item;
 				$updatearray['totalprice'] = $_POST['totalprice'.$key];
-				$updatearray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;
+				$updatearray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;				
 				
 				$this->quotemodel->db->where('id',$key);
 				if(@$_POST['nobid'.$key])
@@ -1955,6 +1968,7 @@ class quote extends CI_Controller
 				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
 				$insertarray['ismanual'] = @$_POST['ismanual'.$key]?@$_POST['ismanual'.$key]:0;
 				$insertarray['notes'] = @$_POST['s_notes'.$key]?@$_POST['s_notes'.$key]:'';
+				$insertarray['itemid'] = $key;
 				
 				if(!@$_POST['nobid'.$key])
 				{
@@ -3187,6 +3201,7 @@ class quote extends CI_Controller
             $itemarray = array();
             $itemarray['award'] = $awardid;
             $itemarray['company'] = $bid->company;           
+            $itemarray['itemid'] = $item['itemid'];
             $itemarray['itemname'] = $item['itemname'];
             $itemarray['quantity'] = $item['quantity'];            
             $itemarray['ea'] = $item['ea'];
@@ -3233,6 +3248,7 @@ class quote extends CI_Controller
             $itemarray = array();
             $itemarray['award'] = $awardid;
             $itemarray['company'] = $item['company'];           
+            $itemarray['itemid'] = $item['itemid'];
             $itemarray['itemname'] = $item['itemname'];           
             $itemarray['ea'] = $item['ea'];
             $itemarray['totalprice'] = $item['totalprice'];            
@@ -4523,7 +4539,7 @@ class quote extends CI_Controller
         $awarded = $this->quote_model->getawardedcontractbid($qid);
         // echo "<pre>",print_r($awarded); die;
         if (!$awarded)
-            redirect('admin/quote/bids/' . $qid);
+            redirect('admin/quote/conbids/' . $qid);
         /*if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
             redirect('admin/dashboard', 'refresh');
         }*/
@@ -5602,6 +5618,386 @@ $loaderEmail = new My_Loader();
             redirect('admin/quote/track/' . $quoteid);
     }
 
+    
+    function savecontracttrack($quoteid,$ajax=0)
+    {
+        $awarded = $this->quote_model->getawardedcontractbid($quoteid);
+        $data['email_body_title'] = "";
+        $data['email_body_content'] = "";
+        //echo '<pre>';print_r($awarded);die;
+        $quote = $awarded->quotedetails;
+        /*if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }*/
+        $project = $this->project_model->get_projects_by_id($quote->pid);
+        $shipto = $awarded->shipto;
+        $received = array();
+        $invoices = array();
+        $credits = array();
+        /*echo "<pre>",print_r($_POST); 
+        echo "<pre>",print_r($awarded->items); die;*/
+        foreach ($awarded->items as $item)
+        {
+            $received[$item->id] = (array) $item;
+            $updatearray = array();
+            $key = $item->id;
+            $updatearray['received'] = $_POST['received' . $key] + $received[$item->id]['received'];
+            if ($_POST['received' . $key] > 100 - $item->received) {
+                $this->session->set_flashdata('message', '<div class="alert alert-failure"><a data-dismiss="alert" class="close" href="#">X</a>
+<div class="msgBox">Received quantity Cannot be more than due.</div></div>');
+
+                redirect('admin/quote/contracttrack/' . $quote->id);
+            }
+            $received[$item->id]['received'] = $_POST['received' . $key];
+            //print_r($updatearray);die;
+            $this->quote_model->db->where('id', $key);
+            $this->quote_model->db->update('awarditem', $updatearray);
+            //echo "<pre>",print_r($received); die;
+            if ($received[$item->id]['received'] > 0)
+            {
+                if ($this->input->post('makedefaultinvoicenum') == '1') {
+                    $temp['defaultinvoicenum'] = $_POST['invoicenum' . $key];
+                    $this->session->set_userdata($temp);
+                }
+                if ($this->input->post('makedefaultreceiveddate') == '1') {
+                    $temp['defaultreceiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);
+                    $this->session->set_userdata($temp);
+                }
+
+                $invoicearr = array();
+                $invoicearr = explode(",",$_POST['invoicenum' . $key]);
+
+                if(count($invoicearr)>1) {
+                	foreach($invoicearr as $inv) {
+
+                		$ship = $this->db->select('shipment.*')
+                		->from('shipment')
+                		->where('quote',$quoteid)
+                		->where('awarditem',$item->id)
+                		->where('invoicenum',$inv)
+                		->get()->row();
+
+
+                		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
+                		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                		$this->quote_model->db->insert('received', $insertarray);
+
+                		$insertarray['id'] = $item->id;
+                		$insertarray['itemname'] = $item->itemname;
+                		$insertarray['companyname'] = $item->companyname;
+                		$insertarray['daterequested'] = $item->daterequested;
+                		$insertarray['unit'] = $item->unit;
+                		$insertarray['ea'] = $item->ea;
+
+                		if (!isset($invoices[$inv])) {
+                			$invoices[$inv] = array();
+                			$invoices[$inv]['invoicenum'] = $inv;
+                			$invoices[$inv]['items'] = array($insertarray);
+                			$invoices[$inv]['invoicenotes'] = $item->companydetails->invoicenote;
+                		} else {
+                			$invoices[$inv]['items'][] = $insertarray;
+                		}
+                		if(isset($credits[$item->company]))
+                		{
+                			$credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
+                			$credits[$item->company]['items'][]=$insertarray;
+                		}
+                		else
+                		{
+                			$credits[$item->company] = array();
+                			$credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
+                			$credits[$item->company]['items'] = array($insertarray);
+                		}
+
+                	}
+                }else {
+
+
+                $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
+                $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                $this->quote_model->db->insert('received', $insertarray);
+
+
+                $insertarray['id'] = $item->id;
+                $insertarray['itemname'] = $item->itemname;
+                $insertarray['companyname'] = $item->companyname;
+                $insertarray['daterequested'] = $item->daterequested;
+                $insertarray['unit'] = $item->unit;
+                $insertarray['ea'] = $item->ea;
+
+                if (!isset($invoices[$_POST['invoicenum' . $key]])) {
+                    $invoices[$_POST['invoicenum' . $key]] = array();
+                    $invoices[$_POST['invoicenum' . $key]]['invoicenum'] = $_POST['invoicenum' . $key];
+                    $invoices[$_POST['invoicenum' . $key]]['items'] = array($insertarray);
+                    $invoices[$_POST['invoicenum' . $key]]['invoicenotes'] = $item->companydetails->invoicenote;
+                } else {
+                    $invoices[$_POST['invoicenum' . $key]]['items'][] = $insertarray;
+                }
+                if(isset($credits[$item->company]))
+                {
+                    $credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
+                    $credits[$item->company]['items'][]=$insertarray;
+                }
+                else
+                {
+                    $credits[$item->company] = array();
+                    $credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
+                    $credits[$item->company]['items'] = array($insertarray);
+                }
+
+              }
+            }
+        }
+        //print_r($invoices);die;
+        //echo '<pre>';print_r($credits);die;
+        $config = (array) $this->settings_model->get_current_settings();
+        $config = array_merge($config, $this->config->config);
+        $this->db->where('id',$this->session->userdata('purchasingadmin'));
+        $cpa = $this->db->get('users')->row();
+
+       // $company = $this->company_model->get_companys_by_id($cid);
+        foreach ($invoices as $invoice)
+        {
+            $pdfhtml = '
+				<strong>Invoice #: ' . $invoice['invoicenum'] . '</strong><br/>
+				<table width="100%" cellspacing="2" cellpadding="2">
+				  <tr>
+				    <td width="33%" align="left" valign="top">
+				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
+				        </tr>
+				      <tr>
+				        <td width="33%" valign="top">Project Title</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $project->title . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $project->address . '</td>
+				      </tr>
+				    </table>
+				    </td>
+				    <td width="10" align="left" valign="top">&nbsp;</td>
+				    <td width="65%" align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
+			          </tr>
+				      <tr>
+				        <td width="33%" valign="top">PO#</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $quote->ponum . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Subject</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->subject . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">PO# Date</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->podate . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Invoice Date</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . date('m/d/Y') . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td width="33%" valign="top">Contact</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">'.$cpa->fullname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Company</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->companyname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->address.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Phone</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->phone.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Fax</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->fax.'</td>
+				      </tr>
+				    </table></td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td>' . nl2br($shipto) . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+
+			</table>
+
+				<table width="100%" cellspacing="0" cellpadding="4">
+				  <tr>
+	              <td>Items:</td>
+	              </tr>
+	             </table>
+
+	             <br/>
+
+				<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				  <thead>
+				  <tr>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Date Received</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
+				  </tr>
+				  </thead>
+				  ';
+            $totalprice = 0;
+            $i = 0;
+            foreach ($invoice['items'] as $invoiceitem) {
+                $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
+                $pdfhtml.='<tr nobr="true">
+				    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
+				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
+				    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
+				    <td style="border: 1px solid #000000;">' . $this->mysql_date($_POST['receiveddate' . $invoiceitem['id']]) . '</td>
+				    <td style="border: 1px solid #000000;">' . $received[$invoiceitem['id']]['received'] . '</td>
+				    <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td>
+				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] . '</td>
+				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $received[$invoiceitem['id']]['received'] . '</td>
+				  </tr>
+				  ';
+            }
+            $taxtotal = $totalprice * $config['taxpercent'] / 100;
+            $grandtotal = $totalprice + $taxtotal;
+
+            $pdfhtml.='<tr>
+            <td colspan="5" rowspan="3">
+            <div style="width:70%">
+            <br/>
+            <h4 class="semi-bold">Terms and Conditions</h4>
+            <p>'.$invoice['invoicenotes'].'</p>
+            <h5 class="text-right semi-bold">Thank you for your business</h5>
+            </div>
+            </td>
+            <td align="right">Subtotal</td>
+            <td align="right">$ ' . number_format($totalprice, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Tax</td>
+            <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Total</td>
+            <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
+            </tr></table>
+            ';
+
+
+            if (!class_exists('TCPDF')) {
+            	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+            	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+			}
+
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('');
+            $pdf->SetTitle('');
+            $pdf->SetSubject('');
+
+            $pdf->setHeaderFont(Array('helvetica', '', PDF_FONT_SIZE_MAIN));
+
+            $pdf->setPrintFooter(false);
+            $pdf->setPrintHeader(true);
+
+            $pdf->SetHeaderData('', '', $cpa->companyname . '', 'Invoice');
+
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->AddPage('L', 'LETTER');
+
+            $pdf->SetFont('helvetica', '', 8, '', true);
+            $pdf->writeHTML($pdfhtml, true, 0, true, true);
+
+            $pdf->lastPage();
+            $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_invoice_' . $invoice['invoicenum'] . '_' . date('YmdHis') . '.pdf';
+            $pdf->Output($pdfname, 'f');
+
+            $data['email_body_content'] = "Please find the attachment invoice for PO#: " . $quote->ponum . ".<br/><br/>";
+            $data['email_body_content'] .= "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/><br/>";
+
+            $settings = (array) $this->settings_model->get_current_settings();
+
+            $toemail = $settings['adminemail'];
+            $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
+	        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
+            $purchaseusers = $this->db->query($sql)->result();
+            foreach ($purchaseusers as $pu) {
+                $toemail = $toemail . ',' . $pu->email;
+            }
+            $loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
+            $this->email->clear(true);
+            $this->email->from($settings['adminemail'], "Administrator");
+            $this->email->to($toemail);
+
+            $this->email->subject('Invoice for PO#:' . $quote->ponum);
+            $this->email->message($send_body);
+            $this->email->set_mailtype("html");
+            $this->email->attach($pdfname);
+            $this->email->send();
+        }
+
+        if($credits)
+        {
+            $this->notifycredits($credits, $quote->ponum);
+        }
+        //echo '<pre>';print_r($received);die;
+        //$this->sendbacktrack($quoteid);/// SENDING BACKTRACK IS NOW MANUAL
+        if(!$ajax)
+            redirect('admin/quote/contracttrack/' . $quoteid);
+    }
+    
+    
+    
     function notifycredits($credits, $ponum)
     {
 
@@ -5803,8 +6199,7 @@ $loaderEmail = new My_Loader();
         }
         $this->email->to(implode(',' , $toemail));
         //$this->email->to($settings['adminemail'] . ',' . $c->email);
-
-        $this->email->subject('Award PO notification for PO# ' . $quote->ponum);
+        $this->email->subject("You've been Awarded Contract:" . $quote->ponum);
         $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
@@ -6124,8 +6519,8 @@ $loaderEmail = new My_Loader();
             $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_' . $company['id'] . '_accept.pdf';
             $pdf->Output($pdfname, 'f');
             $link = '<a href="' . site_url('quote/track/' . $quote->id) . '"></a>';
-            $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
-            $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
+            $data['email_body_title']  = "Please find the attachment for your Awarded Contract (Contract: " . $quote->ponum . ").<br/><br/>";
+            $data['email_body_content'] = "You have been awarded Contract:" . $quote->ponum  . ".  by " . $cpa->companyname . ".<br/>";
             $loaderEmail = new My_Loader();
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $settings = (array) $this->settings_model->get_current_settings();
@@ -6890,7 +7285,7 @@ $loaderEmail = new My_Loader();
 				    $ai->itemname = $companyitem->itemname;
 			}
 			
-			if($ai->received < $ai->quantity)
+			if($ai->received < 100)
 				$complete = false;
 			if($ai->company != $company)
 				$allawarded = false;
@@ -6902,7 +7297,21 @@ $loaderEmail = new My_Loader();
 			                        ->where('quote',$quoteid)->where('company',$company)
 			                        ->where('itemid',$ai->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
-			
+
+			$ai->manualprogress = $this->db->select('SUM(quantity) manualprogress')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)
+			                        ->get()->row()->manualprogress;			                        
+			            
+		    $ai->manualprogress = $ai->manualprogress ? $ai->manualprogress : 2;             
+            $ai->manualprogressbar = '<input id="progress' . $ai->id . '"  class="slider" style="width:200px;"
+											 data-slider-id="progress' . $ai->id . '" type="text"
+											 data-slider-min="0" value="' . $ai->manualprogress . '"
+											 data-slider-max="100" data-slider-step="1"
+											 data-slider-value="' . $ai->manualprogress . '"/>&nbsp;&nbsp;
+											 <span id="progresslabel' . $ai->id . '">' . $ai->manualprogress . '%</span>';
+           			
 			$data['awarditems'][] = $ai;
 		}
 		if(!$noitemsgiven)
@@ -6990,12 +7399,12 @@ $loaderEmail = new My_Loader();
 	        $quantity = 0;
 	        
 	        $invoicenum = $_POST['invoicenum'.$ai->id];
-	        if( $quantity && $invoicenum && $quantity + $pendingshipments > ($ai->quantity - $ai->received) )
+	        if( $quantity && $invoicenum && $quantity + $pendingshipments > (100 - $ai->received) )
 	        {
 	            //you cannot ship more than due quantity.
 	            $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">
 You cannot ship more than due quantity, including pending shipments.</div></div></div>');
-		        redirect('quote/track/'.$quoteid.'/'.$awardid,'refresh');
+		        redirect('admin/quote/trackpurchaser/'.$quoteid.'/'.$awardid,'refresh');
 	        }
 	    }
 	    $shipitems = '';
@@ -7013,7 +7422,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	        $quantity = 0;
 	        
 	        $invoicenum = $_POST['invoicenum'.$ai->id];
-	        if( $quantity && $invoicenum && $quantity <= $ai->quantity - $ai->received )
+	        if( $quantity && $invoicenum && $quantity <= 100 - $ai->received )
 	        {
 	            $arr = array();
 	            $arr['quantity'] = $quantity;
@@ -7558,6 +7967,15 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		//===============================================================================
 		
 	}
+	
+	function savecontractfeedback()
+    {
+        $_POST['ratedate'] = date('Y-m-d');
+        $_POST['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+		//print_r($_POST);die;
+        $this->db->insert('quotefeedback',$_POST);
+        redirect('admin/quote/contracttrack/'.$_POST['quote']);
+    }
 	
 		
     // End

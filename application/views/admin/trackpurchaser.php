@@ -16,7 +16,12 @@
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 <link href="<?php echo base_url();?>templates/front/assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/bootstrap-slider.js"></script>
+<link href="<?php echo base_url(); ?>templates/admin/css/slider.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
  <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
+ <?php echo '<script type="text/javascript">var updateprogressurl = "'.site_url('admin/costcode/updateprogress/').'";</script>';?>
+ 
+ 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 		$('#datatable').dataTable( {
@@ -76,8 +81,71 @@ $(document).ready(function(){
     <?php } ?>
 
     $("#timelineid").css("width",'<?php echo $quote->progress;?>%');
+    
+    
+    	$('.slider').slider({value:0});
+	$(".slider").on('slideStop', function(slideEvt) {
+		if(confirm('Do you want to change the value?'))
+		{
+			id=this.id;
+			id=id.replace('progress','');
+			v=slideEvt.value;
+			d = "id="+id+"&manualprogress="+v;
+			$("#progress"+id +" .tooltip-inner").text(v);
+			$('#quantity'+id).val(v);
+			//alert(d);
+			/*$.ajax({
+			      type:"post",
+			      data: d,
+			      url: updateprogressurl
+			    }).done(function(data){
+				   $("#progresslabel"+id).html(v+'%');
+				   var b = $("#budget"+id).val().replace('%','');
+				   $("#progress"+id +" .tooltip-inner").text(v);
+
+				   if(b<=v)
+					   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/ok.gif');?>'/>");
+				   else
+					   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/bad.png');?>'/>");
+				   location.reload();   
+			    });*/
+		}
+		else
+		{
+			var v = $("#progresslabel"+id).html().replace('%','');
+			//$("#progress"+id).attr('data-slider-value',v);
+			$("#progress"+id).val(v);
+			$("#progress"+id +" .tooltip-inner").text(v);
+			$('#quantity'+id).val('');
+		}
+		return false;
+	});
+    
 });
 </script>
+
+
+
+	<style type="text/css">
+		.box { padding-bottom: 0; }
+		.box > p { margin-bottom: 20px; }
+
+		#popovers li, #tooltips li {
+			display: block;
+			float: left;
+			list-style: none;
+			margin-right: 20px;
+		}
+		
+		#lastpbar div.bar
+		{
+		 max-width:100%;
+		}
+
+		.adminflare > div { margin-bottom: 20px; }
+	</style>
+
+
 <style>
 tr.still-due td
 {
@@ -190,20 +258,23 @@ display:none;
                                         <!-- <td class="v-align-middle"><?php echo $ai->daterequested;?></td> -->
                                         <td class="v-align-middle"><?php echo $ai->notes;?></td>
                                         <td class="v-align-middle"><?php echo $ai->received;?></td>
-                                        <!-- <td class="v-align-middle">
-                                        <?php echo $ai->quantity - $ai->received;?>
-                                        <?php if($ai->pendingshipments){?>
-                                        <br/><?php echo $ai->pendingshipments;?> Pending Acknowledgement
-                                        <?php }?>
-                                        </td> -->
                                         <td class="v-align-middle">
-                                        <?php echo '100%';?>
+                                        <?php echo number_format((100 - $ai->received),2);?>
+                                        <?php /* if($ai->pendingshipments){?>
+                                        <br/><?php echo $ai->pendingshipments;?> Pending Acknowledgement
+                                        <?php } */?>
                                         </td>
-                                        <td>
+                                        
+                                        <!-- <td>
                                         	<div class="progress progress-striped active progress-large">
                       									<div class="progress-bar <?php echo @$inv->mark; ?>" style="width: <?php echo '0'; // echo $inv->progress?>%;" data-percentage="<?php echo '0'; ?>%"><?php echo '0';  ?>% </div>
                    									</div>
-                                        </td>
+                                        </td> -->
+                                      <!--  <td id="progress<?php echo $ai->id;?>"><span class='task-progress' style='display: none;'><?php echo 1; // echo $ai->manualprogress;?></span><?php echo 1; //echo $item->manualprogressbar?></td>-->
+                                        	<td id="progress<?php echo $ai->id;?>"><span class='task-progress' style='display: none;'>
+                                        	<?php echo $ai->manualprogress;?></span><?php echo $ai->manualprogressbar?>
+                                        	<input type="hidden" name="quantity<?php echo $ai->id;?>" id="quantity<?php echo $ai->id;?>" />
+                                        	</td>
                                         <td>                                       	
                                         	<input style="width:100px" type="text" name="invoicenum<?php echo $ai->id;?>"/>                        	
                                         </td>
@@ -358,6 +429,91 @@ display:none;
 
         <?php } else { //if awarded items ?>
 
+        
+        
+          <script type="text/javascript">
+		   $(function () {
+			   var spent = new Array;
+               var prog = new Array;
+               var cc = new Array;
+               var ser = new Array;
+
+               $(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
+               $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
+               $(".cost-code").each(function(index){ cc.push($( this ).text() );});
+          	  for(var index=0;index<prog.length;index++){
+              	  if(prog[index]==0)
+              		prog[index] = parseFloat(spent[index] * 100 );
+              	  else
+					prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
+                }
+              console.log(prog);
+          	ser[0] ={"name":"Spent","data":spent};
+     		ser[1] = {"name":"Estimated","data":prog};
+		        $('#container-highchart').highcharts({
+		            chart: {
+		                type: 'bar'
+		            },
+		            title: {
+		                text: 'Estimated Cost To Complete'
+		            },
+		            subtitle: {
+		                text: ''
+		            },
+		            xAxis: {
+		                categories: cc,
+		                title: {
+		                    text: null
+		                }
+		            },
+		            yAxis: {
+		                min: 0,
+		                title: {
+		                    text: '$',
+		                    align: 'high'
+		                },
+		                labels: {
+		                    overflow: 'justify'
+		                }
+		            },
+		            tooltip: {
+		                valueSuffix: ' $'
+		            },
+		            plotOptions: {
+		                bar: {
+		                    dataLabels: {
+		                        enabled: true
+		                    }
+		                }
+		            },
+		            plotOptions: {
+	                       series: {
+	                           borderWidth: 0,
+	                           dataLabels: {
+	                               enabled: true,
+	                               format: '$ {point.y:.1f}'
+	                           }
+	                       }
+	                   },
+		            legend: {
+		                layout: 'vertical',
+		                align: 'right',
+		                verticalAlign: 'top',
+		                x: -40,
+		                y: 100,
+		                floating: true,
+		                borderWidth: 1,
+		                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+		                shadow: true
+		            },
+		            credits: {
+		                enabled: false
+		            },
+		            series: ser
+		        });
+		    });
+
+		   </script>
             <div class="errordiv">
     			<div class="alert alert-info">
                   	<button data-dismiss="alert" class="close"></button>
