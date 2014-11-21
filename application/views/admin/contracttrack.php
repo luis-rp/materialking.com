@@ -80,10 +80,10 @@ $per .='%';
 				});
 
 				<?php $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
-                    	 if(($q->quantity - $q->received) >0)
+                    	 if((100 - $q->received) >0)
                     	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
-                    	elseif ($q->quantity=="")
-						$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));
+                    	/*elseif ($q->quantity=="")
+						$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));*/
                     	else {
                     		$greaterreceived = "";
                     		foreach ($awarded->invoices as $invoice) {
@@ -492,9 +492,9 @@ function acceptall()
                                 <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">
 
       <?php
-      //$q->quantity;//100%
+      $q->quantity = 100;
       if(@$q->quantity)
-    	$new_pr_value = (($q->received * 100) / 100)/100;
+    	$new_pr_value = (($q->received * 100) / $q->quantity)/100;
       else 
       $new_pr_value = 0;	
    //   $new_pr_value = ($q->received/100) *10; ?>
@@ -562,8 +562,8 @@ function acceptall()
 						<?php } $seconds = "";
 								if(($q->quantity - $q->received) >0)
 								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
-								elseif ($q->quantity=="")
-								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));
+								/*elseif ($q->quantity=="")
+								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime(date('Y-m-d H:i:s'));*/
 								else {
 									$greaterreceived = "";
 									foreach ($awarded->invoices as $invoice) {
