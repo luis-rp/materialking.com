@@ -313,6 +313,11 @@ class quote extends CI_Controller
         if(isset($mess) && $this->session->flashdata('message')!=""){
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');
         }
+        
+        $query1 = "SELECT code FROM ".$this->db->dbprefix('costcode')."
+                  WHERE project='".$this->session->userdata('managedprojectdetails')->id."'";
+        $data['costcodedata'] = $this->db->query($query1)->result();
+        
          //echo "<pre>";print_r($data); die;
         $this->load->view('admin/quotelist', $data);
     }
@@ -517,18 +522,19 @@ class quote extends CI_Controller
             $awarded = false;
             $status = '-';
             $paidprice = '';
+            //echo "<pre>",print_r($awardeditems); die;
             foreach ($awardeditems as $ai)
             {
-                if ($ai->itemid == $item->itemid)
+                if ($ai->itemid == $item->id)
                 {
                     $awarded = true;
                     $paidprice = $ai->ea;
                     $status = 'Not Complete';
-                    if ($ai->quantity == $ai->received)
+                    if (100 == $ai->received)
                     {
                         $status = 'Complete';
                     }
-                    $item->quantity = $ai->quantity;
+                    $item->quantity = 100;
                     $item->received = $ai->received;
 					$item->ea = $ai->ea;
                 }
@@ -548,7 +554,7 @@ class quote extends CI_Controller
              		$received = 0;
              	else
              		$received = $item->received;
-                $ret .= '<tr><td><!-- <a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">-->'.$item->attach.'</a></td><td>'.$item->ea.'</td><td>' . $received. '</td><td>100</td><td>' . $status . '</td></tr>';
+                $ret .= '<tr><td><!-- <a href="javascript:void(0)" onclick="viewitems2(\''.$item->itemid.'\')">-->'.$item->attach.'</a></td><td>'.$item->ea.'</td><td>' . $received. '</td><td>'.(100 - $received).'</td><td>' . $status . '</td></tr>';
              }
         }
         $ret .= '</table>';
@@ -1431,7 +1437,7 @@ class quote extends CI_Controller
 				$items = $this->db->get('awarditem')->result();
 				foreach($items as $i)
 				{
-					if($i->received < $i->quantity)
+					if($i->received < 100)
 						$complete = false;
 					if($i->company != $company)
 						$allawarded = false;
@@ -2222,13 +2228,14 @@ class quote extends CI_Controller
     }
     
     
-     function addcontractitem($qid)
+    function addcontractitem($qid)
     {   	 
         if(isset($_FILES['attach']['name']) && $_FILES['attach']['name']!="")
             {
             	ini_set("upload_max_filesize","128M");
             	$target='uploads/quote/';
             	$count=0;
+            	$_POST['attach'] = "";
             	foreach ($_FILES['attach']['name'] as $filename)
             	{
             		$temp=$target;
@@ -2239,13 +2246,14 @@ class quote extends CI_Controller
             		move_uploaded_file($tmp,$temp);
             		$temp='';
             		$tmp='';
+            		if(isset($filename) && $filename!=""){
+                    $_POST['attach'].=$filename.",";
+                    }
+
             	}
-            	 $_POST['attach'] = implode(",",$_FILES['attach']['name']);
+            	 //$_POST['attach'] = implode(",",$_FILES['attach']['name']);
             }
-            else 
-            {
-            	$_POST['attach'] ="";
-            }
+            
            
        
         $_POST['purchasingadmin'] = $this->session->userdata('purchasingadmin');
@@ -3761,6 +3769,115 @@ class quote extends CI_Controller
     }
 
 
+    
+    function contract_invoice()
+    {
+        $invoicenum = @$_POST['invoicenum'];
+        if (!$invoicenum)
+            redirect('admin/quote/invoices');
+        $invoice = $this->quote_model->geticontractnvoicebynum($invoicenum);
+        $awarded = $this->quote_model->getawardedcontractbid($invoice->quote);
+        //echo "<pre>",print_r($invoice); echo $this->session->userdata('purchasingadmin');die;
+        /*if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('purchasingadmin')) {
+            redirect('admin/dashboard', 'refresh');
+        }*/
+        //echo '<pre>';print_r($invoice);die;
+
+        $this->db->where('id', $this->session->userdata('purchasingadmin'));
+        $pa = $this->db->get('users')->row();
+
+        $quote = $awarded->quotedetails;
+        $project = $this->project_model->get_projects_by_id($quote->pid);
+        $config = (array) $this->settings_model->get_current_settings();
+        $config = array_merge($config, $this->config->config);
+
+        $company = $this->db->from('received')
+                    ->join('awarditem','received.awarditem=awarditem.id')
+                    ->join('company','company.id=awarditem.company')
+                    ->get()->row();
+
+        $data['quote'] = $quote;
+        $data['awarded'] = $awarded;
+        $data['config'] = $config;
+        $data['project'] = $project;
+        $data['invoice'] = $invoice;
+        $data['company'] = $company;
+        $data['heading'] = "Invoice Details";
+        $data['purchasingadmin'] = $pa;
+        $this->load->view('admin/contract_invoice', $data);
+    }
+    
+    
+    
+    function requestpayment($quoteid = '',$award='')
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		$invoicenum = $_POST['invoicenum'];
+		
+		if(!$invoicenum)
+		{
+			$message = 'Invalid Link.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('admin/quote/invoices');
+		}
+		$update = array('paymentstatus'=>'Requested Payment');
+		$update['paymenttype'] = '';
+		$update['refnum'] = date('Y-m-d');//in this case, as the payment status is not paid, we use this field for date.
+		$this->db->where('invoicenum',$invoicenum);
+		$this->db->update('received',$update);
+		
+		$quote = $this->db->select('quote.*')
+				 ->from('received')
+				 ->join('awarditem','received.awarditem=awarditem.id')
+				 ->join('award','awarditem.award=award.id')
+				 ->join('quote','award.quote=quote.id')	 
+				 ->where('invoicenum',$invoicenum)
+				 ->get()->row();
+		
+		$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
+		
+		$settings = (array)$this->homemodel->getconfigurations ();
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+		$this->email->from($purchaser->email);
+		if($pa){
+		$this->email->to($pa->email);
+		$companyadminname = $pa->companyname;
+		}else{
+			$companyadminname = "";			
+		}
+		$subject = 'Payment requested by supplier';
+		$data['email_body_title'] = "";
+		$data['email_body_content'] = "Dear {$companyadminname}, <br> <br> Supplier {$purchaser->companyname} has sent payment request for
+		Invoice# {$invoicenum}
+		for PO# {$quote->ponum} on ".date('m/d/Y').".  <br> <br> Thank You. <br> {$purchaser->companyname}";
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		
+		$this->email->subject($subject);
+		$this->email->message($send_body);
+		$this->email->set_mailtype("html");
+		$this->email->reply_to($purchaser->email);
+		$this->email->send();
+		
+		$message = 'Payment Requested for the invoice# '.$_POST['invoicenum'];
+		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+		
+		if($quoteid)
+		{
+		    redirect('admin/quote/trackpurchaser/'.$quoteid.'/'.$award);
+		}
+		else
+		{
+		    redirect('admin/quote/invoices');
+		    //$this->invoice();
+		}
+	}
 
 
   function trackexport($qid)
@@ -4534,6 +4651,11 @@ class quote extends CI_Controller
     
     function contracttrack($qid)
     {
+    	
+    	$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+			
         if ($this->session->userdata('usertype_id') == 3)
             redirect('admin/purchasinguser/bids/' . $qid);
         $awarded = $this->quote_model->getawardedcontractbid($qid);
@@ -4550,8 +4672,8 @@ class quote extends CI_Controller
 		$this->db->where('quote',$qid);
 		$this->db->order_by('uploadon','DESC');
 		*/
-		$query = "SELECT s.*, c.title companyname FROM ".$this->db->dbprefix('shippingdoc')." s,
-				 ".$this->db->dbprefix('company')." c WHERE s.company=c.id AND s.quote='$qid' ORDER BY uploadon DESC";
+		$query = "SELECT s.*, u.companyname companyname FROM ".$this->db->dbprefix('shippingdoc')." s,
+				 ".$this->db->dbprefix('users')." u WHERE s.company=u.id AND s.quote='$qid' ORDER BY uploadon DESC";
 	    //echo $query;
 		$docs = $this->db->query($query)->result();
 		$data['shippingdocs'] = $docs;
@@ -4578,11 +4700,12 @@ class quote extends CI_Controller
 		    }
 		}
 
-		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
-		             ->where('quote',$qid)->get()->result();
+		$shipments = $this->db->select('shipment.*, quoteitem.itemname')
+		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->where('shipment.quote',$qid)
+		             ->get()->result();
 
-		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
+		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('quoteitem')." i WHERE s.itemid=i.id and s.quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
         $shipments2 = $this->db->query($shipmentsquery)->result();
 
 		if($awarded){
@@ -4622,6 +4745,10 @@ class quote extends CI_Controller
     
   function contracttrackexport($qid)
     {
+    	$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+			
     	/*if ($this->session->userdata('usertype_id') == 3)
     		redirect('admin/purchasinguser/bids/' . $qid);*/
     	$awarded = $this->quote_model->getawardedcontractbid($qid);
@@ -4656,9 +4783,10 @@ class quote extends CI_Controller
     		}
     	}
 
-    	$shipments = $this->db->select('shipment.*, item.itemname')
-    	->from('shipment')->join('item','shipment.itemid=item.id')
-    	->where('quote',$qid)->get()->result();
+    	$shipments = $this->db->select('shipment.*, quoteitem.itemname')
+		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->where('shipment.quote',$qid)->where('shipment.company',$company)
+		             ->get()->result();
 
     	$data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote);
     	$data['quote'] = $this->quote_model->get_quotes_by_id($awarded->quote);
@@ -5678,7 +5806,16 @@ $loaderEmail = new My_Loader();
                 		->get()->row();
 
 
-                		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
+                		$insertarray = array();
+                		if(@$item->id)
+                		$insertarray['awarditem'] = $item->id;
+                		if(@$ship->quantity)
+                		$insertarray['quantity'] = $ship->quantity; 
+                		if(@$inv)
+                		$insertarray['invoicenum'] = $inv; 
+                		if(@$_POST['receiveddate' . $key])
+                		$insertarray['receiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);                		
+                		
                 		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 		$this->quote_model->db->insert('received', $insertarray);
 
@@ -5693,7 +5830,7 @@ $loaderEmail = new My_Loader();
                 			$invoices[$inv] = array();
                 			$invoices[$inv]['invoicenum'] = $inv;
                 			$invoices[$inv]['items'] = array($insertarray);
-                			$invoices[$inv]['invoicenotes'] = $item->companydetails->invoicenote;
+                			//$invoices[$inv]['invoicenotes'] = $item->companydetails->invoicenote;
                 		} else {
                 			$invoices[$inv]['items'][] = $insertarray;
                 		}
@@ -5729,7 +5866,7 @@ $loaderEmail = new My_Loader();
                     $invoices[$_POST['invoicenum' . $key]] = array();
                     $invoices[$_POST['invoicenum' . $key]]['invoicenum'] = $_POST['invoicenum' . $key];
                     $invoices[$_POST['invoicenum' . $key]]['items'] = array($insertarray);
-                    $invoices[$_POST['invoicenum' . $key]]['invoicenotes'] = $item->companydetails->invoicenote;
+                    //$invoices[$_POST['invoicenum' . $key]]['invoicenotes'] = $item->companydetails->invoicenote;
                 } else {
                     $invoices[$_POST['invoicenum' . $key]]['items'][] = $insertarray;
                 }
@@ -5905,8 +6042,7 @@ $loaderEmail = new My_Loader();
             <td colspan="5" rowspan="3">
             <div style="width:70%">
             <br/>
-            <h4 class="semi-bold">Terms and Conditions</h4>
-            <p>'.$invoice['invoicenotes'].'</p>
+            <h4 class="semi-bold">Terms and Conditions</h4>            
             <h5 class="text-right semi-bold">Thank you for your business</h5>
             </div>
             </td>
@@ -6362,20 +6498,17 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">&nbsp;</td>
 				  </tr>
 				  <tr>
-				    <td align="left" valign="top">
-	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
-				      <tr>';
-				      
-				    if($contract=="contract")
-				      $pdfhtml .= '<td bgcolor="#000033"><font color="#FFFFFF"><strong>Contractor</strong></font></td>';
-				    else 
-				      $pdfhtml .= '<td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>';
-				      
-				      $pdfhtml .=' </tr>
+				    <td align="left" valign="top">';
+				      if($contract!="contract") {
+				      	$pdfhtml .= '<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr><td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+				      </tr>
 				      <tr>
 				        <td>' . $awarded->shipto . '</td>
 				      </tr>
-				    </table></td>
+				    </table>';
+				      }
+	                $pdfhtml .= '&nbsp;</td>
 				    <td align="left" valign="top">&nbsp;</td>
 				    <td align="left" valign="top">&nbsp;</td>
 				  </tr>
@@ -6543,7 +6676,11 @@ $loaderEmail = new My_Loader();
             }
             $this->email->to($toemail);
 
-            $this->email->subject('Your Purchase order for PO#:' . $quote->ponum);
+            if($contract=="contract") {
+            	$this->email->subject('You were Awarded Contract:' . $quote->ponum); 
+            }else{
+              $this->email->subject('Your Purchase order for PO#:' . $quote->ponum); 
+            } 
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->attach($pdfname);
@@ -6783,6 +6920,42 @@ $loaderEmail = new My_Loader();
       die;
     }
     
+    
+    
+    function sendcontractduedatealert()
+    {
+    	$SQL = "SELECT u.* FROM " . $this->db->dbprefix('users') . " u WHERE u.id=".$_POST['companyid'];
+    	$qry = $this->db->query($SQL);
+    	$result = $qry->result_array();
+
+    	$settings = (array)$this->settings_model->get_current_settings ();
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$this->email->clear(true);
+	    $this->email->from($settings['adminemail'], "Administrator");
+
+        $toemail = isset($result[0]['email']) ? $result[0]['email'] : '';
+
+        $this->email->to($toemail);
+
+		$data['email_body_title'] = "Dear ".$result[0]['companyname'];
+		$data['email_body_content'] = "Please set due date for Contract#  {$_POST['ponum']}<br><br><br>";
+
+   		$data['email_body_content'].= site_url('admin/quote/trackpurchaser/'.$_POST['quote'].'/'.$_POST['award']);
+   		$loaderEmail = new My_Loader();
+   		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->email->subject("Request to Set Due Date");
+		$this->email->message($send_body);
+		$this->email->set_mailtype("html");
+		$this->email->send();
+
+
+		$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Request due date alert sent via email.</div></div>');
+
+      die;
+    }
     
     // ITEM PDF
 	/*function items_pdf($quoteid)
@@ -7336,14 +7509,14 @@ $loaderEmail = new My_Loader();
 			$quote->mark = "progress-bar-success";
 		}
 		
-		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
-		             ->where('quote',$quoteid)->where('company',$company)
+		$shipments = $this->db->select('shipment.*, quoteitem.itemname')
+		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->where('shipment.quote',$quoteid)->where('shipment.company',$company)
 		             ->get()->result();
 		
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
 		
-		$invs = $this->quotemodel->getinvoices($company);
+		$invs = $this->quote_model->getcontractinvoices($company);
 		$invoices = array();
 		
 		foreach($invs as $i)
@@ -7393,8 +7566,15 @@ $loaderEmail = new My_Loader();
 			                        ->where('quote',$quoteid)->where('company',$company)
 			                        ->where('itemid',$ai->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
+			                        
+			$acceptedshipments = $this->db->select('SUM(quantity) acceptedshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',1)
+			                        ->get()->row()->acceptedshipments;			                        
+			                        
 			if(isset($_POST['quantity'.$ai->id]))                            
-	        $quantity = $_POST['quantity'.$ai->id];
+	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments);
 	        else 
 	        $quantity = 0;
 	        
@@ -7411,13 +7591,21 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $shippingDocInvouceNum = $_POST['invoicenum'.$awardeditems[0]->id];
 	    foreach($awardeditems as $ai)
 	    {
-                $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+            $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
 			                        ->from('shipment')
 			                        ->where('quote',$quoteid)->where('company',$company)
 			                        ->where('itemid',$ai->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
-            if(isset($_POST['quantity'.$ai->id]))    
-	        $quantity = $_POST['quantity'.$ai->id];
+			                        
+			                        
+			$acceptedshipments = $this->db->select('SUM(quantity) acceptedshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quoteid)->where('company',$company)
+			                        ->where('itemid',$ai->itemid)->where('accepted',1)
+			                        ->get()->row()->acceptedshipments;			                        
+			                        
+			if(isset($_POST['quantity'.$ai->id]))                            
+	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments);
 	        else 
 	        $quantity = 0;
 	        
@@ -7473,7 +7661,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		$this->email->to($pa->email);
     		$subject = 'Shipment made by supplier';
     		
-    		$data['email_body_title']  = "Supplier {$purchaser->compayname} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
+    		$data['email_body_title']  = "Supplier {$purchaser->companyname} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
     		$data['email_body_content'] = "<br><br>Details:".$shipitems;
     		$loaderEmail = new My_Loader();
     		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -7568,9 +7756,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$quote->mark = "progress-bar-success";
 		}
 		
-		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
-		             ->where('quote',$quoteid)->where('company',$company)
+		$shipments = $this->db->select('shipment.*, quoteitem.itemname')
+		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->where('shipment.quote',$quoteid)->where('shipment.company',$company)
 		             ->get()->result();
 		
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
@@ -7808,9 +7996,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$quote->mark = "progress-bar-success";
 		}
 		
-		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
-		             ->where('quote',$quoteid)->where('company',$company)
+		$shipments = $this->db->select('shipment.*, quoteitem.itemname')
+		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->where('shipment.quote',$quoteid)->where('shipment.company',$company)
 		             ->get()->result();
 		
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);

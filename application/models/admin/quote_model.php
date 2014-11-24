@@ -429,13 +429,13 @@ class quote_model extends Model {
                 $awarditem->companydetails = $query->row();
 
 
-                $this->db->where('id', $awarditem->itemid);
+                /*$this->db->where('id', $awarditem->itemid);
                 $companyitem = $this->db->get('item')->row();
 
                 if ($companyitem) {
                     $awarditem->itemcode = $companyitem->itemcode;
                     $awarditem->itemname = $companyitem->itemname;
-                }
+                }*/
                 //print_r($companyitem);die;
                 $awarditems[] = $awarditem;
             }
@@ -452,7 +452,7 @@ class quote_model extends Model {
              */
             $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
             				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,  
-            				   ROUND(SUM(ai.ea * r.quantity),2) totalprice
+            				   ROUND(SUM(totalprice * r.quantity/100),2) totalprice
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,
 							   " . $this->db->dbprefix('awarditem') . " ai
@@ -473,13 +473,13 @@ class quote_model extends Model {
                 $invoiceitems = $itemquery->result();
                 $invoicenum->items = array();
                 foreach ($invoiceitems as $invoiceitem) {
-                    $this->db->where('id', $invoiceitem->itemid);
+                    /*$this->db->where('id', $invoiceitem->itemid);
                     $companyitem = $this->db->get('item')->row();
 
                     if ($companyitem) {
                         $invoiceitem->itemcode = $companyitem->itemcode;
                         $invoiceitem->itemname = $companyitem->itemname;
-                    }
+                    }*/
                     $invoicenum->items[] = $invoiceitem;
                 }
                 $invoices[] = $invoicenum;
@@ -846,6 +846,62 @@ class quote_model extends Model {
         return $invoice;
     }
 
+    
+    
+        function geticontractnvoicebynum($invoicenum) {
+
+        $invoicesql = "SELECT invoicenum, ROUND(SUM(totalprice * r.quantity/100),2) totalprice, 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
+				   FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q 
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND invoicenum='{$invoicenum}'
+				  GROUP BY invoicenum
+				  ";
+        //echo $totalquery;
+        $invoicequery = $this->db->query($invoicesql);
+        $invoice = $invoicequery->row();
+
+        $quotesql = "SELECT quote
+				   FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('award') . " a
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND invoicenum='{$invoicenum}'
+				  ";
+        $quotequery = $this->db->query($quotesql);
+        $invoice->quote = $quotequery->row('quote');
+
+        $itemsql = "SELECT 
+					r.*,ai.itemid, ai.itemcode, u.companyname companyname, r.datedue,
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,u.id as companyid,ai.award, ai.attach   
+				  FROM 
+				  " . $this->db->dbprefix('received') . " r, 
+				  " . $this->db->dbprefix('awarditem') . " ai,
+				  " . $this->db->dbprefix('users') . " u 
+				  WHERE r.awarditem=ai.id AND ai.company=u.id 
+				  AND invoicenum='{$invoicenum}'
+				  ";
+        //echo $itemsql;
+        $invoiceitems = $this->db->query($itemsql)->result();
+
+        $invoice->items = array();
+        foreach ($invoiceitems as $invoiceitem) {
+            /*$this->db->where('id', $invoiceitem->itemid);
+            $companyitem = $this->db->get('item')->row();
+
+            if ($companyitem) {
+                $invoiceitem->itemcode = $companyitem->itemcode;
+                $invoiceitem->itemname = $companyitem->itemname;
+            }*/
+            $invoice->items[] = $invoiceitem;
+        }
+        return $invoice;
+    }
+    
+    
     function getbids($quote) {
         $this->db->where('quote', $quote);
         $query = $this->db->get('bid');
@@ -1418,6 +1474,117 @@ class quote_model extends Model {
 			
 		}
 		return false;
+	}
+	
+	
+	
+	function getcontractinvoices($company)
+	{
+		$search='';
+		$searches = array();
+		if(@$_POST['searchkeyword'])
+		{
+			$searches[] = " r.invoicenum LIKE '%{$_POST['searchkeyword']}%'";
+		}
+		if(@$_POST['searchstatus'])
+		{
+			$searches[] = " r.status='{$_POST['searchstatus']}'";
+		}
+        if (@$_POST['searchpaymentstatus'])
+        {
+        	if($_POST['searchpaymentstatus'] == "Unpaid")
+        	$searches[] = " (r.paymentstatus = 'Unpaid' || r.paymentstatus = 'Requested Payment') ";
+        	else
+            $searches[] = " r.paymentstatus = '{$_POST['searchpaymentstatus']}' ";
+        }
+		if(@$_POST['searchfrom'])
+		{
+			$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+			$searches[] = " receiveddate >= '$fromdate'";
+		}
+		if(@$_POST['searchto'])
+		{
+			$todate = date('Y-m-d', strtotime($_POST['searchto']));
+			$searches[] = " receiveddate <= '$todate'";
+		}
+
+
+		// ------- note: $_SESSION['quote_search'] and $_SESSION['pafilter'] are used for export function
+
+
+		if($searches)
+		{
+			$search = " AND ".implode(" AND ", $searches);
+			$this->session->set_userdata("quote_search",$search);
+		}
+		else
+		{
+			$this->session->unset_userdata("quote_search");
+		}
+
+		if($this->session->userdata("quote_search"))
+		{
+			$search = $this->session->userdata("quote_search");
+		}
+		//-----------------------
+		$pafilter = '';
+		if(@$_POST['searchpurchasingadmin'])
+		{
+			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+
+			$this->session->set_userdata("pafilter",$pafilter);
+			$this->session->set_userdata("searchpurchasingadmin",$_POST['searchpurchasingadmin']);
+		}
+		else
+		{
+			$this->session->unset_userdata('pafilter');
+		}
+
+		if($this->session->userdata("pafilter"))
+		{
+			$pafilter = $this->session->userdata("pafilter");
+		}
+
+		//----------edit ends------------------	----------------------------------------------------
+
+
+
+		$query = "SELECT invoicenum, ROUND(SUM(totalprice * r.quantity/100),2) totalprice,
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
+				   FROM
+				   ".$this->db->dbprefix('received')." r,
+				   ".$this->db->dbprefix('awarditem')." ai
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
+				  GROUP BY invoicenum
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				  ";
+		//echo $query;
+		//exit;
+
+		$invoicequery = $this->db->query($query);
+		$items = $invoicequery->result();
+
+		$invoices = array();
+		foreach($items as $invoice)
+		{
+			$quotesql = "SELECT q.*
+					   FROM
+					   ".$this->db->dbprefix('received')." r,
+					   ".$this->db->dbprefix('awarditem')." ai,
+					   ".$this->db->dbprefix('award')." a,
+					   ".$this->db->dbprefix('quote')." q
+					  WHERE r.awarditem=ai.id AND ai.award=a.id
+					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
+					  ";
+
+			$quotequery = $this->db->query($quotesql);
+			$invoice->quote = $quotequery->row();
+
+			$invoices[]=$invoice;
+		}
+
+		return $invoices;
 	}
 
     // End

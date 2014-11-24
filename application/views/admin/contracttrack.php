@@ -326,11 +326,11 @@ function acceptall()
         data: "quote=" + '<?php echo $quote->id;?>',
         url: accepallturl
     }).done(function(data) {
-		<?php foreach($shipments2 as $s) // if($s->accepted == 0){?>
+		<?php foreach($shipments as $s) if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
 		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
-		<?php // }?>
+		<?php }?>
 
 		$("#trackform").submit();
     });
@@ -613,9 +613,7 @@ function acceptall()
                                     
                                     <input type="hidden" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>" />
                                     
-                                    <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
-                                              
-                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>" data-date-format="mm/dd/yyyy"/>                                    
+                                    <input type="hidden" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"                                                  data-date-format="mm/dd/yyyy"/>
                                     <!-- <td>
                                         <?php if ($q->quantity > $q->received) { ?>
                                             <input type="checkbox" id="select<?php echo $q->id ?>" value="<?php echo $q->id ?>" class="select-for-complete" />
@@ -875,7 +873,7 @@ function acceptall()
                                 <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                 <tr><td style="text-align:right;">Total Unpaid:</td><td><?php echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                         </table>
-                        <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
+                        <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/contract_invoice'); ?>">
                             <input type="hidden" id="invoicenum" name="invoicenum"/>
                         </form>
                     </div>

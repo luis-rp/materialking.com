@@ -212,7 +212,7 @@ $(function() {
 		   <?php if($isawarded){?>
 		   <h4>
 		    Awarded on <?php $olddate=strtotime($awarded->awardedon); $newdate = date('m/d/Y', $olddate); echo $newdate; ?>
-		   <a href="<?php echo site_url('admin/quote/track/'.$quote->id);?>">Track</a>
+		   <a href="<?php echo site_url('admin/quote/contracttrack/'.$quote->id);?>">Track</a>
 		   </h4>
 		   <div class="span12">
 		   <table class="table table-bordered span4 awarded-table">

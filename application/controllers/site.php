@@ -163,11 +163,12 @@ class site extends CI_Controller
     					$this->db->update('company', array('com_lat' => $lat, 'com_lng' => $long));
     				}
     			}
-    			$supplier->joinmark = '';
+    			//$supplier->joinmark = '';
+    			$supplier->joinmark = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')" /> Join </a>';
     			if ($this->session->userdata('site_loggedin'))
     			{
     				$currentpa = $this->session->userdata('site_loggedin')->id;
-    				$supplier->joinmark = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')" /> Join </a>';
+    				//$supplier->joinmark = '<a  class="btn btn-primary arrow-right" onclick="joinnetwork(' . $supplier->id . ')" /> Join </a>';
     				$this->db->where('fromid', $currentpa);
     				$this->db->where('toid', $supplier->id);
     				$this->db->where('fromtype', 'users');
@@ -1196,11 +1197,12 @@ class site extends CI_Controller
     }
     public function item ($url)
     {
+    	
         $url = urldecode($url);
         //echo $url;die;
         $this->db->where('url', $url);
         $item = $this->db->get('item')->row();
-
+        
         if(!$item)
             redirect('site');
 
@@ -1629,6 +1631,7 @@ class site extends CI_Controller
 	    //echo '<pre>'; print_r($data['relateditems']);die;
 	    $data['page_title'] = $data["item"]->itemname;
 	    
+	   
 	    if($item->searchquery!="")
 	    {
 	    $data['searchquery'] = 'http://supplyspy.net/'.$item->searchquery;

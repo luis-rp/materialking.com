@@ -4,7 +4,7 @@
 	foreach($awarditems as $ai)
 	{
 		$recsum = $recsum + $ai->received;
-        $qntsum = $qntsum + $ai->quantity;
+        $qntsum = $qntsum + 100;
 	}
 	if($qntsum==0) $per=0;
 	else $per = number_format(($recsum/$qntsum)*100,2);
@@ -179,7 +179,7 @@ display:none;
 }
 </style>
 
-<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
+<form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/contract_invoice');?>">
 	<input type="hidden" id="invoicenum" name="invoicenum"/>
 </form>
 
@@ -340,15 +340,15 @@ display:none;
                <div class="col-md-12">
     		    <div class="grid simple ">
                     <div class="grid-title no-border">
-        	<h4>Shipments Made For PO# <?php echo $quote->ponum;?> </h4>
+        	<h4>Shipments Made For Contract# <?php echo $quote->ponum;?> </h4>
                     </div>
                     <div class="grid-body no-border">
 
 			<table class="borderless general">
 				<tr>
 					<th>Ref#</th>
-					<th>Item</th>
-					<th>Quantity</th>
+					<th>Description</th>
+					<th>Update Progress</th>
 					<th>Sent On</th>
 					<th>Status</th>
 				</tr>
@@ -376,7 +376,7 @@ display:none;
             <div class="col-md-12">
     		    <div class="grid simple ">
                     <div class="grid-title no-border">
-        	<h4>Existing Invoices For PO# <?php echo $quote->ponum;?> </h4>
+        	<h4>Existing Invoices For Contract# <?php echo $quote->ponum;?> </h4>
                     </div>
                     <div class="grid-body no-border">
 
@@ -409,7 +409,7 @@ display:none;
 						<?php echo $i->paymentstatus;?>
 
 	                  	<?php if($i->paymentstatus=='Unpaid'){?>
-	                  	<form action="<?php echo site_url('quote/requestpayment/'.$quote->id.'/'.$award);?>" method="post">
+	                  	<form action="<?php echo site_url('admin/quote/requestpayment/'.$quote->id.'/'.$award);?>" method="post">
 	                  		<input type="hidden" name="invoicenum" value="<?php echo $i->invoicenum;?>"/>
 	                  		<input type="submit" name="companystatus" value="Request Payment">
 	                  	</form>

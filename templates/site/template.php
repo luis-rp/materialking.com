@@ -106,8 +106,11 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                 }).done(function(data) {
 					$("#htmlplace").html(data);
                 });
-
+               <?php if ($this->session->userdata('site_loggedin')) { ?>
                 $("#joinmodal").modal('show');
+               <?php } else { ?>
+               $('#createmodal').modal('show');
+                <?php }  ?>
             }
 
             function joinformsubmit()

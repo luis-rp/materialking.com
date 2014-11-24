@@ -50,7 +50,7 @@ function invoice(invoicenum)
 
 </script>
     <div class="content">
-    <?php echo $this->session->flashdata('message'); ?>
+   <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 			<h3>Dashboard </h3>
 		</div>
@@ -79,7 +79,6 @@ function invoice(invoicenum)
 						<div class="date pull-right">
 								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
 						  </div>
-
 							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 								<div class="user-profile">
@@ -111,7 +110,7 @@ function invoice(invoicenum)
 							<span class="label label-important">No New Errors</span>
 						<?php }?>
 						<?php foreach($logDetails as $key=>$errorLog){ ?>
-					
+
 						<div class="date pull-right">
 								<a class="remove" href="<?php if(isset($errorLog->id)) echo site_url('dashboard/close/'.$errorLog->id); else echo '';?>">X</a>
 						  </div>
@@ -123,7 +122,7 @@ function invoice(invoicenum)
 								</div>
 								<div class="message-wrapper">
 									<div class="heading">
-										For the PO# <?php echo $errorLog['ponum'];?>   &nbsp;&nbsp; Error :  <?php echo $errorLog['error'];?> 
+										For the PO# <?php echo $errorLog['ponum'];?>   &nbsp;&nbsp; Error :  <?php echo $errorLog['error'];?>
 									</div>
 									<div class="description">
 									    Error Comments:	<?php echo $errorLog['comments'];?> / <?php echo $tago[$key];?>
@@ -144,11 +143,10 @@ function invoice(invoicenum)
 					  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($invoices as $invoice) { ?>
-
 					  <tr>
 					  <td><a href="javascript:void(0)" onclick="invoice('<?php echo $invoice->invoicenum;?>');"><?php echo $invoice->invoicenum; ?></a></td>
 					  <td><?php echo $invoice->datedue; ?></td>
-					 <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->invoicenum;?>');" value="Send Alert" > </td>
+					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->invoicenum;?>');" value="Send Alert" > </td>
 					  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
 					  </tr>
 
@@ -159,11 +157,10 @@ function invoice(invoicenum)
 
 				</div>
 			</div>
-
 			<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
                 	<input type="hidden" id="invoicenum" name="invoicenum"/>
                 </form>
-			
+
 			<div class="col-md-6 col-sm-6">
 
 				<div class="tiles white">
@@ -183,6 +180,7 @@ function invoice(invoicenum)
 							foreach($newrequests as $penreq){?>
 
 							<div class="notification-messages" style="height:140px; overflow:auto;">
+
 								<div class="user-profile">
 									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/notification-alert.png">
 								</div>
@@ -202,7 +200,8 @@ function invoice(invoicenum)
 										<?php }?>
 										<?php if($penreq->wishtoapply){?>
 											<?php if($penreq->from){?>
-											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>
+											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>&nbsp;&nbsp;
+											<a href="<?php echo site_url('company/formsubmission/'.$penreq->from->id);?>" target="_blank" >View Submission Data</a>
 											<?php }else{?>
 											No Application information
 											<?php }?>
@@ -216,7 +215,8 @@ function invoice(invoicenum)
 									</div>
 								</div>
 
-							</div>							
+							</div>
+
 
 						<?php } }?>
 					</div>
@@ -259,13 +259,13 @@ function invoice(invoicenum)
 											/ <a href="<?php echo site_url('dashboard/creditapplication/'.$njp->purchasingadmin);?>">View Application</a>
 										<?php }?>
 										<br/>Resident of: <?php echo $njp->address;?>
-									</div>
 								</div>
+							</div>
 							</div>
 						<?php } }?>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 

@@ -38,8 +38,8 @@
 				    		<td><?php echo $q->itemname;?></td>
 				    		<td><?php echo $q->quantity;?></td>
 				    		<td><?php echo $q->unit;?></td>
-				    		<td>$ <?php echo $q->ea;?></td>
-				    		<td>$ <?php echo $q->totalprice;?></td>
+				    		<td><?php if($q->ea==0) { echo "RFQ";} else { echo "$".$q->ea;}?></td>
+				    		<td><?php echo "$".$q->totalprice;?></td>
 				    		<td><?php echo $q->daterequested;?></td>
 				    		<td><?php echo $q->costcode;?></td>
 				    		<td><?php echo $q->notes;?></td>

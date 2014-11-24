@@ -1418,7 +1418,7 @@ class Company extends CI_Controller {
 
 	}
 
-	function formsubmission()
+	function formsubmission($id)
 	{
 	    $companyId = $this->session->userdata('company')->id;
 
@@ -1427,6 +1427,10 @@ class Company extends CI_Controller {
 	    if(isset($_POST['companyname']) && $_POST['companyname']!="")
 	    {
 	    $where = "AND fromid = ".$_POST['companyname'];
+	    }
+	    elseif(isset($id) && $id!="") 
+	    {
+	    $where = "AND fromid = ".$id;
 	    }
 
         $sql = "SELECT fb.*,jrf.Value as formValue,jr.message,jr.accountnumber,jr.fromid, u.companyname FROM ".$this->db->dbprefix('formbuilder')." fb LEFT JOIN ".$this->db->dbprefix('joinrequestform') ." jrf ON jrf.formfieldid = fb.Id LEFT JOIN ".$this->db->dbprefix('joinrequest') ." jr ON jrf.joinrequestid = jr.id left join pms_users u on jr.fromid = u.id WHERE fb.CompanyID=".$companyId." {$where} order by fromid";
@@ -1438,7 +1442,7 @@ class Company extends CI_Controller {
             	$this->load->view('company/formsubmission',$data);
             }
 	}
-
+	
 	function mailinglist(){
 		$this->load->view('company/mailinglist');
 
