@@ -96,9 +96,10 @@
                                                 <th style="width:10%">Date Received</th>
                                                 <th style="width:10%">Date Sent</th>
                                                 <th style="width:10%">Award Date</th>
-                                                <th style="width:20%">Status</th>
+                                                <th style="width:10%">Project Start Date</th>
+                                                <th style="width:15%">Status</th>
                                                 <th style="width:15%">Bid</th>
-                                                <th style="width:30%">Bid Progress</th>
+                                                <th style="width:25%">Bid Progress</th>
                                             </tr>
                                         </thead>
                                         
@@ -124,7 +125,7 @@
                                                 
                                                 <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->duedate));?></td>                                      								<td class="v-align-middle"><?php if(isset($inv->senton)) echo date('m/d/Y',strtotime($inv->senton));?></td>
                                           <td class="v-align-middle"><?php if(isset($inv->daterequested))   echo date('m/d/Y',strtotime($inv->daterequested));?></td>
-                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                        
+                                                <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->podate));?></td>                                                                    <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->quotedetails->startdate));?></td>          
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>

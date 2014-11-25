@@ -406,8 +406,11 @@
 							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
-							<?php if($newcontractnotifications[0]->notify_type=='contract') echo "Contract Notifications"; else echo "Notifications"?>		
-						</div>					 
+					<?php if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo "Notifications"?>&nbsp;&nbsp;									<?php if($newcontractnotifications){?>
+							 <a class="remove" href="<?php echo site_url('admin/dashboard/allclear');?>">Clear Notifications</a>	
+						<?php }?>				
+						</div>	
+							 
 						<?php if(!$newcontractnotifications){?>
 							<span class="label label-important">No New Notifications</span>
 						<?php }?>
@@ -435,7 +438,8 @@
 					</div></div>
 					
 					
-					<h5>Recent Messages</h5>
+					<h5>Recent Messages&nbsp;&nbsp;<?php if(isset($msgs)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallmessage');?>">Clear Messages</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($msgs)) { ?>
 					  <tr>
@@ -462,9 +466,10 @@
 				<?php } ?>
 				</table>
 
-				<h5>Recent Quotes Sent</h5>
+				<h5>Recent Quotes Sent&nbsp;&nbsp;<?php if(isset($newquotes)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallquote');?>">Clear Recent Quotes Sent</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($newquotes)) { ?>
+					<?php if(isset($newquotes)) { //echo "<pre>"; print_r($newquotes); die; ?>
 					  <tr>
 					  <td>Quote</td>
 					  <td>Status</td>
@@ -492,7 +497,8 @@
 				</table>
 
 
-				<h5>Recent Quotes Awarded</h5>
+				<h5>Recent Quotes Awarded&nbsp;&nbsp;<?php if(isset($awardquotes)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallaward');?>">Clear Recent Quotes Awarded</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($awardquotes)) { ?>
 					  <tr>
@@ -515,7 +521,8 @@
 				</table>
 
 
-				<h5>Recent Cost Codes Created</h5>
+				<h5>Recent Cost Codes Created&nbsp;&nbsp;<?php if(isset($newcostcodes)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallcostcode');?>">Clear Recent Cost Codes Created</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($newcostcodes)) { ?>
 					  <tr>
@@ -540,7 +547,8 @@
 				</table>
 
 
-				<h5>Recent Projects Created</h5>
+				<h5>Recent Projects Created&nbsp;&nbsp;<?php if(isset($newprojects)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallproject');?>">Clear Recent Projects Created</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($newprojects)) { ?>
 					  <tr>
@@ -564,7 +572,8 @@
 
 
 
-				<h5>Recent Users Created</h5>
+				<h5>Recent Users Created&nbsp;&nbsp;<?php if(isset($users)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallusers');?>">Clear Recent Users Created</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($users)) { ?>
 					  <tr>
@@ -587,7 +596,8 @@
 				</table>
 
 
-				<h5>Recent Network Connections</h5>
+				<h5>Recent Network Connections&nbsp;&nbsp;<?php if(isset($networks)) { ?>
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallnetwork');?>">Clear Recent Network Connections</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
 					<?php if(isset($networks)) { ?>
 					  <tr>

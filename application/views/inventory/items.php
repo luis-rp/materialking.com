@@ -339,6 +339,25 @@ function updatedeal(id)
 "height=700,width=700,status=yes,toolbar=no,menubar=no,location=no");
 
 }
+
+function clearall(id)
+{
+	$("#name"+id).val("");
+	$("#itemcodedata"+id).val("");
+	$("#itemnamedata"+id).val("");
+	$("#selectoption"+id).val("");
+	$("#price1"+id).val("");
+	$("#price"+id).attr('checked', false); 
+	$("#part"+id).val("");
+	$("#minqty"+id).val("");
+	$("#tierprice"+id).attr('checked', false); 
+	$("#instock"+id).attr('checked', false); 
+	$("#stock"+id).val("");
+	$("#instore"+id).attr('checked', false); 
+	$("#isfeature"+id).attr('checked', false); 
+}
+
+            
 </script>
 
 <style>
@@ -448,24 +467,25 @@ function updatedeal(id)
 									    	$i = 0;
 									    	foreach($items as $item)
 									    	{
+									    		//echo "<pre>"; print_r($items); die;
 									    		$i++;
 									      ?>
                                             <tr>
                                                 <!-- <td class="v-align-middle"><?php echo $item->itemcode;?></td> -->
-                                                <td class="v-align-middle"><?php echo $item->itemname;?></td>
+                                                <td class="v-align-middle"><span id="name<?php echo $item->id;?>"><?php echo $item->itemname;?></span></td>
 
                                                 <td class="v-align-middle">
-                                                	<input type="text" placeholder="Itemcode"
+                                                	<input type="text" placeholder="Itemcode" id="itemcodedata<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->itemcode?>"
                                                 	onchange="updateItemcode('<?php echo $item->id?>',this.value);"/>
 
-                                                	<input type="text" style="margin-top:5px" placeholder="Itemname"
+                                                	<input type="text" style="margin-top:5px" placeholder="Itemname" id="itemnamedata<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->itemname?>"
                                                 	onchange="updateItemname('<?php echo $item->id?>',this.value);"/>
                                                 </td>
 
                                                 <td class="v-align-middle">
-                                                	<select onchange="updateManufacturer('<?php echo $item->id?>',this.value);" style="width: 155px;font-size:12px;" class="form-control">
+                                                	<select onchange="updateManufacturer('<?php echo $item->id?>',this.value);" style="width: 155px;font-size:12px;" class="form-control" id="selectoption<?php echo $item->id;?>">
                                                 		<option value="">Select Manufacturer</option>
                                                 		<?php foreach($manufacturers as $mf){?>
                                                 			<option value="<?php echo $mf->id;?>" <?php if($mf->id == @$item->companyitem->manufacturer){echo 'SELECTED';}?>><?php echo $mf->title?></option>
@@ -474,13 +494,13 @@ function updatedeal(id)
                                                 </td>
 
                                                 <td class="v-align-middle">
-                                                	<input type="text" style="width: 60px;" placeholder="Part#"
+                                                	<input type="text" style="width: 60px;" placeholder="Part#" id="part<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->partnum?>"
                                                 	onchange="updatePartnum('<?php echo $item->id?>',this.value);"/>
                                                 </td>
 
                                                 <td class="v-align-middle">
-                                                	<input type="text" style="width: 60px;" placeholder="Price"
+                                                	<input type="text" style="width: 60px;" placeholder="Price" id="price1<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);"/>
                                                 	<?php if(@$item->companyitem){?>
@@ -489,26 +509,26 @@ function updatedeal(id)
                                                 	</a>
                                                 	<?php }?>
                                                 	<br/>
-                                                	<input type="checkbox" id = 'price' name = 'price' <?php echo @$item->companyitem->price?'checked="CHECKED"':''?>"
+                                                	<input type="checkbox" id = 'price<?php echo $item->id;?>' name = 'price' <?php echo @$item->companyitem->price?'checked="CHECKED"':''?>"
                   											 onchange="updatecheckprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Call for price&nbsp;
                                                 </td>
 
                                                  <td class="v-align-middle">
-                                                	<input type="text"  style="width: 100px;" placeholder="Min Qty"
+                                                	<input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqty<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
                                                 	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname)?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
                                                 	<br/>
-                                                	<input type="checkbox" id = 'tierprice' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
+                                                	<input type="checkbox" id = 'tierprice<?php echo $item->id;?>' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
                   											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc.
                                                 </td>
 
                                                 <td class="v-align-middle">
                                                 	<input type="checkbox"
-                                                	<?php echo @$item->companyitem->instock?'checked="CHECKED"':''?>"
+                                                	<?php echo @$item->companyitem->instock?'checked="CHECKED"':''?>" id="instock<?php echo $item->id;?>"
                                                 	onchange="updateIteminstock('<?php echo $item->id?>',this.checked);"/>
 
-                                                	<input type="text"  style="width: 60px;" placeholder="Stock"
+                                                	<input type="text"  style="width: 60px;" placeholder="Stock" id="stock<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->qtyavailable?>"
                                                 	onchange="updateqtyavailable('<?php echo $item->id?>',this.value);"/>
                                                 	
@@ -518,11 +538,11 @@ function updatedeal(id)
 
                                                 <td class="v-align-middle">
                                                 	<input type="checkbox"
-                                                	<?php echo @$item->companyitem->instore?'checked="CHECKED"':''?>"
+                                                	<?php echo @$item->companyitem->instore?'checked="CHECKED"':''?>" id="instore<?php echo $item->id;?>"
                                                 	onchange="updateIteminstore('<?php echo $item->id?>',this.checked);"/>
 
                                                 	<input type="checkbox"
-                                                	<?php echo @$item->companyitem->isfeature?'checked="CHECKED"':''?>"
+                                                	<?php echo @$item->companyitem->isfeature?'checked="CHECKED"':''?>" id="isfeature<?php echo $item->id;?>"
                                                 	onchange="updateItemisfeature('<?php echo $item->id?>',this.checked);"/>
                                                 </td>
 
@@ -530,6 +550,8 @@ function updatedeal(id)
                                                 	<a href="javascript:void(0);" onclick="updateitem('<?php echo $item->id;?>')">My Store</a>
                                                 	<br/>
                                                 	<a href="javascript:void(0);" onclick="updatedeal('<?php echo $item->id;?>')">Deal Setup</a>
+                                                	<br/>
+                                                	<a href="javascript:void(0);" onclick="clearall('<?php echo $item->id;?>')">Clear Fields</a>
                                                 </td>
 
                                             </tr>

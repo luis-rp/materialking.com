@@ -1007,9 +1007,9 @@ class quote extends CI_Controller
 
             $quoteitems = $this->quote_model->getitems($itemid);
             $emailattachments[] = array();
-            $emailitems = '<table CELLPADDING="12">';
+            $emailitems = '<table CELLPADDING="12" style="text-align:center;">';
     		$emailitems.= '<tr>';    		
-            $emailitems.= '<th> Contract Title:</th> <th> Bid Due Date: </th> <th> Contract Award Date: </th></tr>';
+            $emailitems.= '<th>Contract Title</th> <th> Bid Due Date </th> <th> Contract Award Date </th></tr>';
             $emailitems.= '<tr><td>'.@$_POST['ponum'].'</td><td>'.date('m/d/Y', strtotime(@$_POST['duedate'])).'</td><td>'.date('m/d/Y', strtotime(@$_POST['podate'])).'</td></tr> </table> <br><br>';
     		$emailitems .= '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';    		
@@ -1071,7 +1071,7 @@ class quote extends CI_Controller
                     $this->email->message($send_body);
                     $this->email->set_mailtype("html");
                     /*foreach($emailattachments as $eattach)
-                    $this->email->attach($eattach);*/
+                    $this->email->attach($eattach);*/               
                     $this->email->send();
 
                     $notification = array(
@@ -2158,7 +2158,7 @@ class quote extends CI_Controller
 
     function updateattach()
     {
-        //$items = $this->quote_model->getitems($qid);
+      //$items = $this->quote_model->getitems($qid);
         $qid = $_POST['quoteid'];
         //var_dump($qid); exit;
         //$err = $this->do_upload1($qid);
@@ -2251,7 +2251,8 @@ class quote extends CI_Controller
                     }
 
             	}
-            	 //$_POST['attach'] = implode(",",$_FILES['attach']['name']);
+            	 $_POST['attach'] = rtrim($_POST['attach'], ',');
+            	
             }
             
            
@@ -2826,12 +2827,12 @@ class quote extends CI_Controller
             $totalprice = 0;
             foreach ($bid->items as $item) {
                 foreach ($quoteitems as $qi) {
-                    if ($qi->itemcode == $item->itemcode) {
+                    if ($qi->id == $item->itemid) {
                         $item->originaldate = $qi->daterequested;
                     }
                 }
                 $totalprice += $item->totalprice;
-                $key = $item->itemcode;
+                $key = $item->itemid;
                 if (!isset($minimum[$key])) {
                     $minimum[$key] = $item->ea;
                     $maximum[$key] = $item->totalprice;

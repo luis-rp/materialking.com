@@ -639,8 +639,9 @@ function acceptall()
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete"></td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
-                        </form>
+                       
                     <?php } */ ?>
+                         </form>
                     <?php
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;

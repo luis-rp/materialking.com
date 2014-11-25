@@ -1198,6 +1198,70 @@ class Dashboard extends CI_Controller
 		redirect('admin/dashboard');
 	}
 	
-
+	 function allclear()
+	 {
+	 	$company = $this->session->userdata('purchasingadmin');
+        $this->db->where('notify_type','contract');
+		$this->db->where('company',$company);	
+		$this->db->update('notification',array('isread'=>1));
+		redirect('admin/dashboard');
+	 }
+	 
+	 function closeallmessage()
+	   {
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);	
+		$this->db->update('message',array('isread'=>1));
+		redirect('admin/dashboard');
+	   }
+	
+	function closeallquote()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		//echo "<pre>"; print_r($company); die;
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('quote',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallaward()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('award',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallcostcode()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('costcode',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallproject()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('project',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallusers()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('users',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallnetwork()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('network',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
 }
 ?>

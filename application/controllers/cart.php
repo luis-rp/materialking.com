@@ -1184,5 +1184,25 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		}
 		echo $returnval;
 	}
+	
+	function sendsms($id)
+    { 	
+    	$company=$this->db->get_where('company',array('id'=>$id))->row();
+    	if(isset($_POST["inputName"]) && isset($_POST["inputEmail"]) && isset($_POST["inputMessage"]))
+		{
+			$this->load->library('email');
+			$this->email->clear(true);
+			$this->email->from($_POST["inputEmail"], $_POST["inputName"]);
+			$this->email->to($company->primaryemail);
+			$body = "Dear,<br><br> Following User Has Send You Message.<br><p><strong>Name :</strong> ".$_POST["inputName"]."</p><p><strong>Email : </strong>".$_POST["inputEmail"]."</p><p><strong>Message : </strong></p>". $_POST["inputMessage"] . "<br>";
+			$this->email->subject("Order details!");
+			$this->email->message($body);
+			$this->email->set_mailtype("html");
+			$this->email->send();
+			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>');
+		}
+    	redirect('cart');
+    }
 
-}
+	
+}	

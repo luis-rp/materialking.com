@@ -57,6 +57,7 @@ function updatecart(itemid,companyid,quantity)
             	</tr>
             	<?php 
             	    $gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
+            	    $companyid = $item['companydetails']->id;  
             	?>
             	<tr>
             		<td><?php echo $item['itemdetails']->itemname;?></td>
@@ -207,14 +208,14 @@ function updatecart(itemid,companyid,quantity)
     </div>
 
     <div class="content">
-        <form method="post">
+        <form method="post" action="<?php echo site_url('cart/sendsms/'.$companyid);?>" >
             <div class="control-group">
                 <label class="control-label" for="inputName">
                     Name
                     <span class="form-required" title="This field is required.">*</span>
                 </label>
                 <div class="controls">
-                    <input type="text" id="inputName">
+                    <input type="text" id="inputName" name="inputName" required>
                 </div>
             </div>
 
@@ -224,7 +225,7 @@ function updatecart(itemid,companyid,quantity)
                     <span class="form-required" title="This field is required.">*</span>
                 </label>
                 <div class="controls">
-                    <input type="text" id="inputEmail">
+                    <input type="text" id="inputEmail" name="inputEmail" required>
                 </div>
             </div>
 
@@ -235,13 +236,14 @@ function updatecart(itemid,companyid,quantity)
                 </label>
 
                 <div class="controls">
-                    <textarea id="inputMessage"></textarea>
+                    <textarea id="inputMessage" name="inputMessage" required></textarea>
                 </div>
             </div>
 
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Send">
             </div>
+          
         </form>
     </div>
 </div>

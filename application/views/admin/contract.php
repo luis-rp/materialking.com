@@ -569,7 +569,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
                         	<br>
                         	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
-                        	View File
+                        	<?php echo $file; ?>
                           	</a>
                           	<?php } } }?>                          	
 		    		</td>
@@ -616,7 +616,8 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    			<!--<input type="file" name="attach" id="attach"/> -->
                     </td>
 		    		<td>
-		    			<textarea style="width:90%;" id="itemname" name="itemname" required <?php if ($this->session->userdata('purchasingadmin') != $quote->purchasingadmin){echo 'readonly';}?>></textarea>
+                   <textarea style="width:90%;" id="itemname" name="itemname" required 
+			  	<?php if ($this->session->userdata('purchasingadmin') != $quote->purchasingadmin){echo 'readonly';}?>></textarea>
 		    		</td>		    		
 		    		<td>	
 		    			<select id="costcode" name="costcode" class="costcode" onchange="defaultcostcode(this.value)">
@@ -644,8 +645,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    </table>
 		    </div>
              <div align="right" >
-                 <form class="form-horizontal" enctype="multipart/form-data" method="post"
-    		    	action="<?php echo base_url(); ?>admin/quote/updateattach">
+                 <form class="form-horizontal" enctype="multipart/form-data" method="post" action="<?php echo base_url(); ?>admin/quote/updateattach">
     			  	<input type="hidden" name="quoteid" value="<?php echo $this->validation->id;?>"/>
                         <div class="control-group">
     		   
@@ -657,7 +657,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
     		    			<?php if(@$this->validation->quoteattachment){?>
                         	<br>
                         	<a href="<?php echo site_url('uploads/quote').'/'.@$this->validation->quoteattachment ;?>" target="_blank">  &nbsp;
-                        	View Attachment
+                        	<?php echo @$this->validation->quoteattachment;?>
                           	</a>
                           	<?php }?>
                           	</div> 

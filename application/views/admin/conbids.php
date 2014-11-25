@@ -380,25 +380,25 @@ $(function() {
 					  	<div class="modal-body">
 					      <table class="table table-bordered">
 					      	<tr>
-					    		<th>Item Code</th>
-					    		<th>Item Name</th>
-					    		<th>Qty.</th>
+					    		<th>File Name</th>
+					    		<th>Description</th>
+					    		<!--<th>Qty.</th>-->
 				    		</tr>
 				    		<?php
 				    			foreach($quoteitems as $quoteitem)
 				    			{
 				    				$notbid = true;
 				    				foreach($bid->items as $biditem)
-				    					if($quoteitem->itemcode == $biditem->itemcode)
+				    					if($quoteitem->id == $biditem->itemid)
 				    						$notbid = false;
 
 				    			if($notbid)
 				    			{
 				    		?>
 						      	<tr>
-						    		<td><?php echo $quoteitem->itemcode?></td>
+						    		<td><?php echo $quoteitem->attach?></td>
 						    		<td><?php echo $quoteitem->itemname?></td>
-						    		<td><?php echo $quoteitem->quantity?></td>
+						    		<!--<td><?php //echo $quoteitem->quantity?></td>-->
 					    		</tr>
 				    		<?php
 				    			}
@@ -438,7 +438,7 @@ $(function() {
 <?php $alltotal=0; foreach($bid->items as $q) { // if($q->itemcode){?>
 				    	<?php $alltotal += $q->totalprice;?>
 		    			<?php
-							$key = $q->itemcode;
+							$key = $q->itemid;
 		    				$diff = $q->ea - $minimum[$key];
 		    				$diff = number_format($diff,2);
 		    			?>
