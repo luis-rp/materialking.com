@@ -249,6 +249,17 @@ function displaypricemodal(){
 
 <script type="text/javascript">
 
+function allowonlydigits(e,elementid,errorid){
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message                
+      $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
+      $("#"+errorid).css('color','red');
+      return false;
+    }
+
+}
+
 function calculatetotalprice(id)
 {	
 	var eaid = 'ea'+id;
@@ -424,10 +435,10 @@ function calculatetotalprice(id)
 							    		<input type="hidden" name="itemname<?php echo $q->id;?>" id="itemname<?php echo $q->id;?>" value="<?php echo $q->itemname;?>"/>
 			    							<?php echo htmlentities($q->itemname);?></td>						    		
 							    		<td>							    			
-											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange=" calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"/>							    			
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange=" calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"></span>							    			
 							    		</td>
 							    		<td>	
-											<input type="text" id="totalprice<?php echo $q->id;?>" class="price nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>"/>
+											<input type="text" id="totalprice<?php echo $q->id;?>" class="price nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'totalprice<?php echo $q->id;?>','tpriceerrmsg<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="tpriceerrmsg<?php echo $q->id;?>"></span>
 							    		</td>	
 							    		<td><textarea style="width: 150px" id="s_notes<?php echo $q->id;?>" name="s_notes<?php echo $q->id;?>" class="highlight"><?php if(isset($q->notes)) echo $q->notes; ?></textarea></td>
 							    		<td><input type="checkbox" name="nobid<?php echo $q->id;?>" value="1" class="checkbox nopad"/></td>

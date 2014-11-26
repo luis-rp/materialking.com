@@ -128,12 +128,15 @@ class quote_model extends Model {
 		log_message("debug",var_export($company,true));
 		if(!$company)
 			return array();
-		$this->db->where('isread',0);
+		/*$this->db->where('isread',0);
 		$this->db->where('notify_type','contract');
 		$this->db->where('company',$company);
 		$this->db->order_by('senton','desc');
 		$this->db->limit(5,0);
-		$nots = $this->db->get('notification')->result();
+		$nots = $this->db->get('notification1')->result();*/
+		$sql = "SELECT n.* FROM " . $this->db->dbprefix('notification') . " n join " . $this->db->dbprefix('quote') . " q on n.quote = q.id WHERE n.isread = 0 AND n.notify_type = 'contract' AND n.company = '{$company}' ORDER BY `senton` desc LIMIT 5 ";
+		$query = $this->db->query($sql);
+        $nots = $query->result();
 		log_message("debug",var_export($nots,true));
 		$ret = array();
 		foreach($nots as $not)

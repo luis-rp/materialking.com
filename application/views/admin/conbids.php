@@ -18,7 +18,7 @@
 		if(@$awarded->items)
 		foreach($awarded->items as $ai)
 		{
-			$awardeditemcompany[]=$ai->itemcode . $ai->company;
+			$awardeditemcompany[]=$ai->itemid . $ai->company;
 			$awardedtotal+=$ai->ea;
  		}
  		$awardedtotal = round($awardedtotal,2);
@@ -442,7 +442,7 @@ $(function() {
 		    				$diff = $q->ea - $minimum[$key];
 		    				$diff = number_format($diff,2);
 		    			?>
-				    	<tr class="<?php if(in_array($q->itemcode.$bid->company, $awardeditemcompany)){echo 'awarded-item';} elseif($q->substitute){echo 'substitute-item';}?>">
+				    	<tr class="<?php if(in_array($q->itemid.$bid->company, $awardeditemcompany)){echo 'awarded-item';} elseif($q->substitute){echo 'substitute-item';}?>">
 				    		<td><?php echo $sn++;?></td>
 				    		<?php if(!$isawarded){?>
 				    		<td>
@@ -675,7 +675,7 @@ $(function() {
 
         	<table>
 	        	<tr>
-		        	<td colspan="2"><strong>Shipping Address:</strong> <br/>
+		        	<td colspan="2"><strong>Project Address:</strong> <br/>
 			        	<input type="checkbox" value="1" id="usedefaultaddress" name="usedefaultaddress" onchange="usedefaultaddresscheckchange()"/>
 						<label for="usedefaultaddress">Use Default Project Address?</label>
 			        	<textarea class="span6" rows="2" id="shipto" name="shipto"></textarea>

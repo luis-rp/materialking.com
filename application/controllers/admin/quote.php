@@ -3225,7 +3225,7 @@ class quote extends CI_Controller
         }
         $this->quote_model->db->where('quote', $bid->quote);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($bid->quote,'contract');
+        $this->sendcontractawardemail($bid->quote,'contract');
     }
 
     function awardbidbycontractitems()
@@ -3281,7 +3281,7 @@ class quote extends CI_Controller
         }
         $this->quote_model->db->where('quote', $_POST['quote']);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($_POST['quote'],'contract');
+        $this->sendcontractawardemail($_POST['quote'],'contract');
     }
     
     function getminprice($companyid)
@@ -6300,8 +6300,326 @@ $loaderEmail = new My_Loader();
             $this->db->insert('notification', $notification);
         }
     }
+    
+    
+    
+        function sendawardemail($quoteid)
+    {
+        $awarded = $this->quote_model->getawardedbid($quoteid);
+        $quote = $awarded->quotedetails;
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
+            redirect('admin/dashboard', 'refresh');
+        }
+        $project = $this->project_model->get_projects_by_id($quote->pid);
 
-    function sendawardemail($quoteid,$contract='')
+        // notification to purchasing user
+        $data['email_body_title']  = "Dear Admin";
+
+		$data['email_body_content'] ="This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.
+		    ";
+		$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+        $settings = (array) $this->settings_model->get_current_settings();
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
+        $this->email->from($settings['adminemail'], "Administrator");
+
+        $toemail = array();
+        $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
+        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
+        $purchaseusers = $this->db->query($sql)->result();
+        foreach ($purchaseusers as $pu) {
+            $toemail[] = $pu->email;
+        }
+        $this->email->to(implode(',' , $toemail));
+        //$this->email->to($settings['adminemail'] . ',' . $c->email);
+
+        $this->email->subject('Award PO notification for PO# ' . $quote->ponum);
+        $this->email->message($send_body);
+        $this->email->set_mailtype("html");
+        $this->email->send();
+
+        //print_r($awarded);die;
+        $companies = array();
+        foreach ($awarded->items as $item) {
+            if (!isset($companies[$item->companydetails->id])) {
+                $companies[$item->companydetails->id] = array();
+                $companies[$item->companydetails->id]['id'] = $item->companydetails->id;
+                $companies[$item->companydetails->id]['title'] = $item->companydetails->title;
+                $companies[$item->companydetails->id]['primaryemail'] = $item->companydetails->primaryemail;
+                $companies[$item->companydetails->id]['contact'] = $item->companydetails->contact;
+                $companies[$item->companydetails->id]['invoicenote'] = $item->companydetails->invoicenote;
+                $companies[$item->companydetails->id]['items'] = array($item);
+            } else {
+                $companies[$item->companydetails->id]['items'][] = $item;
+            }
+        }
+        //print_r($companies);die;
+        $config = (array) $this->settings_model->get_current_settings();
+        $config = array_merge($config, $this->config->config);
+        if (!class_exists('TCPDF')) {
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+        }
+        $this->db->where('id',$this->session->userdata('purchasingadmin'));
+        $cpa = $this->db->get('users')->row();
+        foreach ($companies as $company) {
+            $pdfhtml = '
+				<table width="100%" cellspacing="2" cellpadding="2">
+				  <tr>
+				    <td width="33%" align="left" valign="top">
+				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Project Information</strong></font></th>
+				        </tr>
+				      <tr>
+				        <td width="33%" valign="top">Project Title</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $project->title . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $project->address . '</td>
+				      </tr>
+				    </table>
+				    </td>
+				    <td width="10" align="left" valign="top">&nbsp;</td>
+				    <td width="65%" align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
+			          </tr>
+				      <tr>
+				        <td width="33%" valign="top">PO#</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">' . $quote->ponum . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Subject</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->subject . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">PO# Date</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $quote->podate . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>From</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td width="33%" valign="top">Contact</td>
+				        <td width="7%" valign="top">&nbsp;</td>
+				        <td width="60%" valign="top">'.$cpa->fullname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Company</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->companyname.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Address</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->address.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Phone</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->phone.'</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Fax</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">'.$cpa->fax.'</td>
+				      </tr>
+				    </table></td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Supplier</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td width="33%" valign="top">Contact</td>
+				        <td width="2%" valign="top">&nbsp;</td>
+				        <td width="65%" valign="top">' . $company['contact'] . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Company</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . $company['title'] . '</td>
+				      </tr>
+				    </table></td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+				  <tr>
+				    <td align="left" valign="top">
+	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				      <tr>
+				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+				      </tr>
+				      <tr>
+				        <td>' . $awarded->shipto . '</td>
+				      </tr>
+				    </table></td>
+				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">&nbsp;</td>
+				  </tr>
+
+			</table>
+
+				<table width="100%" cellspacing="0" cellpadding="4">
+				  <tr>
+	              <td>PO Details:</td>
+	              </tr>
+	             </table>
+
+	             <br/>
+
+				<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
+				  <thead>
+				  <tr>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
+				  </tr>
+				  </thead>
+				  ';
+            $i = 0;
+            $totalprice = 0;
+            foreach ($company['items'] as $item) {
+                $pdfhtml.='<tr nobr="true">
+					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
+					    <td style="border: 1px solid #000000;">' . ($item->willcall?'For Pickup/Will Call':$item->daterequested) . '</td>
+					    <td style="border: 1px solid #000000;">' . $item->quantity . '</td>
+					    <td style="border: 1px solid #000000;">' . $item->unit . '</td>
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->ea . '</td>
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
+					  </tr>
+					  ';
+                $totalprice += $item->totalprice;
+            }
+            $config = (array) $this->settings_model->get_current_settings();
+            $config = array_merge($config, $this->config->config);
+            $taxtotal = $totalprice * $config['taxpercent'] / 100;
+            $grandtotal = $totalprice + $taxtotal;
+
+            $pdfhtml.='<tr>
+            <td colspan="5" rowspan="3">
+            <div style="width:70%">
+            <br/>
+            <h4 class="semi-bold">Terms and Conditions</h4>
+             <p>'.$companies[$item->companydetails->id]['invoicenote'].'</p>
+            <h5 class="text-right semi-bold">Thank you for your business</h5>
+            </div>
+            </td>
+            <td align="right">Subtotal</td>
+            <td align="right">$ ' . number_format($totalprice, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Tax</td>
+            <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
+            </tr>
+            <tr>
+            <td align="right">Total</td>
+            <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
+            </tr></table>
+            ';
+
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('');
+            $pdf->SetTitle('');
+            $pdf->SetSubject('');
+
+            $pdf->setHeaderFont(Array('helvetica', '', PDF_FONT_SIZE_MAIN));
+
+            $pdf->setPrintFooter(false);
+            $pdf->setPrintHeader(true);
+
+            $pdf->SetHeaderData('', '', $cpa->companyname . '', 'Purchase Order');
+
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->AddPage('L', 'LETTER');
+
+            $pdf->SetFont('helvetica', '', 8, '', true);
+            $pdf->writeHTML($pdfhtml, true, 0, true, true);
+            //$pdf->AddPage();
+
+            $pdf->lastPage();
+            $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_' . $company['id'] . '_accept.pdf';
+            $pdf->Output($pdfname, 'f');
+            $link = '<a href="' . site_url('quote/track/' . $quote->id) . '"></a>';
+            $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
+            $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
+            $loaderEmail = new My_Loader();
+            $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+            $settings = (array) $this->settings_model->get_current_settings();
+            $this->load->library('email');
+            $config['charset'] = 'utf-8';
+            $config['mailtype'] = 'html';
+            $this->email->initialize($config);
+            $this->email->clear(true);
+            $this->email->from($settings['adminemail'], "Administrator");
+
+            $toemail = $settings['adminemail'] . ',' . $company['primaryemail'];
+            $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
+	        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
+            $purchaseusers = $this->db->query($sql)->result();
+            foreach ($purchaseusers as $pu) {
+                $toemail = $toemail . ',' . $pu->email;
+            }
+            $this->email->to($toemail);
+
+            $this->email->subject('Your Purchase order for PO#:' . $quote->ponum);
+            $this->email->message($send_body);
+            $this->email->set_mailtype("html");
+            $this->email->attach($pdfname);
+            $this->email->send();
+
+            $notification = array(
+                'quote' => $quote->id,
+                'company' => $company['id'],
+                'ponum' => $quote->ponum,
+                'category' => 'Award',
+                'senton' => date('Y-m-d H:i'),
+                'isread' => '0'
+            );
+            $notification['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+            $this->db->insert('notification', $notification);
+        }
+    }
+    
+    
+
+    function sendcontractawardemail($quoteid,$contract='')
     {
     	if($contract=='contract')
     	$awarded = $this->quote_model->getawardedcontractbid($quoteid);

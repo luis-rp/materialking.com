@@ -220,7 +220,7 @@ display:none;
                     <div class="grid-body no-border" style="width:98%;">
                         <div class="progress progress-striped active progress-large">
     				    	<div class="progress-bar progress-bar-success" style="width:<?php echo $per;?>;" data-percentage="<?php echo $per;?>">
-    				    	  <?php echo $per;?>items&nbsp;received
+    				    	  <?php echo $per;?>Billings&nbsp;Submitted
     				    	</div>
     					</div>
 

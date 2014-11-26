@@ -410,18 +410,14 @@ class message extends CI_Controller
 		}
 		
 		
-		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, q.potype, c.title companyname, c.email companyemail, u.email adminemail, b.complete FROM 
-		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
-		".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('users')." u
-		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c.id AND m.adminid=u.id		
-		AND m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
+		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, q.potype, q.purchasingadmin as creator, c.title companyname, c.email companyemail, u.email adminemail, b.complete, b.id as bidid, a.id as awardid FROM 
+		".$this->db->dbprefix('message')." m left join ".$this->db->dbprefix('quote')." q on  m.quote=q.id left join ".$this->db->dbprefix('bid')." b on  q.id = b.quote and m.company=b.company left join ".$this->db->dbprefix('company')." c on m.company=c.id left join ".$this->db->dbprefix('users')." u on  m.adminid=u.id left join ".$this->db->dbprefix('award')." a on m.quote=a.quote 		
+		WHERE m.purchasingadmin='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
 		
 		
-		$messagesql2 = "SELECT m.*,q.id quoteid, q.ponum, q.potype, c2.companyname companyname, c2.email companyemail, u.email adminemail, b.complete FROM 
-		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b, 
-		".$this->db->dbprefix('users')." c2, ".$this->db->dbprefix('users')." u
-		WHERE m.quote=q.id AND q.id = b.quote AND m.company=b.company AND m.company=c2.id AND m.adminid=u.id		
-		AND m.company='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
+		$messagesql2 = "SELECT m.*,q.id quoteid, q.ponum, q.potype, q.purchasingadmin as creator, c2.companyname companyname, c2.email companyemail, u.email adminemail, b.complete, b.id as bidid, a.id as awardid FROM 
+		".$this->db->dbprefix('message')." m left join ".$this->db->dbprefix('quote')." q on  m.quote=q.id left join ".$this->db->dbprefix('bid')." b on  q.id = b.quote and m.company=b.company left join ".$this->db->dbprefix('users')." c2 on m.company=c2.id left join ".$this->db->dbprefix('users')." u on m.adminid=u.id left join ".$this->db->dbprefix('award')." a on m.quote=a.quote 
+		WHERE m.company='{$this->session->userdata('id')}' $whrMessage $quotewhere $con";
 		
 		$finalmessagequery = $messagesql." Union ".$messagesql2." ".$orderBy;
 		
@@ -441,6 +437,9 @@ class message extends CI_Controller
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
 			$messages[$msg->ponum]['quote']['complete']=$msg->complete;
 			$messages[$msg->ponum]['quote']['potype']=$msg->potype;
+			$messages[$msg->ponum]['quote']['bidid']=$msg->bidid;
+			$messages[$msg->ponum]['quote']['awardid']=$msg->awardid;
+			$messages[$msg->ponum]['quote']['companyid']=$msg->creator;
 		}
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;
@@ -449,6 +448,7 @@ class message extends CI_Controller
 		$data['sortbyoption']  = (isset($_POST['sortby']) && $_POST['sortby'] != '') ? $_POST['sortby'] : " ";
 		$data['ponumsearch']  = (isset($_POST['ponumsearch']) && $_POST['ponumsearch'] != '') ? $_POST['ponumsearch'] : " ";
 		$uid = $this->session->userdata('id');
+		$data['uid'] = $uid;
 		$setting=$this->settings_model->getalldata($uid);
 		
 		if($setting){
