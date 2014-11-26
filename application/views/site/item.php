@@ -768,6 +768,7 @@ $( document ).tooltip();
                                     if($inventory)
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
+                                    	
                                         $price = $inv->ea;
 
                                 ?>
@@ -786,7 +787,10 @@ $( document ).tooltip();
                                     </td>
                                     <td style="padding:0px;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
-                                    <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?>
+                                    <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?><br>
+                                    <?php echo $inv->backorder ? 'Backorder' : ''; ?><br>
+                                    <?php echo $inv->shipfrom ? 'Ships From Manufacturer.' : ''; ?>
+                                    
 
                                     </td>
                                     <td style="padding:0px;" class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>

@@ -29,6 +29,10 @@
 
 <?php echo '<script>var iteminstockupdateurl="'.site_url('inventory/updateiteminstock').'";</script>'?>
 
+	<?php echo '<script>var updatebackorderurl="'.site_url('inventory/updatebackorder').'";</script>'?>
+
+	<?php echo '<script>var updateshipfromurl="'.site_url('inventory/updateshipfrom').'";</script>'?>
+
 <?php echo '<script>var itemsurl="'.site_url('inventory/itemsjson').'";</script>'?>
 
 <?php echo '<script>var qtydiscountupdateurl="'.site_url('inventory/addqtydiscount').'";</script>'?>
@@ -302,6 +306,34 @@ function delqtydiscount(id,itemid){
 		    }).done(function(data){
 		    });
       }
+      
+      function updatebackorder(itemid,backorder)
+    {
+    	backorder = backorder==true?1:0;
+        var data = "itemid="+itemid+"&backorder="+backorder;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updatebackorderurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
+    
+    function updateshipfrom(itemid,shipfrom)
+    {
+    	shipfrom = shipfrom==shipfrom?1:0;
+        var data = "itemid="+itemid+"&shipfrom="+shipfrom;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updateshipfromurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
 
 </script>
 <?php echo '<script>var formurl = "'.site_url('inventory/showeditform').'";</script>';?>
@@ -355,6 +387,8 @@ function clearall(id)
 	$("#stock"+id).val("");
 	$("#instore"+id).attr('checked', false); 
 	$("#isfeature"+id).attr('checked', false); 
+	$("#backorder"+id).attr('checked', false); 
+	$("#shipfrom"+id).attr('checked', false); 
 }
 
             
@@ -504,7 +538,7 @@ function clearall(id)
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);"/>
                                                 	<?php if(@$item->companyitem){?>
-                                                	<a href="javascript: void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname)?>','<?php echo @$item->companyitem->ea?>');">
+                                                	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">
                                                 		<i class="fa fa-search"></i>
                                                 	</a>
                                                 	<?php }?>
@@ -532,8 +566,13 @@ function clearall(id)
                                                 	value="<?php echo @$item->companyitem->qtyavailable?>"
                                                 	onchange="updateqtyavailable('<?php echo $item->id?>',this.value);"/>
                                                 	
-                                                	<input type="checkbox"/>Backorder<br>                                               	
-                                                	<input type="checkbox"/>Ships From Manufacturer.
+                                                	<input type="checkbox" name="backorder" id="backorder<?php echo $item->id;?>" 
+                                                	<?php echo @$item->companyitem->backorder?'checked="CHECKED"':''?>" 
+                                                	onchange="updatebackorder('<?php echo $item->id?>',this.checked);"/>Backorder<br> 
+                                                	                                              	
+                                                	<input type="checkbox" name="shipfrom" id="shipfrom<?php echo $item->id;?>" 
+                                                	<?php echo @$item->companyitem->shipfrom?'checked="CHECKED"':''?>"
+                                                	onchange="updateshipfrom('<?php echo $item->id?>',this.checked);"/>Ships From Manufacturer.
                                                 </td>
 
                                                 <td class="v-align-middle">
