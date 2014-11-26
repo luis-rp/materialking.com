@@ -323,7 +323,7 @@ function delqtydiscount(id,itemid){
     
     function updateshipfrom(itemid,shipfrom)
     {
-    	shipfrom = shipfrom==shipfrom?1:0;
+    	shipfrom = shipfrom==true?1:0;
         var data = "itemid="+itemid+"&shipfrom="+shipfrom;
         //alert(data);
         $.ajax({
