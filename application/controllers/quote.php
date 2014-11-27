@@ -2899,7 +2899,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            //print_r($arr);
 	            $this->db->insert('shipment',$arr);
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$quantity." Pending Acknowledgement )</td></tr>";
+	            if($pendingshipments)
+	            $Pendingitemacceptance = $pendingshipments;
+	            else 
+	            $Pendingitemacceptance = $quantity;
+	            
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    

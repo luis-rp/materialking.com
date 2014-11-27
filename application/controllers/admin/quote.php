@@ -620,11 +620,11 @@ class quote extends CI_Controller
         if ($this->session->userdata('defaultdeliverydate'))
             $this->validation->deliverydate = $this->session->userdata('defaultdeliverydate');
         $this->validation->potype = $potype;
-        if ($potype == 'Bid')
+        if ($potype == 'Bid'){
             $this->load->view('admin/quote', $data);
-        elseif($potype == 'Direct')
+        }elseif($potype == 'Direct'){
             $this->load->view('admin/direct', $data);
-        else 
+        }else 
         	$this->load->view('admin/contract', $data);    
     }
 
@@ -7944,7 +7944,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            //print_r($arr);
 	            $this->db->insert('shipment',$arr);
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$quantity." Pending Acknowledgement )</td></tr>";
+	            if($pendingshipments)
+	            $Pendingitemacceptance = $pendingshipments;
+	            else 
+	            $Pendingitemacceptance = $quantity;
+	            
+	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
