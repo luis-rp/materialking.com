@@ -29,7 +29,7 @@
 
 	<tr>
 		<td colspan="2">
-			<table>
+			<table border="0" style="text-align:center;" cellpadding="8" cellspacing="2">
         		<tr>
             		<th>Itemcode</th>
             		<th>Itemname</th>

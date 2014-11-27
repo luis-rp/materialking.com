@@ -1755,16 +1755,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $i=1;
         $projectids = "";
         $iscompnotes = "";
-        foreach($_POST['projectid'] as $projectid){
+        if(isset($_POST['projectid'])){
+        	foreach($_POST['projectid'] as $projectid){
 
-        	if($projectid != -1)
-				$iscompnotes = 1;
+        		if($projectid != -1)
+        		$iscompnotes = 1;
 
-        	if($i<count($_POST['projectid']))
-        	$projectids .= $projectid.",";
-        	else
-        	$projectids .= $projectid;
-        	$i++;
+        		if($i<count($_POST['projectid']))
+        		$projectids .= $projectid.",";
+        		else
+        		$projectids .= $projectid;
+        		$i++;
+        	}
         }
         $_POST['projectid'] = $projectids;
 

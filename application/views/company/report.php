@@ -27,7 +27,7 @@ function submitForm(val)
 
 			<div style="float:left; width:100%; position:relative; z-index:111" >
 			  <form class="form-inline" action="<?php echo site_url('report')?>" method="post" style=" margin:0px;">
-<table class="table no-more-tables general" width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;style=" margin:0px;"">
+<table class="table no-more-tables general" width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:left;margin:0px;"">
   <tr>
     <th >From</th>
     <th >To</th>
@@ -35,10 +35,9 @@ function submitForm(val)
 	 <?php if(@$_POST['purchasingadmin']){?>
     <th >Select Project</th>
 	<?php } ?>
-
-
     <th>Payment Status</th>
     <th >Verification Status</th>
+    <th >Select Time</th>
     <th ><input type="submit" value="Filter" class="btn btn-primary"/>
            <a href="<?php echo site_url('report');?>"><input type="button" value="Show All" class="btn btn-primary"/></a></th>
   </tr>
@@ -69,7 +68,6 @@ function submitForm(val)
 
 	<?php } ?>
 
-
 	<td style="padding:0px"><select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:120px" onchange="this.form.submit()">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
@@ -82,10 +80,22 @@ function submitForm(val)
                             	<option value='Pending' <?php if(@$_POST['verificationstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
                             	<option value='Verified' <?php if(@$_POST['verificationstatus'] =='Verified'){echo 'SELECTED';}?>>Verified</option>
                             	<option value='Error' <?php if(@$_POST['verificationstatus'] =='Error'){echo 'SELECTED';}?>>Error</option>
-	            </select></td>
+	           				 </select>
+	 </td>
+	          
+	  <td>
+	   <input type="checkbox" id ='checkunpaid' name ='checkunpaid' value="1" />&nbsp;Include Any Un-Paid.&nbsp;	 
+	   
+	  <select name="datebymonth" id="datebymonth" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
+                            	<option value=''>Select Days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -30 days")); ?>'>Last 30 days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -60 days")); ?>'>Last 60 days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -90 days")); ?>'>Last 90 days</option>
+                             	<option value='alltime'>All-Time</option>                         	
+	           				 </select><br>          				 
+	           				 </td>
     <td style="padding:0px">&nbsp;</td>
   </tr>
-
 </table>
 </form>
 
@@ -100,8 +110,6 @@ function submitForm(val)
                     <div class="grid-title no-border">
                         <h4>&nbsp;</h4>
                     </div>
-
-
                     <div class="grid-body no-border">
                     <table class="table no-more-tables general">
 			    	<tr>
@@ -119,7 +127,8 @@ function submitForm(val)
 			    		<td>$<span id="totalallremaining"></span></td>
 			    	</tr>
 			    	</table>
-			  		 <!-- <div>
+
+			  		<!--<div>
 			  		 	<br/><br/>
     			  		<strong>DATE:</strong> From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?>
     			  		<br/>
@@ -130,7 +139,7 @@ function submitForm(val)
     			  		<strong>TOTAL PAID:</strong> $<span id="totalallpaid"></span>
     			  		<br/>
     			  		<strong>TOTAL REMAINING:</strong> $<span id="totalallremaining"></span>
-    			  	</div> -->
+    			  	</div>-->
            <?php }?>
            <hr/>
 		   <?php
@@ -155,9 +164,8 @@ function submitForm(val)
 			    		$totalallpaid += $report->totalpaid;
 			    		*/
 			    		$i++;
-		   ?>
-
-		   		<table class="table no-more-tables general">
+		     ?>
+		     <table class="table no-more-tables general">
 			    	<tr>
 			    		<th width="20%">DATE</th>
 			    		<th width="20%">TOTAL QUANTITY</th>
@@ -173,12 +181,9 @@ function submitForm(val)
 			    		<td>$<span id="totalpaid<?php echo $i;?>"></span></td>
 			    		<td>$<span id="totalremaining<?php echo $i;?>"></span></td>
 			    	</tr>
-		    	</table>
-	
-		   
-		   
-    			 <!-- <div>
+			    	</table>
 
+    			<!--  <div>
     			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime( $report->receiveddate));?>
     			  		<br/>
     			  		<strong>TOTAL QUANTITY:</strong>
@@ -194,7 +199,7 @@ function submitForm(val)
     			  		<span id="totalremaining<?php echo $i;?>">
     			  		    <?php //echo $report->totalprice - $report->totalpaid;?>
     			  		</span>
-    			  </div> -->
+    			  </div>-->
 
 			    <table class="table no-more-tables general">
 			    	<tr>

@@ -723,7 +723,7 @@ class costcode extends CI_Controller {
         $this->validation->parent = $item->parent;
         $this->validation->forcontract = $item->forcontract;
 
-        $this->db->where('id !=', $id);
+        $this->db->where('id', $id);
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['parents'] = $this->db->get('costcode')->result();
@@ -762,7 +762,7 @@ class costcode extends CI_Controller {
             $data ['action'] = site_url('admin/costcode/updatecostcode');
             $this->load->view('admin/costcode', $data);
         }
-        elseif ($this->costcode_model->checkDuplicateCode($this->input->post('code'), $itemid)) {
+        elseif ($this->costcode_model->checkDuplicateCode($this->input->post('code'), $itemid, $this->input->post('project'))) {
             $data ['message'] = 'Duplicate Costcode';
             $this->db->where('id !=', $itemid);
             $data['parents'] = $this->db->get('costcode')->result();

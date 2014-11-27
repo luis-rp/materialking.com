@@ -1637,13 +1637,19 @@ with the transfer#{$tobj->id}.
 		if(!$project)
 			redirect('admin/dashboard');
 		
+		if(@$this->session->flashdata('message'))
+			$data['message'] = $this->session->flashdata('message');	
 		
 		if($this->input->post('pid') != 0){
 			$this->db->where('id',$id);
 			$this->db->update('order',array('project'=>$this->input->post('pid'),'costcode'=>$this->input->post('ccid')));
 			
-			
-			redirect('admin/order');
+			if(@$this->input->post('ordersid')){
+				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Order Assigned Successfully</div></div>');
+				redirect('admin/order/add_to_project/'.$this->input->post('ordersid'));
+			}else {			
+				redirect('admin/order');
+			}
 		}else{
 			/*$this->db->select('ordernumber');
 			$this->db->where('id',$id);

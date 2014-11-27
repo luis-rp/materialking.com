@@ -1215,6 +1215,7 @@ class site extends CI_Controller
         $data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
         else{
         	$cat_data = $this->db->where('catname','Unassigned')->get('category')->result();
+        	if($cat_data)
         	$data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
         }
 

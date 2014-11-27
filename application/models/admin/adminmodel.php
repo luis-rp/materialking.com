@@ -40,9 +40,9 @@ class adminmodel extends Model
 			$newoffset = $offset;
 		}
 		
-		$userwhere = '';
+		$userwhere = ' where 1=1 ';
 		if($this->session->userdata('usertype_id')==2)
-			$userwhere = " WHERE u.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+			$userwhere = " AND u.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 			
 		
 			$sql = "SELECT
@@ -59,7 +59,7 @@ class adminmodel extends Model
 			".$this->db->dbprefix('usertype')." ut
 			Inner Join ".$this->db->dbprefix('users')." u 
 			ON u.usertype_id = ut.id
-			$userwhere
+			$userwhere AND isdeleted=0 
 			ORDER BY u.fullname asc  LIMIT $newoffset, $limit ";
 		
 		$query = $this->db->query ( $sql );
@@ -173,9 +173,12 @@ class adminmodel extends Model
 	
 	function delete($id) 
 	{
+		/*$options = array(
+			'isdeleted'=>'1'
+		);
 		$this->db->where ('id', $id );
-		$this->db->delete ('users');
-		
+		$this->db->update ('users');*/
+		$this->db->where('id',$id)->update('users',array('isdeleted'=>'1'));
 		//Delete the Setting data from the table
 		
 	}

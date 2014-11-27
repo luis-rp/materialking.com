@@ -3,7 +3,10 @@
 $(document).ready(function(){
 	$('#intro').wysihtml5();
 	$('#description').wysihtml5();
-	$('#startdate').datepicker();
+	$('#startdate').datepicker()                       //  id with "date-two" will pop up a datepicker
+    .on('changeDate', function(){                // when the datechanges
+	$('#startdate').datepicker('hide');      // hide the datepicker
+  });
 });
 //-->
 </script>

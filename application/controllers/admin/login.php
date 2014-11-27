@@ -43,7 +43,8 @@ class Login extends CI_Controller {
 	 	$this->db->where('username', $this->input->post('username'));
        	$this->db->where('password', md5($this->input->post('password')));
 	 	$this->db->where('status', 1);
-        
+		$this->db->where('isdeleted', 0);
+		        
         $query = $this->db->get('users');
         $row = $query->row(); 
          

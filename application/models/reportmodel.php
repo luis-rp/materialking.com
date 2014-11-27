@@ -21,7 +21,8 @@ class reportmodel extends Model
  			$_POST['searchto'] = date('Y-m-d');
  		}
  		if(@$_POST)
- 		{
+ 		{ 
+ 			
  			if(@$_POST['searchfrom'] && @$_POST['searchto'])
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
@@ -54,7 +55,28 @@ class reportmodel extends Model
  			if(@$_POST['verificationstatus'] && @$_POST['verificationstatus'])
  			{
  				$filter .= " AND r.status='".$_POST['verificationstatus']."' ";
- 			} 
+ 			}
+ 			if(@$_POST['datebymonth'] && @$_POST['datebymonth'])
+ 			{	
+ 				if(@$_POST['checkunpaid'])
+ 				{
+ 				    $filter .= "";					
+ 				}
+ 				else
+ 				{
+ 					$filter .= " AND r.paymentstatus='Paid'";	
+ 				}
+ 				
+ 				if(@$_POST['datebymonth']=="alltime")
+ 			     {					
+ 				    $search = "";
+ 			     }
+ 			     else 
+ 			     {
+	 			    $fromdate = date('Y-m-d', strtotime($_POST['datebymonth']));
+	 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'"; 			     	
+ 			     } 				
+ 			} 			
  		}
  		//print_r($_POST);die;
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,

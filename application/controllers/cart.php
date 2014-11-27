@@ -478,9 +478,9 @@ class cart extends CI_Controller
 				{
 					$this->db->where('id',$ci['company']);
 					$cd = $this->db->get('company')->row();				
-					$companies[$ci['company']]="<strong>This is the order email to supplier.</strong><br><br><strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$cd->primaryemail;
+					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$cd->primaryemail;
 					$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Credit Card');	
-					$companies[$ci['company']].= "<a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
+					$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
 					
 					//echo $ci['company'].$cd->primaryemail.'>'.$companies[$ci['company']].'<br/>';
 					$subject = "Order Details from ezpzp";
@@ -552,6 +552,7 @@ class cart extends CI_Controller
 	    		$notifications[$ci['company']]['company'] = $ci['company'];
 	    		$notifications[$ci['company']]['quote'] = $oid;
 	    		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
+	    		$notifications[$ci['company']]['purchasingadmin'] = $this->session->userdata('site_loggedin')->id;
 		
 			}
 			
@@ -611,7 +612,7 @@ class cart extends CI_Controller
                       $transferbody = "Dear {$company->title},<br/><br/>
 $ {$amount} has been transfered to your bank account for order#{$ordernumber}, with the transfer#{$tobj->id}.
 ";
-                      $transferbody.= "<a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
+                      $transferbody.= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
                       //echo $company->primaryemail.'<br>';
                       //echo $transferbody;
                       $subject = "Payment Details from ezpzp";
@@ -920,9 +921,9 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$this->db->where('id',$ci['company']);
 				$cd = $this->db->get('company')->row();
 				
-				$companies[$ci['company']]="<strong>This is the order email to supplier.</strong><br><br><strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$cd->primaryemail;
+				$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$cd->primaryemail;
 				$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Manual');			
-				$companies[$ci['company']].= "<a href='".site_url('order')."' target='_blank'>View Order</a>"; 					
+				$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 					
 				$subject = "Order Details from ezpzp";
 				
 				$labelforvendor='';$addemaillabel='';
@@ -986,6 +987,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
     		$notifications[$ci['company']]['company'] = $ci['company'];
     		$notifications[$ci['company']]['quote'] = $oid;
     		$notifications[$ci['company']]['senton'] = date('Y-m-d H:i:s');
+    		$notifications[$ci['company']]['purchasingadmin'] = $this->session->userdata('site_loggedin')->id;
 		}
 		
 		foreach($notifications as $notification)

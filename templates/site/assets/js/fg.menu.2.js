@@ -268,7 +268,7 @@ Menu.prototype.flyout = function(container, options) {
 			function(){
 				clearTimeout(hideTimer);
 				var subList = $(this).next();
-				if (!fitVertical(subList, $(this).offset().top)) { subList.css({ top: 'auto', bottom: 0 }); };
+				if (!fitVertical(subList, $(this).offset().top)) { subList.css({ top:'auto', bottom:'auto','z-index': 999 }); };
 				if (!fitHorizontal(subList, $(this).offset().left + 100)) { subList.css({ left: 'auto', right: linkWidth, 'z-index': 999 }); };
 				showTimer = setTimeout(function(){
 					subList.addClass('ui-widget-content').show(options.showSpeed).attr('aria-expanded', 'true');	

@@ -41,6 +41,7 @@ class Register extends CI_Controller
 		else 
 		{
 			$this->db->where('email',$_POST['email']);
+			$this->db->where('isdeleted', 0);
 			if($this->db->get('users')->num_rows > 0)
 			{
 				$errormessage = "Email '{$_POST['email']}' already exists.";
@@ -117,6 +118,7 @@ class Register extends CI_Controller
 		else 
 		{
 			$this->db->where('email',$request2['email']);
+			$this->db->where('isdeleted', 0);
 			if($this->db->get('users')->num_rows > 0)
 			{
 				$errormessage = "Email '{$request2['email']}' already exists.";
@@ -471,6 +473,7 @@ class Register extends CI_Controller
 		else
 		{	
 			$this->db->where('email',$_POST['email']);
+			$this->db->where('isdeleted', 0);
 			$check = $this->db->get('users');
 			if($check->num_rows == 0)
 			{
