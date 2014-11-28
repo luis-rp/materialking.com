@@ -36,7 +36,7 @@
 				]
 			} );
 	 $('.dataTables_length').hide();
-	 $('.daterequested').datepicker();
+	// $('.daterequested').datepicker();
 	})
 	function invoice(invoicenum)
 	{
@@ -59,7 +59,10 @@
 
 		}
 	}
-
+	
+	function caloclick(){
+		$('.daterequested').datepicker();
+	}
 
 </script>
 
@@ -67,7 +70,7 @@
 
 <script>
 $(document).ready(function(){
-	$(".datefield").datepicker();
+	
     <?php if($per=='0.00%') { ?>
     $("#timelineid").attr("class","bar madras");
     $("#timelineid").css("width",'100%');
@@ -324,7 +327,7 @@ tr.still-due td
 	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
 	                  	<?php }?>
 					</td>
-					<td><input type="text" class="span daterequested highlight" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
+					<td><input type="text" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
 				</tr>
 				<?php }?>
 			</table>

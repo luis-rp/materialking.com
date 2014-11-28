@@ -108,17 +108,17 @@ display:none;
 								    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
 					                        	<br>
 					                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
-					                        	View File
+					                        	<?php echo $file;?>
 					                          	</a>
 					                          	<?php } } }?>    
                                                 </td>
                                                 <td class="v-align-middle"><?php echo $ai->itemname;?></td>                                         
                                                 <!-- <td class="v-align-middle">$<?php foreach($biditems as $biditem) {  if($biditem->itemid == $ai->itemid) { echo $biditem->ea; $bidea = $biditem->ea; } } ?></td>
                                                 <td class="v-align-middle">$<?php if($bidea!=0) { echo round($ai->quantity * $bidea,2); } else { echo round($ai->quantity * $ai->ea,2); } ?></td> -->
-                                                <td class="v-align-middle">$<?php echo $ai->ea;?></td>
-                                                <td class="v-align-middle">$<?php echo round($ai->totalprice,2); ?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".$ai->ea; else echo "No Bid"; ?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".round($ai->totalprice,2); else echo "No Bid"; ?></td>
                                                 <!-- <td class="v-align-middle"><?php echo $ai->daterequested;?></td> -->
-                                                <td class="v-align-middle"><?php echo $ai->notes;?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo $ai->notes;?></td>
                                             </tr>
                                           <?php } ?>
                                         </tbody>

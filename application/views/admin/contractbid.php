@@ -418,7 +418,7 @@ function calculatetotalprice(id)
 							    			<!--<?php //if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
 				                        	<br>
 				                        	<a href="<?php //echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
-				                        	View File
+				                        	
 				                          	</a>
 				                          	<?php //}?>-->
 							    			
@@ -426,7 +426,7 @@ function calculatetotalprice(id)
 							    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
 				                        	<br>
 				                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
-				                        	View File
+				                        	<?php echo $file;?>
 				                          	</a>
 				                          	<?php } } }?>   
 				                          	<input type="hidden" name="attach<?php echo $q->id;?>" id="attach<?php echo $q->id;?>" value="<?php echo $q->attach;?>"/>
@@ -455,7 +455,7 @@ function calculatetotalprice(id)
 											Quote#
 							    		</td>
 							    		<td colspan="4">
-											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
+											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { $quotenumarr = explode(".",$quotenum); echo @$quotenumarr[0]."."; printf('%03d',(@$quotenumarr[1]+1)); } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
 							    		</td>
 							    		
 							    		

@@ -340,7 +340,7 @@ display:none;
                <div class="col-md-12">
     		    <div class="grid simple ">
                     <div class="grid-title no-border">
-        	<h4>Shipments Made For Contract# <?php echo $quote->ponum;?> </h4>
+        	<h4>Billings Made For Contract# <?php echo $quote->ponum;?> </h4>
                     </div>
                     <div class="grid-body no-border">
 

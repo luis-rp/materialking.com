@@ -746,7 +746,7 @@ class costcode extends CI_Controller {
         $this->_set_rules();
       
         $itemid = $this->input->post('id');
-
+		$item = $this->costcode_model->get_costcodes_by_id($itemid);
         if ($this->validation->run() == FALSE) {
             $data ['message'] = $this->validation->error_string;
             $this->db->where('id !=', $itemid);

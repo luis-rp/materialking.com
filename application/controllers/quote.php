@@ -2900,7 +2900,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            $this->db->insert('shipment',$arr);
 	            
 	            if($pendingshipments)
-	            $Pendingitemacceptance = $pendingshipments;
+	            $Pendingitemacceptance = $pendingshipments+$quantity;
 	            else 
 	            $Pendingitemacceptance = $quantity;
 	            

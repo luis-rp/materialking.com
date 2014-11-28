@@ -204,7 +204,16 @@ class quote extends CI_Controller
                 	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
         			$shipment = $this->db->query($shipmentsquery)->result();
                 	if($shipment)
-                    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance';
+                	  {  
+                		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
+                		   {               	
+                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
+                	       }
+                        else 
+                           {
+                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance';
+                           }
+                	  }
                 }
                 $quote->actions = $quote->awardedbid?'':
                 anchor('admin/quote/items/' . $quote->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view', 'title' => 'view quote items'))
@@ -370,7 +379,7 @@ class quote extends CI_Controller
 		
 		$quote = $this->quotemodel->getquotebyid($quoteid);
 		$bid = $this->db->where('quote',$quoteid)->where('company',$company)->get('bid')->row();
-		$award = $this->quotemodel->getawardedbid($quoteid);
+		$award = $this->quote_model->getawardedcontractbid($quoteid);
 		if($bid)
 		{
 			$this->db->where('bid',$bid->id);			
@@ -621,7 +630,7 @@ class quote extends CI_Controller
             $this->validation->deliverydate = $this->session->userdata('defaultdeliverydate');
         $this->validation->potype = $potype;
         if ($potype == 'Bid'){
-            $this->load->view('admin/quote', $data);
+            $this->load->view('admin/quotebid', $data);
         }elseif($potype == 'Direct'){
             $this->load->view('admin/direct', $data);
         }else 
@@ -644,12 +653,12 @@ class quote extends CI_Controller
         $this->_set_fields();
         $this->_set_rules();
         if ($this->validation->run() == FALSE) {
-            $this->load->view('admin/quote', $data);
+            $this->load->view('admin/quotebid', $data);
         } elseif ($this->quote_model->checkDuplicatePonum($this->input->post('ponum'), 0,$pid)) {
             $data ['message'] = 'Duplicate PO#';
-            //$this->load->view ('admin/quote', $data);
+            //$this->load->view ('admin/quotebid', $data);
             if ($potype == 'Bid')
-                $this->load->view('admin/quote', $data);
+                $this->load->view('admin/quotebid', $data);
             elseif($potype == 'Direct')
                 $this->load->view('admin/direct', $data);
             else 
@@ -723,10 +732,10 @@ class quote extends CI_Controller
         $data['categorymenuitems'] = $this->items_model->getCategoryMenuItems();
         $data ['message'] = '';
         $data ['action'] = site_url('admin/quote/updatequote');
-        //$this->load->view ('admin/quote', $data);
+        //$this->load->view ('admin/quotebid', $data);
 
 	    if ($data['potype'] == 'Bid')
-            $this->load->view('admin/quote', $data);
+            $this->load->view('admin/quotebid', $data);
         elseif($data['potype'] == 'Direct')
             $this->load->view('admin/direct', $data);
         else{
@@ -753,10 +762,10 @@ class quote extends CI_Controller
             $data['companylist'] = $this->quote_model->getcompanylist();
             $data['pid'] = $this->input->post('pid');
             $data ['action'] = site_url('admin/quote/updatequote');
-            $this->load->view('admin/quote', $data);
+            $this->load->view('admin/quotebid', $data);
 
             if ($this->input->post('potype') == 'Bid')
-                $this->load->view('admin/quote', $data);
+                $this->load->view('admin/quotebid', $data);
             else
                 $this->load->view('admin/direct', $data);
         }
@@ -1835,13 +1844,14 @@ class quote extends CI_Controller
 			
 			if($revisionid > 1){			
 				if(isset($_POST['quotenum'])){
-					$quotearr = explode(".",$_POST['quotenum']);
+					/*$quotearr = explode(".",$_POST['quotenum']);
 					if(count($quotearr)>1){
 					$number = sprintf('%03d',$quotearr[1]+1);
-					$bidarray['quotenum'] = $quotearr[0].".".$number;
-					}else {
+					$bidarray['quotenum'] = $quotearr[0].".".$number;*/
+					$bidarray['quotenum'] = $_POST['quotenum'];
+					/*}else {
 						$bidarray['quotenum'] = "";
-					}
+					}*/
 				}else
 					$bidarray['quotenum'] = "";
 			}
@@ -3383,19 +3393,34 @@ class quote extends CI_Controller
             {
                 $invoice->ponum = $invoice->quote->ponum;
 
+                if($invoice->quote->potype=='Contract'){
+                $company = $this->db->select('users.*')->from('received')
+                           ->join('awarditem','received.awarditem=awarditem.id')
+                           ->join('users','awarditem.company=users.id')
+                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->get()->row()
+                           ;
+                }else{
                 $company = $this->db->select('company.*')->from('received')
                            ->join('awarditem','received.awarditem=awarditem.id')
                            ->join('company','awarditem.company=company.id')
                            ->where('received.invoicenum',$invoice->invoicenum)
                            ->get()->row()
-                           ;
+                           ;                      
+                }
+                           
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
                 $invoice->bankaccount = $bankaccount;
 
                 $invoice->companydetails = $company;
                 $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                
+                if($invoice->quote->potype=='Contract')
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                else 
+                 $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                 
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
                 {
@@ -3485,6 +3510,9 @@ class quote extends CI_Controller
 			}
 			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
 			{
+			   if($i->quote->potype=='Contract')
+               $p_status.= '/Payment Requested by/'.$i->companydetails->companyname.'on'.$i->refnum;
+               else 
                $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
 			}
 			//-----------------------------------------------------------
@@ -3514,18 +3542,32 @@ class quote extends CI_Controller
             {
                 $invoice->ponum = $invoice->quote->ponum;
 
+                if($invoice->quote->potype=='Contract'){
+                $company = $this->db->select('users.*')->from('received')
+                           ->join('awarditem','received.awarditem=awarditem.id')
+                           ->join('users','awarditem.company=users.id')
+                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->get()->row()
+                           ;
+                }else{
                 $company = $this->db->select('company.*')->from('received')
                            ->join('awarditem','received.awarditem=awarditem.id')
                            ->join('company','awarditem.company=company.id')
                            ->where('received.invoicenum',$invoice->invoicenum)
                            ->get()->row()
                            ;
+                }
+                           
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
                 $invoice->bankaccount = $bankaccount;
 
                 $invoice->companydetails = $company;
                 $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
+                
+                if($invoice->quote->potype=='Contract')
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                else                 
                 $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
@@ -3616,7 +3658,10 @@ class quote extends CI_Controller
 				$p_status.= '/'.$i->paymenttype.'/'.$i->refnum;
 			}
 			if($i->paymentstatus=='Requested Payment' && isset($i->companydetails))
-			{
+			{  
+			   if($i->quote->potype=='Contract')
+               $p_status.= '/Payment Requested by/'.$i->companydetails->companyname.'on'.$i->refnum;
+               else 
                $p_status.= '/Payment Requested by/'.$i->companydetails->title.'on'.$i->refnum;
 			}
 			//-----------------------------------------------------------
@@ -3650,19 +3695,33 @@ class quote extends CI_Controller
             {
                 $invoice->ponum = $invoice->quote->ponum;
 
+                if($invoice->quote->potype=='Contract'){
+                $company = $this->db->select('users.*')->from('received')
+                           ->join('awarditem','received.awarditem=awarditem.id')
+                           ->join('users','awarditem.company=users.id')
+                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->get()->row()
+                           ;
+                }else{                
                 $company = $this->db->select('company.*')->from('received')
                            ->join('awarditem','received.awarditem=awarditem.id')
                            ->join('company','awarditem.company=company.id')
                            ->where('received.invoicenum',$invoice->invoicenum)
                            ->get()->row()
                            ;
+                }           
+                           
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
                 $invoice->bankaccount = $bankaccount;
 
                 $invoice->companydetails = $company;
                 $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
+                if($invoice->quote->potype=='Contract')
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                else 
                 $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
                 {
@@ -3699,7 +3758,10 @@ class quote extends CI_Controller
                 $payment_status_html .= $update_payment_button;
                 if($invoice->paymentstatus=='Requested Payment')
                 {
-                    $payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
+                	if($invoice->quote->potype=='Contract')
+               			$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Company</i>';
+               		else 
+                    	$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
                 }
 
                 $invoice->status_selectbox = $status_html;
@@ -5921,10 +5983,10 @@ $loaderEmail = new My_Loader();
 				    <td width="65%" align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
+				        <th colspan="3" valign="top" bgcolor="#000033"><font color="#FFFFFF"><strong>Billing Information</strong></font></th>
 			          </tr>
 				      <tr>
-				        <td width="33%" valign="top">PO#</td>
+				        <td width="33%" valign="top">Contract</td>
 				        <td width="7%" valign="top">&nbsp;</td>
 				        <td width="60%" valign="top">' . $quote->ponum . '</td>
 				      </tr>
@@ -5934,7 +5996,7 @@ $loaderEmail = new My_Loader();
 				        <td valign="top">' . $quote->subject . '</td>
 				      </tr>
 				      <tr>
-				        <td valign="top">PO# Date</td>
+				        <td valign="top">Contract Date</td>
 				        <td valign="top">&nbsp;</td>
 				        <td valign="top">' . $quote->podate . '</td>
 				      </tr>
@@ -5986,7 +6048,7 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">
 	                <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 				      <tr>
-				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></td>
+				        <td bgcolor="#000033"><font color="#FFFFFF"><strong>Project Address</strong></font></td>
 				      </tr>
 				      <tr>
 				        <td>' . nl2br($shipto) . '</td>
@@ -6010,10 +6072,10 @@ $loaderEmail = new My_Loader();
 				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>
-				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
-				    <th bgcolor="#000033"><font color="#FFFFFF">Date Received</font></th>
-				    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
-				    <th bgcolor="#000033"><font color="#FFFFFF">Unit</font></th>
+				    <!-- <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th> -->
+				    <th bgcolor="#000033"><font color="#FFFFFF">Date Completed</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Update Progress</font></th>
+				    <!-- <th bgcolor="#000033"><font color="#FFFFFF">Unit</font></th> -->
 				    <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
 				  </tr>
@@ -6027,10 +6089,10 @@ $loaderEmail = new My_Loader();
 				    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
-				    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
+				    <!-- <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td> -->
 				    <td style="border: 1px solid #000000;">' . $this->mysql_date($_POST['receiveddate' . $invoiceitem['id']]) . '</td>
-				    <td style="border: 1px solid #000000;">' . $received[$invoiceitem['id']]['received'] . '</td>
-				    <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td>
+				    <td style="border: 1px solid #000000;">' . $received[$invoiceitem['id']]['received'] . '%</td>
+				    <!-- <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td> -->
 				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] . '</td>
 				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $received[$invoiceitem['id']]['received'] . '</td>
 				  </tr>
@@ -7796,7 +7858,7 @@ $loaderEmail = new My_Loader();
 			                        ->where('itemid',$ai->itemid)
 			                        ->get()->row()->manualprogress;			                        
 			            
-		    $ai->manualprogress = $ai->manualprogress ? $ai->manualprogress : 2;             
+		    $ai->manualprogress = $ai->manualprogress ? $ai->manualprogress : 0;             
             $ai->manualprogressbar = '<input id="progress' . $ai->id . '"  class="slider" style="width:200px;"
 											 data-slider-id="progress' . $ai->id . '" type="text"
 											 data-slider-min="0" value="' . $ai->manualprogress . '"
@@ -7945,11 +8007,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            $this->db->insert('shipment',$arr);
 	            
 	            if($pendingshipments)
-	            $Pendingitemacceptance = $pendingshipments;
+	            $Pendingitemacceptance = $pendingshipments+$quantity;
 	            else 
 	            $Pendingitemacceptance = $quantity;
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
+	            $shipitems .= "<tr><td>{$ai->attach}</td><td>{$quantity}%</td><td>{$ai->itemname}</td><td>".(100 - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
@@ -7973,7 +8035,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if($shipitems)
 		{
 			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
+		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>File</th><th>Progress Update</th><th>Description</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
     		$config['charset'] = 'utf-8';
@@ -7983,9 +8045,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		$this->email->from($purchaser->email);
     		if($pa)
     		$this->email->to($pa->email);
-    		$subject = 'Shipment made by supplier';
+    		$subject = 'Billing Submitted By Company';
     		
-    		$data['email_body_title']  = "Supplier {$purchaser->companyname} has made shipment for PO# {$quote->ponum} on ".date('m/d/Y');
+    		$data['email_body_title']  = "Company {$purchaser->companyname} has submitted a billing for Contract: {$quote->ponum} on ".date('m/d/Y');
     		$data['email_body_content'] = "<br><br>Details:".$shipitems;
     		$loaderEmail = new My_Loader();
     		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);

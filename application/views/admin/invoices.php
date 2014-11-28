@@ -7,11 +7,8 @@
 	    title: "Step 1",
 	    content: "Welcome to the on-page tour for Invoices"
 	  },
-
-
 	]
 	});
-
 	$("#activatetour").click(function(e){
 		  e.preventDefault();
 			$("#tourcontrols").remove();
@@ -23,28 +20,31 @@
 	$('#canceltour').live('click',endTour);
  });
  function start(){
-
 		// Start the tour
 			tour3.start();
 		 }
  function endTour(){
-
 	 $("#tourcontrols").remove();
 	 tour3.end();
 		}
  </script>
 <script type="text/javascript">
-
     $(document).ready(function() {
         $('.datefield').datepicker();
     });
-
     function showInvoice(invoicenum)
     {
         $("#invoicenum").val(invoicenum);
         $("#invoiceform").submit();
     }
-
+    
+    function showContractInvoice(invoicenum)
+    {
+        $("#invoicenum").val(invoicenum);
+        $("#invoiceform").attr('action', "<?php echo site_url('admin/quote/contract_invoice'); ?>");
+        $("#invoiceform").submit();
+    }
+    
     function update_invoice_status(invoice_number) {
         var invoice_status_value = $('#invoice_' + invoice_number + " option:selected").val();
         var url = "<?php echo base_url("admin/quote/update_invoice_status");?>";
@@ -56,20 +56,17 @@
             $('#message_div').html(data);
         });
     }
-
     function update_invoice_payment_status(idnumber)
     {
         var invoice_payment_status_value = $('#invoice_payment_' + idnumber + " option:selected").val();
         var invoice_payment_type_value = $('#invoice_paymenttype_' + idnumber + " option:selected").val();
         var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
         var invoice_number = $('#invoicenumber_' + idnumber).html();
-
         var refnum_value = $('#refnum_' + idnumber + "").val();
         if(invoice_payment_type_value == 'Credit Card')
 			return false;
 		if(invoice_payment_type_value=='')
 			return false;
-
         var url = "<?php echo base_url("admin/quote/update_invoice_payment_status");?>";
         //alert(invoice_payment_status_value);
         $.ajax({
@@ -85,20 +82,15 @@
 <style type="text/css">
     .box { padding-bottom: 0; }
     .box > p { margin-bottom: 20px; }
-
     #popovers li, #tooltips li {
         display: block;
         float: left;
         list-style: none;
         margin-right: 20px;
     }
-
     .adminflare > div { margin-bottom: 20px; }
 </style>
-
-
 <script src="<?php echo base_url(); ?>templates/site/assets/js/creditcard.js"></script>
-
 <script>
 	function validatecc()
 	{
@@ -109,14 +101,12 @@
 		alert (ccErrors[ccErrorNo]);
 		return false;
 	  }
-
 	  cvc = $("#cvc").val();
 	  if(cvc.length != 3 || isNaN(cvc))
 	  {
 		  alert('Wrong cvc code');
 		  return false;
 	  }
-
 	  return true;
 	}
 </script>
@@ -143,13 +133,14 @@ function paycc(ptype,idnumber,amount)
 }
 
 function shownotice(newval,oldval,id){
-	
+
 	if(confirm("Do You really want to Change The Payment Type?")){
 		$('#refnum_' + id).val(newval);
 	}else
 		$('#refnum_' + id).val(oldval);
-	
+
 }
+
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -163,18 +154,15 @@ function shownotice(newval,oldval,id){
             <div id="message_div">
                 <?php echo $this->session->flashdata('message'); ?>
             </div>
-
             <div class="datagrid-example">
             	<div>
                     <form id="invoiceform" class="form-inline" style="padding:0px; margin:0px" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
                         <input type="hidden" id="invoicenum" name="invoicenum"/>
                     </form>
                     <form class="form-inline" action="<?php echo site_url('admin/quote/invoices') ?>" method="post">
-
                         Invoice#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>
                             &nbsp;&nbsp;
-
-                         From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
+                        From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
@@ -232,7 +220,7 @@ function shownotice(newval,oldval,id){
                     		</tr>
                     	</thead>
                     	<tbody>
-                    		<?php $i=0; 
+                    		<?php $i=0;
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
@@ -241,7 +229,7 @@ function shownotice(newval,oldval,id){
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
-                    			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>	
+                    			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo $item->totalprice;?></td>
                     			<td>
@@ -296,9 +284,7 @@ function shownotice(newval,oldval,id){
         </div>
     </div>
 </section>
-
 <div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-
     <div class="modal-header">
     	<h3>
     	Pay by credit card
@@ -307,10 +293,8 @@ function shownotice(newval,oldval,id){
 	</div>
 	<div class="modal-body" id="quoteitems">
         <form method="post" action="<?php echo site_url('admin/quote/payinvoicebycc/');?>" onsubmit="return validatecc();">
-
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
 	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
-
             <div class="control-group">
                 <label class="control-label" for="card">
                    Total Amount to pay
@@ -319,7 +303,6 @@ function shownotice(newval,oldval,id){
                    $<span id="ccpayamountshow"></span>
                 </div>
             </div>
-
             <div class="control-group">
                 <label class="control-label" for="card">
                    Credit Card Number
@@ -335,7 +318,6 @@ function shownotice(newval,oldval,id){
                     <span class="form-required" title="This field is required.">*</span>
                 </label>
                 <div class="controls">
-
 		            <select id="creditcardtypes" name="creditcardtypes">
 			            <option value="visa">Visa</option>
 			            <option value="mastercard">Master Card</option>
@@ -345,7 +327,6 @@ function shownotice(newval,oldval,id){
 		            </select>
                 </div>
             </div>
-
             <div class="control-group">
                 <label class="control-label" for="inputEmail">
                    CVC Code:
@@ -355,29 +336,23 @@ function shownotice(newval,oldval,id){
                     <input type="text" id="cvc" name="cvc" required>
                 </div>
             </div>
-
             <div class="control-group">
                 <label class="control-label" for="inputMessage">
                     Expiry Date
                 </label>
-
                 <div class="controls">
-
                     <select id="month" name="month" style="width: 95px;">
                     	<?php for($i=1; $i<13; $i++){?>
 	                    <option value="<?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?>"><?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?></option>
 	                    <?php }?>
                     </select>
-
                     <select id="year" name="year" style="width: 125px;">
                     	<?php for($i = date('Y'); $i < date('Y')+10; $i++){?>
 	                    <option value="<?php echo $i;?>"><?php echo $i;?></option>
 	                    <?php }?>
                     </select>
-
                 </div>
             </div>
-
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
             </div>

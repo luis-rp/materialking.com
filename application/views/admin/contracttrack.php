@@ -484,7 +484,7 @@ function acceptall()
 				    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
 	                        	<br>
 	                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
-	                        	View File
+	                        	<?php echo $file;?>
 	                          	</a>
 	                          	<?php } } }?>    
 				                </td>
@@ -639,9 +639,9 @@ function acceptall()
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete"></td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
-                       
+                        
                     <?php } */ ?>
-                         </form>
+                        </form>
                     <?php
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;
@@ -667,7 +667,7 @@ function acceptall()
             if (@$shipments)
             {
             ?>
-            <h3 class="box-header">Shipments:  <?php
+            <h3 class="box-header">Progress Updates:  <?php
                /* $canacceptall = false;
                 $shipitemids = array();
                 foreach($shipments as $cs)
@@ -799,7 +799,7 @@ function acceptall()
                 <hr/>
 
         		<?php if($shippingdocs){?>
-        		   <h3 class="box-header">Shipping Documents</h3>
+        		   <h3 class="box-header">Billing Documents</h3>
         		<table class="table table-bordered col-md-4">
         			<tr>
         				<th>Company</th>
@@ -819,7 +819,8 @@ function acceptall()
         		<?php }?>
         		<hr/>
 
-                <?php if ($awarded->invoices) { ?>
+                <?php if ($awarded->invoices) {
+                	?>
                 <div class="control-group">
                     <div class="controls">
                          <h3 class="box-header">
@@ -840,7 +841,7 @@ function acceptall()
 								$f_total=0;
                                 $p_total=0;
                                 $u_total=0;
-                                foreach ($awarded->invoices as $invoice) {?>
+                                foreach ($awarded->invoices as $invoice) { ?>
                                 <tr>
                                     <td><?php echo $invoice->invoicenum; ?></td>
                                     <td><?php echo "$ ".$invoice->totalprice; ?></td>

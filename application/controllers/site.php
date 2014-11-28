@@ -922,14 +922,14 @@ class site extends CI_Controller
         	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
         	$tagarray = $this->items_model->find_tags($keyword);
         	
-        	if($tagarray){
+        	if(@$tagarray){
         		$tagarray2 = array();
         		foreach($tagarray as $tag)
         		$tagarray2[] = trim(strtolower($tag));
         		$tagarray2 = array_unique($tagarray2);
         		$this->data['datatags'] = $tagarray2;
-        	}else
-        	$this->data['datatags'] = $tagarray;
+        	}/*else
+        	$this->data['datatags'] = $tagarray;*/
         }
         if(isset($_POST['searchfor']))
         $this->data['searchfor'] = $_POST['searchfor'];

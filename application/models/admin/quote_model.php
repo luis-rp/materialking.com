@@ -736,10 +736,25 @@ class quote_model extends Model {
 				  WHERE r.awarditem=ai.id AND ai.company=c.id 
 				  AND ai.award=a.id AND a.quote=q.id " .
                 $managedprojectdetails_id_sql
-                . " $search GROUP BY invoicenum 
-                ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC";
+                . " $search GROUP BY invoicenum";
+                
+        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+				   FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('users') . " u,
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q
+				   
+				  WHERE r.awarditem=ai.id AND ai.company=u.id 
+				  AND ai.award=a.id AND a.quote=q.id " .
+                $managedprojectdetails_id_sql
+                . " $search GROUP BY invoicenum";        
+                
         //log_message('debug',var_export($query,true));
-        $invoicequery = $this->db->query($query);
+        $combquery = $query ." UNION ".$contractquery." ORDER BY STR_TO_DATE(receiveddate, '%m/%d/%Y') DESC";
+        $invoicequery = $this->db->query($combquery);
         $items = $invoicequery->result();
 
         $invoices = array();

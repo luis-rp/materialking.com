@@ -448,19 +448,19 @@ $(function() {
 				    		<td>
 				    			<input type="radio" id="selection<?php echo $q->id;?>" class="selection-item" value="<?php echo $q->id;?>" name="<?php echo $key;?>" <?php if($diff==0 && !isset($checkedarray[$key])){ echo 'checked';$checkedarray[$key]='1'; }?>/>
 				    		</td>
-				    		<?php }?>
+				    		<?php  }?>
 				    		<td>
 				    			<!--<?php if(@$q->attach && file_exists("./uploads/quote/".$q->attach)){?>
 				                        	<br>
 				                        	<a href="<?php echo site_url('uploads/quote').'/'.@$q->attach ;?>" target="_blank">  &nbsp;
-				                        	View File
+				                        	<?php echo $file;?>
 				                          	</a>
 				                <?php }?>-->
 				    			<?php if(@$q->attach){ $files=""; $files=explode(',',@$q->attach); foreach ($files as $file) {?>
 				    			<?php if($file && file_exists("./uploads/quote/".$file)){?>
 	                        	<br>
 	                        	<a href="<?php echo site_url('uploads/quote').'/'.$file ;?>" target="_blank">  &nbsp;
-	                        	View File
+	                        	<?php echo $file;?>
 	                          	</a>
 	                          	<?php } } }?>    
 				    		</td>
