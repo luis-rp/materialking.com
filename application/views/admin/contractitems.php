@@ -94,6 +94,7 @@ display:none;
 									    	$i = 0;
 									    	foreach($allawardeditems as $ai)
 									    	{   $bidea = 0;
+									    		$bidnote = "";
 									    		$i++;
 									      ?>
                                             <tr class="<?php echo $ai->company == $company->id?'awarded-to-me':'not-awarded-to-me';?>">
@@ -113,12 +114,12 @@ display:none;
 					                          	<?php } } }?>    
                                                 </td>
                                                 <td class="v-align-middle"><?php echo $ai->itemname;?></td>                                         
-                                                <!-- <td class="v-align-middle">$<?php foreach($biditems as $biditem) {  if($biditem->itemid == $ai->itemid) { echo $biditem->ea; $bidea = $biditem->ea; } } ?></td>
-                                                <td class="v-align-middle">$<?php if($bidea!=0) { echo round($ai->quantity * $bidea,2); } else { echo round($ai->quantity * $ai->ea,2); } ?></td> -->
-                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".$ai->ea; else echo "No Bid"; ?></td>
-                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".round($ai->totalprice,2); else echo "No Bid"; ?></td>
+                                               <td class="v-align-middle"><?php $bid ="false"; foreach($biditems as $biditem) { if($ai->company == $company->id){ echo "$".round($ai->ea,2); $bid ="true"; break; }elseif($biditem->itemid == $ai->itemid) { echo "$".$biditem->ea; $bidea = $biditem->ea; $bidnotes =$biditem->notes; $bid ="true"; } } ?><?php if($bid == "false") echo "No Bid";?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) { echo "$".round($ai->totalprice,2); } elseif($bidea>0) { echo round($bidea,2); } else { echo "No Bid"; } ?></td>
+                                                <!-- <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".$ai->ea; else echo "No Bid"; ?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo "$".round($ai->totalprice,2); else echo "No Bid"; ?></td>-->
                                                 <!-- <td class="v-align-middle"><?php echo $ai->daterequested;?></td> -->
-                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo $ai->notes;?></td>
+                                                <td class="v-align-middle"><?php if($ai->company == $company->id) echo $ai->notes; elseif($bidea>0) echo $bidnotes;?></td>
                                             </tr>
                                           <?php } ?>
                                         </tbody>

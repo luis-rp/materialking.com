@@ -6084,7 +6084,7 @@ $loaderEmail = new My_Loader();
             $totalprice = 0;
             $i = 0;
             foreach ($invoice['items'] as $invoiceitem) {
-                $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
+                $totalprice += $invoiceitem['ea'] * ($invoiceitem['quantity']/100);
                 $pdfhtml.='<tr nobr="true">
 				    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
@@ -6094,7 +6094,7 @@ $loaderEmail = new My_Loader();
 				    <td style="border: 1px solid #000000;">' . $received[$invoiceitem['id']]['received'] . '%</td>
 				    <!-- <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td> -->
 				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] . '</td>
-				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $received[$invoiceitem['id']]['received'] . '</td>
+				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * ($received[$invoiceitem['id']]['received']/100) . '</td>
 				  </tr>
 				  ';
             }
@@ -6365,7 +6365,7 @@ $loaderEmail = new My_Loader();
     
     
     
-        function sendawardemail($quoteid)
+    function sendawardemail($quoteid)
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
         $quote = $awarded->quotedetails;
@@ -7955,10 +7955,10 @@ $loaderEmail = new My_Loader();
 			                        ->get()->row()->acceptedshipments;			                        
 			                        
 			if(isset($_POST['quantity'.$ai->id]))                            
-	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments);
+	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments - $pendingshipments);
 	        else 
 	        $quantity = 0;
-	        
+	        //echo $quantity."-".$pendingshipments."-".$ai->received; die;
 	        $invoicenum = $_POST['invoicenum'.$ai->id];
 	        if( $quantity && $invoicenum && $quantity + $pendingshipments > (100 - $ai->received) )
 	        {
@@ -7986,7 +7986,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			                        ->get()->row()->acceptedshipments;			                        
 			                        
 			if(isset($_POST['quantity'.$ai->id]))                            
-	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments);
+	        $quantity = ($_POST['quantity'.$ai->id] - $acceptedshipments  - $pendingshipments);
 	        else 
 	        $quantity = 0;
 	        
@@ -8551,6 +8551,98 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         redirect('admin/quote/contracttrack/'.$_POST['quote']);
     }
 	
+    
+    function invoicedatedue()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+		    die;
+		$_POST['datedue'] = date('Y-m-d', strtotime($_POST['datedue']));
+		$this->db->where('invoicenum',$_POST['invoicenum'])->update('received',$_POST);
+		
+		$company = $this->session->userdata('purchasingadmin');
+		if(!$company)
+			redirect('admin/login');
+		
+		$invs = $this->quotemodel->getinvoicesdetailsformail($company,$_POST['invoicenum']);
+		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
+		$subject = "Due Date Set For Invoice ".$_POST['invoicenum'];
+		$data['email_body_title']  = "";
+		$data['email_body_content']  = "";
+		$gtotal = 0;
+		foreach ($invs as $invoice)
+		{     		
+			$olddate=strtotime($invoice->awardedon); $awarddate = date('m/d/Y', $olddate);
+			$data['email_body_title'] .= 'Dear '.$invoice->username.' ,<br><br>';
+			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' from PO# '.$invoice->ponum.', Ordered on '.$awarddate.' to Due on  '.$invoice->DueDate.'<br><br>';
+			$data['email_body_content'] .= 'Please see order details below :<br>';
+			$data['email_body_content'] .= '
+					<table class="table table-bordered span12" border="1">
+		            	<tr>
+		            		<th>Invoice</th>
+		            		<th>Received On</th>
+		            		<th>Supplier Name</th>
+		            		<th>Supplier Address</th>
+		            		<th>Supplier Phone</th>
+		            		<th>Order Number</th>
+		            		<th>Item</th>
+		            		<th>Quantity</th>
+		            		<th>Payment Status</th>
+		            		<th>Verification</th>
+		            		<th>Due Date</th>
+		            		<th>Price</th>
+		            	</tr>';
+			
+	        $data['email_body_content'] .= '<td>'.$invoice->invoicenum.'</td>
+            		<td>'.$invoice->receiveddate.'</td>
+            		<td>'.$invoice->supplierusername.'</td>
+            		<td>'.$invoice->address.'</td>
+            		<td>'.$invoice->phone.'</td>
+            		<td>'.$invoice->ponum.'</td>
+            		<td>'.$invoice->itemname.'</td>
+            		<td>'.$invoice->quantity.'</td>
+            		<td>'.$invoice->paymentstatus.'</td>
+            		<td>'.$invoice->status.'</td>
+            		<td>'.$invoice->DueDate.'</td>
+            		<td align="right">'.number_format($invoice->price,2).'</td>
+	            	  </tr>';
+	        $total = ($invoice->price*$invoice->quantity/100);
+            $gtotal+=$total;
+	        $tax = $gtotal * $invoice->taxpercent / 100;
+            $totalwithtax = number_format($tax+$gtotal,2);
+            	
+            $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Tax</td>
+            		<td style="text-align:right;">$'. number_format($tax,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'. $totalwithtax.'</td>
+            	</tr>';
+            $data['email_body_content'] .= '</table>';   
+	    }      
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		//$this->email->clear(true);
+		$this->email->to($invs[0]->email);
+		//$this->email->cc('pratiksha@esparkinfo.com');
+		$this->email->from($purchaser->email,$purchaser->companyname);
+		
+		$this->email->subject($subject);
+		$this->email->message($send_body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
+	}
 		
     // End
 }

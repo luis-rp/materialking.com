@@ -55,15 +55,31 @@ class report_model extends Model
 					   ".$this->db->dbprefix('award')." a,
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
-					  AND ai.award=a.id AND a.quote=q.id 
+					  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract'  
 					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
 					  $filter
 					  GROUP BY receiveddate
-					  $search
-					  ORDER BY receiveddate DESC
-					  ";
-		
-		$datequery = $this->db->query($datesql);
+					  $search ";
+ 		
+ 		
+ 		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
+ 						SUM(r.quantity) totalquantity,
+ 						ROUND(SUM(ai.ea * r.quantity/100),2) totalprice
+					   FROM 
+					   ".$this->db->dbprefix('received')." r,
+					   ".$this->db->dbprefix('awarditem')." ai,
+					   ".$this->db->dbprefix('award')." a,
+					   ".$this->db->dbprefix('quote')." q
+					  WHERE r.awarditem=ai.id
+					  AND ai.award=a.id AND a.quote=q.id AND q.potype = 'Contract'  
+					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
+					  $filter
+					  GROUP BY receiveddate
+					  $search ";
+ 		
+		//echo $datesql;
+		$combsql = $datesql." union ".$contractsql." ORDER BY receiveddate DESC";
+		$datequery = $this->db->query($combsql);
 		$sepdates = $datequery->result();
 		
 		$dates = array();
@@ -81,12 +97,31 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  a.quote=q.id AND
+					  a.quote=q.id AND q.potype <> 'Contract'  AND  
 					  r.receiveddate='{$sepdate->receiveddate}'
 					  $filter
 					  ";
 			
-			$itemquery = $this->db->query($itemsql);
+			$itemcontractsql = "SELECT 
+						r.*, ai.itemcode, c.companyname companyname, q.ponum, a.awardedon,
+						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
+					  FROM 
+					  ".$this->db->dbprefix('received')." r, 
+					  ".$this->db->dbprefix('awarditem')." ai,
+					  ".$this->db->dbprefix('users')." c,
+					  ".$this->db->dbprefix('award')." a,
+					  ".$this->db->dbprefix('quote')." q
+					  WHERE r.awarditem=ai.id AND 
+					  ai.company=c.id AND
+					  ai.award=a.id AND
+					  a.quote=q.id AND q.potype = 'Contract' AND 
+					  r.receiveddate='{$sepdate->receiveddate}'
+					  $filter
+					  ";
+			
+			$itemcombo = $itemsql." UNION ".$itemcontractsql;
+			
+			$itemquery = $this->db->query($itemcombo);
 			$items = $itemquery->result();
 			$sepdate->items = $items;
 			
@@ -100,12 +135,30 @@ class report_model extends Model
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
-					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
+					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype <> 'Contract' 
 					  AND r.paymentstatus='Paid'
 					  AND r.receiveddate='{$sepdate->receiveddate}'
 					  ";
+ 		    
+ 		    $datecontractpaidsql = "SELECT 
+ 						ROUND(SUM(ai.ea * r.quantity/100),2) totalpaid
+					   FROM 
+					   ".$this->db->dbprefix('received')." r,
+					   ".$this->db->dbprefix('awarditem')." ai,
+					   ".$this->db->dbprefix('award')." a,
+					   ".$this->db->dbprefix('quote')." q
+					  WHERE r.awarditem=ai.id
+					  AND ai.award=a.id AND a.quote=q.id 
+					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype = 'Contract' 
+					  AND r.paymentstatus='Paid'
+					  AND r.receiveddate='{$sepdate->receiveddate}'
+					  ";
+ 		    
  		    //echo $datepaidsql.'<br/>';
- 		    $sepdate->totalpaid = @$this->db->query($datepaidsql)->row()->totalpaid;
+ 		    
+ 		    $paidcombo = $datepaidsql." UNION ".$datecontractpaidsql;
+ 		    
+ 		    $sepdate->totalpaid = @$this->db->query($paidcombo)->row()->totalpaid;
 			
 			$dates[]=$sepdate;
 		}

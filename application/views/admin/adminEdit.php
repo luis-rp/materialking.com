@@ -38,7 +38,7 @@ $(document).ready(function(){
     <?php }?>
     
     
-    <div class="control-group">
+   <!-- <div class="control-group">
     <label class="control-label" for="category" required>Category</label>
     <div class="controls">
     <select name="category">
@@ -47,7 +47,7 @@ $(document).ready(function(){
      <?php }?>
 	</select>
     </div>
-    </div>
+    </div>-->
         
     <div class="control-group">
     <label class="control-label" for="username">User Name *</label>

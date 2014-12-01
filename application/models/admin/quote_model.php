@@ -734,7 +734,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('quote') . " q
 				   
 				  WHERE r.awarditem=ai.id AND ai.company=c.id 
-				  AND ai.award=a.id AND a.quote=q.id " .
+				  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract' " .
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
@@ -748,7 +748,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('quote') . " q
 				   
 				  WHERE r.awarditem=ai.id AND ai.company=u.id 
-				  AND ai.award=a.id AND a.quote=q.id " .
+				  AND ai.award=a.id AND a.quote=q.id AND q.potype = 'Contract'  " .
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";        
                 

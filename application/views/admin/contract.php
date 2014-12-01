@@ -537,14 +537,14 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                      <hr/>
 		  <?php if($this->validation->id && !$awarded){?>
 			  <div class="pull-right">
+			  <a href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>&nbsp;&nbsp;
 			  	<?php if(!$contractcostcodes){?>
 			  	<font color="red">No costcodes exist for this project.</font>
-			  	<?php }?>
-			  	<a href="<?echo site_url('admin/costcode');?>">Manage Costcodes</a>
+			  	<?php } else {?>
+			  	
 			  </div>
 		    <div class="control-group">
-			     <h3 class="box-header" style="display:inline;""> <label class="control-label">Contract</label></h3>
-                            
+			     <h3 class="box-header" style="display:inline;""> <label class="control-label">Contract</label></h3>                          
 		    </div>
                   
                   <!-- <div align="right" style="padding-right: 20px;padding-bottom:10px;  ">
@@ -663,7 +663,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
                           	</div> 
     			
 			</div>
-		    <?php }?>
+		    <?php } } ?>
 		    <div class="span12">
 		       
 		    <div class="span3">

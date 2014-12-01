@@ -18,7 +18,7 @@
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/bootstrap-slider.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/slider.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
- <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
+ <?php echo '<script>var datedueurl="' . site_url('admin/quote/invoicedatedue') . '";</script>' ?>
  <?php echo '<script type="text/javascript">var updateprogressurl = "'.site_url('admin/costcode/updateprogress/').'";</script>';?>
  
  

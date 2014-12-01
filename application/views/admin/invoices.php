@@ -253,7 +253,7 @@ function shownotice(newval,oldval,id){
                     				<br/>
                     				<i class="icon-lightbulb">
                     				Payment Requested by
-                    				<?php echo $item->companydetails->title;?>
+                    				<?php echo (@$item->companydetails->title)?$item->companydetails->title:$item->companydetails->companyname;?>
                     				on <?php echo $item->refnum;?>
                     				</i>
                     				<?php }?>

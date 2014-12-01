@@ -160,7 +160,7 @@ class Admin extends CI_Controller {
 				$created_date = date ( "Y-m-d h:i:s" );
                 //$geoloc = $this->company_model->getLatLong( $this->input->post ( 'address' ));
 
-				$id = $this->adminmodel->save ();
+				$id = $this->adminmodel->save();
 				$this->validation->id = $id;
 			//	if($this->session->userdata('usertype_id')==2)			{
 					$settings = (array)$this->settings_model->get_current_settings ();
@@ -386,7 +386,7 @@ $loaderEmail = new My_Loader();
 		$fileds['labels'] = 'Lables';
 		$fileds['newpassword'] = 'newpassword';
 		$fileds['rnewpassword'] = 'rnewpassword';
-		$fileds['category'] = 'category';
+		//$fileds['category'] = 'category';
 		$this->validation->set_fields ($fields);
 	}
 

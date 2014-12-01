@@ -455,7 +455,7 @@ function calculatetotalprice(id)
 											Quote#
 							    		</td>
 							    		<td colspan="4">
-											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { $quotenumarr = explode(".",$quotenum); echo @$quotenumarr[0]."."; printf('%03d',(@$quotenumarr[1]+1)); } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
+											<input type="text" name="quotenum" style="width:30%;" value="<?php if(isset($quotenum) && $quotenum!="") { $quotenumarr = explode(".",$quotenum); echo @$quotenumarr[0]."."; printf('%03d',(@$quotenumarr[1]+1)); } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
 							    		</td>
 							    		
 							    		

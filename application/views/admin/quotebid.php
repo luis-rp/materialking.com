@@ -44,7 +44,8 @@ $(document).ready(function(){
     $("#selectCategoryWindow").hide();
     $("#selectItemWindow").hide();
     $("#browseItemsFromStore").click(function(){
-    	$('#selectCategoryWindow').dialog({ height: "auto"  });
+    	//$('#selectCategoryWindow').dialog({ height: 'auto'  });
+    	$('#selectCategoryWindow').dialog({ height: '600'  });
         });
     $("#browseItem").click(function(){
     	$('#selectItemWindow').dialog({ height: "auto"  });
@@ -651,10 +652,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');" onchange="showhideviewprice('');"/>
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
-		    			<div><span id="showItemsFromStore">
-		    			
-							<a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a>
-							</span></div>
+		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
                     </td>
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
