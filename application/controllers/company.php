@@ -1793,4 +1793,20 @@ class Company extends CI_Controller {
         echo json_encode($item); // die;
     }    
     
+    
+    function savefbwall()
+    {
+    	//echo "<pre>ctrl"; print_r($_POST); die;
+    	$this->db->where('id',$_POST['companyid']);
+    	$this->db->update('company',array('fbwall'=>$_POST['about']));
+    	echo $_POST['about']; die;
+    	
+    }
+    
+    function getcompanycomments(){
+    	
+    	$this->db->where('id',$_POST['companyid']);
+    	$result = $this->db->get('company')->row();
+    	echo json_encode($result);
+    }
 }

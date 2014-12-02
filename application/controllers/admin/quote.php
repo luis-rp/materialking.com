@@ -326,8 +326,10 @@ class quote extends CI_Controller
         $query1 = "SELECT code FROM ".$this->db->dbprefix('costcode')."
                   WHERE project='".$this->session->userdata('managedprojectdetails')->id."'";
         $data['costcodedata'] = $this->db->query($query1)->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$this->session->userdata('managedprojectdetails')->id."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result(); 
         
-         //echo "<pre>";print_r($data); die;
+        
         $this->load->view('admin/quotelist', $data);
     }
 

@@ -11,6 +11,7 @@
 <?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
 <?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
+<?php echo '<script>var companycommentsurl = "' . site_url('company/getcompanycomments') . '";</script>' ?>
 
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
@@ -825,8 +826,67 @@ function viewtag(pic_id,company)
 $(function() {
 $( document ).tooltip();
 });
+
+function changetab(tabname){
+		if(tabname == 'walltab'){
+			$('.nonfbdiv').css('display','none');
+			$("#button").css("background-color","#00bbe4"); 
+			$(".titlebox").css("background-color","#00bbe4"); 
+			$(".page-header").css("background-color","#00bbe4"); 
+			$('#fbwall').css('display','block');
+		}else{
+			$('.nonfbdiv').css('display','block');
+			$("#button").css("background-color","#06a7ea"); 
+			$(".titlebox").css("background-color","#06a7ea"); 
+			$(".page-header").css("background-color","#06a7ea"); 
+			$('#fbwall').css('display','none');
+		}		
+	}
+</script>
+        
+                          
+<script type="text/javascript">	
+	
+	$(document).ready(function (e) {
+		$("#fbwallform").on('submit',(function(e) {
+		e.preventDefault();
+		$.ajax({
+		url: "<?php echo site_url('company/savefbwall')?>",
+		type: "POST",
+		data: new FormData(this),
+		mimeType:"multipart/form-data",
+		contentType: false,
+		cache: false,
+		processData:false,
+		success: function(data)
+		{
+		$("#targetLayer").html(data);
+		},
+		error: function()
+		{
+		}
+		});
+		}));
+		
+		
+		var companyid = $("#company").val();
+		d = "companyid="+companyid;
+		$.ajax({
+			type: "post",
+			url: companycommentsurl,
+			data: d
+		}).done(function(data) {
+			var obj = $.parseJSON(data);
+			$("#targetLayer").html(obj.fbwall);
+		});
+
+	});
+  
 </script>
 
+
+
+<script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -861,10 +921,15 @@ $( document ).tooltip();
                <div style="background-color:#dff0d8;color:black;font-weight:bolder;border-radius:8px;text-align:center;">
                 <p style="line-height:40px;font-family:Helvetica;">
                 Existing & New Customers - Join our Business to Business Network for seamless quotes,ordering and account solutions.</p></div>
+              		<div>
+	                  <button type="button" id="button" class="btn btn-primary btn-lg" onclick="changetab('walltab');" style="border-radius: 10px;">
+	                   <strong>View Wall</strong></button>	                	
+                 	</div>
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
-                        	<td align="left"> <h2 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h2></td>
+                        	<td align="left"><a href="#" onclick="changetab('suppliertab');">                       	
+                        	<h2 class="page-header" style="padding:0px 0px 0px 7px"><?php echo $supplier->title;?></h2></a></td>
                         	<td align="right">
                             	<!-- AddThis Button BEGIN -->
                             	<div class="addthis_toolbox addthis_default_style ">
@@ -879,23 +944,8 @@ $( document ).tooltip();
                     </h3>
                     <div class="carousel property">
                     </div>
-
-                    
-                       
-                   
-                    
-<!-- <div id="container"><div id="imgtag">  
-  <img id="pic1" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" />
-  <div id="tagbox">
-  </div>
-</div>
-<div id="taglist">
-  <ol>
-  </ol>
-</div>
-</div> -->
-                    
-                    
+                  
+                  <div class="nonfbdiv">
                     <div class="property-detail">
                         <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
@@ -1380,6 +1430,44 @@ $( document ).tooltip();
                           </div>
         				</form>
                     </div>
+                  </div><!-- End of nonfbdiv -->
+                    <div id="fbwall">
+                       <div class="property-detail">
+                            <div class="row">                
+								 <div class="content" style="padding-left:15px;">
+                         			<h3 class="titlebox" style="padding:0px 0px 0px 8px">Wall Gallery</h3>
+                         
+                         		 <div class="maindiv">                                              
+			                         <div class="pull-left">                      
+			                           <p style="text-align:center"><?php if($supplier->logo !=""){?>
+			                                   <img width="200" height="400" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
+			                                     <?php } else {?>
+			                                   <img width="200" height="400" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
+			                                     <?php } ?>
+			                           </p>
+			                          </div>
+		                         
+			                          <div class="pull-right">
+			                            <p style="padding-right:30px;font-weight:bolder;font-size:20px;line-height:20px;color:black;"><?php echo $supplier->title; ?></p>	                                                        
+		                              </div>                                                   
+                                 </div><!-- End of maindiv-->
+                                 <div style="clear:both;"></div>
+                                 <div class="comment">
+                                 <form id="fbwallform" method="post"> 
+                                 <p><strong>Comment:</strong></p>                                                			                            	
+		                            	 <textarea rows="2" cols="5" class="form-control ckeditor" id="about" name="about"><?php echo @$company->about;?></textarea>
+		                                <!--<button id="save" type="submit" name="">Save</button>-->
+		                            </form> 
+								<div id="targetLayer"></div>
+								</div>
+                   
+						</div><!-- End of Content -->
+						</div>
+						</div>
+                    
+                    </div><!-- End of  fbwall -->
+                    
+                    
                 </div>
 
                 <div class="sidebar span3">

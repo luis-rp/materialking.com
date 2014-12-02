@@ -7,11 +7,11 @@ class settings_model extends Model
 	}
 
  	function get_setting_by_id($id)
- 	{	
+ 	{
 		$sql ="SELECT *
 		FROM
 		".$this->db->dbprefix('settings')." WHERE id='$id'";
-		
+
 		$query = $this->db->query ($sql);
 		if($query->num_rows>0)
 		{
@@ -23,11 +23,11 @@ class settings_model extends Model
 	}
 
  	function get_setting_by_admin($id)
- 	{	
+ 	{
 		$sql ="SELECT *
 		FROM
 		".$this->db->dbprefix('settings')." WHERE purchasingadmin='$id'";
-		
+
 		$query = $this->db->query ($sql);
 		if($query->num_rows>0)
 		{
@@ -43,16 +43,16 @@ class settings_model extends Model
 		$query=$this->db->get_where('settings', array('purchasingadmin' => $id));
 		return $query->result();
 	}
-	
+
  	function get_current_settings()
- 	{	
+ 	{
  	    $pa = $this->session->userdata('purchasingadmin');
  	    if(!$pa)
  	        $pa = 1;
 		$sql ="SELECT * FROM
-		".$this->db->dbprefix('settings')." 
+		".$this->db->dbprefix('settings')."
 		WHERE purchasingadmin='".$pa."' ";
-		
+
 		$query = $this->db->query ($sql);
 		if($query->num_rows>0)
 		{
@@ -62,17 +62,18 @@ class settings_model extends Model
 		}
 		return NULL;
 	}
-	
-	// counting total 
+
+	// counting total
 	function total_settings()
 	{
 		$query = $this->db->count_all_results('settings');
 		return $query;
 	}
-	
-	// updating 
+
+	// updating
 	function updatesettings($id)
 	{
+		$logo=$_POST['logo'];
 		$options = array(
 			'taxrate'=>$this->input->post('taxrate'),
           	'adminemail'=>$this->input->post('adminemail'),
@@ -80,9 +81,10 @@ class settings_model extends Model
           	'pricepercent'=>$this->input->post('pricepercent'),
           	'tour'=>$this->input->post('tour'),
           	'pagetour'=>$this->input->post('pagetour'),
-          	'timezone'=>$this->input->post('timezone')
+          	'timezone'=>$this->input->post('timezone'),
+          	'logo'=>$logo
 		);
-		
+
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
 		$this->db->update('settings', $options);
 	}
