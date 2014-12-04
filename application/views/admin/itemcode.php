@@ -230,6 +230,15 @@ $(document).ready(function(){
                             <?php echo $this->validation->ea_error; ?>
                         </div>
                     </div>
+                    
+                    
+                      <div class="control-group">
+                        <label class="control-label">Special Increment</label>
+                        <div class="controls">
+                            <input type="number" class="span10" id="increment" name="increment"  min="1" max="100" value="<?php echo $this->validation->increment; ?>">
+                            <?php echo $this->validation->increment_error; ?>
+                        </div>
+                    </div>
 
                     <div class="control-group">
                         <label class="control-label">Notes</label>

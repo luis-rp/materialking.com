@@ -494,11 +494,12 @@ $( document ).tooltip();
                         </form>
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
-                	
+                	<?php if(isset($item->searchquery) && $item->searchquery!="") { ?>              	
                 	<div>
 	                  <button type="button" id="button" class="btn btn-primary btn-lg" onclick="changetab('pricetab');" style="border-radius: 10px;">
 	                   <strong>Price Check</strong></button>	                	
                  	</div>
+                 	<?php } ?>
                 	
                     <h3 class="titlebox">
                 	 <div class="span4">

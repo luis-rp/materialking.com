@@ -941,7 +941,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
 
     function add_itemcode ()
-    {    	
+    {
         $data['heading'] = 'Add New Itemcode';
         $data['action'] = site_url('admin/itemcode/add_itemcode');
         //$data['category'] = $this->itemcode_model->getCategoryList();
@@ -1014,9 +1014,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
         
         $this->db->where('id',$id);
-        $itemcategoriesresult = $this->db->get('vw_item_category')->row();       
-        $itemcategories = explode(",",$itemcategoriesresult->categories); 
-        
+        $itemcategoriesresult = $this->db->get('vw_item_category')->row();     
+        $itemcategories = explode(",",$itemcategoriesresult->categories);         
         $this->validation->id = $id;
         $this->validation->itemcode = $item->itemcode;
         $this->validation->itemname = $item->itemname;
@@ -1047,6 +1046,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->files = $item->files;
         $this->validation->filename = $item->filename;
         $this->validation->searchquery = $item->searchquery;
+        $this->validation->increment = $item->increment;
         $data['minprices'] = $item->minprices;
         $data['poitems'] = $item->poitems;
         $catcodes = $this->catcode_model->get_categories_tiered();
@@ -1287,6 +1287,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['files'] = 'files';
         $fields['filename'] = 'filename';
         $fields['searchquery'] = 'searchquery';
+        $fields['increment'] = 'increment';
         $this->validation->set_fields($fields);
     }
 
@@ -1296,7 +1297,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
         $rules['itemcode'] = 'trim|required';
         $rules['itemname'] = 'trim|required';
-        $rules['weight'] = 'trim|required';        
+        $rules['weight'] = 'trim|required';
         $rules['url'] = 'trim|required';
         $this->validation->set_rules($rules);
         $this->validation->set_message('required', '* required');

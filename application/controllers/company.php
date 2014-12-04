@@ -1797,16 +1797,88 @@ class Company extends CI_Controller {
     function savefbwall()
     {
     	//echo "<pre>ctrl"; print_r($_POST); die;
-    	$this->db->where('id',$_POST['companyid']);
-    	$this->db->update('company',array('fbwall'=>$_POST['about']));
-    	echo $_POST['about']; die;
+    	$insertarray = array();
+    	if(@$_POST['senderid']){
+    		$insertarray['from_type'] = $_POST['logintype'];
+    		$insertarray['from'] = $_POST['senderid'];
+    	}    	
+    	
+    	if(@$_POST['receiverid']){
+    		$insertarray['to_type'] = $_POST['messageto'];
+    		$insertarray['to'] = $_POST['receiverid'];
+    	}  
+    	
+    	$insertarray['company'] = $_POST['companyid'];
+    	$insertarray['message'] = $_POST['commentsection'];    	
+    	$insertarray['senton'] = date('Y-m-d H:i');
+    	
+    	$this->db->insert('fb_comment', $insertarray);    	
+    	//echo $_POST['about']; die;
     	
     }
     
     function getcompanycomments(){
     	
-    	$this->db->where('id',$_POST['companyid']);
-    	$result = $this->db->get('company')->row();
-    	echo json_encode($result);
+    	$this->db->where('company',$_POST['companyid']);
+    	$result = $this->db->get('fb_comment')->result();
+    	$messagebody = array();
+    	foreach ($result as $res){
+    		$messagebody[$res->id]['message'] = $res->message;
+    		
+    		if($res->from_type=='users'){
+    			$this->db->select("companyname");
+    			$this->db->where('id',$res->from);
+				$nameres = $this->db->get('users')->row();
+				
+				$this->db->select("logo");
+    			$this->db->where('purchasingadmin',$res->from);
+				$logres = $this->db->get('settings')->row();
+				
+				if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
+				$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+				else 
+				$messagebody[$res->id]['logosrc'] =  site_url('uploads/logo/noavatar.png');
+				$messagebody[$res->id]['name'] = $nameres->companyname;
+    		}elseif($res->from_type=='company'){
+    			$this->db->select("logo, title");
+    			$this->db->where('id',$res->from);
+				$logres = $this->db->get('company')->row();
+				if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
+				$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+				else 
+				$messagebody[$res->id]['logosrc'] = site_url('templates/site/assets/img/logo.png');
+				$messagebody[$res->id]['name'] = $logres->title;
+    		}else {
+    			$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/noavatar.png');
+    			$messagebody[$res->id]['name'] = "Guest";
+    		}
+    		
+    		
+    		$messagebody[$res->id]['showago'] = $this->tago(strtotime($res->senton));
+    	}
+    	
+    	echo json_encode($messagebody);
     }
+    
+    
+    function tago($time)
+    {
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $lengths = array("60","60","24","7","4.35","12","10");
+        
+        $now = time();
+        $difference     = $now - $time;
+        $tense         = "ago";
+        
+        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+         $difference /= $lengths[$j];
+        }
+        $difference = round($difference);
+        
+        if($difference != 1) {
+         $periods[$j].= "s";
+        }
+        return "$difference $periods[$j] ago ";
+    }
+    
 }

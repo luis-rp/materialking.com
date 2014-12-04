@@ -398,8 +398,8 @@ class itemcode_model extends Model {
 	        'tags' => $tag,
 	        'files' => $name,
 	        'filename' => $filename,
-	        'searchquery' => $this->input->post('searchquery')
-
+	        'searchquery' => $this->input->post('searchquery'),
+	        'increment' => $this->input->post('increment')
         );
 
         $this->db->insert('item', $options);
@@ -445,7 +445,6 @@ class itemcode_model extends Model {
 
 // updating cost code
     function updateItemcode($id) {
-    	
     	$name=implode(",",$_FILES['UploadFile']['name']);
     	$filename=implode(",",$_POST['filename']);  
     	
@@ -484,7 +483,8 @@ class itemcode_model extends Model {
         	'tags' => $tag,
         	'files' => $name,
 	        'filename' => $filename,
-	        'searchquery' => $this->input->post('searchquery')
+	        'searchquery' => $this->input->post('searchquery'),
+	        'increment' => $this->input->post('increment')
         );
         if(@$_FILES['userfile']['name'])
             $options['item_img'] = $_FILES["userfile"]["name"];

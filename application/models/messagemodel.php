@@ -42,9 +42,10 @@ class Messagemodel extends Model
 			$not->tago = $this->tago(strtotime($not->senton));
 			$this->db->where('id',$not->purchasingadmin);
 			$purchasingadmin = $this->db->get('users')->row();
-			if($purchasingadmin) {
+			//if($purchasingadmin) {
 			if($not->category=='Order')
-			{				
+			{
+			
 				$not->class='info';
 				$this->db->where('ordernumber',$not->ponum);
 				$ordertyperesult = $this->db->get('order')->result();
@@ -122,8 +123,8 @@ class Messagemodel extends Model
 				$not->link = site_url('quote/items/'.$not->quote);
 			}
 			$ret[]=$not;
-		  }	
-		}
+		  //}	
+		} 
 		if(!$ret)
 			return array();
 		return $ret;

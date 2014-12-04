@@ -115,6 +115,51 @@ $long = $supplier->com_lng;
 					margin: 0 auto;
 					opacity: 1;
 				}
+				
+				#cke_27 
+				{
+				display:none;
+				}
+				
+				#cke_32 
+				{
+				display:none;
+				}
+				
+				#cke_42 
+				{
+				display:none;
+				}
+				
+				#cke_50 
+				{
+				display:none;
+				}
+				
+				#cke_63 
+				{
+				display:none;
+				}
+				
+				#cke_75 
+				{
+				display:none;
+				}
+
+				#cke_78 
+				{
+				display:none;
+				}
+				
+				#cke_about 
+				{
+				width:78%;
+				}
+				
+				#cke_1_contents
+				{
+				height:99px !important;
+				}
 
 		</style>
 
@@ -860,7 +905,7 @@ function changetab(tabname){
 		processData:false,
 		success: function(data)
 		{
-		$("#targetLayer").html(data);
+			showcomments();
 		},
 		error: function()
 		{
@@ -869,19 +914,66 @@ function changetab(tabname){
 		}));
 		
 		
-		var companyid = $("#company").val();
-		d = "companyid="+companyid;
-		$.ajax({
-			type: "post",
-			url: companycommentsurl,
-			data: d
-		}).done(function(data) {
-			var obj = $.parseJSON(data);
-			$("#targetLayer").html(obj.fbwall);
-		});
+		showcomments();
 
 	});
   
+	
+	function showcomments(){
+		
+		var companyid = $("#companyid").val();
+		d = "companyid="+companyid;		
+		$("#commentdiv").html('');
+		$.ajax({
+			type: "post",
+			url: companycommentsurl,
+			dataType: 'json',
+			data: d
+		}).done(function(data) {
+			var htmlcomment = "";
+			$.each(data,function(id,comment){			
+				//alert(comment.message);			
+				htmlcomment = '<div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment.name+'</strong></p><p>'+comment.message+'</p><br><p>'+comment.showago+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Reply" name="'+id+'" id="'+id+'" onclick="setreplyid(this.id);"></p><br/><div id="replydiv'+id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id+'" name="replysection'+id+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id+'" id="send'+id+'"></div></div><div style="clear:both;"></div></div>';
+				$("#commentdiv").append(htmlcomment);
+
+			});
+			//$("#targetLayer").html(htmlcomment);
+			//$("#commentsection").html('');
+		});
+		
+	}
+  
+	function setreplyid(id){
+		$('#replydiv'+id).css('display','block');
+	}
+
+	/*function sendreply(){
+		alert("fffff");	
+		$("#fbwallform").on('submit',(function(e) {
+		alert('gggggg');	
+		e.preventDefault();
+		$.ajax({
+		url: "<?php echo site_url('company/savefbwall')?>",
+		type: "POST",
+		data: new FormData(this),
+		mimeType:"multipart/form-data",
+		contentType: false,
+		cache: false,
+		processData:false,
+		success: function(data)
+		{
+			showcomments();
+		},
+		error: function()
+		{
+		}
+		});
+		}));
+		
+		
+		//showcomments();
+	}*/
+	
 </script>
 
 
@@ -1431,40 +1523,69 @@ function changetab(tabname){
         				</form>
                     </div>
                   </div><!-- End of nonfbdiv -->
-                    <div id="fbwall">
+                   
+                   <div id="fbwall" style="display:none;">
                        <div class="property-detail">
                             <div class="row">                
 								 <div class="content" style="padding-left:15px;">
-                         			<h3 class="titlebox" style="padding:0px 0px 0px 8px">Wall Gallery</h3>
+                         		 <h3 class="titlebox" style="padding:0px 0px 0px 8px">Wall Gallery</h3>
                          
-                         		 <div class="maindiv">                                              
-			                         <div class="pull-left">                      
+                         		   <div class="maindiv"> 
+                         		                                                
+			                         <div class="pull-left" style="width:24%;">                      
 			                           <p style="text-align:center"><?php if($supplier->logo !=""){?>
-			                                   <img width="200" height="400" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
-			                                     <?php } else {?>
-			                                   <img width="200" height="400" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
-			                                     <?php } ?>
+			                               <img width="200" height="400" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/><?php } else {?>
+			                                <img width="200" height="400" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><?php } ?>
 			                           </p>
 			                          </div>
-		                         
-			                          <div class="pull-right">
-			                            <p style="padding-right:30px;font-weight:bolder;font-size:20px;line-height:20px;color:black;"><?php echo $supplier->title; ?></p>	                                                        
-		                              </div>                                                   
-                                 </div><!-- End of maindiv-->
-                                 <div style="clear:both;"></div>
-                                 <div class="comment">
-                                 <form id="fbwallform" method="post"> 
-                                 <p><strong>Comment:</strong></p>                                                			                            	
-		                            	 <textarea rows="2" cols="5" class="form-control ckeditor" id="about" name="about"><?php echo @$company->about;?></textarea>
-		                                <!--<button id="save" type="submit" name="">Save</button>-->
-		                            </form> 
-								<div id="targetLayer"></div>
-								</div>
-                   
-						</div><!-- End of Content -->
+			                          		                         
+			                          <div class="pull-right" style="width:70%;">
+					                    <p style="padding-right:30px;font-weight:bolder;font-size:20px;line-height:20px;color:black;"><?php echo $supplier->title; ?></p>
+					                    <p><?php echo nl2br($supplier->address); ?></p>
+					                    <hr>
+					                     <p><strong>Comment:</strong></p>
+					                     <form id="fbwallform" method="post"> 		 
+					                    <div id="commentdiv" style="margin-top:6px;width:78%;"> 
+					                    <!-- <div class="purchaser">				                       
+				                           <div class="pull-left" style="width:20%;">
+				                              <p style="text-align:center"><?php if($supplier->logo !=""){?>
+			                               		<img width="50px" height="80px" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/><?php } else {?>
+			                                	<img width="50px" height="80px" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><?php } ?>
+			                           		  </p>
+				                           </div>
+				                           
+				                           <div class="pull-right" style="width:79%;">
+				                             <p><strong>Name of Purchaser</strong></p>
+				                            <p>This is the Comment Section.This is the Comment Section.This is the Comment Section.
+				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
+				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
+				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
+				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.</p>
+				                           </div>  
+										    
+										 </div>--><!-- End of Purchaser -->
+										 
+										<div style="clear:both;"></div>
+									 </div>
+									 					                    
+					                      <div class="comment" style="margin-top:8px;">					                      
+		                                  	  	                                                                                 			                            	
+						                <textarea rows="2" cols="5" class="form-control ckeditor" id="commentsection" name="commentsection"></textarea><br>
+						                <input type="hidden" name="companyid" id="companyid" value="<?php echo @$supplier->id;?>"/>
+		                            	<input type="hidden" name="logintype" id="logintype" value="<?php if(@$this->session->userdata('logintype')) { echo $this->session->userdata('logintype'); }elseif($this->session->userdata('site_loggedin')){ echo 'users'; } else echo 'guest'; ?>"/>									
+		                            	<input type="hidden" name="senderid" id="senderid" value="<?php if (@$this->session->userdata('logintype') =="company" ) { echo $this->session->userdata('company')->id; } elseif($this->session->userdata('site_loggedin')) { echo $this->session->userdata('site_loggedin')->id; } else echo "guest"; ?>"/>
+		                            	<input type="hidden" name="messageto" id="messageto" value="<?php echo "company"; ?>"/>
+		                            	<input type="hidden" name="receiverid" id="receiverid" value="<?php echo @$supplier->id;?>"/>
+						                           <button id="save" type="submit" name="">Save</button>
+				                          	   </form>
+				                           </div>
+				                           										
+										</div><!-- End of main Pull-right -->	                                                                                                          
+		                              </div><!-- End of maindiv-->
+		                              <div style="clear:both;"></div>                 
+							  </div><!-- End of Content -->
+						   </div>
 						</div>
-						</div>
-                    
                     </div><!-- End of  fbwall -->
                     
                     
