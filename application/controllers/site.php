@@ -826,6 +826,21 @@ class site extends CI_Controller
         $items = $items->items;
         foreach ($items as $item)
         {
+        	
+        	$query6 = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            $min = $this->db->query($query6)->row();
+            if($min){
+            	$item->callminprice = $min->price;
+            }
+
+            $query7 = "SELECT ea as maxea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+
+            $max = $this->db->query($query7)->row();
+
+            if($max){           	
+            	$item->callmaxprice = $max->price;
+            }
+        	
             $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
             $minmax = $this->db->query($query)->row();
             $item->minprice = $minmax->minea;

@@ -895,6 +895,9 @@ function changetab(tabname){
 	$(document).ready(function (e) {
 		$("#fbwallform").on('submit',(function(e) {
 		e.preventDefault();
+		for ( instance in CKEDITOR.instances ) {
+        CKEDITOR.instances[instance].updateElement();
+    	}
 		$.ajax({
 		url: "<?php echo site_url('company/savefbwall')?>",
 		type: "POST",
@@ -930,11 +933,18 @@ function changetab(tabname){
 			dataType: 'json',
 			data: d
 		}).done(function(data) {
-			var htmlcomment = "";
+			var htmlcomment = "";			
 			$.each(data,function(id,comment){			
 				//alert(comment.message);			
-				htmlcomment = '<div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment.name+'</strong></p><p>'+comment.message+'</p><br><p>'+comment.showago+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="Reply" name="'+id+'" id="'+id+'" onclick="setreplyid(this.id);"></p><br/><div id="replydiv'+id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id+'" name="replysection'+id+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id+'" id="send'+id+'"></div></div><div style="clear:both;"></div></div>';
+				htmlcomment = '<div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment.name+'</strong></p><p>'+comment.message+'</p><br><p>Commented:'+comment.showago+'&nbsp;&nbsp;&nbsp; on:'+comment.showdate+'&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" value="Reply" name="'+id+'" id="'+id+'" onclick="setreplyid(this.id,\''+comment.from+'\',\''+comment.from_type+'\');"></p><br/><div id="replydiv'+id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id+'" name="replysection'+id+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id+'" id="send'+id+'"></div></div><div style="clear:both;"></div></div>';
 				$("#commentdiv").append(htmlcomment);
+				var htmlcomment2 = "";
+				if( comment.innercomment !== undefined ){ 
+					$.each(comment.innercomment,function(id2,comment2){
+						htmlcomment2 = '<div style="margin-top:4px;margin-left:96px;"><div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment2.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment2.name+'</strong></p><p>'+comment2.message+'</p><br><p>Commented:'+comment2.showago+'&nbsp;&nbsp;&nbsp; on:'+comment2.showdate+'<!--&nbsp;&nbsp;<input type="button" value="Reply" name="'+id2+'" id="'+id2+'" onclick="setreplyid(this.id,\''+comment2.from+'\',\''+comment2.from_type+'\');"></p><br/><div id="replydiv'+id2+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id2+'" name="replysection'+id2+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id2+'" id="send'+id2+'">--></div></div><div style="clear:both;"></div></div></div>';
+						$("#commentdiv").append(htmlcomment2);
+					});
+				}
 
 			});
 			//$("#targetLayer").html(htmlcomment);
@@ -943,8 +953,11 @@ function changetab(tabname){
 		
 	}
   
-	function setreplyid(id){
+	function setreplyid(id,from,from_type){
 		$('#replydiv'+id).css('display','block');
+		$('#messageto').val(from_type);
+		$('#receiverid').val(from);
+		$('#reply').val(id);
 	}
 
 	/*function sendreply(){
@@ -1576,6 +1589,7 @@ function changetab(tabname){
 		                            	<input type="hidden" name="senderid" id="senderid" value="<?php if (@$this->session->userdata('logintype') =="company" ) { echo $this->session->userdata('company')->id; } elseif($this->session->userdata('site_loggedin')) { echo $this->session->userdata('site_loggedin')->id; } else echo "guest"; ?>"/>
 		                            	<input type="hidden" name="messageto" id="messageto" value="<?php echo "company"; ?>"/>
 		                            	<input type="hidden" name="receiverid" id="receiverid" value="<?php echo @$supplier->id;?>"/>
+		                            	<input type="hidden" name="reply" id="reply" value="">
 						                           <button id="save" type="submit" name="">Save</button>
 				                          	   </form>
 				                           </div>

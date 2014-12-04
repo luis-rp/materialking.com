@@ -459,15 +459,17 @@ class cart extends CI_Controller
 		{
 			if($this->session->userdata('site_loggedin'))
 			{
-				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
+				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
+				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
 				$subject = "Order Details from ezpzp";
 				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email, $subject);
 			}
 			else 
 			{
-				$pdftopurchasingadmin = $this->orderpdf('',true,'Credit Card');
+				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
+				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
 				$subject = "Order Details from ezpzp";
-				$this->sendEmail($pdftopurchasingadmin, $_POST['email'], $subject);
+				$this->sendEmail($pdftopurchasingadmin, $_POST['email'], $subject);				
 			}
 			$companies = array();
 			$companiesamount = array();
@@ -478,11 +480,9 @@ class cart extends CI_Controller
 				{
 					$this->db->where('id',$ci['company']);
 					$cd = $this->db->get('company')->row();				
-					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$cd->primaryemail;
-					$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Credit Card');	
+					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email'];
+					$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Credit Card');
 					$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
-					
-					//echo $ci['company'].$cd->primaryemail.'>'.$companies[$ci['company']].'<br/>';
 					$subject = "Order Details from ezpzp";
 					
 					$labelforvendor='';$addemaillabel='';
@@ -561,7 +561,6 @@ class cart extends CI_Controller
 			    $this->db->insert('notification',$notification);
 			}
 			$this->removeallcart();
-			//echo '<pre>';print_r($companiesamount);
 			//divide payment to companies
 			foreach($companiesamount as $caid=>$amount)
 			{
@@ -613,8 +612,6 @@ class cart extends CI_Controller
 $ {$amount} has been transfered to your bank account for order#{$ordernumber}, with the transfer#{$tobj->id}.
 ";
                       $transferbody.= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
-                      //echo $company->primaryemail.'<br>';
-                      //echo $transferbody;
                       $subject = "Payment Details from ezpzp";
                       $this->sendEmail($transferbody,$company->primaryemail, $subject, $company->title);
 			    }

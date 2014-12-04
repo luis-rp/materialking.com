@@ -352,7 +352,7 @@ function acceptall()
             <div class="control-group">
                 <div class="controls">
 
-                        <?php if ($awarded->status == 'incomplete') { ?>
+                        <?php /* if ($awarded->status == 'incomplete') { ?>
                         <div class="pull-right">
                             Mark completed for All items of:
                             <select id="combocompany" onchange="selectbycompany();">
@@ -362,7 +362,7 @@ function acceptall()
                                     <?php } ?>
                             </select>
                         </div>
-                        <?php } ?>
+                        <?php } */ ?>
                     <span class="label label-pink"><?php echo $awarded->status; ?></span>
                     <strong>
                         PO #:<?php echo $quote->ponum; ?>

@@ -174,6 +174,8 @@ function updatecart(itemid,companyid,quantity)
                  <?php }?>
             	
             	 <input type="button" id="submitCC" class="btn btn-primary arrow-right" value="Credit Card Payment">
+            	 
+            	 <p>*Your Shipping Options will be shown on the next page.</p>
             	 <script type="text/javascript">
             	 $(document).ready(function() {
             		
