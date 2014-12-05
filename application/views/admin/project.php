@@ -2,7 +2,7 @@
 <!--
 $(document).ready(function(){
 	$('#intro').wysihtml5();
-	$('#description').wysihtml5();
+	$('#description').wysihtml5();	
 	$('#startdate').datepicker()                       //  id with "date-two" will pop up a datepicker
     .on('changeDate', function(){                // when the datechanges
 	$('#startdate').datepicker('hide');      // hide the datepicker
@@ -60,7 +60,9 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
-     <input name="add" type="submit" class="btn btn-primary" value="Save Project" id="step6"/>
+     <input name="add" type="submit" class="btn btn-primary" value="Save Project"/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="step6"></span>
     </div>
     </div>
     

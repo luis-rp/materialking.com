@@ -261,9 +261,9 @@ display:none;
                                         <td class="v-align-middle"><?php echo $ai->received;?></td>
                                         <td class="v-align-middle">
                                         <?php echo number_format((100 - $ai->received),2);?>
-                                        <?php /* if($ai->pendingshipments){?>
-                                        <br/><?php echo $ai->pendingshipments;?> Pending Acknowledgement
-                                        <?php } */?>
+                                        <?php  if($ai->pendingshipments){?>
+                                        <br/><?php echo $ai->pendingshipments;?> % Pending Acknowledgement
+                                        <?php } ?>
                                         </td>
                                         
                                         <!-- <td>

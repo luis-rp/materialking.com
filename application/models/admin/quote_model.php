@@ -1604,6 +1604,37 @@ class quote_model extends Model {
 
 		return $invoices;
 	}
+	
+	
+	function getinvoicesdetailsformail($company,$invoicenumber)
+	{
+		$search='';
+		if($invoicenumber)
+		{
+			$search .= " AND r.invoicenum ='{$invoicenumber}'";
+		}
+		$pafilter = '';
+		if(@$_POST['searchpurchasingadmin'])
+			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+		$query = "SELECT r.invoicenum,q.ponum,r.quantity,ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.companyname as title,c.username as supplierusername,ai.itemid,ai.itemcode,ai.itemname, (ai.ea*r.quantity/100) as price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,stgs.taxrate,u.email,a.awardedon
+				   FROM
+				   ".$this->db->dbprefix('received')." r
+				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
+				   LEFT JOIN  ".$this->db->dbprefix('users')." u ON u.purchasingadmin = r.purchasingadmin
+				   LEFT JOIN  ".$this->db->dbprefix('users')." c ON ai.company = c.id	
+				   LEFT JOIN  ".$this->db->dbprefix('settings')." stgs ON c.id = stgs.purchasingadmin 			   				   
+				   LEFT JOIN ".$this->db->dbprefix('award')."  a ON a.id = ai.award
+				   LEFT JOIN ".$this->db->dbprefix('quote')."  q ON q.id = a.quote
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
+				  GROUP BY invoicenum
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				  ";
+		$invoicequery = $this->db->query($query);
+		$items = $invoicequery->result();
+
+		return $items;
+	}
 
     // End
 }

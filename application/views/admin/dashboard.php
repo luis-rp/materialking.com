@@ -406,13 +406,13 @@
 							<a class="remove" href="javascript:;"></a>
 						</div>
 						<div class="tiles-title">
-					<?php if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo "Notifications"?>&nbsp;&nbsp;									<?php if($newcontractnotifications){?>
+					<?php if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo " Contract Notifications"?>&nbsp;&nbsp;									<?php if($newcontractnotifications){?>
 							 <a class="remove" href="<?php echo site_url('admin/dashboard/allclear');?>">Clear Notifications</a>	
 						<?php }?>				
 						</div>	
 							 
 						<?php if(!$newcontractnotifications){?>
-							<span class="label label-important">No New Notifications</span>
+							<span class="label label-important">No New Contract Notifications</span>
 						<?php }?>
 						<?php foreach($newcontractnotifications as $newnote){?>
 

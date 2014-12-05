@@ -8566,7 +8566,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(!$company)
 			redirect('admin/login');
 		
-		$invs = $this->quotemodel->getinvoicesdetailsformail($company,$_POST['invoicenum']);
+		$invs = $this->quote_model->getinvoicesdetailsformail($company,$_POST['invoicenum']);
 		$purchaser = $this->quote_model->getpurchaseuserbyid($company);
 		$subject = "Due Date Set For Invoice ".$_POST['invoicenum'];
 		$data['email_body_title']  = "";
@@ -8586,7 +8586,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		            		<th>Supplier Name</th>
 		            		<th>Supplier Address</th>
 		            		<th>Supplier Phone</th>
-		            		<th>Order Number</th>
+		            		<!-- <th>Order Number</th> -->
 		            		<th>Item</th>
 		            		<th>Quantity</th>
 		            		<th>Payment Status</th>
@@ -8600,7 +8600,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td>'.$invoice->supplierusername.'</td>
             		<td>'.$invoice->address.'</td>
             		<td>'.$invoice->phone.'</td>
-            		<td>'.$invoice->ponum.'</td>
+            		<!-- <td>'.$invoice->ponum.'</td> -->
             		<td>'.$invoice->itemname.'</td>
             		<td>'.$invoice->quantity.'</td>
             		<td>'.$invoice->paymentstatus.'</td>
@@ -8608,9 +8608,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td>'.$invoice->DueDate.'</td>
             		<td align="right">'.number_format($invoice->price,2).'</td>
 	            	  </tr>';
-	        $total = ($invoice->price*$invoice->quantity/100);
+	        $total = ($invoice->price);
             $gtotal+=$total;
-	        $tax = $gtotal * $invoice->taxpercent / 100;
+	        $tax = $gtotal * $invoice->taxrate / 100;
             $totalwithtax = number_format($tax+$gtotal,2);
             	
             $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
@@ -8644,6 +8644,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
+		echo "<pre>",print_r($data); die;
 	}
 		
     // End

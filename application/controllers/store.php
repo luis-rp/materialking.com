@@ -76,6 +76,7 @@ class Store extends CI_Controller
                 $item->itemcode = $orgitem->itemcode;        
                 
             $item->unit = $orgitem->unit;
+            $item->increment = $orgitem->increment;
             
             $this->db->where('id',$item->manufacturer);
             $item->manufacturername = @$this->db->get('type')->row()->title;
@@ -145,6 +146,7 @@ class Store extends CI_Controller
         		$di->itemcode = $orgitem->itemcode;
         		$di->itemname = $orgitem->itemname;
         		$di->unit = $orgitem->unit;
+        		$di->increment = $orgitem->increment;
         		if(isset($tv))
         		{
         			$di->dealprice = $di->dealprice + ($di->dealprice * $tv / 100);

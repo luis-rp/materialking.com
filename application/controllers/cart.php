@@ -459,18 +459,18 @@ class cart extends CI_Controller
 		{
 			if($this->session->userdata('site_loggedin'))
 			{
-				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
+				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
 				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
 				$subject = "Order Details from ezpzp";
 				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email, $subject);
 			}
 			else 
 			{
-				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
+				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
 				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
-				$subject = "Order Details from ezpzp";
+				$subject = "Order Details from ezpzp";				
 				$this->sendEmail($pdftopurchasingadmin, $_POST['email'], $subject);				
-			}
+			} 
 			$companies = array();
 			$companiesamount = array();
 			$getvendorship=explode(', ',$_REQUEST['shippingforvendors']);
@@ -480,9 +480,9 @@ class cart extends CI_Controller
 				{
 					$this->db->where('id',$ci['company']);
 					$cd = $this->db->get('company')->row();				
-					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".@$chargeobj->card->name."<br><strong>Customer Email:</strong>".$_POST['email'];
+					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email'];
 					$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Credit Card');
-					$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
+					$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 
 					$subject = "Order Details from ezpzp";
 					
 					$labelforvendor='';$addemaillabel='';

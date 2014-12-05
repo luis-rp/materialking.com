@@ -119,7 +119,7 @@ $(document).ready(function() {
 <script>
 
 
-    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
+  /*  function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
     {    	
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
@@ -142,6 +142,89 @@ $(document).ready(function() {
         	selected = "";
            	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
    			}
+   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
+        $('#cartqtydiv').html(strselect);
+        if(!isdeal) {
+        	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
+        	$("#qtypricebox").html("");
+        	$.ajax({
+        		type:"post",
+        		data: data,
+        		sync: false,
+        		url: getpriceqtydetails
+        	}).done(function(data){
+        		if(data){
+
+        			$("#qtypricebox").html(data);
+        		}
+        	});
+
+        	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
+
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		sync: false,
+        		url: getpriceperqtydetails
+        	}).done(function(data){
+        		if(data){
+
+        			$("#cartsavediv").html("");
+        			$("#cartsavediv").html(data);
+        		}
+        	});
+
+        	$.ajax({
+        		type:"post",
+        		data: data2,
+        		url: getnewprice,
+        		sync:false
+        	}).done(function(data){
+        		if(data){
+
+        			if(data!="norecord")
+        			$("#hiddenprice").val(data);
+        		}
+        	});
+        }
+
+    } */
+    
+    
+      function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment,isdeal)
+    {    	
+    	if(typeof(minqty)==='undefined') minqty = 0;
+    	if(increment==0) { increment=1;} 
+    	if(typeof(isdeal)==='undefined') isdeal = 0;
+        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
+		$('#cartqtydiv').html('');
+		$("#cartsavediv").html('');
+		$("#qtypricebox").html('');
+		$("#itemnamebox").html('');
+       	$("#hiddenprice").val(price);
+        $("#cartprice").modal();
+        var selected = "";
+        $("#itemnamebox").html(itemcode+"  /  "+itemname);
+        $("#unitbox").html("Unit Type: "+unit+"<br/>");
+        var strselect = ('Qty');
+        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
+       /*for (i = increment; i <=500; i+=3) {
+        	if(i == minqty)
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+   			}*/
+      increment = parseInt(increment);
+   		i = increment;
+       	while(i <=500){
+       		if(i == minqty)
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+       		i=i+increment;	
+       	}	 	
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
         if(!isdeal) {
@@ -448,7 +531,7 @@ $( document ).tooltip();
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>')">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>)">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         <?php } ?>
@@ -729,7 +812,7 @@ $( document ).tooltip();
                         		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		</td>
                         		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',1)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>

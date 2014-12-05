@@ -66,19 +66,14 @@ function invoice(invoicenum)
 						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
 							<a class="remove" href="javascript:;"></a>
-						</div>
-						<div class="tiles-title">
-							NOTIFICATIONS
-						</div>
-					  <br>
-						<?php if(!$newnotifications){?>
-							<span class="label label-important">No New Notifications</span>
-						<?php }?>
-						<?php foreach($newnotifications as $newnote){?>
+						 </div>
+						 <div class="tiles-title">NOTIFICATIONS</div><br>
+							<?php if(!$newnotifications){?>
+								<span class="label label-important">No New Notifications</span>
+							<?php }?>
+							<?php foreach($newnotifications as $newnote){?>
 
-						<div class="date pull-right">
-								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
-						  </div>
+							<div class="date pull-right"><a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a></div>
 							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 								<div class="user-profile">
@@ -96,6 +91,8 @@ function invoice(invoicenum)
 							</a>
 						<?php }?>
 					</div>
+					</div>
+					
 
 					<div class="tiles-body">
 						<div class="controller">
@@ -132,7 +129,8 @@ function invoice(invoicenum)
 							</a>
 						<?php }?>
 						</div>
-					</div>
+					
+					
 					<div class="tiles-title extrabox">
 					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>
 					<table cellpadding="3">

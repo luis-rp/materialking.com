@@ -1821,9 +1821,17 @@ class Company extends CI_Controller {
     	$insertarray['company'] = $_POST['companyid'];
     	$insertarray['message'] = $_POST['commentsection'];    	
     	$insertarray['senton'] = date('Y-m-d H:i');
+    	$insertarray['threadsenton'] = date('Y-m-d H:i');
     	
     	$this->db->insert('fb_comment', $insertarray);    	
     	//echo $_POST['about']; die;
+    	
+    	if(@$_POST['reply']){
+    		$updatearray = array();
+    		$updatearray['threadsenton'] = date('Y-m-d H:i');    		
+    		$this->db->where('id', $_POST['reply']);    		
+    		$result = $this->db->update('fb_comment',$updatearray);
+    	}
     	
     }
     
@@ -1831,12 +1839,15 @@ class Company extends CI_Controller {
     	
     	$this->db->where('company',$_POST['companyid']);    	
     	$this->db->where('replyto IS NULL', null, false);
+    	$this->db->order_by('threadsenton', 'DESC');
     	$result = $this->db->get('fb_comment')->result();
     	$messagebody = array();
     	foreach ($result as $res){
-    		$messagebody[$res->id]['message'] = $res->message;
-    		$messagebody[$res->id]['from'] = $res->from;
-    		$messagebody[$res->id]['from_type'] = $res->from_type;
+    		$res->from_types = $res->from_type."-".$res->id;
+    		$messagebody[$res->from_types]['id'] = $res->id;
+    		$messagebody[$res->from_types]['message'] = $res->message;
+    		$messagebody[$res->from_types]['from'] = $res->from;
+    		$messagebody[$res->from_types]['from_type'] = $res->from_type;
     		
     		if($res->from_type=='users'){
     			$this->db->select("companyname");
@@ -1848,39 +1859,42 @@ class Company extends CI_Controller {
 				$logres = $this->db->get('settings')->row();
 				
 				if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
-				$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+				$messagebody[$res->from_types]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
 				else 
-				$messagebody[$res->id]['logosrc'] =  site_url('uploads/logo/noavatar.png');
-				$messagebody[$res->id]['name'] = $nameres->companyname;
+				$messagebody[$res->from_types]['logosrc'] =  site_url('uploads/logo/noavatar.png');
+				$messagebody[$res->from_types]['name'] = $nameres->companyname;
     		}elseif($res->from_type=='company'){
     			$this->db->select("logo, title");
     			$this->db->where('id',$res->from);
 				$logres = $this->db->get('company')->row();
 				if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
-				$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+				$messagebody[$res->from_types]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
 				else 
-				$messagebody[$res->id]['logosrc'] = site_url('templates/site/assets/img/logo.png');
-				$messagebody[$res->id]['name'] = $logres->title;
+				$messagebody[$res->from_types]['logosrc'] = site_url('templates/site/assets/img/logo.png');
+				$messagebody[$res->from_types]['name'] = $logres->title;
     		}else {
-    			$messagebody[$res->id]['logosrc'] = site_url('uploads/logo/noavatar.png');
-    			$messagebody[$res->id]['name'] = "Guest";
+    			$messagebody[$res->from_types]['logosrc'] = site_url('uploads/logo/noavatar.png');
+    			$messagebody[$res->from_types]['name'] = "Guest";
     		}
     		
     		
-    		$messagebody[$res->id]['showago'] = $this->tago(strtotime($res->senton));
+    		$messagebody[$res->from_types]['showago'] = $this->tago(strtotime($res->senton));
     		$datetime = strtotime($res->senton);
-			$messagebody[$res->id]['showdate'] = date("M d, Y H:i A", $datetime);
+			$messagebody[$res->from_types]['showdate'] = date("M d, Y H:i A", $datetime);
 			
 			$this->db->where('company',$_POST['companyid']);
 			$this->db->where('replyto',$res->id);
+			$this->db->order_by('threadsenton', 'DESC');
     		$result2 = $this->db->get('fb_comment')->result();
     		
     		if($result2){
 				$messagebody2 = array();
     			foreach ($result2 as $res2){
-    				$messagebody2[$res2->id]['message'] = $res2->message;
-    				$messagebody2[$res2->id]['from'] = $res2->from;
-    				$messagebody2[$res2->id]['from_type'] = $res2->from_type;
+    				$res2->from_types = $res2->from_type."-".$res2->id;
+    				$messagebody2[$res2->from_types]['id'] = $res2->id;
+    				$messagebody2[$res2->from_types]['message'] = $res2->message;
+    				$messagebody2[$res2->from_types]['from'] = $res2->from;
+    				$messagebody2[$res2->from_types]['from_type'] = $res2->from_type;
 
     				if($res2->from_type=='users'){
     					$this->db->select("companyname");
@@ -1892,29 +1906,29 @@ class Company extends CI_Controller {
     					$logres = $this->db->get('settings')->row();
 
     					if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
-    					$messagebody2[$res2->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+    					$messagebody2[$res2->from_types]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
     					else
-    					$messagebody2[$res2->id]['logosrc'] =  site_url('uploads/logo/noavatar.png');
-    					$messagebody2[$res2->id]['name'] = $nameres->companyname;
+    					$messagebody2[$res2->from_types]['logosrc'] =  site_url('uploads/logo/noavatar.png');
+    					$messagebody2[$res2->from_types]['name'] = $nameres->companyname;
     				}elseif($res2->from_type=='company'){
     					$this->db->select("logo, title");
     					$this->db->where('id',$res2->from);
     					$logres = $this->db->get('company')->row();
     					if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
-    					$messagebody2[$res2->id]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
+    					$messagebody2[$res2->from_types]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
     					else
-    					$messagebody2[$res2->id]['logosrc'] = site_url('templates/site/assets/img/logo.png');
-    					$messagebody2[$res2->id]['name'] = $logres->title;
+    					$messagebody2[$res2->from_types]['logosrc'] = site_url('templates/site/assets/img/logo.png');
+    					$messagebody2[$res2->from_types]['name'] = $logres->title;
     				}else {
-    					$messagebody2[$res2->id]['logosrc'] = site_url('uploads/logo/noavatar.png');
-    					$messagebody2[$res2->id]['name'] = "Guest";
+    					$messagebody2[$res2->from_types]['logosrc'] = site_url('uploads/logo/noavatar.png');
+    					$messagebody2[$res2->from_types]['name'] = "Guest";
     				}
 
-    				$messagebody2[$res2->id]['showago'] = $this->tago(strtotime($res2->senton));
+    				$messagebody2[$res2->from_types]['showago'] = $this->tago(strtotime($res2->senton));
     				$datetime = strtotime($res2->senton);
-    				$messagebody2[$res2->id]['showdate'] = date("M d, Y H:i A", $datetime);
+    				$messagebody2[$res2->from_types]['showdate'] = date("M d, Y H:i A", $datetime);
     			}
-				$messagebody[$res->id]['innercomment'] = $messagebody2;
+				$messagebody[$res->from_types]['innercomment'] = $messagebody2;
     		}
 			
     	}

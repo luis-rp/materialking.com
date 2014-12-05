@@ -235,10 +235,10 @@ $( document ).tooltip();
     }
 
     function addtocart(itemid, companyid, price, minqty, unit, itemcode,itemname,increment,isdeal)
-    {  	
+    { 
     	if(typeof(minqty)==='undefined') { miqty = 0; } 
-    	if(typeof(increment)==='undefined') { increment = 1;} 
-    	if(typeof(isdeal)==='undefined') isdeal = 0;
+    	if(increment==0) { increment=1;} 
+    	if(typeof(isdeal)==='undefined') isdeal = 0;  		
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
         $('#cartqtydiv').html('');
 		$("#cartsavediv").html('');
@@ -767,7 +767,7 @@ $( document ).tooltip();
                                       <?php if($item->featureditem->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>
                                        <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>','<?php echo $item->increment; ?>')">
+                                    	<a class="btn btn-primary" href="javascript:void(o)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                         <?php } ?>
@@ -851,8 +851,7 @@ $( document ).tooltip();
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-
+                                <?php                                    
                                     if($inventory)
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
@@ -886,8 +885,8 @@ $( document ).tooltip();
                                     <td style="padding:0px;" align="center">
                                         <?php if($inv->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
-                                       <?php }else{?>
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>','<?php echo $item->increment; ?>')">
+                                       <?php }else{?><?php //echo "<pre>"; print_r($inv); die;?>
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>)">
                                             <i class="icon icon-plus"></i>
                                         </a>
                                         <?php } ?>
@@ -1204,7 +1203,7 @@ $( document ).tooltip();
                         		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
                         	</tr>
                             <tr>
-                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>','<?php echo $item->increment; ?>',1)">
+                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
                                     <i class="icon icon-plus"></i>
                                 </a></td>
                             </tr>

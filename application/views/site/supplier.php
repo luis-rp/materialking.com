@@ -594,10 +594,11 @@ function viewtag(pic_id,company)
 </script>
 
 <script>
-    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, isdeal)
+    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
+    	if(increment==0) { increment=1;} 
         //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
 		$('#cartqtydiv').html('');
 		$("#cartsavediv").html('');
@@ -610,13 +611,24 @@ function viewtag(pic_id,company)
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
-        for (i = 1; i <=500; i++) {
+       /* for (i = 1; i <=500; i++) {
         	if(i == minqty)
         	selected = 'selected';
         	else
         	selected = "";
            	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-   			}
+   			}*/
+       
+       increment = parseInt(increment);
+   		i = increment;
+       	while(i <=500){
+       		if(i == minqty)
+        	selected = 'selected';
+        	else
+        	selected = "";
+           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
+       		i=i+increment;	
+       	}	 	
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
 
@@ -909,6 +921,9 @@ function changetab(tabname){
 		success: function(data)
 		{
 			showcomments();
+			for ( instance in CKEDITOR.instances ) {
+        		CKEDITOR.instances[instance].setData('');
+			}
 		},
 		error: function()
 		{
@@ -936,12 +951,12 @@ function changetab(tabname){
 			var htmlcomment = "";			
 			$.each(data,function(id,comment){			
 				//alert(comment.message);			
-				htmlcomment = '<div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment.name+'</strong></p><p>'+comment.message+'</p><br><p>Commented:'+comment.showago+'&nbsp;&nbsp;&nbsp; on:'+comment.showdate+'&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" value="Reply" name="'+id+'" id="'+id+'" onclick="setreplyid(this.id,\''+comment.from+'\',\''+comment.from_type+'\');"></p><br/><div id="replydiv'+id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id+'" name="replysection'+id+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id+'" id="send'+id+'"></div></div><div style="clear:both;"></div></div>';
+				htmlcomment = '<div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment.name+'</strong></p><p>'+comment.message+'</p><br><p>Commented:'+comment.showago+'&nbsp;&nbsp;&nbsp; on:'+comment.showdate+'&nbsp;&nbsp;<input type="button" class="btn btn-primary btn-xs" style="border-radius: 10px;" value="Reply" name="'+comment.id+'" id="'+comment.id+'" onclick="setreplyid(this.id,\''+comment.from+'\',\''+comment.from_type+'\');"></p><br/><div id="replydiv'+comment.id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+comment.id+'" name="replysection'+comment.id+'"></textarea>&nbsp;<input type="submit" value="Comment" class="btn btn-success btn-xs" name="send'+comment.id+'" id="send'+comment.id+'"></div></div><div style="clear:both;"></div></div>';
 				$("#commentdiv").append(htmlcomment);
 				var htmlcomment2 = "";
 				if( comment.innercomment !== undefined ){ 
 					$.each(comment.innercomment,function(id2,comment2){
-						htmlcomment2 = '<div style="margin-top:4px;margin-left:96px;"><div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment2.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment2.name+'</strong></p><p>'+comment2.message+'</p><br><p>Commented:'+comment2.showago+'&nbsp;&nbsp;&nbsp; on:'+comment2.showdate+'<!--&nbsp;&nbsp;<input type="button" value="Reply" name="'+id2+'" id="'+id2+'" onclick="setreplyid(this.id,\''+comment2.from+'\',\''+comment2.from_type+'\');"></p><br/><div id="replydiv'+id2+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+id2+'" name="replysection'+id2+'"></textarea>&nbsp;<input type="submit" value="Send" name="send'+id2+'" id="send'+id2+'">--></div></div><div style="clear:both;"></div></div></div>';
+						htmlcomment2 = '<div style="margin-top:4px;margin-left:96px;"><div class="purchaser"><div class="pull-left" style="width:20%;"><p style="text-align:center"><img width="50px" height="80px" src="'+comment2.logosrc+'"/></p></div><div class="pull-right" style="width:79%;"><p><strong>'+comment2.name+'</strong></p><p>'+comment2.message+'</p><br><p>Commented:'+comment2.showago+'&nbsp;&nbsp;&nbsp; on:'+comment2.showdate+'<!--&nbsp;&nbsp;<input type="button" value="Reply" name="'+comment2.id+'" id="'+comment2.id+'" onclick="setreplyid(this.id,\''+comment2.from+'\',\''+comment2.from_type+'\');"></p><br/><div id="replydiv'+comment2.id+'" style="display:none;"><textarea rows="2" cols="5" class="form-control ckeditor" id="replysection'+comment2.id+'" name="replysection'+comment2.id+'"></textarea>&nbsp;<input type="submit" value="Send" class="btn btn-success btn-xs" name="send'+comment2.id+'" id="send'+comment2.id+'">--></div></div><div style="clear:both;"></div></div></div>';
 						$("#commentdiv").append(htmlcomment2);
 					});
 				}
@@ -1022,14 +1037,16 @@ function changetab(tabname){
     <div class="container">
         <div id="main">
             <div class="row">
-                <div class="span9">              
-               <div style="background-color:#dff0d8;color:black;font-weight:bolder;border-radius:8px;text-align:center;">
-                <p style="line-height:40px;font-family:Helvetica;">
-                Existing & New Customers - Join our Business to Business Network for seamless quotes,ordering and account solutions.</p></div>
-              		<div>
-	                  <button type="button" id="button" class="btn btn-primary btn-lg" onclick="changetab('walltab');" style="border-radius: 10px;">
-	                   <strong>View Wall</strong></button>	                	
-                 	</div>
+                <div class="span9">                             
+	               <div style="background-color:#dff0d8;color:black;font-weight:bolder;border-radius:8px;text-align:center;">
+	                  <p style="line-height:40px;font-family:Helvetica;">
+	                     Existing & New Customers - Join our Business to Business Network for seamless quotes,ordering and account solutions.
+	                  </p>
+	               </div>
+              	 <div>
+              		
+	            <button type="button" id="button" class="btn btn-primary btn-lg" onclick="changetab('walltab');" style="border-radius: 10px;"><strong>View Wall</strong></button>	                	
+            </div><!-- End of row -->
                  <h3 class="titlebox">
                 	<table width="100%">
                     	<tr>
@@ -1047,8 +1064,8 @@ function changetab(tabname){
                     	</tr>
                     </table>
                     </h3>
-                    <div class="carousel property">
-                    </div>
+                    
+                 <div class="carousel property"></div>
                   
                   <div class="nonfbdiv">
                     <div class="property-detail">
@@ -1096,32 +1113,19 @@ function changetab(tabname){
                                         </tr>
                                     </table>
                                 </div>
-                            </div>
+                            </div><!-- End of row of effect 5-->
                             <br/>
+                            
                               <div class="invoice-button-action-set">
                                   <p style="float: left;line-height: 17px;">
                                       <button type="button" class="btn btn-primary" onclick="PrintElem(mydiv)" style="border-radius: 2px;padding: 0 10px;">
                                         Print
                                       </button>
                                 </p>
-                                 <!-- <div style="float: left;margin-left: 20px;" class="addthis_toolbox addthis_default_style ">
-                                     <a class="addthis_counter addthis_pill_style" addthis:url="<?php // echo $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];?>#mydiv" addthis:title=""></a>
-                        </div>-->
-                                <!--<a class="shareEmail" href="" title="Share by Email"><img src="http://png-2.findicons.com/files/icons/573/must_have/48/mail.png"/></a>-->
                               </div>
+                        </div><!-- End of pull-left overview effect5 -->
 
-                        </div>
-
-                        <!-- <div id="example-1" class="thumbs" style="float:left; height:310px;width:395px; overflow-x:auto;">
-						<ul>
-                           <?php  if(isset($image) && count($image)>0)  foreach($image as $items) { ?>
-                          <li style="margin-bottom:3px;">
-                         	<a href="<?php echo site_url('uploads/gallery/'.$items->imagename);?>">
-							<img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" width="100%x" class="img-thumbnail"/></a></li>
-                           <?php }   ?>
-                        </ul>
-                      </div>
--->
+                      
                    <?php  if(isset($image) && count($image)>0) { ?>
                      <div style="float:left; height:310px;width:395px;">
                         <ul class="bxslider">
@@ -1134,7 +1138,7 @@ function changetab(tabname){
 						</ul>
                       </div>
                    <?php }   ?>
-                      <br><br><br>
+                   <br><br><br>
 
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
@@ -1205,23 +1209,13 @@ function changetab(tabname){
 
                             	<td style="position:relative;">
 
-                             <!--    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><h1><?php echo $member->name;?>&nbsp; <?php echo $member->title;?></h1></td>
-  </tr>
-  <tr>
-    <td><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image" style="height:225px;width:190px;"/></td>
-  </tr>
-  <tr>
-   <td style="word-wrap: break-word"><h2><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></td>
-  </tr> -->
-  
+                            
   <div>
   <div style="height:40px;width:200px;"><h1 style="overflow:auto;"><?php echo $member->name;?>&nbsp;<?php echo $member->title;?></h1></div>
   <div style="height:180px;width:200px;overflow:hidden;"><img src="<?php echo base_url("uploads/companyMembers/".$member->picture);?>" alt="Profile Image"/></div>
   <div style="height:40px;width:200px;"><h2 style="overflow:auto;font-family: Arial, Helvetica, sans-serif;font-size:15px;"><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></div>
  </div>  
-<!-- </table> -->
+
 </td>
 
 
@@ -1269,6 +1263,7 @@ function changetab(tabname){
                             <?php } ?>
                             </ul>
                         </div>
+                        
 						<?php } } ?>
 						<?php if($feedbacks){?>
                         <div>
@@ -1356,7 +1351,7 @@ function changetab(tabname){
                                         <div class="price">
                                         <span>   $<?php echo $di->dealprice;?> &nbsp; <?php echo $di->unit;?></span>
 
-                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',1)">
+                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
                                     <i class="icon icon-plus"></i> Buy
                                 </a>
                                         </div>
@@ -1453,7 +1448,7 @@ function changetab(tabname){
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price</div>
                                        <?php }else{?>
                                             <span> <?php echo '$'.$inv->ea;?> <?php echo $inv->unit;?></span>
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>')">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>)">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
                                         <?php } ?>
@@ -1536,9 +1531,11 @@ function changetab(tabname){
         				</form>
                     </div>
                   </div><!-- End of nonfbdiv -->
+                  
                    
                    <div id="fbwall" style="display:none;">
-                       <div class="property-detail">
+                       <div class="property-detail" style="height:2000px;overflow:auto;">
+                          <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">                
 								 <div class="content" style="padding-left:15px;">
                          		 <h3 class="titlebox" style="padding:0px 0px 0px 8px">Wall Gallery</h3>
@@ -1558,30 +1555,11 @@ function changetab(tabname){
 					                    <hr>
 					                     <p><strong>Comment:</strong></p>
 					                     <form id="fbwallform" method="post"> 		 
-					                    <div id="commentdiv" style="margin-top:6px;width:78%;"> 
-					                    <!-- <div class="purchaser">				                       
-				                           <div class="pull-left" style="width:20%;">
-				                              <p style="text-align:center"><?php if($supplier->logo !=""){?>
-			                               		<img width="50px" height="80px" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/><?php } else {?>
-			                                	<img width="50px" height="80px" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/><?php } ?>
-			                           		  </p>
-				                           </div>
-				                           
-				                           <div class="pull-right" style="width:79%;">
-				                             <p><strong>Name of Purchaser</strong></p>
-				                            <p>This is the Comment Section.This is the Comment Section.This is the Comment Section.
-				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
-				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
-				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.
-				                             This is the Comment Section.This is the Comment Section.This is the Comment Section.</p>
-				                           </div>  
-										    
-										 </div>--><!-- End of Purchaser -->
-										 
-										<div style="clear:both;"></div>
-									 </div>
+					                    <div id="commentdiv" style="margin-top:6px;width:78%;"> 										 
+										   <!-- <div style="clear:both;"></div>-->
+									    </div>
 									 					                    
-					                      <div class="comment" style="margin-top:8px;">					                      
+					                  <div class="comment" style="margin-top:8px;">					                      
 		                                  	  	                                                                                 			                            	
 						                <textarea rows="2" cols="5" class="form-control ckeditor" id="commentsection" name="commentsection"></textarea><br>
 						                <input type="hidden" name="companyid" id="companyid" value="<?php echo @$supplier->id;?>"/>
@@ -1590,21 +1568,20 @@ function changetab(tabname){
 		                            	<input type="hidden" name="messageto" id="messageto" value="<?php echo "company"; ?>"/>
 		                            	<input type="hidden" name="receiverid" id="receiverid" value="<?php echo @$supplier->id;?>"/>
 		                            	<input type="hidden" name="reply" id="reply" value="">
-						                           <button id="save" type="submit" name="">Save</button>
+						                           <input type="submit" id="save" name="save" class="btn btn-success btn-xs" value="Comment">
 				                          	   </form>
-				                           </div>
+				                       </div>
 				                           										
 										</div><!-- End of main Pull-right -->	                                                                                                          
 		                              </div><!-- End of maindiv-->
 		                              <div style="clear:both;"></div>                 
 							  </div><!-- End of Content -->
+						   </div><!-- end of row -->
 						   </div>
 						</div>
-                    </div><!-- End of  fbwall -->
-                    
-                    
-                </div>
-
+                    </div><!-- End of  fbwall -->                   
+                </div><!-- End of Main -->
+           <div>
                 <div class="sidebar span3">
                     <div class="widget contact">
                         <div class="title">
@@ -1916,7 +1893,7 @@ function changetab(tabname){
                  
                  
                  
- <div class="sidebar span3">
+                <div class="sidebar span3">
                     <div class="widget contact">
                     <?php if(@$filespublic) { ?>
                     <div class="title">
@@ -1987,14 +1964,15 @@ function changetab(tabname){
 
 
                <div class="sidebar span3">
-               <div class="widget contact">
-               <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
-               </div></div>
+                  <div class="widget contact">
+                      <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
+                 </div>
+              </div>
+              </div>
 
 
                               <!-- Start Dialog Form -->
                <div class="dialog-form" id="dialog-form">
-
 				            		<form  role="form" method="post" name="form-addsubscriber" id="form-addsubscriber" action="<?php echo base_url();?>subscriber/addsubscriber">
 				                     <div class="col-md-6 col-sm-6 col-xs-6">
 				                     <div class="form-group">
@@ -2053,13 +2031,13 @@ function changetab(tabname){
 
 				</div><!-- End Dialog Form -->
 
-            </div>
-        </div>
+            </div><!--End of Container -->
+        </div><!-- End of Content -->
     </div>
 </div>
 
 
-        <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
+   <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">

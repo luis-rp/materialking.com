@@ -501,8 +501,6 @@ class site extends CI_Controller
 
          foreach($inventory as $initem)
          {
-
-
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
 
@@ -519,6 +517,8 @@ class site extends CI_Controller
 
             if(!$initem->image)
             	$initem->image = $orgitem->item_img;
+            	
+            $initem->increment = $orgitem->increment;	
 
             $initem->unit = $orgitem->unit;
 
@@ -597,6 +597,7 @@ class site extends CI_Controller
                 $orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
                 $cmpitem = $this->db->where('itemid',$di->itemid)->where('company',$id)->where('type','Supplier')->get('companyitem')->row();
                 $di->itemname = @$cmpitem->itemname?$cmpitem->itemname:$orgitem->itemname;
+                $di->increment = $orgitem->increment;
 
                 $di->price = @$cmpitem->price?$cmpitem->price:'';
                 if(@$cmpitem->company){
@@ -1320,12 +1321,14 @@ class site extends CI_Controller
         $inventorydata = array();
         foreach ($inventory as $initem)
         {
+        	
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
             if(!$initem->itemname)
                 $initem->itemname = $orgitem->itemname;
             if(!$initem->itemcode)
-                $initem->itemcode = $orgitem->itemcode;    
+                $initem->itemcode = $orgitem->itemcode;
+                $initem->increment = $orgitem->increment;         
                 
             $initem->unit = $orgitem->unit;
             $this->db->where('id',$initem->manufacturer);
@@ -1588,6 +1591,7 @@ class site extends CI_Controller
                 $di->url = $orgitem->url;
                 $di->itemcode = $orgitem->itemcode;
                 $di->itemname = $orgitem->itemname;
+                $di->increment = $orgitem->increment;
                 $di->unit = $orgitem->unit;
                 if(isset($tv))
                 {
@@ -1656,7 +1660,6 @@ class site extends CI_Controller
 	     {
 	    $data['searchquery'] = 'http://supplyspy.net';
 	     }
-	    
         $this->load->view('site/item', $data);
     }
     public function tag($tag){

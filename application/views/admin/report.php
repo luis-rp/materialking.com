@@ -14,8 +14,8 @@
 		<br />
 		   <br/>
 		   <form class="form-inline" action="<?php echo site_url('admin/report')?>" method="post">
-		   
-           <?php if(isset($_POST['searchfrom'])) {  $olddate=strtotime($_POST['searchfrom']); $fromdate = date('m/d/Y', $olddate); }
+		 
+		   <?php if(isset($_POST['searchfrom'])) {  $olddate=strtotime($_POST['searchfrom']); $fromdate = date('m/d/Y', $olddate); }
 		   else { $fromdate=date('m/d/Y', strtotime("now -30 days") ); }
 		   if(isset($_POST['searchto'])) { $olddate1=strtotime($_POST['searchto']); $todate = date('m/d/Y', $olddate1);}  
 		   else { $todate=date('m/d/Y'); } ?>
@@ -44,7 +44,7 @@
            </form>
            <?php if(@$reports){?>
 
-			  <!-- <div>
+			 <!-- <div>
 			  		<strong>DATE:</strong> From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <span id="totalallquantity"></span>
@@ -55,8 +55,8 @@
 			  		<br/>
 			  		<strong>TOTAL REMAINING:</strong> $<span id="totalallremaining"></span>
 			  </div>-->
-			  
-			   <table class="table table-bordered">
+
+			  <table class="table table-bordered">
 			    	<tr>
 			    		<th width="20%">DATE</th>
 			    		<th width="20%">TOTAL QUANTITY</th>
@@ -71,8 +71,7 @@
 			    		<td>$<span id="totalallpaid"></span></td>
 			    		<td>$<span id="totalallremaining"></span></td>
 			    	</tr>
-			   </table>
-			  
+			    	</table>
            <?php }?>
            <hr/>
 		   <?php
@@ -95,7 +94,7 @@
 			    		$totalallpaid += $report->totalpaid;
 		   ?>
 
-			  <!--  <div>
+			<!--  <div>
 			  		<strong>DATE:</strong> <?php echo date('m/d/Y', strtotime($report->receiveddate));?>
 			  		<br/>
 			  		<strong>TOTAL QUANTITY:</strong> <?php echo $report->totalquantity;?>
@@ -106,8 +105,8 @@
 			  		<br/>
 			  		<strong>TOTAL REMAINING:</strong> $<?php echo $report->totalprice - $report->totalpaid;?>
 			  </div>-->
-			  
-			  <table class="table table-bordered">
+
+			<table class="table table-bordered">
 			    	<tr>
 			    		<th width="20%">DATE</th>
 			    		<th width="20%">TOTAL QUANTITY</th>
@@ -123,7 +122,7 @@
 			    		<td>$<?php echo $report->totalprice - $report->totalpaid;?></td>
 			    	</tr>
 			 </table>
-			  
+
 			  <hr/>
 			    <table class="table table-bordered">
 			    	<tr>
@@ -146,6 +145,9 @@
 
 			    		foreach($report->items as $item)
 			    		{
+			    			if($item->potype == "Contract" )
+			    			$amount = $item->ea;
+			    			else 
 			    			$amount = $item->quantity * $item->ea;
 			    			$amount = round($amount + ($amount*$tax/100),2);
 			    			$totalallprice += $amount;

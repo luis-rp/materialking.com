@@ -73,7 +73,6 @@ class settings_model extends Model
 	// updating
 	function updatesettings($id)
 	{
-		$logo=$_POST['logo'];
 		$options = array(
 			'taxrate'=>$this->input->post('taxrate'),
           	'adminemail'=>$this->input->post('adminemail'),
@@ -82,7 +81,7 @@ class settings_model extends Model
           	'tour'=>$this->input->post('tour'),
           	'pagetour'=>$this->input->post('pagetour'),
           	'timezone'=>$this->input->post('timezone'),
-          	'logo'=>$logo
+          	'logo'=>$this->input->post('logo')
 		);
 
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
