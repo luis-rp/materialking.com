@@ -116,7 +116,7 @@ function fetchItem(codeid)
 	var itemcode = document.getElementById(codeid).value;
 
 	var idid = codeid.replace('itemcode','itemid');
-	
+	var incrementid = codeid.replace('itemcode','itemincrement');
 	var nameid = codeid.replace('itemcode','itemname');
 	var unitid = codeid.replace('itemcode','unit');
 	var eaid = codeid.replace('itemcode','ea');
@@ -125,7 +125,7 @@ function fetchItem(codeid)
 	var totalpriceid = codeid.replace('itemcode','totalprice');
 	var companyid = codeid.replace('itemcode','company');
 
-    if(itemcode!=""){
+	if(itemcode!=""){
 		$.ajax({
 			type:"post",
 			url: '<?php echo base_url()?>admin/quote/getitembycode/',
@@ -135,6 +135,7 @@ function fetchItem(codeid)
 			if(obj.itemname !== undefined)
 			{
 				document.getElementById(idid).value = obj.itemid;
+				document.getElementById(incrementid).value = obj.increment;
 				document.getElementById(nameid).value = obj.itemname;
 				document.getElementById(unitid).value = obj.unit;
 				document.getElementById(eaid).value = obj.ea;
@@ -148,6 +149,7 @@ function fetchItem(codeid)
 		});
 	}else{
 		document.getElementById(idid).value = "";
+		document.getElementById(incrementid).value = "";
 		document.getElementById(nameid).value = "";
 		document.getElementById(unitid).value = "";
 		document.getElementById(eaid).value = "";
@@ -195,7 +197,7 @@ function getminprice(companyid)
 }
 
 function getminpricecompanies(itemid, companyid, quantity, selected)
-{
+{	
     $.ajax({
       type:"post",
       url: '<?php echo base_url()?>admin/itemcode/getminpricecompanies',
@@ -224,6 +226,35 @@ function calculatetotalprice(id)
     document.getElementById(totalpriceid).value = totalprice;
 	//document.getElementById(totalpriceid).value = document.getElementById(eaid).value * document.getElementById(quantityid).value;
 
+}
+
+function checkincrementquantity(quantity){
+	
+	var incrementval = $('#itemincrement').val();	
+	$('#incrementmessage').html('');
+	if(incrementval>0){
+		if((quantity%incrementval)!=0){
+			$('#incrementmessage').html('Sorry this item is only available in increments of '+incrementval);
+			return false;
+		}else{
+			$('#incrementmessage').html('');
+		}
+	}
+	
+}
+
+
+function checkupdateincrementquantity(quantity,id){	
+	var incrementval = $('#itemincrement'+id).val();
+	$('#incrementmessage'+id).html('');
+	if(incrementval>0){
+		if((quantity%incrementval)!=0){
+			$('#incrementmessage'+id).html('Sorry this item is only available in increments of '+incrementval);
+			return false;
+		}else{
+			$('#incrementmessage'+id).html('');
+		}
+	}	
 }
 
 function showhideviewprice(id)
@@ -309,15 +340,39 @@ function selectcompany(codeid, company, price)
 function selectquantity(qty, quant, price, priceid)
 {
 	if(quant==0){
+		
+		var incrementval = $('#itemincrement').val();
+		$('#incrementmessage').html('');
+		if(incrementval>0){
+			if((qty%incrementval)!=0){
+				$('#incrementmessage').html('Sorry this item is only available in increments of '+incrementval);
+				return false;
+			}else{
+				$('#incrementmessage').html('');
+			}
+		}
+		
 		document.getElementById('quantity').value = qty;
 		document.getElementById('ea').value = price;
 		
 	}else{
+		
+		var id = priceid.substr(2);
+		var incrementval = $('#itemincrement'+id).val();
+		$('#incrementmessage'+id).html('');
+		if(incrementval>0){
+			if((qty%incrementval)!=0){
+				$('#incrementmessage'+id).html('Sorry this item is only available in increments of '+incrementval);
+				return false;
+			}else{
+				$('#incrementmessage'+id).html('');
+			}
+		}
+		
 		document.getElementById(quant).value = qty;		
 		document.getElementById(priceid).value = price;
 	}
 }
-
 
 function checkzero(classname)
 {
@@ -515,13 +570,14 @@ function savclose()
 		    	<tr>
 		    		<td>
 		    			<input type="hidden" id="itemid<?php echo $q->id;?>" name="itemid<?php echo $q->id;?>" class="span itemid" value="<?php echo $q->itemid;?>"/>
+		    			<input type="hidden" id="itemincrement<?php echo $q->id;?>" name="itemincrement<?php echo $q->id;?>" value="<?php echo $q->increment;?>"/>
 			    		<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>
 		    			<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
 		    		</td>
 		    		<td>
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
-		    		<td><input type="text" class="span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" required/></td>
+		    		<td><input type="text" class="span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>');  calculatetotalprice('<?php echo $q->id?>')" required/><br><span style="color:red" id="incrementmessage<?php echo $q->id?>"></span></td>
 		    		<td><input type="text" class="span12" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>" required/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
@@ -583,6 +639,7 @@ function savclose()
 		    	<tr>
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
+		    			<input type="hidden" id="itemincrement" name="itemincrement" />
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');showhideviewprice('');" onchange="//showhideviewprice('');"/>
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
@@ -591,7 +648,7 @@ function savclose()
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
 		    		</td>
-		    		<td><input type="text" id="quantity" name="quantity" class="span" onblur="calculatetotalprice('')" required/></td>
+		    		<td><input type="text" id="quantity" name="quantity" class="span" onblur="return checkincrementquantity(this.value); calculatetotalprice('')" required/><br><span style="color:red" id="incrementmessage"></td>
 		    		<td><input type="text" id="unit" name="unit" class="span"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">

@@ -2011,7 +2011,7 @@ box-shadow:  0 0 14px 1px #969696;
 }
 
 .properties-rows .property .sidepan img:hover {
-  margin-left: -80px;
+  margin-left: -25px;
 }
   .properties-rows .property:hover{  background-color: #FCFCFC; -webkit-box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);
 box-shadow: 0px 0px 10px 3px rgba(0, 185, 233, .75);

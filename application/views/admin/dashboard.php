@@ -10,11 +10,10 @@
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-
-
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/highcharts-3d.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="http://code.highcharts.com/highcharts-3d.js"></script>
+	<script src="http://code.highcharts.com/modules/exporting.js"></script>
 	<script>
 	$(document).ready(function(){
 
@@ -207,8 +206,7 @@
 					//alert(data);
 				});
 				return true;
-	}
-		
+	}	
  </script>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -230,8 +228,10 @@
 			</h3>
 	<div class="box">
 		<div class="span12">
-
-			<br/>
+       <div style="text-align:center;">
+          <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a></div>
 			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">
@@ -629,6 +629,7 @@
                 <div class="well span3"  style="width:30%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
+					
 					<?php if(isset($invoices)) { ?>
 					  <tr>
 					  <td>Invoice</td>
@@ -639,9 +640,11 @@
 				<?php foreach ($invoices as $invoice)
             if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
             { ?>
-
 					  <tr>
-					  <td><?php echo $invoice->invoicenum; ?></td>
+					  <td><?php	if($invoice->quote->potype=='Contract') { ?>
+                      	<a href="<?php echo site_url('admin/quote/invoice/'.$invoice->invoicenum)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a>
+					  <?php  } else { ?>
+					   	<a href="<?php echo site_url('admin/quote/contract_invoice/'.$invoice->invoicenum)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a><?php } ?></td>
 					  <td><?php if($invoice->datedue) { $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); }?></td>
 					   <td><?php echo $invoice->paymentstatus;?><br>
                       <?php //if($i->paymentstatus=='Paid') { $olddate=strtotime($invoice->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>

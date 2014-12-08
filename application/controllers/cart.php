@@ -46,7 +46,7 @@ class cart extends CI_Controller
 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
 			
 			$item['itemdetails'] = $itemdetails;
-			
+			$item['increment'] = $orgitem->increment;
 			
 			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();

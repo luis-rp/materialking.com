@@ -2156,7 +2156,7 @@ class site extends CI_Controller
 
     public function ad($id){
 
-    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('ads')." a, ".$this->db->dbprefix('category')." cat WHERE a.id=".$id." AND a.user_id=c.id AND a.category = cat.id ";
+    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c left join ".$this->db->dbprefix('ads')." a on a.user_id=c.id left join ".$this->db->dbprefix('category')." cat on a.category = cat.id WHERE a.id=".$id." ";
     	$data = $this->db->query($sql)->row_array();
     	if(isset($data["a_views"])){
     	$view = $data['a_views']+1;

@@ -292,10 +292,6 @@ setTimeout(function() {
            </div>
            <?php if(!$costcodedata) {?> <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
             No Costcodes Exist - Please Click Here to Create a Cost Code for "<?php echo $this->session->userdata('managedprojectdetails')->title; ?>"</a><?php } ?>
-           <br><br> <?php if(!$contractcostcodes) {?> 
-           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
-            No Contract Costcodes Exist - Please Click Here to Create a Contract Cost Code for "<?php echo $this->session->userdata('managedprojectdetails')->title; ?>"</a>
-            <?php } ?>
          </div>
       </div>
     </div>

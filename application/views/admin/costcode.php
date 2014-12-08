@@ -76,7 +76,8 @@ function changeparent(projectid){
     <div class="control-group">
     <label class="control-label">Contract Cost Code:</label>
     <div class="controls">
-       <input type="checkbox" name="forcontract" id="forcontract" <?php echo @$this->validation->forcontract?'checked="CHECKED"':''?>" /> 
+       <input type="checkbox" name="forcontract" id="forcontract" <?php echo @$this->validation->forcontract?'checked="CHECKED"':''?>" />
+       <p>*If you plan to sub-contract any work for this cost-code please check the Contract Cost Code box.</p> 
     </div>
     </div>
     

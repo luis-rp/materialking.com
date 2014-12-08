@@ -1555,9 +1555,7 @@ function changetab(tabname){
 					                    <hr>
 					                     <p><strong>Comment:</strong></p>
 					                     <form id="fbwallform" method="post"> 		 
-					                    <div id="commentdiv" style="margin-top:6px;width:78%;"> 										 
-										   <!-- <div style="clear:both;"></div>-->
-									    </div>
+					               
 									 					                    
 					                  <div class="comment" style="margin-top:8px;">					                      
 		                                  	  	                                                                                 			                            	
@@ -1568,8 +1566,11 @@ function changetab(tabname){
 		                            	<input type="hidden" name="messageto" id="messageto" value="<?php echo "company"; ?>"/>
 		                            	<input type="hidden" name="receiverid" id="receiverid" value="<?php echo @$supplier->id;?>"/>
 		                            	<input type="hidden" name="reply" id="reply" value="">
-						                           <input type="submit" id="save" name="save" class="btn btn-success btn-xs" value="Comment">
-				                          	   </form>
+						                <input type="submit" id="save" name="save" class="btn btn-success btn-xs" value="Comment">
+						                
+						                <div id="commentdiv" style="margin-top:6px;width:78%;"></div>
+						                
+				                       </form>
 				                       </div>
 				                           										
 										</div><!-- End of main Pull-right -->	                                                                                                          

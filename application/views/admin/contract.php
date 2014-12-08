@@ -424,6 +424,12 @@ function savclose()
 	<div class="box">
 		<div class="span12">
 		   <?php echo $this->session->flashdata('message'); ?>
+		   
+		   <?php if(!@$contractcostcodes) {?> 
+           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
+            No Contract Costcodes Exist - Please Click Here to Create a Contract Cost Code for "<?php echo $this->session->userdata('managedprojectdetails')->title; ?>"</a>
+            <?php } ?>
+		   
 		   <?php echo @$message; ?>
 		   <br/>
 		   <a class="btn btn-primary" href="<?php echo site_url('admin/quote/index/'.$pid);?>">&lt;&lt; Back</a>

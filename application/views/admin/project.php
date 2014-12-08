@@ -7,6 +7,15 @@ $(document).ready(function(){
     .on('changeDate', function(){                // when the datechanges
 	$('#startdate').datepicker('hide');      // hide the datepicker
   });
+  
+$('body').on('keydown', '#title', function(e) {
+    if (e.which == 9) {
+        e.preventDefault();
+        editor.composer.element.focus();
+        // do your code
+    }
+});  
+  
 });
 //-->
 </script>
@@ -60,9 +69,11 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
-     <input name="add" type="submit" class="btn btn-primary" value="Save Project"/>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="step6"></span>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <input name="add" type="submit" class="btn btn-primary" id="step6" value="Save Project"/>
     </div>
     </div>
     

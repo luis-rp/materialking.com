@@ -550,12 +550,12 @@ function clearall(id)
 
                                                  <td class="v-align-middle">
                                                 	<input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqty<?php echo $item->id;?>"
-                                                	value="<?php echo @$item->companyitem->minqty?>"
+                                                	value="<?php echo (@$item->increment)?$item->increment:@$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
                                                 	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
                                                 	<br/>
                                                 	<input type="checkbox" id = 'tierprice<?php echo $item->id;?>' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
-                  											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc.
+                  											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc. <?php if(@$item->increment) echo "<br> *This qty. has been set to be sold in increments of ".$item->increment." only"; ?>
                                                 </td>
 
                                                 <td class="v-align-middle">

@@ -251,9 +251,9 @@ class quote_model extends Model {
     }
 
     function getitems($id) {
-        $this->db->where('quote', $id);
-        $query = $this->db->get('quoteitem');
-
+        
+        $sql = "SELECT qi.*, i.increment FROM ".$this->db->dbprefix('quoteitem'). " qi left join ". $this->db->dbprefix('item') ." i on qi.itemid = i.id WHERE quote='$id' ";
+		$query = $this->db->query($sql);
         $ret = $query->result();
         return $ret;
     }
@@ -708,6 +708,85 @@ class quote_model extends Model {
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
             $searches[] = " receiveddate <= '$todate'";
         }
+        if ($this->session->userdata('usertype_id') > 1) {
+            $searches[] = " r.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";
+        }
+        if ($searches) {
+            $search = "  AND (" . implode(" AND ", $searches) . " )";
+        }
+        $managedprojectdetails = $this->session->userdata('managedprojectdetails');
+        if ($managedprojectdetails) {
+            $managedprojectdetails_id = $managedprojectdetails->id;
+        } else {
+            $managedprojectdetails_id = 0;
+        }
+
+        $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
+
+
+        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+				   FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('company') . " c,
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q
+				   
+				  WHERE r.awarditem=ai.id AND ai.company=c.id 
+				  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract' " .
+                $managedprojectdetails_id_sql
+                . " $search GROUP BY invoicenum";
+                
+        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+				   FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('users') . " u,
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q
+				   
+				  WHERE r.awarditem=ai.id AND ai.company=u.id 
+				  AND ai.award=a.id AND a.quote=q.id AND q.potype = 'Contract'  " .
+                $managedprojectdetails_id_sql
+                . " $search GROUP BY invoicenum";        
+                
+        //log_message('debug',var_export($query,true));
+        $combquery = $query ." UNION ".$contractquery." ORDER BY STR_TO_DATE(receiveddate, '%m/%d/%Y') DESC";
+        $invoicequery = $this->db->query($combquery);
+        $items = $invoicequery->result();
+
+        $invoices = array();
+        foreach ($items as $invoice) {
+            $quotesql = "SELECT q.*
+					   FROM 
+					   " . $this->db->dbprefix('received') . " r,
+					   " . $this->db->dbprefix('awarditem') . " ai,
+					   " . $this->db->dbprefix('award') . " a,
+					   " . $this->db->dbprefix('quote') . " q
+					  WHERE r.awarditem=ai.id AND ai.award=a.id 
+					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
+					  ";
+            
+            $quotequery = $this->db->query($quotesql);
+            $invoice->quote = $quotequery->row();
+
+            $invoices[] = $invoice;
+        }
+
+        return $invoices;
+    }
+    
+         
+    function getinvoicesforpayment($invoicenum) {
+        $search = '';
+        $searches = array();
+       
+        if (@$invoicenum) {
+            $searches[] = " r.invoicenum LIKE '%{$invoicenum}%' ";
+        }
+
         if ($this->session->userdata('usertype_id') > 1) {
             $searches[] = " r.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";
         }

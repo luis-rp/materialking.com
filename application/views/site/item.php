@@ -706,8 +706,8 @@ $( document ).tooltip();
                                         <strong> Item Name:</strong> <?php echo $item->itemname; ?>
                                         <br/>
                                         <strong>Unit:</strong> <?php echo $item->unit; ?><br/>
-                                        <?php if(isset($item->increment)) { ?>
-                                        <strong>Increment:</strong> <?php echo $item->increment; ?><?php } ?>
+                                        <?php if(isset($item->increment)) {  ?>
+                                        <strong>Increment:</strong> <?php if($item->increment==0) { echo "1";} else { echo $item->increment;} ?><?php } ?>
                                         <div><strong>Tags:</strong><?php if(!empty($item->tags)){?><ul class="tags"><?php
                                         $tags = explode(",",$item->tags);
                                         foreach ($tags as $tag){

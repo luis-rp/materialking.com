@@ -76,6 +76,8 @@ class Settings extends CI_Controller
 
 	function update()
 	{
+		//echo "<pre>data1-"; print_r($_FILES['logo']['tmp_name']); die;
+		//echo "<pre>data2-"; print_r($_POST); die;
 		$data ['heading'] = 'Update Settings';
 		$this->_set_fields ();
 		$this->_set_rules ();
@@ -89,7 +91,8 @@ class Settings extends CI_Controller
 			$_POST['pagetour']=1;
 		}
 		
-		 if (isset($_FILES['logo']['tmp_name']))
+		 if (isset($_FILES['logo']['tmp_name']) && $_FILES['logo']['tmp_name']!="") 
+		 {
             if (is_uploaded_file($_FILES['logo']['tmp_name'])) {
                 $nfn = $_FILES['logo']['name'];
                 $ext = end(explode('.', $nfn));
@@ -100,6 +103,7 @@ class Settings extends CI_Controller
                     $_POST['logo'] = $nfn;
                 }
             }
+		 }
 
 		$id = $this->input->post ('id');
 		if ($this->validation->run () == FALSE)

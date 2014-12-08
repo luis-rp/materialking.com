@@ -170,7 +170,7 @@ $(document).ready( function() {
 						</tr>
 						<tr>
 							<td>Message:</td>
-							<td><textarea name="message" rows="5" style="width: 350px;"></textarea>
+							<td><textarea name="message" rows="5" style="width: 350px;"><?php if(isset($address)) echo "Pick-up Address:&nbsp;".$address;?></textarea>
 						</tr>
 						<?php if($orderitems[0]->paymentstatus != 'Paid'){?>
 						<tr>

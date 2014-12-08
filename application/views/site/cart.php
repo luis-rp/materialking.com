@@ -18,10 +18,18 @@ function removefromcart(itemid, companyid)
 	    });
 }
 
-function updatecart(itemid,companyid,quantity)
+function updatecart(itemid,companyid,quantity,incrementval)
 {
 	var data = "itemid="+itemid+"&company="+companyid+"&quantity="+quantity;
     //alert(data);return;
+      
+	if(incrementval>0){
+		if((quantity%incrementval)!=0){
+			alert('Sorry this item is only available in increments of '+incrementval);
+			return false;
+		}
+	}
+    
     $.ajax({
 	      type:"post",
 	      data: data,
@@ -63,7 +71,7 @@ function updatecart(itemid,companyid,quantity)
             		<td><?php echo $item['itemdetails']->itemname;?></td>
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
-            		<td><input class="span1" type="text" value="<?php echo $item['quantity']?>" onchange="updatecart(<?php echo $item['itemid'];?>,<?php echo $item['company'];?>,this.value)"/></td>
+            		<td><input class="span1" type="text" value="<?php echo $item['quantity']?>" onchange="updatecart(<?php echo $item['itemid'];?>,<?php echo $item['company'];?>,this.value, <?php echo $item['increment'];?>)"/></td>
             		<td>$<?php echo number_format($total,2);?></td>
             		<td align="center">
 	            		<a class="btn btn-primary" href="javascript:void(0)" onclick="removefromcart(<?php echo $item['itemid'];?>, <?php echo $item['company'];?>)">
