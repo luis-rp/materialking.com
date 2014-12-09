@@ -130,6 +130,7 @@ class Admin extends CI_Controller {
 		$parent=0;
         //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
         $data['categories'] = $this->db->get('contractcategory')->result();
+        $data['adminusers'] = $this->adminmodel->get_paged_list();
 		$this->load->view ( 'admin/adminEdit', $data );
 	}
 

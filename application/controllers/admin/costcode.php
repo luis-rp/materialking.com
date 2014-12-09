@@ -559,7 +559,24 @@ class costcode extends CI_Controller {
         $items = array();
         if ($count >= 1) {
             foreach ($costcodeitems as $row) {
-                $awarded = $this->quote_model->getawardedbid($row->quote);
+            	if($row->potype=="Contract"){
+                $awarded = $this->quote_model->getawardedcontractbid($row->quote);
+                $row->ea = "$ " . $row->ea;
+                $row->quantity = '100%';
+                $row->unit = 'N/A';
+                $row->itemcode = 'N/A';
+                $row->newreceived = $row->newreceived."%";
+                $row->daterequested = 'N/A';
+                $row->totalprice = "$ " . $row->totalprice;
+                $row->itemname = htmlentities($row->itemname);
+                $row->status = strtoupper($awarded->status);
+                $row->actions = //$row->status=='COMPLETE'?'':
+                        anchor('admin/quote/contracttrack/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
+                ;
+                $items[] = $row;
+            	}else{
+            		
+            		 $awarded = $this->quote_model->getawardedbid($row->quote);
                 $row->ea = "$ " . $row->ea;
                 $row->totalprice = "$ " . $row->totalprice;
                 $row->itemname = htmlentities($row->itemname);
@@ -568,9 +585,28 @@ class costcode extends CI_Controller {
                         anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;
                 $items[] = $row;
+            	}
             }
 
             foreach ($costcodeitems2 as $row2) {
+            	if($row->potype=="Contract"){
+            		
+            	$awarded = $this->quote_model->getawardedcontractbid($row2->quote);
+                $row2->ea = "$ " . $row2->ea;
+                $row->quantity = '100%';
+                $row->unit = 'N/A';
+                $row->itemcode = 'N/A';
+                $row->newreceived = $row->newreceived."%";
+                $row->daterequested = 'N/A';
+                $row2->totalprice = "$ " . $row2->totalprice;
+                $row->itemname = htmlentities($row2->itemname);
+                $row2->status = strtoupper($awarded->status);
+                //$row2->newreceived = $row2->newreceived;
+                $row2->actions = //$row->status=='COMPLETE'?'':
+                        anchor('admin/quote/contracttrack/' . $row2->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
+                ;
+                $items2[] = $row2;
+            	}else{
                 $awarded = $this->quote_model->getawardedbid($row2->quote);
                 $row2->ea = "$ " . $row2->ea;
                 $row2->totalprice = "$ " . $row2->totalprice;
@@ -581,6 +617,7 @@ class costcode extends CI_Controller {
                         anchor('admin/quote/track/' . $row2->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;
                 $items2[] = $row2;
+            	}
             }
 
             $data['items'] = $items;
@@ -630,7 +667,7 @@ class costcode extends CI_Controller {
 
     function add() {
         $this->_set_fields();
-        $data ['heading'] = 'Add New Costcode First';
+        $data ['heading'] = 'Add New Costcode';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/costcode/add_costcode');
         if ($this->session->userdata('usertype_id') > 1)
@@ -666,6 +703,7 @@ class costcode extends CI_Controller {
         	$data['settingtour']=$setting[0]->tour;
         $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
         $data['viewname'] = 'costcode';
+        $data['costcodes'] = $this->costcode_model->get_costcodes();
         $this->load->view('admin/costcode', $data);
     }
 

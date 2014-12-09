@@ -417,7 +417,7 @@ function viewtag(pic_id,company)
                 <br>
                  <div class="pull-right">  <br>             	
                  	<div class="pull-left"> 
-                 		<div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark">This is Comment</div> 
+                 		<div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;color:black;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark">This is Comment</div> 
                 	</div>
                                 
                  	<div class="pull-right">

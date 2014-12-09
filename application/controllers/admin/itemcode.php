@@ -1338,7 +1338,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-            	<h3>Company prices : <span id="minpriceitemcode">' . $item->itemcode . '</span></h3>
+            	<h3>Company prices : <span id="minpriceitemcode">' . @$item->itemcode . '</span></h3>
         	</div>
         	<div class="modal-body" id="minprices">
         	';
@@ -1357,11 +1357,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             //if ($days > 30)
                 //$table .= "<b><font color='red'>Item has not been requited within 30 days.</font></b>";
             $table .= "<table class='table table-bordered'><tr><th>Company</th><th>Price</th><th width='30'></th></tr>";
-            $table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             foreach ($item->tierprices as $mp)
             {
             	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid,$quantiid,$priceid);
             	if($priceqtyresult){
+            		$table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $mp->companyname . "</td></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $priceqtyresult . "</td></tr>";            	
             	}

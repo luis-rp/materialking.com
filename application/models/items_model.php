@@ -74,9 +74,10 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
                  //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
                  $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
-                 <span style='white-space:pre-wrap;'><b>" . $item->catname."</b><span></a>";
+                   <span style='white-space:pre-wrap;'><b>" . $item->catname."(".$count.")</b><span></a>";
 			   	   
 			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
             }
@@ -132,7 +133,7 @@ class items_model extends Model {
             }
             else
             {
-                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'> <span style='white-space:pre-wrap;'>" . $item->catname."<span></a>";
+                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'> <span style='white-space:pre-wrap;line-height:20px;'>" . $item->catname."<span></a>";
                 
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }

@@ -21,12 +21,13 @@ $('body').on('keydown', '#title', function(e) {
 </script>
 
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+        
 <section class="row-fluid" >
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span12">
-	
-	<?php echo $message; ?>
+	<div class="pull-left" style="width:70%;">
+   <?php echo $message; ?>
    <?php echo $this->session->flashdata('message'); ?>
    <form class="form-horizontal" id="form-add-prj" method="post" action="<?php echo $action; ?>"> 
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
@@ -75,10 +76,25 @@ $('body').on('keydown', '#title', function(e) {
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      <input name="add" type="submit" class="btn btn-primary" id="step6" value="Save Project"/>
     </div>
-    </div>
-    
+    </div>  
   </form>
-    
-    </div>
-    </div>
+  </div><!-- End of Pull left -->
+  
+   <?php if(isset($projects) && count($projects) > 0) { ?>
+	   <div class="pull-right" style="width:26%;">
+		   <div class="table-responsive">
+			   <h3>Existing Projects</h3>
+				  <table class="table table-hover">
+				  <tr><th>Project Name</th></tr>
+				    <?php foreach ($projects as $project) { ?>
+				  		<tr><td><?php echo $project->title; ?></td></tr>
+				     <?php } ?>
+				  </table>
+			</div>
+	   </div><!-- End of Pull right -->
+   <?php } ?>
+	   
+	   <div style="clear:both;"></div>
+	  </div>
+	</div>
 </section>

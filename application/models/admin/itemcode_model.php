@@ -138,6 +138,12 @@ class itemcode_model extends Model {
                     break 1;
                 }
             }
+            
+            $sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  ";
+            $item = $this->db->query($sql1)->result(); 
+            $count="<strong>".number_format(count($item))."</strong>";
+            $leaf->catname .="(".$count.")";
+            
             $ret[] = $leaf;
         }
         //echo '<pre>'; print_r($ret);//die;

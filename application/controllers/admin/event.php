@@ -42,8 +42,7 @@ class event extends CI_Controller
 	
 	function index($offset = 0) 
 	{
-		$data = array();
-		
+		$data = array();		
 		$this->load->view ('admin/event/calendar', $data);
 	}
 
@@ -95,6 +94,7 @@ class event extends CI_Controller
             $u->checked = '';
             $data['users'][] = $u;
         }
+        $data['events'] = $this->event_model->get_items();
 		$this->load->view ('admin/event/form', $data);
 	}
 	

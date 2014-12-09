@@ -32,6 +32,7 @@ function changeparent(projectid){
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span12">
+	<div class="pull-left" style="width:70%;">
 	
 	<?php echo @$message; ?>
    <?php echo $this->session->flashdata('message'); ?>
@@ -108,7 +109,24 @@ function changeparent(projectid){
     </div>
     
   </form>
-    
+      
+         </div><!-- End of Pull left -->
+   <?php if(isset($costcodes) && count($costcodes) > 0) { ?>
+	   <div class="pull-right" style="width:26%;">
+		   <div class="table-responsive">
+			   <h3>Existing Cost Codes</h3>
+				  <table class="table table-hover">
+				  <tr><th>Cost Code Name</th></tr>
+				    <?php foreach ($costcodes as $costcode) { ?>
+				  		<tr><td><?php echo $costcode->code; ?></td></tr>
+				     <?php } ?>
+				  </table>
+			</div>
+	   </div><!-- End of Pull right -->
+   <?php } ?>
+	   
+	   <div style="clear:both;"></div> 
+  
     </div>
     </div>
 </section>

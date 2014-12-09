@@ -17,6 +17,8 @@ $(document).ready(function(){
 	<div class="box">
 	<div class="span12">
 	
+	 <div class="pull-left" style="width:70%;">
+	
 	  <?php if(@$message){echo '<div class="alert alert-block alert-danger fade in"><button event="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>'.$message.'</div>';}?>
 	  <?php echo $this->session->flashdata('message'); ?>
 	  <?php if($this->validation->id){?>
@@ -126,6 +128,24 @@ $(document).ready(function(){
     
   </form>
     
+       </div><!-- End of Pull left -->
+ 
+   <?php if(isset($events) && count($events) > 0) { ?>
+	   <div class="pull-right" style="width:26%;">
+		   <div class="table-responsive">
+			   <h3>Existing Events</h3>
+				  <table class="table table-hover">
+				  <tr><th>Event Name</th><th>Event Date</th></tr>
+				    <?php foreach ($events as $event) { ?>
+				  		<tr><td><?php echo $event->title; ?></td><td><?php echo $event->evtdate; ?></td></tr>
+				     <?php } ?>
+				  </table>
+			</div>
+	   </div><!-- End of Pull right -->
+   <?php } ?>
+	   
+	   <div style="clear:both;"></div>
+  
     </div>
     </div>
 </section>

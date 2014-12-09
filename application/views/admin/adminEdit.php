@@ -12,7 +12,7 @@ $(document).ready(function(){
 	<div class="span9">
 	
 	
-
+  <div class="pull-left" style="width:70%;">
    <form class="form-horizontal" method="post" action="<?php echo $action; ?>">
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
     <br/>
@@ -105,6 +105,23 @@ $(document).ready(function(){
     </div>
     
   </form>
+  
+         </div><!-- End of Pull left -->
+   <?php if(isset($adminusers) && count($adminusers) > 0) { ?>
+	   <div class="pull-right" style="width:26%;">
+		   <div class="table-responsive">
+			   <h3>Existing Users</h3>
+				  <table class="table table-hover">
+				  <tr><th>User Name</th></tr>
+				    <?php foreach ($adminusers as $adminuser) { ?>
+				  		<tr><td><?php echo $adminuser->fullname; ?></td></tr>
+				     <?php } ?>
+				  </table>
+			</div>
+	   </div><!-- End of Pull right -->
+   <?php } ?>
+	   
+	   <div style="clear:both;"></div>
     
     </div>
     </div>

@@ -101,6 +101,7 @@ class project extends CI_Controller
 		$data ['message'] = '';
 		$data ['action'] = site_url ('admin/project/add_project');
 		$data['viewname'] = 'project';
+		$data['projects'] = $this->project_model->get_projects();
 		$this->load->view ('admin/project', $data);
 	}
 

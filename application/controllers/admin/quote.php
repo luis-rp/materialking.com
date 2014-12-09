@@ -1728,6 +1728,8 @@ class quote extends CI_Controller
             }
             //print_r($updatearray);die;
             $updatearray['totalprice'] = $updatearray['quantity'] * $updatearray['ea'];
+            if(isset($updatearray['increment']) || $updatearray['increment'] == "" )
+            unset($updatearray['increment']);
             $this->quote_model->db->where('id', $key);
             $this->quote_model->db->update('quoteitem', $updatearray);
             if (!$this->quote_model->finditembycode($updatearray['itemcode'])) {
