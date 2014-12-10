@@ -3084,13 +3084,18 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		else 
 			$invoicenum = "";
 			
+		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
+			$invoicequote = $_POST['invoicequote'];
+		else 
+			$invoicequote = "";				
+			
 		if(!$invoicenum)
 		{
 			$message = 'Invalid Link.';
 			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
 			redirect('quote/invoices');
 		}
-		$invoice = $this->quotemodel->getinvoicebynum($invoicenum, $company->id);
+		$invoice = $this->quotemodel->getinvoicebynum($invoicenum, $company->id,$invoicequote);
 		$awarded = $this->quotemodel->getawardedbid($invoice->quote, $company->id);
 		//echo '<pre>';print_r($invoice);die;
 		
@@ -3125,7 +3130,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$invoicenum = $_POST['invoicenum'];
 		else 
 			$invoicenum = "";
-			
+		
+		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
+			$invoicequote = $_POST['invoicequote'];
+		else 
+			$invoicequote = "";	
+				
 		if(!$invoicenum)
 		{
 			$message = 'Invalid Link.';
@@ -3142,7 +3152,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->db->update('received',$_POST);
 		
 		
-		$invoice = $this->quotemodel->getinvoicebynum($_POST['invoicenum'], $company->id);
+		$invoice = $this->quotemodel->getinvoicebynum($_POST['invoicenum'], $company->id,$invoicequote);
 		$awarded = $this->quotemodel->getawardedbid($invoice->quote, $company->id);
 		//echo '<pre>';print_r($invoice);die;
 		

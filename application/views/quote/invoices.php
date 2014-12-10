@@ -41,9 +41,10 @@ function changeduedate(invoicenum,datedue)
 
 	}
 }
-function invoice(invoicenum)
+function invoice(invoicenum,invoicequote)
 {
 	$("#invoicenum").val(invoicenum);
+	$("#invoicequote").val(invoicequote);	
 	$("#invoiceform").submit();
 }
 
@@ -133,6 +134,8 @@ function invoice(invoicenum)
 		<div class="row">
 				<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
                 	<input type="hidden" id="invoicenum" name="invoicenum"/>
+                	<input type="hidden" id="invoicequote" name="invoicequote"/>
+                	
                 </form>
                     <div class="col-md-12">
                         <div class="grid simple ">
@@ -161,11 +164,11 @@ function invoice(invoicenum)
 							              $totalunpaid= 0;
 									    	foreach($invoices as $ponum=>$invs)
 									    	{
-									      			foreach($invs as $i){?>
+     								      			foreach($invs as $i){ ?>
                                                 		<tr>
                                                 			<td class="v-align-middle"><?php echo $ponum;?> </td>
                                                 			<td>
-                                                			<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>');">
+                                                			<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>','<?php echo $i->quote->id;?>');">
                                                 			<?php echo $i->invoicenum;?>
                                                 			</a>
                                                 			</td>

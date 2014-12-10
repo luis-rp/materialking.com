@@ -1,7 +1,19 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready( function() {
 	$("#status").select2();
-});      
+}); 
+
+function pickupfun()
+{
+	if($('#pickup').is(':checked'))
+	{
+      $("#pickupaddress").show ();
+    }
+    else
+    {
+      $("#pickupaddress").hide ();
+    }
+}
 </script>
 
     <div class="content">  
@@ -170,7 +182,13 @@ $(document).ready( function() {
 						</tr>
 						<tr>
 							<td>Message:</td>
-							<td><textarea name="message" rows="5" style="width: 350px;"><?php if(isset($address)) echo "Pick-up Address:&nbsp;".$address;?></textarea>
+							<td>
+							<?php if(isset($address)){?>
+								<input type="checkbox" id = 'pickup' name = 'pickup' onchange="pickupfun()">Include Pickup Address.<br>
+							<?php } ?>
+							
+								<input type="text"  id="pickupaddress" name="pickupaddress" value="<?php if(isset($address)) echo $address;?>" style="width: 350px;display:none;"><br>
+							<textarea name="message" rows="5" style="width: 350px;"></textarea></td>
 						</tr>
 						<?php if($orderitems[0]->paymentstatus != 'Paid'){?>
 						<tr>

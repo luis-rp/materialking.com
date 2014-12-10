@@ -5,7 +5,7 @@
         PopupPrint($(elem).html());
     }
 
-    function PopupPrint(data) 
+    function PopupPrint(data)
     {
         var mywindow = window.open('', 'my div', 'height=100,width=100,left=100,top=100');
         mywindow.document.write('<html><head><title>my div</title>');
@@ -19,22 +19,22 @@
     }
 </script>
 
-<div class="content">  
+<div class="content">
     	<?php echo $this->session->flashdata('message'); ?>
-		<div class="page-title">	
+		<div class="page-title">
 			<h3>&nbsp;</h3>
 		</div>
-		
+
 	   <div id="container">
 		<div class="row">
                     <div class="col-md-11">
                         <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-                                
+
                             </div>
                             <div id="invoicewrapper" class="grid-body no-border">
-                  				
+
 			                  <table width="100%" >
 			                  <tr>
 			                  <td>
@@ -52,9 +52,10 @@
 			                  	Ref#: <?php echo $invoice->refnum;?>
 			                  	<?php }?>
 			                  	Verification: <?php echo $invoice->status;?>
-			                  	<?php if($invoice->status=='Pending' && $invoice->paymentstatus=='Paid'){?>			                  	
+			                  	<?php if($invoice->status=='Pending' && $invoice->paymentstatus=='Paid'){?>
 			                  	<form action="<?php echo site_url('quote/invoicestatus');?>" method="post">
 			                  		<input type="hidden" name="invoicenum" value="<?php echo $invoice->invoicenum;?>"/>
+			                  		<input type="hidden" name="invoicequote" value="<?php echo $invoice->quote;?>"/>
 			                  		<input type="submit" name="status" value="Verified">
 			                  		<input type="submit" name="status" value="Error">
 			                  	</form>
@@ -64,33 +65,33 @@
 			                  	<?php if($invoice->paymentstatus=='Paid'){?>
 			                  	<br/>Paid: <?php  echo date("m/d/Y", strtotime( $invoice->paymentdate)); ?>
 			                  	<?php }?>
-			                  	<br/>Status: 
+			                  	<br/>Status:
 			                  	<?php if($invoice->paymentstatus=='Paid'){?>
-			                  		<?php echo ($invoice->datedue == $invoice->paymentdate?'Paid on time':($invoice->datedue > $invoice->paymentdate?'Paid Early':'Paid Late')) 
+			                  		<?php echo ($invoice->datedue == $invoice->paymentdate?'Paid on time':($invoice->datedue > $invoice->paymentdate?'Paid Early':'Paid Late'))
 			                  				.' on '. date("m/d/Y", strtotime( $invoice->paymentdate));?>
 			                  	<?php }else{?>
 			                  	    <?php echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue';?>
 			                  	<?php }?>
-			                  
+
 			                  	<?php }?>
 			                  </td>
-			                  
+
 			              	  <td valign="top">
 				              	 <div class="pull-right">
 					              <h2><strong>INVOICE</strong></h2>
 					            </div>
-			            
+
 			              	  </td>
 			                  </tr>
 			                  </table>
-			                  
+
 			                  <br/>
 							    <br/>
-							    
+
 							    <table width="100%">
 							    <tr>
 							    <td width="50%" valign="top">
-							      
+
 				                <table width="90%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 							      <tr>
 							        <th colspan="3" valign="top" bgcolor="#000033" ><font color="#FFFFFF"><strong>Purchase Order Information</strong></font></th>
@@ -168,14 +169,14 @@
 							        <td valign="top"><?php echo nl2br($project->address);?></td>
 							      </tr>
 							    </table>
-							    
+
 							    </td>
 							    </tr>
 							    </table>
 							   <br/>
-							    
+
 							   <br/>
-				             
+
 							<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
 							  <thead>
 							 <tr>
@@ -189,7 +190,7 @@
 							    <th bgcolor="#000033" width="150" align="right"><font color="#FFFFFF">Total Price</font></th>
 							  </tr>
 							  </thead>
-							  <?php 
+							  <?php
 							  	$totalprice = 0;
 							  	$i = 0;
 							  	foreach($invoice->items as $invoiceitem)
@@ -213,7 +214,7 @@
 								$grandtotal = $totalprice + $taxtotal;
 								echo '<tr>
 								    <td colspan="6" rowspan="3">
-			                  		
+
 			                  		<div style="width:70%">
 			                  		<br/>
 			                  		<h4 class="semi-bold">Terms and Conditions</h4>
@@ -225,7 +226,7 @@
 								    <td align="right">$ '. number_format($totalprice,2).'</td>
 								  </tr>
 								  <tr>
-								   
+
 								    <td align="right">Tax</td>
 								    <td align="right">$ '. number_format($taxtotal,2).'</td>
 								  </tr>
@@ -234,14 +235,14 @@
 								    <td align="right"><strong>$ '.number_format($grandtotal,2).'</strong></td>
 								  </tr>
 								';
-							  
+
 							  ?>
 				    	</table>
-	    	
+
                             </div>
                         </div>
                     </div>
-                    
+
 				     <div class="col-md-1">
 				        <div class="invoice-button-action-set">
 				          <p>
@@ -249,8 +250,8 @@
 				          </p>
 				        </div>
 				      </div>
-      
-                </div>  
+
+                </div>
       </div>
-			
+
 		</div>

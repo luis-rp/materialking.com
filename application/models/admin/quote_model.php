@@ -374,8 +374,9 @@ class quote_model extends Model {
                 $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea 
 							  FROM 
 							  " . $this->db->dbprefix('received') . " r, 
-							  " . $this->db->dbprefix('awarditem') . " ai
-							  WHERE r.awarditem=ai.id AND r.invoicenum='{$invoicenum->invoicenum}'";
+							  " . $this->db->dbprefix('awarditem') . " ai,
+							  " . $this->db->dbprefix('award') . " a
+							  WHERE r.awarditem=ai.id AND ai.award = a.id AND a.quote='{$quote}' AND r.invoicenum='{$invoicenum->invoicenum}'";
                 $itemquery = $this->db->query($itemsql);
                 $invoiceitems = $itemquery->result();
                 $invoicenum->items = array();
@@ -890,7 +891,7 @@ class quote_model extends Model {
         }
     }
 
-    function getinvoicebynum($invoicenum) {
+    function getinvoicebynum($invoicenum,$invoicequote) {
 
         $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
@@ -899,7 +900,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('awarditem') . " ai,
 				   " . $this->db->dbprefix('award') . " a,
 				   " . $this->db->dbprefix('quote') . " q 
-				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND invoicenum='{$invoicenum}'
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND a.quote='{$invoicequote}' AND invoicenum='{$invoicenum}'
 				  GROUP BY invoicenum
 				  ";
         //echo $totalquery;
@@ -911,7 +912,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
 				   " . $this->db->dbprefix('award') . " a
-				  WHERE r.awarditem=ai.id AND ai.award=a.id AND invoicenum='{$invoicenum}'
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote='{$invoicequote}' AND invoicenum='{$invoicenum}'
 				  ";
         $quotequery = $this->db->query($quotesql);
         $invoice->quote = $quotequery->row('quote');
@@ -922,8 +923,9 @@ class quote_model extends Model {
 				  FROM 
 				  " . $this->db->dbprefix('received') . " r, 
 				  " . $this->db->dbprefix('awarditem') . " ai,
+				   " . $this->db->dbprefix('award') . " a,
 				  " . $this->db->dbprefix('company') . " c
-				  WHERE r.awarditem=ai.id AND ai.company=c.id 
+				  WHERE r.awarditem=ai.id AND ai.company=c.id AND ai.award=a.id AND a.quote='{$invoicequote}'
 				  AND invoicenum='{$invoicenum}'
 				  ";
         //echo $itemsql;
@@ -945,7 +947,7 @@ class quote_model extends Model {
 
     
     
-        function geticontractnvoicebynum($invoicenum) {
+        function geticontractnvoicebynum($invoicenum,$invoicequote) {
 
         $invoicesql = "SELECT invoicenum, ROUND(SUM(totalprice * r.quantity/100),2) totalprice, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
@@ -954,7 +956,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('awarditem') . " ai,
 				   " . $this->db->dbprefix('award') . " a,
 				   " . $this->db->dbprefix('quote') . " q 
-				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND invoicenum='{$invoicenum}'
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id  AND a.quote='{$invoicequote}' AND invoicenum='{$invoicenum}'
 				  GROUP BY invoicenum
 				  ";
         //echo $totalquery;
@@ -966,7 +968,7 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
 				   " . $this->db->dbprefix('award') . " a
-				  WHERE r.awarditem=ai.id AND ai.award=a.id AND invoicenum='{$invoicenum}'
+				  WHERE r.awarditem=ai.id AND ai.award=a.id  AND a.quote='{$invoicequote}' AND invoicenum='{$invoicenum}'
 				  ";
         $quotequery = $this->db->query($quotesql);
         $invoice->quote = $quotequery->row('quote');
@@ -977,8 +979,9 @@ class quote_model extends Model {
 				  FROM 
 				  " . $this->db->dbprefix('received') . " r, 
 				  " . $this->db->dbprefix('awarditem') . " ai,
+				  " . $this->db->dbprefix('award') . " a,
 				  " . $this->db->dbprefix('users') . " u 
-				  WHERE r.awarditem=ai.id AND ai.company=u.id 
+				  WHERE r.awarditem=ai.id AND ai.company=u.id AND ai.award=a.id AND a.quote='{$invoicequote}'
 				  AND invoicenum='{$invoicenum}'
 				  ";
         //echo $itemsql;

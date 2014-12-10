@@ -32,15 +32,17 @@
     $(document).ready(function() {
         $('.datefield').datepicker();
     });
-    function showInvoice(invoicenum)
+    function showInvoice(invoicenum,invoicequote)
     {
         $("#invoicenum").val(invoicenum);
+        $("#invoicequote").val(invoicequote);	
         $("#invoiceform").submit();
     }
     
-    function showContractInvoice(invoicenum)
+    function showContractInvoice(invoicenum,invoicequote)
     {
         $("#invoicenum").val(invoicenum);
+        $("#invoicequote").val(invoicequote);	
         $("#invoiceform").attr('action', "<?php echo site_url('admin/quote/contract_invoice'); ?>");
         $("#invoiceform").submit();
     }
@@ -157,7 +159,8 @@ function shownotice(newval,oldval,id){
             <div class="datagrid-example">
             	<div>
                     <form id="invoiceform" class="form-inline" style="padding:0px; margin:0px" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
-                        <input type="hidden" id="invoicenum" name="invoicenum"/>
+                        <input type="hidden" id="invoicenum" name="invoicenum"/>                        
+                        <input type="hidden" id="invoicequote" name="invoicequote"/>
                     </form>
                     <form class="form-inline" action="<?php echo site_url('admin/quote/invoices') ?>" method="post">
                         Invoice#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>

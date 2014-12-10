@@ -82,9 +82,10 @@ class items_model extends Model {
 			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
             }
             else
-            {
+          {
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
-                 <span style='white-space:pre-wrap;'>" . $item->catname."<span></a>";
+                 <span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")<span></a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
             $ret .= "</li>";
@@ -186,12 +187,14 @@ class items_model extends Model {
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
             {
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."</b></a>";
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."(".$count.")</b></a>";
                 $ret .= $this->getStoreCategoryMenu($supplier,$item->id); // here is the recursion
             }
             else
             {
-               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."</span></a>";
+               $count="<font color='red'>".number_format(count($hasitems))."</font>";	
+               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")</span></a>";
             }
             $ret .= "</li>";
         }

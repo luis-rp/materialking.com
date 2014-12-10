@@ -38,9 +38,10 @@
 	 $('.dataTables_length').hide();
 	// $('.daterequested').datepicker();
 	})
-	function invoice(invoicenum)
+	function invoice(invoicenum,invoicequote)
 	{
 		$("#invoicenum").val(invoicenum);
+		$("#invoicequote").val(invoicequote);	
 		$("#invoiceform").submit();
 	}
 
@@ -90,6 +91,7 @@ tr.still-due td
 
 <form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
 	<input type="hidden" id="invoicenum" name="invoicenum"/>
+	<input type="hidden" id="invoicequote" name="invoicequote"/>
 </form>
 
     <div class="content">
@@ -301,14 +303,14 @@ tr.still-due td
 				</tr>
 				<?php
 				    foreach($invoices as $i)
-				    {
+				    { 
 				        $amount = $i->totalprice;
 				        $amount = $amount + ($amount*$settings->taxpercent/100);
 				        $amount = number_format($amount,2);
 				?>
 				<tr>
 					<td>
-					<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>');">
+					<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>','<?php echo $i->quote->id;?>');">
 					<?php echo $i->invoicenum;?>
 					</a>
 					</td>

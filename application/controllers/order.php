@@ -760,6 +760,23 @@ class Order extends CI_Controller
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
+			
+			if(isset($_POST['pickupaddress']))
+			{
+				$add=$_POST['pickupaddress'];
+			}
+			else {
+				$add="";
+			}
+			
+			if(isset($_POST['pickup']) && $_POST['pickup']=='on')
+			{
+				$data['email_body_content'] = "Pickup Address:".$add."<br>";
+			}
+			else 
+			{
+				$data['email_body_content'] = "";
+			}
 
 		$data['email_body_title'] = $_POST['message'];
 		$order = $this->db->where('id',$id)->get('order')->row();
@@ -779,7 +796,7 @@ class Order extends CI_Controller
 			
 			$orderitems[]=$item;
 		}
-		$data['email_body_content'] = "<br/>Order Status:" . (@$orderdetails[0]->accepted==1?'Approved':(@$orderdetails[0]->accepted==-1?'Declined':'Pending'));
+		$data['email_body_content'] .= "<br/>Order Status:" . (@$orderdetails[0]->accepted==1?'Approved':(@$orderdetails[0]->accepted==-1?'Declined':'Pending'));
 		$data['email_body_content'] .= "<br/>Payment Status:" . @$orderdetails[0]->paymentstatus;
 		$data['email_body_content'] .= "<br/><br>Order details:";
 		

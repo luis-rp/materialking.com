@@ -1,32 +1,32 @@
 <?php
-class Quotemodel extends Model 
+class Quotemodel extends Model
 {
-	
-	function Quotemodel() 
+
+	function Quotemodel()
 	{
 		parent::Model ();
 	}
-	
+
 	function getconfigurations()
 	{
 	    $query = $this->db->get ('settings' );
 	    $result = $query->result ();
 	    return $result [0];
 	}
-	
+
 	function getpurchaseremail($prchaserid){
-		
+
 		$this->db->where('purchasingadmin',$prchaserid);
 		$query = $this->db->get ('settings' );
 	    $result = $query->result ();
 	    return $result [0];
 	}
-	
+
 	/*function getnewinvitations($company)
 	{
 		$this->db->where('company',$company);
 		$invitations = $this->db->get('invitation')->result();
-		
+
 		$ret = array();
 		foreach($invitations as $i)
 		{
@@ -36,7 +36,7 @@ class Quotemodel extends Model
 			$this->db->where('quote',$i->quote);
 			if($this->db->get('award')->num_rows>0)
 				$new = false;
-			
+
 			if($new)
 			{
 				$this->db->where('id',$i->quote);
@@ -46,19 +46,19 @@ class Quotemodel extends Model
 		}
 		return $ret;
 	}*/
-	
-	
-		function getnewinvitations($company){
+
+
+	function getnewinvitations($company){
 		$searchstatus = 'New';
-				$sql = "SELECT i.*,q.ponum FROM 
+				$sql = "SELECT i.*,q.ponum FROM
 		".$this->db->dbprefix('invitation')." i, ".$this->db->dbprefix('quote')." q
 		WHERE i.quote=q.id AND i.company='{$company}' ORDER BY i.senton DESC";
 		$count = $this->db->query($sql)->num_rows;
-		
+
 		//echo $sql;
-		
+
 		$invs = $this->db->query($sql)->result();
-		
+
 		$invitations = array();
 		foreach($invs as $inv)
 		{
@@ -68,17 +68,17 @@ class Quotemodel extends Model
     		$this->db->where('company',$company);
     		$bid = $this->db->get('bid')->row();
     		$inv->quotenum = @$bid->quotenum;
-    		
+
 			$awarded = $this->checkbidcomplete($inv->quote);
 			$inv->awardedtothis = false;
-			
+
 			if($bid){
 				$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
 				$revisionquote = $this->db->query($sqlq)->row();
 				if($revisionquote)
 				$inv->daterequested = $revisionquote->daterequested;
 			}
-			
+
 			if($awarded)
 			{
 				$complete = true;
@@ -96,7 +96,7 @@ class Quotemodel extends Model
 					if($i->received > 0)
 						$noitemsgiven = false;
 				}
-				
+
 				if(!$noitemsgiven)
 				{
 					if($complete)
@@ -115,7 +115,7 @@ class Quotemodel extends Model
 				else
 				{
 					$awardeditems = $this->getawardeditems($awarded->id,$company);
-					
+
 					if($awardeditems && !$allawarded)
 					{
 						$inv->status = 'Partially Awarded';
@@ -129,7 +129,7 @@ class Quotemodel extends Model
 						$inv->mark = "progress-bar-success";
 					}
 				}
-				
+
 				if($this->getawardeditems($awarded->id,$company))
 				{
 					$inv->awardedtothis = true;
@@ -154,7 +154,7 @@ class Quotemodel extends Model
 				$inv->progress = 20;
 				$inv->mark = "progress-bar-danger";
 			}
-			
+
 			if(!$searchstatus)
 			{
 				$invitations[]=$inv;
@@ -163,14 +163,13 @@ class Quotemodel extends Model
 			{
 				$invitations[]=$inv;
 			}
-			
+
 		}
-		
+
 		return $invitations;
-		
+
 	}
-	
-	
+
 	function getinvitation($key)
 	{
 		$this->db->where('invitation',$key);
@@ -180,7 +179,7 @@ class Quotemodel extends Model
 		else
 			return NULL;
 	}
-	
+
 	function getcompanybyid($id)
 	{
 		$this->db->where('id',$id);
@@ -190,7 +189,7 @@ class Quotemodel extends Model
 		else
 			return NULL;
 	}
-	
+
 	function getquotebyid($id)
 	{
 		$this->db->where('id',$id);
@@ -202,7 +201,7 @@ class Quotemodel extends Model
 		}
 		return NULL;
 	}
-	
+
 	function checkbidcomplete($qid)
 	{
 		//$this->db->reset();
@@ -214,7 +213,7 @@ class Quotemodel extends Model
 		}
 		return false;
 	}
-	
+
 	function getawardeditems($award,$company)
 	{
 		//$this->db->reset();
@@ -226,25 +225,25 @@ class Quotemodel extends Model
 		}
 		return false;
 	}
-	
+
 	function clearinvitation($key)
 	{
 		$this->db->where('invitation',$key);
 		$this->db->update('invitation',array('invitation'=>''));
 	}
-	
+
 	function getquoteitems($id)
 	{
 		$this->db->where('quote',$id);
 		$query = $this->db->get('quoteitem');
-		
+
 		$ret = $query->result();
 		return $ret;
 	}
-	
+
 	function getdraftitems($quote,$company)
 	{
-		$sql = "SELECT bi.* FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b 
+		$sql = "SELECT bi.* FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b
 			   WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company'
 		 	   ";
 		$query = $this->db->query ($sql);
@@ -253,7 +252,7 @@ class Quotemodel extends Model
 		else
 			return array();
 	}
-	
+
 	function getdraftitemswithdefaultitemcode($quote,$company)
 	{
 		$sql = "SELECT bi.*, i.itemcode as defaultitemcode, i.itemname as defaultitemname FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b, ".$this->db->dbprefix('item')." i 
@@ -265,42 +264,42 @@ class Quotemodel extends Model
 		else
 			return array();
 	}
-
-	function getrevisiondraftitems($quote,$company,$rid="") 
-    { 
+	
+	function getrevisiondraftitems($quote,$company,$rid="")
+    {
     	$where = "";
-    	
+
     	if(isset($rid) && $rid!=""){
     		$where = "AND bi.revisionid=".$rid;
     	}
-    	
-        $sql = "SELECT bi.* FROM ".$this->db->dbprefix('quoterevisions')." bi, ".$this->db->dbprefix('bid')." b  
-               WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company' {$where} order by bi.revisionid desc" ; 
-        $query = $this->db->query ($sql); 
-        if($query->num_rows>0) 
-            return $query->result(); 
-        else 
-            return array(); 
-    } 	
-	
+
+        $sql = "SELECT bi.* FROM ".$this->db->dbprefix('quoterevisions')." bi, ".$this->db->dbprefix('bid')." b
+               WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company' {$where} order by bi.revisionid desc" ;
+        $query = $this->db->query ($sql);
+        if($query->num_rows>0)
+            return $query->result();
+        else
+            return array();
+    }
+
 	function getquotesubtotal($id)
-	{	
+	{
 		$sql ="SELECT SUM(totalprice) subtotal
 		FROM
 		".$this->db->dbprefix('quoteitem')." WHERE quote='$id'";
-		
+
 		$query = $this->db->query ($sql);
-		if ($query->result ()) 
+		if ($query->result ())
 		{
 			$row = $query->row ();
 			return $row->subtotal;
-		} 
-		else 
+		}
+		else
 		{
 			return 0;
-		}	
+		}
 	}
-	
+
 	function saveminimum($company,$pa,$itemid,$itemcode,$itemname,$price,$substitute=0)
 	{
 		$arr = array('company'=>$company,'itemid'=>$itemid,'purchasingadmin'=>$pa);
@@ -312,28 +311,28 @@ class Quotemodel extends Model
 		$itemcode = mysql_real_escape_string($itemcode);
 		
 		$sql = "INSERT INTO ".$this->db->dbprefix('minprice')."
-				SET company='$company', itemid='$itemid', purchasingadmin='$pa', 
-				itemcode='$itemcode', itemname='$itemname', price='$price', 
+				SET company='$company', itemid='$itemid', purchasingadmin='$pa',
+				itemcode='$itemcode', itemname='$itemname', price='$price',
 				substitute='$substitute', quoteon='".date('m/d/Y')."'
 				";
 		//echo $sql;die;
 		$this->db->query($sql);
 	}
-	
+
 	///////////// backtrack
-	
+
 	function getBacktracks($company)
 	{
 		if(@$_POST['searchpurchasingadmin'])
 			$this->db->where('purchasingadmin',$_POST['searchpurchasingadmin']);
 		$this->db->order_by("podate", "asc");
 		$quotes = $this->db->get('quote')->result();
-		
+
 		$count = count ($quotes);
 		$items = array();
-		if ($count >= 1) 
+		if ($count >= 1)
 		{
-			foreach ($quotes as $quote) 
+			foreach ($quotes as $quote)
 			{
 				$this->db->where('quote',$quote->id);
 				$awarded = $this->db->get('award')->row();
@@ -355,22 +354,22 @@ class Quotemodel extends Model
 								$items[$quote->ponum]['items'][]=$item;
 							}
 						}
-						
+
 					}
 				}
 			}
 		}
 		return $items;
 	}
-	
+
 	function getBacktrackDetails($quote,$company)
 	{
 		$this->db->where('id',$quote);
 		$quote = $this->db->get('quote')->row();
-		
+
 		$count = count ($quote);
 		$items = array();
-		if ($quote) 
+		if ($quote)
 		{
 			$this->db->where('quote',$quote->id);
 			$awarded = $this->db->get('award')->row();
@@ -386,47 +385,47 @@ class Quotemodel extends Model
 						{
 							$item->ponum = $quote->ponum;
 							$item->duequantity = $item->quantity - $item->received;
-			
+
 			                $item->etalog = $this->db->where('company',$company)
                                 			->where('quote',$quote->id)
                                 			->where('itemid',$item->itemid)
                                 			->get('etalog')->result();
-							
+
                             $item->quotedaterequested = $this->db->select('daterequested')
 					        ->where('purchasingadmin',$item->purchasingadmin)
 					        ->where('quote',$quote->id)
 					        ->where('itemid',$item->itemid)
-					        ->get('quoteitem')->row();       			
-                                			
+					        ->get('quoteitem')->row();
+
 							$items[]=$item;
 						}
 					}
-					
+
 				}
 			}
 		}
 		//echo '<pre>';print_r($items);die;
 		return array('quote'=>$quote,'items'=>$items);
 	}
-	
+
 	function checkReceivedPartially($awardid)
 	{
 		$sql ="SELECT *
 		FROM
 		".$this->db->dbprefix('awarditem')." WHERE award='$awardid'";
-		
+
 		$ret = array();
 		$query = $this->db->query ($sql);
-		if ($query->result ()) 
+		if ($query->result ())
 		{
 			foreach($query->result () as $item)
 				if($item->received)
 					return true;
-			
+
 		}
 		return false;
 	}
-	
+
 	function getbacktrack($key)
 	{
 		$this->db->where('invitation',$key);
@@ -436,24 +435,24 @@ class Quotemodel extends Model
 		else
 			return NULL;
 	}
-	
+
 	function getawardedbid($quote)
 	{
 		$this->db->where('quote',$quote);
 		$query = $this->db->get('award');
-		
+
 		$item = $query->row();
 		if(!$item)
 			return false;
 		//foreach($result as $item)
 		//{
-			
+
 			$this->db->where('id',$item->quote);
 			$query = $this->db->get('quote');
 			if($query->result())
 			{
 				$item->quotedetails = $query->row();
-				
+
 				$this->db->where('award',$item->id);
 				$query = $this->db->get('awarditem');
 				$awarditems = array();
@@ -461,12 +460,12 @@ class Quotemodel extends Model
 				{
 					$this->db->where('id',$awarditem->company);
 					$query = $this->db->get('company');
-					$awarditem->companyname = $query->row('title');	
-					$awarditem->companydetails = $query->row();	
+					$awarditem->companyname = $query->row('title');
+					$awarditem->companydetails = $query->row();
 					$awarditems[] = $awarditem;
 				}
 				$item->items = $awarditems;
-				
+
 				$status = 'complete';
 				foreach($item->items as $it)
 				{
@@ -481,7 +480,7 @@ class Quotemodel extends Model
 		//echo '<pre>';print_r($ret);die;
 		return $item;
 	}
-	
+
 	function getbidbyid($id)
 	{
 		$this->db->where('id',$id);
@@ -493,66 +492,66 @@ class Quotemodel extends Model
 		}
 		return NULL;
 	}
-	
+
 	function getinvoices_export($company)
 	{
 		$search   = '';
 		$searches = array();
-		$pafilter = '';			
-							
+		$pafilter = '';
+
 		if($this->session->userdata("quote_search"))
 		{
 			$search = $this->session->userdata("quote_search");
-		}	
-				
+		}
+
 		if($this->session->userdata("pafilter"))
 		{
 			$pafilter = $this->session->userdata("pafilter");
-		}		
-					
+		}
+
 		//----------edit ends------------------	----------------------------------------------------
-				
-		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
+
+		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
-				   FROM 
+				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai
 				  WHERE r.awarditem=ai.id AND ai.company=$company $search
 				  $pafilter
-				  GROUP BY invoicenum 
+				  GROUP BY invoicenum
                   ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
 				  ";
 		//echo $query;
 		//exit;
-		
+
 		$invoicequery = $this->db->query($query);
 		$items = $invoicequery->result();
-		
+
 		$invoices = array();
 		foreach($items as $invoice)
 		{
 			$quotesql = "SELECT q.*
-					   FROM 
+					   FROM
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
 					   ".$this->db->dbprefix('award')." a,
 					   ".$this->db->dbprefix('quote')." q
-					  WHERE r.awarditem=ai.id AND ai.award=a.id 
+					  WHERE r.awarditem=ai.id AND ai.award=a.id
 					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
 			$quotequery = $this->db->query($quotesql);
 			$invoice->quote = $quotequery->row();
-			
+
 			$invoices[]=$invoice;
 		}
-		
+
 		return $invoices;
 	}
 
-	
-	
-	
-	
+
+
+
+
 	function getinvoices($company)
 	{
 		$search='';
@@ -582,48 +581,48 @@ class Quotemodel extends Model
 			$todate = date('Y-m-d', strtotime($_POST['searchto']));
 			$searches[] = " receiveddate <= '$todate'";
 		}
-		
-		
+
+
 		// ------- note: $_SESSION['quote_search'] and $_SESSION['pafilter'] are used for export function
-		
-		
+
+
 		if($searches)
 		{
-			$search = " AND ".implode(" AND ", $searches);			
-			$this->session->set_userdata("quote_search",$search);		
+			$search = " AND ".implode(" AND ", $searches);
+			$this->session->set_userdata("quote_search",$search);
 		}
 		else
 		{
 			$this->session->unset_userdata("quote_search");
 		}
-						
+
 		if($this->session->userdata("quote_search"))
 		{
 			$search = $this->session->userdata("quote_search");
 		}
-		//-----------------------					
-		$pafilter = '';			
+		//-----------------------
+		$pafilter = '';
 		if(@$_POST['searchpurchasingadmin'])
 		{
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
-			
+
 			$this->session->set_userdata("pafilter",$pafilter);
-			$this->session->set_userdata("searchpurchasingadmin",$_POST['searchpurchasingadmin']);		
+			$this->session->set_userdata("searchpurchasingadmin",$_POST['searchpurchasingadmin']);
 		}
 		else
 		{
 			$this->session->unset_userdata('pafilter');
 		}
-				
+
 		if($this->session->userdata("pafilter"))
 		{
 			$pafilter = $this->session->userdata("pafilter");
-		}		
-					
+		}
+
 		//----------edit ends------------------	----------------------------------------------------
-		
-			
-		
+
+
+
 		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM
@@ -636,32 +635,32 @@ class Quotemodel extends Model
 				  ";
 		//echo $query;
 		//exit;
-		
+
 		$invoicequery = $this->db->query($query);
 		$items = $invoicequery->result();
-		
+
 		$invoices = array();
 		foreach($items as $invoice)
 		{
 			$quotesql = "SELECT q.*
-					   FROM 
+					   FROM
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
 					   ".$this->db->dbprefix('award')." a,
 					   ".$this->db->dbprefix('quote')." q
-					  WHERE r.awarditem=ai.id AND ai.award=a.id 
+					  WHERE r.awarditem=ai.id AND ai.award=a.id
 					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
-			
+
 			$quotequery = $this->db->query($quotesql);
 			$invoice->quote = $quotequery->row();
-			
+
 			$invoices[]=$invoice;
 		}
-		
+
 		return $invoices;
 	}
-	
+
 	function getinvoicesdetailsformail($company,$invoicenumber)
 	{
 		$search='';
@@ -669,12 +668,11 @@ class Quotemodel extends Model
 		{
 			$search .= " AND r.invoicenum ='{$invoicenumber}'";
 		}
-		
-		$pafilter = '';		
+		$pafilter = '';
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
 		$query = "SELECT r.invoicenum,q.ponum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent,u.email,a.awardedon
-				   FROM 
+				   FROM
 				   ".$this->db->dbprefix('received')." r
 				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
 				   LEFT JOIN  ".$this->db->dbprefix('users')." u ON u.purchasingadmin = r.purchasingadmin
@@ -686,53 +684,55 @@ class Quotemodel extends Model
 				   LEFT JOIN ".$this->db->dbprefix('quote')."  q ON q.id = a.quote
 				  WHERE r.awarditem=ai.id AND ai.company=$company $search
 				  $pafilter
-				  GROUP BY invoicenum 
+				  GROUP BY invoicenum
                   ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
 				  ";
-			
+
 		$invoicequery = $this->db->query($query);
 		$items = $invoicequery->result();
-		
+
 		return $items;
 	}
-	
-	function getinvoicebynum($invoicenum, $company)
+
+	function getinvoicebynum($invoicenum, $company,$invoicequote)
 	{
-		
-		$invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.status, 
+
+		$invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.status,
 					 r.paymentstatus, r.paymenttype, r.refnum, receiveddate, r.datedue, r.paymentdate
-				   FROM 
+				   FROM
 				   ".$this->db->dbprefix('received')." r,
-				   ".$this->db->dbprefix('awarditem')." ai
-				  WHERE r.awarditem=ai.id 
-				  AND invoicenum='{$invoicenum}' 
+				   ".$this->db->dbprefix('awarditem')." ai,
+				   ".$this->db->dbprefix('award')." a 
+				  WHERE r.awarditem=ai.id AND ai.award = a.id AND a.quote='{$invoicequote}' 
+				  AND invoicenum='{$invoicenum}'
 				  AND ai.company=$company
 				  GROUP BY invoicenum
 				  ";
 		//echo $invoicesql;
 		$invoicequery = $this->db->query($invoicesql);
 		$invoice = $invoicequery->row();
-		
+
 		$quotesql = "SELECT quote
-				   FROM 
+				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,
 				   ".$this->db->dbprefix('award')." a
-				  WHERE r.awarditem=ai.id AND ai.award=a.id 
+				  WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote='{$invoicequote}'
 				  AND invoicenum='{$invoicenum}' AND ai.company=$company
 				  ";
 		$quotequery = $this->db->query($quotesql);
 		$invoice->quote = $quotequery->row('quote');
-		
-		$itemsql = "SELECT 
+
+		$itemsql = "SELECT
 					r.*, ai.itemcode, c.title companyname,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
-				  FROM 
-				  ".$this->db->dbprefix('received')." r, 
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes
+				  FROM
+				  ".$this->db->dbprefix('received')." r,
 				  ".$this->db->dbprefix('awarditem')." ai,
+				   " . $this->db->dbprefix('award') . " a,
 				  ".$this->db->dbprefix('company')." c
-				  WHERE r.awarditem=ai.id  AND ai.company=$company
-				  AND invoicenum='{$invoicenum}' 
+				  WHERE r.awarditem=ai.id  AND ai.company=$company AND ai.award=a.id AND a.quote='{$invoicequote}'
+				  AND invoicenum='{$invoicenum}'
 				  GROUP BY awarditem
 				  ";
 		//echo $itemsql;
@@ -740,10 +740,10 @@ class Quotemodel extends Model
 		$invoice->items = $itemquery->result();
 		return $invoice;
 	}
-	
+
 	function getpendinginvoices($company)
 	{
-		
+
 		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate, q.ponum
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
@@ -763,13 +763,13 @@ class Quotemodel extends Model
 		$invoice = $invoicequery->result();
 		return $invoice;
 	}
-	
+
 	function setalertdate($alertarray){
-		
+
 		$this->db->where('id',$alertarray['id']);
 		$returnresult = $this->db->update('received',array('alertsentdate'=>$alertarray['alertsentdate']));
 		return $returnresult;
 	}
-	
+
 }
 ?>

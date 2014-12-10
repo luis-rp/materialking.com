@@ -3424,9 +3424,9 @@ class quote extends CI_Controller
                 //$invoice->status = $invoice->quote->status;
                 
                 if($invoice->quote->potype=='Contract')
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 else 
-                 $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                 $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                  
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
@@ -3725,9 +3725,9 @@ class quote extends CI_Controller
                 $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
                 if($invoice->quote->potype=='Contract')
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 else 
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
@@ -3801,7 +3801,7 @@ class quote extends CI_Controller
         $this->load->view('admin/invoices', $data);
     }
 
-   function invoice($invid='')
+   function invoice($invid='',$quotid='')
     {
        if($invid=='')
     	{
@@ -3811,9 +3811,25 @@ class quote extends CI_Controller
     	{
     	$invoicenum = $invid;	
     	}
+    	
+    	if($quotid=='')
+    	{
+        $invoicequote = $_POST['invoicequote'];
+    	}
+    	else 
+    	{
+    	$invoicequote =$quotid;	
+    	}
+    	
+    	
+    	/*if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
+			$invoicequote = $_POST['invoicequote'];
+		else 
+			$invoicequote = "";	*/
+    	
         if (!$invoicenum)
             redirect('quote/invoices');
-        $invoice = $this->quote_model->getinvoicebynum($invoicenum);
+        $invoice = $this->quote_model->getinvoicebynum($invoicenum,$invoicequote);
         $awarded = $this->quote_model->getawardedbid($invoice->quote);
         //print_r($invoice); echo $this->session->userdata('purchasingadmin');die;
         if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('purchasingadmin')) {
@@ -3878,9 +3894,9 @@ class quote extends CI_Controller
                 $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
                 if($invoice->quote->potype=='Contract')
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 else 
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
@@ -3956,7 +3972,7 @@ class quote extends CI_Controller
 
 
     
-   function contract_invoice($invid='')
+   function contract_invoice($invid='',$quotid='')
     {
     	if($invid=='')
     	{
@@ -3966,9 +3982,19 @@ class quote extends CI_Controller
     	{
     	$invoicenum = $invid;	
     	}
+    	
+    	if($quotid=='')
+    	{
+        $invoicequote = $_POST['invoicequote'];
+    	}
+    	else 
+    	{
+    	$invoicequote =$quotid;	
+    	}
+    	
         if (!$invoicenum)
             redirect('admin/quote/invoices');
-        $invoice = $this->quote_model->geticontractnvoicebynum($invoicenum);
+        $invoice = $this->quote_model->geticontractnvoicebynum($invoicenum, $invoicequote);
         $awarded = $this->quote_model->getawardedcontractbid($invoice->quote);
         //echo "<pre>",print_r($invoice); echo $this->session->userdata('purchasingadmin');die;
         /*if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('purchasingadmin')) {

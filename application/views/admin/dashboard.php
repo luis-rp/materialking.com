@@ -642,9 +642,9 @@
             { ?>
 					  <tr>
 					  <td><?php	if($invoice->quote->potype=='Contract') { ?>
-                      	<a href="<?php echo site_url('admin/quote/invoice/'.$invoice->invoicenum)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a>
+                      	<a href="<?php echo site_url('admin/quote/contract_invoice/'.$invoice->invoicenum.'/'.$invoice->quote->id)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a>
 					  <?php  } else { ?>
-					   	<a href="<?php echo site_url('admin/quote/contract_invoice/'.$invoice->invoicenum)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a><?php } ?></td>
+					   	<a href="<?php echo site_url('admin/quote/invoice/'.$invoice->invoicenum.'/'.$invoice->quote->id)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a><?php } ?></td>
 					  <td><?php if($invoice->datedue) { $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); }?></td>
 					   <td><?php echo $invoice->paymentstatus;?><br>
                       <?php //if($i->paymentstatus=='Paid') { $olddate=strtotime($invoice->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
