@@ -121,7 +121,7 @@
                                                 </td>
                                                 <td class="v-align-middle"><?php echo $inv->quotenum;?></td>
                                                 <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->senton));?></td>
-                                                <td class="v-align-middle"><?php if(isset($inv->daterequested)) echo date('m/d/Y',strtotime($inv->daterequested));?></td>
+                                                <td class="v-align-middle"><?php if(isset($inv->submitdate)) echo date('m/d/Y',strtotime($inv->submitdate));?></td>
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
                                                 <td>
                                                 	<?php if($inv->status == 'New'||$inv->status == 'Processing'){?>

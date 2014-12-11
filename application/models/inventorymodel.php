@@ -16,6 +16,7 @@ class Inventorymodel extends Model
 	
 	function getItems($company, $limit = 10, $offset = 0)
 	{
+		//echo "<pre>"; print_r($_POST['filteroption']); die;
 		if ($offset == 0) {
 			$newoffset = 0;
 		} else {
@@ -23,7 +24,9 @@ class Inventorymodel extends Model
 		}
 		$ti = $this->db->dbprefix('item');
 		$tci = $this->db->dbprefix('companyitem');
+		$tq = $this->db->dbprefix('qtydiscount');
 		$where = " WHERE  1=1 ";
+		$joinqty="";
 		//$this->db->limit($limit, $newoffset);
 		if(@$_POST['searchitem'])
 		{
@@ -44,14 +47,54 @@ class Inventorymodel extends Model
 		$noleftjoin = "LEFT";
 		if(@$_POST['serachmyitem'])
 		{
-			//$where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";		    
-			$noleftjoin = ""; 
+		   // $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		   $noleftjoin = ""; 
+		}
+		
+		if(@$_POST['filteroption'])
+		{
+		    	if(@$_POST['filteroption']=='backorder')
+				{
+		   		$where .= " AND $tci.backorder='1' ";
+				}
+				
+				if(@$_POST['filteroption']=='shipfrom')
+				{
+		   		$where .= " AND $tci.shipfrom='1' ";
+				}
+				
+				if(@$_POST['filteroption']=='qtydiscount')
+				{
+				$joinqty="JOIN $tq ON $tci.itemid=$tq.itemid";
+		   		//$where1 = " AND WHERE itemid IN ($tci.itemid)  ";
+				}
+				else 
+				{
+				$joinqty="";
+		   		//$where1 = "";
+				}
+				
+				if(@$_POST['filteroption']=='serachmyitem')
+				{
+		   		  $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+				}
+				
+				if(@$_POST['filteroption']=='isfeature')
+				{
+		   		$where .= " AND $tci.isfeature='1' ";
+				}
 		}
 		
 		$sql = "SELECT $ti.* FROM $ti 
-				{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
+		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where 
 		        LIMIT $offset, $limit";
+		
+		/*echo $sql = "SELECT $ti.* FROM $ti 
+		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
+		        $where 
+		        LIMIT $offset, $limit";*/
+			
 		//$this->db->where('item.instore',1);
 		//$items = $this->db->from('item')->join('companyitem', 'item.id=companyitem.itemid', 'left')->get()->result();
 		//echo $sql;
@@ -75,7 +118,9 @@ class Inventorymodel extends Model
 	{
 		$ti = $this->db->dbprefix('item');
 		$tci = $this->db->dbprefix('companyitem');
+		$tq = $this->db->dbprefix('qtydiscount');
 		$where = " WHERE  1=1 ";
+		$joinqty="";
 		//$this->db->limit($limit, $newoffset);
 		if(@$_POST['searchitem'])
 		{
@@ -100,8 +145,42 @@ class Inventorymodel extends Model
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
 		}
 		
+		if(@$_POST['filteroption'])
+		{
+		    	if(@$_POST['filteroption']=='backorder')
+				{
+		   		$where .= " AND $tci.backorder='1' ";
+				}
+				
+				if(@$_POST['filteroption']=='shipfrom')
+				{
+		   		$where .= " AND $tci.shipfrom='1' ";
+				}
+				
+				if(@$_POST['filteroption']=='qtydiscount')
+				{
+				$joinqty="JOIN $tq ON $tci.itemid=$tq.itemid";
+		   		//$where1 = " AND WHERE itemid IN ($tci.itemid)  ";
+				}
+				else 
+				{
+				$joinqty="";
+		   		//$where1 = "";
+				}
+				
+				if(@$_POST['filteroption']=='serachmyitem')
+				{
+		   		  $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+				}
+				
+				if(@$_POST['filteroption']=='isfeature')
+				{
+		   		$where .= " AND $tci.isfeature='1' ";
+				}
+		}
+		
 		$sql = "SELECT $ti.* FROM $ti 
-				LEFT JOIN $tci ON $tci.itemid=$ti.id AND $tci.company=$company AND $tci.type='Supplier'
+				LEFT JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where";
 		$items = $this->db->query($sql)->result();
 		$total = count($items);

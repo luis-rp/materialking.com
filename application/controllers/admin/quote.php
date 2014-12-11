@@ -627,6 +627,8 @@ class quote extends CI_Controller
         $data['companylist'] = $this->quote_model->getcompanylist();
         $data['quoteitems'] = array();
         $data ['action'] = site_url('admin/quote/add_quote/' . $pid . '/' . $potype);
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();  
 
         if ($this->session->userdata('defaultdeliverydate'))
             $this->validation->deliverydate = $this->session->userdata('defaultdeliverydate');
@@ -650,7 +652,9 @@ class quote extends CI_Controller
         $data['quoteitems'] = array();
         $data['pid'] = $pid;
         $data['potype'] = $potype;
-        $this->validation->potype = $potype;
+        $this->validation->potype = $potype;       
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();  
 
         $this->_set_fields();
         $this->_set_rules();
@@ -2245,7 +2249,7 @@ class quote extends CI_Controller
     
     
     function addcontractitem($qid)
-    {   	 
+    {
         if(isset($_FILES['attach']['name']) && $_FILES['attach']['name']!="")
             {
             	ini_set("upload_max_filesize","128M");
@@ -6366,6 +6370,7 @@ $loaderEmail = new My_Loader();
         foreach($credits as $cid=>$credit)
         {
             $amount = $credit['amount'];
+            $tax = $amount * $config['taxpercent'] / 100;
             $items = $credit['items'];
             $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
             $this->db->where('company',$cid);
@@ -6377,7 +6382,7 @@ $loaderEmail = new My_Loader();
                 $this->db->update('purchasingtier',array('creditlimit'=>$tier->creditlimit-$amount));
                 $company = $this->company_model->get_companys_by_id($cid);
 
-                $data['email_body_title'] = "Credit amount of ".$cpa->fullname.', '.$cpa->companyname." has been deducted by $".$amount.".<br>";
+                $data['email_body_title'] = "Credit amount of ".$cpa->fullname.', '.$cpa->companyname." has been deducted by $".$amount+$tax.".<br>";
                 $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname." is $".$tier->creditlimit - $amount.".<br><br>";
                 $data['email_body_content'] .= "Find the details below:<br/><br/>";
                 $data['email_body_content'] .= "<table>";

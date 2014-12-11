@@ -27,6 +27,9 @@ class Company extends CI_Controller {
         $this->load->library('session');
         if ($this->session->userdata('company'))
             $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
+          if ($this->session->userdata('company')) {    
+            $data['pagetour'] = $this->companymodel->getcompanybyid($this->session->userdata('company')->id); }
+                
         $data['newnotifications'] = $this->messagemodel->getnewnotifications();
         $this->load = new My_Loader();
         $this->load->template('../../templates/front/template', $data);
@@ -435,6 +438,8 @@ class Company extends CI_Controller {
     	echo json_encode($row);
     }
     function saveprofile() {
+    	
+    	
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
@@ -449,7 +454,15 @@ class Company extends CI_Controller {
             $data['types'] = $this->db->get('type')->result();
             $errormessage = "Email '{$_POST['primaryemail']}' already exists.";
         }
-
+        if(isset($_POST['pagetour']))
+        {
+			$_POST['pagetour']=1;
+		}
+		else 
+		{
+			$_POST['pagetour']=0;
+		}
+        
         if (isset($_FILES['logo']['tmp_name']))
             if (is_uploaded_file($_FILES['logo']['tmp_name'])) {
                 $nfn = $_FILES['logo']['name'];

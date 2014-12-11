@@ -16,6 +16,8 @@ class Message extends CI_Controller
 		$this->load->model ('companymodel', '', TRUE);
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
+		 if ($this->session->userdata('company')) {    
+            $data['pagetour'] = $this->companymodel->getcompanybyid($this->session->userdata('company')->id); }
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/front/template', $data);
 	}

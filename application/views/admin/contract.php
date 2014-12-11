@@ -351,7 +351,7 @@ function defaultcategory(categoryid){
 	
 	$('#categoryinvitees').val(categoryid);
 }
-
+	
 </script>
 
 
@@ -407,6 +407,14 @@ function savclose()
     $('#selectItemWindow').dialog('close');
     $('.fg-menu-container').css({display: "none"});
 }
+
+
+	function addFileInput(count) {
+	 	var count=parseInt(count)+1;
+	 	$("#attach"+count).show();
+	 	
+	}
+	
 </script>
 
 <style>
@@ -614,12 +622,10 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			  	
 		    	<tr>
 		    		<td>
-		    			<input type="file" name="attach[]" id="attach"/><br>
-						<input type="file" name="attach[]" id="attach"/><br>   	
-						<input type="file" name="attach[]" id="attach"/><br>   	
-						<input type="file" name="attach[]" id="attach"/><br>   	
-						<input type="file" name="attach[]" id="attach"/><br>   	 
-		    			<!--<input type="file" name="attach" id="attach"/> -->
+						<input type="file" name="attach[]" id="attach" onclick="addFileInput('0')" />
+						<?php $i=1; while($i<=10) { ?>
+							<input type="file" name="attach[]" id="attach<?php echo $i;?>" style="display:none;" onclick="addFileInput('<?php echo $i;?>')" />
+						<?php $i++; }?>
                     </td>
 		    		<td>
                    <textarea style="width:90%;" id="itemname" name="itemname" required 

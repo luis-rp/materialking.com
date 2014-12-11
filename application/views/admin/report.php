@@ -159,7 +159,7 @@
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo $item->quantity;?></td>
-			    		<td><?php echo $item->ea;?></td>
+			    		<td><?php echo round($item->ea,2);?></td>
 			    		<td>$<?php echo round($amount,2);?></td>
 			    		<td><?php echo $item->paymentstatus;?></td>
 			    		<td><?php echo $item->status;?></td>

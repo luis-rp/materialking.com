@@ -14,8 +14,11 @@ class Quote extends CI_Controller
 		$this->load->model ('messagemodel', '', TRUE);
 		$this->load->model ('admin/project_model', '', TRUE);
 		$this->load->model ('admin/settings_model', '', TRUE);
+		$this->load->model ('companymodel', '', TRUE);
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
+		 if ($this->session->userdata('company')) {    
+            $data['pagetour'] = $this->companymodel->getcompanybyid($this->session->userdata('company')->id); }
 		//print_r($data['newquotes']);die;
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/front/template', $data);
@@ -269,6 +272,7 @@ class Quote extends CI_Controller
     		$this->db->where('company',$company->id);
     		$bid = $this->db->get('bid')->row();
     		$inv->quotenum = @$bid->quotenum;
+    		$inv->submitdate = @$bid->submitdate;
     		
 			$awarded = $this->quotemodel->checkbidcomplete($inv->quote);
 			$inv->awardedtothis = false;
@@ -686,7 +690,9 @@ class Quote extends CI_Controller
 			//print_r($companyitem);
 			if($companyitem)
 			{
+				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
 				if(!$draftitems) $item->ea = $companyitem->ea;
 				$item->showinventorylink = false;
@@ -1011,7 +1017,9 @@ class Quote extends CI_Controller
 			//print_r($companyitem);
 			if($companyitem)
 			{
+				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
 				if(!$draftitems) $item->ea = $companyitem->ea;
 				$item->showinventorylink = false;
@@ -1309,7 +1317,9 @@ class Quote extends CI_Controller
 			//print_r($companyitem);
 			if($companyitem)
 			{
+				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
 				if(!$draftitems) $item->ea = $companyitem->ea;
 				$item->showinventorylink = false;
@@ -1886,7 +1896,9 @@ class Quote extends CI_Controller
 			$companyitem = $this->db->get('companyitem')->row();
 			if($companyitem)
 			{
+				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
 			}
 			
@@ -2016,7 +2028,9 @@ class Quote extends CI_Controller
 			$companyitem = $this->db->get('companyitem')->row();
 			if($companyitem)
 			{
+				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
 			}
 			
@@ -2149,7 +2163,9 @@ class Quote extends CI_Controller
 				$companyitem = $this->db->get('companyitem')->row();
 				if($companyitem)
 				{
+					if($companyitem->itemcode)
 					$item->itemcode = $companyitem->itemcode;
+					if($companyitem->itemname)
 					$item->itemname = $companyitem->itemname;
 				}
 
@@ -2609,7 +2625,9 @@ or edit your quote.</div></div></div>');
 				$companyitem = $this->db->get('companyitem')->row();
 				if($companyitem)
 				{
+					if($companyitem->itemcode)
 					$item->itemcode = $companyitem->itemcode;
+					if($companyitem->itemname)
 					$item->itemname = $companyitem->itemname;
 				}
 				$pdfhtml.='<tr nobr="true">

@@ -47,7 +47,7 @@ $(document).ready(function(){
 		
 	   $("#editMember").modal();
 	   });
-   
+	     
 });
 
 function showEmailForm()
@@ -412,9 +412,9 @@ function addEmail()
 				                          <input type="text" class="form-control input-sm" name="twitter" id="twitter" value="<?php echo $company->twitter;?>" required>
 				                        </div>
 				                      </div> -->
+				                                   
 				                      
-				                      
-				                      <div class="form-group">
+    								 <div class="form-group">
 				                        <label class="form-label">Business Hours:</label>
 				                        <div class="controls">				                           
 				                          <table class="table table-striped">
@@ -471,8 +471,14 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
-				                      
-				                      
+				                       <div class="form-group">
+										    <label class="form-label">Disable Welcome Tour</label>
+										    	<div class="controls">									    
+													<input name="pagetour" type="checkbox" <?php echo $company->pagetour==1?'checked="checked"':'';?>>	
+										    	</div>
+										    </div>
+    								 
+    								 
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">

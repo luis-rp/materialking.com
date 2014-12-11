@@ -128,6 +128,9 @@
 <script src="../templates/admin/js/bootstrap.min.js"></script>
 <script src="../templates/admin/js/bootstrap-tour.min.js"></script>
 <script type="text/javascript">
+
+  <?php  if(isset($pagetour->pagetour)) {
+					if($pagetour->pagetour==0) { ?>
 	 $(document).ready(function(){
 		tourCompany = new Tour({
 			  steps: [
@@ -158,6 +161,8 @@
 			start();
 			
 	 });
+	 
+	 <?php } } ?>
 	$('#canceltour').live('click',endTour);
 	 function start(){
 		  

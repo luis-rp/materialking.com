@@ -434,7 +434,6 @@ function clearall(id)
                                 <table>
 
                                 <tr>
-                                <td width="20">&nbsp;</td>
                                 	<td>ITEM CODE/Name: </td>
                                 	<td>
                                 	<input type="text" name="searchitem" value="<?php echo @$_POST['searchitem'];?>"/>
@@ -463,7 +462,16 @@ function clearall(id)
                                     </td><td>
                                     &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My Iitems only
                                     </td>
-                                    <td width="5">&nbsp;</td>
+                                    <td>Filter Options:</td>
+                                    <td>
+                                    <select id="filteroption" name="filteroption" class="form-control" style="width:140px">
+                                <option value="backorder" <?php if(@$_POST['filteroption']=="backorder"){echo 'selected';}?>>Shows Backorder Items Only</option>
+                   <option value="shipfrom"  <?php if(@$_POST['filteroption']=="shipfrom"){echo 'selected';}?>>Shows Ships From Manufacturer Items Only</option>
+             <option value="qtydiscount"  <?php if(@$_POST['filteroption']=="qtydiscount"){echo 'selected';}?>>Shows Items with Qty Discounts Only</option>
+                              <option value="serachmyitem"  <?php if(@$_POST['filteroption']=="serachmyitem"){echo 'selected';}?>>Shows My Store Items Only</option>
+                                <option value="isfeature"  <?php if(@$_POST['filteroption']=="isfeature"){echo 'selected';}?>>Shows Featured Items Only</option>                                 	
+                                    </select>
+                                    </td>
                                     <td>
                                 	<input type="submit" value="Search" class="btn btn-primary"/>
                                 	<?php if(@$_POST['searchitem'] || @$_POST['category'] || @$_POST['manufacturer']){?>
@@ -502,7 +510,7 @@ function clearall(id)
 									    	$i = 0;
 									    	foreach($items as $item)
 									    	{
-									    		//echo "<pre>"; print_r($items); die;
+									    		//echo "<pre>"; print_r($item); die;
 									    		$i++;
 									      ?>
                                             <tr>

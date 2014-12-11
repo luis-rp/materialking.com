@@ -14,12 +14,15 @@ class Inventory extends CI_Controller
 		$this->load->model ('inventorymodel', '', TRUE);
 		$this->load->model ('quotemodel', '', TRUE);
 		$this->load->model ('messagemodel', '', TRUE);
+		$this->load->model('companymodel', '', TRUE);
 		$this->load->model ('admin/itemcode_model', '', TRUE);
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
+		 if ($this->session->userdata('company')) {    
+            $data['pagetour'] = $this->companymodel->getcompanybyid($this->session->userdata('company')->id); }
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/front/template', $data);
 	}

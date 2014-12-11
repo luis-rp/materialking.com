@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Dashboard extends CI_Controller 
+class Dashboard extends CI_Controller
 {
 	public function Dashboard()
 	{
@@ -11,13 +11,15 @@ class Dashboard extends CI_Controller
 		$this->load->dbforge();
 		$this->load->model ('quotemodel', '', TRUE);
 		$this->load->model ('messagemodel', '', TRUE);
+		$this->load->model('companymodel', '', TRUE);
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
 		$company = $this->session->userdata('company');
-		//print_r($company);
+		 if ($this->session->userdata('company')) {    
+            $data['pagetour'] = $this->companymodel->getcompanybyid($this->session->userdata('company')->id); }
 		if(!$company)
 			redirect('company/login');
-			
+
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/front/template', $data);
 	}
@@ -32,7 +34,7 @@ class Dashboard extends CI_Controller
 		$this->db->where('toid',$company->id);
 		$this->db->where('status','Pending');
 		$reqs = $this->db->get('joinrequest')->result();
-		
+
 		$data['newrequests'] = array();
 		foreach($reqs as $rq)
 		{
@@ -41,7 +43,7 @@ class Dashboard extends CI_Controller
 			$rq->from = $this->db->get($rq->fromtype)->row();
 			$data['newrequests'][]=$rq;
 		}
-		
+
 		if(isset($_POST['allcompany']))
 		{
 		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
@@ -52,49 +54,49 @@ class Dashboard extends CI_Controller
 		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
 			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc limit 5";
 		}
-		
+
+
 		$query = $this->db->query($sql);
-			
+
 		$data['networkjoinedpurchasers'] = $query->result();
-		
 		$invoices = $this->quotemodel->getpendinginvoices($company->id);
-		//echo "<pre>",print_r($invoices);	die;	
+		//echo "<pre>",print_r($invoices);	die;
 		$data['invoices'] = $invoices;
-		
+
 		$errorLogSql = "SELECT qe.*,q.ponum,ai.award
-						FROM ".$this->db->dbprefix('quote_errorlog')." qe 
+						FROM ".$this->db->dbprefix('quote_errorlog')." qe
 						JOIN ".$this->db->dbprefix('quote')." q ON q.id = qe.quoteid
 						JOIN ".$this->db->dbprefix('award')." a ON a.quote = qe.quoteid
 						JOIN ".$this->db->dbprefix('awarditem')." ai ON a.id = ai.award
 						WHERE qe.companyid=".$company->id;
-		
+
 		$logQry = $this->db->query($errorLogSql);
 		$logDetails = $logQry->result_array();
 		$tago = '';
 		foreach ($logDetails as $key=>$val)
-		{			
-			$tago[] = $this->messagemodel->tago(strtotime($val['created'])); 			
+		{
+			$tago[] = $this->messagemodel->tago(strtotime($val['created']));
 		}
 		//log_message("debug",var_export($data['newrequests'],true));
 		$data['logDetails'] = $logDetails;
 		$data['tago'] = $tago;
-		
+
 		$this->load->view('dashboard/index',$data);
 	}
-	
+
 	function creditapplication($pa)
 	{
 	    $this->db->where('purchasingadmin',$pa);
 	    $appl = $this->db->get('application')->row();
 	    $data['appl'] = $appl;
-	   
+
 	    $sql = "SELECT * FROM ".$this->db->dbprefix('applicationattachment')." WHERE purchasingadmin=".$pa;
 	    $qry = $this->db->query($sql);
-	    $attachmentData = $qry->result_array();	    
+	    $attachmentData = $qry->result_array();
 	    $data['attachmentdata'] = $attachmentData;
 	    $this->load->view('dashboard/application',$data);
 	}
-	
+
 	function readnotification()
 	{
 		$this->db->where($_POST);
@@ -141,9 +143,9 @@ class Dashboard extends CI_Controller
 		echo "fail";
 		//echo "<pre>",print_r($this->email->send()); die;
 	}
-	
+
 	function alertsentdate(){
-		
+
 		$alertdatearray = array();
 		$alertdatearray['alertsentdate'] = date('Y-m-d');
 		$alertdatearray['id'] = $_POST['invoiceid'];
@@ -155,7 +157,7 @@ class Dashboard extends CI_Controller
 		echo "*Error in sending Alert";
 		die;
 	}
-	
+
 	function close($id)
 	{
 		$company = $this->session->userdata('company');
@@ -164,7 +166,7 @@ class Dashboard extends CI_Controller
 		$this->db->update('notification',array('isread'=>1));
 		redirect('dashboard');
 	}
-	
+
 	function acceptreq($id)
 	{
 		$company = $this->session->userdata('company');
@@ -182,7 +184,7 @@ class Dashboard extends CI_Controller
 			$this->db->where('toid',$company->id);
 			$this->db->where('status','Pending');
 			$this->db->update('joinrequest',array('status'=>'Accepted'));
-			
+
 			$insert = array();
 			$insert['company'] = $company->id;
 			$insert['purchasingadmin'] = $row->fromid;
@@ -193,10 +195,10 @@ class Dashboard extends CI_Controller
 			$insert['status'] = 'Active';
 			//print_r($insert);die;
 			$this->db->insert('network',$insert);
-			
+
 			$supplier = $this->db->where('id', $company->id)->get('company')->row();
 			$company = $this->db->where('id',$row->fromid)->get('users')->row();
-			
+
 			$data['email_body_title'] = "Dear " . $company->companyname ;
 			$data['email_body_content'] = "Congratulation! ". $supplier->title." has just accept your request to join in the network.
 			<br/>
@@ -214,11 +216,11 @@ class Dashboard extends CI_Controller
 			$this->email->message($send_body);
 			$this->email->set_mailtype("html");
 			$this->email->send();
-			
+
 		}
 		redirect('dashboard');
 	}
-	
+
 	function rejectreq($id)
 	{
 		$company = $this->session->userdata('company');
@@ -239,7 +241,7 @@ class Dashboard extends CI_Controller
 		}
 		redirect('dashboard');
 	}
-	
+
 	function networkdelete($pid)
 	{
       $cid=$this->session->userdata('company')->id;

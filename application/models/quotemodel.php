@@ -574,12 +574,12 @@ class Quotemodel extends Model
 		if(@$_POST['searchfrom'])
 		{
 			$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-			$searches[] = " receiveddate >= '$fromdate'";
+			$searches[] = " date(receiveddate) >= '$fromdate'";
 		}
 		if(@$_POST['searchto'])
 		{
 			$todate = date('Y-m-d', strtotime($_POST['searchto']));
-			$searches[] = " receiveddate <= '$todate'";
+			$searches[] = " date(receiveddate) <= '$todate'";
 		}
 
 
