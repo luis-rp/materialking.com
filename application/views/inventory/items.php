@@ -465,6 +465,7 @@ function clearall(id)
                                     <td>Filter Options:</td>
                                     <td>
                                     <select id="filteroption" name="filteroption" class="form-control" style="width:140px">
+                                    <option value=''>All</option>
                                 <option value="backorder" <?php if(@$_POST['filteroption']=="backorder"){echo 'selected';}?>>Shows Backorder Items Only</option>
                    <option value="shipfrom"  <?php if(@$_POST['filteroption']=="shipfrom"){echo 'selected';}?>>Shows Ships From Manufacturer Items Only</option>
              <option value="qtydiscount"  <?php if(@$_POST['filteroption']=="qtydiscount"){echo 'selected';}?>>Shows Items with Qty Discounts Only</option>

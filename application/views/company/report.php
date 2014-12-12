@@ -120,7 +120,7 @@ function submitForm(val)
 			    		<th width="20%">TOTAL REMAINING</th>
 			    	</tr>
 			    	<tr>
-			    		<td>From <?php echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']?></td>
+			    		<td>From <?php if(@$_POST['datebymonth'] !="" && count($reports)>=2){  echo @$reports[0]->receiveddate;?> - To <?php echo @$reports[count($reports)-1]->receiveddate; } else { echo @$_POST['searchfrom']?> - To <?php echo @$_POST['searchto']; } ?></td>
 			    		<td><span id="totalallquantity"></span></td>
 			    		<td>$<span id="totalallprice"></span></td>
 			    		<td>$<span id="totalallpaid"></span></td>

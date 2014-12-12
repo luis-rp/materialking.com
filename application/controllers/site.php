@@ -1920,6 +1920,10 @@ class site extends CI_Controller
         $_POST['ea'] = @$cmpitem->ea?@$cmpitem->ea:$orgitem->ea;
         $_POST['notes'] = @$cmpitem->notes?@$cmpitem->notes:$orgitem->notes;
         $_POST['totalprice'] = $_POST['quantity'] * $_POST['ea'];
+        
+        if(isset($_POST['incrementqty']))
+        	unset($_POST['incrementqty']);
+        
         //print_r($_POST);die;
         $this->db->insert('quoteitem',$_POST);
         echo 'Success';
@@ -2561,7 +2565,7 @@ class site extends CI_Controller
     				if($_POST['view']=='profile'){
     				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>';
                     }else{
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-sm"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i> <br/>Add to RFQ</a></td></tr>'; }
     				}
@@ -2662,7 +2666,7 @@ class site extends CI_Controller
     				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
                     }else{
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
     				
@@ -2765,7 +2769,7 @@ class site extends CI_Controller
     				$itemdata = '<table class="table table-bordered;" style="background-color:white;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td><strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr><tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'"><strong>ViewItem</strong></a></td></tr>';
     				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
                     }else{
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
     				

@@ -289,14 +289,18 @@ padding:5px 0px;
 </script>
 <?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 <script>
-	function addtopo(itemid)
+	function addtopo(itemid, increment)
 	{
 		$("#addform").trigger("reset");
 		$("#additemid").val(itemid);
+		if(increment>0){
+		$("#additemqty").val(increment);
+		$("#incrementqty").val(increment);
+		}else
+		$('#additemqty').val('');
 		//$('#additemproject').attr('selectedIndex',0);
 		//$('#additemproject option:first-child').attr("selected", "selected");
-		//document.getElementById('additemproject').value=2;
-		$('#additemqty').val('');
+		//document.getElementById('additemproject').value=2;		
 		$("#additempo").html('<select name="quote" required></select>');
 		$('#additemcostcode').html('<select name="costcode" required></select>');
 		getquotecombo();
@@ -316,6 +320,11 @@ padding:5px 0px;
 
 	function rfqformsubmit()
 	{
+		if($('#additemqty').val()%$("#incrementqty").val()!=0){
+			alert('Sorry this item is only available in increments of '+$("#incrementqty").val());
+			return false;
+		}
+		
 		var d = $("#addtoquoteform").serialize();
 		var quote = $('[name="quote"]').val();
 

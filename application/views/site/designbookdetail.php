@@ -293,15 +293,19 @@ function viewtag(pic_id,company)
     	
     }
 
-    function addtopo(itemid)
+    function addtopo(itemid, increment)
 	{
 		$('#imgmodaltag').modal('hide');
 		$("#addform").trigger("reset");
 		$("#additemid").val(itemid);
+		if(increment>0){
+		$("#additemqty").val(increment);
+		$("#incrementqty").val(increment);
+		}else
+		$('#additemqty').val('');
 		//$('#additemproject').attr('selectedIndex',0);
 		//$('#additemproject option:first-child').attr("selected", "selected");
-		//document.getElementById('additemproject').value=2;
-		$('#additemqty').val('');
+		//document.getElementById('additemproject').value=2;		
 		$("#additempo").html('<select name="quote" required></select>');
 		$('#additemcostcode').html('<select name="costcode" required></select>');
 		getquotecombo();
@@ -350,6 +354,12 @@ function viewtag(pic_id,company)
     
     function rfqformsubmit()
 	{
+		
+		if($('#additemqty').val()%$("#incrementqty").val()!=0){
+			alert('Sorry this item is only available in increments of '+$("#incrementqty").val());
+			return false;
+		}
+		
 		var d = $("#addtoquoteform").serialize();
 		var quote = $('[name="quote"]').val();
 
@@ -417,7 +427,7 @@ function viewtag(pic_id,company)
                 <br>
                  <div class="pull-right">  <br>             	
                  	<div class="pull-left"> 
-                 		<div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;color:black;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="dark">This is Comment</div> 
+                 		<div class="fb-comments" style="position:relative;margin-top:0px;width: 200px; height: 400px;color:black;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $details->id;?>" data-width="200"  data-height="100" data-numposts="1" data-colorscheme="light">This is Comment</div> 
                 	</div>
                                 
                  	<div class="pull-right">
@@ -536,6 +546,7 @@ function viewtag(pic_id,company)
 
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+                            <input type="hidden" id="incrementqty" name="incrementqty" />
                             <h4>Costcode</h4>
                             <span id="additemcostcode">
                             <select name="costcode" required>

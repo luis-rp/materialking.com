@@ -23,6 +23,7 @@ class quote extends CI_Controller
         $this->load->model('admin/quote_model');
         $this->load->model('quotemodel');
         $this->load->model('homemodel');
+        $this->load->model('admin/report_model');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data ['title'] = "Administrator";
@@ -3801,7 +3802,25 @@ class quote extends CI_Controller
 		if($setting){
 			$data['settingtour']=$setting[0]->tour;
 		}
-
+		
+		/*Following code from Report controller.*/
+		//------------------
+		$reports = $this->report_model->get_reports();	
+		$count = count ($reports);
+		$items = array();
+		if ($count >= 1) 
+		{
+			foreach ($reports as $report) 
+			{
+				$items[] = $report;
+			}
+		    $data['reports'] = $items;
+		}
+		if(!$items)
+		{
+		    $this->data['message'] = 'No Records';
+		}
+		//-------------
         $this->load->view('admin/invoices', $data);
     }
 

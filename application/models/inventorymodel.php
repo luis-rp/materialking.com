@@ -65,18 +65,16 @@ class Inventorymodel extends Model
 				
 				if(@$_POST['filteroption']=='qtydiscount')
 				{
-				$joinqty="JOIN $tq ON $tci.itemid=$tq.itemid";
-		   		//$where1 = " AND WHERE itemid IN ($tci.itemid)  ";
+				$joinqty="JOIN (select * from $tq  where $tq.company=1  group by company,itemid) qty2 ON $tci.itemid=qty2.itemid";		   		
 				}
 				else 
 				{
 				$joinqty="";
-		   		//$where1 = "";
 				}
 				
 				if(@$_POST['filteroption']=='serachmyitem')
 				{
-		   		  $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		   		  $where .= " AND $tci.instore='1'";
 				}
 				
 				if(@$_POST['filteroption']=='isfeature')
@@ -85,7 +83,7 @@ class Inventorymodel extends Model
 				}
 		}
 		
-		$sql = "SELECT $ti.* FROM $ti 
+		 $sql = "SELECT $ti.* FROM $ti 
 		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where 
 		        LIMIT $offset, $limit";
@@ -159,18 +157,16 @@ class Inventorymodel extends Model
 				
 				if(@$_POST['filteroption']=='qtydiscount')
 				{
-				$joinqty="JOIN $tq ON $tci.itemid=$tq.itemid";
-		   		//$where1 = " AND WHERE itemid IN ($tci.itemid)  ";
+				$joinqty="JOIN (select * from $tq  where $tq.company=1  group by company,itemid) qty2 ON $tci.itemid=qty2.itemid";		   		
 				}
 				else 
 				{
 				$joinqty="";
-		   		//$where1 = "";
 				}
 				
 				if(@$_POST['filteroption']=='serachmyitem')
 				{
-		   		  $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		   		  $where .= " AND $tci.instore='1'";
 				}
 				
 				if(@$_POST['filteroption']=='isfeature')
@@ -180,7 +176,7 @@ class Inventorymodel extends Model
 		}
 		
 		$sql = "SELECT $ti.* FROM $ti 
-				LEFT JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
+		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where";
 		$items = $this->db->query($sql)->result();
 		$total = count($items);

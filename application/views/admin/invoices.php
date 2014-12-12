@@ -143,6 +143,11 @@ function shownotice(newval,oldval,id){
 
 }
 
+function showreport()
+{
+	$("#reportdiv").toggle();
+}
+
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -230,7 +235,9 @@ function shownotice(newval,oldval,id){
                     		foreach($items as $item){ $i++;?>
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
-                    			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
+                    			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
+                    		    <a href="javascript:void(0)" onclick="showreport();">Expand</a>
+                    			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
@@ -283,6 +290,58 @@ function shownotice(newval,oldval,id){
                     	</tbody>
                     </table>
                 </div>
+                
+                <div id="reportdiv" style="display:none;">
+              
+                 <table class="table table-bordered">
+			    	<tr>
+			    		<th width="120">Company</th>
+			    		<th width="75">PO#</th>
+			    		<th width="120">Item Code</th>
+			    		<th width="200">Item Name</th>
+			    		<th width="50">Unit</th>
+			    		<th width="50">Qty.</th>
+			    		<th width="50">EA</th>
+			    		<th width="50">Total</th>
+			    		<th width="50">Payment</th>
+			    		<th width="50">Verification</th>
+			    		<th width="120">Cost Code</th>
+			    	</tr>
+			    	<?php
+			    	foreach($reports as $report)
+			    		{
+			    	foreach($report->items as $item)
+			    		{
+			    			if($item->potype == "Contract" )
+			    			$amount = $item->ea;
+			    			else 
+			    			$amount = $item->quantity * $item->ea;
+			    			$tax=3;
+			    			$amount = round($amount + ($amount*$tax/100),2);
+			    			$amount += $amount;
+			    	?>
+			    	<tr>
+			    		<td><?php echo $item->companyname;?></td>
+			    		<td><?php echo $item->ponum;?></td>
+			    		<td><?php echo $item->itemcode;?></td>
+			    		<td><?php echo $item->itemname;?></td>
+			    		<td><?php echo $item->unit;?></td>
+			    		<td><?php echo $item->quantity;?></td>
+			    		<td><?php echo round($item->ea,2);?></td>
+			    		<td>$<?php echo round($amount,2);?></td>
+			    		<td><?php echo $item->paymentstatus;?></td>
+			    		<td><?php echo $item->status;?></td>
+			    		<td><?php echo $item->costcode;?></td>			    		
+			    	</tr>
+			    	<?php
+			    		} }
+			    	?>
+		      </table>
+              </div>  
+                
+                
+                
+                
             </div>
         </div>
     </div>

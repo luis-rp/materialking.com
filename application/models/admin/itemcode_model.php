@@ -141,7 +141,7 @@ class itemcode_model extends Model {
             
             $sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  ";
             $item = $this->db->query($sql1)->result(); 
-            $count="<strong>".number_format(count($item))."</strong>";
+            $count=number_format(count($item));
             $leaf->catname .="(".$count.")";
             
             $ret[] = $leaf;

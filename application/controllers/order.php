@@ -196,8 +196,36 @@ class Order extends CI_Controller
 			}
 			if(@$_POST['purchasingadmin'])
 			{
+				if(@$_POST['purchasingadmin']=='guest')
+				{
+				 $filter = " AND o.purchasingadmin IS NULL ";	
+				}
+				else 
+				{
 				$filter = " AND o.purchasingadmin='".$_POST['purchasingadmin']."'";
+				}
 			}
+			
+			if(@$_POST['searchpaymentstatus'] && @$_POST['searchpaymentstatus'])
+ 			{
+ 				if(@$_POST['searchpaymentstatus']=='Unpaid')
+ 				{
+ 				$filter .= " AND (od.paymentstatus='Unpaid' OR od.paymentstatus='Requested Payment') ";
+ 				}
+ 				else 
+ 				{
+ 				$filter .= " AND od.paymentstatus='".$_POST['searchpaymentstatus']."' ";
+ 				}
+ 			}
+ 			if(@$_POST['searchorderstatus'] && @$_POST['searchorderstatus'])
+ 			{
+ 				$filter .= " AND od.status='".$_POST['searchorderstatus']."' ";
+ 			}
+ 			
+ 			if(@$_POST['ordertype'] && @$_POST['ordertype'])
+ 			{
+ 				$filter .= " AND o.type='".$_POST['ordertype']."' ";
+ 			}
 		}
  		
 		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status  

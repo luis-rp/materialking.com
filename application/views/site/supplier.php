@@ -177,12 +177,12 @@ padding:5px 0px;
 }
 
  .ui-tooltip {
-	padding: 8px;
-	font-size:19px !important;
-	font-weight:bold !important;
+	padding: 2px;
+	font-size:10px !important;
+	font-weight:bold;
 	position: absolute;
 	z-index: 9999;
-	max-width: 300px;
+	max-width: 150px;
 	-webkit-box-shadow: 0 0 5px #aaa;
 	box-shadow: 0 0 5px #aaa;
 	color:#06A7EA !important;
@@ -792,15 +792,19 @@ function viewtag(pic_id,company)
     }
     
     
-    function addtopo(itemid)
+    function addtopo(itemid, increment)
 	{
 		$('#imgmodaltag').modal('hide');
 		$("#addform").trigger("reset");
 		$("#additemid").val(itemid);
+		if(increment>0){
+		$("#additemqty").val(increment);
+		$("#incrementqty").val(increment);
+		}else
+		$('#additemqty').val('');
 		//$('#additemproject').attr('selectedIndex',0);
 		//$('#additemproject option:first-child').attr("selected", "selected");
-		//document.getElementById('additemproject').value=2;
-		$('#additemqty').val('');
+		//document.getElementById('additemproject').value=2;	
 		$("#additempo").html('<select name="quote" required></select>');
 		$('#additemcostcode').html('<select name="costcode" required></select>');
 		getquotecombo();
@@ -855,6 +859,12 @@ function viewtag(pic_id,company)
     
     function rfqformsubmit()
 	{
+		
+		if($('#additemqty').val()%$("#incrementqty").val()!=0){
+			alert('Sorry this item is only available in increments of '+$("#incrementqty").val());
+			return false;
+		}
+		
 		var d = $("#addtoquoteform").serialize();
 		var quote = $('[name="quote"]').val();
 
@@ -2208,6 +2218,7 @@ function changetab(tabname){
 
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+                            <input type="hidden" id="incrementqty" name="incrementqty" />
                             <h4>Costcode</h4>
                             <span id="additemcostcode">
                             <select name="costcode" required>

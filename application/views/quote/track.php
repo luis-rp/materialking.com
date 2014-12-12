@@ -174,7 +174,11 @@ tr.still-due td
                                         <td class="v-align-middle">$<?php echo round($ai->quantity * $ai->ea,2);?></td>
                                         <td class="v-align-middle"><?php echo $ai->daterequested;?></td>
                                         <td class="v-align-middle"><?php echo $ai->notes;?></td>
-                                        <td class="v-align-middle"><?php echo $ai->received;?></td>
+                                        <td class="v-align-middle"><?php echo $ai->received;?><br>
+                                        <?php if($ai->pendingshipments){?>
+                                        <br/><?php echo round($ai->pendingshipments,2);?>
+                                        <?php }?>
+                                        </td>
                                         <td class="v-align-middle">
                                         <?php echo $ai->quantity - $ai->received;?>
                                         <?php if($ai->pendingshipments){?>

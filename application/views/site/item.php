@@ -507,14 +507,18 @@ $( document ).tooltip();
 </script>
 <?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 <script>
-	function addtopo(itemid)
+	function addtopo(itemid, increment)
 	{
 		$("#addform").trigger("reset");
 		$("#additemid").val(itemid);
+		if(increment>0){
+		$("#additemqty").val(increment);
+		$("#incrementqty").val(increment);
+		}else
+		$('#additemqty').val('');
 		//$('#additemproject').attr('selectedIndex',0);
 		//$('#additemproject option:first-child').attr("selected", "selected");
-		//document.getElementById('additemproject').value=2;
-		$('#additemqty').val('');
+		//document.getElementById('additemproject').value=2;		
 		$("#additempo").html('<select name="quote" required></select>');
 		$('#additemcostcode').html('<select name="costcode" required></select>');
 		getquotecombo();
@@ -523,8 +527,12 @@ $( document ).tooltip();
 	}
 	function rfqformsubmit()
 	{
+		if($('#additemqty').val()%$("#incrementqty").val()!=0){
+			alert('Sorry this item is only available in increments of '+$("#incrementqty").val());
+			return false;
+		}
+		
 		var d = $("#addtoquoteform").serialize();
-
 
         $.ajax({
             type: "post",
@@ -810,7 +818,7 @@ $( document ).tooltip();
                             <div class="pull-right" style="margin:10px 0px;">
 
                             <?php if ($this->session->userdata('site_loggedin')){?>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtopo(<?php echo $item->id; ?>,<?php echo $item->increment; ?>)">
                                     <i class="icon icon-plus"></i> <br/>Add to RFQ
                                 </a>
                             	<br/><br/>
@@ -1307,6 +1315,7 @@ $( document ).tooltip();
 
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+                            <input type="hidden" id="incrementqty" name="incrementqty" />
                             <h4>Costcode</h4>
                             <span id="additemcostcode">
                             <select name="costcode" required>
