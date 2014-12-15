@@ -277,9 +277,10 @@ $per .='%';
 		errorselected();
 	}
 
-    function showInvoice(invoicenum)
+    function showInvoice(invoicenum,invoicequote)
     {
         $("#invoicenum").val(invoicenum);
+        $("#invoicequote").val(invoicequote);
         $("#invoiceform").submit();
     }
 </script>
@@ -850,7 +851,7 @@ function acceptall()
                                     <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";} ?></td>
                                     <td><?php echo $invoice->status; ?></td>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="showInvoice('<?php echo $invoice->invoicenum; ?>');">
+                                        <a href="javascript:void(0);" onclick="showInvoice('<?php echo $invoice->invoicenum; ?>','<?php echo $quote->id; ?>');">
                                             <span class="icon-2x icon-search"></span>
                                         </a>
                                     </td>
@@ -877,6 +878,7 @@ function acceptall()
                         </table>
                         <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/contract_invoice'); ?>">
                             <input type="hidden" id="invoicenum" name="invoicenum"/>
+                             <input type="hidden" id="invoicequote" name="invoicequote"/>
                         </form>
                     </div>
                 </div>

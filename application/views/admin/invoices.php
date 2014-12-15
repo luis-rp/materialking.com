@@ -143,9 +143,9 @@ function shownotice(newval,oldval,id){
 
 }
 
-function showreport()
+function showreport(invoicenum)
 {
-	$("#reportdiv").toggle();
+	$("#reportdiv"+invoicenum).toggle();
 }
 
 </script>
@@ -232,16 +232,17 @@ function showreport()
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
-                    		foreach($items as $item){ $i++;?>
+                    		foreach($items as $item){ $i++;
+                    		?>
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
-                    		    <a href="javascript:void(0)" onclick="showreport();">Expand</a>
+                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>');">Expand</a>
                     			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
-                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo $item->totalprice;?></td>
+                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->totalprice;?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>
@@ -291,9 +292,11 @@ function showreport()
                     </table>
                 </div>
                 
-                <div id="reportdiv" style="display:none;">
-              
-                 <table class="table table-bordered">
+                <div>   
+			    <?php  if(isset($reports)) { foreach ($reports as $report) { ?>
+			    	    
+			   <table id="reportdiv<?php echo $report->invoicenum; ?>" class="table table-bordered" style="display:none;">
+			     
 			    	<tr>
 			    		<th width="120">Company</th>
 			    		<th width="75">PO#</th>
@@ -307,35 +310,28 @@ function showreport()
 			    		<th width="50">Verification</th>
 			    		<th width="120">Cost Code</th>
 			    	</tr>
-			    	<?php
-			    	foreach($reports as $report)
-			    		{
-			    	foreach($report->items as $item)
-			    		{
-			    			if($item->potype == "Contract" )
-			    			$amount = $item->ea;
-			    			else 
-			    			$amount = $item->quantity * $item->ea;
-			    			$tax=3;
-			    			$amount = round($amount + ($amount*$tax/100),2);
-			    			$amount += $amount;
-			    	?>
-			    	<tr>
-			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->ponum;?></td>
-			    		<td><?php echo $item->itemcode;?></td>
-			    		<td><?php echo $item->itemname;?></td>
-			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo $item->quantity;?></td>
-			    		<td><?php echo round($item->ea,2);?></td>
-			    		<td>$<?php echo round($amount,2);?></td>
-			    		<td><?php echo $item->paymentstatus;?></td>
-			    		<td><?php echo $item->status;?></td>
-			    		<td><?php echo $item->costcode;?></td>			    		
-			    	</tr>
-			    	<?php
-			    		} }
-			    	?>
+				    	<?php $totalallprice=""; foreach($report->items as $item) {
+				    		if($item->potype == "Contract" )
+				    		$amount = $item->ea;
+				    		else 
+				    		$amount = $item->quantity * $item->ea;
+				    		$amount = round($amount + ($amount*$taxdata/100),2);
+				    		$totalallprice += $amount; ?>
+				    	
+				    	<tr>
+				    		<td><?php echo $item->companyname;?></td>
+				    		<td><?php echo $item->ponum;?></td>
+				    		<td><?php echo $item->itemcode;?></td>
+				    		<td><?php echo $item->itemname;?></td>
+				    		<td><?php echo $item->unit;?></td>
+				    		<td><?php echo $item->quantity;?></td>
+				    		<td><?php echo round($item->ea,2);?></td>
+				    		<td>$<?php echo round($totalallprice,2);?></td>
+				    		<td><?php echo $item->paymentstatus;?></td>
+				    		<td><?php echo $item->status;?></td>
+				    		<td><?php echo $item->costcode;?></td>			    		
+				    	</tr>
+				    	<?php  } }  }?>			    	
 		      </table>
               </div>  
                 

@@ -740,7 +740,69 @@ class quote extends CI_Controller
         $data ['message'] = '';
         $data ['action'] = site_url('admin/quote/updatequote');
         //$this->load->view ('admin/quotebid', $data);
-
+               
+         $gusttotal=0; $message = "";
+         foreach($data['quoteitems'] as $items){          
+         $totalSuppliers=0;
+		 $invcnt = 0; $total=0; $totalSuppliers=0;
+		 
+		 $inventory = $this->db->where('type','Supplier')
+                    ->where('itemid',$items->itemid)                  
+                    ->get('companyitem')
+                    ->result();
+		 if($inventory){
+         foreach($inventory as $initem)
+         {
+            $this->db->where('id',$initem->itemid);
+            $orgitem = $this->db->get('item')->row();
+            if(!is_object($orgitem)){
+            	continue;
+            }                        	
+            
+            if($this->session->userdata('site_loggedin'))
+            {
+                $this->db->where('company', $this->session->userdata('purchasingadmin'));
+                $tiers = $this->db->get('tierpricing')->row();
+                if ($tiers)
+                {
+                    $currentpa = $this->session->userdata('site_loggedin')->id;
+                    $this->db->where('company', $initem->company);
+                    $this->db->where('purchasingadmin', $currentpa);
+                    $tier = @$this->db->get('purchasingtier')->row()->tier;
+                    if ($tier)
+                    {
+                        $tv = $tiers->$tier;
+                        $initem->ea = $initem->ea + ($initem->ea * $tv / 100);
+                        $initem->ea = number_format($initem->ea, 2);
+                    }
+                }
+            }
+            
+            if ($initem->ea && $initem->ea>0)
+            {
+            	$invcnt++;
+            	$price = $initem->ea;
+            	$total = $total + $price;
+            }
+            
+         }
+         
+         	$totalSuppliers =$invcnt;
+         	$total = $total*($items->quantity);
+		 }else{
+		 	$totalSuppliers = 0;		 	
+		 	$message="*Some items without price data are not included in the estimate.";
+		 }
+         
+           
+			if($totalSuppliers>0)
+			$gusttotal += $total/$totalSuppliers;
+         
+         }
+          
+                 
+        $data['guesttotal'] = $gusttotal." ".$message."";
+        
 	    if ($data['potype'] == 'Bid')
             $this->load->view('admin/quotebid', $data);
         elseif($data['potype'] == 'Direct')
@@ -3805,7 +3867,7 @@ class quote extends CI_Controller
 		
 		/*Following code from Report controller.*/
 		//------------------
-		$reports = $this->report_model->get_reports();	
+		$reports = $this->report_model->get_reports1();	
 		$count = count ($reports);
 		$items = array();
 		if ($count >= 1) 
@@ -3815,6 +3877,7 @@ class quote extends CI_Controller
 				$items[] = $report;
 			}
 		    $data['reports'] = $items;
+		    $data['taxdata']=$settings->taxpercent;
 		}
 		if(!$items)
 		{

@@ -297,6 +297,19 @@ $loaderEmail = new My_Loader();
 		$data ['action'] = site_url ('admin/admin/editownProfile' );
 		$data ['message'] = '';
 		$data ['heading'] = "Change Password - ".$adminuser->fullname." - ".$adminuser->username;
+		$permissiondata=$this->db->get_where('quoteuser',array('userid'=>$id))->result();
+		if(count($permissiondata) > 0)
+		{
+			$data['permissions']=array();		
+			foreach ($permissiondata as $permission)
+			{
+				$quote=$this->db->get_where('quote',array('id'=>$permission->quote))->row();
+				$project=$this->db->get_where('project',array('id'=>$quote->pid))->row();			
+				$permission->quotename = $quote->ponum;
+				$permission->projectname = $project->title;
+				$data['permissions'][]=$permission;
+			}		
+		}
 		$this->load->view ('admin/editProfile', $data );
 	}
 

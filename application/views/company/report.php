@@ -8,9 +8,10 @@ $(document).ready(function(){
 	$('.datefield').datepicker();
 });
 
-function submitForm(val)
+function submitForm(val,invoicequote)
 {
 	$("#invoicenum").val(val);
+	$("#invoicequote").val(invoicequote);
   	document.forms['invoiceform'].submit()
 }
 </script>
@@ -254,7 +255,8 @@ function submitForm(val)
 			    		<td>
 			    		<form id="invoiceform" name="invoiceform" action="<?php echo site_url('quote/invoice');?>" method="post">
 			    		<input type="hidden" name="invoicenum" id="invoicenum" value="<?php echo $item->invoicenum;?>">
-			    		<a href="javascript: submitForm('<?php echo $item->invoicenum;?>');"><?php echo $item->invoicenum;?></a>
+			    		<input type="hidden" name="invoicequote" id="invoicequote" value="<?php echo $item->quote;?>">
+			    		<a href="javascript: submitForm('<?php echo $item->invoicenum;?>','<?php echo $item->quote;?>');"><?php echo $item->invoicenum;?></a>
 			    		</form>
 			    		</td>
 			    		<?php if(0){?>

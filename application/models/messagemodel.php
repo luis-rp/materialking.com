@@ -42,8 +42,8 @@ class Messagemodel extends Model
 			$not->tago = $this->tago(strtotime($not->senton));
 			$this->db->where('id',$not->purchasingadmin);
 			$purchasingadmin = $this->db->get('users')->row();
-			//if($purchasingadmin) {
-			if($not->category=='Order')
+			if($purchasingadmin) {
+			/*if($not->category=='Order')
 			{
 			
 				$not->class='info';
@@ -60,7 +60,7 @@ class Messagemodel extends Model
 				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";
 				
 				$not->link = site_url('order/details/'.$not->quote);
-			}
+			}*/
 			if($not->category=='Invitation(Direct)')
 			{
 				$this->db->where('company',$company->id);
@@ -101,7 +101,7 @@ class Messagemodel extends Model
 				$not->link = site_url('quote/viewbacktrack/'.$not->quote);
 			}
 			if($not->category=='Award')
-			{
+			{				
 				$not->class='success';
 				$not->message = "You have been awarded by $purchasingadmin->companyname, $purchasingadmin->fullname, for the PO# $not->ponum";
 				$items = 0;
@@ -123,7 +123,29 @@ class Messagemodel extends Model
 				$not->link = site_url('quote/items/'.$not->quote);
 			}
 			$ret[]=$not;
-		  //}	
+		  }else{
+		  	
+		  	if($not->category=='Order')
+			{
+			
+				$not->class='info';
+				$this->db->where('ordernumber',$not->ponum);
+				$ordertyperesult = $this->db->get('order')->result();
+		
+				if(isset($ordertyperesult[0]->type) && $ordertyperesult[0]->type)
+				$ordertype = $ordertyperesult[0]->type;
+				else 
+				$ordertype = "";
+				$not->message =  "You have received a new order request store with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
+				$this->db->where('orderid',$not->quote);
+				$this->db->where('company',$company->id);
+				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";
+				
+				$not->link = site_url('order/details/'.$not->quote);
+				$ret[]=$not;
+			}
+		  	
+		  }
 		} 
 		if(!$ret)
 			return array();

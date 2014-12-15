@@ -118,6 +118,7 @@ class Inventorymodel extends Model
 		$tci = $this->db->dbprefix('companyitem');
 		$tq = $this->db->dbprefix('qtydiscount');
 		$where = " WHERE  1=1 ";
+		$noleftjoin = "";
 		$joinqty="";
 		//$this->db->limit($limit, $newoffset);
 		if(@$_POST['searchitem'])

@@ -1135,7 +1135,7 @@ class Company extends CI_Controller {
         if (!$company)
             redirect('company/login');
         //print_r($_POST);die;
-
+		if(@$_POST['tier']){
         foreach ($_POST['tier'] as $admin => $tier) {
             //echo $admin.'-'.$tier.'<br/>';
             $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
@@ -1152,6 +1152,7 @@ class Company extends CI_Controller {
             //print_r($arr);die;
             $this->db->insert('purchasingtier', $arr);
         }
+		}
 
         $message = 'Tier price settings updated for purchasing companies.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');

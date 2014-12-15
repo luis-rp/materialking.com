@@ -228,10 +228,12 @@
 			</h3>
 	<div class="box">
 		<div class="span12">
+		<?php if(!$this->session->userdata('managedprojectdetails')){?>
        <div style="text-align:center;">
           <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a></div>
+          <?php } ?>
 			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">

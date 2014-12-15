@@ -781,6 +781,16 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
     			
 			</div>
 		    <?php }?>
+		    
+		     <div class="span12">
+		    	
+		    <div class="span3">			    	
+				    <div class="controls">
+				    	Our Price Guestimate:$<?php echo @$guesttotal;?>
+				    </div>
+			</div>
+		    </div>
+		    
 		    <div class="span12">
 		       <?php if($this->validation->id && !$awarded){?>
 			   <div class="span3">

@@ -43,9 +43,10 @@
 	 $('.dataTables_length').hide();
 	 $('.daterequested').datepicker();
 	})
-	function invoice(invoicenum)
+	function invoice(invoicenum,invoicequote)
 	{
 		$("#invoicenum").val(invoicenum);
+		$("#invoicequote").val(invoicequote);
 		$("#invoiceform").submit();
 	}
 
@@ -181,6 +182,7 @@ display:none;
 
 <form id="invoiceform" method="post" action="<?php echo site_url('admin/quote/contract_invoice');?>">
 	<input type="hidden" id="invoicenum" name="invoicenum"/>
+	<input type="hidden" id="invoicequote" name="invoicequote"/>
 </form>
 
     <div class="content">
@@ -398,7 +400,7 @@ display:none;
 				?>
 				<tr>
 					<td>
-					<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>');">
+					<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>','<?php echo $quote->id;?>');">
 					<?php echo $i->invoicenum;?>
 					</a>
 					</td>

@@ -67,9 +67,12 @@ class Message extends CI_Controller
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
 			$messages[$msg->ponum]['quote']['messagekey']=$msg->messagekey;
-			$messages[$msg->ponum]['quote']['complete']=$msg->complete;			
+			//$messages[$msg->ponum]['quote']['complete']=$msg->complete;	
+			$messages[$msg->ponum]['quote']['complete']= "No";
 			$this->db->where('quote',$msg->quoteid);
-			$award = $this->db->get('award')->row();
+			$award = $this->db->get('award')->row();		
+			$finalstatus = 0;	
+			
 			if($award)
 			{
 				$messages[$msg->ponum]['quote']['status'] = 'Awarded';
@@ -77,6 +80,44 @@ class Message extends CI_Controller
 				$this->db->where('company',$company->id);
 				$awarditems = $this->db->get('awarditem')->num_rows;
 				$messages[$msg->ponum]['quote']['awarditems'] = $awarditems;
+				/*--------------------------------------------------------------------------*/
+					$awardeditems = $this->quotemodel->getawardeditems($award->id,$company->id);
+					$complete = true;
+					$noitemsgiven = true;
+					$allawarded = true;
+					$awarditemcount = count($awardeditems);
+					foreach($awardeditems as $ai)
+					{				
+						if($ai->received < $ai->quantity)
+							$complete = false;
+						if($ai->company != $company->id)
+							$allawarded = false;
+						if($ai->received > 0)
+							$noitemsgiven = false;
+						$data['myawarditems'][] = $ai;
+						$progress="";
+						if(!$noitemsgiven)
+						{
+							
+							if($complete)
+							{
+								$progress=100;
+							}
+							else
+							{
+								$progress=80;
+							}
+						}
+						else
+						{
+							$progress=60;
+						}
+						$finalstatus+=$progress;
+						
+				 }
+				if(($finalstatus/$awarditemcount) == 100)
+					$messages[$msg->ponum]['quote']['complete']= 'Yes'; 	
+			   /*--------------------------------------------------------------------------*/								
 			}
 			else
 			{
@@ -87,16 +128,18 @@ class Message extends CI_Controller
 					$messages[$msg->ponum]['quote']['invitation'] = $inv->invitation;
 				else
 					$messages[$msg->ponum]['quote']['invitation'] = '';
-			}
+			}			
 		}
-		//echo '<pre>';print_r($messages);die;
 		$this->db->select($this->db->dbprefix('users.').'*');
 		$this->db->where('usertype_id',2);
 		$this->db->from('users')->join('network',"users.id=network.purchasingadmin")->where('network.company',$company->id);
 		$data['purchasingadmins'] = $this->db->get()->result();
 		$data['company'] = $company;
 		$data['messages'] = $messages;
+		
 		$data['quote'] = $quote;
+		
+		
 		if($quote)
 			$this->load->view('message/list',$data);
 		else

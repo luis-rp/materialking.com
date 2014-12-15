@@ -2,7 +2,7 @@
 	<h3 class="box-header"><?php echo $heading; ?></h3>
 	<div class="box">
 	<div class="span9">
-	
+	<div class="pull-left" style="width:70%;">
 	<?php echo $message; ?>
 
    <form class="form-horizontal" method="post" action="<?php echo $action; ?>">
@@ -40,6 +40,23 @@
     </div>
     
   </form>
+  
+      </div><!-- End of Pull left -->
+   <?php if(isset($permissions) && count($permissions) > 0) { ?>
+	   <div class="pull-right" style="width:26%;">
+		   <div class="table-responsive">
+			   <h3>Existing Permissions</h3>
+				  <table class="table table-hover">
+				  <tr><th>Quote Name</th><th>Project Name</th></tr>
+				    <?php foreach ($permissions as $permission) { ?>
+				  		<tr><td><?php echo $permission->quotename; ?></td><td><?php echo $permission->projectname; ?></td></tr>
+				     <?php } ?>
+				  </table>
+			</div>
+	   </div><!-- End of Pull right -->
+   <?php } ?>
+	   
+	   <div style="clear:both;"></div>
     
     </div>
     </div>

@@ -800,8 +800,10 @@ function viewtag(pic_id,company)
 		if(increment>0){
 		$("#additemqty").val(increment);
 		$("#incrementqty").val(increment);
-		}else
+		}else{
 		$('#additemqty').val('');
+		$("#incrementqty").val(1);
+		}
 		//$('#additemproject').attr('selectedIndex',0);
 		//$('#additemproject option:first-child').attr("selected", "selected");
 		//document.getElementById('additemproject').value=2;	
