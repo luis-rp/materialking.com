@@ -1871,10 +1871,12 @@ class Company extends CI_Controller {
 				$this->db->select("logo");
     			$this->db->where('purchasingadmin',$res->from);
 				$logres = $this->db->get('settings')->row();
-				
+				if($logres){
 				if($logres->logo && file_exists("./uploads/logo/".$logres->logo))
 				$messagebody[$res->from_types]['logosrc'] = site_url('uploads/logo/'.$logres->logo);
 				else 
+				$messagebody[$res->from_types]['logosrc'] =  site_url('uploads/logo/noavatar.png');
+				}else 
 				$messagebody[$res->from_types]['logosrc'] =  site_url('uploads/logo/noavatar.png');
 				$messagebody[$res->from_types]['name'] = $nameres->companyname;
     		}elseif($res->from_type=='company'){
