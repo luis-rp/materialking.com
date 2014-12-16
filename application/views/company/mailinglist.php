@@ -25,11 +25,11 @@ $(document).ready(function(){
 	  		         <div class="col-md-12">
                         <div class="grid simple ">
                         	<div class="grid-body no-border">
-					   		<p><a href="<?php echo base_url("company/newtemplate");?>">New Template</a></p>
-					   		<p><a href="<?php echo base_url("company/createformsubscriptions");?>">Create/Edit Form Subscriptions</a></p>
-							<p><a href="<?php echo base_url("company/listtemplates");?>">View Your Newsletter Templates</a></p>
-							<!--<p><a href="<?php //echo base_url("company/listpretemplates");?>">View Predefined Templates</a></p>-->
-							<p><a href="<?php echo base_url("company/listsubscribers");?>">View Newsletter Subscribers</a></p>
+   <a href="<?php echo base_url("company/newtemplate");?>"><button type="button" class="btn btn-primary">New Template</button></a><br><br>
+   <a href="<?php echo base_url("company/createformsubscriptions");?>"><button type="button" class="btn btn-primary">Create/Edit Form Subscriptions</button></a><br><br>
+   <a href="<?php echo base_url("company/createformsubscriptions");?>"><button type="button" class="btn btn-primary">View Your Newsletter Templates</button></a><br><br>
+   <!--<p><a href="<?php //echo base_url("company/listpretemplates");?>">View Predefined Templates</a></p>-->
+   <a href="<?php echo base_url("company/listsubscribers");?>"><button type="button" class="btn btn-primary">View Newsletter Subscribers</button></a>
 							</div>
 						</div>
 						</div>

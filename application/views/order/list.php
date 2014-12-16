@@ -46,7 +46,7 @@ $(document).ready(function(){
                     <div class="col-md-12">
 				   		<div class="combofixed">
 
-			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post">
+			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post" style="margin-left:-34px">
 			                    From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
 			           
 			                    To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
@@ -87,7 +87,7 @@ $(document).ready(function(){
               						<option value="Manual" <?php if (@$_POST['ordertype'] == 'Manual') { echo 'SELECTED'; } ?>>Manual</option>
 			    				</select>
 			    				
-			    				
+			    				<input type="text" name="searchbyguest" id="searchbyguest" placeholder="Search By Guest Email" style="width:100px;">&nbsp;
 			                    <input type="submit" value="Filter" class="btn btn-primary"/>
 			                    <a href="<?php echo site_url('report');?>">
 			                    	<input type="button" value="Show All" class="btn btn-primary"/>

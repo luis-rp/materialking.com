@@ -274,9 +274,10 @@ function addEmail()
                     				
 				                      <div class="form-group">
 				                        <label class="form-label">Logo</label>
+				                        
 				                        <div class="controls">
 				                          <input type="file"  name="logo" id="logo"/>
-				                          
+				                           <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
 				                          <?php if($company->logo){?>
 				                          <br/>
 				                          <img src="<?php echo site_url('uploads/logo/thumbs/'.$company->logo);?>" width="100" height="100"/>
@@ -286,7 +287,7 @@ function addEmail()
 				                      
 				                      <div class="form-group">
 										<label class="form-label">Add Images</label>
-										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
 												<div id="moreUploads"></div>
 										    <div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a>
 											</div>
@@ -308,7 +309,7 @@ function addEmail()
 				                      
 				                      <div class="form-group">
 										<label class="form-label">Add Images for Gallery</label>
-										  <input type="file" name="UploadFile2[]" id="UploadFile2" onchange="document.getElementById('moreUploadsLink2').style.display = 'block';" />
+										  <input type="file" name="UploadFile2[]" id="UploadFile2" onchange="document.getElementById('moreUploadsLink2').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
 												<div id="moreUploads2"></div>
 										    <div id="moreUploadsLink2" style="display:none;"><a href="javascript:addFileInput2();">Add another Image for Gallery</a>
 											</div>
@@ -328,7 +329,7 @@ function addEmail()
 				                      
 				                      <div class="form-group">
 										<label class="form-label">Add Files</label>
-										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" />
+										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
 												<div id="moreUploads1"></div>
 										    <div id="moreUploadsLink1" style="display:none;"><a href="javascript:addFileInput1();">Add another File</a>
 											</div>

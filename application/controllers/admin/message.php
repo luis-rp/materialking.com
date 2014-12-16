@@ -389,7 +389,7 @@ class message extends CI_Controller
 		}
 		else 
 		{
-			$orderBy .= " ORDER BY senton ASC" ;
+			$orderBy .= " ORDER BY senton DESC" ;
 		}
 		
 		
@@ -440,6 +440,14 @@ class message extends CI_Controller
 			$messages[$msg->ponum]['quote']['bidid']=$msg->bidid;
 			$messages[$msg->ponum]['quote']['awardid']=$msg->awardid;
 			$messages[$msg->ponum]['quote']['companyid']=$msg->creator;
+			
+			$this->db->where('quote',$msg->quoteid);
+			$this->db->where('purchasingadmin',$msg->creator);
+			$this->db->where('company',$this->session->userdata('id'));
+			$invite=$this->db->get('invitation')->row();
+			if($invite)
+			$messages[$msg->ponum]['quote']['invitation']=$invite->invitation;
+			
 		}
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;

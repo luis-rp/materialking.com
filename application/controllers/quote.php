@@ -3976,7 +3976,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$query = "SELECT itemid, itemcode, count(bi.id) as bidcount
+		$query = "SELECT itemid, itemcode, count(bi.id) as bidcount, sum(bi.quantity) as totalquantity
 				  FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b 
 				  WHERE bi.bid=b.id AND b.company={$company->id}
 				  GROUP BY itemid HAVING itemid
@@ -3993,6 +3993,19 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			//echo $query.'<br>'.'<br>';
 			$item->awardcount = $this->db->query($query)->row()->awardcount;
 			$item->performance = round(($item->awardcount/$item->bidcount) * 100,2);
+			
+			$query2 = "SELECT o.id, count(o.id) as ordercount, sum(od.quantity) as quantitycount, sum((od.price*od.quantity)+od.shipping) as storesales 
+				  FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('order')." o WHERE od.orderid = o.id AND od.company={$company->id} AND itemid='".$item->itemid."'
+				  ";
+			$result2 = $this->db->query($query2)->row();
+			$item->storesales = $result2->storesales;
+			$item->totalstoreqty = $result2->quantitycount;
+			if($result2->ordercount>0)
+			$item->avgstoreqty = $result2->quantitycount/$result2->ordercount;
+			else 
+			$item->avgstoreqty = 0;
+			$item->performance = round(($item->awardcount/$item->bidcount) * 100,2);
+			
 			$data['items'][]= $item;
 		}
 		$this->load->view ('quote/performance', $data);

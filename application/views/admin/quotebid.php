@@ -782,6 +782,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 			</div>
 		    <?php }?>
 		    
+		    <?php if($quoteitems){?>
 		     <div class="span12">
 		    	
 		    <div class="span3">			    	
@@ -790,6 +791,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 				    </div>
 			</div>
 		    </div>
+		    <?php } ?>
 		    
 		    <div class="span12">
 		       <?php if($this->validation->id && !$awarded){?>
@@ -814,6 +816,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 				    </div>
 			   </div>
 			   <?php }?>
+			<?php if($quoteitems){?>   
 		    <div class="span3">
 			    
 				    <div class="controls">
@@ -821,6 +824,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 				    	<input type="submit" value="Upload" class="btn btn-primary"/>
 				    </div>
 			   </div>
+		    <?php } ?>	   
 		    </div>
 	    </form>
 	    	<p>&nbsp;</p>

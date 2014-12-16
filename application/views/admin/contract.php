@@ -676,6 +676,8 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
     			
 			</div>
 		    <?php } } ?>
+		    
+		    <?php if($quoteitems){?>
 		    <div class="span12">
 		       
 		    <div class="span3">
@@ -686,6 +688,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 				    </div>
 			   </div>
 		    </div>
+		    <?php } ?>
 	    </form>
 	    	<p>&nbsp;</p>
 	    	<?php if($this->validation->id && $quoteitems && !$awarded){?>

@@ -226,6 +226,11 @@ class Order extends CI_Controller
  			{
  				$filter .= " AND o.type='".$_POST['ordertype']."' ";
  			}
+ 			
+ 			if(@$_POST['searchbyguest'] && @$_POST['searchbyguest'])
+ 			{
+ 				$filter .=  " AND o.email LIKE '%".trim($_POST['searchbyguest'])."%'";
+ 			}
 		}
  		
 		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status  

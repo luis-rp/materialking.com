@@ -453,7 +453,7 @@ function displaypricemodal(){
 											Quote#
 							    		</td>
 							    		<td colspan="5">
-											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } elseif(isset($revisionno)) { echo "."; printf('%03d',($revisionno-1)); } else {  echo ".000";  } ?>"/>
+											<input type="text" name="quotenum" value="<?php if(isset($revisionno)) { echo "."; printf('%03d',($revisionno)); } elseif(isset($quotenum) && $quotenum!="") { echo $quotenum; } else {  echo ".000";  } ?>"/>
 							    		</td>
 							    		<td>
 											<?php // if($draft){?>

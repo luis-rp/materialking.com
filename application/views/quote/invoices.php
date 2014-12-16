@@ -209,7 +209,8 @@ function invoice(invoicenum,invoicequote)
                 </div>
 
                 <?php } else {?>
-       				<span style="display: block;position:absolute;z-index:9999;margin-top:10px; margin-left:30px;" class="label label-important">No Invoice Detected.</span>
+                <br>
+       		<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Invoice Detected</div></div>
                 <?php }?>
 
 		</div>

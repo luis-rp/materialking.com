@@ -16,6 +16,18 @@ function changetier(newval,oldval,id){
 	
 }
 
+
+function allowonlydigits(e,elementid,errorid){
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message                
+      $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
+      $("#"+errorid).css('color','red');
+      return false;
+    }
+
+}
+
 </script>
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
@@ -164,7 +176,8 @@ function changetier(newval,oldval,id){
 								</td>
 								
 								<td>
-									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>"/>
+									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  /> 
+									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span>	
 								</td>
 								<td>
 									<input  style="width:70px" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 

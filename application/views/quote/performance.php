@@ -65,6 +65,11 @@
                                                 <th style="width:15%">Bids</th>
                                                 <th style="width:25%">Awards</th>
                                                 <th style="width:35%">Win Rate(%)</th>
+                                                <th style="width:35%">Total Qty. via Bids</th>
+                                                <th style="width:35%">Avg Order Qty. via Bids</th>
+                                                <th style="width:25%">Store Sales</th>
+                                                <th style="width:25%">Total Qty. Via Store</th><br>
+												<th style="width:25%">Avg Order Qty. Via Store</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -79,6 +84,11 @@
                                                 <td class="v-align-middle"><?php echo $item->bidcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->awardcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->performance;?></td>
+                                                <td class="v-align-middle"><?php echo $item->totalquantity;?></td>
+                                                <td class="v-align-middle"><?php echo ceil($item->totalquantity/$item->bidcount);?></td>
+                                                 <td class="v-align-middle"><?php echo round($item->storesales,2);?></td>
+                                                <td class="v-align-middle"><?php echo $item->totalstoreqty;?></td>
+                                                <td class="v-align-middle"><?php echo ceil($item->avgstoreqty);?></td>
                                             </tr>
                                           <?php } ?>
                                         </tbody>

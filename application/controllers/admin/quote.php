@@ -7351,8 +7351,10 @@ $loaderEmail = new My_Loader();
     function getitembycode()
     {
         $code = $_POST['code'];
-        if(isset($projectid))
+        if(isset($_POST['projectid']))
         $projectid = $_POST['projectid'];
+        else 
+        $projectid = "";
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
 

@@ -489,6 +489,8 @@ $(function() {
 				    <?php } ?>				    
 				   <tbody>
 			    </table>
+               <?php } else {?>
+              <br><div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Design Book Published</div></div>
                <?php } ?>
 			    <div class="form-group">
 				   <label class="form-label"></label>

@@ -27,6 +27,7 @@ function readnotification(id)
                                 <h4>&nbsp;</h4>
                             </div>
                             <div class="grid-body no-border">
+                                 <?php if(isset($ads) && count($ads) > 0) { ?>
                                     <table id="datatable" class="table no-more-tables general">
                                         <thead>
                                             <tr>
@@ -39,8 +40,7 @@ function readnotification(id)
                                         </thead>
                                         
                                         <tbody>
-							              <?php
-									    	$i = 0;
+							              <?php $i = 0;
 									    	foreach($ads as $ad)
 									    	{
 									    		$i++;
@@ -52,9 +52,12 @@ function readnotification(id)
                                                 <td><a href="<?php echo base_url("company/updatead/".$ad->id);?>">Edit</a></td>
                                                 <td><a class="close" href="<?php echo base_url("company/deletead/".$ad->id);?>" onclick="return confirm('Are you really want to delete this field?');">&times;</a></td>
                                             </tr>
-                                          <?php } ?>
+                                          <?php }  ?>
                                         </tbody>
                                     </table>
+                                    <?php } else { ?>
+                         <br><div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Live Classified Ads</div></div>
+                                    <?php }  ?>
                                     <br/>
                             </div>
                         </div>

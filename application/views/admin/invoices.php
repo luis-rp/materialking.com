@@ -310,13 +310,15 @@ function showreport(invoicenum)
 			    		<th width="50">Verification</th>
 			    		<th width="120">Cost Code</th>
 			    	</tr>
-				    	<?php $totalallprice=""; foreach($report->items as $item) {
+				    	<?php //$totalallprice=""; 
+				    	foreach($report->items as $item) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
 				    		$amount = $item->quantity * $item->ea;
-				    		$amount = round($amount + ($amount*$taxdata/100),2);
-				    		$totalallprice += $amount; ?>
+				    		//$amount = round($amount + ($amount*$taxdata/100),2);
+				    		//$amount = round($amount + ($amount*$taxdata/100),2);
+				    		//$totalallprice += $amount; ?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -326,7 +328,7 @@ function showreport(invoicenum)
 				    		<td><?php echo $item->unit;?></td>
 				    		<td><?php echo $item->quantity;?></td>
 				    		<td><?php echo round($item->ea,2);?></td>
-				    		<td>$<?php echo round($totalallprice,2);?></td>
+				    		<td>$<?php echo round($amount,2);?></td>
 				    		<td><?php echo $item->paymentstatus;?></td>
 				    		<td><?php echo $item->status;?></td>
 				    		<td><?php echo $item->costcode;?></td>			    		

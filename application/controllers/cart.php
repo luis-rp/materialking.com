@@ -611,7 +611,7 @@ class cart extends CI_Controller
                       $transferbody = "Dear {$company->title},<br/><br/>
 $ {$amount} has been transfered to your bank account for order#{$ordernumber}, with the transfer#{$tobj->id}.
 ";
-                      $transferbody.= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 		
+                      $transferbody.= "<br><a href='".site_url('order/details/'.$oid)."' target='_blank'>View Order</a>"; 		
                       $subject = "Payment Details from ezpzp";
                       $this->sendEmail($transferbody,$company->primaryemail, $subject, $company->title);
 			    }
@@ -1196,8 +1196,8 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			$this->email->clear(true);
 			$this->email->from($_POST["inputEmail"], $_POST["inputName"]);
 			$this->email->to($company->primaryemail);
-			$body = "Dear,<br><br> Following User Has Send You Message.<br><p><strong>Name :</strong> ".$_POST["inputName"]."</p><p><strong>Email : </strong>".$_POST["inputEmail"]."</p><p><strong>Message : </strong></p>". $_POST["inputMessage"] . "<br>";
-			$this->email->subject("Order details!");
+			$body = "Dear,<br><br> Following User Has Sent You a Message from the order Checkout page.<br><p><strong>Name :</strong> ".$_POST["inputName"]."</p><p><strong>Email : </strong>".$_POST["inputEmail"]."</p><p><strong>Message : </strong></p>". $_POST["inputMessage"] . "<br>";
+			$this->email->subject("Message From Customer via Order Checkout.");
 			$this->email->message($body);
 			$this->email->set_mailtype("html");
 			$this->email->send();

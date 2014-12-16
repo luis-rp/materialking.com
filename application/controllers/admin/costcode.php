@@ -589,17 +589,17 @@ class costcode extends CI_Controller {
             }
          
             foreach ($costcodeitems2 as $row2) {
-            	if($row->potype=="Contract"){
+            	if($row2->potype=="Contract"){
             		
             	$awarded = $this->quote_model->getawardedcontractbid($row2->quote);
                 $row2->ea = "$ " . $row2->ea;
-                $row->quantity = '100%';
-                $row->unit = 'Contract';
-                $row->itemcode = 'Contract';
-                $row->newreceived = $row->newreceived;
-                $row->daterequested = isset($awarded->invoices[0]->items[0]->receiveddate)?$awarded->invoices[0]->items[0]->receiveddate:'N/A';
+                $row2->quantity = '100%';
+                $row2->unit = 'Contract';
+                $row2->itemcode = 'Contract';
+                $row2->newreceived = $row2->newreceived;
+                $row2->daterequested = isset($awarded->invoices[0]->items[0]->receiveddate)?$awarded->invoices[0]->items[0]->receiveddate:'N/A';
                 $row2->totalprice = "$ " . $row2->totalprice;
-                $row->itemname = htmlentities($row2->itemname);
+                $row2->itemname = htmlentities($row2->itemname);
                 $row2->status = strtoupper($awarded->status);
                 //$row2->newreceived = $row2->newreceived;
                 $row2->actions = //$row->status=='COMPLETE'?'':
@@ -610,7 +610,7 @@ class costcode extends CI_Controller {
                 $awarded = $this->quote_model->getawardedbid($row2->quote);
                 $row2->ea = "$ " . $row2->ea;
                 $row2->totalprice = "$ " . $row2->totalprice;
-                $row->itemname = htmlentities($row2->itemname);
+                $row2->itemname = htmlentities($row2->itemname);
                 $row2->status = strtoupper($awarded->status);
                 //$row2->newreceived = $row2->newreceived;
                 $row2->actions = //$row->status=='COMPLETE'?'':

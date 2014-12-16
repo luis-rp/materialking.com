@@ -149,7 +149,7 @@ function submitForm(val,invoicequote)
 		   		$totalallpaid = 0;
 		   		$i = 0;
 		   		if(!@$reports)
-		   			echo '<br/><br/><br/><br/>No records found';
+		   		echo '<br><div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No records found</div></div>';
 		   		else
 		   			foreach($reports as $report)
 		   			{
