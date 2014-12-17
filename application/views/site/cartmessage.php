@@ -38,6 +38,7 @@ $(document).ready(function() {
 					$totalRates=$totalordershipping=0;
 				}
 				$gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
+				$companyid = $item['companydetails']->id;  
             	/*if(is_object($item['rate'])){
             	
             		$totalRates +=$item['rate']->rate;
@@ -89,7 +90,8 @@ $(document).ready(function() {
     </div>
 
     <div class="content">
-        <form method="post">
+    
+        <form method="post"  action="<?php echo site_url('cart/sendsms/'.$companyid);?>">
             <div class="control-group">
                 <label class="control-label" for="inputName">
                     Name
@@ -127,7 +129,7 @@ $(document).ready(function() {
         </form>
     </div>
 </div>
-            </div>
+   </div>
             
             
         </div>
