@@ -2790,7 +2790,7 @@ or edit your quote.</div></div></div>');
 		}
 		
 		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->from('shipment')->join('item','shipment.itemid=item.id', 'left')
 		             ->where('quote',$quoteid)->where('company',$company->id)
 		             ->get()->result();
 		

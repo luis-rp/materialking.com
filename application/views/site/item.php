@@ -527,6 +527,17 @@ $( document ).tooltip();
 		getcostcodecombo()
 		$("#addtoquotemodal").modal();
 	}
+	
+	function addtopo1(quote)
+	{
+		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+
+		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("admin/quote/update/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
+		$("#modalhtm").html(string);
+		$("#addtoquotemodal1").modal();
+
+	}
+	
 	function rfqformsubmit()
 	{
 		if($('#additemqty').val()%$("#incrementqty").val()!=0){
@@ -534,6 +545,7 @@ $( document ).tooltip();
 			return false;
 		}
 		
+		var quote = $('[name="quote"]').val();
 		var d = $("#addtoquoteform").serialize();
 
         $.ajax({
@@ -543,7 +555,8 @@ $( document ).tooltip();
         }).done(function(data) {
             if (data == 'Success')
             {
-                alert('RFQ created for the item.')
+                //alert('RFQ created for the item.')
+                addtopo1(quote);
             }
             else
             {
@@ -1440,3 +1453,22 @@ $( document ).tooltip();
     </div>
     <!-- /.modal-dialog -->
   </div>
+  
+  
+  		<div class="modal hide fade" id="addtoquotemodal1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                        <div id="modalhtm">
+
+                        </div>
+                        </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

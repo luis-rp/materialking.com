@@ -315,7 +315,7 @@ function acceptshipment(ai,si)
     	var invoicenum = $("#acceptinvoicenum"+si).html();
     	$("#received"+ai).val(quantity);
     	$("#invoicenum"+ai).val(invoicenum);
-    	$("#receiveddate"+ai).val('<?php echo date('m/d/Y');?>');
+    	//$("#receiveddate"+ai).val('<?php echo date('m/d/Y');?>');
     	$("#trackform").submit();
     });
 }
@@ -329,13 +329,13 @@ function acceptall()
 		<?php if(count($shipments2)>1) { foreach($shipments2 as $s) // if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
-		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
+		//$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
 		<?php // }
 		}else{
 		foreach($shipments as $s) if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
-		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
+		//$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
 		<?php  } 
 		}
 		?>
@@ -558,7 +558,7 @@ function acceptall()
 									   }
 									}
                                 
-                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> </td>
+                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate));  ?>  </td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
@@ -632,7 +632,7 @@ function acceptall()
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" ';
                                                else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
-                                               value="<?php if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
+                                               value="<?php if(@$q->datereceived) echo date("m/d/Y",strtotime($q->datereceived)); //if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
                                                data-date-format="mm/dd/yyyy"/>
                                     </td>
                                     <td>
@@ -714,6 +714,7 @@ function acceptall()
            <table class="table table-bordered" >
            	<tr>
            		<th>Item</th>
+           		<th>Date Sent</th>
            		<th>Quantity</th>
            		<th>Reference #</th>
            		<th>Action</th>
@@ -721,6 +722,7 @@ function acceptall()
            	<?php foreach($shipments as $s){?>
            	<tr>
            		<td><?php echo $s->itemname;?></td>
+           		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>
            		<td>

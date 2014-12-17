@@ -356,6 +356,7 @@ class Order extends CI_Controller
 			
 		$this->db->where('id',$id);
 		$order = $this->db->get('order')->row();
+		$orderdetails = $this->db->get_where('orderdetails',array('orderid'=>$order->id))->row();
 		if(!$order)
 			redirect('order');
 		if($status != 'Accepted' && $status != 'Void')
@@ -364,7 +365,32 @@ class Order extends CI_Controller
 		}
 		$update = array('status'=>$status);
 		if($status == 'Void')
-		{
+		{ 
+			if(isset($orderdetails)) {
+				if($orderdetails->paymentstatus=='Paid' && $orderdetails->paymenttype=='Credit Card') {
+					$data="";
+					if(!$order->email)
+		    		{
+			    	$order->email = @$this->db->where('id',$order->purchasingadmin)->get('users')->row()->email;
+		    		}
+		    		
+					if($order->email)
+					{
+	        			$this->load->library('email');
+		        		$config['charset'] = 'utf-8';
+		        		$config['mailtype'] = 'html';	        			
+		        		$this->email->initialize($config);
+		        		$this->email->from($company->primaryemail);
+		        		$this->email->to($order->email);
+		        		$subject = 'Payment verified by supplier';		        		
+		        		$body= "Payment verified for Transaction id is {$order->txnid} for order# {$order->ordernumber}";
+				      	$loaderEmail = new My_Loader();
+		        		$this->email->subject($subject);
+		        		$this->email->message($body);	
+		        		$this->email->set_mailtype("html");
+		        		$this->email->reply_to($company->primaryemail);
+		        		$this->email->send();
+					} } }
 		    $update['paymentstatus'] = 'Unpaid';
 		    $update['paymenttype'] = '';
 		    $update['paymentnote'] = '';
@@ -376,32 +402,29 @@ class Order extends CI_Controller
 			    $order->email = @$this->db->where('id',$order->purchasingadmin)->get('users')->row()->email;
 		    }
 			if($order->email)
-			{
-        		$this->load->library('email');
-        		$config['charset'] = 'utf-8';
-        		$config['mailtype'] = 'html';
-        			
-        		$this->email->initialize($config);
-        		$this->email->from($company->primaryemail);
-        		$this->email->to($order->email);
-        		$subject = 'Payment verified by supplier';
-        		
-        		$data['email_body_title'] = "Payment verified for order# {$order->ordernumber}";
-        		$data['email_body_content'] = "<strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
-		        $data['email_body_content'] .= $this->getorderdetails($order->id);	
-		      	$loaderEmail = new My_Loader();
-		        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-        		$this->email->subject($subject);
-        		$this->email->message($send_body);	
-        		$this->email->set_mailtype("html");
-        		$this->email->reply_to($company->primaryemail);
-        		$this->email->send();
-			}
+					{
+	        		$this->load->library('email');
+	        		$config['charset'] = 'utf-8';
+	        		$config['mailtype'] = 'html';        			
+	        		$this->email->initialize($config);
+	        		$this->email->from($company->primaryemail);
+	        		$this->email->to($order->email);
+	        		$subject = 'Payment verified by supplier';	        		
+	        		$data['email_body_title'] = "Payment verified for order# {$order->ordernumber}";
+	        		$data['email_body_content'] = "<strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
+			        $data['email_body_content'] .= $this->getorderdetails($order->id);	
+			      	$loaderEmail = new My_Loader();
+			        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+	        		$this->email->subject($subject);
+	        		$this->email->message($send_body);	
+	        		$this->email->set_mailtype("html");
+	        		$this->email->reply_to($company->primaryemail);
+	        		$this->email->send();
+					}			
 		}
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$this->db->update('orderdetails',$update);
-		//echo $id.'-'.$company->id.'-'.$status;die;
 		redirect('order/details/'.$id);
 	}
 	

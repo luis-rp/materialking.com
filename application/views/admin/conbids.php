@@ -259,19 +259,24 @@ $(function() {
                for(var index=0;index<cat.length;index++){
                	   val[index] = val[index].replace(",","");
             	   myfloat = parseFloat(val[index]);
+            	   val[index] = parseFloat(val[index]);
 				ser[index] = {"name":cat[index],"data":[myfloat]};
                    }
 
                    if(cat.length>1) {
+                   	<?php if($maxcountitems>1) {?>
                    	ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
-
+					<?php } ?>
                    	var save = val.max() - val.min();
                    	save = save.toFixed(2);
                    	//var savepo = val.max() - parseFloat($("#selectedtotal").text());
                    	<?php $highTotal =array_sum($maximum);?>
                    	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());
                    	savepo = savepo.toFixed(2);
-                   	var textsubtitle = '*HI VS LOW SAVINGS '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   	var textsubtitle = '*HI VS LOW SAVINGS '+save+'$'+'<br />';
+                   	<?php if($maxcountitems>1) {?>
+                   	textsubtitle += '*Split P.O. Savings '+savepo+'$';
+                   	<?php } ?>
                    }else
                    var textsubtitle = "";
 

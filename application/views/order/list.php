@@ -45,14 +45,27 @@ $(document).ready(function(){
 		<div class="row">
                     <div class="col-md-12">
 				   		<div class="combofixed">
-
-			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post" style="margin-left:-34px">
-			                    From: <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield" style="width: 70px;"/>
-			           
-			                    To: <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield" style="width: 70px;"/>
-			                   
-			                    Company:
-			    				<select id="purchasingadmin" name="purchasingadmin" style="width:120px;"> 
+				   		
+			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post">
+			    		   
+			    		    <div class="form-group">
+			    		     <label class="form-label"> From</label>
+			    		       <div class="controls">
+			                     <input type="text" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="datefield"/>
+			                   </div>
+			                </div>
+			                
+			               <div class="form-group">
+			    		     <label class="form-label"> To</label>
+			    		       <div class="controls">		           
+			                     <input type="text" name="searchto" value="<?php echo @$_POST['searchto']?>" class="datefield"/>
+			                    </div>
+			                </div>
+			                
+			               <div class="form-group">
+			    		     <label class="form-label"> Company</label>
+			    		       <div class="controls">		           			                    
+			    				<select id="purchasingadmin" name="purchasingadmin"> 
 			    					<option value=''>All Companies</option>
 			    					<option value='guest'>Guest</option>
 			    					<?php foreach($purchasingadmins as $company){?>
@@ -64,36 +77,63 @@ $(document).ready(function(){
 			    						
 			    					<?php }?>
 			    				</select>
-			                   
-			                    Payment Status:
-			                    <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width:120px">
+			    		       </div>
+			                </div>
+			                
+			                		
+			                <div class="form-group">
+			    		     <label class="form-label"> Payment Status</label>
+			    		       <div class="controls">	   		                   
+			                    <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick">
                             		<option value=''>All</option>
                                     <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
               <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
                                     <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
                                 </select>
-			    				 
-			    				 Order Status:
-			    				  <select id="searchorderstatus" name="searchorderstatus" class="form-control selectpicker show-tick" style="width:120px">
+                                </div>
+                             </div>
+                             
+                             
+			    			 <div class="form-group">
+			    		     <label class="form-label"> Order Status</label>
+			    		       <div class="controls">		 		    				
+			    				  <select id="searchorderstatus" name="searchorderstatus" class="form-control selectpicker show-tick">
                             		<option value=''>All</option>
                                     <option value="Pending" <?php if (@$_POST['searchorderstatus'] == 'Pending') { echo 'SELECTED'; } ?>>Pending</option>
               						<option value="Accepted" <?php if (@$_POST['searchorderstatus'] == 'Accepted') { echo 'SELECTED'; } ?>>Accepted</option>
 			    				</select>
-			    				
-			    				  Order Type:
-			    				 <select id="ordertype" name="ordertype" class="form-control selectpicker show-tick" style="width:120px">
+			    			   </div>
+                             </div>
+                             	
+			    			 <div class="form-group">
+			    		     <label class="form-label">Order Type</label>
+			    		       <div class="controls">					    				 
+			    				 <select id="ordertype" name="ordertype" class="form-control selectpicker show-tick">
                             		<option value=''>All</option>
                                     <option value="Credit Card" <?php if (@$_POST['ordertype'] == 'Credit Card') { echo 'SELECTED'; } ?>>Credit Card</option>
               						<option value="Manual" <?php if (@$_POST['ordertype'] == 'Manual') { echo 'SELECTED'; } ?>>Manual</option>
 			    				</select>
+			    			   </div>
+                             </div>	
 			    				
-			    				<input type="text" name="searchbyguest" id="searchbyguest" placeholder="Search By Guest Email" style="width:100px;">&nbsp;
-			                    <input type="submit" value="Filter" class="btn btn-primary"/>
-			                    <a href="<?php echo site_url('report');?>">
-			                    	<input type="button" value="Show All" class="btn btn-primary"/>
-			                    </a>
+			    				<div class="form-group">
+			    				    <label class="form-label">Search By Email</label>
+			    				  <div class="controls">		    				
+			    					<input type="text" name="searchbyguest" id="searchbyguest" placeholder="Search By Email">
+			    					</div>
+			    				</div>
+			    				
+			    				
+			    				 <div class="form-group">
+				                     <label class="form-label"></label>
+				                        <div class="controls">
+			                   			 <input type="submit" value="Filter" class="btn btn-primary"/>
+			                    			<a href="<?php echo site_url('report');?>">
+			                    			<input type="button" value="Show All" class="btn btn-primary"/>
+			                    			</a>
+			                    		</div>
+			                    	</div>
 			               </form>
-			               <br/><br/><br/><br/>
 			        </div>
 
                         <div class="grid simple ">

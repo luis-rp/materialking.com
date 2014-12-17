@@ -147,7 +147,13 @@ class subscriber extends CI_Controller
 			die;
 		}
 		$emailexists = 0;	
-		$subscribers = $this->db->get("newsletter_subscribers_data")->result();
+		
+		$this->db->select('*');
+		$this->db->from('newsletter_subscribers');
+		$this->db->join("newsletter_subscribers_data","newsletter_subscribers.id=newsletter_subscribers_data.subscriber_id");		
+		$this->db->where("newsletter_subscribers.cid",$_POST["cid"]);
+		$subscribers =$this->db->get()->result(); 
+				
 		if($subscribers){
 			foreach ($subscribers as $subscribe){
 				if($subscribe->value == $_POST['email'])

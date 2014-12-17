@@ -144,7 +144,7 @@
 			    	<?php
 
 			    		foreach($report->items as $item)
-			    		{
+			    		{	
 			    			if($item->potype == "Contract" )
 			    			$amount = $item->ea;
 			    			else 
@@ -165,7 +165,12 @@
 			    		<td><?php echo $item->status;?></td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
-			    		<td><a target="_blank" href="<?php echo site_url('admin/quote/invoices');?>"><?php echo $item->invoicenum;?></a></td>
+			    		<td>
+			    		<?php	if($item->potype=='Contract') { ?>
+                      	<a href="<?php echo site_url('admin/quote/contract_invoice/'.$item->invoicenum.'/'.$item->quoteid)?>" target="_blank"><?php echo $item->invoicenum; ?></a>
+					  <?php  } else { ?>
+			    		<a target="_blank" href="<?php echo site_url('admin/quote/invoice/'.$item->invoicenum.'/'.$item->quoteid);?>"><?php echo $item->invoicenum;?></a>     <?php } ?>
+			    		</td>
 			    		<td><?php  if(isset($item->datedue) && $item->datedue!="") { echo date("m/d/Y", strtotime($item->datedue)); } else { echo "No Date Set"; }  ?></td>
 			    		<?php if(0){?>
 			    		<td>

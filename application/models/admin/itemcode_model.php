@@ -451,6 +451,7 @@ class itemcode_model extends Model {
 
 // updating cost code
     function updateItemcode($id) {
+    	
     	$name=implode(",",$_FILES['UploadFile']['name']);
     	$filename=implode(",",$_POST['filename']);  
     	
@@ -492,10 +493,16 @@ class itemcode_model extends Model {
 	        'searchquery' => $this->input->post('searchquery'),
 	        'increment' => $this->input->post('increment')
         );
-        if(@$_FILES['userfile']['name'])
-            $options['item_img'] = $_FILES["userfile"]["name"];
-
-
+        
+    	if($_FILES["userfile"]["name"]=="")
+    	{
+    		$updatedata=$this->db->get_where('item',array('id'=>$this->input->post('id')))->row();
+    		$options['item_img'] = $updatedata->item_img;
+    	}
+    	else 
+    	{
+    		$options['item_img'] = $_FILES["userfile"]["name"];
+    	}
         $oldcoderow = $this->get_itemcodes_by_id($this->input->post('id'));
         $oldcode = $oldcoderow->itemcode;
         $newcode = $this->input->post('itemcode');

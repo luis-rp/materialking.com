@@ -4917,6 +4917,37 @@ class quote extends CI_Controller
 
 		if($awarded){
 			foreach($awarded->items as $item) {
+				
+				$item->shipreceiveddate = "";
+				
+				$awarditemid = $this->db->select('awarditem.id')
+			                        ->from('awarditem')
+			                        ->where('award',$item->award)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)
+			                        ->get()->row();		
+				
+				if($awarditemid){
+					
+					$shipreceiveddateresult = $this->db->select('receiveddate')
+			                        ->from('received')
+			                        ->where('awarditem',$awarditemid->id)
+			                        ->get()->row();	
+			         
+					if($shipreceiveddateresult){
+						$item->shipreceiveddate = $shipreceiveddateresult->receiveddate;
+					}
+			                        
+			                        
+				}
+				
+				$itemshipmentdate = $this->db->select('shipment.shipdate')
+		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
+		             ->where('quote',$qid)->where('shipment.itemid',$item->itemid)->get()->result();
+				if(@$itemshipmentdate[0]->shipdate)
+				$item->datereceived = $itemshipmentdate[0]->shipdate;
+				else 
+				$item->datereceived = "";
+				
 				if($item->company){
 				$item->etalog = $this->db->where('company',$item->company)
 				->where('quote',$qid)

@@ -68,6 +68,7 @@ class Dashboard extends CI_Controller
 						JOIN ".$this->db->dbprefix('quote')." q ON q.id = qe.quoteid
 						JOIN ".$this->db->dbprefix('award')." a ON a.quote = qe.quoteid
 						JOIN ".$this->db->dbprefix('awarditem')." ai ON a.id = ai.award
+						AND qe.companyid= ai.company
 						WHERE qe.companyid=".$company->id;
 
 		$logQry = $this->db->query($errorLogSql);

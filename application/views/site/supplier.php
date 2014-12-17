@@ -151,6 +151,11 @@ $long = $supplier->com_lng;
 				display:none;
 				}
 				
+				#cke_67 
+				{
+				display:none;
+				}
+				
 				#cke_about 
 				{
 				width:78%;
@@ -159,6 +164,10 @@ $long = $supplier->com_lng;
 				#cke_1_contents
 				{
 				height:99px !important;
+				}
+				.bx-viewport
+				{
+				height:290px !important;
 				}
 
 		</style>
@@ -373,7 +382,7 @@ border-color: #7C9710
 
             		if($('#email').val() !=""){
 
-            			var data = "email="+$('#email').val();
+            			var data = "email="+$('#email').val()+"&cid="+$('#cid').val();
 
             			$.ajax({
             				type:"post",
@@ -1639,26 +1648,29 @@ function changetab(tabname){
                         			</td>
                         		</tr>
                         		<?php }?>
-                        		<?php  $i=0;if($types[$i]->category == 'Industry') {?>
+                        		
+                        		<?php $typecnt=0; $typehtml=""; foreach ($types as $type)
+                                            if ($type->category == 'Industry') {
+                                                
+                                                $typehtml .= '<li>
+                                                <a href="javascript:void(0)" onclick="industryitems('.$type->id.')">
+                                                <h4>'.$type->title.'</h4>
+                                                </a>
+                                                </li>';
+                                $typecnt++; } ?>
+                        		
+                        		<?php if($typecnt >0) {?>
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
                         		<tr>
                         			<td colspan="2">
                         			<ul class="inlist">
-                        			    <?php foreach ($types as $type)
-                                            if ($type->category == 'Industry') {
-                                                ?>
-                                                <li>
-                                                <a href="javascript:void(0)" onclick="industryitems('<?php echo $type->id;?>')">
-                                                <h4><?php echo $type->title; ?></h4>
-                                                </a>
-                                                </li>
-                                        <?php } ?>
-                                        </ul>
+                        			<?php echo $typehtml; ?>    
+                                    </ul>
                         			</td>
                         		</tr>
-                        		<?php } $i++; ?>
+                        		<?php } ?>
                         		<?php if($rating){?>
                         		<tr>
                         			<td>Reviews: </td>
@@ -2035,7 +2047,7 @@ function changetab(tabname){
 				 					    <div class="form-group">
 					                        <label class="form-label"></label>
 					                        <div class="controls">
-					                        	  <input type="hidden" name="cid" class="cid" value="<?php echo $supplier->id;?>">
+					                        	  <input type="hidden" name="cid" id="cid" class="cid" value="<?php echo $supplier->id;?>">
 					                              <input type="button" value="Subscribe" name="subscribe" id="subscribe" class="btn btn-primary btn-lg">
 					                        </div>
 					                    </div>
