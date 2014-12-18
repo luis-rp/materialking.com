@@ -6494,9 +6494,12 @@ $loaderEmail = new My_Loader();
                 $this->db->where('company',$cid);
                 $this->db->update('purchasingtier',array('creditlimit'=>$tier->creditlimit-$amount));
                 $company = $this->company_model->get_companys_by_id($cid);
-
-                $data['email_body_title'] = "Credit amount of ".$cpa->fullname.', '.$cpa->companyname." has been deducted by $".$amount+$tax.".<br>";
-                $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname." is $".$tier->creditlimit - $amount.".<br><br>";
+                $tamount="";
+                $ramount="";
+                $tamount=$amount+$tax;
+                $ramount=$tier->creditlimit - $amount;
+                $data['email_body_title'] = "Credit amount of ".$cpa->fullname.",".$cpa->companyname." has been deducted by $".$tamount."<br>";
+                $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname."is $".$ramount."<br><br>";
                 $data['email_body_content'] .= "Find the details below:<br/><br/>";
                 $data['email_body_content'] .= "<table>";
                 $data['email_body_content'] .= "<tr><td>Name</td><td>Price</td><td>Quantity</td><td>Total</td></tr>";

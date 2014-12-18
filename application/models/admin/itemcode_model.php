@@ -862,6 +862,23 @@ class itemcode_model extends Model {
         return $this->db->insert_id();
     }
 
+    
+    public function add_massitem($data_user)
+    {	
+        $this->load->database();
+
+        $this->db->insert('item',$data_user);
+        $id = $this->db->insert_id();
+
+        foreach ($_POST['categories'] as $category){
+        	$options2 = array();
+        	$options2['itemid'] = $id;
+        	$options2['categoryid'] = $category;
+        	$this->db->insert('item_category', $options2);
+        }
+        
+    }
+    
 //End By Dhruvisha
 }
 

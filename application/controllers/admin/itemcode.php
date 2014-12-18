@@ -939,6 +939,89 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->load->view('admin/itemcode', $data);
     }
 
+    
+    function add_itemcode_xls(){
+    	
+    	$data['heading'] = 'Add Itemcode in Mass';
+        $data['action'] = site_url('admin/itemcode/add_itemcode_xls');
+        //$data['category'] = $this->itemcode_model->getCategoryList();
+        //$data['subcategory'] = $this->itemcode_model->getSubCategoryList();
+        //$this->_set_fields();
+        //$this->_set_rules();
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['category'] = $categories;
+        
+        	 if(isset($_FILES['massexcelfile']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/excel/';            	     	
+            	$temp=$target;
+            	$tmp=$_FILES['massexcelfile']['tmp_name'];
+            	$temp=$temp.basename($_FILES['massexcelfile']['name']);
+            	move_uploaded_file($tmp,$temp);
+            	$temp='';
+            	$tmp='';
+            	}
+            $this->do_excelupload();
+            //$itemid = $this->itemcode_model->SaveItemcode();
+            
+            ini_set('display_errors', 1); error_reporting(E_ALL ^ E_NOTICE);
+            include_once(APPPATH.'third_party/reader.php');
+            $data = new Spreadsheet_Excel_Reader();
+            $data->setOutputEncoding('CP1251');
+            $data->read('./uploads/excel/'.$_FILES['massexcelfile']['name']);
+
+            $defaultcategory = "";
+            if($_POST['categories']){
+            	$defaultcategory = @$_POST['categories'][0];
+            }
+            
+            for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) {
+            	$itemcode = $data->sheets[0]["cells"][$x][1];
+            	$url = $data->sheets[0]["cells"][$x][2];
+            	$itemname = $data->sheets[0]["cells"][$x][3];
+            	$description = $data->sheets[0]["cells"][$x][4];
+            	$details  = $data->sheets[0]["cells"][$x][5];
+            	$unit = $data->sheets[0]["cells"][$x][6];
+            	$ea = $data->sheets[0]["cells"][$x][7];
+            	$notes = $data->sheets[0]["cells"][$x][7];
+            	$keyword = $data->sheets[0]["cells"][$x][7];
+            	$category = $defaultcategory;
+            	$item_img = $data->sheets[0]["cells"][$x][9];
+            	$item_img_alt_text = $data->sheets[0]["cells"][$x][10];
+            	$external_url = $data->sheets[0]["cells"][$x][11];
+            	$length = $data->sheets[0]["cells"][$x][12];
+            	$width = $data->sheets[0]["cells"][$x][13];
+            	$height = $data->sheets[0]["cells"][$x][14];
+            	$weight = $data->sheets[0]["cells"][$x][15];
+            	$featuredsupplier = $_POST['featuredsuppliers'];
+            	$instore = $data->sheets[0]["cells"][$x][16];
+            	$zoom = $data->sheets[0]["cells"][$x][17];
+            	$wiki = $data->sheets[0]["cells"][$x][18];
+            	$listinfo = $data->sheets[0]["cells"][$x][19];
+            	$tags = $data->sheets[0]["cells"][$x][20];
+            	$files = $data->sheets[0]["cells"][$x][21];
+            	$filename = $data->sheets[0]["cells"][$x][22];
+            	$searchquery = $data->sheets[0]["cells"][$x][23];
+            	$increment = $data->sheets[0]["cells"][$x][24];
+            	
+				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'details'=>$details, 'unit'=>$unit, 'ea'=>$ea, 'notes'=>$notes, 'keyword'=>$keyword, 'category'=>$category, 'item_img'=>$item_img, 'item_img_alt_text'=>$item_img_alt_text, 'external_url'=>$external_url, 'length'=>$length, 'width'=>$width, 'height'=>$height, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'zoom'=>$zoom, 'wiki'=>$wiki, 'listinfo'=>$listinfo, 'tags'=>$tags, 'files'=>$files, 'filename'=>$filename, 'searchquery'=>$searchquery, 'increment'=>$increment);
+            	$this->itemcode_model->add_massitem($data_user);
+            }
+            
+            $this->session->set_flashdata('message',
+            '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Codes Added Successfully</div></div>');
+            redirect('admin/itemcode');
+        	
+    }
 
     function add_itemcode ()
     {
@@ -1147,6 +1230,30 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
+    function do_excelupload ()
+    {
+        $config['upload_path'] = './uploads/excel/';
+        $config['allowed_types'] = '*';
+        //$config['max_size']	= '9000';
+        //	$config['max_width']  = '1024';
+        //	$config['max_height']  = '768';
+        $this->load->library('upload', $config);
+        if (! $this->upload->do_upload())
+        {
+            $error = array('error' => $this->upload->display_errors());
+
+             //$this->load->view('upload_form', $error);
+        }
+        else
+        {
+            //var_dump($this->upload->data()); exit;
+            $error = array('upload_data' => $this->upload->data());
+            //$this->_createThumbnail($_FILES["userfile"]["name"],'item',200,200);
+             //$this->load->view('upload_success', $data);
+        } //var_dump($error); exit;
+        return $error;
+    }
+    
     function updateitemcode ()
     {
         $data['heading'] = 'Update Item Code';

@@ -2,7 +2,7 @@
 
 class catcode extends CI_Controller {
 
-    function catcode() 
+    function catcode()
     {
         parent::__construct();
         $this->load->library('session');
@@ -37,10 +37,10 @@ class catcode extends CI_Controller {
         $this->load->template('../../templates/admin/template', $data);
     }
 
-    private function list_categories(&$categories, $parent_id, $cats, $sub = '') 
+    private function list_categories(&$categories, $parent_id, $cats, $sub = '')
     {
 
-        foreach ($cats[$parent_id] as $cat) 
+        foreach ($cats[$parent_id] as $cat)
         {
             $cat->id = $cat->id;
             $cat->catname = $sub . $cat->catname;
@@ -58,25 +58,45 @@ class catcode extends CI_Controller {
         }
     }
     
+    private function list_designcategories(&$categories, $parent_id, $cats, $sub = '')
+    {
+        foreach ($cats[$parent_id] as $cat)
+        {
+            $cat->id = $cat->id;
+            $cat->catname = $sub . $cat->catname;
+            $cat->cattype = $cat->parent_id?'Sub Category':'Parent Category';
+            $cat->actions = anchor('admin/catcode/designupdate/' . $cat->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
+                    . ' ' .
+                    anchor('admin/catcode/designdelete/' . $cat->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
+            ;
+            $categories[] = $cat;
+            if (isset($cats[$cat->id]) && sizeof($cats[$cat->id]) > 0) {
+                $sub2 = str_replace('&rarr;&nbsp;', '&nbsp;', $sub);
+                $sub2 .= '&nbsp;&nbsp;&nbsp;&rarr;&nbsp;';
+                $this->list_designcategories($categories, $cat->id, $cats, $sub2);
+            }
+        }
+    }
 
-    function index() 
+
+    function index()
     {
 
         $catcodes = $this->catcode_model->get_categories_tiered();
 
         $categories = array();
-        if ($catcodes) 
+        if ($catcodes)
         {
 
-            if (isset($catcodes[0])) 
+            if (isset($catcodes[0]))
             {
                 $this->list_categories($categories, 0, $catcodes);
             }
 
             $data['categories'] = $categories;
             $data['jsfile'] = 'catcodes.php';
-        } 
-        else 
+        }
+        else
         {
             $this->data['message'] = 'No Records';
         }
@@ -84,11 +104,41 @@ class catcode extends CI_Controller {
         $data ['heading'] = 'Category Management';
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
+        $data ['addlink'] .= '&nbsp;<a class="btn btn-green" href="' . base_url() . 'admin/catcode/adddesigncat">Add Design Book Category</a>';
+        $data ['addlink'] .= '&nbsp;<a class="btn btn-green" href="' . base_url() . 'admin/catcode/viewdesigncat">View Design Book Category</a>';
+        $data ['addsubcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/subcatcode/addcat">Add Sub Category</a>';
+        $this->load->view('admin/catlist', $data);
+    }
+    
+     function viewdesigncat()
+    {
+        $catcodes = $this->catcode_model->get_designcategories_tiered();
+        
+        $categories = array();
+        if ($catcodes)
+        {
+            
+            if(isset($catcodes[0]))
+            {
+                $this->list_designcategories($categories, 0, $catcodes);
+            }           
+            $data['categories'] = $categories;
+            $data['jsfile'] = 'catcodes.php';
+        }
+        else
+        {    
+            $this->data['message'] = 'No Records';
+        }
+        $data ['heading'] = 'Design Book Category Management';
+        $data ['table'] = $this->table->generate();
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/index">View Category</a>';
+        $data ['addlink'] .= '&nbsp;<a class="btn btn-green" href="' . base_url() . 'admin/catcode/adddesigncat">Add Design Book Category</a>';
         $data ['addsubcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/subcatcode/addcat">Add Sub Category</a>';
         $this->load->view('admin/catlist', $data);
     }
 
-    function addcat() 
+
+    function addcat()
     {
         $catcodes = $this->catcode_model->get_categories_tiered();
         $categories = array();
@@ -107,6 +157,27 @@ class catcode extends CI_Controller {
         $data['parentoptions'] = $this->catcode_model->getTreeOptions();
         $this->load->view('admin/catcode', $data);
     }
+    
+    function adddesigncat()
+    {
+        $catcodes = $this->catcode_model->get_designcategories_tiered();
+        $categories = array();
+        if ($catcodes) {
+            if (isset($catcodes[0])) {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['id'] = false;
+        $data['parent_id'] = false;
+        $data['categories'] = $categories;
+        $this->_set_catfields();
+        $data ['heading'] = 'Add New Design Book Category';
+        $data ['message'] = '';
+        $data ['action'] = site_url('admin/catcode/add_designcatcode');
+        $data['parentoptions'] = $this->catcode_model->getDesignTreeOptions();
+        $this->load->view('admin/designcatcode', $data);
+    }
+    
     function  do_upload($previous_image = "")
     {
         $config['upload_path'] = './uploads/category-banners/';
@@ -115,7 +186,7 @@ class catcode extends CI_Controller {
        // $config['max_size']	= '330';
         //$config['max_width']  = '830';
         //$config['max_height']  = '330';
-        
+
         $this->load->library('upload', $config);
         $field_name = "banner_image";
         if ( ! $this->upload->do_upload($field_name))
@@ -126,7 +197,7 @@ class catcode extends CI_Controller {
         else
         {
                 $data_image = array('upload_data' => $this->upload->data());
-                
+
                 $config['image_library'] = 'gd2';
                 $config['source_image']	= './uploads/category-banners/'.$data_image['upload_data']['file_name'];
                 $config['new_image'] =  './uploads/category-banners/thumbs/'.$data_image['upload_data']['file_name'];
@@ -135,20 +206,20 @@ class catcode extends CI_Controller {
                 //$config['maintain_ratio'] = TRUE;
                 $config['width']	 = 90;
                 $config['height']	= 60;
-                $this->load->library('image_lib', $config); 
+                $this->load->library('image_lib', $config);
                 $this->image_lib->resize();
-                
+
                 //Unlink Previous images
                 if($previous_image!= "")
                 {
                         unlink('./uploads/category-banners/'.$previous_image);
                         unlink('./uploads/category-banners/thumbs/'.$previous_image);
-                }   
-                
+                }
+
         }
          return $data_image['upload_data']['file_name'];
     }
-    function add_catcode() 
+    function add_catcode()
     {
         $image_name = "";
         if($_FILES['banner_image']['error'] == 0)
@@ -164,7 +235,7 @@ class catcode extends CI_Controller {
         }
         */
 
-        
+
         $data ['heading'] = 'Add New Category';
         $data ['action'] = site_url('admin/catcode/add_catcode');
 
@@ -184,6 +255,28 @@ class catcode extends CI_Controller {
             redirect('admin/catcode');
         }
     }
+    
+    function add_designcatcode()
+    {
+        $data ['heading'] = 'Add New Design Book Category';
+        $data ['action'] = site_url('admin/catcode/add_designcatcode');
+
+        $this->_set_catfields();
+        $this->_set_catrules();
+        $data['parentoptions'] = $this->catcode_model->getDesignTreeOptions();
+
+        if ($this->validation->run() == FALSE) {
+            $data ['message'] = $this->validation->error_string;
+            $this->load->view('admin/designcatcode', $data);
+        } elseif ($this->catcode_model->checkDesignDuplicateCat($this->input->post('catname'), 0)) {
+            $data ['message'] = 'Duplicate Design Book Category';
+            $this->load->view('admin/designcatcode', $data);
+        } else {
+            $itemid = $this->catcode_model->SaveDesignCategory();
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Design Book Category Added Successfully</div></div>');
+            redirect('admin/catcode/viewdesigncat');
+        }
+    }
 
     function _set_catfields() {
         $fields ['id'] = 'id';
@@ -193,13 +286,12 @@ class catcode extends CI_Controller {
 
     function _set_catrules() {
         $rules ['catname'] = 'trim|required';
-
         $this->validation->set_rules($rules);
         $this->validation->set_message('required', '* required');
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
     }
-
-    function update($id) 
+     
+    function update($id)
     {
         $catcodes = $this->catcode_model->get_categories_tiered();
         $categories = array();
@@ -223,15 +315,41 @@ class catcode extends CI_Controller {
         $this->validation->id = $id;
         $this->validation->catname = $cat[0]->catname;
         $this->validation->parent_id = $cat[0]->parent_id;
-		$this->validation->title = $cat[0]->title;
+        $this->validation->title = $cat[0]->title;
         $this->validation->text = $cat[0]->text;
-                
+
         $data['banner_image'] = $cat[0]->banner_image;
-        
+
         $data ['heading'] = 'Update Category';
         $data ['message'] = '';
         $data ['action'] = site_url('admin/catcode/updatecatcode');
         $this->load->view('admin/catcode', $data);
+    }
+    
+    function designupdate($id)
+    {
+        $catcodes = $this->catcode_model->get_designcategories_tiered();
+        $categories = array();
+        if ($catcodes) {
+            if (isset($catcodes[0])) {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['categories'] = $categories;
+
+        $this->_set_catfields();
+        $category_record = $this->catcode_model->get_designcategory($id);
+        $data['id'] = $category_record->id;
+        $data['parent_id'] = $category_record->parent_id;
+        $data['parentoptions'] = $this->catcode_model->getDesignTreeOptions($category_record->parent_id);
+        $cat = $this->catcode_model->get_designcatcodes_by_id($id);
+        $this->validation->id = $id;
+        $this->validation->catname = $cat[0]->catname;
+        $this->validation->parent_id = $cat[0]->parent_id;
+        $data ['heading'] = 'Update Design Book Category';
+        $data ['message'] = '';
+        $data ['action'] = site_url('admin/catcode/updatedesigncatcode');
+        $this->load->view('admin/designcatcode', $data);
     }
 
     function updatecatcode() {
@@ -239,21 +357,21 @@ class catcode extends CI_Controller {
         //$data ['action'] = site_url ('admin/catcode/update/'.$catid);
         $this->_set_catfields();
         $this->_set_catrules();
-        
+
         $image_name = $this->input->post('previous_image');
-        
+
         if($_FILES['banner_image']['error'] == 0)
         {
             $image_name = $this->do_upload($this->input->post('previous_image'));
         }
-        
+
 //        if(isset($image_name['error']) && $image_name['error'] != "")
 //        {
 //            $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Not a valid image file.</div></div>');
 //            redirect(base_url()."admin/catcode/update/".$this->input->post('id'),$data);
 //            die;
 //        }
-        
+
 
         $catid = $this->input->post('id');
         // echo $this->validation->run (); exit;
@@ -269,7 +387,7 @@ class catcode extends CI_Controller {
             $data['parentoptions'] = $this->catcode_model->getTreeOptions($this->input->post('parent_id'));
             $this->load->view('admin/catcode', $data);
         } else {
-            
+
             $dataUpdate = array(
                             "catname"=>$this->input->post('catname'),
                             "parent_id"=>$this->input->post('parent_id'),
@@ -277,17 +395,53 @@ class catcode extends CI_Controller {
                             "title"=>$this->input->post('catTitle'),
                             "text"=>$this->input->post('catText'),
             );
+
              $this->catcode_model->updateCategory($dataUpdate);
-            
+
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Category Updaed Successfully</div></div>');
             redirect('admin/catcode');
             //redirect('admin/itemcode/index');
+        }
+    }
+    
+    function updatedesigncatcode() {
+        $data ['heading'] = 'Update Design Book Category';
+        $this->_set_catfields();
+        $this->_set_catrules();
+        $catid = $this->input->post('id');
+        
+        if ($this->validation->run() == FALSE) {
+            $data ['message'] = $this->validation->error_string;
+            $data ['action'] = site_url('admin/catcode/designupdate/' . $catid);
+            $data['parentoptions'] = $this->catcode_model->getDesignTreeOptions($this->input->post('parent_id'));
+            $this->load->view('admin/designcatcode', $data);
+        } elseif ($this->catcode_model->checkDesignDuplicateCat($this->input->post('catname'), $catid)) {
+            $data ['message'] = 'Duplicate Design Bokk Category';
+            $data ['action'] = site_url('admin/catcode/designupdate/' . $catid);
+            $data['parentoptions'] = $this->catcode_model->getDesignTreeOptions($this->input->post('parent_id'));
+            $this->load->view('admin/designcatcode', $data);
+        } else {
+
+            $dataUpdate = array(
+                            "catname"=>$this->input->post('catname'),
+                            "parent_id"=>$this->input->post('parent_id')
+            );
+
+             $this->catcode_model->updateDesignCategory($dataUpdate);
+
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Design Book Category Updaed Successfully</div></div>');
+            redirect('admin/catcode/viewdesigncat');
         }
     }
 
     function delete($id) {
         $this->catcode_model->remove_category($id);
         redirect('admin/catcode', 'refresh');
+    }
+    
+     function designdelete($id) {
+        $this->catcode_model->remove_designcategory($id);
+        redirect('admin/catcode/viewdesigncat', 'refresh');
     }
 
 }

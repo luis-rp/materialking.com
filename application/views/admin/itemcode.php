@@ -62,6 +62,9 @@ $(document).ready(function(){
             });
             return false;
         });
+        
+        $('.noxls').css('display','none');		
+		$('.forxls').css('display','none');
 
        // $('#tagsInput').tagsinput();
     });
@@ -120,6 +123,17 @@ $(document).ready(function(){
 	 	document.getElementById("moreUploads").appendChild(abc);
 	 	upload_number++;
 	}
+	
+	
+	function showuploadfields(){
+		$('.noxls').css('display','none');		
+		$('.forxls').css('display','block');		
+	}
+	
+	function showindividualfields(){
+		$('.noxls').css('display','block');		
+		$('.forxls').css('display','none');		
+	}
 
 </script>
 
@@ -133,12 +147,58 @@ $(document).ready(function(){
                 <?php echo $this->session->flashdata('message'); ?>
                 <a class="btn btn-green" href="<?php echo site_url('admin/itemcode'); ?>">&lt;&lt; Back</a>
                 <br/>
-                <form class="form-horizontal" method="post" action="<?php echo $action; ?>" enctype="multipart/form-data">
+                <br>
+                <a style="cursor:pointer" onclick="showuploadfields();">Upload items using excel sheet</a> / <a style="cursor:pointer" onclick="showindividualfields();">Add Individual items</a>         
+                
+                <form id="massitemaddform" class="form-horizontal" method="post" action="<?php echo site_url('admin/itemcode/add_itemcode_xls'); ?>" enctype="multipart/form-data">
+                
+                
+                    <div class="control-group forxls">
+                        <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
+                        <div class="controls">
+                            <select style="width:400px;" multiple id="categories[]" name="categories[]">
+                            	<?php foreach($categories as $cat){?>
+                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
+                            	<?php  } ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group forxls">
+                        <label class="control-label">Featured Supplier</label>
+                        <div class="controls">
+                            <select id="featuredsuppliers" name="featuredsuppliers">
+                            	<?php foreach($companies as $sup){?>
+                            	<option value="<?php echo $sup->id;?>" <?php if($this->validation->featuredsupplier==$sup->id){echo 'selected';}?>><?php echo $sup->title;?></option>
+                            	<?php }?>
+                            </select>
+                        </div>
+                    </div>
+                
+                
+                 <div class="control-group forxls">
+                        <label class="control-label">Upload Excel</label>
+                        <div class="controls">                        	
+                            <input type="file" name="massexcelfile" size="20"  />                            
+                        </div>
+                </div>
+                
+                <div class="control-group forxls">
+                            <label class="control-label">&nbsp;</label>
+                            <div class="controls">
+                                <input name="massadd" type="submit" class="btn btn-primary" value="Update Itemcode List"/>
+                            </div>
+                </div>
+                
+                	
+                </form>
+                
+                <form id="itemaddform" class="form-horizontal" method="post" action="<?php echo $action; ?>" enctype="multipart/form-data">
                 <div  style="width:48%; float:left;">
                     <input type="hidden" name="id" value="<?php echo $this->validation->id; ?>"/>
                     <br/>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
                         <div class="controls">
                             <select style="width:400px;" multiple id="category[]" name="category[]">
@@ -149,7 +209,7 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Featured Supplier</label>
                         <div class="controls">
                             <select id="featuredsupplier" name="featuredsupplier">
@@ -159,8 +219,12 @@ $(document).ready(function(){
                             </select>
                         </div>
                     </div>
+                    
+                    
+                    
+                    
 					<?php if(0){?>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">In Store?</label>
                         <div class="controls">
                             <input type="checkbox" name="instore" value="1" <?php if($this->validation->instore){ echo 'CHECKED';}?>/>
@@ -168,7 +232,7 @@ $(document).ready(function(){
                     </div>
                     <?php }?>
                     
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Item Code</label>
                         <div class="controls">
                             <input type="text" id="itemcode" name="itemcode" class="span10" value="<?php echo $this->validation->itemcode; ?>">
@@ -176,7 +240,7 @@ $(document).ready(function(){
                         </div>
                     </div>
                     
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">URL</label>
                         <div class="controls">
                             <input type="text" id="url" name="url" class="span10" value="<?php echo $this->validation->url; ?>" required
@@ -186,7 +250,7 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Item Name</label>
                         <div class="controls">
                             <input type="text" id="itemname" name="itemname" class="span10" value="<?php echo htmlentities($this->validation->itemname); ?>">
@@ -194,21 +258,21 @@ $(document).ready(function(){
                         </div>
                     </div>
                     
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Item Description</label>
                         <div class="controls">
                             <textarea class="span10" id="description" name="description"><?php echo htmlentities($this->validation->description); ?></textarea>
                         </div>
                     </div>
                     
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Item Details</label>
                         <div class="controls">
                         	<textarea class="span10" id="details" name="details"><?php echo htmlentities($this->validation->details); ?></textarea> 
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Unit</label>
                         <div class="controls">
                             <input type="text" id="unit" name="unit" class="span10" value="<?php echo $this->validation->unit; ?>">
@@ -216,7 +280,7 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">
                             E A
                             <?php
@@ -225,14 +289,14 @@ $(document).ready(function(){
                             }
                             ?>
                         </label>
-                        <div class="controls">
+                        <div class="controls noxls">
                             <input type="text" id="ea" name="ea" class="span10" value="<?php echo $this->validation->ea; ?>">
                             <?php echo $this->validation->ea_error; ?>
                         </div>
                     </div>
                     
                     
-                      <div class="control-group">
+                      <div class="control-group noxls">
                         <label class="control-label">Special Increment</label>
                         <div class="controls">
                             <input type="number" class="span10" id="increment" name="increment"  min="1" max="100" value="<?php echo $this->validation->increment; ?>">
@@ -240,7 +304,7 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Notes</label>
                         <div class="controls">
                             <textarea class="span10" id="notes" name="notes"><?php echo $this->validation->notes; ?></textarea>
@@ -248,14 +312,14 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Keyword</label>
                         <div class="controls">
                             <input type="text" id="keyword" name="keyword" class="span10" value="<?php echo $this->validation->keyword; ?>">
                             <?php echo $this->validation->keyword_error; ?>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Amazon URL</label>
                         <div class="controls">
                             <input value="<?php echo @$this->validation->external_url; ?>" type="text" name="external_url" id="external_url" class="span10"  placeholder="Enter amazon.com URL for that item" >
@@ -264,28 +328,28 @@ $(document).ready(function(){
                             <?php }?>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Length (in)</label>
                         <div class="controls">
                             <input value="<?php echo $this->validation->length; ?>" type="text" name="length" id="length" class="span10"   >
                            <?php echo @$this->validation->error_length; ?>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Width (in)</label>
                         <div class="controls">
                             <input value="<?php echo $this->validation->width; ?>" type="text" name="width" id="width" class="span10"   >
                             <?php echo @$this->validation->error_width; ?>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Height (in)</label>
                         <div class="controls">
                             <input value="<?php echo $this->validation->height; ?>" type="text" name="height" id="height" class="span10"   >
                          <?php echo @$this->validation->error_height; ?>
                         </div>
                     </div>
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Weight (oz)</label>
                         <div class="controls">
                             <input value="<?php echo $this->validation->weight; ?>" type="text" name="weight" id="weight" class="span10"  >
@@ -293,7 +357,7 @@ $(document).ready(function(){
                         </div>
                     </div> 
                                         
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">File</label>
                         <div class="controls">
                         	<?php if ($this->session->userdata('usertype_id') == 1) { ?>
@@ -307,7 +371,7 @@ $(document).ready(function(){
                     </div>
                     
                     
-                     <div class="control-group">
+                     <div class="control-group noxls">
 						<label class="control-label">Add Files</label>
 						 <div class="controls">
 							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
@@ -346,14 +410,14 @@ $(document).ready(function(){
 						</div>
 					</div>
                                         
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">Wiki</label>
                         <div class="controls">
                             <textarea class="span10" rows="10" id="wiki" name="wiki" ><?php echo @$this->validation->wiki; ?></textarea>
                         </div>
                     </div>
                     
-                     <div class="control-group">
+                     <div class="control-group noxls">
                        <label class="control-label"> Zoom Image </label> 
                         <div class="controls"> 
                         <input type="checkbox" name="zoom" id="zoom" <?php echo @$this->validation->zoom?'checked="CHECKED"':''?>" />                          
@@ -361,13 +425,13 @@ $(document).ready(function(){
                         </div>
                     	</div> 
                     
-                    <div class="control-group">
+                    <div class="control-group noxls">
                         <label class="control-label">List Info</label>
                         <div class="controls">
                             <textarea class="span10" rows="10" id="listinfo" name="listinfo" ><?php echo @$this->validation->listinfo; ?></textarea>
                         </div>
                     </div>
-					    <div class="control-group">
+					    <div class="control-group noxls">
                         <label class="control-label">Tags</label>
                         <div class="controls">
                             <input type="text" class="span10"  id="tags" name="tags" value="<?php echo @$this->validation->tags; ?>" data-role="tagsinput">
@@ -375,7 +439,7 @@ $(document).ready(function(){
                     </div>
                    
                     
-                     <div class="control-group">
+                     <div class="control-group noxls">
                         <label class="control-label">Price Check Setting<br/>Set Item Search URL</label>
                         <div class="controls"><span>http://supplyspy.net/</span>
                             <input type="text" class="span10"  id="searchquery" name="searchquery" value="<?php echo @$this->validation->searchquery; ?>">
@@ -384,7 +448,7 @@ $(document).ready(function(){
                     
                     
                     <?php if ($this->session->userdata('usertype_id') == 1) { ?>
-                        <div class="control-group">
+                        <div class="control-group noxls">
                             <label class="control-label">&nbsp;</label>
                             <div class="controls">
                                 <input name="add" type="submit" class="btn btn-primary" value="Update Itemcode List"/>

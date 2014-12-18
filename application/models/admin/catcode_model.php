@@ -44,6 +44,39 @@ class catcode_model extends Model {
 		} 
 		return $temp;
 	}
+	
+	function getDesignTreeOptions($selected = '', $parent_id = 0, $level = 0)
+	{
+		static $temp = '';
+		# retrieve all children of $parent
+		$sql = "SELECT * FROM ".$this->db->dbprefix('designcategory')." WHERE parent_id = '{$parent_id}' ORDER BY catname ASC";		
+  		$result = $this->db->query($sql)->result();			
+		# display each child		
+		foreach($result as $row)
+		{
+		    $row = (array)$row;
+			if($row['parent_id'] == 0)
+			{				
+				$opt_style = "style = \"BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;\"";
+			}
+			else
+			{
+				$opt_style = "";
+			}
+			if($row['id'] == $selected)
+			{
+				$is_selected = 'selected="selected"';
+			}
+			else
+			{
+				$is_selected = "";
+			}
+			$separator = str_repeat("&raquo;&nbsp;", $level);
+			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['catname']}</option>\r\n";				
+			$this->getDesignTreeOptions($selected, $row['id'], $level + 1);			
+		} 
+		return $temp;
+	}
 
     function SaveCategory($image_name="") 
     {
@@ -58,6 +91,16 @@ class catcode_model extends Model {
         return $this->db->insert_id();
     }
 
+    function SaveDesignCategory() 
+    {
+        $options = array(
+            'parent_id' => $this->input->post('parent_id'),
+            'catname' => $this->input->post('catname')         
+        );
+        $this->db->insert('designcategory', $options);
+        return $this->db->insert_id();
+    }
+    
     function checkDuplicateCat($catname, $edit_id = 0) {
         if ($edit_id > 0) {
             $this->db->where(array('id !=' => $edit_id, 'catname' => $catname));
@@ -65,6 +108,22 @@ class catcode_model extends Model {
             $this->db->where('catname', $catname);
         }
         $query = $this->db->get('category');
+        $result = $query->result();
+
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    function checkDesignDuplicateCat($catname, $edit_id = 0) {
+        if ($edit_id > 0) {
+            $this->db->where(array('id !=' => $edit_id, 'catname' => $catname));
+        } else {
+            $this->db->where('catname', $catname);
+        }
+        $query = $this->db->get('designcategory');
         $result = $query->result();
 
         if ($query->num_rows > 0) {
@@ -88,11 +147,31 @@ class catcode_model extends Model {
             return null;
         }
     }
+    
+     function get_designcatcodes_by_id($id) {
+        $sql = "SELECT *
+		FROM
+		" . $this->db->dbprefix('designcategory') . " where id =" . $id . " ORDER BY catname ASC";
+
+        $query = $this->db->query($sql);
+        if ($query->result()) {
+            $result = $query->result();
+            return $result;
+        } else {
+            return null;
+        }
+    }
 
     function updateCategory($data) {
         
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('category', $data);
+    }
+    
+     function updateDesignCategory($data) {
+        
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('designcategory', $data);
     }
 
     function remove_category($id) 
@@ -100,6 +179,13 @@ class catcode_model extends Model {
         $subcategories = $this->getSubCategores($id);
         $this->db->where_in('id', $subcategories);
         $this->db->delete('category');
+    }
+    
+     function remove_designcategory($id) 
+    {
+        $subcategories = $this->getSubDesignCategores($id);
+        $this->db->where_in('id', $subcategories);
+        $this->db->delete('designcategory');
     }
 
 
@@ -109,6 +195,16 @@ class catcode_model extends Model {
     	if($includetop)
     		$ret[]=$catid;
     	$sub = $this->getallsubcategories($catid);
+    	$ret = array_merge($ret,$sub);
+    	return $ret;
+    }
+    
+    function getSubDesignCategores($catid,$includetop=true)
+    {
+    	$ret = array();
+    	if($includetop)
+    		$ret[]=$catid;
+    	$sub = $this->getallsubdesigncategories($catid);
     	$ret = array_merge($ret,$sub);
     	return $ret;
     }
@@ -129,10 +225,38 @@ class catcode_model extends Model {
     	}
     	return $ret;
     }
+    
+    function getallsubdesigncategories($parent)
+    {
+    	$this->db->where('parent_id',$parent);
+    	$sub = $this->db->get('designcategory')->result();
+    	$ret = array();
+    	foreach($sub as $s)
+    	{
+    		$ret[]=$s->id;
+    	}
+    	foreach($ret as $r)
+    	{
+    		$rs = $this->getallsubdesigncategories($r);
+    		$ret = array_merge($ret,$rs);
+    	}
+    	return $ret;
+    }
 
     function get_categories_tiered() {
         $this->db->order_by('catname', 'ASC');
         $categories = $this->db->get($this->db->dbprefix('category'))->result();
+        $results = array();
+        foreach ($categories as $category) {
+            $results[$category->parent_id][$category->id] = $category;
+        }
+
+        return $results;
+    }
+    
+    function get_designcategories_tiered() {
+        $this->db->order_by('catname', 'ASC');
+        $categories = $this->db->get($this->db->dbprefix('designcategory'))->result();
         $results = array();
         foreach ($categories as $category) {
             $results[$category->parent_id][$category->id] = $category;
@@ -160,6 +284,10 @@ class catcode_model extends Model {
 
     function get_category($id) {
         return $this->db->get_where($this->db->dbprefix('category'), array('id' => $id))->row();
+    }
+    
+     function get_designcategory($id) {
+        return $this->db->get_where($this->db->dbprefix('designcategory'), array('id' => $id))->row();
     }
 
 }

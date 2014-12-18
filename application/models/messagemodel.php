@@ -43,7 +43,7 @@ class Messagemodel extends Model
 			$this->db->where('id',$not->purchasingadmin);
 			$purchasingadmin = $this->db->get('users')->row();
 			if($purchasingadmin) {
-			/*if($not->category=='Order')
+			if($not->category=='Order')
 			{
 			
 				$not->class='info';
@@ -60,7 +60,7 @@ class Messagemodel extends Model
 				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";
 				
 				$not->link = site_url('order/details/'.$not->quote);
-			}*/
+			}
 			if($not->category=='Invitation(Direct)')
 			{
 				$this->db->where('company',$company->id);
