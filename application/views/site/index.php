@@ -1,5 +1,5 @@
 <?php echo '<script>var ipinserturl="' . site_url('site/insertuserip') . '";</script>' ?>
-
+<?php echo '<script>var getmanufacturersurl="' . site_url('admin/type/getmanufacturers') . '";</script>' ?>
 <?php //var_dump($popups);die;?>
 <script>
 	function getlatlong()
@@ -56,7 +56,6 @@
         <?php } else { ?>
         	$("#videopopsrc").remove();
         <?php } ?>
-        
     });
 
     function InitEzmark() {
@@ -155,6 +154,40 @@
     function InitMap() {
         google.maps.event.addDomListener(window, 'load', LoadMap);
     }
+    
+    
+    function changemanufacturer(industryid){
+	if(industryid=="")
+		industryid=0;
+	$. ajax ({
+					type: "POST",					
+					data: {"industryid" : industryid},
+					dataType: 'json',
+					url: getmanufacturersurl,
+					success: function (data) {
+						if(data){
+							
+							$('#manuselect').html('');
+							
+							$("#manuselect").append("<select name='typem' id='typem'>" +"</select>");
+        												
+							$('#typem').append( new Option("All","") ); 	
+							
+							$.each(data, function( index, value ) {
+								
+								$('#typem').append( new Option(value.title,value.id) );
+
+							});									
+							
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+	}
+    
 </script>
 
 <div id="content"><div class="map-wrapper">
@@ -193,7 +226,7 @@
                                             Industry
                                         </label>
                                         <div class="controls">
-                                            <select id="typei" name="typei">
+                                            <select id="typei" name="typei" onchange="changemanufacturer(this.value);">
                                                 <option value=''>All</option>
                                                 <?php
                                                 foreach ($types as $t)
@@ -213,7 +246,7 @@
                                         <label class="control-label" for="inputType">
                                             Manufacturer
                                         </label>
-                                        <div class="controls">
+                                        <div id="manuselect" class="controls">
                                             <select id="typem" name="typem">
                                                 <option value=''>All</option>
                                                 <?php
@@ -723,5 +756,12 @@ width="530" height="350" title="Video">
     </div>
     <!-- /.modal-dialog -->
   </div> 
+    
    
 </div>
+
+
+
+
+
+ 

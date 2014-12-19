@@ -39,9 +39,37 @@ function updatecart(itemid,companyid,quantity,incrementval)
 			window.location=window.location;
 	    });
 }
+
+
+	$(document).ready(function (e) {
+		$("#sendsmsform").on('submit',(function(e) {
+		e.preventDefault();
+		var companyid = $('#companysmsid').val();
+		$.ajax({
+		url: site_url('cart/sendsmsviaajax/'+companyid),
+		type: "POST",
+		data: new FormData(this),		
+		contentType: false,
+		cache: false,
+		processData:false,
+		success: function(data)
+		{
+			var msgstr ='<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>';
+			$('#messagesuccess').html(msgstr);
+		},
+		error: function()
+		{
+		}
+		});
+		}));
+		
+	});
+
+
 </script>
 
 <div id="content">
+<div id="messagesuccess"></div>
 <div class="container">
     <div id="main">
         <div class="row">
@@ -218,7 +246,7 @@ function updatecart(itemid,companyid,quantity,incrementval)
     </div>
 
     <div class="content">
-        <form method="post" action="<?php echo site_url('cart/sendsms/'.$companyid);?>" >
+        <form id="sendsmsform" name="sendsmsform" method="post" action="<?php echo site_url('cart/sendsms/'.$companyid);?>" >
             <div class="control-group">
                 <label class="control-label" for="inputName">
                     Name
@@ -249,7 +277,7 @@ function updatecart(itemid,companyid,quantity,incrementval)
                     <textarea id="inputMessage" name="inputMessage" required></textarea>
                 </div>
             </div>
-
+			<input type="hidden" name="companysmsid" id="companysmsid" value="<?php echo $companyid;?>"/>
             <div class="form-actions">
                 <input type="submit" class="btn btn-primary arrow-right" value="Send">
             </div>

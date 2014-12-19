@@ -1083,6 +1083,7 @@ class site extends CI_Controller
         $this->data['page_titile'] = "Items List";
         $this->data['items'] = array();
         $items = $items->items;
+        
         foreach ($items as $item)
         {
             $query = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
@@ -1144,14 +1145,14 @@ class site extends CI_Controller
             $this->data['norecords'] = 'No Records found for the search.';
         }
         $this->data['categories'] = $this->itemcode_model->getcategories();
-
+        //echo "<pre>"; print_r($_POST['category']); die;
          if(isset($_POST['category']))
         $category = $_POST['category'];
         else
         $category = "";
 
         $this->data['categoriesoptions'] = $this->items_model->getTreeOptions($category);
-
+          
         if($category){
 
         	$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
@@ -1164,8 +1165,8 @@ class site extends CI_Controller
             //$this->db->where('category', $_POST['category']);
         $this->data['subcategories'] = array();//$this->db->get('subcategory')->result();
         $this->data['categorymenu'] = $this->items_model->getCategoryMenu();
+       
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
-
         $this->data['userquotes'] = array();
         $this->data['projects'] = array();
         $this->data['costcodes'] = array();
@@ -1183,8 +1184,8 @@ class site extends CI_Controller
         }
 
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
+         
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);
-
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->data['page_title'] = "The Building & Construction Supply House Marketplace";
         $this->data['page_description'] = "The Building & Construction Supply House Marketplace";
@@ -2803,23 +2804,70 @@ class site extends CI_Controller
 
     function designbook()
     {
-
-    	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.publish=1";
-		$data['gallery'] = $this->db->query($sql)->result();
-		//echo "<pre>"; print_r($data['gallery']);die;
-		$totalresult = $this->db->query($sql)->num_rows();
+		$this->items_model->set_keyword(false);
+        $items = $this->items_model->find_design_item();
+        $this->data['totalcount'] = $items->totalresult;
     	$limit = 18;
-    	$data['totalcount'] = $totalresult;
     	if(@$_POST['pagenum'])
-        $data['currentpage'] = $_POST['pagenum'] + 1;
+        $this->data['currentpage'] = $_POST['pagenum'] + 1;
         else
-        $data['currentpage'] = 1;
-        $data['totalpages'] = ceil($data['totalcount'] / $limit);
-        $data['submiturl'] = 'site/designbook';
-        $data['submitmethod'] = 'POST';
-        $data['pagingfields'] = $_POST;
-        $data['page_titile'] = "Design Book";
-    	$this->load->view('site/designbook',$data);
+        $this->data['currentpage'] = 1;
+        $this->data['totalpages'] = ceil($this->data['totalcount'] / $limit);
+        $this->data['submiturl'] = 'site/designbook';
+        $this->data['submitmethod'] = 'POST';
+        $this->data['pagingfields'] = $_POST;
+        $this->data['page_titile'] = "Design Book";
+        
+        $this->data['items'] = array();
+        $items = $items->items;
+              
+        foreach ($items as $item)
+        {
+           $company=$this->db->get_where('company',array('id'=>$item->company))->row();
+           $item->supplier=$company->title;
+           $catnamefor=$this->db->get_where('designcategory',array('id'=>$item->categoryid))->row();
+           $item->catnamefor=@$catnamefor->catname;
+           $this->data['items'][] = $item;
+        }
+        
+        
+        
+        
+        
+        $this->data['items'] =$items;
+        $this->data['norecords'] = '';
+        
+        
+        
+        if (! $this->data['items'])
+        {
+            $this->data['norecords'] = 'No Records found for the search.';
+        }
+           
+        $this->data['categories'] = $this->itemcode_model->getdesigncategories();
+      
+
+        if(isset($_POST['category']))
+        $category = $_POST['category'];
+        else
+        $category = "";
+         
+
+        $this->data['categoriesoptions'] = $this->items_model->getDesignTreeOptions($category);
+        if($category){
+
+        	$sql1 = "SELECT * FROM ".$this->db->dbprefix('designcategory')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
+
+        	$result1 = $this->db->query($sql1)->result();
+        	if($result1)
+        	$this->data['catname'] = $result1[0]->catname;
+  	    }
+        $this->data['subcategories'] = array();
+        $this->data['categorymenu'] = $this->items_model->getDesignCategoryMenu();
+        $this->data['breadcrumb'] = @$_POST['breadcrumb'];
+        $this->data['breadcrumb'] = $this->items_model->getDesignParents(@$_POST['category']);
+        $this->data['breadcrumb2'] = $this->items_model->getdesignsubcategorynames(@$_POST['category']);
+    	$this->load->view('site/designbook',$this->data);
 
     }
 

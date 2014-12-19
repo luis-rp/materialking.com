@@ -145,7 +145,14 @@ function shownotice(newval,oldval,id){
 
 function showreport(invoicenum)
 {
-	$("#reportdiv"+invoicenum).toggle();
+	$(".dclose").css('display','none');
+	$(jq("reportdiv"+invoicenum)).toggle();
+}
+
+function jq( myid ) {
+ 
+    return "." + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
+ 
 }
 
 </script>
@@ -232,6 +239,7 @@ function showreport(invoicenum)
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
+                    		//echo "<pre>",print_r($items);
                     		foreach($items as $item){ $i++;
                     		?>
                     		<tr>
@@ -293,9 +301,9 @@ function showreport(invoicenum)
                 </div>
                 
                 <div>   
-			    <?php  if(isset($reports)) { foreach ($reports as $report) { ?>
+			    <?php if(isset($reports)) { foreach ($reports as $report) { $newhtmltable =""; ?>
 			    	    
-			   <table id="reportdiv<?php echo $report->invoicenum; ?>" class="table table-bordered" style="display:none;">
+			   <table class="table table-bordered reportdiv<?php echo $report->invoicenum; ?> dclose" style="display:none;">
 			     
 			    	<tr>
 			    		<th width="120">Company</th>
@@ -312,13 +320,11 @@ function showreport(invoicenum)
 			    	</tr>
 				    	<?php //$totalallprice=""; 
 				    	foreach($report->items as $item) {
+				    		if($item->invoicenum==$report->invoicenum){
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = $item->quantity * $item->ea;
-				    		//$amount = round($amount + ($amount*$taxdata/100),2);
-				    		//$amount = round($amount + ($amount*$taxdata/100),2);
-				    		//$totalallprice += $amount; ?>
+				    		$amount = $item->quantity * $item->ea; ?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -333,8 +339,47 @@ function showreport(invoicenum)
 				    		<td><?php echo $item->status;?></td>
 				    		<td><?php echo $item->costcode;?></td>			    		
 				    	</tr>
-				    	<?php  } }  }?>			    	
-		      </table>
+				    	<?php  }else{
+				    		
+				    	$newhtmltable .= '<table class="table table-bordered reportdiv'.$item->invoicenum.' dclose" style="display:none;">
+			     
+			    	<tr>
+			    		<th width="120">Company</th>
+			    		<th width="75">PO#</th>
+			    		<th width="120">Item Code</th>
+			    		<th width="200">Item Name</th>
+			    		<th width="50">Unit</th>
+			    		<th width="50">Qty.</th>
+			    		<th width="50">EA</th>
+			    		<th width="50">Total</th>
+			    		<th width="50">Payment</th>
+			    		<th width="50">Verification</th>
+			    		<th width="120">Cost Code</th>
+			    	</tr>';
+				    	
+				    	if($item->potype == "Contract" )
+				    		$amount = $item->ea;
+				    		else 
+				    		$amount = $item->quantity * $item->ea;
+				    	
+				    	$newhtmltable .= '<tr>
+				    		<td>'.$item->companyname.'</td>
+				    		<td>'.$item->ponum.'</td>
+				    		<td>'.$item->itemcode.'</td>
+				    		<td>'.$item->itemname.'</td>
+				    		<td>'.$item->unit.'</td>
+				    		<td>'.$item->quantity.'</td>
+				    		<td>'.round($item->ea,2).'</td>
+				    		<td>$'.round($amount,2).'</td>
+				    		<td>'.$item->paymentstatus.'</td>
+				    		<td>'.$item->status.'</td>
+				    		<td>'.$item->costcode.'</td>			    		
+				    	</tr></table>';
+				    	
+				    		
+				    		
+				    	} }?> </table>  <?php echo $newhtmltable; } }?>
+		      
               </div>  
                 
                 

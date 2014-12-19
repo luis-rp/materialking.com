@@ -410,26 +410,35 @@ padding:5px 0px;
     <div class="container">
         <div id="main">
             <div class="row">
-             <form id="categorysearchform" name="categorysearchform" method="post" action="<?php //echo base_url('site/items');?>">
-                   <input type="hidden" name="keyword" value="<?php //echo isset($keyword)?$keyword:"";?>"/>
+            
+              <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/designbook');?>">
+                   <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                    <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                   <input type="hidden" id="formcategory" name="category" value="<?php //echo isset($_POST['category'])?$_POST['category']:"";?>"/>
+                   <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
 				      <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
-                            <?php //$this->load->view('site/catmenu.php');?>
-                        </div>
-                        </form>
+                            <?php $this->load->view('site/catmenu.php');?>
+                       </div>
+              </form>
 
                <div class="span9">
-                <?php //if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?>
-                	<!--<div class="breadcrumb-pms"><ul class="breadcrumb"><?php //echo $breadcrumb;?></ul></div>-->
+                <?php if( (isset($searchfor) && $searchfor == "itemandtags") || !(isset($searchfor)))  { ?>
+                	<!--<div class="breadcrumb-pms">
+                	   <ul class="breadcrumb"><?php echo $breadcrumb;?></ul>
+                	</div>-->
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px">Design Book</h3>
 
                     <div class="properties-rows">
-                        <div class="row">
-                            <?php
-                            $i = 3;
-                            if (isset($gallery) && count($gallery)>0) {
-                            	foreach ($gallery as $item) {
+                        <div class="row">                    
+                           <?php if ($norecords) { ?>
+                                <div class="alert alert-error" style="margin-left:30px;">
+                                    <button data-dismiss="alert" class="close" type="button">X</button>
+                                    <strong> <?php echo $norecords; ?></strong> <a href="<?php echo site_url('site/designbook'); ?>">View All Listing</a>
+                                </div>
+                            <?php } ?>
+                        <?php //echo "<pre>"; print_r($items); die;?>
+                        
+                            <?php $i = 3;
+                            foreach ($items as $item) {
                             	$i++; ?>
                                 <div class="property span9">
                                   <?php $count=strlen($item->name); if($count>=20){ ?>
@@ -442,51 +451,53 @@ padding:5px 0px;
                                   <div class="row">
                                    <div class="body span6">
                                      <div class="title-price row">
+                                     
                                         <div class="title span4">
-                                      <?php if(isset($item->imagename) && $item->imagename!= "" && file_exists("./uploads/designbook/".$item->imagename)) { ?>
-
-               <img style="height:200px;width:220px; max-height:210px;padding: 10px;" height="120" width="120" src="<?php echo site_url('uploads/designbook/'.$item->imagename);?>" alt="">
+                                            <?php if(isset($item->imagename) && $item->imagename!= "" && file_exists("./uploads/designbook/".$item->imagename)) { ?>
+                                                <img style="height:200px;width:220px; max-height:210px;padding: 10px;" height="120" width="120" src="<?php echo site_url('uploads/designbook/'.$item->imagename);?>" alt="">
                                                 <?php } else { ?>
-                                    <img style="height:200px;width:220px;max-height: 120px; padding: 20px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                <img style="height:200px;width:220px;max-height: 120px; padding: 20px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
-                                                <!-- <div id="tagbox_<?php echo $item->id;?>"></div> -->												
-												<!-- <div id="taglist_<?php echo $item->id;?>"></div> -->
-                                             </div>
+                                                <!-- <div id="tagbox_<?php //echo $item->id;?>"></div> -->												
+												<!-- <div id="taglist_<?php //echo $item->id;?>"></div> -->
+												  <div>
+													  <p>Published By:<?php echo $item->supplier;?>&nbsp;
+													  <?php if(isset($item->catnamefor)) {?>
+													  In(<?php echo $item->catnamefor;?>)<?php } ?></p>
+												  </div> 											
+												
+                                        </div>
 
-                                                <div class="price">
-                                                	<!--<p>LIKES <br> COMMENTS</p>-->
-                                                </div>
+                                        <div class="price">
+                                          <!--<p>Published By :</p>-->
+                                        </div>
 
                                           </div>
                                       </div>
                                   </div>
+                                  
                                 </div>
-                                <?php } }
-                                else { ?>
-
-                                	 <div class="alert alert-error" style="margin-left:30px;">
-                                    <button data-dismiss="alert" class="close" type="button">X</button>
-                                    <strong>No Records Found</strong>
-                                </div>
-
-                             <?php   }
-
-
-                                ?>
+                                <?php } ?>                   
                         </div>
                     </div>
 
                     <div class="pagination pagination-centered">
                         <?php $this->view('site/paging'); ?>
-                    </div><?php //} ?>
+                    </div><?php } ?>
                 </div>
 
-                <!--<div class="sidebar span3">
-                    <div class="widget contact">
-                        <div class="title"><h2 class="block-title">Main Menu</h2></div>
-                        <div class="content_sup"></div>
+               <!-- <div class="sidebar span3">
+                    <?php if(isset($breadcrumb2) && $breadcrumb2!="") {?>
+                    <h2>Sub Categories</h2>
+                    <div class="content_sup">
+                         <div style="clear:both;"></div>
+                    	 <div class="breadcrumb-pms">
+                    	 <ul><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
+                     	 </div>
                     </div>
+                   <?php } ?>
                 </div>-->
+                
             </div>
         </div>
     </div>

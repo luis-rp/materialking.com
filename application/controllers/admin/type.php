@@ -1,20 +1,20 @@
 <?php
-class type extends CI_Controller 
+class type extends CI_Controller
 {
 	private $limit = 10;
 	private $pageid = 6;
-	
-	function type() 
+
+	function type()
 	{
 		parent::__construct ();
 		$this->load->library('session');
 	    if(!$this->session->userdata('id'))
 		{
-			redirect('admin/login/index', 'refresh'); 
+			redirect('admin/login/index', 'refresh');
 		}
 		if($this->session->userdata('usertype_id')==3)
 		{
-			redirect('admin/dashboard', 'refresh'); 
+			redirect('admin/dashboard', 'refresh');
 		}
 		$this->load->dbforge();
 		$this->load->library ('form_validation');
@@ -39,12 +39,12 @@ class type extends CI_Controller
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/admin/template', $data);
 	}
-	
-	function index($offset = 0) 
+
+	function index($offset = 0)
 	{
 		$uri_segment = 4;
 		$offset = $this->uri->segment ( $uri_segment );
-		
+
 		$this->load->library ( 'pagination' );
 		$config ['base_url'] = site_url ('admin/type/index/');
 		$config ['total_rows'] = $this->type_model->count_all ();
@@ -52,14 +52,14 @@ class type extends CI_Controller
 		$config ['uri_segment'] = $uri_segment;
 		$this->pagination->initialize ( $config );
 		$data ['pagination'] = $this->pagination->create_links ();
-		
+
 		$type = $this->type_model->get_items ($this->limit, $offset);
-		
+
 		$jsitems = array();
-		if (count($type) >= 1) 
+		if (count($type) >= 1)
 		{
 			$sn = $offset + 0;
-			foreach ($type as $item) 
+			foreach ($type as $item)
 			{
 				$item->sn = ++$sn;
 				$jsitems[] = $item;
@@ -73,7 +73,7 @@ class type extends CI_Controller
 		}
 		//print_r($jsitems);die;
 		$this->_set_fields ();
-		
+
 		$data ['addlink'] = '';
 		$data ['heading'] = 'type';
 		$data ['table'] = $this->table->generate ();
@@ -87,17 +87,18 @@ class type extends CI_Controller
 		$data ['heading'] = 'Add New type';
 		$data ['message'] = '';
 		$data ['action'] = site_url ('admin/type/additem');
+		$data['types'] = $this->db->get_where('type', array('category'=>'Industry'))->result();
 		$this->load->view ('admin/type/form', $data);
 	}
-	
-	function additem() 
+
+	function additem()
 	{
 		$data ['heading'] = 'Add New type';
 		$data ['action'] = site_url ('admin/type/additem');
-		
+
 		$this->_set_fields ();
 		$this->_set_rules ();
-		
+
 		if(isset($_FILES['image']['tmp_name']))
 		if(is_uploaded_file($_FILES['image']['tmp_name']))
 		{
@@ -115,25 +116,25 @@ class type extends CI_Controller
 				$_POST['image'] = $nfn;
 			}
 		}
-		
-		if ($this->validation->run () == FALSE) 
+
+		if ($this->validation->run () == FALSE)
 		{
 			$this->load->view ('admin/type/form', $data);
-		} 
-		else 
+		}
+		else
 		{
 			$itemid = $this->type_model->add ();
 			$this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>type Added Successfully.</div>');
-			redirect('admin/type'); 
+			redirect('admin/type');
 		}
 	}
-	
+
 	function update($id)
 	{
 		$this->_set_fields ();
 		$item = $this->type_model->get_item($id);
 		$columns = (array)$this->type_model->getfields();
-		
+
 		foreach($columns as $column)
 		{
 			$column = (array)$column;
@@ -142,17 +143,18 @@ class type extends CI_Controller
 		//print_r($item);die;
 		$data ['heading'] = 'Update type';
 		$data ['message'] = '';
+		$data['types'] = $this->db->get_where('type', array('category'=>'Industry'))->result();
 		$data ['action'] = site_url ('admin/type/updateitem');
 		$this->load->view ('admin/type/form', $data);
 	}
-	
+
 	function updateitem()
 	{
 		$data ['heading'] = 'Update type';
 		$data ['action'] = site_url ('admin/type/updateitem');
 		$this->_set_fields ();
 		$this->_set_rules ();
-		
+
 		if(isset($_FILES['image']['tmp_name']))
 		if(is_uploaded_file($_FILES['image']['tmp_name']))
 		{
@@ -170,28 +172,28 @@ class type extends CI_Controller
 				$_POST['image'] = $nfn;
 			}
 		}
-		
-		if ($this->validation->run () == FALSE) 
+
+		if ($this->validation->run () == FALSE)
 		{
 		    $data ['action'] = site_url ('admin/type/updateitem');
 			$this->load->view ('admin/type/form', $data);
-		} 
-		else 
+		}
+		else
 		{
 			$this->type_model->update ();
 			$this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>type has been Updated.</div>');
-			redirect('admin/type'); 
+			redirect('admin/type');
 		}
 	}
-	
-	function delete($id) 
+
+	function delete($id)
 	{
 		$this->type_model->remove($id);
 		$this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Type Deleted.</div>');
 		redirect ('admin/type', 'refresh');
 	}
-	
-	function _set_fields() 
+
+	function _set_fields()
 	{
 		$columns = (array)$this->type_model->getfields();
 		$fields = array();
@@ -204,8 +206,8 @@ class type extends CI_Controller
 		$fileds['types'] = 'Types';
 		$this->validation->set_fields ($fields);
 	}
-	
-	function _set_rules() 
+
+	function _set_rules()
 	{
 		$rules = array();
 		$rules ['title'] = 'trim|required';
@@ -213,13 +215,13 @@ class type extends CI_Controller
 		$this->validation->set_message ('required', '* Field Required');
 		$this->validation->set_error_delimiters ( '<div class="frmerror">', '</div>');
 	}
-	
+
 	function _createThumbnail($fileName, $foldername="", $width=170, $height=150)
 	{
 		ini_set("memory_limit","512M");
 		ini_set("max_execution_time", 1500);
 		ini_set("set_time_limit", 200);
-		
+
 		$config['image_library'] = 'gd2';
 		$config['source_image'] = 'uploads/'.($foldername?$foldername.'/':'') . $fileName;
 		$config['new_image'] = 'uploads/'.($foldername?$foldername.'/':'').'thumbs/' . $fileName;
@@ -229,9 +231,24 @@ class type extends CI_Controller
 		$image_config['y_axis'] = '0';
 		$config['width'] = $width;
 		$config['height'] = $height;
-	
+
 		$this->load->library('image_lib', $config);
 		if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
+	}
+	
+	function getmanufacturers(){
+		
+		if(@$_POST[ 'industryid' ]==0){
+			
+			$result = $this->db->get_where('type', array('category'=>'Manufacturer'))->result();
+		}else{			
+		
+		$checkauth = array('parent_id' => $_POST[ 'industryid' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('type')->result();
+		}
+
+		echo json_encode($result);
 	}
 }
 ?>

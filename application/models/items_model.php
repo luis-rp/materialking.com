@@ -93,6 +93,53 @@ class items_model extends Model {
         $ret .= "</ul>";
         return $ret;
     }
+    
+    function getDesignCategoryMenu ($parentid=0) 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',$parentid);
+        $menus = $this->db->get('designcategory')->result();	   
+	   if($parentid==0)
+	   {
+	   
+	    $ret = "<ul class='topmenu' id='css3menu1' >";
+        }
+		else
+		{
+			$ret = "<ul >";
+		}
+	  
+	  
+	    foreach ($menus as $item) 
+        {
+           $subcategories = $this->getDesignSubCategores($item->id,true);
+           $hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
+            
+            if(!$hasitems)
+                continue;
+            $this->db->where('parent_id',$item->id);
+            $submenus = $this->db->get('designcategory')->result();
+            if ($submenus) 
+            {
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
+                 //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
+                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                   <span style='white-space:pre-wrap;'><b>" . $item->catname."(".$count.")</b><span></a>";
+			   	   
+			    $ret .= $this->getDesignCategoryMenu($item->id); // here is the recursion
+            }
+            else
+          {
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
+                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                 <span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")<span></a>";
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+            }
+            $ret .= "</li>";
+        }
+        $ret .= "</ul>";
+        return $ret;
+    }
 	
 	
 	
@@ -213,6 +260,16 @@ class items_model extends Model {
         return $ret;
     }
     
+     function getDesignSubCategores($catid,$includetop=true) 
+    {
+        $ret = array();
+        if($includetop)
+            $ret[]=$catid;
+        $sub = $this->getalldesignsubcategories($catid);
+        $ret = array_merge($ret,$sub);
+        return $ret;
+    }
+    
     function getallsubcategories($parent)
     {
         $this->db->where('parent_id',$parent);
@@ -225,6 +282,23 @@ class items_model extends Model {
         foreach($ret as $r)
         {
             $rs = $this->getallsubcategories($r);
+            $ret = array_merge($ret,$rs);
+        }
+        return $ret;
+    }
+    
+    function getalldesignsubcategories($parent)
+    {
+        $this->db->where('parent_id',$parent);
+        $sub = $this->db->get('designcategory')->result();
+        $ret = array();
+        foreach($sub as $s)
+        {
+            $ret[]=$s->id;
+        }
+        foreach($ret as $r)
+        {
+            $rs = $this->getalldesignsubcategories($r);
             $ret = array_merge($ret,$rs);
         }
         return $ret;
@@ -246,6 +320,23 @@ class items_model extends Model {
         //$ret = array_reverse($ret);
         return $ret;
     }
+    
+    function getDesignParents($catid)
+    {
+        $cat = $this->db->where('id',$catid)->get('designcategory')->row();
+        if(!$cat)
+        	return '';
+        $ret = '<li onclick="filtercategory('.$cat->id.')"><a href="#">'.$cat->catname.'</a></li>';//array($cat);
+        $parent = $this->db->where('id',$cat->parent_id)->get('designcategory')->result();
+        if($parent)
+        {
+            $rs = $this->getDesignParents($cat->parent_id);
+            $ret = $rs.$ret;//array_merge($ret,$rs);
+        }
+        return $ret;
+    }
+    
+    
     
     function getParentids($catid)
     {
@@ -286,6 +377,24 @@ class items_model extends Model {
         return $ret;
     }
     
+    function getdesignsubcategorynames($parentid=0) 
+    {
+    	$this->db->order_by('catname','asc');
+        $this->db->where('parent_id',$parentid);
+        $menus = $this->db->get('designcategory')->result();
+        $ret = "";
+        foreach ($menus as $item) 
+        {
+            $subcategories = $this->getDesignSubCategores($item->id,true);
+            $hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
+            
+            if(!$hasitems)
+                continue;
+               $ret .= '<ul><li onclick="filtercategory('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';          
+        }
+        return $ret;
+    }
+    
 	function getTreeOptions($selected = '', $parent_id = 0, $level = 0)
 	{
 		static $temp = '';
@@ -316,6 +425,40 @@ class items_model extends Model {
 			$separator = str_repeat("&raquo;&nbsp;", $level);
 			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['catname']}</option>\r\n";				
 			$this->getTreeOptions($selected, $row['id'], $level + 1);			
+		} 
+		return $temp;
+	}
+	
+	function getDesignTreeOptions($selected = '', $parent_id = 0, $level = 0)
+	{
+		static $temp = '';
+		# retrieve all children of $parent
+		$sql = "SELECT * FROM ".$this->db->dbprefix('designcategory')." WHERE parent_id = '{$parent_id}' ORDER BY catname ASC";
+		
+  		$result = $this->db->query($sql)->result();			
+		# display each child		
+		foreach($result as $row)
+		{
+		    $row = (array)$row;
+			if($row['parent_id'] == 0)
+			{				
+				$opt_style = "";//"style = \"BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;\"";
+			}
+			else
+			{
+				$opt_style = "";
+			}
+			if($row['id'] == $selected)
+			{
+				$is_selected = 'selected="selected"';
+			}
+			else
+			{
+				$is_selected = "";
+			}
+			$separator = str_repeat("&raquo;&nbsp;", $level);
+			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['catname']}</option>\r\n";				
+			$this->getDesignTreeOptions($selected, $row['id'], $level + 1);			
 		} 
 		return $temp;
 	}
@@ -360,6 +503,49 @@ class items_model extends Model {
         $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid $where LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
+        return $return;
+    }
+    
+    
+       public function find_design_item() 
+    {
+        $limit = 18;
+        $return = new stdClass();
+
+        if (!isset($_POST['pagenum']))
+            $_POST['pagenum'] = 0;
+        $start = $_POST['pagenum'] * $limit;
+
+        $where = array();
+        $where[]="publish='1'";
+       
+        if (@$_POST['category']) 
+        {
+            $slist = $this->getDesignSubCategores($_POST['category']);
+            $inclause = implode(',', $slist);
+            $where[]=" (category IN ($inclause) OR ic.categoryid IN ($inclause) )";
+        }
+        
+        if ($where)
+            $where = " WHERE " . implode(' AND ', $where) . " ";
+        else
+            $where = '';
+        
+        if($this->keyword){
+            $lookup = " (`name` like '%$this->keyword%')";
+            if(trim($where)){
+                $where .= " AND ".$lookup;
+            }else{
+                $where .= " WHERE ".$lookup;
+            }
+        }
+
+        $query = "SELECT * FROM " . $this->db->dbprefix('designbook') . " i left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid ".$where;      
+        $return->totalresult = $this->db->query($query)->num_rows();
+   
+        $query = "SELECT * FROM " . $this->db->dbprefix('designbook') . " i left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid $where LIMIT $start, $limit";
+        $return->items = $this->db->query($query)->result();
+      
         return $return;
     }
     

@@ -480,6 +480,22 @@ $(function() {
                      </td>
                      <td><input type="text" class="form-control" name="designname[<?php echo $items->id;?>]" id="designname[<?php echo $items->id;?>]" value="<?php echo $items->name;?>" required>
                       <input type="hidden" name="nameid[]" value="<?php echo $items->id;?>"/>
+                      <br>
+                      
+                      
+                       <div class="control-group">
+                        <label class="control-label">Category</label>
+                        <div class="controls">
+                            <select style="width:400px;" multiple id="category[<?php echo $items->id;?>]" name="category[<?php echo $items->id;?>]">
+                            	<?php foreach($categories as $cat){?>
+                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
+                            	<?php  } ?>
+                            </select>
+                            <input type="hidden" name="designcatid[]" value="<?php echo $items->id;?>"/>
+                        </div>
+                    </div>
+                    
+                    
                      </td>
 					 <td><input type="checkbox" id="file[<?php echo $items->id;?>]" name="file[<?php echo $items->id;?>]" <?php if(isset($items->publish) && $items->publish==1) {echo "checked='checked'";}?>/>
 						  <input type="hidden" name="publishid[]" value="<?php echo $items->id;?>"/>

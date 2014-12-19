@@ -554,11 +554,40 @@ class costcode extends CI_Controller {
 
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode);
-
+		//echo "<pre>",print_r($costcodeitems); die;
         $count = count($costcodeitems);
+        
+        $postatus = "incomplete";
+        $totalquantity = 0;
+        $totalreceived = 0;
+        foreach ($costcodeitems as $row) {
+        	
+        	$totalquantity +=  $row->quantity;
+        	$totalreceived += $row->received;
+        }
+        if($totalquantity-$totalreceived == 0)
+        $postatus = "complete";
+        
+        /*$postatus2 = "incomplete";
+        $totalquantity2 = 0;
+        $totalreceived2 = 0;
+        foreach ($costcodeitems2 as $row2) {
+        	
+        	$totalquantity2 +=  $row2->quantity;
+        	$totalreceived2 += $row2->received;
+        }
+        if($totalquantity2-$totalreceived2 == 0)
+        $postatus2 = "complete";*/
+        
         $items = array();
         if ($count >= 1) {
             foreach ($costcodeitems as $row) {
+            	$status = "incomplete";
+            	if($row->quantity - $row->received == 0)
+                $status = "complete";
+                else 
+                $status = "incomplete";
+            	
             	if($row->potype=="Contract"){
                 $awarded = $this->quote_model->getawardedcontractbid($row->quote);
                 $row->ea = "$ " . $row->ea;
@@ -580,7 +609,9 @@ class costcode extends CI_Controller {
                 $row->ea = "$ " . $row->ea;
                 $row->totalprice = "$ " . $row->totalprice;
                 $row->itemname = htmlentities($row->itemname);
-                $row->status = strtoupper($awarded->status);
+                $row->itemstatus = strtoupper($status);
+                //$row->status = strtoupper($awarded->status);
+                $row->status = strtoupper($postatus);
                 $row->actions = //$row->status=='COMPLETE'?'':
                         anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;
@@ -589,6 +620,13 @@ class costcode extends CI_Controller {
             }
          
             foreach ($costcodeitems2 as $row2) {
+            	
+            	/*$status2 = "incomplete";
+            	if($row2->quantity - $row2->received == 0)
+                $status2 = "complete";
+                else 
+                $status2 = "incomplete";*/            	
+            	
             	if($row2->potype=="Contract"){
             		
             	$awarded = $this->quote_model->getawardedcontractbid($row2->quote);
@@ -611,6 +649,7 @@ class costcode extends CI_Controller {
                 $row2->ea = "$ " . $row2->ea;
                 $row2->totalprice = "$ " . $row2->totalprice;
                 $row2->itemname = htmlentities($row2->itemname);
+                //$row2->itemstatus = strtoupper($status2);
                 $row2->status = strtoupper($awarded->status);
                 //$row2->newreceived = $row2->newreceived;
                 $row2->actions = //$row->status=='COMPLETE'?'':

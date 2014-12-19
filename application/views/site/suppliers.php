@@ -1,5 +1,6 @@
 
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<?php echo '<script>var getmanufacturersurl="' . site_url('admin/type/getmanufacturers') . '";</script>' ?>
 <script>
 	function getlatlong()
 	{
@@ -54,6 +55,40 @@
         $("#searchform").submit();
         return true;
     }
+    
+    function changemanufacturer(industryid){
+	if(industryid=="")
+		industryid=0;
+	$. ajax ({
+					type: "POST",					
+					data: {"industryid" : industryid},
+					async: false,
+					dataType: 'json',
+					url: getmanufacturersurl,
+					success: function (data) {
+						if(data){
+							
+							$('#manuselect').html('');
+							
+							$("#manuselect").append("<select name='typem' id='typem'>" +"</select>");
+        												
+							$('#typem').append( new Option("All","") ); 	
+							
+							$.each(data, function( index, value ) {
+								
+								$('#typem').append( new Option(value.title,value.id) );
+
+							});									
+							
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+	}
+    
 </script>
 
 <div id="content">
@@ -130,7 +165,7 @@
                     <div class="property-filter widget">
                         <div class="content">
                             <form id="searchform" method="post" action="" onsubmit="return getlatlong()">
-                            
+
                             	<input type="hidden" id="latitude" name="lat"/>
                             	<input type="hidden" id="longitude" name="lng"/>
                                 <input type="hidden" id="get_by" name="get_by" value="<?php echo isset($_POST['get_by'])? $_POST['get_by'] : "" ?>" />
@@ -160,8 +195,8 @@
                                         Industry
                                     </label>
                                     <div class="controls">
-                                        <select id="typei" name="typei">
-                                            <option></option>
+                                        <select id="typei" name="typei" onchange="changemanufacturer(this.value);">
+                                            <option value=''>All</option>
                                             <?php
                                             foreach ($types as $t)
                                                 if ($t->category == 'Industry') {
@@ -180,7 +215,7 @@
                                     <label class="control-label" for="inputType">
                                         Manufacturer
                                     </label>
-                                    <div class="controls">
+                                    <div id="manuselect" class="controls">
                                         <select id="typem" name="typem">
                                             <option></option>
                                             <?php

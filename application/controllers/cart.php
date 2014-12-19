@@ -911,7 +911,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		}
  		$userinfoship=http_build_query($userinfoship,'',', ');
 		$getvendorship=explode(', ',$userinfoship);
-		foreach($cart as $ci)
+		/*foreach($cart as $ci)
 		{
 			if(!isset($companies[$ci['company']]))
 			{				
@@ -938,7 +938,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject);
 				
 			}
-		}
+		}*/
 		$order = array();
 		$order['ordernumber'] = $ordernumber;
 		$order['type'] = 'Manual';
@@ -950,6 +950,36 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		//print_r($order);die;
 		$this->db->insert('order',$order);
 		$oid = $this->db->insert_id();
+		
+		foreach($cart as $ci)
+		{
+			if(!isset($companies[$ci['company']]))
+			{				
+				$this->db->where('id',$ci['company']);
+				$cd = $this->db->get('company')->row();
+				
+				$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Customer Email:</strong>".$this->session->userdata('site_loggedin')->email;
+				$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Manual');			
+				$companies[$ci['company']].= "<br><a href='".site_url('order/details/'.$oid)."' target='_blank'>View Order</a>";								
+				$subject = "Order Details from ezpzp";
+				
+				$labelforvendor='';$addemaillabel='';
+				foreach($getvendorship as $getvendorship2)
+				{
+					$getvendorship3=explode('=',trim($getvendorship2));
+					//echo $getvendorship3[0].'---'.$ci['company'].'comp'.$ci['itemid'];
+					if($getvendorship3[0]==$ci['company'].'comp2'.$ci['itemid'])
+					{
+						$labelforvendor=$getvendorship3[1];
+					}
+				}
+				if($labelforvendor!='')
+				$addemaillabel="<br><br>Label url: ".urldecode($labelforvendor);
+				$this->sendEmail($companies[$ci['company']].$addemaillabel,$cd->primaryemail, $subject);
+				
+			}
+		}
+		
 		
 		$notifications = array();
 		
@@ -1207,4 +1237,23 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
     }
 
 	
+    function sendsmsviaajax()
+    { 	
+    	$company=$this->db->get_where('company',array('id'=>$_POST['id']))->row();
+    	if(isset($_POST["inputName"]) && isset($_POST["inputEmail"]) && isset($_POST["inputMessage"]))
+		{
+			$this->load->library('email');
+			$this->email->clear(true);
+			$this->email->from($_POST["inputEmail"], $_POST["inputName"]);
+			$this->email->to($company->primaryemail);
+			$body = "Dear,<br><br> Following User Has Sent You a Message from the order Checkout page.<br><p><strong>Name :</strong> ".$_POST["inputName"]."</p><p><strong>Email : </strong>".$_POST["inputEmail"]."</p><p><strong>Message : </strong></p>". $_POST["inputMessage"] . "<br>";
+			$this->email->subject("Message From Customer via Order Checkout.");
+			$this->email->message($body);
+			$this->email->set_mailtype("html");
+			$this->email->send();
+			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>');
+		}
+		
+    }
+    
 }	

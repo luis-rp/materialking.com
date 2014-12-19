@@ -248,6 +248,8 @@ class Order extends CI_Controller
 			{
 				$this->db->where('id',$order->purchasingadmin);
 				$order->purchaser = $this->db->get('users')->row();
+				$order->purchaser->companyname .= '('.$order->email.')';
+				
 			}
 			else
 			{
@@ -743,6 +745,7 @@ class Order extends CI_Controller
 		$data['email_body_title'] .= "<br>The following Order is : ". ($status=='1'?'Approved':'Declined');
 		$data['email_body_content'] .= "<br><br><strong>Supplier Name</strong>: {$company->title}<br><br><strong>Supplier Address</strong>: {$company->address} <br><br><strong>Supplier Phone:</strong>  {$company->phone} <br><br><strong>Order details:</strong>";
 		$data['email_body_content'] .= $this->getorderdetails($id);
+		$data['email_body_content'] .= "<br><br><a href='".site_url('admin/order/details/'.$id)."' target='_blank'>Click here to manage/view the Order</a>";
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->db->where('id',$order->purchasingadmin);

@@ -56,6 +56,11 @@ $(document).ready(function () {
     			sortable: false
     		},
     		{
+    			property: 'itemstatus',
+    			label: 'Item Status',
+    			sortable: true
+    		},
+    		{
     			property: 'status',
     			label: 'P.O. Status',
     			sortable: true

@@ -153,6 +153,44 @@ class itemcode_model extends Model {
         return $ret;
 
     }
+    
+    function getdesigncategories()
+    {
+        $sql = "SELECT * FROM " . $this->db->dbprefix('designcategory') . "
+        		WHERE id NOT IN (SELECT distinct(parent_id) FROM " . $this->db->dbprefix('designcategory') . ")";
+        $leaves = $this->db->query($sql)->result();
+        $ret = array();
+
+        foreach($leaves as $leaf)
+        {
+            $parent = $leaf->parent_id;
+            while($parent)
+            {
+                $sql = "SELECT * FROM " . $this->db->dbprefix('designcategory') . " WHERE id='$parent'  ";
+                $pcat = $this->db->query($sql)->row();
+                if($pcat)
+                {
+                    $parent = $pcat->parent_id;
+                    $leaf->catname = $pcat->catname . ' > ' . $leaf->catname;
+                }
+                else
+                {
+                    break 1;
+                }
+            }
+            
+            $sql1 = "SELECT * FROM " . $this->db->dbprefix('designbook') . " WHERE category='$leaf->id'  ";
+            $item = $this->db->query($sql1)->result(); 
+            $count=number_format(count($item));
+            $leaf->catname .="(".$count.")";
+            
+            $ret[] = $leaf;
+        }      
+        $this->aasort($ret, 'catname');
+        return $ret;
+
+    }
+    
 	function aasort (&$array, $key)
 	{
 	    $sorter=array();

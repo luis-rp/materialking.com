@@ -1658,6 +1658,22 @@ class Company extends CI_Controller {
 
 	function designbook()
 	{
+		/*---------------------------------------------------------------------------*/
+		$catcodes = $this->catcode_model->get_designcategories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $this->_set_fields();
+        $data['category'] = $categories;
+        $data['product_categories'] = false;
+        $data['categories'] = $this->itemcode_model->getdesigncategories();
+        /*---------------------------------------------------------------------------*/
+        
 		$company = $this->session->userdata('company');
         $data['design']=$this->db->get_where('designbook',array('company'=>$company->id))->result();
         
@@ -1677,10 +1693,12 @@ class Company extends CI_Controller {
 
 	function designbook1()
 	{
+		//echo "<pre>"; print_r($_POST); die;
        $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
-		$this->load->library('image_lib');	
+		$this->load->library('image_lib');
+			
         $errormessage = '';
         $message='';
 		   if(isset($_FILES['UploadFile']['name']))
@@ -1713,7 +1731,8 @@ class Company extends CI_Controller {
                       		$this->image_lib->initialize($config);
                       		$this->image_lib->resize();
                       	}
-            		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename));
+            		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename,'categoty'=>$primarycategory));
+            		 $id = $this->db->insert_id();
                       }
             	 }
             	$message='Images Uploaded Succesfully.';
@@ -1749,10 +1768,64 @@ class Company extends CI_Controller {
             	 }
                }
            }
+           
            else
             {
              $errormessage = 'Please Enter Name for Image.';
             }
+             
+              /*---------------------My Code-------------------------------*/
+              
+			$this->_set_fields();		
+			$catcodes = $this->catcode_model->get_designcategories_tiered();
+			$primarycategory="";
+	        $categories = array();
+	        if ($catcodes)
+	        {
+	            if (isset($catcodes[0]))
+	            {
+	                build_category_tree($categories, 0, $catcodes);
+	            }
+	        }
+	          $data['category'] = $categories;  
+	        if(isset($_POST['designcatid']))
+           {
+              foreach($_POST['designcatid'] as $check1)
+              {
+            	 if(isset($_POST['category'][$check1]))
+            	 {
+            	    $catid = $_POST['category'][$check1];
+            	    $this->db->where('id', $check1);
+            		$this->db->update('designbook', array('category' => $catid));
+            		
+            		$options2 = array();
+				    $options2['itemid'] = $check1;
+				    $options2['categoryid'] = $_POST['category'][$check1];
+				    $this->db->insert('designbook_category', $options2);
+            	 }
+               }
+           }
+	        
+	        
+	       /* $data['category'] = $categories;     
+	        foreach($_POST['designcatid'] as $check2)
+              { 
+              	    $primarycategory = $_POST['category'][0];              	    
+            	    $this->db->where('id', $check2);
+            		$this->db->update('designbook', array('category' => $primarycategory)); 
+            		
+            		  foreach ($_POST['category'] as $category)
+				          {				          	
+				        	$options2 = array();
+				        	$options2['itemid'] = $check2;
+				        	$options2['categoryid'] = $category;
+				        	$this->db->insert('designbook_category', $options2);
+			              }
+            		        	 
+               }*/
+			/*---------------------End My Code-------------------------------*/
+             
+            
            $message="Data Updated successfully.";
 			if ($errormessage)
 			 {
@@ -1973,4 +2046,104 @@ class Company extends CI_Controller {
         return "$difference $periods[$j] ago ";
     }
     
+    /*function add ()
+    {
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $this->_set_fields();
+        $data['heading'] = 'Add New Itemcode';
+        $data['message'] = '';
+        $data['action'] = site_url('admin/itemcode/add_itemcode');
+        $data['category'] = $categories;
+        $data['product_categories'] = false;
+        $data['categories'] = $this->itemcode_model->getcategories();
+        $data['companies'] = $this->db->get('company')->result();
+        $this->validation->featuredsupplier = 38;
+        $this->load->view('admin/itemcode', $data);
+    }
+    
+     function add_itemcode ()
+    {
+        $data['heading'] = 'Add New Itemcode';
+        $data['action'] = site_url('admin/itemcode/add_itemcode');
+        //$data['category'] = $this->itemcode_model->getCategoryList();
+        //$data['subcategory'] = $this->itemcode_model->getSubCategoryList();
+        $this->_set_fields();
+        $this->_set_rules();
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['category'] = $categories;
+        if ($this->validation->run() == FALSE)
+        {
+            $data['message'] = $this->validation->error_string;
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateCode($this->input->post('itemcode'), 0))
+        {
+            $data['message'] = 'Duplicate Itemcode';
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateUrl($this->input->post('url'), 0))
+        {
+            $data['message'] = 'Duplicate Itemcode';
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        else
+        {
+        	 if(isset($_FILES['UploadFile']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/item/';
+            	$count=0;           	
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            	}
+
+            }
+            $this->do_upload();
+            $itemid = $this->itemcode_model->SaveItemcode();
+            $this->session->set_flashdata('message',
+            '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Code Added Successfully</div></div>');
+            redirect('admin/itemcode');
+        }
+    }
+    
+    */
+    
+    function _set_fields ()
+    {
+        $fields['category'] = 'category';    
+        $this->validation->set_fields($fields);
+    }
+    
+   
+
 }

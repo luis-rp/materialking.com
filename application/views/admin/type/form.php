@@ -3,8 +3,21 @@
 <!--
 $(document).ready(function(){
 	
+	<?php if($this->validation->category =='Manufacturer') {?>	
+	$('#industrydiv').css('display','block');
+	<?php } ?>
+	
 });
 //-->
+
+function hideviewindustry(val){
+	
+	if(val == 'Manufacturer')	
+	$('#industrydiv').css('display','block');
+	else
+	$('#industrydiv').css('display','none');
+}
+
 </script>
 
 <section class="row-fluid">
@@ -30,7 +43,7 @@ $(document).ready(function(){
     <div class="control-group">
     <label class="control-label">Category</label>
     <div class="controls">
-      <select id="category" name="category">
+      <select id="category" name="category" onchange="hideviewindustry(this.value);">
       	<option value="Industry" <?php if($this->validation->category=='Industry'){echo 'SELECTED';}?>>
       		Industry
       	</option>
@@ -40,6 +53,20 @@ $(document).ready(function(){
       </select>
     </div>
     </div>
+    
+    
+    <div id="industrydiv" class="control-group" style="display:none;">
+    <label class="control-label">Industry</label>
+    <div class="controls">
+      <select id="parent_id" name="parent_id">
+      	<option value="">Select Industry</option>
+      	<?php foreach($types as $type){?>
+	    <option value="<?php echo $type->id;?>" <?php if($this->validation->parent_id == $type->id){echo 'SELECTED';}?>><?php echo $type->title;?></option>
+	    <?php }?>
+     </select>
+    </div>
+    </div>
+    
     
     <div class="control-group">
     <label class="control-label">Type:</label>
