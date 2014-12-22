@@ -372,6 +372,22 @@
     				</a>
 				<?php } ?>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>&nbsp;<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>
+				<br><br>
+				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
+				<table class="table table-bordered">
+				<!--<tr><td colspan="2">Recommended Suppliers</td><td colspan="2"></td></tr>-->
+				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
+				 <?php foreach ($suppliers as $supplier) { ?>
+				<tr>
+				<td><?php echo $supplier->title; ?></td>
+				<td> <?php if (isset($supplier->city) && isset($supplier->state)) {  
+					  echo $supplier->city.",&nbsp;".$supplier->state; } else { echo $supplier->address; } ?>
+                </td>
+				<td><?php echo $supplier->industry; ?></td>
+				<td><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>" target="_blank">View-Apply</a></td>
+				</tr>
+				  <?php } ?>
+				</table>
 				</div>
 	    	</div>
 

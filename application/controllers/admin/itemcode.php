@@ -936,6 +936,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['categories'] = $this->itemcode_model->getcategories();
         $data['companies'] = $this->db->get('company')->result();
         $this->validation->featuredsupplier = 38;
+        $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";
+    	$newitemid = $this->db->query($sql)->row();    	
+        $data['defaultitemid'] = $newitemid->id+1;
+        $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
         $this->load->view('admin/itemcode', $data);
     }
 
@@ -1182,7 +1186,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }
         //print_r($relateditems);
         $data['items'] = $this->db->get('item')->result();
-
+		
+        $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();        
+        $data['defaultitemid'] = $id;
         $this->load->view('admin/itemcode', $data);
     }
 
@@ -1205,6 +1211,53 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
+    function addmasterdefault(){
+    	    	
+    	if(!@$_POST)
+    	{
+    		die;
+    	}    	
+		if(@$_POST['itemiddefault'])
+    	$insert['itemid'] = $_POST['itemiddefault'];
+    	
+		$insert['manufacturer'] = $_POST['manufacturerdefault'];
+		$insert['partnum'] = $_POST['partnodefault'];
+		$insert['price'] = $_POST['pricedefault'];
+		$insert['itemname'] = $_POST['itemnamedefault'];
+		$insert['minqty'] = $_POST['minqtydefault'];
+		$defaultitem = $this->db->insert('masterdefault',$insert);
+    	if($defaultitem){
+    		echo  $defaultitem;
+    	}else 
+    	echo ""; 
+    	
+    }
+    
+    function getmasterdefaults(){
+
+    	if(!@$_POST)
+    	{
+    		die;
+    	}
+
+    	$this->db->where('itemid',$_POST['itemiddefault']);
+    	$defaultitems = $this->db->get('masterdefault')->result();
+    	$defaultitems = $this->db->select('md.*,p.title')->where('itemid',$_POST['itemiddefault'])->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+    	echo json_encode($defaultitems);
+    }
+    
+    
+    function deletedefaultitem(){
+    	
+    	$query = "DELETE FROM ".$this->db->dbprefix('masterdefault')." WHERE `id` = ".$_POST['id'];
+    	$returnval = $this->db->query($query);
+    	if($returnval)
+    	echo "success";
+    	else 
+    	echo "fail"; die;
+    	
+    }
+        	 
     function do_upload ()
     {
         $config['upload_path'] = './uploads/item/';

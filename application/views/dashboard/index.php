@@ -201,7 +201,7 @@ function invoice(invoicenum,quoteid)
 										<?php if($penreq->wishtoapply){?>
 											<?php if($penreq->from){?>
 											<br/><a href="<?php echo site_url('dashboard/creditapplication/'.$penreq->from->id);?>">View Application</a>&nbsp;&nbsp;
-											<a href="<?php echo site_url('company/formsubmission/'.$penreq->from->id);?>" target="_blank" >View Submission Data</a>
+											<?php if($formdata){?> <a href="<?php echo site_url('company/formsubmission/'.$penreq->from->id);?>" target="_blank" >View Submission Data</a><?php }?>
 											<?php }else{?>
 											No Application information
 											<?php }?>

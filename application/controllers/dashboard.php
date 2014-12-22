@@ -34,7 +34,11 @@ class Dashboard extends CI_Controller
 		$this->db->where('toid',$company->id);
 		$this->db->where('status','Pending');
 		$reqs = $this->db->get('joinrequest')->result();
-
+		
+		$this->db->where('CompanyID',$company->id);		
+		$formsubmissionresult = $this->db->get('formbuilder')->result();
+		$data['formdata'] = $formsubmissionresult;
+		
 		$data['newrequests'] = array();
 		foreach($reqs as $rq)
 		{

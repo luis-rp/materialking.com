@@ -1,3 +1,6 @@
+<?php echo '<script>var addmasterdefaulturl="'.site_url('admin/itemcode/addmasterdefault').'";</script>'?>
+<?php echo '<script>var getmasterdefaultsurl="'.site_url('admin/itemcode/getmasterdefaults').'";</script>'?>
+<?php echo '<script>var deletedefaultitemurl="'.site_url('admin/itemcode/deletedefaultitem').'";</script>'?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -31,6 +34,8 @@ $(document).ready(function(){
 <script src="<?php echo base_url(); ?>templates/admin/js/jquery.form.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+	$( window ).load(function() { fetchmasterdefaults(); });
 
     $(document).ready(function() {        
         $('#itemcodedate').datepicker();
@@ -67,6 +72,9 @@ $(document).ready(function(){
 		$('.forxls').css('display','none');
 
        // $('#tagsInput').tagsinput();
+       
+       fetchmasterdefaults();
+       
     });
 
     function showhistory(companyid, itemcode, companyname)
@@ -105,6 +113,96 @@ $(document).ready(function(){
         var url = 'http://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=' + keyword + '&rh=i%3Aaps%2Ck%3A1%22+x+3%2F4%22+copper+reducer';
 
         window.open(url, 'amazonlookup', 'width=1200,height=800,menubar=no,scrollbars=yes');
+    }
+    
+    
+    function addmasterdefaultoptions()
+    {    	
+    	var minqtydefault = $("#minqtydefault").val();
+    	var itemnamedefault = $("#itemnamedefault").val();
+    	var pricedefault = $("#pricedefault").val();
+    	var pricedefault = Number(pricedefault);    	
+    	var partnodefault = $("#partnodefault").val();
+		var manufacturerdefault = $("#manufacturerdefault").val();
+    	var itemiddefault = $("#itemiddefault").val();
+    	
+    	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault;
+           	
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: addmasterdefaulturl
+    	}).done(function(data){
+    		if(data){
+				
+    			fetchmasterdefaults();
+    		}
+    	});
+
+    	/*$("#addiscount").html('<table><tr><td>Qty</td><td>Price</td><td>&nbsp</td></td><tr><td><input type="text" name = "discqty" id="discqty"></td><td><input type="text" name = "discprice" id="discprice"></td><td><input type="button" value = "Add" onclick="addqtydiscount();"><input type="hidden" name="qtyitemid" id="qtyitemid" value="'+itemid+'" </td></tr><table>');*/
+    }
+    
+    
+    function fetchmasterdefaults(){
+    	var itemiddefault = $("#itemiddefault").val();    	
+    	var data = "itemiddefault="+itemiddefault;
+           	
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		dataType : 'json',
+    		url: getmasterdefaultsurl
+    	}).done(function(data){
+    		if(data){
+    		
+			$(".defaulttab tbody").html('');	
+    		$.each(data,function(id,defaultitem){
+    		
+    			var newhtml = '<tr>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.title+'</td>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.partnum+'</td>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.itemname+'</td>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.price+'</td>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.minqty+'</td>';
+    			newhtml +='<td class="v-align-middle"><a href="#"><img onclick="deldefaultoption('+defaultitem.id+')" src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></td>';
+    			newhtml +='</tr>';    			
+    			$(".defaulttab tbody").append(newhtml);
+    		});	
+    			
+    			
+    			var html ='<tr>';
+    			html +='<td class="v-align-middle">';
+    			html +='<select style="width: 155px;font-size:12px;" class="form-control" id="manufacturerdefault">';
+    			html +='<option value="">Select Manufacturer</option><?php foreach($manufacturers as $mf){?><option value="<?php echo $mf->id;?>"><?php echo $mf->title?></option><?php }?></select></td>';
+    			html +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Part#" id="partnodefault"/></td>';
+    			html +='<td class="v-align-middle"><input name="itemnamedefault"  id="itemnamedefault"></td>';
+    			html +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Price" id="pricedefault" name="pricedefault"/></td>';
+    			html +='<td class="v-align-middle"><input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqtydefault" /></td></tr>';    			
+    			html +='<tr><td><input type="button" onclick="addmasterdefaultoptions();" value="Add Another" name="addmasterdefault" id="addmasterdefault"/></td><td colspan="4"></td></tr>';
+    			$(".defaulttab tbody").append(html);
+    		
+    		}
+    	});
+    	
+    }
+    
+    function deldefaultoption(id){
+    	
+    	$.ajax({
+    		type:"post",
+    		data: "id="+id,
+    		url: deletedefaultitemurl,
+    		sync:false
+    	}).done(function(data){
+    		if(data){
+    			if(data=="success")
+    			$("#htmldefaultitemmessage").html("Master Default Option deleted successfully!");
+    			else
+    			$("#htmldefaultitemmessage").html("*Error in deleting Master Default Option!");
+    			fetchmasterdefaults();
+    		}
+    	});
+    	
     }
     
     var upload_number = 2;
@@ -630,6 +728,54 @@ $(document).ready(function(){
             			</form>
 						
                 <?php } ?>
+                
+                
+                
+                					<div id="htmldefaultitemmessage"></div>
+                                    <div class="grid-body no-border">
+                                    <table id="datatable" class="table no-more-tables general defaulttab">
+                                        <thead>
+                                            <tr>                                                                                        
+                                                <th style="width:10%"><font color="#fff">Manufacturer</font></th>
+                                                <th style="width:10%"><font color="#fff">Part#</font></th>
+                                                <th style="width:15%">Item Name</th>        
+                                                <th style="width:10%"><font color="#fff">List Price</font></th>
+                                                <th style="width:15%"><font color="#fff">Min. Qty.</font></th>         
+                                                <th style="width:5%">&nbsp;</th>            
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+							              
+							               <tr>                                           
+                                                <td class="v-align-middle">
+                                                	<select style="width: 155px;font-size:12px;" class="form-control" id="manufacturerdefault">
+                                                		<option value="">Select Manufacturer</option>
+                                                		<?php foreach($manufacturers as $mf){?>
+                                                			<option value="<?php echo $mf->id;?>"><?php echo $mf->title?></option>
+                                                		<?php }?>
+                                                	</select>
+                                                </td>
+                                                
+                                                
+                                                <td class="v-align-middle">
+                                                	<input type="text" style="width: 60px;" placeholder="Part#" id="partnodefault"/>
+                                                </td>
+
+                                                <td class="v-align-middle"><input name="itemnamedefault"  id="itemnamedefault"></td>                                                                                                
+                                                <td class="v-align-middle">
+                                                	<input type="text" style="width: 60px;" placeholder="Price" id="pricedefault" name="pricedefault"/>                                    </td>
+
+                                                 <td class="v-align-middle">
+                                                	<input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqtydefault" />
+                                        </td></tr>				                                                         
+                                        <tr><td><input type="button" onclick="addmasterdefaultoptions();" value="Add Another" name="addmasterdefault" id="addmasterdefault"/></td><td colspan="4"></td></tr>
+                                        </tbody>
+                                    </table>
+                                   <input type="hidden" name="itemiddefault" id="itemiddefault" value="<?php echo @$defaultitemid;?>" />
+                            </div>
+                
+                
 						
                 </div>
 

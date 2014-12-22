@@ -938,7 +938,15 @@ class Dashboard extends CI_Controller
 		$data['settingtour']=$setting[0]->tour;
 
 		$data['viewname'] = 'dashboard';
-
+		$data['suppliers']=$this->db->get('company')->result();
+		$i=0;
+		foreach($data['suppliers'] as $supplier)
+		 {
+		   $sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+		  $data['industry']=$this->db->query($sql)->row();	
+		  $data['suppliers'][$i]->industry = $data['industry']->industry;		  
+		  $i++;
+		 }		 
 		$this->load->view ('admin/dashboard', $data);
 	}
 

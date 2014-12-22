@@ -95,7 +95,7 @@ function caloclick(){
 							    	</tr>
 							    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>">
 
-									<?php foreach($backtrack['items'] as $q) {//print_r($q);?>
+									<?php foreach($backtrack['items'] as $q) { //echo "<pre>data-"; print_r($quote->id); die;?>
 							    	<tr>
 							    		<td><?php echo htmlentities($q->itemname);?></td>
 							    		<td><?php echo $q->quantity;?></td>
@@ -120,7 +120,9 @@ function caloclick(){
 							    	<?php }?>
 							    	<tr>
 							    		<td colspan="8">
-										<input type="button" value="Update" class="btn btn-primary" onclick="$('#olditemform').submit();"/>
+										<input type="button" value="Update" class="btn btn-primary" onclick="$('#olditemform').submit();"/>&nbsp;&nbsp;
+										<a href="<?php echo site_url('quote/track/'.$quote->id.'/'.$q->award);?>" target="_blank">
+										<input type="button" value="Track/Send Shipment" class="btn btn-primary"/></a>
 							    		</td>
 							    	</tr>
 							    	</form>

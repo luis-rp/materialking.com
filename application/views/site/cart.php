@@ -46,7 +46,7 @@ function updatecart(itemid,companyid,quantity,incrementval)
 		e.preventDefault();
 		var companyid = $('#companysmsid').val();
 		$.ajax({
-		url: site_url('cart/sendsmsviaajax/'+companyid),
+		url: "<?php echo site_url('cart/sendsmsviaajax'); ?>/"+companyid,
 		type: "POST",
 		data: new FormData(this),		
 		contentType: false,

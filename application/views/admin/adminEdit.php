@@ -16,7 +16,7 @@ $(document).ready(function(){
    <form class="form-horizontal" method="post" action="<?php echo $action; ?>">
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
     <br/>
-    <?php if($this->session->userdata('usertype_id') == 1){?>
+    <?php //if($this->session->userdata('usertype_id') == 1){?>
     <div class="control-group">
     <label class="control-label" for="usertype_id">User Type</label>
     <div class="controls">
@@ -33,7 +33,9 @@ $(document).ready(function(){
 	</select>
     </div>
     </div>
-    <?php }elseif($this->session->userdata('usertype_id') == 2){?>
+    <?php //}
+    //elseif($this->session->userdata('usertype_id') == 2){
+    	if($this->session->userdata('usertype_id') == 2){?>
     <input type="hidden" name="purchasingadmin" value="<?php echo $this->session->userdata('id');?>"/>
     <?php }?>
     
