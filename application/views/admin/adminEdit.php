@@ -21,13 +21,13 @@ $(document).ready(function(){
     <label class="control-label" for="usertype_id">User Type</label>
     <div class="controls">
     <select name="usertype_id">
-	<?php
-	
-		foreach($userarrays as $userarray) {
-		echo '<option value="'.$userarray['id'].'" ';
-		echo $this->validation->usertype_id == $userarray['id'] ? ' selected="selected"' : '';
-		echo '>'.$userarray['userType'].'</option>';
-		}
+    
+    <?php if($this->session->userdata('usertype_id') != 1) {  $userarrays=array_slice($userarrays,1,2);;  } 
+			foreach($userarrays as $userarray) {
+			echo '<option value="'.$userarray['id'].'" ';
+			echo $this->validation->usertype_id == $userarray['id'] ? ' selected="selected"' : '';
+			echo '>'.$userarray['userType'].'</option>';
+			}
 		?>
 	<?php echo $this->validation->usertype_id_error; ?>
 	</select>

@@ -144,11 +144,12 @@ function invoice(invoicenum,invoicequote)
                             </div>
 
                             <div class="grid-body no-border">
-
+ <?php //echo "<pre>"; print_r($invoices); die; ?>
                                     <table id="datatable" class="table no-more-tables general">
                                     <thead>
                                        <tr>
-                  	             			<th style="width:20%">PO Number</th>
+                  	             			<th style="width:15%">PO Number</th>
+                  	             			<th>Company</th>
                                    			<th>Invoice#</th>
                                    			<th>Received On</th>
                                             <th>Total Cost</th>
@@ -163,17 +164,19 @@ function invoice(invoicenum,invoicequote)
 							              $totalpaid= 0;
 							              $totalunpaid= 0;
 									    	foreach($invoices as $ponum=>$invs)
-									    	{
-     								      			foreach($invs as $i){ ?>
+									    	{ 
+     								      			foreach($invs as $i){  ?>
                                                 		<tr>
                                                 			<td class="v-align-middle"><?php echo $ponum;?> </td>
+                                                			<td class="v-align-middle"><?php echo $i->quote->companyname;?> </td>
                                                 			<td>
                                                 			<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>','<?php echo $i->quote->id;?>');">
                                                 			<?php echo $i->invoicenum;?>
                                                 			</a>
                                                 			</td>
                                                 			<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
-                                                			<td>$<?php echo $i->totalprice;?></td>
+                               <td>$<?php $total=(($i->totalprice*$i->taxrate)/100); $gtotal=$total+$i->totalprice; echo number_format($gtotal,2); ?></td>
+                               
                                                 			<td><?php echo $i->paymentstatus;?><br>
                                                 			<?php if($i->paymentstatus=='Paid') { $olddate=strtotime($i->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
                                                 			<td><?php echo $i->status;?></td>
@@ -183,17 +186,17 @@ function invoice(invoicenum,invoicequote)
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
                                                 			</td>
                                                 		</tr>
-                                                		<?php $finaltotal += $i->totalprice;
+                                                		<?php $finaltotal += $gtotal;
 																if($i->paymentstatus=='Paid')
 									    							{
-									    							$totalpaid+= $i->totalprice;
+									    							$totalpaid+= $gtotal;
 									    							}
 
 									    						if($i->paymentstatus=='Unpaid' || $i->paymentstatus=='Requested Payment')
 									    							{
-									    							$totalunpaid+= $i->totalprice;
+									    							$totalunpaid+= $gtotal;
 									    							}
-     								      								}?>
+     								      								}   ?>
                                                 <?php } ?>
                                                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td>
                                                 <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>

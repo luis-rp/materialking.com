@@ -11,6 +11,7 @@ class Quote extends CI_Controller
 		$this->load->dbforge();
 		$this->load->model ('homemodel', '', TRUE);
 		$this->load->model ('quotemodel', '', TRUE);
+		$this->load->model ('admin/quote_model', '', TRUE);
 		$this->load->model ('messagemodel', '', TRUE);
 		$this->load->model ('admin/project_model', '', TRUE);
 		$this->load->model ('admin/settings_model', '', TRUE);
@@ -2819,6 +2820,8 @@ or edit your quote.</div></div></div>');
 			$data['messagekey'] = $message->messagekey;
 		}
 		
+		//$data['errorLog'] = $this->quote_model->get_quotes_error_log($quoteid);
+		$data['errorLog'] = $this->quotemodel->get_quotes_error_log($quoteid,$company->id);
 		//for export link
 		$data['quoteid'] = $quoteid;
 		$data['award']   = $award;
@@ -2996,6 +2999,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->db->where('usertype_id',2);
 		$this->db->from('users')->join('network',"users.id=network.purchasingadmin")->where('network.company',$company->id);
 		$data['purchasingadmins'] = $this->db->get()->result();
+		
 		$this->load->view('quote/invoices',$data);
 	}
 	
@@ -3976,9 +3980,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$query = "SELECT itemid, itemcode, count(bi.id) as bidcount, sum(bi.quantity) as totalquantity
-				  FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b 
-				  WHERE bi.bid=b.id AND b.company={$company->id}
+		$query = "SELECT itemid, bi.itemcode, count(bi.id) as bidcount, sum(bi.quantity) as totalquantity, i.itemcode as orgitemcode
+				  FROM ".$this->db->dbprefix('biditem')." bi,
+				   ".$this->db->dbprefix('bid')." b, 
+				    ".$this->db->dbprefix('item')." i
+				  WHERE bi.bid=b.id AND bi.itemid=i.id AND b.company={$company->id}
 				  GROUP BY itemid HAVING itemid
 				  ";
 		//echo $query.'<br>';

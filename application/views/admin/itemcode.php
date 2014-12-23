@@ -1,6 +1,7 @@
 <?php echo '<script>var addmasterdefaulturl="'.site_url('admin/itemcode/addmasterdefault').'";</script>'?>
 <?php echo '<script>var getmasterdefaultsurl="'.site_url('admin/itemcode/getmasterdefaults').'";</script>'?>
 <?php echo '<script>var deletedefaultitemurl="'.site_url('admin/itemcode/deletedefaultitem').'";</script>'?>
+<?php echo '<script>var updatemasterdefaulturl="'.site_url('admin/itemcode/updatemasterdefault').'";</script>'?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -68,8 +69,8 @@ $(document).ready(function(){
             return false;
         });
         
-        $('.noxls').css('display','none');		
-		$('.forxls').css('display','none');
+        /*$('.noxls').css('display','none');		
+		$('.forxls').css('display','none');*/
 
        // $('#tagsInput').tagsinput();
        
@@ -143,6 +144,34 @@ $(document).ready(function(){
     }
     
     
+    function updatedefaultoption(id){
+    	
+    	var minqtydefault = $("#minqtydefault"+id).val();
+    	var itemnamedefault = $("#itemnamedefault"+id).val();
+    	var pricedefault = $("#pricedefault"+id).val();
+    	var pricedefault = Number(pricedefault);    	
+    	var partnodefault = $("#partnodefault"+id).val();
+		var manufacturerdefault = $("#manufacturerdefault"+id).val();    	
+    	
+    	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault;
+           	
+    	$.ajax({
+    		type:"post",
+    		data: data,
+    		url: updatemasterdefaulturl
+    	}).done(function(data){
+    		if(data){				
+    			if(data==1)
+    			$("#htmldefaultitemmessage").html("Master Default Option Updated successfully!");
+    			else
+    			$("#htmldefaultitemmessage").html("*Error in Updating Master Default Option!");    			
+    			fetchmasterdefaults();
+    		}
+    	});
+    	
+    }
+    
+    
     function fetchmasterdefaults(){
     	var itemiddefault = $("#itemiddefault").val();    	
     	var data = "itemiddefault="+itemiddefault;
@@ -158,15 +187,33 @@ $(document).ready(function(){
 			$(".defaulttab tbody").html('');	
     		$.each(data,function(id,defaultitem){
     		
-    			var newhtml = '<tr>';
+    			var newhtml = '<tr id="label'+defaultitem.id+'">';
     			newhtml +='<td class="v-align-middle">'+defaultitem.title+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.partnum+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.itemname+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.price+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.minqty+'</td>';
-    			newhtml +='<td class="v-align-middle"><a href="#"><img onclick="deldefaultoption('+defaultitem.id+')" src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></td>';
-    			newhtml +='</tr>';    			
+    			newhtml +='<td class="v-align-middle"><a href="javascript:void(0);" onclick="editdefaultoption('+defaultitem.id+','+defaultitem.manufacturer+')"><span class="icon-edit"></span></a>&nbsp;&nbsp;<a href="#"><img onclick="deldefaultoption('+defaultitem.id+')" src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></td>';
+    			newhtml +='</tr>';    	
+    			
+    			var newhtml2 = '<tr id="text'+defaultitem.id+'" style="display:none;">';
+    			newhtml2 +='<td class="v-align-middle">';
+    			newhtml2 +='<select style="width: 155px;font-size:12px;" class="form-control" id="manufacturerdefault'+defaultitem.id+'">';
+    			newhtml2 +='<option value="">Select Manufacturer</option><?php foreach($manufacturers as $mf){?><option value="<?php echo $mf->id;?>"><?php echo $mf->title?></option><?php }?></select></td>';    			    			
+    			//newhtml2 +='<td class="v-align-middle">'+defaultitem.title+'</td>';
+    			//newhtml2 +='<td class="v-align-middle">'+defaultitem.partnum+'</td>';
+    			newhtml2 +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Part#" value="'+defaultitem.partnum+'" id="partnodefault'+defaultitem.id+'"/></td>';
+    			//newhtml2 +='<td class="v-align-middle">'+defaultitem.itemname+'</td>';
+    			newhtml2 +='<td class="v-align-middle"><input name="itemnamedefault'+defaultitem.id+'" value="'+defaultitem.itemname+'" id="itemnamedefault'+defaultitem.id+'"></td>';
+    			//newhtml2 +='<td class="v-align-middle">'+defaultitem.price+'</td>';
+    			newhtml2 +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Price" id="pricedefault'+defaultitem.id+'" name="pricedefault'+defaultitem.id+'" value="'+defaultitem.price+'" /></td>';
+    			//newhtml2 +='<td class="v-align-middle">'+defaultitem.minqty+'</td>';
+    			newhtml2 +='<td class="v-align-middle"><input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqtydefault'+defaultitem.id+'"  value="'+defaultitem.minqty+'" /></td>';    		
+    			newhtml2 +='<td class="v-align-middle"><input type="button" onclick="updatedefaultoption('+defaultitem.id+');" value="Update" name="updatemasterdefault" id="updatemasterdefault"/></td>';
+    			newhtml2 +='</tr>'; 
+    					
     			$(".defaulttab tbody").append(newhtml);
+    			$(".defaulttab tbody").append(newhtml2);
     		});	
     			
     			
@@ -205,6 +252,14 @@ $(document).ready(function(){
     	
     }
     
+    
+    function editdefaultoption(id,manufacturer){
+    	
+    	$('#label'+id).css('display','none');
+    	$('#text'+id).css('display','table-row');    	
+    	$('#manufacturerdefault'+id).val(manufacturer);
+    }
+    
     var upload_number = 2;
 	function addFileInput() {
 	 	var d = document.createElement("div");
@@ -241,8 +296,8 @@ $(document).ready(function(){
     <div class="box">
             <div class="span12">
 
-                <?php echo $message; ?>
-                <?php echo $this->session->flashdata('message'); ?>
+                <?php echo @$message; ?>
+                <?php echo @$this->session->flashdata('message'); ?>
                 <a class="btn btn-green" href="<?php echo site_url('admin/itemcode'); ?>">&lt;&lt; Back</a>
                 <br/>
                 <br>
@@ -397,7 +452,8 @@ $(document).ready(function(){
                       <div class="control-group noxls">
                         <label class="control-label">Special Increment</label>
                         <div class="controls">
-                            <input type="number" class="span10" id="increment" name="increment"  min="1" max="100" value="<?php echo $this->validation->increment; ?>">
+                            <input type="number" class="span10" id="increment" name="increment"  min="1" max="100" 
+                            value="<?php echo $this->validation->increment?$this->validation->increment:'1'; ?>">
                             <?php echo $this->validation->increment_error; ?>
                         </div>
                     </div>

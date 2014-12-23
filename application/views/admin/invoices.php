@@ -143,10 +143,16 @@ function shownotice(newval,oldval,id){
 
 }
 
-function showreport(invoicenum)
-{
-	$(".dclose").css('display','none');
-	$(jq("reportdiv"+invoicenum)).toggle();
+function showreport(invoicenum,i)
+{	
+	//$(".dclose").css('display','none');
+	if($('a','td#invoicenumber_'+i).text() == "Expand"){
+		$('a','td#invoicenumber_'+i).text('Collapse');
+		$(jq("reportdiv"+invoicenum)).css('display','block');
+	}else{
+		$('a','td#invoicenumber_'+i).text('Expand');
+		$(jq("reportdiv"+invoicenum)).css('display','none');
+	}
 }
 
 function jq( myid ) {
@@ -245,7 +251,7 @@ function jq( myid ) {
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
-                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>');">Expand</a>
+                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a>
                     			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>

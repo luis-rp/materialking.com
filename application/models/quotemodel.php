@@ -623,12 +623,13 @@ class Quotemodel extends Model
 
 
 
-		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,
+		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,s.taxrate,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
-				   ".$this->db->dbprefix('awarditem')." ai
-				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				   ".$this->db->dbprefix('awarditem')." ai,
+				    ".$this->db->dbprefix('settings')." s
+				  WHERE r.awarditem=ai.id AND ai.purchasingadmin=s.purchasingadmin AND ai.company=$company $search
 				  $pafilter
 				  GROUP BY invoicenum
                   ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
@@ -638,26 +639,26 @@ class Quotemodel extends Model
 
 		$invoicequery = $this->db->query($query);
 		$items = $invoicequery->result();
-
+        //echo "<pre>"; print_r($items); die;
 		$invoices = array();
 		foreach($items as $invoice)
 		{
-			$quotesql = "SELECT q.*
+			$quotesql = "SELECT q.*,u.companyname
 					   FROM
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
 					   ".$this->db->dbprefix('award')." a,
-					   ".$this->db->dbprefix('quote')." q
+					   ".$this->db->dbprefix('quote')." q,
+					   ".$this->db->dbprefix('users')." u
 					  WHERE r.awarditem=ai.id AND ai.award=a.id
-					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
+					  AND a.quote=q.id AND q.purchasingadmin=u.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
-
 			$quotequery = $this->db->query($quotesql);
 			$invoice->quote = $quotequery->row();
-
+			
 			$invoices[]=$invoice;
 		}
-
+          
 		return $invoices;
 	}
 
@@ -770,6 +771,22 @@ class Quotemodel extends Model
 		$returnresult = $this->db->update('received',array('alertsentdate'=>$alertarray['alertsentdate']));
 		return $returnresult;
 	}
+		
+	
+    function get_quotes_error_log($quote,$companyid)
+    {
+        $this->db->select("quote_errorlog.*,company.*");
+        $this->db->where('quoteid', $quote);
+        $this->db->where('quote_errorlog.companyid', $companyid);
+        $this->db->join("company",'company.id = quote_errorlog.companyid');
+        $query = $this->db->get('quote_errorlog');
+          if ($query->num_rows > 0) {
+            $ret = $query->result();
+            return $ret;
+          }
+          return NULL;
+
+    }
 
 }
 ?>

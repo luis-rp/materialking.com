@@ -57,6 +57,8 @@ class Inventory extends CI_Controller
 		$data['categories'] = $this->itemcode_model->getcategories();
 		$this->db->where('id',$company->id);
 		$data['company'] = $this->db->get('company')->row();
+				
+		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
 		$this->load->view('inventory/items',$data);
 	}
 	

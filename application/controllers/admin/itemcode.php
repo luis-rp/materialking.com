@@ -1189,6 +1189,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		
         $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();        
         $data['defaultitemid'] = $id;
+        if(@$this->session->flashdata('message'))
+        $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
         $this->load->view('admin/itemcode', $data);
     }
 
@@ -1226,6 +1228,27 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$insert['itemname'] = $_POST['itemnamedefault'];
 		$insert['minqty'] = $_POST['minqtydefault'];
 		$defaultitem = $this->db->insert('masterdefault',$insert);
+    	if($defaultitem){
+    		echo  $defaultitem;
+    	}else 
+    	echo ""; 
+    	
+    }
+    
+    function updatemasterdefault(){
+    	
+    	if(!@$_POST)
+    	{
+    		die;
+    	}    	
+		    	
+		$update['manufacturer'] = $_POST['manufacturerdefault'];
+		$update['partnum'] = $_POST['partnodefault'];
+		$update['price'] = $_POST['pricedefault'];
+		$update['itemname'] = $_POST['itemnamedefault'];
+		$update['minqty'] = $_POST['minqtydefault'];
+		$this->db->where(array('id' => $_POST['id']));
+		$defaultitem = $this->db->update('masterdefault',$update);
     	if($defaultitem){
     		echo  $defaultitem;
     	}else 
@@ -1406,6 +1429,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                     $this->itemcode_model->db->update('minprice', $updatearray);
                 }
             $data['message'] = '<div class="success">Item Code has been updated.</div>';
+            $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
             redirect('admin/itemcode/update/' . $itemid);
 
      //redirect('admin/itemcode/index');

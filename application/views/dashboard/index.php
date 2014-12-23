@@ -141,11 +141,11 @@ function invoice(invoicenum,quoteid)
 					  <td>&nbsp;</td>
 					  <td>&nbsp;</td>
 					  </tr>
-				<?php foreach($invoices as $invoice) { ?>
+				<?php foreach($invoices as $invoice) {  ?>
 					  <tr>
 					  <td><a href="javascript:void(0)" onclick="invoice('<?php echo $invoice->invoicenum;?>','<?php echo $invoice->quoteid;?>');"><?php echo $invoice->invoicenum; ?></a></td>
 					  <td><?php echo $invoice->datedue; ?></td>
-					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->invoicenum;?>');" value="Send Alert" > </td>
+					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->ponum;?>');" value="Send Alert" > </td>
 					  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
 					  </tr>
 

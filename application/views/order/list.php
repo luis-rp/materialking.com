@@ -44,6 +44,7 @@ $(document).ready(function(){
 		    ?>
 		<div class="row">
                     <div class="col-md-12">
+                    <div>
 				   		<div class="combofixed">
 				   		
 			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post">
@@ -134,14 +135,14 @@ $(document).ready(function(){
 			                    		</div>
 			                    	</div>
 			               </form>
-			        </div>
+			        </div></div>
 
                         <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
                             </div>
                             <div class="grid-body no-border">
-                                    <table id="datatable" class="table no-more-tables general">
+                                    <table id="datatable" class="table no-more-tables general" style="margin-top:40px;">
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Order#</th>
@@ -167,6 +168,15 @@ $(document).ready(function(){
 									    	{
 									    		
 									    		$i++;
+									    		$tot="";
+									    		if($order->status =="Void")
+									    		{
+									    			$tot=0;
+									    		}
+									    		else 
+									    		{
+									    			$tot=$order->amount;
+									    		}
 									      ?>
                                            <tr>
                                                 <td><?php if(isset($order->ordernumber)) echo $order->ordernumber;?></td>
@@ -174,7 +184,7 @@ $(document).ready(function(){
                                                 <td><?php if(isset($order->paymentstatus)) echo $order->paymentstatus;?></td>
                                                 <td><?php if(isset($order->status)) { if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; } ?></td>
                                                 <td><?php if(isset($order->purchasedate)) echo date("d F Y", strtotime($order->purchasedate));?></td>
-                                                <td><?php if(isset($order->amount)) echo $order->amount;?></td>
+                                                <td><?php if(isset($order->amount)) echo $tot;?></td>
                                                 <td><?php if(isset($order->type)) echo $order->type;?></td>
                                                 <td><?php if(isset($order->txnid)) echo $order->txnid;?></td>
                                                 <td><?php if(isset($order->id)) { ?>
@@ -184,16 +194,19 @@ $(document).ready(function(){
                                                 	<?php } ?>
                                                 </td>
                                             </tr>
-                                          <?php  $finaltotal += $order->amount;
+                                          <?php  
+                                          
+                                          
+                                          $finaltotal += $tot;
 
 									    	if($order->paymentstatus=='Paid')
 									    	{
-									    		$totalpaid+= $order->amount;
+									    		$totalpaid+= $tot;
 									    	}
 
 									    	if($order->paymentstatus=='Unpaid' || $order->paymentstatus=='Requested Payment')
 									    	{
-									    		$totalunpaid+= $order->amount;
+									    		$totalunpaid+= $tot;
 									    	}
 
 

@@ -61,26 +61,26 @@
                                     <table id="datatable" class="table no-more-tables general">
                                         <thead>
                                             <tr>
-                                                <th style="width:25%">Itemcode</th>
-                                                <th style="width:15%">Bids</th>
-                                                <th style="width:25%">Awards</th>
-                                                <th style="width:35%">Win Rate(%)</th>
-                                                <th style="width:35%">Total Qty. via Bids</th>
-                                                <th style="width:35%">Avg Order Qty. via Bids</th>
-                                                <th style="width:25%">Store Sales</th>
-                                                <th style="width:25%">Total Qty. Via Store</th><br>
-												<th style="width:25%">Avg Order Qty. Via Store</th>
+                                                <th style="width:20%">Itemcode</th>
+                                                <th style="width:10%">Bids</th>
+                                                <th style="width:10%">Awards</th>
+                                                <th style="width:10%">Win Rate(%)</th>
+                                                <th style="width:10%">Total Qty. via Bids</th>
+                                                <th style="width:10%">Avg Order Qty. via Bids</th>
+                                                <th style="width:10%">Store Sales</th>
+                                                <th style="width:10%">Total Qty. Via Store</th><br>
+												<th style="width:10%">Avg Order Qty. Via Store</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-							              <?php
+							              <?php 
 									    	$i = 0;
 									    	foreach($items as $item)
 									    	{
 									    		$i++;
 									      ?>
                                             <tr>
-                                                <td class="v-align-middle"><?php echo $item->itemcode;?></td>
+                                                <td class="v-align-middle"><?php echo $item->itemcode?$item->itemcode:$item->orgitemcode;?></td>
                                                 <td class="v-align-middle"><?php echo $item->bidcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->awardcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->performance;?></td>

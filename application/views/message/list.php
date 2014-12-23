@@ -51,6 +51,9 @@
 		 				<?php if($po['quote']['status'] == 'Awarded'){?>
 		 				(<?php echo $po['quote']['awarditems'];?> items awarded.)
 		 				<?php }?>
+		 				<?php if($po['quote']['complete'] == 'Yes'){?>
+		 		<a style="color:red;" href="<?php echo site_url('message/archivemessage/'.$po['quote']['id']);?>" class="btn btn-primary btn-xs"> Archive </a>
+		 				<?php }?>
                     	</h3>
                 </div>
           <ul class="cbp_tmtimeline">
