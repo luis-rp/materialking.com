@@ -957,7 +957,7 @@ class Company extends CI_Controller {
 		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
 		    //echo $query.'<br/>';
 		    $manualdue = $this->db->query($query)->row()->orderdue;

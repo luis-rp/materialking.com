@@ -14,6 +14,7 @@ class Dashboard extends CI_Controller
 		$this->load->dbforge();
 		$this->load = new My_Loader();
 		$this->load->library ( array ('table', 'session'));
+		$this->load->model('homemodel', '', TRUE);
 		$this->load->model('admin/statmodel');
 		$this->load->model('admin/quote_model');
 		$this->load->model('admin/project_model');
@@ -567,10 +568,11 @@ class Dashboard extends CI_Controller
 		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (SUM(od.price) + (SUM(od.price) * o.taxpercent / 100)), (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)) )
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
 		    $manualdue = $this->db->query($query)->row()->orderdue;
 		    $manualdue = round($manualdue,2);
+		    
 		    //echo $manualdue.' <br/> ';
 		    $nc->due += $manualdue;
 
@@ -938,7 +940,53 @@ class Dashboard extends CI_Controller
 		$data['settingtour']=$setting[0]->tour;
 
 		$data['viewname'] = 'dashboard';
-		$data['suppliers']=$this->db->get('company')->result();
+		
+		
+		$details = get_my_address();
+            $center = $details->loc;
+            $this->data['my_location'] = get_my_location($details);
+            $geo_coords = explode(",", $center);
+            $search = new stdClass();
+            $search->distance = 100000;
+            $search->current_lat = $geo_coords[0];
+            $search->current_lon = $geo_coords[1];
+            $search->earths_radius = 6371;
+            $use_supplier_position = false;
+            $this->homemodel->set_search_criteria($search);
+
+            $location = $this->input->post('location');
+
+            //$lat = $this->input->post('lat');
+            //$lng = $this->input->post('lng');
+            if ($location)
+            {
+                $return = get_geo_from_address($location);
+                if($return)
+                {
+                    $center = "{$return->lat}, {$return->long}";
+                    $search->current_lat = $return->lat;
+                    $search->current_lon = $return->long;
+                    $this->homemodel->set_search_criteria($search);
+                }
+            }
+            $this->homemodel->set_distance(20);
+            $query_suppliers = $this->homemodel->get_nearest_suppliers();
+            //echo "<pre>",print_r($query_suppliers); die;
+            if (! $query_suppliers->totalresult)
+            {
+                $this->homemodel->set_distance(15000);
+                $query_suppliers = $this->homemodel->get_nearest_suppliers($ignore_location = true);
+                $this->homemodel->set_distance(20);
+                //$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
+            }
+            /*else
+            {
+                $this->data['found_records'] = "Found " . $query_suppliers->totalresult . " nearest suppliers";
+            }*/
+		
+		//$data['suppliers']=$this->db->get('company')->result();
+		//echo "<pre>",print_r($query_suppliers); die;
+		$data['suppliers']=$query_suppliers->suppliers;
 		$i=0;
 		foreach($data['suppliers'] as $supplier)
 		 {

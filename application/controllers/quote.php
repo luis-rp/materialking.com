@@ -3021,8 +3021,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['email_body_title']  = "";
 		$data['email_body_content']  = "";
 		$gtotal = 0;
+				
 		foreach ($invs as $invoice)
-		{     		
+		{ 
+		    $config = (array)$this->settings_model->get_setting_by_admin ($invoice->purchasingadmin);
+		    $config = array_merge($config, $this->config->config); 		
 			$olddate=strtotime($invoice->awardedon); $awarddate = date('m/d/Y', $olddate);
 			$data['email_body_title'] .= 'Dear '.$invoice->username.' ,<br><br>';
 			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$_POST['invoicenum'].' from PO# '.$invoice->ponum.', Ordered on '.$awarddate.' to Due on  '.$invoice->DueDate.'<br><br>';
@@ -3055,13 +3058,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td>'.$invoice->paymentstatus.'</td>
             		<td>'.$invoice->status.'</td>
             		<td>'.$invoice->DueDate.'</td>
-            		<td align="right">'.number_format($invoice->price,2).'</td>
+            		<td align="right">'.number_format($invoice->ea,2).'</td>
 	            	  </tr>';
-	        $total = $invoice->price*$invoice->quantity;
+	        $total = $invoice->ea*$invoice->quantity;
             $gtotal+=$total;
-	        $tax = $gtotal * $invoice->taxpercent / 100;
+	        $tax = $gtotal * $config['taxpercent'] / 100;
             $totalwithtax = number_format($tax+$gtotal,2);
-            	
             $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
             		<td colspan="11" align="right">Total</td>
             		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
@@ -3077,16 +3079,14 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>';
             $data['email_body_content'] .= '</table>';   
-	    }      
+	    }  
 	    $loaderEmail = new My_Loader();
 	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
 		$this->email->initialize($config);
-		//$this->email->clear(true);
 		$this->email->to($invs[0]->email);
-		//$this->email->cc('pratiksha@esparkinfo.com');
 		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
 		
 		$this->email->subject($subject);

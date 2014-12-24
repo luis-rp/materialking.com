@@ -14,6 +14,7 @@ class Order extends CI_Controller
 		$this->load->model ('messagemodel', '', TRUE);
 		$this->load->model ('quotemodel', '', TRUE);
 		$this->load->model ('companymodel', '', TRUE);
+		$this->load->model ('admin/settings_model', '', TRUE);
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
 		 if ($this->session->userdata('company')) {    
@@ -378,14 +379,15 @@ class Order extends CI_Controller
 		    		
 					if($order->email)
 					{
+						$settings = (array) $this->settings_model->get_current_settings();						
 	        			$this->load->library('email');
 		        		$config['charset'] = 'utf-8';
 		        		$config['mailtype'] = 'html';	        			
 		        		$this->email->initialize($config);
 		        		$this->email->from($company->primaryemail);
 		        		$this->email->to($order->email);
-		        		$subject = 'Payment verified by supplier';	
-		        		
+		        		$this->email->cc($settings['adminemail']);
+		        		$subject = 'Payment verified by supplier';		        		
 		        		$data['email_body_title'] = "Information Regarding Payment";
 	        			$data['email_body_content'] = "Payment verified for Transaction id is {$order->txnid} for order# {$order->ordernumber}";	
 			      		$loaderEmail = new My_Loader();

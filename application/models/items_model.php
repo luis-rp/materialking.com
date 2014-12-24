@@ -489,6 +489,14 @@ class items_model extends Model {
         
         if($this->keyword){
             $lookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' or `keyword` like '%$this->keyword%')";
+            
+            $arrkeyword = explode(" ",$this->keyword);
+            if(count($arrkeyword>1)){
+            $lookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' or `keyword` like '%$this->keyword%' ";
+            foreach($arrkeyword as $keyw){
+            	$lookup .= " or `itemcode` like '%$keyw%' OR `itemname` like '%$keyw%' or `keyword` like '%$keyw%' ";
+            } }
+            $lookup .= " ) ";
             if(trim($where)){
                 $where .= " AND ".$lookup;
             }else{

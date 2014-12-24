@@ -347,7 +347,7 @@ function delqtydiscount(id,itemid){
     }
     
     
-    function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,minqty){
+    function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,minqty,itemcode){
 
     	if ($('#check'+id).is(':checked') ) {
 			$('.check'+itemid).prop('checked', false);
@@ -357,7 +357,7 @@ function delqtydiscount(id,itemid){
     		$('#part'+itemid).val(partnum);
     		$('#price1'+itemid).val(listprice);
     		$('#minqty'+itemid).val(minqty);
-
+			$('#itemcodedata'+itemid).val(itemcode);
     	}else{
 
     		$('#itemnamedata'+itemid).val('');
@@ -365,6 +365,7 @@ function delqtydiscount(id,itemid){
     		$('#part'+itemid).val('');
     		$('#price1'+itemid).val('');
     		$('#minqty'+itemid).val('');
+    		$('#itemcodedata'+itemid).val('');
     	}
     }
 
@@ -836,7 +837,7 @@ function clearall(id)
             </div>
              <div class="col-md-2">
               <span><?php echo $masterdata->minqty;?></span>
-              <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo $masterdata->itemname;?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>')"></span>
+              <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo $masterdata->itemname;?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>','<?php echo $masterdata->itemcode;?>')"></span>
             </div>            
           </div>  
      <?php if($masterdata->itemid!=$masterdefaults[$i+1]->itemid) {?>    

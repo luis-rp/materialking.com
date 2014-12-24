@@ -126,8 +126,9 @@ $(document).ready(function(){
     	var partnodefault = $("#partnodefault").val();
 		var manufacturerdefault = $("#manufacturerdefault").val();
     	var itemiddefault = $("#itemiddefault").val();
+    	var itemcodedefault = $("#itemcodedefault").val();
     	
-    	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault;
+    	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
            	
     	$.ajax({
     		type:"post",
@@ -152,8 +153,9 @@ $(document).ready(function(){
     	var pricedefault = Number(pricedefault);    	
     	var partnodefault = $("#partnodefault"+id).val();
 		var manufacturerdefault = $("#manufacturerdefault"+id).val();    	
+		var itemcodedefault = $("#itemcodedefault"+id).val();  
     	
-    	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault;
+    	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
            	
     	$.ajax({
     		type:"post",
@@ -189,6 +191,7 @@ $(document).ready(function(){
     		
     			var newhtml = '<tr id="label'+defaultitem.id+'">';
     			newhtml +='<td class="v-align-middle">'+defaultitem.title+'</td>';
+    			newhtml +='<td class="v-align-middle">'+defaultitem.itemcode+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.partnum+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.itemname+'</td>';
     			newhtml +='<td class="v-align-middle">'+defaultitem.price+'</td>';
@@ -201,6 +204,9 @@ $(document).ready(function(){
     			newhtml2 +='<select style="width: 155px;font-size:12px;" class="form-control" id="manufacturerdefault'+defaultitem.id+'">';
     			newhtml2 +='<option value="">Select Manufacturer</option><?php foreach($manufacturers as $mf){?><option value="<?php echo $mf->id;?>"><?php echo $mf->title?></option><?php }?></select></td>';    			    			
     			//newhtml2 +='<td class="v-align-middle">'+defaultitem.title+'</td>';
+    			
+    			newhtml2 +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Itemcode" value="'+defaultitem.itemcode+'" id="itemcodedefault'+defaultitem.id+'" name="itemcodedefault'+defaultitem.id+'" /></td>';
+    			
     			//newhtml2 +='<td class="v-align-middle">'+defaultitem.partnum+'</td>';
     			newhtml2 +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Part#" value="'+defaultitem.partnum+'" id="partnodefault'+defaultitem.id+'"/></td>';
     			//newhtml2 +='<td class="v-align-middle">'+defaultitem.itemname+'</td>';
@@ -221,6 +227,7 @@ $(document).ready(function(){
     			html +='<td class="v-align-middle">';
     			html +='<select style="width: 155px;font-size:12px;" class="form-control" id="manufacturerdefault">';
     			html +='<option value="">Select Manufacturer</option><?php foreach($manufacturers as $mf){?><option value="<?php echo $mf->id;?>"><?php echo $mf->title?></option><?php }?></select></td>';
+    			html +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Itemcode" id="itemcodedefault" name="itemcodedefault" value="<?php echo $this->validation->itemcode; ?>" /></td>';
     			html +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Part#" id="partnodefault"/></td>';
     			html +='<td class="v-align-middle"><input name="itemnamedefault"  id="itemnamedefault"></td>';
     			html +='<td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Price" id="pricedefault" name="pricedefault"/></td>';
@@ -793,6 +800,7 @@ $(document).ready(function(){
                                         <thead>
                                             <tr>                                                                                        
                                                 <th style="width:10%"><font color="#fff">Manufacturer</font></th>
+                                                <th style="width:10%"><font color="#fff">Item Code</font></th>
                                                 <th style="width:10%"><font color="#fff">Part#</font></th>
                                                 <th style="width:15%">Item Name</th>        
                                                 <th style="width:10%"><font color="#fff">List Price</font></th>
@@ -813,7 +821,7 @@ $(document).ready(function(){
                                                 	</select>
                                                 </td>
                                                 
-                                                
+                                                <td class="v-align-middle"><input type="text" style="width: 60px;" placeholder="Itemcode" id="itemcodedefault" name="itemcodedefault"/></td>
                                                 <td class="v-align-middle">
                                                 	<input type="text" style="width: 60px;" placeholder="Part#" id="partnodefault"/>
                                                 </td>

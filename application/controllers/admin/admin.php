@@ -125,7 +125,7 @@ class Admin extends CI_Controller {
 		$data ['message'] = '';
 		$data ['action'] = site_url ( 'admin/admin/addAdminuser' );
 		$data ['link_back'] = anchor ( 'admin/admin/index/', 'Back To List', array ('class' => 'back' ) );
-		$data ['userarrays'] = $this->adminmodel->getUserType ();
+		$data ['userarrays'] = $this->adminmodel->getUserType();
 		$this->db->order_by('catname', 'ASC');
 		$parent=0;
         //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
@@ -158,6 +158,7 @@ class Admin extends CI_Controller {
 				$data ['message'] = '<div class="already">Username Already Exists.</div>';
 				$this->load->view ('admin/adminEdit', $data);
 			} else {
+							
 				$created_date = date ( "Y-m-d h:i:s" );
                 //$geoloc = $this->company_model->getLatLong( $this->input->post ( 'address' ));
 
@@ -174,11 +175,13 @@ class Admin extends CI_Controller {
 			        $this->email->to($_POST['email']);
 			        $link = '<a href="'.site_url('admin').'">Login</a>';
 			        $data['email_body_title'] = "Dear ".$_POST['fullname'];
-$data['email_body_content'] = "Your account is created with following details <br/><br/>
+/*$data['email_body_content'] = "Your account is created with following details <br/><br/>*/
+$data['email_body_content'] = "(".$this->session->userdata('fullname').") Has created an account for you at materialking.com, you now have to access your account using your username and password below. <br/><br/>
 Username: {$_POST['username']}<br/><br/>
 Password: {$_POST['password']}<br/><br/>
 You can login from:<br/><br/>
 $link";
+
 $loaderEmail = new My_Loader();
 			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		    $this->email->subject("EZPZ-P Account Created");

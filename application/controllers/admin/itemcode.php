@@ -1227,6 +1227,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$insert['price'] = $_POST['pricedefault'];
 		$insert['itemname'] = $_POST['itemnamedefault'];
 		$insert['minqty'] = $_POST['minqtydefault'];
+		$insert['itemcode'] = $_POST['itemcodedefault'];
 		$defaultitem = $this->db->insert('masterdefault',$insert);
     	if($defaultitem){
     		echo  $defaultitem;
@@ -1247,6 +1248,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$update['price'] = $_POST['pricedefault'];
 		$update['itemname'] = $_POST['itemnamedefault'];
 		$update['minqty'] = $_POST['minqtydefault'];
+		$update['itemcode'] = $_POST['itemcodedefault'];
 		$this->db->where(array('id' => $_POST['id']));
 		$defaultitem = $this->db->update('masterdefault',$update);
     	if($defaultitem){

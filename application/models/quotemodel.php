@@ -672,7 +672,24 @@ class Quotemodel extends Model
 		$pafilter = '';
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
-		$query = "SELECT r.invoicenum,q.ponum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent,u.email,a.awardedon
+		/*$query = "SELECT r.invoicenum,q.ponum,od.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,o.taxpercent,u.email,a.awardedon
+				   FROM
+				   ".$this->db->dbprefix('received')." r
+				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
+				   LEFT JOIN  ".$this->db->dbprefix('users')." u ON u.purchasingadmin = r.purchasingadmin
+				   LEFT JOIN  ".$this->db->dbprefix('company')." c ON ai.company = c.id
+				   LEFT JOIN  ".$this->db->dbprefix('item')." i ON i.id = ai.itemid
+				   LEFT JOIN ".$this->db->dbprefix('orderdetails')."  od ON od.itemid = ai.itemid
+				   LEFT JOIN ".$this->db->dbprefix('order')."  o ON o.id = od.orderid
+				   LEFT JOIN ".$this->db->dbprefix('award')."  a ON a.id = ai.award
+				   LEFT JOIN ".$this->db->dbprefix('quote')."  q ON q.id = a.quote
+				  WHERE r.awarditem=ai.id AND ai.company=$company $search
+				  $pafilter
+				  GROUP BY invoicenum
+                  ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
+				  ";*/
+		
+		$query = "SELECT r.invoicenum,q.ponum,r.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,u.email,a.awardedon,ai.ea,r.purchasingadmin
 				   FROM
 				   ".$this->db->dbprefix('received')." r
 				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id

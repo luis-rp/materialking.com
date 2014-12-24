@@ -245,6 +245,11 @@ function jq( myid ) {
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
+                    		$future = array();
+                    		$current = array();
+                    		$daysold60 = array();
+                    		$daysold90 = array();
+                    		$daysold120 = array();
                     		//echo "<pre>",print_r($items);
                     		foreach($items as $item){ $i++;
                     		?>
@@ -296,9 +301,24 @@ function jq( myid ) {
                     		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
                     		{
                     			$totalunpaid+= $item->totalprice;
+                    			
+                    			$datediff = strtotime($item->datedue) - time();
+     							$datediff = abs(floor($datediff/(60*60*24)));
+                    			if($item->datedue>=date('Y-m-d')){                    			
+                    				$future[] = $item->totalprice;
+                    			}elseif($datediff>=1 && $datediff<=30){ 
+                    				echo $current[] = $item->totalprice;
+                    			}elseif($datediff>=31 && $datediff<=60){ 
+                    				echo $daysold60[] = $item->totalprice;
+                    			}elseif($datediff>=61 && $datediff<=90){ 
+                    				$daysold90[] = $item->totalprice;
+                    			}elseif($datediff>=91 && $datediff<=120){ 
+                    				$daysold120[] = $item->totalprice;
+                    			}
                     		}
 
-                    		}?>
+                    		}                 		
+                    		?>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -386,10 +406,31 @@ function jq( myid ) {
 				    		
 				    	} }?> </table>  <?php echo $newhtmltable; } }?>
 		      
+              </div>             
+                
+              <div>
+              <?php if(count($future>0) || count($current>0) || count($daysold60>0) || count($daysold90>0) || count($daysold120>0)){?>
+              <span style="text-align:center;"><b>A/R Aging Table</b></span>
+              <table class="table table-bordered">
+			     
+			    	<tr>
+			    		<th width="75">Future</th>
+			    		<th width="75">Current</th>
+			    		<th width="75">30-60</th>
+			    		<th width="75">60-90</th>
+			    		<th width="75">90-120</th>			    		
+			    		<th width="75">Total</th>			    		
+			    	</tr>
+			    	<tr>
+			    		<td><?php echo array_sum($future); ?></td>  
+			    		<td><?php echo array_sum($current); ?></td>
+			    		<td><?php echo array_sum($daysold60); ?></td>
+			    		<td><?php echo array_sum($daysold90); ?></td>
+			    		<td><?php echo array_sum($daysold120); ?></td>
+			    		<td><?php echo array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120); ?></td>
+			    	</tr>
+              <?php } ?>
               </div>  
-                
-                
-                
                 
             </div>
         </div>

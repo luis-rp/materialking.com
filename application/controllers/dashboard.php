@@ -205,9 +205,10 @@ class Dashboard extends CI_Controller
 			$company = $this->db->where('id',$row->fromid)->get('users')->row();
 
 			$data['email_body_title'] = "Dear " . $company->companyname ;
-			$data['email_body_content'] = "Congratulation! ". $supplier->title." has just accept your request to join in the network.
+			$data['email_body_content'] = "Congratulation! ". $supplier->title." has just accepted your request to join in the network.
 			<br/>
-			Thanks
+			Thanks,<br>
+			Materialking.com
 			<br><br>";
 			$loaderEmail = new My_Loader();
 			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);

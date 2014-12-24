@@ -566,7 +566,10 @@ $( document ).tooltip();
                         			<td><?php echo $supplier->joinstatus?$supplier->joinstatus:'Guest';?></td>
                         		</tr>
 
-                        		<?php  $i=0;if($types[$i]->category == 'Industry') {?>
+                        		
+                        		
+                        		
+                        		<!--<?php  $i=0;if($types[$i]->category == 'Industry') {?>
                         		<tr>
                         			<td><b>Industry:</b></td>
                         		</tr>
@@ -587,7 +590,40 @@ $( document ).tooltip();
                                         </ul>
                         			</td>
                         		</tr>
-								<?php } $i++; ?>
+								<?php } $i++; ?>-->
+								
+								
+								
+								
+								
+								<?php $typecnt=0; $typehtml=""; foreach ($types as $type)
+                                            if ($type->category == 'Industry') {
+                                                
+                                                $typehtml .= '<li>
+                                                <a href="javascript:void(0)" onclick="industryitems('.$type->id.')">
+                                                <h4>'.$type->title.'</h4>
+                                                </a>
+                                                </li>';
+                                $typecnt++; } ?>
+                        		
+                        		<?php if($typecnt >0) {?>
+                        		<tr>
+                        			<td><b>Industry:</b></td>
+                        		</tr>
+                        		<tr>
+                        			<td colspan="2">
+                        			<ul class="inlist">
+                        			<?php echo $typehtml; ?>    
+                                    </ul>
+                        			</td>
+                        		</tr>
+                        		<?php } ?>
+								
+								
+								
+								
+								
+								
 								<?php if(@$rating) {?>
                         		<tr>
                         			<td colspan="">Reviews:

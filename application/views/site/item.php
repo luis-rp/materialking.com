@@ -1160,9 +1160,9 @@ $( document ).tooltip();
                                     		<tr>
                                     			<td>
                                     				<?php if($ri->item_img){?>
-                                    				<img style="width:65px;height:65px" src="<?php echo site_url('uploads/item/'.$ri->item_img);?>"/>
+                                    				<img style="width:75px;height:50px" src="<?php echo site_url('uploads/item/'.$ri->item_img);?>"/>
                                     				<?php } else {?>
-                                    				<img style="width:65px;height:65px" src="<?php echo site_url('uploads/item/big.png');?>"/>
+                                    				<img style="width:75px;height:50px" src="<?php echo site_url('uploads/item/big.png');?>"/>
                                     				<?php }?>
                                     			</td>
                                     			<td>
