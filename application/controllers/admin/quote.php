@@ -202,7 +202,7 @@ class quote extends CI_Controller
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
 
-                	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
+                	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('item')." i on s.itemid=i.id WHERE quote='{$quote->id}' and s.accepted = 0";
         			$shipment = $this->db->query($shipmentsquery)->result();
                 	if($shipment)
                 	  {  
@@ -2982,6 +2982,7 @@ class quote extends CI_Controller
 
         $awardarray = array();
         $awardarray['quote'] = $qid;
+        $awardarray['shipto'] = $_POST['shipto'];
         $awardarray['awardedon'] = date('Y-m-d H:i:s');
         $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         $this->quote_model->db->insert('award', $awardarray);
@@ -4335,7 +4336,7 @@ class quote extends CI_Controller
     	}
 
     	$shipments = $this->db->select('shipment.*, item.itemname')
-    	->from('shipment')->join('item','shipment.itemid=item.id')
+    	->from('shipment')->join('item','shipment.itemid=item.id','left')
     	->where('quote',$qid)->get()->result();
 
     	$data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote);
@@ -4672,7 +4673,7 @@ class quote extends CI_Controller
     	}
 
     	$shipments = $this->db->select('shipment.*, item.itemname')
-    	->from('shipment')->join('item','shipment.itemid=item.id')
+    	->from('shipment')->join('item','shipment.itemid=item.id','left')
     	->where('quote',$qid)->get()->result();
 
     	$data['errorLog'] = $this->quote_model->get_quotes_error_log($awarded->quote);
@@ -5021,7 +5022,7 @@ class quote extends CI_Controller
 		}
 
 		$shipments = $this->db->select('shipment.*, item.itemname')
-		             ->from('shipment')->join('item','shipment.itemid=item.id')
+		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
 		             ->where('quote',$qid)->get()->result();
 
 		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
@@ -9035,6 +9036,248 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->send();
 		// echo "<pre>",print_r($data); die;
 	}
+	
+	
+	function receive($pid)
+    {    	
+        $temp['managedproject'] = $data['pid'] = $pid;
+        //$this->load->model('admin/project_model');
+        $temp['managedprojectdetails'] = $this->project_model->get_projects_by_id($pid);
+        if ($this->session->userdata('usertype_id') == 2 && $temp['managedprojectdetails']->purchasingadmin != $this->session->userdata('id')) {
+            //redirect('admin/dashboard', 'refresh');
+        }
+        $this->session->set_userdata($temp);
+
+        $quotes = $this->quote_model->get_quotes('',$pid);
+       // echo "<pre>"; print_r($quotes); die;
+        $config ['total_rows'] = $this->quote_model->total_quote();
+
+        $this->load->library('table');
+        $this->table->set_empty("&nbsp;");
+        $this->table->set_heading('ID', 'Name', 'Actions');
+		// Save rating into award table
+		if(isset($_POST['idBox'])){
+			$pricerank = "";
+			if($_POST['rate'] <=1.4)
+			$pricerank = 'poor';
+			if($_POST['rate'] >=1.5 && $_POST['rate'] <=2.4)
+			$pricerank = 'fair';
+			if($_POST['rate'] >=2.5 && $_POST['rate'] <=3.4)
+			$pricerank = 'good';
+			if($_POST['rate'] >=3.5 && $_POST['rate'] <=5)
+			$pricerank = 'great';
+			$updatearray = array();
+			$updatearray['pricerank'] = $pricerank;
+			$this->quote_model->db->where('quote', $_POST['idBox']);
+			$this->quote_model->db->update('award', $updatearray);
+		}
+		
+        $data['counts'] = count($quotes);
+
+        $count = count($quotes);
+        $items = array();
+        $companyarr = array();
+        $shipmentarray = array();
+        if ($count >= 1) {
+			
+            foreach ($quotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
+            	$shipments = array();
+                $quote->invitations = $this->quote_model->getInvitedquote($quote->id);
+                $quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
+                $quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
+                //print_r($quote->awardedbid);
+                $quoteponum = $quote->ponum;
+                $quote->pricerank = '-';
+                if (!$quote->awardedbid)
+                    $quote->pricerank = '-';
+                elseif (!@$quote->awardedbid->items)
+                    $quote->pricerank = '-';
+                /*elseif (@$quote->awardedbid->quotedetails->potype == "Contract")
+                    $quote->pricerank = '-';*/
+                else {
+                	
+                	if(@$quote->awardedbid->quotedetails->potype == "Contract")
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+                    else 
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+					/*
+                    $totalcount = count($quote->awardedbid->items);
+                    $lowcount = 0;
+                    foreach ($quote->awardedbid->items as $ai) {
+                        $itemlowest = $this->itemcode_model->getlowestquoteprice($ai->itemid);
+
+                        if ($ai->ea <= $itemlowest)
+                            $lowcount++;
+                    }
+
+                    if ($lowcount >= ($totalcount * 0.8))
+                        $quote->pricerank = 'great';
+                    elseif ($lowcount >= ($totalcount * 0.7))
+                        $quote->pricerank = 'good';
+                    elseif ($lowcount >= ($totalcount * 0.5))
+                        $quote->pricerank = 'fair';
+                    else
+                        $quote->pricerank = 'poor';
+                    */
+                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
+                    {
+                    	if ($quote->awardedbid->pricerank == 'great')
+                    	$quote->pricerank = 4;
+                    	elseif ($quote->awardedbid->pricerank == 'good')
+                    	$quote->pricerank = 3;
+                    	elseif ($quote->awardedbid->pricerank == 'fair')
+                    	$quote->pricerank = 2;
+                    	else
+                    	$quote->pricerank = 1;
+                    	
+	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
+	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
+                	}                	
+                }
+                //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
+                $quote->podate = $quote->podate ? $quote->podate : '';
+                $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
+                //echo '<pre>';print_r($quote->awardedbid);die;
+                if ($quote->status == 'AWARDED') {
+
+                	/*$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
+        			$shipment = $this->db->query($shipmentsquery)->result();*/
+        			$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
+		             ->where('quote',$quote->id)->where('shipment.accepted',0)->get()->result();
+
+                	if($shipments)
+                	  {  
+                		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
+                		   {               	
+                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
+                	       }
+                        else 
+                           {
+                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance <a id="hrefa_'.$quote->id.'" href="javascript:void(0)" onclick="previewshipment('.$quote->id.');">Preview Shipment</a><img height="15px;" width="15px;" id="imageholder_'.$quote->id.'" src="'.site_url('templates/admin/css/icons/plus.gif').'" >';
+                           }
+                	  }
+                }
+                $quote->actions = $quote->awardedbid?'':
+                anchor('admin/quote/items/' . $quote->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view', 'title' => 'view quote items'))
+                ;
+                if (empty($quote->awardedbid)) {
+                    $quote->actions .=
+
+                            anchor('admin/quote/update/' . $quote->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
+                            . ' ' .
+                            anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
+                    ;
+                } else {
+                    $quote->actions .= anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
+                    ;
+                    //$quote->actions .= anchor ('admin/quote/update/' . $quote->id,'<span class="icon-2x icon-edit"></span>',array ('class' => 'update' ) );
+                }
+                //$quote->sent ='';
+                //if($quote->invitations && !$quote->awardedbid)	{
+                $quote->sent = '<div class="badgepos"><span class="badge badge-blue">' . count($quote->invitations) . '</span></div>'
+                ;
+                //}
+                if ($quote->awardedbid) {
+                    //$quote->actions.= ' ' .
+                    //anchor ( 'admin/quote/bids/' . $quote->id, '<span class="icon-2x icon-search"></span> ', array ('class' => 'view','alt' => 'awarded bid','title' => 'awarded bid' ) )
+                    //;
+                    
+                    if($quote->potype=='Contract'){
+                		$quote->actions.= ' ' .
+                            anchor('admin/quote/contracttrack/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view', 'alt' => 'awarded bid', 'title' => 'awarded bid'))
+                    ;
+                	}else {
+                    
+                    $quote->actions.= ' ' .
+                            anchor('admin/quote/track/' . $quote->id, '<span class="label label-pink">Track</span> ', array('class' => 'view', 'alt' => 'awarded bid', 'title' => 'awarded bid'));
+                	} 
+                }
+                //echo "<pre>id-"; print_r($quote->id); die;
+                $quote->recived = '';
+                if ($quote->pendingbids) {
+                	if($quote->potype=='Contract'){
+                		 $quote->recived = anchor('admin/quote/conbids/' . $quote->id, '<div class="badgepos"><span class="badge badge-red">' . count($quote->pendingbids) . '</span></div>', array('class' => 'view'));
+                	}
+                	else {
+                    $quote->recived = anchor('admin/quote/bids/' . $quote->id, '<div class="badgepos"><span class="badge badge-red">' . count($quote->pendingbids) . '</span></div>', array('class' => 'view'))
+                    ;
+                }}
+                $quote->actions .=
+                        '<a href="javascript:void(0)" onclick="duplicate(\'' . $quote->id . '\')" ><span class="icon-2x icon-copy"></span></a>'
+                ;
+                if ($this->session->userdata('usertype_id') == 2) {
+                    $quote->actions .=
+                            ' <a href="javascript: void(0)" onclick="quotepermission(' . $quote->id . ',\'' . $quoteponum . '\')"><span class="icon-2x icon-key"></span></a>';
+                    ;
+                }
+
+                if(isset($quote->awardedbid->items)) {
+                	foreach ($quote->awardedbid->items as $item) {
+
+                		if($item->company){
+                			$companyarr[] = $item->company;
+                		}
+                	}
+                }
+
+                if (@$_POST['searchcompany']) {
+
+					if(count($companyarr)>0){
+						if(!in_array($_POST['searchcompany'],$companyarr)){
+							continue;
+						}
+					}else
+					continue;
+
+                }
+                if (@$_POST['postatus']) {
+                    if ($quote->status == $_POST['postatus']) {
+                        $items[] = $quote;
+                    }
+                } else {
+                    $items[] = $quote;
+                }
+                if(count($shipments)>0)                
+                $shipmentarray[] = $shipments;
+            }
+            $data['items'] = $items;
+            $data['jsfile'] = 'quotejs.php';
+        } else {
+            $this->data['message'] = 'No Records';
+        }
+
+        if(count($companyarr)>1){
+        	$companyimplode = implode(",",$companyarr);
+        	$companystr = "AND c.id in (".$companyimplode.")";
+        }else
+        	$companystr = "";
+
+        $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
+        $data['companies'] = $this->db->query($query)->result();
+
+        $data ['addlink'] = '';
+        $data ['heading'] = "Shipments Pending Acknowledgement - " . $this->session->userdata('managedprojectdetails')->title;
+        $data ['table'] = $this->table->generate();
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '">Add Quote</a>&nbsp;';
+        $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>&nbsp;';
+        $data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
+        $mess= $this->session->flashdata('message');
+        if(isset($mess) && $this->session->flashdata('message')!=""){
+        	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');
+        }
+        
+        $query1 = "SELECT code FROM ".$this->db->dbprefix('costcode')."
+                  WHERE project='".$this->session->userdata('managedprojectdetails')->id."'";
+        $data['costcodedata'] = $this->db->query($query1)->result();
+        $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$this->session->userdata('managedprojectdetails')->id."' AND forcontract=1";
+ 		$data['contractcostcodes'] = $this->db->query($sqlquery)->result(); 
+        $data['shipmentarray'] = $shipmentarray;
+        
+        $this->load->view('admin/receivelist', $data);
+    }	
+	
 		
     // End
 }

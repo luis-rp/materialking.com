@@ -389,7 +389,8 @@ class Order extends CI_Controller
 		        		$this->email->cc($settings['adminemail']);
 		        		$subject = 'Payment verified by supplier';		        		
 		        		$data['email_body_title'] = "Information Regarding Payment";
-	        			$data['email_body_content'] = "Payment verified for Transaction id is {$order->txnid} for order# {$order->ordernumber}";	
+	        		$data['email_body_content'] = "Payment verified for Transaction id is {$order->txnid} for order# {$order->ordernumber} <br>Order Details<br>";
+	        			$data['email_body_content'] .= $this->getorderdetails($order->id);		
 			      		$loaderEmail = new My_Loader();
 			        	$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
 		        		$this->email->subject($subject);

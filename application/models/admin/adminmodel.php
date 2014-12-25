@@ -42,7 +42,7 @@ class adminmodel extends Model
 		
 		$userwhere = ' where 1=1 ';
 		if($this->session->userdata('usertype_id')==2)
-			$userwhere = " AND u.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+			$userwhere .= " AND u.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 			
 		
 			$sql = "SELECT
@@ -103,19 +103,21 @@ class adminmodel extends Model
 	{
 		$options = $this->input->post();
 		$options['password'] = md5($options['password']);
-		if($this->session->userdata('usertype_id') == 2)
+		if($this->session->userdata('usertype_id') == 2)		
 			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
-		$options['created_date'] = date ( "Y-m-d h:i:s" );
-		unset($options['_wysihtml5_mode']);
-		if($this->session->userdata('usertype_id') == 2)
-			$options['usertype_id'] = 3;
+			$options['created_date'] = date ( "Y-m-d h:i:s" );
+		//unset($options['_wysihtml5_mode']);
+		//if($this->session->userdata('usertype_id') == 2)
+			//$options['usertype_id'] = 3;
+			//$options['usertype_id'] = $this->input->post('usertype_id');
+			//echo "<pre>",print_r($options); die;
 		$this->db->insert ( 'users', $options );
 		$id = $this->db->insert_id ();
 		
-		if($options['usertype_id'] == 2)
+		/*if($options['usertype_id'] == 2)
 		{
 			$this->db->where('id',$id)->update('users',array('purchasingadmin'=>$id));
-		}
+		}*/
 		return $id;
 	}	
 	
@@ -172,7 +174,7 @@ class adminmodel extends Model
 	}
 	
 	function delete($id) 
-	{
+	{		
 		/*$options = array(
 			'isdeleted'=>'1'
 		);

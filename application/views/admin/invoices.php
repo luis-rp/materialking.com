@@ -300,6 +300,7 @@ function jq( myid ) {
 
                     		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
                     		{
+                    			$item->totalprice = str_replace( ',', '', $item->totalprice );
                     			$totalunpaid+= $item->totalprice;
                     			
                     			$datediff = strtotime($item->datedue) - time();
@@ -307,9 +308,9 @@ function jq( myid ) {
                     			if($item->datedue>=date('Y-m-d')){                    			
                     				$future[] = $item->totalprice;
                     			}elseif($datediff>=1 && $datediff<=30){ 
-                    				echo $current[] = $item->totalprice;
+                    				$current[] = $item->totalprice;
                     			}elseif($datediff>=31 && $datediff<=60){ 
-                    				echo $daysold60[] = $item->totalprice;
+                    				$daysold60[] = $item->totalprice;
                     			}elseif($datediff>=61 && $datediff<=90){ 
                     				$daysold90[] = $item->totalprice;
                     			}elseif($datediff>=91 && $datediff<=120){ 

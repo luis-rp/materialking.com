@@ -29,6 +29,10 @@ class Dashboard extends CI_Controller
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
+		$data['companydata'] = $this->db->get_where('company',array('id'=>$company->id))->row();
+		$data['quoteitems']=$this->db->get_where('quoteitem',array('company'=>$company->id))->result();
+		$sql = "SELECT qi.*,ai.* FROM " . $this->db->dbprefix('quoteitem') . " qi left join ".$this->db->dbprefix('awarditem') . " ai on  qi.itemid = ai.itemid WHERE qi.company='{$company->id}' GROUP BY qi.company" ; 
+		$data['awarditems']=$this->db->query($sql)->result();	
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
 		$this->db->where('totype','company');
 		$this->db->where('toid',$company->id);

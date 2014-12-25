@@ -206,7 +206,12 @@
 					//alert(data);
 				});
 				return true;
-	}	
+	}
+
+	 function preloadoptions()
+	 {
+    	$("#smodal").modal();   	   
+     }
  </script>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -216,10 +221,11 @@
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
 <section class="row-fluid">
+  
 <h3 class="box-header" style="display:inline" >
 				<span id="step1" >Your Dashboard</span>
 				&nbsp;
-
+                <?php echo $this->session->flashdata('message'); ?>
 				<?php if($this->session->userdata('usertype_id') == 2){?>
 				<a class="btn btn-primary pull-right" href="<?php echo site_url('site/items');?>"><strong>Go to store</strong></a>&nbsp;&nbsp;
 				<span class="pull-right" style="width: 5px;">&nbsp;</span>
@@ -232,7 +238,8 @@
        <div style="text-align:center;">
           <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a></div>
+          <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
+          <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a></div>
           <?php } ?>
 			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
@@ -371,7 +378,8 @@
     					Browse Suppliers
     				</a>
 				<?php } ?>
-				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>&nbsp;<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>
+				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>&nbsp;<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
+				<a class="btn btn-green"  href="javascript:void(0)" onclick="preloadoptions();">Invite Your Supplier</a>
 				<br><br>
 				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
 				<table class="table table-bordered">
@@ -790,4 +798,52 @@
 		
 
 	</div>
+	
+   <div id="smodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
+      
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel">Suppliers List</h4>        
+        </div>
+        
+        <div class="modal-body"> 
+        
+        <table class="table table-bordered  col-lg-10">
+	  		<tr>
+	  			<td><strong>Supplier Company Name</strong></td>
+	  			<td><strong> Contact Name</strong></td>
+	  			<td><strong>Email</strong></td>
+	  			<td><strong>Action</strong></td>
+	  		</tr>
+	  		 <?php foreach ($invitesuppliers as $supplier) { ?>   
+	  		<tr>
+	  			<td> <?php echo $supplier->title;?></td>
+	  			<td><?php echo $supplier->contact;?></td>
+	  			<td><?php echo $supplier->primaryemail;?></td>
+	  			<td><?php if($supplier->send!=1) { ?><input type="checkbox"  name="check[]" value="<?php echo $supplier->id;?>"><?php } else { echo "Already Invitation Send";} ?></td>
+	  		</tr>
+	  		  <?php } ?>
+	  		
+	  	</table> 
+	  	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
+        </div>       
+        </form>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+ 
+  
+  
+	
 </section>
+
+

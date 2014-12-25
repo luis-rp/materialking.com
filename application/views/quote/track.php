@@ -36,7 +36,12 @@
 				]
 			} );
 	 $('.dataTables_length').hide();
-	// $('.daterequested').datepicker();
+	 
+	 /*$('#daterequested').change(function() {
+	 	alert('gfgf');
+	 });*/
+	 
+	 $('#daterequested').datepicker({ autoclose: true });
 	})
 	function invoice(invoicenum,invoicequote)
 	{
@@ -47,8 +52,9 @@
 
 	var datetext = "";
 	function changeduedate(invoicenum,datedue)
-	{
+	{		
 		if(datetext!= datedue) {
+			if(confirm("Are you sure")){
 			datetext = datedue;
 			var data = "invoicenum="+invoicenum+"&datedue="+datedue;
 			$.ajax({
@@ -58,12 +64,17 @@
 			}).done(function(data) {
 			});
 
+		}else{
+			datetext = datedue;
+		}
 		}
 	}
 	
-	function caloclick(){
+	
+	
+	/*function caloclick(){
 		$('.daterequested').datepicker();
-	}
+	}*/
 
 </script>
 
@@ -250,6 +261,45 @@ tr.still-due td
         	</form>
         </div>
 
+        
+         <div>
+                <?php
+
+                if(!empty($errorLog))
+                {
+                    ?>
+                     <hr>
+                         <h3 class="box-header">Error Log</h3>
+                       <table  class='table table-bordered'>
+                            <tbody>
+                                <tr>
+                                     <th>company</th>
+                                     <th>Error</th>
+                                     <th>Item</th>
+                                     <th>Qty</th>
+                                     <th>Invoice#</th>
+                                     <th>Date</th>
+                                 </tr>
+                        <?php
+                         foreach($errorLog as $error)
+                         { ?>
+                                <tr>
+                                    <td><?php echo $error->title;?></td>
+                                    <td><?php echo $error->error;?></td>
+                                    <td><?php echo $error->itemcode;?></td>
+                                    <td><?php echo $error->quantity;?></td>
+                                    <td><?php echo $error->invoicenum;?></td>
+                                    <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
+                                </tr>
+                        <?php
+                        }?>
+                       </tbody>
+                 </table>
+                 <?php    }
+                  ?>
+        </div>
+        
+        
         <?php if($shipments){?>
 
         <div class="row">
@@ -333,7 +383,7 @@ tr.still-due td
 	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
 	                  	<?php }?>
 					</td>
-					<td><input type="text" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
+					<td><input type="text" class="span daterequested highlight" id="daterequested" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
 				</tr>
 				<?php }?>
 			</table>

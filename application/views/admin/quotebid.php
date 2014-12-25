@@ -279,6 +279,8 @@ function checkincrementquantity(quantity){
 	if(incrementval>0){
 		if((quantity%incrementval)!=0){
 			$('#incrementmessage').html('Sorry this item is only available in increments of '+incrementval);
+			$('#quantity').val('');
+			$('#quantity').focus();
 			return false;
 		}else{
 			$('#incrementmessage').html('');
@@ -294,6 +296,8 @@ function checkupdateincrementquantity(quantity,id){
 	if(incrementval>0){
 		if((quantity%incrementval)!=0){
 			$('#incrementmessage'+id).html('Sorry this item is only available in increments of '+incrementval);
+			$('#quantity'+id).val('');
+			$('#quantity'+id).focus();
 			return false;
 		}else{
 			$('#incrementmessage'+id).html('');
