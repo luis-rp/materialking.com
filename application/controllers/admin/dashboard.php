@@ -14,7 +14,6 @@ class Dashboard extends CI_Controller
 		$this->load->dbforge();
 		$this->load = new My_Loader();
 		$this->load->library ( array ('table', 'session'));
-		$this->load->model('homemodel', '', TRUE);
 		$this->load->model('admin/statmodel');
 		$this->load->model('admin/quote_model');
 		$this->load->model('admin/project_model');
@@ -481,8 +480,9 @@ class Dashboard extends CI_Controller
 	}
 
 
-	function index()
-	{
+
+	function index(){
+	
 		ini_set('display_errors', 1); error_reporting(E_ALL ^ E_NOTICE);
 		$config = $this->settings_model->get_current_settings ();
 		$Totalawardedtotal = 0;
@@ -512,6 +512,8 @@ class Dashboard extends CI_Controller
 		$invited = 0;
 		$pending = 0;
 		$awarded = 0;
+		$completed = 0;
+		$allbids = 0;
 		if($data['quotes'])
 		foreach($data['quotes'] as $quote)
 		{
@@ -521,11 +523,19 @@ class Dashboard extends CI_Controller
 				$pending++;
 			if($this->quote_model->getawardedbid($quote->id))
 				$awarded++;
+			if($this->quote_model->getcompletedbids($quote->id))
+				$completed++;	
+			if($this->quote_model->getbids($quote->id))
+				$allbids++;		
 		}
 
 		$data['invited'] = $invited;
 		$data['pending'] = $pending;
 		$data['awarded'] = $awarded;
+		$data['allBids'] = 		 $allbids;
+		$data['completedBids'] = $completed;
+		$data['awardedbids'] =   $awarded;
+		$data['pendingbids'] =   $this->quote_model->getpendingbids();
 
 		//$data['allcompanies'] = $this->db->where('username !=', '')->get('company')->result();
 
@@ -568,11 +578,10 @@ class Dashboard extends CI_Controller
 		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (SUM(od.price) + (SUM(od.price) * o.taxpercent / 100)), (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)) )
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
 		    $manualdue = $this->db->query($query)->row()->orderdue;
 		    $manualdue = round($manualdue,2);
-		    
 		    //echo $manualdue.' <br/> ';
 		    $nc->due += $manualdue;
 
@@ -940,85 +949,16 @@ class Dashboard extends CI_Controller
 		$data['settingtour']=$setting[0]->tour;
 
 		$data['viewname'] = 'dashboard';
-		
-		
-		/*$details = get_my_address();
-		$center = $details->loc;
-		$this->data['my_location'] = get_my_location($details);
-		$geo_coords = explode(",", $center);
-		$search = new stdClass();
-		$search->distance = 100000;
-		$search->current_lat = $geo_coords[0];
-		$search->current_lon = $geo_coords[1];*/
-		//echo "<pre>",print_r($this->session->userdata); die;
-		$search = new stdClass();
-		if(@$this->session->userdata('user_lat'))
-			$search->current_lat = $this->session->userdata('user_lat');
-		else 
-			$search->current_lat = "33.956419";	
-		if(@$this->session->userdata('user_lng'))
-			$search->current_lon = $this->session->userdata('user_lng');
-		else 
-			$search->current_lon = "-118.442232";
-				
-		$search->earths_radius = 6371;
-		$use_supplier_position = false;
-		$this->homemodel->set_search_criteria($search);
-
-		$location = $this->input->post('location');
-
-		//$lat = $this->input->post('lat');
-		//$lng = $this->input->post('lng');
-		if ($location)
-		{
-			$return = get_geo_from_address($location);
-			if($return)
-			{
-				$center = "{$return->lat}, {$return->long}";
-				$search->current_lat = $return->lat;
-				$search->current_lon = $return->long;
-				$this->homemodel->set_search_criteria($search);
-			}
-		}
-		$this->homemodel->set_distance(20);
-		$query_suppliers = $this->homemodel->get_nearest_suppliers();
-		//echo "<pre>",print_r($query_suppliers); die;
-		if (! $query_suppliers->totalresult)
-		{
-			$this->homemodel->set_distance(15000);
-			$query_suppliers = $this->homemodel->get_nearest_suppliers($ignore_location = true);
-			$this->homemodel->set_distance(20);
-			//$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
-		}
-		/*else
-		{
-		$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " nearest suppliers";
-		}*/
-
-		//$data['suppliers']=$this->db->get('company')->result();
-		//echo "<pre>",print_r($query_suppliers); die;
-		$data['suppliers']=$query_suppliers->suppliers;
+		$data['suppliers']=$this->db->get('company')->result();
 		$i=0;
 		foreach($data['suppliers'] as $supplier)
-		{
-			$sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
-			$data['industry']=$this->db->query($sql)->row();
-			$data['suppliers'][$i]->industry = $data['industry']->industry;
-			$i++;
-		}
-		
-		
-		$data['invitesuppliers']=$query_suppliers->suppliers;
-		$i=0;
-		foreach($data['invitesuppliers'] as $supplier)
 		 {
-		   $sql = "SELECT c.*,s.send FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('supplierinvitation') . " s on  c.id = s.company WHERE c.id='{$supplier->id}' GROUP BY c.id" ;   
-		  
-		  $data['invitesuppliers'][$i]=$this->db->query($sql)->row();			  
+		   $sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+		  $data['industry']=$this->db->query($sql)->row();	
+		  $data['suppliers'][$i]->industry = $data['industry']->industry;		  
 		  $i++;
-		 }		
-		 
-		$this->load->view ('admin/dashboard', $data);
+		 }		 
+		$this->load->view ('admin/dashboard2', $data);
 	}
 
 	function closequote($id)
@@ -1341,44 +1281,6 @@ class Dashboard extends CI_Controller
 		$this->db->where('purchasingadmin',$company);
 		$this->db->update('network',array('isread'=>1));
 		redirect('admin/dashboard');
-	}
-	
-	function supplier_invitation()
-	{		
-		$id = $this->session->userdata('purchasingadmin');
-		$company=$this->db->get_where('users',array('id'=>$id))->row();
-		if(isset($_POST['check']))
-		{
-			$list=array();
-			foreach ($_POST['check'] as $check)
-			{
-			$supplier=$this->db->get_where('company',array('id'=>$check))->row();	
-			$supplier->primaryemail;
-			$option=array('purchasingadmin'=>$id,'company'=>$check,'send'=>'1'); 	
-			$this->db->insert('supplierinvitation',$option);
-			$list[]=$supplier->primaryemail;			  		        			
-			}			
-			    $this->load->library('email');
-		        $config['charset'] = 'utf-8';
-		        $config['mailtype'] = 'html';	        			
-		        $this->email->initialize($config);
-		        $this->email->from($company->email);
-		        //$list = array('one@example.com', 'two@example.com', 'three@example.com');
-				$this->email->to($list);
-		        $subject = 'Invitation';		        		
-		        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
-	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.";	
-			    $loaderEmail = new My_Loader();
-			    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
-		        $this->email->subject($subject);
-		        $this->email->message($send_body);	
-		        $this->email->set_mailtype("html");
-		        $this->email->send();
-		        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');	
-		}
-	
-		redirect('admin/dashboard');
-		
 	}
 }
 ?>

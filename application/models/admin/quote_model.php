@@ -41,6 +41,46 @@ class quote_model extends Model {
             return null;
         }
     }
+		
+		function getcompletedbids($quote = '') {
+		$where = " b.quote=q.id AND `b`.complete='Yes' ";
+		if ($quote)
+			$where .= " AND b.quote=$quote ";
+		if ($this->session->userdata('usertype_id') > 1)
+			$where .= " AND q.purchasingadmin=" . $this->session->userdata('purchasingadmin');
+		$mp = $this->session->userdata('managedprojectdetails');
+		if ($mp)
+			$where .= " AND q.pid=" . $mp->id;
+		$query = "SELECT b.* FROM " . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('bid') . " b 
+				WHERE $where";
+		//echo $query.'<br>';
+
+		$query = $this->db->query($query);
+
+		$ret = array();
+		$result = $query->result();
+
+		foreach ($result as $item) {
+			$this->db->where('id', $item->quote);
+			$query = $this->db->get('quote');
+			if ($query->result()) {
+				$item->quotedetails = $query->row();
+
+				$this->db->where('bid', $item->id);
+				$query = $this->db->get('biditem');
+				$item->items = $query->result();
+
+				$this->db->where('id', $item->company);
+				$query = $this->db->get('company');
+				$item->companyname = $query->row('title');
+
+				$ret[] = $item;
+			}
+		}
+		//echo '<pre>';print_r($ret);die;
+		return $ret;
+	}
+
      function get_Direct_Quotes($path,$pid = '') {
         $sql = "SELECT * FROM " . $this->db->dbprefix('quote') . " WHERE 1=1 ";
         if ($pid)
