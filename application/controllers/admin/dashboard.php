@@ -997,13 +997,30 @@ class Dashboard extends CI_Controller
 
 		//$data['suppliers']=$this->db->get('company')->result();
 		//echo "<pre>",print_r($query_suppliers); die;
+		/*if($_POST['suppliersearch']){
+			echo "<pre>",print_r($_POST['types']); die;
+		}*/
 		$data['suppliers']=$query_suppliers->suppliers;
 		$i=0;
 		foreach($data['suppliers'] as $supplier)
 		{
-			$sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
-			$data['industry']=$this->db->query($sql)->row();
-			$data['suppliers'][$i]->industry = $data['industry']->industry;
+			$where="";
+			if(@$_POST['types']){
+				$typestr = implode(",",$_POST['types']);
+				$where = " and ct.typeid in ({$typestr}) ";
+			}
+			$sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' {$where} GROUP BY ct.companyid";
+			$filterindustries=$this->db->query($sql)->row();
+			$data['suppliers'][$i]->industry = $filterindustries->industry;
+			if(@$_POST['types']){
+				if(!$filterindustries){					
+					unset($data['suppliers'][$i]);
+				}else{
+					$sql2 = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+				$data['industry']=$this->db->query($sql2)->row();
+				$data['suppliers'][$i]->industry = $data['industry']->industry;
+				}
+			}			
 			$i++;
 		}
 		
@@ -1016,8 +1033,12 @@ class Dashboard extends CI_Controller
 		  
 		  $data['invitesuppliers'][$i]=$this->db->query($sql)->row();			  
 		  $i++;
-		 }		
+		 }	
 		 
+		$data['promembers'] = $this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();	
+		
+		$data['types'] = $this->db->get('type')->result(); 
+		
 		$this->load->view ('admin/dashboard', $data);
 	}
 

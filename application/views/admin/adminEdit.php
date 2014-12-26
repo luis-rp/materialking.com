@@ -50,6 +50,15 @@ $(document).ready(function(){
 	</select>
     </div>
     </div>-->
+   
+   
+    <div class="control-group">
+    <label class="control-label" for="position">Position</label>
+    <div class="controls"> 		
+	<input type="text" name="position" class="span4" class="text"  value="<?php echo $this->validation->position; ?>"/>
+	<?php echo $this->validation->position_error; ?>
+    </div>
+    </div>
         
     <div class="control-group">
     <label class="control-label" for="username">User Name *</label>

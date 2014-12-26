@@ -385,7 +385,7 @@
 				<table class="table table-bordered">
 				<!--<tr><td colspan="2">Recommended Suppliers</td><td colspan="2"></td></tr>-->
 				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
-				 <?php foreach ($suppliers as $supplier) { ?>
+				 <?php if(count($suppliers)>0){ foreach ($suppliers as $supplier) { ?>
 				<tr>
 				<td><?php echo $supplier->title; ?></td>
 				<td> <?php if (isset($supplier->city) && isset($supplier->state)) {  
@@ -394,9 +394,11 @@
 				<td><?php echo $supplier->industry; ?></td>
 				<td><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>" target="_blank">View-Apply</a></td>
 				</tr>
-				  <?php } ?>
-				</table>
+				  <?php } } else{ ?>
+				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
+				</table>				
 				</div>
+				
 	    	</div>
 
 			
@@ -417,8 +419,41 @@
 
 				<?php } ?>
 				
+	    	</div><br>
+	    	
+	    	<div class="span7">
+	    	<form method="post" action="<?php echo site_url('admin/dashboard');?>">
+				<table><tr><td>
+				What type of work will be performed on this job?
+				</td></tr>
+				<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
+	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$_POST['types']) { if(in_array($type->id,$_POST['types'])) echo 'checked="checked"'; else echo ''; } ?>>
+	      			<?php echo $type->title;?>
+	      			<br/>
+	      			<?php }?>
+	      		</td></tr>	
+	      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Search Suppliers"></td></tr>			
+				</table>
+			</form>
+			
+			<?php if(@$this->session->userdata('address')) echo "Jobsite Address:".$this->session->userdata('address'); ?>
+			
 	    	</div>
-			<?php }else{?>
+	    	<br>
+	    	<?php if(isset($promembers)) {?>
+	    	<div class="span7">
+	    	  <table class="table table-bordered">
+				<caption><strong>Project Team Members<strong></caption>
+				<tr><th>Username</th><th>Position</th></tr>
+				 <?php foreach ($promembers as $promember) { ?>
+				<tr>
+				<td><?php echo $promember->username; ?></td>
+				<td><?php echo $promember->position; ?></td>
+				</tr>
+				  <?php } ?>
+				</table>
+	    	</div>
+			<?php } }else{?>
 			<div  class="span8" style="margin-left:1%;">
 		
 

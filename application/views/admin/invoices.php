@@ -63,7 +63,7 @@
         var invoice_payment_status_value = $('#invoice_payment_' + idnumber + " option:selected").val();
         var invoice_payment_type_value = $('#invoice_paymenttype_' + idnumber + " option:selected").val();
         var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
-        var invoice_number = $('#invoicenumber_' + idnumber).html();
+        var invoice_number = $('#invoicenumber_' + idnumber).val();
         var refnum_value = $('#refnum_' + idnumber + "").val();
         if(invoice_payment_type_value == 'Credit Card')
 			return false;
@@ -123,7 +123,7 @@ function paycc(ptype,idnumber,amount)
 			return true;
 		}
 		$('#invoice_paymenttype_' + idnumber + " option:first-child").attr("selected", true);
-		var invoicenumber = $('#invoicenumber_' + idnumber).html();
+		var invoicenumber = $('#invoicenumber_' + idnumber).val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
 		$("#ccpayinvoiceamount").val(amount);
 		$("#ccpayamountshow").html(amount);
@@ -146,11 +146,11 @@ function shownotice(newval,oldval,id){
 function showreport(invoicenum,i)
 {	
 	//$(".dclose").css('display','none');
-	if($('a','td#invoicenumber_'+i).text() == "Expand"){
-		$('a','td#invoicenumber_'+i).text('Collapse');
+	if($('a','td#invoicenumberid_'+i).text() == "Expand"){
+		$('a','td#invoicenumberid_'+i).text('Collapse');
 		$(jq("reportdiv"+invoicenum)).css('display','block');
 	}else{
-		$('a','td#invoicenumber_'+i).text('Expand');
+		$('a','td#invoicenumberid_'+i).text('Expand');
 		$(jq("reportdiv"+invoicenum)).css('display','none');
 	}
 }
@@ -255,8 +255,8 @@ function jq( myid ) {
                     		?>
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
-                    			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
-                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a>
+                    			<td id="invoicenumberid_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
+                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->invoicenum;?>"/>
                     			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>

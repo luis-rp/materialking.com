@@ -29,10 +29,6 @@ class Dashboard extends CI_Controller
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$data['companydata'] = $this->db->get_where('company',array('id'=>$company->id))->row();
-		$data['quoteitems']=$this->db->get_where('quoteitem',array('company'=>$company->id))->result();
-		$sql = "SELECT qi.*,ai.* FROM " . $this->db->dbprefix('quoteitem') . " qi left join ".$this->db->dbprefix('awarditem') . " ai on  qi.itemid = ai.itemid WHERE qi.company='{$company->id}' GROUP BY qi.company" ; 
-		$data['awarditems']=$this->db->query($sql)->result();	
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
 		$this->db->where('totype','company');
 		$this->db->where('toid',$company->id);
@@ -44,11 +40,17 @@ class Dashboard extends CI_Controller
 		$data['formdata'] = $formsubmissionresult;
 		
 		$data['newrequests'] = array();
+		//echo "<pre>"; print_r($reqs); die;
 		foreach($reqs as $rq)
 		{
 			$rq->tago = $this->messagemodel->tago(strtotime($rq->requeston));
 			$this->db->where('id',$rq->fromid);
 			$rq->from = $this->db->get($rq->fromtype)->row();
+			
+			$rq->quoteitems=$this->db->get_where('quoteitem',array('purchasingadmin'=>$rq->fromid))->result();
+			$rq->awarditems=$this->db->get_where('awarditem',array('purchasingadmin'=>$rq->fromid))->result();
+			/*$sql = "SELECT ai.*,qi.* FROM " . $this->db->dbprefix('awarditem') . " ai left join ".$this->db->dbprefix('quoteitem') . " qi on  qi.itemid = ai.itemid WHERE qi.company='{$company->id}' GROUP BY qi.company" ; 
+		$data['awarditems']=$this->db->query($sql)->result();	*/			
 			$data['newrequests'][]=$rq;
 		}
 

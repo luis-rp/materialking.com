@@ -54,7 +54,7 @@
 	function changeduedate(invoicenum,datedue)
 	{		
 		if(datetext!= datedue) {
-			if(confirm("Are you sure")){
+			if(confirm("Do you want to set the invoice due date to"+datedue)){
 			datetext = datedue;
 			var data = "invoicenum="+invoicenum+"&datedue="+datedue;
 			$.ajax({

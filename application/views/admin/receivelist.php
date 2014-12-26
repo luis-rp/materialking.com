@@ -341,6 +341,7 @@ function jq( myid ) {
            		</td>
            	</tr>
            	<?php }?>
+           	<tr><td colspan="5" style="text-align:center";><a href="<?php echo base_url()?>admin/quote/track/<?php echo $shipments[0]->quote;?>"><span class="label label-pink">Track</span></a></td></tr>
            </table>
             <?php
             } }

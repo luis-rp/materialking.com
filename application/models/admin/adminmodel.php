@@ -54,6 +54,7 @@ class adminmodel extends Model
 			u.created_date,
 			u.last_logged_date,
 			u.status,
+			u.position,
 			ut.userType
 			FROM
 			".$this->db->dbprefix('usertype')." ut

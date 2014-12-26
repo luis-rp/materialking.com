@@ -3418,7 +3418,7 @@ class quote extends CI_Controller
 
     		$pa = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
 
-    		$data['email_body_title']  = "Dear " . $company->title ;
+    		$data['email_body_title']  = "Dear " . @$company->title ;
     		$data['email_body_content'] =  $pa->companyname." sent payment for the Invoice#: ".$_POST['invoicenum'].";
     		The following information sent:
     		<br/>
@@ -3441,7 +3441,7 @@ class quote extends CI_Controller
     		$config['mailtype'] = 'html';
     		$this->email->initialize($config);
     		$this->email->from($pa->email, $pa->companyname);
-    		$this->email->to($company->title . ',' . $company->primaryemail);
+    		$this->email->to(@$company->title . ',' . @$company->primaryemail);
     		$this->email->subject('Payment made for the invoice: '.$_POST['invoicenum']);
     		$this->email->message($send_body);
     		$this->email->set_mailtype("html");
@@ -9048,9 +9048,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         }
         $this->session->set_userdata($temp);
 
-        $quotes = $this->quote_model->get_quotes('',$pid);
+        $quotes = $this->quote_model->get_pendingshipment_quotes('',$pid);
        // echo "<pre>"; print_r($quotes); die;
-        $config ['total_rows'] = $this->quote_model->total_quote();
+        //$config ['total_rows'] = $this->quote_model->total_quote();
 
         $this->load->library('table');
         $this->table->set_empty("&nbsp;");
@@ -9140,11 +9140,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
 
-                	/*$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$quote->id}' and s.accepted = 0";
-        			$shipment = $this->db->query($shipmentsquery)->result();*/
-        			$shipments = $this->db->select('shipment.*, item.itemname')
+                	$shipmentsquery = "SELECT s.*, qi.itemname FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) where s.quote='{$quote->id}' and s.accepted = 0";
+        			$shipments = $this->db->query($shipmentsquery)->result();
+        			/*$shipments = $this->db->select('shipment.*, item.itemname')
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
-		             ->where('quote',$quote->id)->where('shipment.accepted',0)->get()->result();
+		             ->where('quote',$quote->id)->where('shipment.accepted',0)->get()->result();*/
 
                 	if($shipments)
                 	  {  

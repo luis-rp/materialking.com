@@ -41,6 +41,44 @@ class quote_model extends Model {
             return null;
         }
     }
+    
+    
+        function get_pendingshipment_quotes($path,$pid = '') {
+        $sql = "SELECT q.* FROM " . $this->db->dbprefix('quote') . " q join ". $this->db->dbprefix('shipment')." s ON q.id = s.quote where s.accepted = 0 ";
+        if ($pid)
+            $sql .= " AND q.pid='$pid'";
+        /*if (@$_POST['potype'] != 'All' && @$_POST['potype']) {
+            $sql .= " AND potype='" . $_POST['potype'] . "'";
+        }
+        if (@$_POST['searchponum']) {
+            $sql .= " AND ponum LIKE '%" . $_POST['searchponum'] . "%'";
+        }
+        if (@$_POST['searchdatefrom']) {
+            $sql .= " AND str_to_date(podate,'%m/%d/%Y') >= str_to_date('" . $_POST['searchdatefrom'] . "','%m/%d/%Y')";
+        }
+        if (@$_POST['searchdateto']) {
+            $sql .= " AND str_to_date(podate,'%m/%d/%Y') <= str_to_date('" . $_POST['searchdateto'] . "','%m/%d/%Y')";
+        }*/
+
+        if ($this->session->userdata('usertype_id') > 1) {
+            $sql .= " AND q.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
+        }
+	
+        if($path == 'dashboard')
+        {
+        	$sql .= " AND q.potype='Bid' ";
+        }
+        
+        $sql .= " group by q.id ORDER BY str_to_date(podate,'%m/%d/%Y') DESC";
+        $query = $this->db->query($sql);
+  
+        if ($query->result()) {
+            return $query->result();
+        } else {
+            return null;
+        }
+    }
+    
      function get_Direct_Quotes($path,$pid = '') {
         $sql = "SELECT * FROM " . $this->db->dbprefix('quote') . " WHERE 1=1 ";
         if ($pid)
@@ -919,14 +957,15 @@ class quote_model extends Model {
 
         $itemsql = "SELECT 
 					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award  
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate   
 				  FROM 
 				  " . $this->db->dbprefix('received') . " r, 
+				   " . $this->db->dbprefix('shipment') . " s,
 				  " . $this->db->dbprefix('awarditem') . " ai,
 				   " . $this->db->dbprefix('award') . " a,
 				  " . $this->db->dbprefix('company') . " c
-				  WHERE r.awarditem=ai.id AND ai.company=c.id AND ai.award=a.id AND a.quote='{$invoicequote}'
-				  AND invoicenum='{$invoicenum}'
+				  WHERE r.awarditem=ai.id AND r.awarditem = s.awarditem AND r.invoicenum = s.invoicenum AND ai.company=c.id AND ai.award=a.id AND a.quote='{$invoicequote}'
+				  AND r.invoicenum='{$invoicenum}'
 				  ";
         //echo $itemsql;
         $invoiceitems = $this->db->query($itemsql)->result();

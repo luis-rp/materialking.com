@@ -39,6 +39,8 @@ class backtrack_model extends Model
 		return $ret;	
 	}
 	
+	
+	
 	function get_quoteswithoutprj($pid="")
 	{
 		$ret = array();
@@ -94,7 +96,7 @@ class backtrack_model extends Model
 		}
 		
 		if(!$ret)
-			return array();		
+			return array();				
 		return $ret;
 	}
 	
@@ -134,7 +136,7 @@ class backtrack_model extends Model
 		if ($query->result ()) 
 		{
 			foreach($query->result () as $item)
-				if($item->received)
+				if($item->received>0)
 					return true;
 			
 		}

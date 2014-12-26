@@ -49,9 +49,9 @@ function invoice(invoicenum,quoteid)
 	$("#invoiceform").submit();
 }
 
-function preloadoptions()
+function preloadoptions(fromid)
 	 {
-    	$("#smodal").modal();   	   
+    	$("#smodal"+fromid).modal();   	   
      }
 
 </script>
@@ -212,7 +212,7 @@ function preloadoptions()
 											<?php }?>
 										<?php }?>
                                            
-                                           <a href="javascript:void(0)" onclick="preloadoptions();">View Stats</a>
+                                           <a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$penreq->fromid)?>');">View Stats</a>
 									</div>
 									<div class="description">
 										<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('dashboard/acceptreq/'.$penreq->id);?>">Accept</a>
@@ -278,24 +278,23 @@ function preloadoptions()
 	</div>
 </div>
 
-
-
- <div id="smodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+<?php //echo "<pre>"; print_r($newrequests); die;?>
+ <?php $oldfromid=""; $i=0; foreach ($newrequests as $requests){?>
+ <div id="smodal<?php echo $requests->fromid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
-           
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $companydata->title;?></h4> 
-          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $companydata->contact;?></h5>
-          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $companydata->address;?></h6>       
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->companyname;?></h4> 
+          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->fullname;?></h5>
+          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->address;?></h6>       
         </div>
         
         <div class="modal-body">       
         	<div>
           		<h6 class="semi-bold" id="myModalLabel" style="text-align:center">Member Since&nbsp;
-          		<?php $olddate1=strtotime($companydata->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
+          		<?php $olddate1=strtotime($requests->from->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
         	</div>
         
          	<div>
@@ -304,20 +303,19 @@ function preloadoptions()
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
 		        <div>
-		        	<p><?php echo count($quoteitems)."&nbsp;RFQs Submitted and Processed";?></p>
+		        	<p><?php echo count($requests->quoteitems)."&nbsp;RFQs Submitted and Processed";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php //echo "0&nbsp;RFQs Received Quotes Online";?></p>
+		        	<p><?php echo "0&nbsp;RFQs Received Quotes Online";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo count($awarditems)."&nbsp;RFQs Awarded to Suppliers";?></p>
+		        	<p><?php echo count($requests->awarditems)."&nbsp;RFQs Awarded to Suppliers";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php //echo "0&nbsp;RFQs Currently Open for Quoting";?></p>
+		        	<p><?php echo "0&nbsp;RFQs Currently Open for Quoting";?></p>
 		        </div>  
 	        </div>	  
         </div>       
-      
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
@@ -325,3 +323,6 @@ function preloadoptions()
       </div>   
     </div>
   </div>
+  <?php $oldfrommid=$requests->fromid; $i++; } ?> 
+  
+  

@@ -54,7 +54,7 @@ class Admin extends CI_Controller {
 
 		$this->load->library ( 'table' );
 		$this->table->set_empty ( "&nbsp;" );
-		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type', 'User Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
+		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
 		$i = 0 + $offset;
 		if(isset($adminusers)) {
 		foreach ($adminusers as $adminuser)
@@ -62,6 +62,7 @@ class Admin extends CI_Controller {
 				$this->table->add_row ( ++ $i,
 			    $adminuser->fullname,
 			    $adminuser->userType,
+			    $adminuser->position,
 			    $adminuser->username,
 				$adminuser->created_date?date("m/d/Y h:i A", strtotime($adminuser->created_date)):'',
 				$adminuser->last_logged_date?date("m/d/Y h:i A", strtotime( $adminuser->last_logged_date)):'',
@@ -136,6 +137,7 @@ class Admin extends CI_Controller {
 
 	function addAdminuser()
 	{
+		
 		if($this->session->userdata('usertype_id')==3)
 		{
 			redirect('admin/dashboard', 'refresh');
@@ -293,6 +295,7 @@ $loaderEmail = new My_Loader();
 		$this->validation->id = $id;
 		$this->validation->username = $adminuser->username;
 		$this->validation->fullname = $adminuser->fullname;
+		$this->validation->position = $adminuser->position;
 		$this->validation->password = $adminuser->password;
 		$this->validation->newpassword = '';
 		$this->validation->rnewpassword = '';
@@ -413,6 +416,8 @@ $loaderEmail = new My_Loader();
 		$rules ['email'] = 'trim|required';
 		$rules ['status'] = 'trim|required';
 		$rules ['fullname'] = 'trim|required';
+		$rules ['position'] = 'trim';
+
 
 		$this->validation->set_rules ( $rules );
 
