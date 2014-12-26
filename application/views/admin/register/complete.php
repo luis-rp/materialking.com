@@ -18,14 +18,14 @@
 		</div>
 
 		<div class="box">
-			<div class="span3" style="margin-left:0px;width:auto;">
+			<div class="alert alert-info" style="margin-left:0px;width:auto;">
 				Please submit your Username and Password to gain access on Purchasing admin Dashboard.
 			</div>
 			</div>
 
 		<?php echo form_open('admin/register/savecomplete') . "\n"; ?>
 			<input type="hidden" name="regkey" value="<?php echo $user->regkey;?>"/>
-			<fieldset>
+			
 				<div class="fields">
 					<input type="text" name="fullname" placeholder="Full Name" id="fullname" value="<?php if(isset($user->fullname) && $user->fullname!="")
 					echo $user->fullname;?>" tabindex="1" style="margin-top:3px;" required>
@@ -48,7 +48,7 @@
 				</div>
 					<input type="hidden" name="hiddenuserid" id="hiddenuserid" value="<?php if(isset($user->id) && $user->id!="") echo $user->id; ?>"/>
 				<button type="submit" class="btn btn-primary btn-block" tabindex="10">Continue</button>
-			</fieldset>
+			
 		<?php echo form_close(); ?>
 
 	</section>
