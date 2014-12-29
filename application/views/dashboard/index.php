@@ -278,7 +278,6 @@ function preloadoptions(fromid)
 	</div>
 </div>
 
-<?php //echo "<pre>"; print_r($newrequests); die;?>
  <?php $oldfromid=""; $i=0; foreach ($newrequests as $requests){?>
  <div id="smodal<?php echo $requests->fromid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
@@ -306,13 +305,13 @@ function preloadoptions(fromid)
 		        	<p><?php echo count($requests->quoteitems)."&nbsp;RFQs Submitted and Processed";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "0&nbsp;RFQs Received Quotes Online";?></p>
+		        	<p><?php echo count($requests->quoteitems)."&nbsp;RFQs Received Quotes Online";?></p>
 		        </div> 
 		        <div>
 		        	<p><?php echo count($requests->awarditems)."&nbsp;RFQs Awarded to Suppliers";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "0&nbsp;RFQs Currently Open for Quoting";?></p>
+		        	<p><?php echo count($quoting)."&nbsp;RFQs Currently Open for Quoting";?></p>
 		        </div>  
 	        </div>	  
         </div>       

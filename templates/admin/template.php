@@ -608,7 +608,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         
                         
                          <?php if ($mp) { ?>
-                            <li <?php if ($menu == 'quote') { ?>class="active"<?php } ?>>
+                            <li <?php if ($menu == 'quote' && $function == 'index') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/quote/index/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
                                     <span class="icon-legal"></span>QUOTE/PO MANAGEMENT
                                 </a>
@@ -633,6 +633,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                             </li>
                         <?php } ?>
+                        
+                        	<li <?php if ($menu == 'quote' && $function == 'receive') { ?>class="active"<?php } ?>>
+                                <a href="<?php echo site_url('admin/quote/receive/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
+                                    <span class="icon-cog"></span>RECEIVE
+                                </a>
+                        	</li>
+                        
                           <?php } ?>
                         <li <?php if ($menu == 'settings') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>index.php/admin/settings"><span class="icon-cog"></span>App Settings</a>
