@@ -940,8 +940,7 @@ $( document ).tooltip();
                         </table>
 </div>
                         <?php } ?>
-                        <?php if(count($inventory)!=0){?>
-                         <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
+                        <?php if(count($inventory)!=0){?>                         
 					    <script type="text/javascript">
 
 					   $(function () {
@@ -1018,6 +1017,9 @@ $( document ).tooltip();
 					    });
 					    <?php } ?>
 					   </script>
+					   <?php if($invcnt>0){?>
+					   <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div> 					<?php } ?>
+					   
 		        <h3 class="titlebox1">Request Assistance</h3>
                         <a name="form"></a>
                         <?php //echo $this->session->flashdata('message'); ?>

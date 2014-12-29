@@ -9158,10 +9158,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                            }
                 	  }
                 }
-                $quote->actions = $quote->awardedbid?'':
+                /*$quote->actions = $quote->awardedbid?'':
                 anchor('admin/quote/items/' . $quote->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view', 'title' => 'view quote items'))
                 ;
-                if (empty($quote->awardedbid)) {
+                 if (empty($quote->awardedbid)) {
                     $quote->actions .=
 
                             anchor('admin/quote/update/' . $quote->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
@@ -9171,12 +9171,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 } else {
                     $quote->actions .= anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
                     ;
-                    //$quote->actions .= anchor ('admin/quote/update/' . $quote->id,'<span class="icon-2x icon-edit"></span>',array ('class' => 'update' ) );
-                }
+                    
+                }*/
                 //$quote->sent ='';
                 //if($quote->invitations && !$quote->awardedbid)	{
-                $quote->sent = '<div class="badgepos"><span class="badge badge-blue">' . count($quote->invitations) . '</span></div>'
-                ;
+               // $quote->sent = '<div class="badgepos"><span class="badge badge-blue">' . count($quote->invitations) . '</span></div>';
                 //}
                 if ($quote->awardedbid) {
                     //$quote->actions.= ' ' .
@@ -9194,7 +9193,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 	} 
                 }
                 //echo "<pre>id-"; print_r($quote->id); die;
-                $quote->recived = '';
+                /*$quote->recived = '';
                 if ($quote->pendingbids) {
                 	if($quote->potype=='Contract'){
                 		 $quote->recived = anchor('admin/quote/conbids/' . $quote->id, '<div class="badgepos"><span class="badge badge-red">' . count($quote->pendingbids) . '</span></div>', array('class' => 'view'));
@@ -9210,7 +9209,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $quote->actions .=
                             ' <a href="javascript: void(0)" onclick="quotepermission(' . $quote->id . ',\'' . $quoteponum . '\')"><span class="icon-2x icon-key"></span></a>';
                     ;
-                }
+                }*/
 
                 if(isset($quote->awardedbid->items)) {
                 	foreach ($quote->awardedbid->items as $item) {
@@ -9242,7 +9241,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 $shipmentarray[] = $shipments;
             }
             $data['items'] = $items;
-            $data['jsfile'] = 'quotejs.php';
+            $data['jsfile'] = 'quotereceivejs.php';
         } else {
             $this->data['message'] = 'No Records';
         }

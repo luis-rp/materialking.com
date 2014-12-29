@@ -41,7 +41,7 @@
 	 	alert('gfgf');
 	 });*/
 	 
-	 $('#daterequested').datepicker({ autoclose: true });
+	 $('.daterequested').datepicker({ autoclose: true });
 	})
 	function invoice(invoicenum,invoicequote)
 	{
@@ -51,11 +51,14 @@
 	}
 
 	var datetext = "";
+	var isconfirm = "";
 	function changeduedate(invoicenum,datedue)
-	{		
+	{			
 		if(datetext!= datedue) {
 			if(confirm("Do you want to set the invoice due date to"+datedue)){
 			datetext = datedue;
+			isconfirm = "yes";
+			$('#originaldate'+invoicenum).val(datedue);
 			var data = "invoicenum="+invoicenum+"&datedue="+datedue;
 			$.ajax({
 				type: "post",
@@ -65,8 +68,17 @@
 			});
 
 		}else{
-			datetext = datedue;
+				$('#daterequested'+invoicenum).val($('#originaldate'+invoicenum).val());
+				datetext = $('#originaldate'+invoicenum).val();			
+				$('#canceldate').val(datedue);
+				datedue = $('#originaldate'+invoicenum).val();			
 		}
+		}else{ 
+				if(isconfirm == ""){
+				$('#daterequested'+invoicenum).val($('#originaldate'+invoicenum).val());				
+				datetext = $('#canceldate').val();									
+				}
+				
 		}
 	}
 	
@@ -383,9 +395,12 @@ tr.still-due td
 	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
 	                  	<?php }?>
 					</td>
-					<td><input type="text" class="span daterequested highlight" id="daterequested" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /></td>
+					<td><input type="text" class="span daterequested highlight" id="daterequested<?php echo $i->invoicenum;?>" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" />
+					 <input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />				
+					</td>
 				</tr>
 				<?php }?>
+				<input type="hidden" id="canceldate" /> 	
 			</table>
         </div>
                  </div>

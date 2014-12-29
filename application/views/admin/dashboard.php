@@ -396,11 +396,36 @@
 				</tr>
 				  <?php } } else{ ?>
 				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
-				</table>				
+				</table>			
 				</div>
 				
 	    	</div>
-
+	    	
+			<?php if(@$this->session->userdata('managedprojectdetails')){?>
+			<br>
+	    	<div class="span7">
+	    	<form method="post" action="<?php echo site_url('admin/dashboard');?>">
+				<table>
+				<tr>
+				<th align="left"><h3 class="box-header">Filter Recommended Suppliers</h3></th>
+				</tr>
+				<tr><td>
+				What type of work will be performed on this job?
+				</td></tr>
+				<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
+	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$_POST['types']) { if(in_array($type->id,$_POST['types'])) echo 'checked="checked"'; else echo ''; } ?>>
+	      			<?php echo $type->title;?>
+	      			<br/>
+	      			<?php }?>
+	      		</td></tr>	
+	      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Filter Suppliers"></td></tr>			
+							
+			<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('address')." </h4></td></tr>"; ?>	    	
+			
+			</table>
+			</form>
+			</div>
+			<?php } ?>	
 			
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
@@ -419,25 +444,6 @@
 
 				<?php } ?>
 				
-	    	</div><br>
-	    	
-	    	<div class="span7">
-	    	<form method="post" action="<?php echo site_url('admin/dashboard');?>">
-				<table><tr><td>
-				What type of work will be performed on this job?
-				</td></tr>
-				<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
-	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$_POST['types']) { if(in_array($type->id,$_POST['types'])) echo 'checked="checked"'; else echo ''; } ?>>
-	      			<?php echo $type->title;?>
-	      			<br/>
-	      			<?php }?>
-	      		</td></tr>	
-	      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Search Suppliers"></td></tr>			
-				</table>
-			</form>
-			
-			<?php if(@$this->session->userdata('address')) echo "Jobsite Address:".$this->session->userdata('address'); ?>
-			
 	    	</div>
 	    	<br>
 	    	<?php if(isset($promembers)) {?>
@@ -445,6 +451,10 @@
 	    	  <table class="table table-bordered">
 				<caption><strong>Project Team Members<strong></caption>
 				<tr><th>Username</th><th>Position</th></tr>
+				<tr>
+				<td><?php echo $mainuser->username; ?></td>
+				<td><?php echo $mainuser->position; ?></td>
+				</tr>
 				 <?php foreach ($promembers as $promember) { ?>
 				<tr>
 				<td><?php echo $promember->username; ?></td>

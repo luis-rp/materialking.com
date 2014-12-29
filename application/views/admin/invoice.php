@@ -156,7 +156,7 @@ function shownotice(newval,oldval,id){
                     	elseif (strtotime($invoice->items[0]->paymentdate) > strtotime($invoice->datedue))
                     	echo "PAID LATE";
                     	echo "&nbsp;&nbsp;". date("m/d/Y",  strtotime($invoice->items[0]->paymentdate));
-                    } else { echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue'; } ?></font>
+                    } else { echo $invoice->datedue > date('Y-m-d')?'Upcoming':'Overdue'; } ?></font>
                 	<?php } else {?> <input type="button" value="Request Due Date" id="btnRequestDuedate" name="btnRequestDuedate" class="btn btn-primary btn-small" onclick="sendDueDatealert('<?php echo $invoice->invoicenum; ?>','<?php echo $quote->ponum ?>','<?php echo $invoice->items[0]->companyid; ?>','<?php echo $invoice->quote; ?>','<?php echo $invoice->items[0]->award; ?>');">  <?php }?>
                 </h4>
             </div>

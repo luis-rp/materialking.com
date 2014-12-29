@@ -3,11 +3,11 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/data.js"></script>
 <script src="http://code.highcharts.com/modules/drilldown.js"></script>
-<?php 
+<?php
 	//print_r($bids);die;
 
-	$maxcountitems = count($quoteitems); 
-	
+	$maxcountitems = count($quoteitems);
+
 	$isawarded = $isawarded=='Yes'?true:false;
 	$checkedarray = array();
 	echo '<script>var tax='.$config['taxpercent'].';</script>';
@@ -31,7 +31,7 @@
 		if($highTotal > $awardedtotal){
  			$totalsaved = $highTotal + (($highTotal)*$config['taxpercent']/100) - $awardedtotalwithtax;
 		}
-		
+
 	}
 ?>
 <style>
@@ -83,7 +83,7 @@ function refreshtotal()
 	total=total1.toFixed(2);
 	taxtotal = Math.round(taxtotal*100)/100;
 	grandtotal = Math.round(grandtotal*100)/100;
-	
+
     $("#selectedsubtotal").html(total);
     $("#selectedtax").html(taxtotal);
     $("#selectedtotal").html(grandtotal);
@@ -189,13 +189,13 @@ function viewitems(itemid)
 
 <script type="text/javascript">
 $(function() {
-    
+
     //autocomplete
     $(".costcode").autocomplete({
         source: "<?php echo base_url(); ?>admin/quote/findcostcode",
         minLength: 1
     });
- 
+
 });
 </script>
 
@@ -210,7 +210,7 @@ $(function() {
 		   <br/>
 		   <?php echo $this->session->flashdata('message'); ?>
 		   <?php echo @$message; ?>
-		   
+
 		   <span class="poheading"><?php echo $quote->potype=='Direct'?'Direct':'Via Quote';?></span>
 		   <?php if($isawarded){?>
 		   <h4>
@@ -224,9 +224,9 @@ $(function() {
 			   <tr><td>Tax:</td><td>$<?php echo number_format($awardedtax,2);?></td>
 			   <tr><td>Total:</td><td>$<?php echo number_format($awardedtotalwithtax,2);?></td>
 		   </table>
-           
+
 		   </div>
-           
+
 		   <?php }else{?>
 		   <div class="span12">
 		   <table class="table table-bordered span4">
@@ -264,7 +264,7 @@ $(function() {
             	   myfloat = parseFloat(val[index]);
 				ser[index] = {"name":cat[index],"data":[myfloat]};
                    }
-               
+
                    if(cat.length>1) {
                    	ser.push({"name":"Split P.O.","data": [parseFloat($("#selectedtotal").text())]});
 
@@ -272,16 +272,23 @@ $(function() {
                    	save = save.toFixed(2);
                    	//var savepo = val.max() - parseFloat($("#selectedtotal").text());
                    	<?php $highTotal =array_sum($maximum);?>
-                   	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());                   	
+                   	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());
                    	savepo = savepo.toFixed(2);
-                   	var textsubtitle = '*HI VS LOW SAVINGS '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   	var textsubtitle1 = '*HI VS LOW SAVINGS '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   	var textsubtitle2 = "";
+                   	<?php foreach($bids as $bid) if($bid->items){                   		
+                   		if($maxcountitems > count($bid->items))
+			      		{?>
+			      			textsubtitle2 = '<br>*Low did not bid all items';
+			      		<?php } } ?>
+                   	var textsubtitle = textsubtitle1 + textsubtitle2;	
                    }else
                    var textsubtitle = "";
-               
+
                $('#container-highchart').highcharts({
                    chart: {
                        type: 'column',
-                      
+
                    },
                    title: {
                        text: 'Comparison'
@@ -345,7 +352,7 @@ $(function() {
            </script>
 		   </div>
 		   <?php }?>
-		  <?php 
+		  <?php
 		  	foreach($bids as $bid)
 		  	if($bid->items)
 		  	{
@@ -354,27 +361,27 @@ $(function() {
 		      <div class="control-group">
 			    <div class="controls">
                 <h3 class="box-header"><strong>PO #:<?php echo $quote->ponum; ?>
-			      &nbsp; &nbsp; 
+			      &nbsp; &nbsp;
 			      Company:   <span class="company-name"><?php echo $bid->companyname;?></span> &nbsp; &nbsp;
-			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp; 
+			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp;
 			      <?php if($bid->quotefile){?>
 			      	<a href="<?php echo site_url('uploads/quotefile/'.$bid->quotefile);?>" target="_blank">View Attachment</a>
 			      <?php }?>
 			      </strong>
-			      
+
 				  <?php if($bid->draft=='Yes'){ ?>
 				    <span class="label label-pink">Draft</span>
 				  <?php }?>
 				   <strong>
 				  &nbsp; &nbsp; &nbsp;<?php if(isset($bid->revisionno) && $bid->revisionno>1) echo "Revision ".$bid->revisionno; else echo "Original bid"; ?>
 				   </strong>
-			      <?php 
+			      <?php
 			      	if($maxcountitems > count($bid->items))
 			      	{
 			      ?></h3>
-			      
+
 			      	  <div style="color:red">*This company did not bid some items: <span class="btn btn-mini btn-red" onclick="$('#notbid<?php echo $bid->id;?>').modal();">Show</span></div>
-			      	  
+
 					  <div id="notbid<?php echo $bid->id;?>" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 					  	<div class="modal-header">
 					  		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -387,14 +394,14 @@ $(function() {
 					    		<th>Item Name</th>
 					    		<th>Qty.</th>
 				    		</tr>
-				    		<?php 
+				    		<?php
 				    			foreach($quoteitems as $quoteitem)
 				    			{
 				    				$notbid = true;
 				    				foreach($bid->items as $biditem)
 				    					if($quoteitem->itemcode == $biditem->itemcode)
 				    						$notbid = false;
-				    			
+
 				    			if($notbid)
 				    			{
 				    		?>
@@ -403,7 +410,7 @@ $(function() {
 						    		<td><?php echo $quoteitem->itemname?></td>
 						    		<td><?php echo $quoteitem->quantity?></td>
 					    		</tr>
-				    		<?php 
+				    		<?php
 				    			}
 				    			}
 				    		?>
@@ -413,13 +420,13 @@ $(function() {
 				  </div>
 			      <?php
 			      	}
-			      	else 
+			      	else
 			      	{
 			      		echo '<br/><br/>';
 			      	}
 			      ?>
 		      </div>
-			  
+
 			  <div class="control-group">
 				    <table class="table table-bordered">
 				    	<tr>
@@ -443,7 +450,7 @@ $(function() {
 				    	</tr>
 				    	<?php $alltotal=0; foreach($bid->items as $q) if($q->itemcode){?>
 				    	<?php $alltotal += $q->quantity * $q->ea;?>
-		    			<?php 
+		    			<?php
 							$key = $q->itemcode;
 		    				$diff = $q->ea - $minimum[$key];
 		    				$diff = number_format($diff,2);
@@ -467,20 +474,20 @@ $(function() {
 				    			<?php if($diff=='0'){echo '<span class="label label-success">';}?>
 				    			$ <span id="ea<?php echo $q->id;?>"><?php echo $q->ea;?></span>
 				    			<?php if($diff=='0'){echo '</span>';}?>
-				    			
+
 				    			<?php if($q->minprice >= $q->ea){?>
 				    			<br/>*New Low Price
 				    			<?php }?>
 				    		</td>
-				    		<td><?php 
+				    		<td><?php
 									echo $q->reqprice;
 									if($q->reqprice > 0)
 									{
     								 	if($q->ea > $q->reqprice){
     										echo '<span class="label label-red"><strong>!</strong></span>';
     									} else {
-                                        	echo '<span class="label label-success"><i class="icon-ok"></i></span>';	
-    										
+                                        	echo '<span class="label label-success"><i class="icon-ok"></i></span>';
+
     									}
 									}
 									else
@@ -497,12 +504,12 @@ $(function() {
 				    			<?php if($isawarded){ echo $q->costcode;} else {?>
 				    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="input-medium costcode" onblur="updatecostcode('<?php echo $q->id;?>')">
 				    				<?php foreach($costcodes as $costcode){?>
-			    						<option value="<?php echo $costcode->code;?>" 
+			    						<option value="<?php echo $costcode->code;?>"
 			    						<?php if($q->costcode==$costcode->code){echo 'SELECTED';}?>>
 			    						<?php echo $costcode->code;?>
 			    						</option>
 		    						<?php }?>
-		    					</select>	
+		    					</select>
 				    			<?php }?>
 				    		</td>
 				    		<td><?php echo $q->notes;?>&nbsp;</td>
@@ -514,14 +521,14 @@ $(function() {
 				    		</td>
 				    	</tr>
 				    	<?php }?>
-				    	<?php 
+				    	<?php
 				    		$alltotal = round($alltotal,2);
 							$taxtotal = $alltotal * $config['taxpercent'] / 100;
 				    		$taxtotal = round($taxtotal,2);
 							$grandtotal = $alltotal + $taxtotal;
 				    		$grandtotal = round($grandtotal,2);
 							$diff = $alltotal - $minimum['totalprice'];
-							
+
 				    	?>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Subtotal: </td>
@@ -551,8 +558,8 @@ $(function() {
 					    </form>
 				    </div>
 				    <?php }?>
-				    
-				    <?php 
+
+				    <?php
 				    	if($bid->messages)
 				    	{
 				    ?>
@@ -588,8 +595,8 @@ $(function() {
 				    <?php
 				    	}
 				    ?>
-				    
-				    
+
+
 				    <div class="well">
 					    <form method="post" class="form-horizontal" enctype="multipart/form-data" action="<?php echo site_url('admin/message/sendmessage/'.$bid->quote)?>">
 					    	<input type="hidden" name="quote" value="<?php echo $bid->quote;?>"/>
@@ -597,37 +604,37 @@ $(function() {
 					    	<input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname')?> (Admin)"/>
 					    	<input type="hidden" name="to" value="<?php echo $bid->companyname;?>"/>
 					    	<input type="hidden" name="ponum" value="<?php echo $quote->ponum;?>"/>
-					    	
-					    	
+
+
 					    	<div class="control-group">
                             <label class="control-label" for="company">Send Message To:</label>
                             <div class="controls">
                             <?php echo $bid->companyname;?>
                             </div>
                             </div>
-    
+
                             <div class="control-group">
                             <label class="control-label" for="message">Message</label>
                             <div class="controls">
                            		<textarea name="message" class="span8" rows="5" required></textarea>
                             </div>
                             </div>
-                            
+
                             <div class="control-group">
                             <label class="control-label" for="userfile">Attachment</label>
                             <div class="controls">
                            		 <input type="file" name="userfile" size="10"  />
                             </div>
                             </div>
-                            
+
                             <div class="control-group">
                             <label class="control-label" for="">&nbsp;</label>
                             <div class="controls">
                            		 <input type="submit" value="Send" class="btn btn-primary"/>
                             </div>
                             </div>
-    
-				
+
+
 					    </form>
 				    </div>
 
@@ -646,7 +653,7 @@ $(function() {
                       </a>
 </form></div>-->
 			    </div>
-			 
+
 			    <br/>
 			    <br/>
 		    <?php }?>
@@ -654,7 +661,7 @@ $(function() {
 	    <?php if(!$isawarded){?>
 	    <div class="span12">
 	    <span class="poheading">Lowest Price Possible: $ <span class="mintotal"></span></span>
-	    
+
 	    </div>
 	    <?php }?>
     </div>
@@ -670,7 +677,7 @@ $(function() {
             	<h3>Award Bid</h3>
         	</div>
         	<div class="modal-body">
-        	
+
         	<table>
 	        	<tr>
 		        	<td colspan="2"><strong>Shipping Address:</strong> <br/>
@@ -679,22 +686,22 @@ $(function() {
 			        	<textarea class="span6" rows="2" id="shipto" name="shipto"></textarea>
 		        	</td>
 	        	</tr>
-        	
+
         	</table>
-        	
+
         	</div>
         	<div class="modal-footer">
         		<input type="submit" class="btn btn-primary" value="Award"/>
         	</div>
             </form>
         </div>
-        
+
         <div id="itemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-        	
+
             <div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
         	</div>
         	<div class="modal-body" id="quoteitems">
         	</div>
-            
+
         </div>

@@ -49,10 +49,13 @@ class Dashboard extends CI_Controller
 			
 			$rq->quoteitems=$this->db->get_where('quoteitem',array('purchasingadmin'=>$rq->fromid))->result();
 			$rq->awarditems=$this->db->get_where('awarditem',array('purchasingadmin'=>$rq->fromid))->result();
-			/*$sql = "SELECT ai.*,qi.* FROM " . $this->db->dbprefix('awarditem') . " ai left join ".$this->db->dbprefix('quoteitem') . " qi on  qi.itemid = ai.itemid WHERE qi.company='{$company->id}' GROUP BY qi.company" ; 
-		$data['awarditems']=$this->db->query($sql)->result();	*/			
+			
+			$sql = "SELECT itemid FROM " . $this->db->dbprefix('quoteitem') ." where itemid 
+		   NOT IN (SELECT itemid FROM " . $this->db->dbprefix('awarditem')." where purchasingadmin='{$rq->fromid}') AND  purchasingadmin='{$rq->fromid}'GROUP BY itemid"; 			
+			$data['quoting']=$this->db->query($sql)->result();
+				
 			$data['newrequests'][]=$rq;
-		}
+		} 
 
 		if(isset($_POST['allcompany']))
 		{

@@ -1045,7 +1045,19 @@ class Dashboard extends CI_Controller
 		  $i++;
 		 }	
 		 
-		$data['promembers'] = $this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();	
+		//$data['promembers'] = $this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();
+		 $data['mainuser'] = $this->db->get_where('users',array('id'=>$this->session->userdata('purchasingadmin')))->row();
+		   $mpid=$this->session->userdata('managedprojectdetails')->id;
+		   	
+		   $sql ="SELECT u.username,u.position,q.ponum,p.title FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu,".$this->db->dbprefix('quote')." q,
+							".$this->db->dbprefix('project')." p
+					WHERE u.purchasingadmin =  '".$this->session->userdata('purchasingadmin')."'
+					AND qu.userid = u.id
+					AND q.id = qu.quote
+					AND p.id = '".$mpid."' AND q.pid = p.id GROUP BY p.title";
+					$data['promembers'] = $this->db->query($sql)->result();
+					
+					
 		$data['types'] = $this->db->get('type')->result(); 
 		
 		$this->load->view ('admin/dashboard', $data);

@@ -26,7 +26,8 @@ $(document).ready(function(){
 	 $('.dataTables_length').hide();
 
 });
-var datetext = "";
+
+/*var datetext = "";
 function changeduedate(invoicenum,datedue)
 {
 	if(datetext!= datedue) {
@@ -40,7 +41,40 @@ function changeduedate(invoicenum,datedue)
     });
 
 	}
-}
+}*/
+
+	var datetext = "";
+	var isconfirm = "";
+	function changeduedate(invoicenum,datedue)
+	{			
+		if(datetext!= datedue) {
+			if(confirm("Do you want to set the invoice due date to"+datedue)){
+			datetext = datedue;
+			isconfirm = "yes";
+			$('#originaldate'+invoicenum).val(datedue);
+			var data = "invoicenum="+invoicenum+"&datedue="+datedue;
+			$.ajax({
+				type: "post",
+				data: data,
+				url: datedueurl
+			}).done(function(data) {
+			});
+
+		}else{
+				$('#daterequested'+invoicenum).val($('#originaldate'+invoicenum).val());
+				datetext = $('#originaldate'+invoicenum).val();			
+				$('#canceldate').val(datedue);
+				datedue = $('#originaldate'+invoicenum).val();			
+		}
+		}else{ 
+				if(isconfirm == ""){
+				$('#daterequested'+invoicenum).val($('#originaldate'+invoicenum).val());				
+				datetext = $('#canceldate').val();									
+				}
+				
+		}
+	}
+
 function invoice(invoicenum,invoicequote)
 {
 	$("#invoicenum").val(invoicenum);
@@ -181,9 +215,10 @@ function invoice(invoicenum,invoicequote)
                                                 			<?php if($i->paymentstatus=='Paid') { $olddate=strtotime($i->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
                                                 			<td><?php echo $i->status;?></td>
                                                 			<td>
-                                                			<input type="text" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{echo "No Date Set";} ;?>" class="date" style="width:100px;"
+                                                			<input type="text" id="daterequested<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{echo "No Date Set";} ;?>" class="date" style="width:100px;"
                                                 			data-date-format="mm/dd/yyyy" readonly
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
+                                                			<input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />
                                                 			</td>
                                                 		</tr>
                                                 		<?php $finaltotal += $gtotal;
@@ -197,7 +232,7 @@ function invoice(invoicenum,invoicequote)
 									    							$totalunpaid+= $gtotal;
 									    							}
      								      								}   ?>
-                                                <?php } ?>
+                                                <?php } ?> <input type="hidden" id="canceldate" />
                                                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total:</td>
                                                 <td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Paid:</td>

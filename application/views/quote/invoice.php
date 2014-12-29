@@ -70,7 +70,7 @@
 			                  		<?php echo ($invoice->datedue == $invoice->paymentdate?'Paid on time':($invoice->datedue > $invoice->paymentdate?'Paid Early':'Paid Late'))
 			                  				.' on '. date("m/d/Y", strtotime( $invoice->paymentdate));?>
 			                  	<?php }else{?>
-			                  	    <?php echo $invoice->datedue >= date('Y-m-d')?'Upcoming':'Overdue';?>
+			                  	    <?php echo $invoice->datedue > date('Y-m-d')?'Upcoming':'Overdue';?>
 			                  	<?php }?>
 
 			                  	<?php }?>

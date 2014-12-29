@@ -306,6 +306,8 @@ function jq( myid ) {
                 </th>
                </tr>
               </tfoot>
+              <?php }else{ ?>
+              <tr><th>No Shipments Pending Acknowledgement</th></tr>
               <?php } ?>
             </table>
                        
@@ -316,9 +318,9 @@ function jq( myid ) {
             {
             ?>
             <h3 class="box-header" style="display:none;">Shipments:
-            <?php if(count($shipmentarray)>0){?>
+            <?php /* if(count($shipmentarray)>0){?>
            <button class="btn btn-primary"  title="Please go to tracking page to accept shipments">Accept All</button>
-           <?php }?></h3>
+           <?php } */ ?></h3>
 		   <?php foreach($shipmentarray as $shipments){ if(@$shipments[0]->quote){ ?>	
            <table id="ship<?php echo $shipments[0]->quote;?>" class="table table-bordered" style="display:none;">
            	<tr>
@@ -335,9 +337,9 @@ function jq( myid ) {
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>
            		<td>
-           			<?php if($s->accepted == 0){?>
+           			<?php /* if($s->accepted == 0){?>
            			<input type="button" value="Accept" title="Please go to tracking page to accept shipments"/>
-           			<?php }?>
+           			<?php } */?>
            		</td>
            	</tr>
            	<?php }?>
