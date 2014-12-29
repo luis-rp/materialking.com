@@ -9,13 +9,12 @@
 		</div>
 		
 			<div class="box">
-				<div class="span3" style="margin-left:0px;width:auto;">
+				<div class="alert alert-info" style="margin-left:0px;width:auto;">
 					Please Enter Your Email to retrieve password.
 				</div>
 			</div>
 					
 		<?php echo form_open('admin/register/sendforgot',array('class'=>"form-horizontal")) . "\n"; ?>
-			<fieldset>
 				<div class="fields">
 					<input type="email" name="email" placeholder="Email" id="email" tabindex="1">
 				</div>
@@ -25,7 +24,7 @@
 				<a class="btn btn-primary" href="<?php echo site_url('admin/login');?>">Back To Login</a>
 				&nbsp; &nbsp;
 				<a class="btn btn-primary" href="<?php echo site_url('admin/register');?>">Create Account</a>
-			</fieldset>
+
 		<?php echo form_close(); ?>
 		
 	</section>

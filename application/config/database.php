@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 //Jon120758! findsupplyhousecom
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'jon';
-$db['default']['password'] = 'fJdft(=k-+Kd';
-$db['default']['database'] = 'pms';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
+$db['default']['database'] = 'materialking';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'pms_';
 $db['default']['pconnect'] = TRUE;
