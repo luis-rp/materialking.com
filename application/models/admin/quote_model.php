@@ -761,6 +761,15 @@ class quote_model extends Model {
             //$searches[]= " itemcode LIKE '%{$_POST['searchinvoice']}%' ";
             //$searches[]= " itemname LIKE '%{$_POST['searchinvoice']}%' ";
         //}
+        
+        if(!@$_POST)
+ 		{
+ 			$fromdate = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+ 			$todate = date('Y-m-d');
+ 			$searches[] = " (receiveddate >= '$fromdate'
+						AND receiveddate <= '$todate')";
+ 		}
+        
         if (@$_POST['searchbycompany']) {
             $searches[] = " c.id = '{$_POST['searchbycompany']}' ";
         }

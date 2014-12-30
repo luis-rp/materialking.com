@@ -274,7 +274,7 @@ $(function() {
                    	<?php $highTotal =array_sum($maximum);?>
                    	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());
                    	savepo = savepo.toFixed(2);
-                   	var textsubtitle1 = '*HI VS LOW SAVINGS '+save+'$'+'<br />*Split P.O. Savings '+savepo+'$';
+                   	var textsubtitle1 = '<table class="table table-bordered"><tr><td>HI VS LOW SAVINGS = '+save+'$ </td></tr><tr><td>Split P.O. Savings = '+savepo+'$ </td></tr></table>';
                    	var textsubtitle2 = "";
                    	<?php foreach($bids as $bid) if($bid->items){                   		
                    		if($maxcountitems > count($bid->items))

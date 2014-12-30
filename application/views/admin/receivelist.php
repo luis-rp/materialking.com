@@ -209,14 +209,14 @@ function jq( myid ) {
 	   <?php echo $this->session->flashdata('message'); ?>
 	    
 	    <div class="datagrid-example">
-		<div style="height:400px;width:100%;margin-bottom:20px;">
+		<div style="width:100%;margin-bottom:20px;">
             <table id="MyGrid" class="table table-bordered datagrid">
              <thead>
-              <!-- <tr>
+              <tr>
                 <th>
                 <div>
                
-                <form class="form-inline" style="padding-top: 10px; padding-bottom:2px;" action="<?php echo site_url('admin/quote/index/'.$pid)?>" method="post">
+             <!--   <form class="form-inline" style="padding-top: 10px; padding-bottom:2px;" action="<?php echo site_url('admin/quote/index/'.$pid)?>" method="post">
                 	
                 	 <?php echo $addlink;?><br/></br>
                 	 
@@ -256,11 +256,11 @@ function jq( myid ) {
                 	&nbsp;&nbsp;
                 	
                 	<input type="submit" value="Filter" class="btn btn-primary"/>
-                </form>
+                </form>-->
                 
                 </div>
                 </th>
-               </tr>-->
+               </tr>
               </thead>
               <?php if ($counts) {?>
               <tfoot>
@@ -328,7 +328,7 @@ function jq( myid ) {
            		<th>Date Sent</th>
            		<th>Quantity</th>
            		<th>Reference #</th>
-           		<th>Action</th>
+           		
            	</tr>
            	<?php foreach($shipments as $s){?>
            	<tr>
@@ -336,11 +336,6 @@ function jq( myid ) {
            		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>
-           		<td>
-           			<?php /* if($s->accepted == 0){?>
-           			<input type="button" value="Accept" title="Please go to tracking page to accept shipments"/>
-           			<?php } */?>
-           		</td>
            	</tr>
            	<?php }?>
            	<tr><td colspan="5" style="text-align:center";><a href="<?php echo base_url()?>admin/quote/track/<?php echo $shipments[0]->quote;?>"><span class="label label-pink">Track</span></a></td></tr>

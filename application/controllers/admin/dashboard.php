@@ -1015,24 +1015,63 @@ class Dashboard extends CI_Controller
 		foreach($data['suppliers'] as $supplier)
 		{
 			$where="";
-			if(@$_POST['types']){
+			if(@$_POST['types'])
+			 {
 				$typestr = implode(",",$_POST['types']);
+				$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+				$this->db->update('settings',array('filter'=>$typestr));
+				$data['filterdata']=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
 				$where = " and ct.typeid in ({$typestr}) ";
+			 }
+			else 
+			{
+				if(isset($_POST['suppliersearch'])){
+			   $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+			   $this->db->update('settings',array('filter'=>""));}	
+			   
+			   $data['filterdata']=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
+			   		if(isset($data['filterdata']->filter) && $data['filterdata']->filter!="")
+			   		{
+						$where = " and ct.typeid in ({$data['filterdata']->filter}) ";
+			   		}
+			   		else 
+			   		{ 
+			   			$where="";
+			   		}
 			}
-			$sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' {$where} GROUP BY ct.companyid";
+			
+		   $sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' {$where} GROUP BY ct.companyid";
 			$filterindustries=$this->db->query($sql)->row();
 			$data['suppliers'][$i]->industry = $filterindustries->industry;
-			if(@$_POST['types']){
-				if(!$filterindustries){					
+			
+			if(@$_POST['types'])
+			  {
+				if(!$filterindustries)
+				  {					
 					unset($data['suppliers'][$i]);
-				}else{
+				  }
+				else
+				  {
 					$sql2 = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
-				$data['industry']=$this->db->query($sql2)->row();
-				$data['suppliers'][$i]->industry = $data['industry']->industry;
-				}
-			}			
+				    $data['industry']=$this->db->query($sql2)->row();
+				    $data['suppliers'][$i]->industry = $data['industry']->industry;
+				   }
+			  }
+			else 
+			  {
+				if(!$filterindustries)
+				 {					
+				   unset($data['suppliers'][$i]);
+				 }
+				 else
+				 {
+					$sql2 = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+					$data['industry']=$this->db->query($sql2)->row();
+					$data['suppliers'][$i]->industry = $data['industry']->industry;
+				 }				
+			}
 			$i++;
-		}
+		} 
 		
 		
 		$data['invitesuppliers']=$query_suppliers->suppliers;
@@ -1396,7 +1435,7 @@ class Dashboard extends CI_Controller
 			{
 			$supplier=$this->db->get_where('company',array('id'=>$check))->row();	
 			$supplier->primaryemail;
-			$option=array('purchasingadmin'=>$id,'company'=>$check,'send'=>'1'); 	
+			$option=array('purchasingadmin'=>$id,'company'=>$check,'send'=>'1','sup_email'=>$supplier->primaryemail); 	
 			$this->db->insert('supplierinvitation',$option);
 			$list[]=$supplier->primaryemail;			  		        			
 			}			
@@ -1419,6 +1458,38 @@ class Dashboard extends CI_Controller
 		        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');	
 		}
 	
+		redirect('admin/dashboard');
+		
+	}
+	
+	
+	function supplier_email_invitation()
+	{		
+		$id = $this->session->userdata('purchasingadmin');
+		$company=$this->db->get_where('users',array('id'=>$id))->row();
+		if(isset($_POST['exampleInputEmail2']))
+		{
+			$option=array('purchasingadmin'=>$id,'send'=>'1','sup_email'=>$_POST['exampleInputEmail2']); 	
+			$this->db->insert('supplierinvitation',$option);
+			
+			    $this->load->library('email');
+		        $config['charset'] = 'utf-8';
+		        $config['mailtype'] = 'html';	        			
+		        $this->email->initialize($config);
+		        $this->email->from($company->email);
+				$this->email->to($_POST['exampleInputEmail2']);
+		        $subject = 'Invitation';		        		
+		        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
+	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.";	
+			    $loaderEmail = new My_Loader();
+			    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
+		        $this->email->subject($subject);
+		        $this->email->message($send_body);	
+		        $this->email->set_mailtype("html");
+		        $this->email->send();
+		       
+		}	
+		 $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');	
 		redirect('admin/dashboard');
 		
 	}

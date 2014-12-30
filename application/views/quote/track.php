@@ -210,7 +210,7 @@ tr.still-due td
                                         </td>
                                         <td>
                                         	<?php if($ai->quantity - $ai->received){?>
-                                        	<input style="width:100px" type="text" name="quantity<?php echo $ai->id;?>"/>
+                                        	<input style="width:100px" type="text" name="quantity<?php echo $ai->id;?>" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                         	<?php }?>
                                         </td>
                                         <td>
@@ -382,7 +382,7 @@ tr.still-due td
 					</td>
 					<td><?php echo $i->status;?></td>
 					<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
-					<td>$<?php echo $amount;?></td>
+					<td>$<?php echo $amount;?>z</td>
 					<td>
 						<?php echo $i->paymentstatus;?>
 

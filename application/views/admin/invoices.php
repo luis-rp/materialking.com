@@ -293,10 +293,10 @@ function jq( myid ) {
                     			<td><?php echo $item->actions;?></td>
                     		</tr>
                     		<?php
-                    		$finaltotal += $item->totalprice;
+                    		$finaltotal += str_replace( ',', '', $item->totalprice);
                     		if($item->paymentstatus=='Paid')
                     		{
-                    			$totalpaid+= $item->totalprice;
+                    			$totalpaid+= str_replace( ',', '', $item->totalprice);
                     		}
 
                     		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')

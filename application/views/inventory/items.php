@@ -580,7 +580,7 @@ function clearall(id)
                                                 <td class="v-align-middle">
                                                 	<input type="text" style="width: 60px;" placeholder="Price" id="price1<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->ea?>"
-                                                	onchange="updateItemprice('<?php echo $item->id?>',this.value);"/>
+                                                	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                                 	<?php if(@$item->companyitem){?>
                                                 	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">
                                                 		<i class="fa fa-search"></i>
@@ -594,7 +594,7 @@ function clearall(id)
                                                  <td class="v-align-middle">
                                                 	<input type="text"  style="width: 100px;" placeholder="Min Qty" id="minqty<?php echo $item->id;?>"
                                                 	value="<?php echo (@$item->increment)?$item->increment:@$item->companyitem->minqty?>"
-                                                	onchange="updateMinqty('<?php echo $item->id?>',this.value);"/><br/>
+                                                	onchange="updateMinqty('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br/>
                                                 	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
                                                 	<br/>
                                                 	<input type="checkbox" id = 'tierprice<?php echo $item->id;?>' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"

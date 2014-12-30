@@ -351,6 +351,11 @@ function defaultcategory(categoryid){
 	
 	$('#categoryinvitees').val(categoryid);
 }
+
+function setmiles(){
+	
+	$('#locradiushidden').val($('#locradius').val());
+}
 	
 </script>
 
@@ -449,7 +454,8 @@ function savclose()
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <input type="hidden" id="reminders" name="reminders" value=""/>
 		   <input type="hidden" id="revisions" name="revisions" value=""/>
-		   <input type="hidden" id="categoryinvitees" name="categoryinvitees" value=""/>
+		   <input type="hidden" id="categoryinvitees" name="categoryinvitees" value="<?php echo @$this->session->userdata('forcat');?>"/>
+		   <input type="hidden" id="locradiushidden" name="locradiushidden" value=""/>	
 		   <br/>
 		    
 		    <div class="control-group">
@@ -695,6 +701,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    	<div class="row span12">
 				    <div class="control-group span4">
 					<select onchange="defaultcategory(this.value)" id="purchasercategory" name="purchasercategory" class="costcode">
+						    <option value="">Select Category</option>
 		    				<?php if(count($purchasercategories1)>0) { foreach($purchasercategories1 as $cat){?>
 		    				<option value="<?php echo $cat->id;?>" 
 		    				<?php  if($this->session->userdata('forcat')==$cat->id){echo 'SELECTED';}?>>
@@ -703,8 +710,8 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    				<?php } }?>
 		    		</select>   
 				    </div>
-				   
-				    
+				  <?php if(@$this->session->userdata('address')) echo "Project Address:<br>".$this->session->userdata('address'); ?>  
+				  <span id="mileid"><br>Send RFP to contractors within miles of job site:&nbsp;<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="setmiles()"> Miles </span> 				 
 				</div>
 			    <?php if(1){?>
 		    	<br/><br/>

@@ -1,3 +1,4 @@
+<?php echo '<script>var createbillurl="'.site_url('admin/quote/createbill').'";</script>'?>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
@@ -126,6 +127,7 @@ $per .='%';
     $(document).ready(function() {
     	$("#feedbackformwrapper").hide();
     	$(".datefield").datepicker();
+    	$("#customerduedate").datepicker();
     	$('.basic').jRating({
 			length:5,
 			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
@@ -343,6 +345,55 @@ function acceptall()
 		$("#trackform").submit();
     });
 }
+
+function addalltobill(quoteid,cnt){
+	
+	$('#billwindow').html(cnt+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quoteid+')" id="createallbillbtn" />');
+	
+}
+
+function createallbill(quoteid){
+	
+	$('#billmodal').modal();
+	$('#customerquoteid').val(quoteid);
+	 /*$.ajax({
+        type: "post",
+        dataType : 'json',
+        data: "quoteid=" + quoteid,
+        url: accepturl
+    }).done(function(data) {
+    	
+    });
+	
+	billwindow*/
+	
+}
+
+
+function billformsubmit()
+	{
+		var quote = $('#customerquoteid').val();
+		var d = $("#createbillform").serialize();
+
+        $.ajax({
+            type: "post",
+            url: createbillurl,
+            data: d
+        }).done(function(data) {
+            if (data == 'Success')
+            {
+                alert('Bill sent to Customer');
+                //addtopo1(quote);
+            }
+            else
+            {
+                alert(data);
+            }
+            $("#billmodal").modal('hide');
+        });
+        return false;
+	}
+
 </script>
 
 <section class="row-fluid">
@@ -618,7 +669,7 @@ function acceptall()
 								</td>
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"
-                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value=""/>
+                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>
                                     </td>
                                     <td>
@@ -676,7 +727,13 @@ function acceptall()
                     </tr>
                     <tr>
                         <td colspan="6" style="text-align:right">Total: </td>
-                        <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">$ <?php echo round($grandtotal, 2); ?></td>
+                        <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">
+                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>')" >+ Add all items to bill</a></span> </td>
+                        <td>
+                        <span style="align:right;" id="billwindow"></span>
+                        </td></tr></table>
+                        
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -1133,4 +1190,37 @@ function acceptall()
     <!-- /.modal-dialog -->
   </div>
 <?php //}
-} }
+} }?>
+
+
+<div id="billmodal" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+    	<h3>Bill <span id="billspan"></span></h3>
+	</div>
+	<div class="modal-body" id="billwrapper">
+		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+		<table>
+		<tr><td>Customer name:</td><td><input type="text" name="customername" id="customername" style="width: 250px;"/></td></tr>
+		<tr><td>Customer e-mail:</td><td><input type="text" name="customeremail" id="customeremail" style="width: 250px;" /> </td></tr>
+		<tr><td>Customer Address:</td><td><input type="text" name="customeraddress" id="customeraddress" style="width: 250px;" /> </td></tr>
+		<tr><td>Due Date:</td><td><input type="text" name="customerduedate" id="customerduedate" style="width: 150px;" /> </td></tr>
+		<tr><td>Bill Note:</td><td><input type="text" name="customerbillnote" id="customerbillnote" style="width: 250px;" /></td></tr>
+		<tr><td>Include logo:</td><td><input type="radio" name="customerlogo" id="customerlogoyes" value="yes" /> Yes <input type="radio" name="customerlogo" id="customerlogono" value="no" checked="checked" /> No </td></tr>
+		<tr><td>Payable via:</td><td><select id="customerpaymenttype" name="customerpaymenttype" style="width: 150px;" >
+        							<option value="cash">Cash</option>
+        							<option value="cheque">Cheque</option>
+        							<option value="paypal">Paypal</option>
+        							</select></td></tr>
+		<tr><td>Paypal e-mail:</td><td><input type="text" name="customerpaypalemail" id="customerpaypalemail" style="width: 250px;" /> </td></tr>
+		<tr><td>Mark up total %:</td><td><input type="text" name="markuptotalpercent" id="markuptotalpercent" style="width: 75px;" /> </td></tr>
+		<tr><td>Mark up each item %:</td><td><input type="text" name="markupitempercent" id="markupitempercent" style="width: 75px;" /></td></tr>
+		<tr><td>Payable To:</td><td><input type="text" name="customerpayableto" id="customerpayableto" value="<?php echo @$this->session->userdata('companyname');?>" style="width: 250px;" /></td></tr> 		
+		<tr><td colspan="2" style="text-align:center;"><input type="button" value="Savebill" class="btn btn-primary" onclick="billformsubmit();"/></td>
+		<input type="hidden" name="customerquoteid" id="customerquoteid"/>
+		</tr> 
+		</table>
+		</form>
+	</div>
+</div>
+

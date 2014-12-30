@@ -412,8 +412,9 @@
 				<tr><td>
 				What type of work will be performed on this job?
 				</td></tr>
+				<?php $fd=explode(",",$filterdata->filter); ?>
 				<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
-	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$_POST['types']) { if(in_array($type->id,$_POST['types'])) echo 'checked="checked"'; else echo ''; } ?>>
+	<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$fd) { if(in_array($type->id,$fd)) echo 'checked="checked"'; else echo ''; } ?>>
 	      			<?php echo $type->title;?>
 	      			<br/>
 	      			<?php }?>
@@ -847,8 +848,7 @@
    <div id="smodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
-      <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
-      
+       
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
@@ -856,7 +856,7 @@
         </div>
         
         <div class="modal-body"> 
-        
+       <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
         <table class="table table-bordered  col-lg-10">
 	  		<tr>
 	  			<td><strong>Supplier Company Name</strong></td>
@@ -875,8 +875,20 @@
 	  		
 	  	</table> 
 	  	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
+	  	</form><br>
+	  	
+	  	  <div><p>Don't See Your Supplier?Enter their e-mail to send an e-mail invitation to join your network</p></div>
+	        <form class="form-inline" action="<?php echo base_url()?>admin/dashboard/supplier_email_invitation" method="post">
+			  <div class="form-group">
+			    <label class="sr-only" for="exampleInputEmail2">Email</label>
+			    <input type="email" class="form-control" id="exampleInputEmail2" name="exampleInputEmail2" placeholder="Suplier email" style="width:60%;">
+			    <button type="submit" class="btn btn-default">Invite</button>
+			  </div> 
+			  
+			</form>
+		
         </div>       
-        </form>
+              
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>

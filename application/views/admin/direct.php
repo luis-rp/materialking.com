@@ -457,6 +457,17 @@ function savclose()
 }
 </script>
 
+<script type="text/javascript">
+function allowonlydigits(e,elementid,errorid){
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {                
+      $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
+      $("#"+errorid).css('color','red');
+      return false;
+    } }
+
+
+</script>
+
 <style>
 .findtext
 {
@@ -581,19 +592,21 @@ function savclose()
 		    		<td>
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
-		    		<td><input type="text" class="span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>');  calculatetotalprice('<?php echo $q->id?>')" required/><br><span style="color:red" id="incrementmessage<?php echo $q->id?>"></span></td>
+		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>');  calculatetotalprice('<?php echo $q->id?>')" 
+			      	onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/><br><span style="color:red" id="incrementmessage<?php echo $q->id?>"></span><span id="eaerrmsg<?php echo $q->id;?>"></span></td>
+		    		
 		    		<td><input type="text" class="span12" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>" required/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" class="span12" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" readonly required/>
-		    			</div>
+						<input type="text" class="highlight nonzero nopad width50 input-sm span12" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
+		    			</div><span id="eaerrmsg1<?php echo $q->id;?>"></span>
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="totalprice<?php echo $q->id;?>" class="span9 price" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" required/>
-		    			</div>
+						<input type="text" id="totalprice<?php echo $q->id;?>" class="highlight nonzero nopad width50 input-sm span9 price" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>"  onkeypress="return allowonlydigits(event,'totalprice<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
+		    			</div><span id="eaerrmsg2<?php echo $q->id;?>"></span>
 		    		</td>
 		    		
 		    		<td>
@@ -652,18 +665,18 @@ function savclose()
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
 		    		</td>
-		    		<td><input type="text" id="quantity" name="quantity" class="span" onblur="return checkincrementquantity(this.value); calculatetotalprice('')" required/><br><span style="color:red" id="incrementmessage"></td>
+		    		<td><input type="text" id="quantity" name="quantity" class="highlight nonzero nopad width50 input-sm span" onblur="return checkincrementquantity(this.value); calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/><br><span style="color:red" id="incrementmessage"></td>
 		    		<td><input type="text" id="unit" name="unit" class="span"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="span9 price pricefieldnew" onblur="calculatetotalprice('')" readonly required/>
+						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span9 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" readonly required/>
 		    			</div>
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="totalprice" name="totalprice" class="span9 price" required/>
+						<input type="text" id="totalprice" name="totalprice" class="highlight nonzero nopad width50 input-sm span9 price" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
 		    			</div>
 		    		</td>
 		    		<td>

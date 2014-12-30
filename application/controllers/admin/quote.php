@@ -1107,9 +1107,11 @@ class quote extends CI_Controller
     	
     		    if (@$_POST['categoryinvitees']) {
     		    $this->session->set_userdata('forcat', $_POST['categoryinvitees']);
-                $companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
-                $companynames = array();
+                //$companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
                 
+                $companies = $this->get_contract_company_in_miles(@$_POST['locradiushidden'],@$_POST['categoryinvitees']);
+                $companynames = array();
+                //echo "<pre>",print_r($companies); die;
                 foreach ($companies as $c)
                 {	
                     $companynames[] = (@$c->companyname)?$c->companyname:$c->username;
@@ -9275,7 +9277,98 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $data['shipmentarray'] = $shipmentarray;
         
         $this->load->view('admin/receivelist', $data);
-    }	
+    }
+    
+    
+        function get_contract_company_in_miles($miles="",$category) {
+        
+        $radiusval = $miles;
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+
+        $arr = array();
+        $sql = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE 1=1";
+			
+        	if($miles!="")
+  			$having = "HAVING distance <= {$radiusval}";
+  			else 
+  			$having = "";
+  			
+            $lat = $this->quote_model->getcomplat($this->session->userdata('id'));
+            $lng = $this->quote_model->getcomplong($this->session->userdata('id'));
+
+            $sql_radius = "SELECT  *,(3963.191 * acos( cos( radians({$lat}) ) * cos( radians( `user_lat` ) ) * cos( radians( `user_lng` ) - radians({$lng}) ) + sin( radians({$lat}) ) * sin( radians( `user_lat` ) ) ) ) AS distance 
+                    FROM " . $this->db->dbprefix('users') . " 
+                    {$having}                    
+                    ORDER BY distance ASC";
+
+            $sql_radius = $this->db->query($sql_radius);
+            $dist = $sql_radius->result();
+
+            foreach ($dist as $ret) {
+
+                array_push($arr, $ret->id, true);
+            }
+            if (!empty($arr)) {
+                $arr1 = implode(',', $arr);
+                $sql .= " and id IN ($arr1)";
+            } else {
+                return '';
+            }
+           
+           if($category) 
+           $sql .= " and category=". $category;      
+		   $query = $this->db->query($sql);
+           $ret = $query->result();
+           return $ret;	
+    }
+    
+    
+    function createbill(){
+    	
+    	if(!$_POST)
+            die;
+
+	    $settings = (array)$this->homemodel->getconfigurations ();
+	    $data['email_body_title'] = "";
+	    $data['email_body_content'] = "";
+	    $data['email_body_title'] = 'Bill';	    
+		$data['email_body_content'] .= ' Dear Customer, You bill details are as follows:<br/><br/>';
+		//$body .= "Type: ".$_POST['type']."<br/>";
+		if(@$_POST['customername'])
+		$data['email_body_content'] .= "Name: ".$_POST['customername']."<br/>";		
+		if(@$_POST['customeremail'])
+		$data['email_body_content'] .= "Email: ".$_POST['customeremail']."<br/>";
+		if(@$_POST['customeraddress'])
+		$data['email_body_content'] .= "Address: ".$_POST['customeraddress']."<br/>";
+		if(@$_POST['customerduedate'])
+		$data['email_body_content'] .= "Due Date: ".$_POST['customerduedate']."<br/>";
+		if(@$_POST['customerbillnote'])
+		$data['email_body_content'] .= "Note: ".site_url($_POST['customerbillnote'])."<br/>";
+		if(@$_POST['customerpaymenttype'])
+		$data['email_body_content'] .= "Payment Type: ".$_POST['customerpaymenttype']."<br/>";
+		if(@$_POST['customerpaypalemail'])
+		$data['email_body_content'] .= "Paypal Email: ".$_POST['customerpaypalemail']."<br/>";
+		if(@$_POST['markuptotalpercent'])
+		$data['email_body_content'] .= "Mark up total %: ".$_POST['markuptotalpercent']."<br/>";
+		if(@$_POST['markupitempercent'])
+		$data['email_body_content'] .= "Mark up each item %: ".site_url($_POST['markupitempercent'])."<br/>";
+		if(@$_POST['customerpayableto'])
+		$data['email_body_content'] .= "Payable To: ".$_POST['customerpayableto']."<br/>";
+				
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$this->email->from($settings['adminemail']);
+		$this->email->to(@$_POST['customeremail']);
+		$this->email->subject('Bill');
+		$this->email->message($send_body);
+		$this->email->set_mailtype("html");
+		$this->email->send();
+    	echo 'Success';
+    }
 	
 		
     // End
