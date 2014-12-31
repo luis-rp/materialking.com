@@ -9331,9 +9331,14 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	    $settings = (array)$this->homemodel->getconfigurations ();
 	    $data['email_body_title'] = "";
 	    $data['email_body_content'] = "";
-	    $data['email_body_title'] = 'Bill';	    
-		$data['email_body_content'] .= ' Dear Customer, You bill details are as follows:<br/><br/>';
+	    $data['email_body_title'] = 'Bill';	 
+	    if(@$_POST['customername'])   
+		$email_body_content = " Dear ".$_POST['customername'].", Your bill details are as follows:<br/><br/>";
+		else 
+		$email_body_content = " Dear Customer, Your bill details are as follows:<br/><br/>";
 		//$body .= "Type: ".$_POST['type']."<br/>";
+		if(@$_POST['billname'])
+		$data['email_body_content'] .= "Bill #Name: ".$_POST['billname']."<br/>";		
 		if(@$_POST['customername'])
 		$data['email_body_content'] .= "Name: ".$_POST['customername']."<br/>";		
 		if(@$_POST['customeremail'])
@@ -9341,9 +9346,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(@$_POST['customeraddress'])
 		$data['email_body_content'] .= "Address: ".$_POST['customeraddress']."<br/>";
 		if(@$_POST['customerduedate'])
-		$data['email_body_content'] .= "Due Date: ".$_POST['customerduedate']."<br/>";
+		$data['email_body_content'] .= "Due Date: ".date('m/d/Y', strtotime($_POST['customerduedate']))."<br/>";
 		if(@$_POST['customerbillnote'])
-		$data['email_body_content'] .= "Note: ".site_url($_POST['customerbillnote'])."<br/>";
+		$data['email_body_content'] .= "Note: ".$_POST['customerbillnote']."<br/>";
 		if(@$_POST['customerpaymenttype'])
 		$data['email_body_content'] .= "Payment Type: ".$_POST['customerpaymenttype']."<br/>";
 		if(@$_POST['customerpaypalemail'])
@@ -9351,11 +9356,99 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(@$_POST['markuptotalpercent'])
 		$data['email_body_content'] .= "Mark up total %: ".$_POST['markuptotalpercent']."<br/>";
 		if(@$_POST['markupitempercent'])
-		$data['email_body_content'] .= "Mark up each item %: ".site_url($_POST['markupitempercent'])."<br/>";
+		$data['email_body_content'] .= "Mark up each item %: ".$_POST['markupitempercent']."<br/>";
 		if(@$_POST['customerpayableto'])
 		$data['email_body_content'] .= "Payable To: ".$_POST['customerpayableto']."<br/>";
-				
-		$loaderEmail = new My_Loader();
+
+		
+		$emailitems = '<table BORDER CELLPADDING="12">';
+		$emailitems.= '<tr>';
+		$emailitems.= '<th> Itemcode  </th>';
+		$emailitems.= '<th>Itemname</th>';
+		$emailitems.= '<th>Qty</th>';
+		$emailitems.= '<th>Unit</th>';
+		$emailitems.= '<th>Price</th>';
+		$emailitems.= '<th>Total Price</th>';
+		$emailitems.= '<th>Date Requested</th>';
+		$emailitems.= '<th>Cost Code</th>';
+		$emailitems.= '</tr>';		
+
+		   	
+    	$awardedbid = $this->quote_model->getawardedbidquote($_POST['customerquoteid']);
+		// echo "<pre>",print_r($awardedbid->items); die;
+		
+					$billarray = array();    		
+					$billarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');		
+                    $billarray['quote'] = $awardedbid->quote;                
+                    $billarray['billname'] = @$_POST['billname'];    
+                    $billarray['customername'] = @$_POST['customername'];
+                    $billarray['customeremail'] = @$_POST['customeremail'];
+                    $billarray['customeraddress'] = @$_POST['customeraddress'];
+                    $billarray['customerduedate'] = (@$_POST['customerduedate'])?date("Y-m-d", strtotime($_POST['customerduedate'])):"";
+                    $billarray['customerbillnote'] = @$_POST['customerbillnote'];
+                    $billarray['customerpaymenttype'] = @$_POST['customerpaymenttype'];
+                    $billarray['customerpaypalemail'] = @$_POST['customerpaypalemail'];
+                    $billarray['markuptotalpercent'] = @$_POST['markuptotalpercent'];
+                    $billarray['markupitempercent'] = @$_POST['markupitempercent'];     
+                    $billarray['customerpayableto'] = @$_POST['customerpayableto'];                                   
+                    $billarray['customerlogo'] = @$_POST['customerlogo'];       
+					$billarray['billedon'] = date('Y-m-d H:i:s');
+                    
+                    $this->quote_model->db->insert('bill', $billarray);
+					$billid = $this->quote_model->db->insert_id();	
+					
+					$awarditemsarr = array();
+					if(@$_POST['billawarditems']){
+    				
+    					$awarditemsarr = explode(",",$_POST['billawarditems']);	
+    				
+    				}
+					
+    	if($awardedbid->items && $billid){
+    		
+    		foreach($awardedbid->items as $item){
+    			//echo "<pre>",print_r($items);
+    			if($_POST['billingtype']=="all" || (count($awarditemsarr>0) && in_array($item->id,$awarditemsarr)) ){
+    				$item = (array) $item;
+    				$itemarray = array();
+    				$itemarray['bill'] = $billid;
+    				$itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                    $itemarray['award'] = $item['award'];
+                    $itemarray['company'] = $item['company'];
+                    $itemarray['itemid'] = $item['itemid'];
+                    $itemarray['itemcode'] = $item['itemcode'];
+                    $itemarray['itemname'] = $item['itemname'];
+                    $itemarray['quantity'] = $item['quantity'];
+                    $itemarray['unit'] = $item['unit'];
+                    $itemarray['ea'] = $item['ea'];
+                    $itemarray['totalprice'] = $item['quantity'] * $item['ea'];
+                    $itemarray['daterequested'] = $item['daterequested'];
+                    $itemarray['costcode'] = $item['costcode'];                    
+                    
+                    $this->quote_model->db->insert('billitem', $itemarray);
+                    
+                    $emailitems.= '<tr>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['itemcode'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['itemname'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['quantity'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['unit'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['ea'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['quantity'] * $item['ea'].'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.date('m/d/Y', strtotime($item['daterequested'])).'</td>';
+                    $emailitems.= '<td style="padding-left:5;">'.$item['costcode'].'</td>';
+                    
+                    $emailitems.= '</tr>';
+                    
+    			}
+    		}
+    		
+    	}
+    	
+    	$emailitems .= '</table>';
+    	
+    	$data['email_body_content'] .= "<br><br>{$emailitems}";
+    	$data['email_body_content2'] = $email_body_content." <br>".$data['email_body_content'];
+    	$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
@@ -9366,8 +9459,50 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->subject('Bill');
 		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
-		$this->email->send();
-    	echo 'Success';
+		$this->email->send();  
+    	
+		
+		/*-------------------------------------------------------------------*/
+		
+		$config = (array) $this->settings_model->get_current_settings();
+        $config = array_merge($config, $this->config->config);
+        if (!class_exists('TCPDF')) {
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+        	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
+        } 
+         //$pdfhtml2 =$emailitems;
+         $pdfhtml2 = $data['email_body_content'];
+         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('');
+            $pdf->SetTitle('');
+            $pdf->SetSubject('');
+
+            $pdf->setHeaderFont(Array('helvetica', '', PDF_FONT_SIZE_MAIN));
+
+            $pdf->setPrintFooter(false);
+            $pdf->setPrintHeader(true);
+
+            $pdf->SetHeaderData('', '', '', 'CUSTOMER BILL');
+
+            $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+            $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+            $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->AddPage('L', 'LETTER');
+
+            $pdf->SetFont('helvetica', '', 8, '', true);
+            $pdf->writeHTML($pdfhtml2, true, 0, true, true);
+            $pdf->lastPage();
+            $pdfname = $config['base_dir'] . 'uploads/pdf/bill_' .$billid .'.pdf';
+            $pdf->Output($pdfname, 'f');
+        /*-------------------------------------------------------------------*/
+		
+		
+    	echo $billid;
+    	
     }
 	
 		

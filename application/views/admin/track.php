@@ -348,25 +348,36 @@ function acceptall()
 
 function addalltobill(quoteid,cnt){
 	
+	$('#billawarditems').val('');
+	$('#billwindow').html('');	
+	$('#billitemcount').val('0');	
 	$('#billwindow').html(cnt+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quoteid+')" id="createallbillbtn" />');
+	$('#billingtype').val('all');
 	
+}
+
+function addtobill(quoteid, awardid){
+	awarditemstr = $('#billawarditems').val();
+	var res = awarditemstr.split(",");
+	if($.inArray(awardid,res) ==-1){
+	if($('#billingtype').val() == "all")
+	$('#billwindow').html('');		
+	
+	$('#billitemcount').val(parseInt($('#billitemcount').val())+1); 
+	if($('#billawarditems').val()=="")
+	$('#billawarditems').val(awardid);
+	else	
+	$('#billawarditems').val($('#billawarditems').val()+","+awardid);
+	$('#billwindow').html($('#billitemcount').val()+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quoteid+')" id="createallbillbtn" />');
+	$('#billingtype').val('single');
+	}else
+	alert('item already exists');
 }
 
 function createallbill(quoteid){
 	
 	$('#billmodal').modal();
-	$('#customerquoteid').val(quoteid);
-	 /*$.ajax({
-        type: "post",
-        dataType : 'json',
-        data: "quoteid=" + quoteid,
-        url: accepturl
-    }).done(function(data) {
-    	
-    });
-	
-	billwindow*/
-	
+	$('#customerquoteid').val(quoteid);	
 }
 
 
@@ -380,19 +391,30 @@ function billformsubmit()
             url: createbillurl,
             data: d
         }).done(function(data) {
-            if (data == 'Success')
-            {
-                alert('Bill sent to Customer');
-                //addtopo1(quote);
+            if (data)
+            {                
+                showbillpdf(data);
             }
-            else
-            {
-                alert(data);
-            }
+            
             $("#billmodal").modal('hide');
+            $('#billawarditems').val('');
+			$('#billwindow').html('');	
+			$('#billitemcount').val('0');	
+			$('#billingtype').val('');
         });
         return false;
 	}
+	
+	
+function showbillpdf(data)
+	{
+		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+
+		var string = '<h3>Bill sent to Customer</h3><div><a target="blank" href="<?php echo base_url()?>uploads/pdf/bill_'+data+'.pdf" class="btn btn-primary btn-xs btn-mini">View PDF</a><br/>';	
+		$("#modalhtm").html(string);	
+		$("#billsuccessmodal").modal();
+
+	}	
 
 </script>
 
@@ -592,7 +614,9 @@ function billformsubmit()
                                 </td>
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
-                                <td>$ <?php echo $q->totalprice; ?></td>
+                                <td>$ <?php echo $q->totalprice; ?>
+                                <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>')" >+ Add to bill</a></span>
+                                </td>
                                 <td><?php echo $q->daterequested;?><br/>
                                 
                                 <?php $greaterreceived = "";
@@ -1201,6 +1225,7 @@ function billformsubmit()
 	<div class="modal-body" id="billwrapper">
 		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
 		<table>
+		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
 		<tr><td>Customer name:</td><td><input type="text" name="customername" id="customername" style="width: 250px;"/></td></tr>
 		<tr><td>Customer e-mail:</td><td><input type="text" name="customeremail" id="customeremail" style="width: 250px;" /> </td></tr>
 		<tr><td>Customer Address:</td><td><input type="text" name="customeraddress" id="customeraddress" style="width: 250px;" /> </td></tr>
@@ -1218,9 +1243,34 @@ function billformsubmit()
 		<tr><td>Payable To:</td><td><input type="text" name="customerpayableto" id="customerpayableto" value="<?php echo @$this->session->userdata('companyname');?>" style="width: 250px;" /></td></tr> 		
 		<tr><td colspan="2" style="text-align:center;"><input type="button" value="Savebill" class="btn btn-primary" onclick="billformsubmit();"/></td>
 		<input type="hidden" name="customerquoteid" id="customerquoteid"/>
+		<input type="hidden" name="billingtype" id="billingtype"/>
+		<input type="hidden" name="billitemcount" id="billitemcount" value="0" />
+		<input type="hidden" name="billawarditems" id="billawarditems"/>
 		</tr> 
 		</table>
 		</form>
 	</div>
 </div>
 
+
+
+		<div class="modal hide fade" id="billsuccessmodal">
+		<div class="modal-header">
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+    	</div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+                        <input type="hidden" id="additemid" name="itemid" value=""/>
+                        <div class="modal-body">
+                        <div id="modalhtm">
+
+                        </div>
+                        </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>

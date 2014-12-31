@@ -271,10 +271,8 @@
 
 			<br/>
 			<div class="well span4" id="step2">
-
+             
 				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
-				
-
 				<table class="table table-bordered stat">
 	   			<tr>
 	   			<td>1.</td>
@@ -331,9 +329,10 @@
 	   			</tr>
 	   			<?php }?>
 	    		</table>
-
+             
 
 				<?php if($this->session->userdata('usertype_id') == 2){?>
+			
 	    		<h3 class="box-header" style="width:94.5%">Companies in Your Network</h3>
 	    		<?php if(!$networkjoinedcompanies){?>
 					<span class="label label-important">No companies have joined your network.</span>
@@ -373,17 +372,34 @@
 					<?php }?>
 					</table>
 				<?php } ?>
-					<div> 
-    				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">
-    					Browse Suppliers
-    				</a>
+    				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">Browse Suppliers</a>
 				<?php } ?>
-				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a>&nbsp;<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
+			
+			 
+				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a><br><br>
+				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
 				<a class="btn btn-green"  href="javascript:void(0)" onclick="preloadoptions();">Invite Your Supplier</a>
+			
+							
+				<?php if(@$this->session->userdata('managedprojectdetails')){?>
+				<br><br>
+				     <h3 class="box-header" style="width:94.5%">Filter Recommended Suppliers</h3>
+				     <p><strong>What type of work will be performed on this job?</strong></p>
+			    	 <form method="post" action="<?php echo site_url('admin/dashboard');?>">
+						<table class="table table-bordered">
+						<?php $fd=explode(",",$filterdata->filter); ?>
+						<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
+  <input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$fd) { if(in_array($type->id,$fd)) echo 'checked="checked"'; else echo ''; } ?>>
+			      		<?php echo $type->title;?><br/><?php }?></td></tr>	
+			      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Filter Suppliers"></td></tr>									
+					<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('address')." </h4></td></tr>"; ?>	 
+					</table>
+					</form>
+		 		
+			   <?php } ?>	
 				<br><br>
 				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
 				<table class="table table-bordered">
-				<!--<tr><td colspan="2">Recommended Suppliers</td><td colspan="2"></td></tr>-->
 				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
 				 <?php if(count($suppliers)>0){ foreach ($suppliers as $supplier) { ?>
 				<tr>
@@ -396,37 +412,13 @@
 				</tr>
 				  <?php } } else{ ?>
 				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
-				</table>			
-				</div>
-				
-	    	</div>
-	    	
-			<?php if(@$this->session->userdata('managedprojectdetails')){?>
-			<br>
-	    	<div class="span7">
-	    	<form method="post" action="<?php echo site_url('admin/dashboard');?>">
-				<table>
-				<tr>
-				<th align="left"><h3 class="box-header">Filter Recommended Suppliers</h3></th>
-				</tr>
-				<tr><td>
-				What type of work will be performed on this job?
-				</td></tr>
-				<?php $fd=explode(",",$filterdata->filter); ?>
-				<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
-	<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$fd) { if(in_array($type->id,$fd)) echo 'checked="checked"'; else echo ''; } ?>>
-	      			<?php echo $type->title;?>
-	      			<br/>
-	      			<?php }?>
-	      		</td></tr>	
-	      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Filter Suppliers"></td></tr>			
-							
-			<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('address')." </h4></td></tr>"; ?>	    	
+				</table>
+						
+		</div>
 			
-			</table>
-			</form>
-			</div>
-			<?php } ?>	
+	    	
+	    	
+			
 			
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
@@ -448,7 +440,7 @@
 	    	</div>
 	    	<br>
 	    	<?php if(isset($promembers)) {?>
-	    	<div class="span7">
+	    	<div class="span7" style="width:50%;">
 	    	  <table class="table table-bordered">
 				<caption><strong>Project Team Members<strong></caption>
 				<tr><th>Username</th><th>Position</th></tr>
@@ -869,7 +861,7 @@
 	  			<td> <?php echo $supplier->title;?></td>
 	  			<td><?php echo $supplier->contact;?></td>
 	  			<td><?php echo $supplier->primaryemail;?></td>
-	  			<td><?php if($supplier->send!=1) { ?><input type="checkbox"  name="check[]" value="<?php echo $supplier->id;?>"><?php } else { echo "Already Invitation Send";} ?></td>
+	  			<td><?php if($supplier->send!=1) { ?><input type="checkbox"  name="check[]" value="<?php echo $supplier->id;?>"><?php } else { echo "Already Sent Invitation.";} ?></td>
 	  		</tr>
 	  		  <?php } ?>
 	  		

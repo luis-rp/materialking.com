@@ -570,7 +570,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		  <div class="control-group">
 		    <table class="table table-bordered">
 		    	<tr>
-		    		<th>Item Code</th>
+		    		<th>Item Codez</th>
 		    		<th>Item Name</th>
 		    		<th>Qty.</th>
 		    		<th>Unit</th>
@@ -842,7 +842,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 	    </div>
     </div>
    </div>
- </div>      
+ </div>  
 </section>
 
         <div id="minpricemodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">

@@ -52,6 +52,7 @@
 {
 	background: #BFEFFF;
 }
+
 </style>
 
 <script>
@@ -236,7 +237,8 @@ $(function() {
 			   <tr><td>Total:</td><td>$<span id="selectedtotal"></span></td>
 			   <tr><td colspan="2"><input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Award"/></td>
 		   </table>
-		   <div id="container-highchart" class="span4" style="min-width: 200px ;height: 200px; margin: 0 auto; width:60%"></div>
+		   
+		   <div id="container-highchart" class="span4" style="min-width: 200px ;height: 300px; margin-top: -70px; margin-left:auto; margin-right:auto; margin-bottom:0px;width:60%"></div>
 		   <script type="text/javascript">
 		   Array.prototype.max = function() {
 			   var max = this[0];
@@ -274,14 +276,14 @@ $(function() {
                    	<?php $highTotal =array_sum($maximum);?>
                    	var savepo = <?php echo $highTotal;?> + (tax*<?php echo $highTotal;?>/100) - parseFloat($("#selectedtotal").text());
                    	savepo = savepo.toFixed(2);
-                   	var textsubtitle1 = '<table class="table table-bordered"><tr><td>HI VS LOW SAVINGS = '+save+'$ </td></tr><tr><td>Split P.O. Savings = '+savepo+'$ </td></tr></table>';
+                   	var textsubtitle1 = '<table class="table table-bordered"><tr><td>HI VS LOW SAVINGS = ('+Math.abs(save)+'$) </td></tr><tr><td>Split P.O. Savings = ('+Math.abs(savepo)+'$) </td></tr>';
                    	var textsubtitle2 = "";
                    	<?php foreach($bids as $bid) if($bid->items){                   		
                    		if($maxcountitems > count($bid->items))
 			      		{?>
-			      			textsubtitle2 = '<br>*Low did not bid all items';
+			      			textsubtitle2 = '<tr><td>*Low did not bid all items</td></tr>';
 			      		<?php } } ?>
-                   	var textsubtitle = textsubtitle1 + textsubtitle2;	
+                   	var textsubtitle = textsubtitle1 + textsubtitle2 +'</table>';	
                    }else
                    var textsubtitle = "";
 
@@ -297,7 +299,7 @@ $(function() {
                 	   text: textsubtitle,
                        useHTML:true,
                        align: 'right',
-                       x: -50
+                       x: 5
                    },
                    xAxis: {
                        categories: ["Companies"],
@@ -337,7 +339,7 @@ $(function() {
                        align: 'right',
                        verticalAlign: 'top',
                        x: 0,
-                       y: 100,
+                       y: 200,
                        floating: false,
                        borderWidth: 1,
                        backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),

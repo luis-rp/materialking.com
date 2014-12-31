@@ -133,11 +133,11 @@
                                                     	<a href="<?php echo site_url('admin/quote/invitation/'.$inv->invitation);?>">
     										    			<span class="label label-success">BID</span>
     										    		</a>    										    		
-										    		<?php }elseif($inv->awardedtothis){?>
-                                                	<a href="<?php echo site_url('quote/track/'.$inv->quote.'/'.$inv->award);?>">
+										    		<?php } }elseif($inv->awardedtothis){?>
+                                                	<a href="<?php echo site_url('admin/quote/trackpurchaser/'.$inv->quote.'/'.$inv->award);?>">
 										    			<span class="label label-success">TRACK</span>
 										    		</a>
-										    		<?php } } ?>
+										    		<?php } ?>
 										    		<span class="label label-important"><?php echo $inv->status?></span>
 										    	</td>
                                                 <td class="v-align-middle">

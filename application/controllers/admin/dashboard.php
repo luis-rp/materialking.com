@@ -1014,22 +1014,38 @@ class Dashboard extends CI_Controller
 		$i=0;
 		foreach($data['suppliers'] as $supplier)
 		{
+			$mpid=$this->session->userdata('managedprojectdetails')->id;
+			$adid=$this->session->userdata('purchasingadmin');
 			$where="";
 			if(@$_POST['types'])
-			 {
+			 {			 	
 				$typestr = implode(",",$_POST['types']);
-				$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
-				$this->db->update('settings',array('filter'=>$typestr));
-				$data['filterdata']=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
+				$present=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
+				if(empty($present))
+				{					
+					$this->db->insert('industryfilter',array('purchasingadmin'=>$adid,'filter'=>$typestr,'proid'=>$mpid));					
+				}
+				else 
+				{
+					$this->db->where('purchasingadmin',$adid);
+					$this->db->where('proid',$mpid);
+					$this->db->update('industryfilter',array('filter'=>$typestr));					
+				}
+				
+				
+				$data['filterdata']=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
 				$where = " and ct.typeid in ({$typestr}) ";
 			 }
 			else 
 			{
-				if(isset($_POST['suppliersearch'])){
-			   $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
-			   $this->db->update('settings',array('filter'=>""));}	
+			   if(isset($_POST['suppliersearch']))
+			    {
+			       $this->db->where('purchasingadmin',$adid);
+			       $this->db->where('proid',$mpid);
+			       $this->db->update('industryfilter',array('filter'=>""));
+			    }	
 			   
-			   $data['filterdata']=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
+			  $data['filterdata']=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
 			   		if(isset($data['filterdata']->filter) && $data['filterdata']->filter!="")
 			   		{
 						$where = " and ct.typeid in ({$data['filterdata']->filter}) ";
