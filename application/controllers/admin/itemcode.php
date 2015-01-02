@@ -1703,7 +1703,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 			";
             //die($sqlavg);
-            $itemname = 'Itemcode :'.isset($itemnameResult[0]['itemcode']) ? $itemnameResult[0]['itemcode'] : '' ;
+            $itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
             $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
             $companyavgpricefordays = number_format($companyavgpricefordays, 2);
             if ($companyavgpricefordays > $avgforpricedays)
@@ -1847,10 +1847,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
-    function ajaxdetail ($id = 0)
+    function ajaxdetail ($id = 0,$bidid="")
     {
         $this->_set_fields();
-        $item = $this->itemcode_model->get_itemcodes_by_id($id);
+        $item = $this->itemcode_model->get_itemcodes_by_idandbidid($id,$bidid);
       //  echo '<pre>';print_r($item);die;
         $data['item'] = $item;
         $this->validation->id = $id;
@@ -1873,7 +1873,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $trend = 'NO DATA';
         }
         $data['itempricetrend'] = $trend;
-        $data['heading'] = 'Item Code Detail for '.$item->itemcode;
+        $data['heading'] = 'Item Code Detail for '.@$item->itemcode;
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/updateitemcode');
         $this->load->template('../../templates/admin/blank', $data);

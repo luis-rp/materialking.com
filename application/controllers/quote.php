@@ -693,8 +693,13 @@ class Quote extends CI_Controller
 			{
 				if($companyitem->itemcode)
 				$item->itemcode = $companyitem->itemcode;
+				else 
+				$item->itemcode = $orgitem->itemcode;
+				
 				if($companyitem->itemname)
 				$item->itemname = $companyitem->itemname;
+				else 
+				$item->itemname = $orgitem->itemname;
 				if(!$draftitems) $item->ea = $companyitem->ea;
 				$item->showinventorylink = false;
 				

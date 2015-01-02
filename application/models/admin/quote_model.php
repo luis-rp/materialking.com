@@ -1090,6 +1090,47 @@ class quote_model extends Model {
     }
     
     
+    
+       function getinvoicebybillnum($invoicenum,$invoicequote) {
+
+        $invoicesql = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice," 
+        			//."r.status, r.paymentstatus, r.paymenttype, r.refnum,"
+        			." b.customerduedate 
+				   FROM 				   
+				   " . $this->db->dbprefix('billitem') . " bi,
+				   " . $this->db->dbprefix('bill') . " b,
+				   " . $this->db->dbprefix('quote') . " q 
+				  WHERE bi.bill=b.id AND b.quote=q.id AND b.quote='{$invoicequote}' AND b.id='{$invoicenum}'
+				  GROUP BY b.id 
+				  ";
+        //echo $totalquery;
+        $invoicequery = $this->db->query($invoicesql);
+        $invoice = $invoicequery->row();
+		//echo "<pre>",print_r($invoice); die;
+       
+        $invoice->quote = $invoicequote;
+
+        $itemsql = "SELECT 
+					bi.*, c.title companyname, b.customerduedate     
+				  FROM 				 
+				  " . $this->db->dbprefix('billitem') . " bi,
+				   " . $this->db->dbprefix('bill') . " b,
+				  " . $this->db->dbprefix('company') . " c 
+				  WHERE b.id=bi.bill AND bi.company=c.id AND b.quote='{$invoicequote}'
+				  AND b.id='{$invoicenum}'
+				  ";
+
+        //echo $itemsql;
+        $invoiceitems = $this->db->query($itemsql)->result();
+
+        $invoice->items = array();
+        foreach ($invoiceitems as $invoiceitem) {
+                 
+            $invoice->items[] = $invoiceitem;
+        }
+        return $invoice;
+    }
+    
     function getbids($quote) {
         $this->db->where('quote', $quote);
         $query = $this->db->get('bid');

@@ -143,12 +143,14 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	}
 }
 
-function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel, quote)
+function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel, quote, isdefault)
 {
 	$("#pricelist").modal();
 	$("#itemnamebox").html('');
 	$("#pricelistitemcode").html(itemcode);
-	$("#pricelistitemname").html(itemname);
+	$("#pricelistitemname").html(itemname);	
+	if(isdefault == "false")
+	$("#defaultmessage").html('No Default item data has been set. Click the edit icon next to the item name  <br> Or visit your inventory tab to set defaults for this item');
 	price = Number(price);
 	tier0price = price.toFixed(2);
 	var selectbuttondefault = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier0\","+tier0price+","+itemid+","+purchasingadmin+")' value='Select'>";
@@ -386,7 +388,7 @@ function allowonlydigits(e,elementid,errorid){
 							    		<?php }?>
 							    		</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
-							    		<td><?php echo $originalitems[$q->itemid]->unit;?>z</td>
+							    		<td><?php echo $originalitems[$q->itemid]->unit;?></td>
 							    		<td>$<?php echo $originalitems[$q->itemid]->ea;?></td>
 							    		<td><?php echo round($originalitems[$q->itemid]->ea * $originalitems[$q->itemid]->quantity,2);?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->daterequested;?></td>
@@ -407,8 +409,8 @@ function allowonlydigits(e,elementid,errorid){
 							    		</td>
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
-							    			<?php if(@$q->companyitem->ea){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(@$q->companyitem->itemcode)?>','<?php echo htmlentities(@$q->companyitem->itemname)?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>')">
+							    			<?php if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->itemcode!="" || @$q->companyitem->itemcode!="") echo "true"; else echo "false"; ?>')">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -599,6 +601,7 @@ function allowonlydigits(e,elementid,errorid){
           <span id="pricelistitemcode"></span>
           (<span id="pricelistitemname"></span>)
           </h4>
+          <span id="defaultmessage"></span>
           <br>
         </div>
         <div class="modal-body">

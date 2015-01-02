@@ -1731,7 +1731,7 @@ class Company extends CI_Controller {
                       		$this->image_lib->initialize($config);
                       		$this->image_lib->resize();
                       	}
-            		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename,'categoty'=>$primarycategory));
+            		$this->db->insert('designbook', array('company' => $company->id, 'imagename' => $filename));
             		 $id = $this->db->insert_id();
                       }
             	 }

@@ -352,20 +352,20 @@ function delqtydiscount(id,itemid){
     	if ($('#check'+id).is(':checked') ) {
 			$('.check'+itemid).prop('checked', false);
 			$('#check'+id).prop('checked', true);
-    		$('#itemnamedata'+itemid).val(itemname);
-    		$('#selectoption'+itemid).val(manufacturerid);
-    		$('#part'+itemid).val(partnum);
-    		$('#price1'+itemid).val(listprice);
-    		$('#minqty'+itemid).val(minqty);
-			$('#itemcodedata'+itemid).val(itemcode);
+    		$('#itemnamedata'+itemid).val(itemname).trigger('change');
+    		$('#selectoption'+itemid).val(manufacturerid).trigger('change');
+    		$('#part'+itemid).val(partnum).trigger('change');
+    		$('#price1'+itemid).val(listprice).trigger('change');
+    		$('#minqty'+itemid).val(minqty).trigger('change');
+			$('#itemcodedata'+itemid).val(itemcode).trigger('change');
     	}else{
 
-    		$('#itemnamedata'+itemid).val('');
-    		$('#selectoption'+itemid).val('');
-    		$('#part'+itemid).val('');
-    		$('#price1'+itemid).val('');
-    		$('#minqty'+itemid).val('');
-    		$('#itemcodedata'+itemid).val('');
+    		$('#itemnamedata'+itemid).val('').trigger('change');
+    		$('#selectoption'+itemid).val('').trigger('change');
+    		$('#part'+itemid).val('').trigger('change');
+    		$('#price1'+itemid).val('').trigger('change');
+    		$('#minqty'+itemid).val('').trigger('change');
+    		$('#itemcodedata'+itemid).val('').trigger('change');
     	}
     }
 

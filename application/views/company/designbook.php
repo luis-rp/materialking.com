@@ -382,7 +382,7 @@ $(function() {
     function fetchItem(codeid)
     {    	
     	var itemcode = $(codeid).val();
-    	$('#itemcodedetails').css('display:block');
+    	$('#itemcodedetails').css('display','block');
     	if($('#taghidid').val()=="")
     		alert("Please select any tag first");
     		
@@ -401,8 +401,8 @@ $(function() {
     			console.log(obj);
     			if(obj.itemname !== undefined)
     			{
-    				$('#itemcodedetails').css('display:block');
-    				$('#itemcodedetails').html('<table style="width:100px;"><tr><td>Itemcode:'+obj.itemcode+'</td></tr><tr><td>Itemname:'+obj.itemname+'</td></tr><tr><td>Price:'+obj.ea+'</td></tr><tr><td><a target="blank" href="<?php echo base_url()?>site/item/'+obj.url+'">ViewItem</a></td></tr><tr><td><input type="button" value="Save" onclick="saveitemtotag('+obj.id+');" /></td></tr></table>');    							$('#itemcodedetails').css('display:block');
+    				$('#itemcodedetails').css('display','block');
+    				$('#itemcodedetails').html('<table style="width:100px;"><tr><td>Itemcode:'+obj.itemcode+'</td></tr><tr><td>Itemname:'+obj.itemname+'</td></tr><tr><td>Price:'+obj.ea+'</td></tr><tr><td><a target="blank" href="<?php echo base_url()?>site/item/'+obj.url+'">ViewItem</a></td></tr><tr><td><input type="button" value="Save" onclick="saveitemtotag('+obj.id+');" /></td></tr></table>');    							$('#itemcodedetails').css('display','block');
     			}
     		});
     	}
@@ -488,7 +488,9 @@ $(function() {
                         <div class="controls">
                             <select style="width:400px;" multiple id="category[<?php echo $items->id;?>]" name="category[<?php echo $items->id;?>]">
                             	<?php foreach($categories as $cat){?>
-                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
+                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" 
+				                 <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>>
+                            	 <?php echo htmlentities($cat->catname);?></option>
                             	<?php  } ?>
                             </select>
                             <input type="hidden" name="designcatid[]" value="<?php echo $items->id;?>"/>
@@ -539,7 +541,7 @@ $(function() {
 			<img id="pic1"  style="margin-left:27%;"/>
 			  <input type="hidden" name="taghidid" id="taghidid"/>
 			  <input type="hidden" id="pictureid" name="pictureid"/> 
-			 <div id="tagbox"></div>
+			  <div id="tagbox"></div>
 		</div> 
 		
 		<div  style="width:500px;height:300px;overflow-y:scroll;padding-left:150px;">
@@ -564,7 +566,7 @@ $(function() {
         <div class="modal-footer">          
           <!-- <button data-dismiss="modal" class="btn btn-default" type="button">Close</button> -->
         </div>
-        <div style="margin-left:85%;margin-bottom:10px;">          
+        <div style="margin-left:85%;margin-bottom:10px;height:300px;">          
            <button data-dismiss="modal" class="btn btn-primary" type="button">Save Changes & Close</button> 
         </div>
       </div>

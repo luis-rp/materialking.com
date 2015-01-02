@@ -172,9 +172,9 @@ function showOriginal(quote,itemcode)
     	$("#itemdetails").html(data);
     });
 }
-function viewitems(itemid)
+function viewitems(itemid, bidid)
 {
-	var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+	var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid+'/'+bidid;
 	//alert(quoteid);
     $("#quoteitems").html('loading ...');
     $("#itemsmodal").modal();
@@ -465,7 +465,7 @@ $(function() {
 				    		</td>
 				    		<?php }?>
 				    		<td>
-				    			<?php echo $q->substitute?$q->itemcode: "<a href='javascript:void(0)' onclick=\"viewitems('$q->itemid')\">$q->itemcode</a>"; ?>
+				    			<?php echo $q->substitute?$q->itemcode: "<a href='javascript:void(0)' onclick=\"viewitems('$q->itemid','$q->bid')\">$q->itemcode</a>"; ?>
 				    			<?php if($q->substitute){?><small><span class="label label-red">Substitute</span></small><?php }?>
 				    		</td>
 				    		<td><?php echo $q->itemname;?></td>

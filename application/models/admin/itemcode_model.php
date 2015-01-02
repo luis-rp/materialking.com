@@ -666,6 +666,60 @@ class itemcode_model extends Model {
     }
 
 
+        function get_itemcodes_by_idandbidid($id,$bidid) {
+        $this->db->where('id', $id);
+        $query = $this->db->get('item');
+        
+        if($query->num_rows <= 0){
+        $this->db->where('itemid', $id)->where('bid', $bidid);
+        $query = $this->db->get('biditem');
+        }
+        
+        if ($query->num_rows > 0) {
+            $ret = $query->row();
+            $ret->minprices = $this->getminimumprices($id);
+            $ret->poitems = $this->getpoitems($id);
+            $ret->tierprices = $this->gettierprices($id);
+
+
+            // LAST QUOTED DATE
+            $lastsql = "SELECT a.awardedon lastdate
+				FROM " . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a
+				WHERE a.id=ai.award AND ai.itemcode='" . $ret->itemcode . "' AND ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
+				ORDER BY b.submitdate DESC LIMIT 0,1
+				";
+
+            $lastsql = "SELECT b.submitdate lastdate
+				FROM " . $this->db->dbprefix('biditem') . " bi, " . $this->db->dbprefix('bid') . " b
+				WHERE b.id=bi.bid AND bi.itemcode='" . $ret->itemcode . "' AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'
+				ORDER BY b.submitdate DESC LIMIT 0,1
+				";
+
+            $lastquery = $this->db->query($lastsql);
+            if ($lastquery->num_rows > 0)
+                $ret->lastquoted = $lastquery->row()->lastdate;
+            else
+                $ret->lastquoted = '';
+
+
+            // TARGET PRICE
+            $sqlmin = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . "
+						WHERE itemcode='" . $ret->itemcode . "' AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
+            $minprice = $this->db->query($sqlmin)->row()->minprice;
+            $sqlconfig = "SELECT * FROM " . $this->db->dbprefix('settings') . " WHERE id='1'";
+            $queryconfig = $this->db->query($sqlconfig);
+            $pricepercent = $queryconfig->row()->pricepercent;
+
+            $ret->targetprice = $minprice - ($minprice * $pricepercent / 100);
+
+
+            //$ret->product_categories = $this->get_product_categories($id);
+
+            return $ret;
+        }
+        return NULL;
+    }
+    
 
      function get_itemcodes_by_id2($id, $quantity) {
         $this->db->where('id', $id);

@@ -284,6 +284,14 @@ $per .='%';
         $("#invoicequote").val(invoicequote);	
         $("#invoiceform").submit();
     }
+    
+    function showBill(invoiceid,invoicequote){
+    	
+    	$("#billid").val(invoiceid);
+        $("#billquote").val(invoicequote);	
+        $("#billform").submit();
+    }   
+    
 </script>
 <script>
 	function showfeedbackform(companyid, companyname)
@@ -986,6 +994,73 @@ function showbillpdf(data)
 
 
             <?php } ?>
+            
+            
+            
+               <?php if ($bills) { ?>
+                <div class="control-group">
+                    <div class="controls">
+                         <h3 class="box-header">
+                            Existing Bills
+                        </h3>
+                        <br/>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Bill Name #</th>
+                                <th>Total Cost</th>                               
+                                <th>Payment</th>
+                                <th>DUE DATE</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                                <?php
+								$f_total=0;
+                                $p_total=0;
+                                $u_total=0;
+                                foreach ($bills as $invoice) {?>
+                                <tr>
+                                    <td><?php echo $invoice->billname; ?></td>
+                                    <td><?php echo "$ ".$invoice->total; ?></td>
+                                    <td><?php //echo $invoice->paymentstatus; ?></td>
+                                    <td><?php if($invoice->customerduedate){echo date("m/d/Y", strtotime($invoice->customerduedate));}else{ echo "No Date Set";} ?></td>
+                                    <td><?php // echo $invoice->status; ?></td>
+                                    <td>
+                                        <a href="javascript:void(0);" onclick="showBill('<?php  echo $invoice->id; ?>','<?php echo $invoice->quote; ?>');">
+                                            <span class="icon-2x icon-search"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                 <?php
+                                /*$f1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                $f_total +=$f1_total;
+                                if($invoice->paymentstatus=='Paid')
+                                {
+                                   $p1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                   $p_total +=$p1_total;
+                                }
+                                 if($invoice->paymentstatus=='Unpaid')
+                                {
+                                	 $u1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                     $u_total +=$u1_total;
+                                }*/
+
+
+                                } ?>
+                               <tr><td style="text-align:right;">Total:</td><td><?php // echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Paid:</td><td><?php // echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php // echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                        </table>
+                        <form id="billform" method="post" action="<?php echo site_url('admin/quote/bill'); ?>">
+                            <input type="hidden" id="billid" name="billid"/>
+                            <input type="hidden" id="billquote" name="billquote" />
+                        </form>
+                    </div>
+                </div>
+
+
+            <?php } ?>
+            
+            
             <?php
             if ($recsum == $qntsum) {
                 $class = "complete";

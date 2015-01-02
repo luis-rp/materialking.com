@@ -2537,7 +2537,7 @@ class site extends CI_Controller
 
     			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
-    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div></div>';
     			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
 
     			$itemdata = "";
@@ -2561,7 +2561,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
     				
     				if($_POST['view']=='profile'){
     				

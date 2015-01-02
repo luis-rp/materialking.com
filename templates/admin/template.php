@@ -44,24 +44,23 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <meta name="viewport" content="width=device-width">
 
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo-init.min.js" type="text/javascript"></script>
-	<?php if ($_SERVER['SERVER_NAME'] != 'localhost' || 0) { ?>
-		    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
-	<?php } ?>
+<?php if ($_SERVER['SERVER_NAME'] != 'localhost' || 0) { ?>
+            <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700" rel="stylesheet" type="text/css">
+<?php } ?>
 
 		
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
-        <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
-        <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min2.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
+         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tour.min.css" media="all" rel="stylesheet" type="text/css" id="boostrap-tour">
+        <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tagsinput.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-tagsinput">
         <link href="<?php echo base_url(); ?>templates/admin/css/jquerytour.css" media="all" rel="stylesheet" type="text/css">
-       
         <script src="<?php echo base_url(); ?>templates/admin/js/jquery.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/modernizr-jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+          <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 
         <style type="text/css">
             #theme_switcher
@@ -404,23 +403,18 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
     <body>
 
-       <header class="navbar navbar-fixed-top" id="main-navbar">
+        <header class="navbar navbar-fixed-top" id="main-navbar">
             <div class="navbar-inner">
-     <div class="container" style="width:100%;">
-              
+
+                <div class="nav-collapse collapse" >
                     <a href="#" class="logo"><img src="<?php echo base_url(); ?>templates/admin/images/smalllogo.png" alt="EZPZP"></a>
-                    <a style="display:block !important" class="btn nav-button collapsed" data-toggle="collapse" data-target=".nav-collapse" href="#">
+                    <a class="btn nav-button collapsed" data-toggle="collapse" data-target=".nav-collapse" href="<?php echo site_url('site/items'); ?>">
                         <span class="icon-reorder"></span>
                     </a>
-					<div class="nav-collapse collapse">
-                     <ul class="nav">
-						<li class="active">
-							<a href="#">Home</a>
-							</li>
-					 
-					 <?php if (@$mp->id) { ?>
-                    
-						<li class="divider-vertical"></li>
+
+                     <?php if (@$mp->id) { ?>
+                    <ul class="nav">
+                    <li class="divider-vertical"></li>
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Quick Order <i class=" icon-caret-down"></i></a>
 							<ul class="dropdown-menu">
@@ -428,11 +422,13 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 								<li><a href="<?php echo site_url('admin/quote/add/' . $this->session->userdata('managedproject'));?>/Direct">Add Purchase Order</a></li>
 							</ul>
 						</li>
-					
-					<?php } ?>
 					</ul>
-                        <ul class="nav pull-right">
-							
+					<?php } ?>
+
+
+
+                    <div style="float: right;padding-top:0px;padding-right:10px;">
+                        <ul class="messages">
                             <li>
                                 <a href="<?php echo site_url('admin/quote/calendar'); ?>">
                                     <i class="icon-calendar"></i>PO Calendar
@@ -441,7 +437,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                             <?php if ($this->session->userdata('usertype_id') > 1) { ?>
                             <li>
-                            	<a href="<?php echo base_url(); ?>index.php/admin/event"><span class="icon-calendar"></span>Events</a>
+                            	<a href="<?php echo base_url(); ?>admin/event"><span class="icon-calendar"></span>Events</a>
                             </li>
                             <?php }?>
                                 <?php
@@ -487,17 +483,18 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 							&nbsp;
 							<?php echo $this->session->userdata('fullname'); ?> <i class=" icon-caret-down"></i></a>
 							<ul class="dropdown-menu">
-								 <li><a href="<?php echo base_url(); ?>index.php/admin/admin/changepwd"><span class="icon-key1"></span> &nbsp; Change Password</a></li>
-                                    <li><a href="<?php echo base_url(); ?>index.php/admin/admin/profile"><span class="icon-edit1"></span> &nbsp; Edit Profile</a></li>
+								 <li><a href="<?php echo base_url(); ?>admin/admin/changepwd"><span class="icon-key1"></span> &nbsp; Change Password</a></li>
+                                    <li><a href="<?php echo base_url(); ?>admin/admin/profile"><span class="icon-edit1"></span> &nbsp; Edit Profile</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="<?php echo base_url(); ?>index.php/admin/login/logout"><span class="icon-off"></span> &nbsp; Logout</a>
+                                    <li><a href="<?php echo base_url(); ?>admin/login/logout"><span class="icon-off"></span> &nbsp; Logout</a>
                                     </li>
 							</ul>
 						</li>
                         </ul>
-						 <ul class="nav pull-right">
-						 <li>
-                         <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
+                    </div>
+
+                    <div class="input-append"  style="float: right;padding-right: 20px;">
+                        <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
                             <input type="text" style="width:150px;"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
                             <input type="hidden" id="searchponum" name="searchponum" value="<?php echo @$_POST['globalsearch'] ?>"/>
                             <input type="hidden" id="searchitemname" name="searchitemname" value="<?php echo @$_POST['globalsearch'] ?>"/>
@@ -506,24 +503,21 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <button class="btn dropdown-toggle btn btn-primary" data-toggle="dropdown">Action<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <?php if (@$mp->id) { ?>
-                                    <li><a class="myLink" onClick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>index.php/admin/quote/index/<?php echo $mp->id; ?>">P.O. #</a></li>
+                                    <li><a class="myLink" onClick="$('#searchponum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/index/<?php echo $mp->id; ?>">P.O. #</a></li>
                                     <?php } ?>
-                                    <li><a class="myLink" onClick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>index.php/admin/quote/invoices">Invoice</a></li>
-                                    <li><a class="myLink" onClick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>index.php/admin/itemcode">Item</a></li>
+                                    <li><a class="myLink" onClick="$('#searchinvoicenum').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/quote/invoices">Invoice</a></li>
+                                    <li><a class="myLink" onClick="$('#searchitemname').val($('#globalsearch').val());" href="<?php echo base_url(); ?>admin/itemcode">Item</a></li>
                                 </ul>
                             </div>
                         </form>
-						</li>
-						</ul>
 
                     </div>
 
                     <div class="dropdown" style="float: left">
 
                     </div>
-            
+                </div>
             </div>
-			</div>
         </header>
 
         <div style="clear: both"></div>
@@ -531,53 +525,53 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
             <div id="left-panel-content" style="padding-top: 0px;">
                 <ul>
                    <li  <?php if ($menu == 'dashboard') { ?>class="active"<?php } ?>>
-                   		<a href="<?php echo base_url(); ?>index.php/admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a>
+                   		<a href="<?php echo base_url(); ?>admin/dashboard"><span class="icon-dashboard"></span>Dashboard</a>
                    </li>
 
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);  ?>						
-    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billing' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                                <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
 
                             	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">
-                                	<a href="<?php echo base_url(); ?>index.php/admin/project" >
+                                	<a href="<?php echo base_url(); ?>admin/project" >
                                     	<i class="icon-check"></i>
                                     	Projects
                                 	</a>
                             	</li>
 
                                 <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?> id="step9">
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/costcode"><i class="icon-money"></i>&nbsp;&nbsp;Cost Codes</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/costcode"><i class="icon-money"></i>&nbsp;&nbsp;Cost Codes</a>
                                 </li>
                                 <?php if ($this->session->userdata('usertype_id') == 1) { ?>
                                 <!-- <li <?php if ($menu == 'manufacturer') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/manufacturer"><i class="icon-check"></i>&nbsp;&nbsp;Manufacturers</a>
                                 </li> -->
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/itemcode"><i class="icon-check"></i>&nbsp;&nbsp;Items</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-check"></i>&nbsp;&nbsp;Items</a>
                                 </li>
                                 <li <?php if ($menu == 'company') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
                                 </li>
                                 <li <?php if ($menu == 'catcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
                                 </li>
                                  <li <?php if ($menu == 'contractcatcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/contractcatcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Contract Category</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractcatcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Contract Category</a>
                                 </li>
                                 <li <?php if ($menu == 'type') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>
                                 </li>
                                 <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
                                 </li>
                                 <li <?php if ($menu == 'manage_network') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/manage_network"><i class="icon-th-list"></i>&nbsp;&nbsp;Manage Network Connection</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/manage_network"><i class="icon-th-list"></i>&nbsp;&nbsp;Manage Network Connection</a>
                                 </li>
                                 <?php } else { ?>
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>index.php/admin/itemcode"><i class="icon-briefcase"></i>&nbsp;&nbsp;Items</a>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-briefcase"></i>&nbsp;&nbsp;Items</a>
                                 </li>
                                 <?php } ?>
 
@@ -590,14 +584,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <?php } ?>
 
                             	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
-                                	<a href="<?php echo base_url(); ?>index.php/admin/admin/index">
+                                	<a href="<?php echo base_url(); ?>admin/admin/index">
                                 		<i class="icon-user"></i>
                                 		Manage Users
                                 	</a>
                             	</li>
 
                             	<li <?php if ($menu == 'event') { ?>class="active"<?php } ?>>
-                                	<a href="<?php echo base_url(); ?>index.php/admin/event">
+                                	<a href="<?php echo base_url(); ?>admin/event">
                                 		<i class="icon-user"></i>
                                 		Events
                                 	</a>
@@ -613,9 +607,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     <span class="icon-legal"></span>QUOTE/PO MANAGEMENT
                                 </a>
                             </li>
-                            <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>index.php/admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
-                            <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>index.php/admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
-                            <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>index.php/admin/report"><span class="icon-file"></span>Report</a></li>
+                            <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
+                            <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
+                            <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
 
                         <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                             <li <?php if ($menu == 'order') { ?>class="active"<?php } ?>>
@@ -623,6 +617,19 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     <span class="icon-reorder"></span>Store Purchases
                                 </a>
                             </li>
+                            
+                            <li <?php if ($menu == 'quote' && $function == 'receive') { ?>class="active"<?php } ?>>
+                                <a href="<?php echo site_url('admin/quote/receive/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
+                                    <span class="icon-cog"></span>RECEIVE
+                                </a>
+                        </li>
+                        
+                        <li <?php if ($menu == 'quote' && $function == 'billing') { ?>class="active"<?php } ?>>
+                                <a href="<?php echo site_url('admin/quote/billings/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
+                                    <span class="icon-hand-down"></span>BILLING
+                                </a>
+                        </li>
+                            
                         <?php } else { ?>
 
 
@@ -633,21 +640,14 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                             </li>
                         <?php } ?>
-                        
-                        	<li <?php if ($menu == 'quote' && $function == 'receive') { ?>class="active"<?php } ?>>
-                                <a href="<?php echo site_url('admin/quote/receive/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
-                                    <span class="icon-cog"></span>RECEIVE
-                                </a>
-                        	</li>
-                        
                           <?php } ?>
                         <li <?php if ($menu == 'settings') { ?>class="active"<?php } ?>>
-                        	<a href="<?php echo base_url(); ?>index.php/admin/settings"><span class="icon-cog"></span>App Settings</a>
+                        	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
                         
                         <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
-                        	<a href="<?php echo base_url(); ?>index.php/admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
-                        </li>
+                        	<a href="<?php echo base_url(); ?>admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
+                        </li>               
                         
                           <?php } else { ?>
                             <?php if ($mp) { ?>
@@ -665,7 +665,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <a href="<?php echo site_url('admin/backtrack/') ?>">
                                     <span class="icon-random"></span>BACKORDER
                                 </a>
-                            </li>
+                            </li>                                                
                             <?php } ?>
                         <?php } ?>
                 </ul>
