@@ -407,9 +407,13 @@ class Quote extends CI_Controller
 			redirect('quote/invitations');
 		}
 		
-		$this->db->where('company',$company->id);
+		/*$this->db->where('company',$company->id);
 		$this->db->where('quote',$quote->id);
-		$quoteitems = $this->db->get('quoteitem')->result();
+		$quoteitems = $this->db->get('quoteitem')->result();*/
+		
+		$sql = "SELECT qi.*, ci.id as cid,  ci.itemid as citemid, ci.itemcode as citemcode, ci.itemname as citemname, ci.ea as cea, ci.qtyavailable as cqtyavailable, ci.minqty as cminqty, ci.price as cprice FROM ".$this->db->dbprefix('quoteitem'). " qi left join ". $this->db->dbprefix('companyitem') ." ci on qi.itemid = ci.itemid WHERE qi.quote='$quote->id' AND qi.company='$company->id' group by qi.itemid";		 
+		$query = $this->db->query($sql);
+        $quoteitems = $query->result();
 		
 		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
 		

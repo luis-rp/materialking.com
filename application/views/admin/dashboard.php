@@ -392,7 +392,7 @@
   <input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$fd) { if(in_array($type->id,$fd)) echo 'checked="checked"'; else echo ''; } ?>>
 			      		<?php echo $type->title;?><br/><?php }?></td></tr>	
 			      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Filter Suppliers"></td></tr>									
-					<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('address')." </h4></td></tr>"; ?>	 
+					<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('managedprojectdetails')->address." </h4></td></tr>"; ?>	 
 					</table>
 					</form>
 		 		

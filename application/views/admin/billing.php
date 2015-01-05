@@ -32,12 +32,13 @@
     $(document).ready(function() {
         $('.datefield').datepicker();
     });
-    function showInvoice(invoicenum,invoicequote)
-    {
-        $("#invoicenum").val(invoicenum);
-        $("#invoicequote").val(invoicequote);	
-        $("#invoiceform").submit();
-    }
+    
+    function showBill(invoiceid,invoicequote){
+    	
+    	$("#billid").val(invoiceid);
+        $("#billquote").val(invoicequote);	
+        $("#billform").submit();
+    }   
     
     function showContractInvoice(invoicenum,invoicequote)
     {
@@ -58,7 +59,7 @@
             $('#message_div').html(data);
         });
     }
-    function update_invoice_payment_status(idnumber)
+    function update_bill_payment_status(idnumber)
     {
         var invoice_payment_status_value = $('#invoice_payment_' + idnumber + " option:selected").val();
         var invoice_payment_type_value = $('#invoice_paymenttype_' + idnumber + " option:selected").val();
@@ -69,7 +70,7 @@
 			return false;
 		if(invoice_payment_type_value=='')
 			return false;
-        var url = "<?php echo base_url("admin/quote/update_invoice_payment_status");?>";
+        var url = "<?php echo base_url("admin/quote/update_bill_payment_status");?>";
         //alert(invoice_payment_status_value);
         $.ajax({
             type: "POST",
@@ -179,34 +180,35 @@ function jq( myid ) {
             </div>
             <div class="datagrid-example">
             	<div>
-                    <form id="invoiceform" class="form-inline" style="padding:0px; margin:0px" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
-                        <input type="hidden" id="invoicenum" name="invoicenum"/>                        
-                        <input type="hidden" id="invoicequote" name="invoicequote"/>
-                    </form>
-                    <form class="form-inline" action="<?php echo site_url('admin/quote/invoices') ?>" method="post">
+                     <form id="billform" method="post" action="<?php echo site_url('admin/quote/bill'); ?>">
+                            <input type="hidden" id="billid" name="billid"/>
+                            <input type="hidden" id="billquote" name="billquote" />
+                     </form>
+                        
+                    <form class="form-inline" action="<?php echo site_url('admin/quote/billings') ?>" method="post">
                         Bill#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>
                             &nbsp;&nbsp;
-                       <!-- From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
+                       From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
-                        To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>-->
+                        To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         Customer:
-                        <select id="searchcompany" name="searchbycompany" style="width: 120px;">
+                        <select id="searchcustomer" name="searchcustomer" style="width: 120px;">
                             <option value=''>All Customers</option>
-                            <?php foreach($bills as $item) { ?>
-                                <option value="<?php echo $item->id ?>"
+                            <?php foreach($customers as $cust) { ?>
+                                <option value="<?php echo $cust->id ?>"
                                 <?php
-                                if (@$_POST['searchbycompany'] == $item->id) {
+                                if (@$cust->id == @$_POST['searchcustomer']) {
                                     echo 'SELECTED';
                                 }
                                 ?>
                                         >
-                                <?php echo $item->customername ?>
+                                <?php echo $cust->name ?>
                                 </option>
 <?php } ?>
                         </select>
                         &nbsp;&nbsp;
-                       <!-- Status:
+                       Status:
                         <select id="searchstatus" name="searchstatus" style="width: 100px;">
                             <option value=''>All</option>
                             <option value="Pending" <?php if (@$_POST['searchstatus'] == 'Pending') { echo 'SELECTED'; } ?>>Pending</option>
@@ -221,13 +223,13 @@ function jq( myid ) {
                            <option value="Requested Payment" <?php if (@$_POST['searchpaymentstatus'] == 'Requested Payment') { echo 'SELECTED'; } ?>>Requested Payment</option>
                             <option value="Unpaid" <?php if (@$_POST['searchpaymentstatus'] == 'Unpaid') { echo 'SELECTED'; } ?>>Unpaid</option>
                         </select>
-                        &nbsp;&nbsp;-->
-                      <!--  <input type="submit" value="Filter" class="btn btn-primary"/>-->
-                       <!-- <a href="<?php echo site_url('admin/quote/invoices'); ?>">
+                        &nbsp;&nbsp;
+                      <input type="submit" value="Filter" class="btn btn-primary"/>
+                       <a href="<?php echo site_url('admin/quote/billings'); ?>">
                             <input type="button" value="Show All" class="btn btn-primary"/>
-                        </a>-->
+                        </a>
                     </form>
-                    <?php if (!@$bills) echo 'No Billing Data Found.'; ?>
+                    <?php if (!@$items) echo 'No Billing Data Found.'; ?>
             	</div>
                 <div>
                       
@@ -239,9 +241,9 @@ function jq( myid ) {
                     			<th>Sent Date</th>
                     			<th>Set Due Date</th>
                     			<th>Total Cost</th>
-                    			<!--<th>Payment</th>-->
-                    			<th>Verification</th>
-                    			<th>View Bill</th>
+                    			<th>Payment</th>
+                    			<!-- <th>Verification</th> -->
+                    			<th>Details</th>
                     		</tr>
                     	</thead>
                     	<tbody>
@@ -254,32 +256,32 @@ function jq( myid ) {
                     		$daysold60 = array();
                     		$daysold90 = array();
                     		$daysold120 = array();*/
-                    		//echo "<pre>",print_r($items);
-                    		foreach($bills as $item){ $i++;
+                    		//echo "<pre>",print_r($items); die;
+                    		foreach($items as $item){ $i++;
                     		?>
                     		<tr>
                     			<td><?php echo $item->customername;?></td>
                     			<td id="invoicenumberid_<?php echo $i;?>"><?php echo $item->billname;?></br>
-                    		   <!-- <a href="javascript:void(0)" onclick="showreport('<?php echo $item->billname;?>','<?php echo $i;?>');">Expand</a>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->billname;?>"/>-->
+                    		   <!-- <a href="javascript:void(0)" onclick="showreport('<?php echo $item->billname;?>','<?php echo $i;?>');">Expand</a>-->						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->id;?>"/>
                     			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->billedon));?></td>
                     			<td><?php if($item->customerduedate){echo date("m/d/Y", strtotime($item->customerduedate));}else{ echo "No Date Set";} ?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->total;?></td>
-                    			<!--<td>
+                    			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>
-                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo $item->totalprice?>');">
+                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo $item->total;?>');">
                     				<option value="">Select Payment Type</option>
-                    				<?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
+                    				<!-- <?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                     				<option <?php echo $item->paymenttype=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>
-                    				<?php }?>
+                    				<?php }?> -->
                     				<option <?php echo $item->paymenttype=='Cash'?'SELECTED':'';?> value="Cash">Cash</option>
                     				<option <?php echo $item->paymenttype=='Check'?'SELECTED':'';?> value="Check">Check</option>
                     				</select>
                     				<input type="hidden" id="hiddenpaytype<?php echo $i;?>" name="hiddenpaytype<?php echo $i;?>" value="<?php echo $item->paymenttype;?>" />
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
-                    				<!--<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
-                    				<button onclick="update_invoice_payment_status('<?php echo $i;?>')">Save</button>
+                    				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
+                    				<button onclick="update_bill_payment_status('<?php echo $i;?>')">Save</button>
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
                     				<?php }?>
@@ -291,9 +293,9 @@ function jq( myid ) {
                     				on <?php echo $item->refnum;?>
                     				</i>
                     				<?php }?>
-                    			</td>-->
-                    			<td>&nbsp;</td>
-                    			<td>View</td>
+                    			</td>
+                    			<!-- <td>&nbsp;</td> -->
+                    			<td><?php echo $item->actions;?></td>
                     		</tr>
                     		<!--<?php
                     		$finaltotal += str_replace( ',', '', $item->totalprice);

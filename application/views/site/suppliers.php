@@ -81,10 +81,10 @@
 							});									
 							
 						}
-					},
-					error: function(x,y,z){
-						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
 					}
+					/*error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}*/
 				});
 	
 	}

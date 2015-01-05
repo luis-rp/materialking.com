@@ -138,7 +138,7 @@ function selectall(sel)
 											Quote#
 							    		</td>
 							    		<td colspan="7">
-											<input type="text" name="quotenum" value="<?php echo $quotenum?>"/>
+											<input type="text" name="quotenum" value="<?php echo $quotenum?>" required/>
 							    		</td>
 							    	</tr>
 							    	<tr>

@@ -1003,7 +1003,7 @@ class quote_model extends Model {
         $quotequery = $this->db->query($quotesql);
         $invoice->quote = $quotequery->row('quote');
 
-        $itemsql = "SELECT 
+       /* $itemsql = "SELECT 
 					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
 					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate   
 				  FROM 
@@ -1013,6 +1013,19 @@ class quote_model extends Model {
 				   " . $this->db->dbprefix('award') . " a,
 				  " . $this->db->dbprefix('company') . " c
 				  WHERE r.awarditem=ai.id AND r.awarditem = s.awarditem AND r.invoicenum = s.invoicenum AND ai.company=c.id AND ai.award=a.id AND a.quote='{$invoicequote}'
+				  AND r.invoicenum='{$invoicenum}'
+				  ";*/
+        
+         $itemsql = "SELECT 
+					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate   
+				  FROM 
+				  " . $this->db->dbprefix('received') . " r  
+				    LEFT JOIN " . $this->db->dbprefix('shipment') . " s ON r.awarditem = s.awarditem AND r.invoicenum = s.invoicenum
+				    LEFT JOIN " . $this->db->dbprefix('awarditem') . " ai ON r.awarditem=ai.id
+				    LEFT JOIN " . $this->db->dbprefix('award') . " a ON ai.award=a.id
+				    LEFT JOIN " . $this->db->dbprefix('company') . " c ON ai.company=c.id
+				  WHERE  a.quote='{$invoicequote}'
 				  AND r.invoicenum='{$invoicenum}'
 				  ";
 

@@ -201,18 +201,20 @@ class quote extends CI_Controller
                 $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
-
+					
+                	$quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status);
+                	
                 	$shipmentsquery = "SELECT s.quantity FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('item')." i on s.itemid=i.id WHERE quote='{$quote->id}' and s.accepted = 0";
         			$shipment = $this->db->query($shipmentsquery)->result();
                 	if($shipment)
                 	  {  
                 		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
                 		   {               	
-                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
+                            $quote->status = $quote->status .'<br> *Billing(s) Pending Acceptance'; 
                 	       }
                         else 
                            {
-                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance';
+                    	    $quote->status = $quote->status .'<br> *Shipment(s) Pending Acceptance';
                            }
                 	  }
                 }
@@ -5098,6 +5100,10 @@ class quote extends CI_Controller
         $data['bills'] = $this->db->select('sum(totalprice) as total, bill.billname, bill.id, bill.customerduedate, bill.quote')
 		             ->from('bill')->join('billitem','bill.id=billitem.bill','left')
 		             ->where('bill.quote',$qid)->group_by('billitem.bill')->get()->result();
+		             
+		$data['customerdata'] = $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'))				
+				->get('customer')->result();             
+		             
 		//echo "<pre>",print_r($data['bills']); die;            
         $this->load->view('admin/track', $data);
     }
@@ -9497,7 +9503,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     
     
     function createbill(){
-    	
+    	//echo "<pre>",print_r($_POST); die;
     	if(!$_POST)
             die;
 
@@ -9550,13 +9556,22 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	$awardedbid = $this->quote_model->getawardedbidquote($_POST['customerquoteid']);
 		// echo "<pre>",print_r($awardedbid->items); die;
 		
+					if(!@$_POST['customerid'] || @$_POST['customerid']==""){
+						$custarray = array();
+						$custarray['name'] = @$_POST['customername'];
+						$custarray['email'] = @$_POST['customeremail'];
+						$custarray['address'] = @$_POST['customeraddress'];
+						$custarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+						$this->quote_model->db->insert('customer', $custarray);
+						$custid = $this->quote_model->db->insert_id();	
+					}else 
+						$custid = $_POST['customerid'];
+						
 					$billarray = array();    		
 					$billarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');		
                     $billarray['quote'] = $awardedbid->quote;                
                     $billarray['billname'] = @$_POST['billname'];    
-                    $billarray['customername'] = @$_POST['customername'];
-                    $billarray['customeremail'] = @$_POST['customeremail'];
-                    $billarray['customeraddress'] = @$_POST['customeraddress'];
+                    $billarray['customerid'] = $custid;                    
                     $billarray['customerduedate'] = (@$_POST['customerduedate'])?date("Y-m-d", strtotime($_POST['customerduedate'])):"";
                     $billarray['customerbillnote'] = @$_POST['customerbillnote'];
                     $billarray['customerpaymenttype'] = @$_POST['customerpaymenttype'];
@@ -9681,51 +9696,87 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     
     function billings()
     {
-       /* $invoices = $this->quote_model->getinvoices();
-        $count = count($invoices);
+        /*$invoices = $this->quote_model->getinvoices();
+        $count = count($invoices);*/
+        $search = "";
+        $searches = array();        
+        if(!@$_POST)
+ 		{
+ 			$fromdate = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
+ 			$todate = date('Y-m-d');
+ 			$searches[] = " (DATE(billedon) >= '$fromdate'
+						AND DATE(billedon) <= '$todate')";
+ 		}
+        
+        if (@$_POST['searchcustomer']) {
+            $searches[] = " b.customerid = '{$_POST['searchcustomer']}' ";
+        }
+        if (@$_POST['searchstatus']) {
+            $searches[] = " b.status = '{$_POST['searchstatus']}' ";
+        }
+        if (@$_POST['searchpaymentstatus']) {
+            $searches[] = " b.paymentstatus = '{$_POST['searchpaymentstatus']}' ";
+        }
+        if (@$_POST['searchinvoicenum']) {
+            $searches[] = " b.billname LIKE '%{$_POST['searchinvoicenum']}%' ";
+        }
+
+        if (@$_POST['searchfrom'] && @$_POST['searchto']) {
+            $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+            $todate = date('Y-m-d', strtotime($_POST['searchto']));
+            $searches[] = " (DATE(billedon) >= '$fromdate'
+						AND DATE(billedon) <= '$todate')";
+        } elseif (@$_POST['searchfrom']) {
+            $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+            $searches[] = " DATE(billedon) >= '$fromdate'";
+        } elseif (@$_POST['searchto']) {
+            $todate = date('Y-m-d', strtotime($_POST['searchto']));
+            $searches[] = " DATE(billedon) <= '$todate'";
+        }
+        if ($this->session->userdata('usertype_id') > 1) {
+            $searches[] = " b.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";
+        }
+        if ($searches) {
+            $search = "  AND (" . implode(" AND ", $searches) . " )";
+        }
+        
+        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername from ". $this->db->dbprefix('bill') ." b left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id where 1=1 {$search} group by bi.bill";
+        
+        $billqryeres = $this->db->query($billquery);
+        $bills = $billqryeres->result();
+        $count = count($bills);
         $items = array();
         if ($count >= 1)
         {
             $settings = $this->settings_model->get_current_settings();
             $available_statuses = array('pending', 'verified', 'error');
             $data['available_statuses'] = $available_statuses;
-            foreach ($invoices as $invoice)
-            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
-            {
-                $invoice->ponum = $invoice->quote->ponum;
-
-                if($invoice->quote->potype=='Contract'){
-                $company = $this->db->select('users.*')->from('received')
-                           ->join('awarditem','received.awarditem=awarditem.id')
-                           ->join('users','awarditem.company=users.id')
-                           ->where('received.invoicenum',$invoice->invoicenum)
+            foreach ($bills as $bill){
+            	if($bill->id && $bill->purchasingadmin == $this->session->userdata('purchasingadmin') ){
+           
+                           
+                $company = $this->db->select('company.*')->from('bill')
+                           ->join('billitem','bill.id=billitem.bill')
+                           ->join('company','billitem.company=company.id')
+                           ->where('bill.id',$bill->id)
                            ->get()->row()
                            ;
-                }else{                
-                $company = $this->db->select('company.*')->from('received')
-                           ->join('awarditem','received.awarditem=awarditem.id')
-                           ->join('company','awarditem.company=company.id')
-                           ->where('received.invoicenum',$invoice->invoicenum)
-                           ->get()->row()
-                           ;
-                }           
+                           
                            
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
-                $invoice->bankaccount = $bankaccount;
+                $bill->bankaccount = $bankaccount;
 
-                $invoice->companydetails = $company;
-                $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
-              
-                if($invoice->quote->potype=='Contract')
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
-                else 
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
+                $bill->companydetails = $company;
+                $bill->total = $bill->total + ($bill->total*$settings->taxpercent/100);
+                          
+               	
+                $bill->actions = '<a href="javascript:void(0)" onclick="showBill(\'' . $bill->id . '\',\''.$bill->quote.'\')"><span class="icon-2x icon-search"></span></a>';
                 
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
                 {
 
-                    if (strtolower($invoice->status) == $status_text) {
+                    if (strtolower($bill->status) == $status_text) {
                         $selected = " selected=\"selected\"";
                     } else {
                         $selected = '';
@@ -9734,57 +9785,54 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 }
                 $options_payment = array();
                 $options_paymenttype = array();
-                $options_payment[]="<option value=\"Paid\" ".($invoice->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
+                $options_payment[]="<option value=\"Paid\" ".($bill->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
                
-                $options_payment[]="<option value=\"Unpaid\" ".($invoice->paymentstatus=='Unpaid'||$invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
+                $options_payment[]="<option value=\"Unpaid\" ".($bill->paymentstatus=='Unpaid'||$bill->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
 
                 $options_paymenttype[]="<option value=\"\">Select Payment Type</option>";
                 if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
-                $options_paymenttype[]="<option value=\"Credit Card\" ".($invoice->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";;
-                $options_paymenttype[]="<option value=\"Cash\" ".($invoice->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
-                $options_paymenttype[]="<option value=\"Check\" ".($invoice->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
+                //$options_paymenttype[]="<option value=\"Credit Card\" ".($bill->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";
+                $options_paymenttype[]="<option value=\"Cash\" ".($bill->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
+                $options_paymenttype[]="<option value=\"Check\" ".($bill->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
 
-                $txtrefnum = "<input type=\"text\" id=\"refnum_$invoice->invoicenum\" name=\"refnum\" value=\"$invoice->refnum\"/>";
+                $txtrefnum = "<input type=\"text\" id=\"refnum_$bill->id\" name=\"refnum\" value=\"$bill->refnum\"/>";
 
-                $update_button = "<button onclick=\"update_invoice_status('$invoice->invoicenum')\">update</button>";
-                $update_payment_button = "<button onclick=\"update_invoice_payment_status('$invoice->invoicenum')\">update</button>";
+                $update_button = "<button onclick=\"update_invoice_status('$bill->id')\">update</button>";
+                $update_payment_button = "<button onclick=\"update_bill_payment_status('$bill->id')\">update</button>";
 
-                $status_html = "<select id=\"invoice_$invoice->invoicenum\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
+                $status_html = "<select id=\"invoice_$bill->id\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
 
-                $payment_status_html = "<select id=\"invoice_payment_$invoice->invoicenum\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
-                $payment_status_html .= "<select id=\"invoice_paymenttype_$invoice->invoicenum\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$invoice->invoicenum."','".$invoice->totalprice."');\">" . implode("", $options_paymenttype) . "</select>";
+                $payment_status_html = "<select id=\"invoice_payment_$bill->id\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
+                $payment_status_html .= "<select id=\"invoice_paymenttype_$bill->id\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$bill->id."','".$bill->total."');\">" . implode("", $options_paymenttype) . "</select>";
                 $payment_status_html .= $txtrefnum;
                 $payment_status_html .= $update_payment_button;
-                if($invoice->paymentstatus=='Requested Payment')
-                {
-                	if($invoice->quote->potype=='Contract')
-               			$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Company</i>';
-               		else 
-                    	$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
+                if($bill->paymentstatus=='Requested Payment')
+                {                	
+                   	$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
                 }
 
-                $invoice->status_selectbox = $status_html;
-                $invoice->payment_status_selectbox = $payment_status_html;
+                $bill->status_selectbox = $status_html;
+                $bill->payment_status_selectbox = $payment_status_html;
 
-                $invoice->totalprice = number_format($invoice->totalprice,2);
+                $bill->total = number_format($bill->total,2);
 
-                $items[] = $invoice;
+                $items[] = $bill;
             }
+          }
 
             $data['items'] = $items;
             $data['jsfile'] = 'invoicejs.php';
         } else {
         	$data['items'] = array();
             $data['message'] = 'No Records';
-        } */
+        } 
        
        // $data ['addlink'] = '';
         $data ['heading'] = 'Customer Bills';
+        
+        $query = "SELECT c.* FROM ".$this->db->dbprefix('customer')." c WHERE c.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+        $data['customers'] = $this->db->query($query)->result();
         /*
-        $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
-        		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
-        $data['companies'] = $this->db->query($query)->result();
-
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
 		if($setting){
@@ -9809,14 +9857,85 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		{
 		    $this->data['message'] = 'No Records';
 		} */
-	
-		
-	   $data['bills'] = $this->db->select('sum(totalprice) as total, bill.*')
-		             ->from('bill')->join('billitem','bill.id=billitem.bill','left')
-		             ->group_by('billitem.bill')->get()->result();
-		            // echo "<pre>"; print_r( $data['bills']); die;
 		
         $this->load->view('admin/billing', $data);
+    }
+    
+    
+    public function update_bill_payment_status()
+    {
+        //echo "<pre>",print_r($_POST);die;
+        $_POST['paymentstatus'] = 'Paid';
+        $_POST['status'] = 'Pending';
+        $this->db->where('id', $_POST['invoicenum']);
+        $amount = $_POST['amount'];
+        unset($_POST['amount']);
+        unset($_POST['invoicenum']);
+        $_POST['paymentdate'] = date('Y-m-d');
+        $this->db->update('bill', $_POST);
+
+
+        /*if($_POST['paymentstatus'] == 'Paid')
+        {
+    		$company = $this->db->select('company.*')
+    		            ->from('received')
+    		            ->join('awarditem','received.awarditem=awarditem.id')
+    		            ->join('company','awarditem.company=company.id')
+    		            ->where('invoicenum',$_POST['invoicenum'])
+    		            ->get()->row();
+    		$quote = $this->db->select('quote.*')
+    		            ->from('received')
+    		            ->join('awarditem','received.awarditem=awarditem.id')
+    		            ->join('award','awarditem.award=award.id')
+    		            ->join('quote','award.quote=quote.id')
+    		            ->where('invoicenum',$_POST['invoicenum'])
+    		            ->get()->row();
+
+    		$pa = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
+
+    		$data['email_body_title']  = "Dear " . @$company->title ;
+    		$data['email_body_content'] =  $pa->companyname." sent payment for the Invoice#: ".$_POST['invoicenum'].";
+    		The following information sent:
+    		<br/>
+    		PO# : ".$quote->ponum."
+    		<br/>
+    		Payment By : ".$pa->companyname."
+    		<br/>
+    		Payment Type : ".$_POST['paymenttype']."
+    		<br/>
+    		Payment Amount : ".$amount."
+    		<br/>
+    		Ref# : ".$_POST['refnum']."
+    		<br/>
+    		Payment Date: ".date('m/d/Y')."
+    		<br><br>";
+    		$loaderEmail = new My_Loader();
+    		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+    		$this->load->library('email');
+    		$config['charset'] = 'utf-8';
+    		$config['mailtype'] = 'html';
+    		$this->email->initialize($config);
+    		$this->email->from($pa->email, $pa->companyname);
+    		$this->email->to(@$company->title . ',' . @$company->primaryemail);
+    		$this->email->subject('Payment made for the invoice: '.$_POST['invoicenum']);
+    		$this->email->message($send_body);
+    		$this->email->set_mailtype("html");
+    		$this->email->send();
+        }*/
+
+        echo '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Billing Payment Status Changed.</div></div>';
+    }
+    
+    
+    function getcustomerdata(){
+    	if(!@$_POST)
+    	die;
+    	
+    	$id = $_POST['id'];
+        $sql = "SELECT c.* FROM ".$this->db->dbprefix('customer')." c WHERE c.id=".$id;
+        $query = $this->db->query($sql);
+        $cust = $query->row();
+        echo json_encode($cust);
     }
 	
 		

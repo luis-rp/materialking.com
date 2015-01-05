@@ -1,4 +1,5 @@
 <?php echo '<script>var createbillurl="'.site_url('admin/quote/createbill').'";</script>'?>
+<?php echo '<script type="text/javascript">var getcustomerdataurl = "' . site_url('admin/quote/getcustomerdata') . '";</script>'; ?>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
@@ -423,6 +424,40 @@ function showbillpdf(data)
 		$("#billsuccessmodal").modal();
 
 	}	
+	
+
+function setcustomerdata(id)
+{
+	$('#customername').val('');
+    $('#customeraddress').val('');
+    $('#customeremail').val('');
+    
+    if(id!=""){	
+    $.ajax({
+        type: "post",
+        data: "id=" + id,
+        sync:false,
+        url: getcustomerdataurl
+    }).done(function(data) {
+    	var obj = $.parseJSON(data);
+    	
+    	$('#customername').val(obj.name);
+    	$('#customeraddress').val(obj.address);
+    	$('#customeremail').val(obj.email);
+    	$('#customername').prop("readonly",true);
+    	$('#customeraddress').prop("readonly",true);
+    	$('#customeremail').prop("readonly",true);
+    });
+    }else{
+    	$('#customername').val('');
+   	 	$('#customeraddress').val('');
+   	 	$('#customeremail').val('');
+   	 	$('#customername').prop("readonly",false);
+    	$('#customeraddress').prop("readonly",false);
+    	$('#customeremail').prop("readonly",false);
+    }
+}
+
 
 </script>
 
@@ -1301,6 +1336,15 @@ function showbillpdf(data)
 		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
 		<table>
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
+		<?php if($customerdata){ ?>
+		<tr><td>Select Customer:</td><td><select id="customerid" name="customerid" onchange="setcustomerdata(this.value);">
+		<option value="">Select</option>
+		<?php foreach($customerdata as $cust){ ?>
+		<option value="<?php echo $cust->id;?>"><?php echo $cust->name;?></option>	
+		<?php } ?>
+		</select>
+		</td></tr>
+		<?php } ?>
 		<tr><td>Customer name:</td><td><input type="text" name="customername" id="customername" style="width: 250px;"/></td></tr>
 		<tr><td>Customer e-mail:</td><td><input type="text" name="customeremail" id="customeremail" style="width: 250px;" /> </td></tr>
 		<tr><td>Customer Address:</td><td><input type="text" name="customeraddress" id="customeraddress" style="width: 250px;" /> </td></tr>
