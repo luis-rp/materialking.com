@@ -1096,22 +1096,27 @@ class quote extends CI_Controller
     		$emailitems.= '<th>Description</th>';    		
     		$emailitems.= '<th>File Name</th>';
     		$emailitems.= '</tr>';
+    		
+    		$af=""; 		
     		foreach($quoteitems as $q)
     		{
     		    $emailitems.= '<tr>';        		
         		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';        		
         		$emailitems.= '<td style="padding-left:5;">'.$q->attach.'</td>';
         		$emailitems.= '</tr>';
-        		if(@$q->attach && file_exists("./uploads/quote/".$q->attach))
-        		$emailattachments[] = site_url('uploads/quote').'/'.$q->attach;
-    		}
-    		$emailitems .= '</table>';
-    	
+        		$af.=$q->attach.","; 
+        		//if(@$q->attach && file_exists("./uploads/quote/".$q->attach))
+        		//$emailattachments[] = site_url('uploads/quote').'/'.$q->attach;
+    		}   		    		
+    		 $emailitems .= '</table>';
+    	    
     		    if (@$_POST['categoryinvitees']) {
     		    $this->session->set_userdata('forcat', $_POST['categoryinvitees']);
                 //$companies = $this->quote_model->getpurchaserlistbycategory($_POST['categoryinvitees']);
                 
                 $companies = $this->get_contract_company_in_miles(@$_POST['locradiushidden'],@$_POST['categoryinvitees']);
+                //$companies = $this->db->get_where('users',array('purchasingadmin'=>'115'))->result();
+                
                 $companynames = array();
                 //echo "<pre>",print_r($companies); die;
                 foreach ($companies as $c)
@@ -1145,13 +1150,28 @@ class quote extends CI_Controller
                     $config['charset'] = 'utf-8';
                     $config['mailtype'] = 'html';
                     $this->email->initialize($config);
+                    $this->email->clear(TRUE);
                     $this->email->from($settings['adminemail'], "Administrator");
-
-                    $this->email->to($settings['adminemail'] . ',' . $c->email);
-                
+                    $this->email->to($settings['adminemail'] . ',' . $c->email);                
                     $this->email->subject('Request for Contract Quote Proposal ' . $this->input->post('ponum'));
                     $this->email->message($send_body);
-                    $this->email->set_mailtype("html");
+                    $this->email->set_mailtype("html");                   
+                    $aff=""; 
+                    $aff=rtrim($af, ",");
+                    $aaff=""; 
+		    		$aaff=explode(',',$aff);
+		    		    		
+                    if(isset($aaff) && $aaff!=""){
+						$config = $this->config->config;
+						$attachfile="";	
+			            foreach($aaff as $file){
+			    			if(@$file && file_exists("./uploads/quote/".$file)){
+			    				$attachfile = $config['base_dir'] . 'uploads/quote/'.$file;
+			    			    $this->email->attach($attachfile);			    			   		    				
+			    			}			    			
+			    		}
+                    }
+                    
                     /*foreach($emailattachments as $eattach)
                     $this->email->attach($eattach);*/               
                     $this->email->send();
@@ -1167,7 +1187,7 @@ class quote extends CI_Controller
                         'notify_type' => 'contract'      
                     );
                     $this->db->insert('notification', $notification);
-                }
+                } 
                 $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Contract Quote Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
             }
     		
@@ -1175,6 +1195,7 @@ class quote extends CI_Controller
             redirect('admin/quote/update/' . $itemid);            
         }
     }
+
     
     
     public function invitation($key,$print='')
