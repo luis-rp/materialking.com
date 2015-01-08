@@ -142,8 +142,8 @@ function shownotice(newval,oldval,id){
             <div align="center">
                 <h4>
                     INVOICE #: <?php echo $invoice->billname; ?> 
-                    STATUS: <font color=#FF0000""> <?php // echo $invoice->status; ?></font>
-                    PAYMENT: <font color=#FF0000""> <?php // echo $invoice->paymentstatus; ?></font>
+                    STATUS: <font color=#FF0000""> <?php echo $invoice->status; ?></font>
+                    PAYMENT: <font color=#FF0000""> <?php echo $invoice->paymentstatus; ?></font>
                     <?php /* if(isset($invoice->customerduedate) && $invoice->customerduedate !=""){?>
                     DUE DATE: <font color=#FF0000""> <?php  echo date("m/d/Y", strtotime( $invoice->customerduedate)); ?></font>
                     <br/>
@@ -244,11 +244,20 @@ function shownotice(newval,oldval,id){
                     <td align="left" valign="top">&nbsp;</td>
                     <td align="left" valign="top">
                         <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
-                            <tr>
-                                <th bgcolor="#000033"><font color="#FFFFFF"><strong>Ship to</strong></font></th>
+                             <tr>
+                                <th bgcolor="#000033" colspan="2"><font color="#FFFFFF"><strong>Bill to</strong></font></th>
                             </tr>
                             <tr>
-                                <td><?php echo nl2br($awarded->shipto); ?></td>
+                                <td>Name</td>
+                                <td><?php echo nl2br(@$invoice->name); ?></td>
+                            </tr>
+                              <tr>
+                                <td>Email</td>
+                                <td><?php echo nl2br(@$invoice->email); ?></td>
+                            </tr>
+                              <tr>
+                                <td>Address</td>
+                                <td><?php echo nl2br(@$invoice->address); ?></td>
                             </tr>
                         </table></td>
                 </tr>
@@ -302,8 +311,8 @@ function shownotice(newval,oldval,id){
 					    <td colspan="7" rowspan="3">
                       		<div style="width:70%">
                           		<br/>
-                          		<h4 class="semi-bold">Terms and Conditions</h4>
-                                <p>'.$company->invoicenote.'</p>
+                          		<!-- <h4 class="semi-bold">Terms and Conditions</h4>
+                                <p>'.@$company->invoicenote.'</p> -->
                                 <h5 class="text-right semi-bold">Thank you for your business</h5>
                       		</div>
                   		</td>

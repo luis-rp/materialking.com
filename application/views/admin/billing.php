@@ -1,4 +1,5 @@
- <script type="text/javascript">
+<?php echo '<script>var datedueurl="' . site_url('admin/quote/billdatedue') . '";</script>' ?> 
+<script type="text/javascript">
  $(document).ready(function(){
  tour3 = new Tour({
 	  steps: [
@@ -30,7 +31,7 @@
  </script>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('.datefield').datepicker();
+        $('.datefield').datepicker();        
     });
     
     function showBill(invoiceid,invoicequote){
@@ -66,6 +67,12 @@
         var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
         var invoice_number = $('#invoicenumber_' + idnumber).val();
         var refnum_value = $('#refnum_' + idnumber + "").val();
+        var amountpaid = $('#amountpaid_' + idnumber).val();
+        if($('#ispaid_' + idnumber).attr("checked"))
+        var ispaid = 1;
+        else
+        var ispaid = 0;
+        
         if(invoice_payment_type_value == 'Credit Card')
 			return false;
 		if(invoice_payment_type_value=='')
@@ -75,12 +82,27 @@
         $.ajax({
             type: "POST",
             url: url,
-            data: {invoicenum:invoice_number, paymentstatus: invoice_payment_status_value, paymenttype: invoice_payment_type_value, refnum: refnum_value, amount: invoice_payment_amount_value}
+            data: {invoicenum:invoice_number, paymentstatus: invoice_payment_status_value, paymenttype: invoice_payment_type_value, refnum: refnum_value, amountpaid: amountpaid, ispaid:ispaid }
         }).done(function(data) {
         	$('#paymentstatus' + idnumber).html('Paid');
             $('#message_div').html(data);
         });
     }
+    
+    
+    function setpaidamount(idnumber,chk){
+    	    	
+    	 if(chk == true){
+    	 var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
+    	 invoice_payment_amount_value = invoice_payment_amount_value.replace('$', '');
+    	 invoice_payment_amount_value = invoice_payment_amount_value.replace(/,/g, '');
+    	 invoice_payment_amount_value = parseFloat(invoice_payment_amount_value,10);
+    	 $('#amountpaid_' + idnumber).val(invoice_payment_amount_value);
+    	 }else{
+    	 	$('#amountpaid_' + idnumber).val('');
+    	 }
+    }
+    
 </script>
 <style type="text/css">
     .box { padding-bottom: 0; }
@@ -162,6 +184,39 @@ function jq( myid ) {
  
 }
 
+var datetext = "";
+var isconfirm = "";
+
+function changeduedate(count,invoicenum,datedue)
+	{			
+		if(datetext!= datedue) {
+			if(confirm("Do you want to set the invoice due date to"+datedue)){
+			datetext = datedue;
+			isconfirm = "yes";
+			$('#originaldate'+count).val(datedue);
+			var data = "id="+invoicenum+"&customerduedate="+datedue;
+			$.ajax({
+				type: "post",
+				data: data,
+				url: datedueurl
+			}).done(function(data) {
+			});
+
+		}else{
+				$('#daterequested'+count).val($('#originaldate'+count).val());
+				datetext = $('#originaldate'+count).val();			
+				$('#canceldate').val(datedue);
+				datedue = $('#originaldate'+count).val();			
+		}
+		}else{ 
+				if(isconfirm == ""){
+				$('#daterequested'+count).val($('#originaldate'+count).val());				
+				datetext = $('#canceldate').val();									
+				}
+				
+		}
+	}
+
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -239,7 +294,7 @@ function jq( myid ) {
                     			<th>Customer</th>
                     			<th>Bill#</th>
                     			<th>Sent Date</th>
-                    			<th>Set Due Date</th>
+                    			<th>Due Date</th>
                     			<th>Total Cost</th>
                     			<th>Payment</th>
                     			<!-- <th>Verification</th> -->
@@ -248,14 +303,14 @@ function jq( myid ) {
                     	</thead>
                     	<tbody>
                     		<?php $i=0;
-                    	/*	$finaltotal = 0;
+                    		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
                     		$future = array();
                     		$current = array();
                     		$daysold60 = array();
                     		$daysold90 = array();
-                    		$daysold120 = array();*/
+                    		$daysold120 = array();
                     		//echo "<pre>",print_r($items); die;
                     		foreach($items as $item){ $i++;
                     		?>
@@ -265,7 +320,12 @@ function jq( myid ) {
                     		   <!-- <a href="javascript:void(0)" onclick="showreport('<?php echo $item->billname;?>','<?php echo $i;?>');">Expand</a>-->						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->id;?>"/>
                     			</td>
                     			<td><?php echo date('m/d/Y', strtotime($item->billedon));?></td>
-                    			<td><?php if($item->customerduedate){echo date("m/d/Y", strtotime($item->customerduedate));}else{ echo "No Date Set";} ?></td>
+                    			<td><input type="text" id="customerduedate<?php echo $i;?>" name="customerduedate" value="<?php if($item->customerduedate){ echo date("m/d/Y", strtotime($item->customerduedate)); }else{echo "No Date Set";} ;?>" class="datefield" style="width:100px;" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i;?>','<?php echo $item->id;?>',this.value)" />
+                    			
+                    			<input type="hidden" id="originaldate<?php echo $i;?>" value="<?php if($item->customerduedate){ echo date('m/d/Y',strtotime($item->customerduedate)); } ?>" />
+                    			
+                    			<input type="hidden" id="canceldate" />
+                    			</td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->total;?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
@@ -281,6 +341,8 @@ function jq( myid ) {
                     				<input type="hidden" id="hiddenpaytype<?php echo $i;?>" name="hiddenpaytype<?php echo $i;?>" value="<?php echo $item->paymenttype;?>" />
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
                     				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
+                    				Total Value Paid? &nbsp;<input type="checkbox" name="ispaid" id="ispaid_<?php echo $i;?>" onclick="setpaidamount('<?php echo $i;?>',this.checked);" <?php if($item->ispaid ==1 ) { ?> checked='checked' <?php } ?> >
+                    				$ <input placeholder='Amount Paid' type="text" name="amountpaid" id="amountpaid_<?php echo $i;?>" value="<?php echo $item->amountpaid;?>" >
                     				<button onclick="update_bill_payment_status('<?php echo $i;?>')">Save</button>
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
@@ -298,37 +360,35 @@ function jq( myid ) {
                     			<td><?php echo $item->actions;?></td>
                     		</tr>
                     		<!--<?php
-                    		$finaltotal += str_replace( ',', '', $item->totalprice);
-                    		if($item->paymentstatus=='Paid')
-                    		{
-                    			$totalpaid+= str_replace( ',', '', $item->totalprice);
-                    		}
-
-                    		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
-                    		{
-                    			$item->totalprice = str_replace( ',', '', $item->totalprice );
-                    			$totalunpaid+= $item->totalprice;
+                    		$finaltotal += str_replace( ',', '', $item->total);
+                    		
+                    		$totalpaid+= str_replace( ',', '', $item->amountpaid);
+                    		
+                    		/*if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
+                    		{*/
+                    			$item->total = str_replace( ',', '', $item->total );
+                    			$totalunpaid+= $item->total - $item->amountpaid;
                     			
-                    			$datediff = strtotime($item->datedue) - time();
+                    			$datediff = strtotime($item->customerduedate) - time();
      							$datediff = abs(floor($datediff/(60*60*24)));
-                    			if($item->datedue>=date('Y-m-d')){                    			
-                    				$future[] = $item->totalprice;
+                    			if($item->customerduedate>=date('Y-m-d')){                    			
+                    				$future[] = ($item->total-$item->amountpaid);
                     			}elseif($datediff>=1 && $datediff<=30){ 
-                    				$current[] = $item->totalprice;
+                    				$current[] = ($item->total-$item->amountpaid);
                     			}elseif($datediff>=31 && $datediff<=60){ 
-                    				$daysold60[] = $item->totalprice;
+                    				$daysold60[] = ($item->total-$item->amountpaid);
                     			}elseif($datediff>=61 && $datediff<=90){ 
-                    				$daysold90[] = $item->totalprice;
+                    				$daysold90[] = ($item->total-$item->amountpaid);
                     			}elseif($datediff>=91 && $datediff<=120){ 
-                    				$daysold120[] = $item->totalprice;
+                    				$daysold120[] = ($item->total-$item->amountpaid);
                     			}
-                    		} ?>-->
+                    		//} ?>-->
 
                     	<?php	}                 		
                     		?>
-                    		<!--<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>-->
+                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     	</tbody>
                     </table>
                 </div>
@@ -416,7 +476,7 @@ function jq( myid ) {
               </div>             
                 
               <div>
-              <!--<?php if(count($future>0) || count($current>0) || count($daysold60>0) || count($daysold90>0) || count($daysold120>0)){?>
+              <?php if(count($future>0) || count($current>0) || count($daysold60>0) || count($daysold90>0) || count($daysold120>0)){?>
               <span style="text-align:center;"><b>Aging Table</b></span>
               <table class="table table-bordered">
 			     
@@ -436,7 +496,7 @@ function jq( myid ) {
 			    		<td><?php echo array_sum($daysold120); ?></td>
 			    		<td><?php echo array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120); ?></td>
 			    	</tr>
-              <?php } ?>-->
+              <?php } ?>
               </div>  
                 
             </div>

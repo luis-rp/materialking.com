@@ -589,7 +589,7 @@ function setcustomerdata(id)
 					    <?php
 
 						$counter_kk = 1;
-
+						$billcnt = 0;
 						$alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) {
 
 						$counter_kk++;
@@ -658,7 +658,7 @@ function setcustomerdata(id)
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
                                 <td>$ <?php echo $q->totalprice; ?>
-                                <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>')" >+ Add to bill</a></span>
+                                <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>')" >+ Add to bill</a></span><br><?php if (array_key_exists($q->company, $billitemdata)){ if(in_array(@$q->itemid,$billitemdata[$q->company])){ echo "Already Billed"; $billcnt++;  } } ?>
                                 </td>
                                 <td><?php echo $q->daterequested;?><br/>
                                 
@@ -795,7 +795,7 @@ function setcustomerdata(id)
                     <tr>
                         <td colspan="6" style="text-align:right">Total: </td>
                         <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">
-                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>')" >+ Add all items to bill</a></span> </td>
+                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>')" >+ Add all items to bill</a></span> <br> <?php if(@$billcnt == $cnt) { echo "All items already Billed"; } ?> </td>
                         <td>
                         <span style="align:right;" id="billwindow"></span>
                         </td></tr></table>
@@ -1056,9 +1056,9 @@ function setcustomerdata(id)
                                 <tr>
                                     <td><?php echo $invoice->billname; ?></td>
                                     <td><?php echo "$ ".$invoice->total; ?></td>
-                                    <td><?php //echo $invoice->paymentstatus; ?></td>
+                                    <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->customerduedate){echo date("m/d/Y", strtotime($invoice->customerduedate));}else{ echo "No Date Set";} ?></td>
-                                    <td><?php // echo $invoice->status; ?></td>
+                                    <td><?php echo $invoice->status; ?></td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="showBill('<?php  echo $invoice->id; ?>','<?php echo $invoice->quote; ?>');">
                                             <span class="icon-2x icon-search"></span>
@@ -1066,24 +1066,21 @@ function setcustomerdata(id)
                                     </td>
                                 </tr>
                                  <?php
-                                /*$f1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                $f1_total=$invoice->total+number_format($invoice->total * $config['taxpercent'] / 100, 2);
                                 $f_total +=$f1_total;
-                                if($invoice->paymentstatus=='Paid')
-                                {
-                                   $p1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                
+                                   $p1_total=$invoice->amountpaid+number_format($invoice->amountpaid * $config['taxpercent'] / 100, 2);
                                    $p_total +=$p1_total;
-                                }
-                                 if($invoice->paymentstatus=='Unpaid')
-                                {
-                                	 $u1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                
+                                	 $u1_total=($invoice->total - $invoice->amountpaid) +number_format(($invoice->total - $invoice->amountpaid) * $config['taxpercent'] / 100, 2);
                                      $u_total +=$u1_total;
-                                }*/
+                                
 
 
                                 } ?>
-                               <tr><td style="text-align:right;">Total:</td><td><?php // echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                                <tr><td style="text-align:right;">Total Paid:</td><td><?php // echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php // echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                               <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+                                <tr><td style="text-align:right;">Total Unpaid:</td><td><?php echo "$ ".number_format($u_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                         </table>
                         <form id="billform" method="post" action="<?php echo site_url('admin/quote/bill'); ?>">
                             <input type="hidden" id="billid" name="billid"/>

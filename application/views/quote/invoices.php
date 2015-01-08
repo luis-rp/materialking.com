@@ -197,10 +197,11 @@ function invoice(invoicenum,invoicequote)
 							              $finaltotal = 0;
 							              $totalpaid= 0;
 							              $totalunpaid= 0;
-									    	foreach($invoices as $ponum=>$invs)
+									    	foreach($invoices as $ponum=>$invs)  
 									    	{ 
      								      			foreach($invs as $i){  ?>
-                                                		<tr style="background-color:<?php if($i->paymentstatus=='Paid' && $i->status=='Verified') { echo "#ADEBAD"; } elseif($i->paymentstatus=='Unpaid'  && $i->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($i->datedue)))) { echo "#FF8080"; } elseif($i->paymentstatus=='Paid' && $i->status=='Pending') { echo "#FFDB99";} elseif($i->paymentstatus=='Unpaid'  && $i->status=='Pending'){ echo "pink";}?>">
+                                                		<tr style="background-color:<?php if($i->paymentstatus=='Paid' && $i->status=='Verified') { echo "#ADEBAD"; } elseif($i->paymentstatus=='Unpaid' && $i->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($i->datedue)))) { echo "#FF8080"; } elseif($i->paymentstatus=='Paid' && $i->status=='Pending') { echo "#FFDB99";} elseif($i->paymentstatus=='Unpaid'  && $i->status=='Pending'){ echo "pink";} 
+ elseif($i->paymentstatus=='Requested Payment' && $i->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($i->datedue)))) { echo "#FF8080"; }?>">
                                                 			<td class="v-align-middle"><?php echo $ponum;?> </td>
                                                 			<td class="v-align-middle"><?php echo $i->quote->companyname;?> </td>
                                                 			<td>

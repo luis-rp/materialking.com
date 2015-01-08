@@ -45,7 +45,7 @@ $(document).ready(function(){
 		<div class="row">
                     <div class="col-md-12">
                     <div>
-				   		<div class="combofixed">
+				   		<div class="combofixed" style="background-color:white;position:relative;margin:0px;">
 				   		
 			    		   <form class="form-inline" action="<?php echo site_url('order')?>" method="post">
 			    		   
@@ -138,9 +138,9 @@ $(document).ready(function(){
 			        </div></div>
 
                         <div class="grid simple ">
-                            <div class="grid-title no-border">
+                           <!-- <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-                            </div>
+                            </div>-->
                             <div class="grid-body no-border">
                                     <table id="datatable" class="table no-more-tables general" style="margin-top:40px;">
                                         <thead>

@@ -312,11 +312,13 @@ function allowonlydigits(e,elementid,errorid){
 								<table class="no-more-tables general" border="0">
 									<tr>
 										<td>
-										  <strong>
+										  <strong><?php //echo "<pre>"; print_r($quote); die; ?>
 									      PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
 									      <tr><td>
 									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
-									      <td>Company: <?php echo $company->title;?>
+									      <td>Project: <?php if(isset($project)) echo $project->title;?>
+									      <br/>
+									      Company: <?php echo $company->title;?>
 									      <br/>
 									      Contact: <?php echo $company->contact;?>
 									      </strong>

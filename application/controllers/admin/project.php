@@ -82,7 +82,8 @@ class project extends CI_Controller
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Project Management';
 		$data ['table'] = $this->table->generate ();
-		$data ['addlink'] = '<a id="step5" class="btn btn-green" href="'.base_url().'admin/project/add">Add Project</a>';
+		$data ['addlink'] = '<a id="step5" class="btn btn-green" href="'.base_url().'admin/project/add">Add Project</a>&nbsp;';
+		$data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/add" id="step10">Add Cost Code</a>';
 		$data['viewname'] = 'projects';
 
 		$uid = $this->session->userdata('id');

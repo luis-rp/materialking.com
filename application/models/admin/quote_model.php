@@ -1106,14 +1106,13 @@ class quote_model extends Model {
     
        function getinvoicebybillnum($invoicenum,$invoicequote) {
 
-        $invoicesql = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice," 
-        			//."r.status, r.paymentstatus, r.paymenttype, r.refnum,"
-        			." b.customerduedate 
-				   FROM 				   
-				   " . $this->db->dbprefix('billitem') . " bi,
-				   " . $this->db->dbprefix('bill') . " b,
-				   " . $this->db->dbprefix('quote') . " q 
-				  WHERE bi.bill=b.id AND b.quote=q.id AND b.quote='{$invoicequote}' AND b.id='{$invoicenum}'
+        $invoicesql = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, b.paymenttype, b.refnum,"
+        			." b.customerduedate, c.name, c.email,c.address  
+				   FROM 			   
+				   " . $this->db->dbprefix('billitem') . " bi left join " . $this->db->dbprefix('bill') . " b on  bi.bill=b.id 
+				   left join " . $this->db->dbprefix('quote') . " q on b.quote=q.id left join  
+				   " . $this->db->dbprefix('customer') . " c on b.customerid = c.id    
+				  WHERE b.quote='{$invoicequote}' AND b.id='{$invoicenum}'
 				  GROUP BY b.id 
 				  ";
         //echo $totalquery;
@@ -1854,6 +1853,25 @@ class quote_model extends Model {
 				  GROUP BY invoicenum
                   ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
 				  ";
+		$invoicequery = $this->db->query($query);
+		$items = $invoicequery->result();
+
+		return $items;
+	}
+	
+	
+	function getbillsdetailsformail($invoicenumber)
+	{		
+		$pafilter = '';
+		if(@$_POST['searchpurchasingadmin'])
+			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
+			
+		$query = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, b.paymenttype, b.refnum, b.customerduedate, b.purchasingadmin, bi.quantity, bi.ea, b.billedon, c.name, c.email, bi.itemid, bi.itemcode, bi.itemname  FROM 			   
+				   " . $this->db->dbprefix('billitem') . " bi left join " . $this->db->dbprefix('bill') . " b on  bi.bill=b.id 
+				   left join " . $this->db->dbprefix('quote') . " q on b.quote=q.id left join  
+				   " . $this->db->dbprefix('customer') . " c on b.customerid = c.id    
+				  WHERE 1=1 $pafilter AND b.id='{$invoicenumber}' 
+				   GROUP BY bi.id ";
 		$invoicequery = $this->db->query($query);
 		$items = $invoicequery->result();
 

@@ -728,6 +728,7 @@ class Dashboard extends CI_Controller
 			foreach ($quotes[0] as $quote)
 			{
 				$awarded = $this->quote_model->getawardedbid($quote->id);
+				
 				$items[$quote->ponum]['quote'] = $quote;
 				if($awarded)
 				{
@@ -1442,7 +1443,7 @@ class Dashboard extends CI_Controller
 	
 	function supplier_invitation()
 	{		
-		$id = $this->session->userdata('purchasingadmin');
+		$id = $this->session->userdata('id');
 		$company=$this->db->get_where('users',array('id'=>$id))->row();
 		if(isset($_POST['check']))
 		{
@@ -1481,7 +1482,7 @@ class Dashboard extends CI_Controller
 	
 	function supplier_email_invitation()
 	{		
-		$id = $this->session->userdata('purchasingadmin');
+		$id = $this->session->userdata('id');
 		$company=$this->db->get_where('users',array('id'=>$id))->row();
 		if(isset($_POST['exampleInputEmail2']))
 		{

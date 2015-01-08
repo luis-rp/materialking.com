@@ -12,6 +12,7 @@ class Dashboard extends CI_Controller
 		$this->load->model ('quotemodel', '', TRUE);
 		$this->load->model ('messagemodel', '', TRUE);
 		$this->load->model('companymodel', '', TRUE);
+		$this->load->model('admin/quote_model', '', TRUE);
 		if($this->session->userdata('company')) $data['newquotes'] = $this->quotemodel->getnewinvitations($this->session->userdata('company')->id);
 		$data['newnotifications'] = $this->messagemodel->getnewnotifications();
 		$company = $this->session->userdata('company');
@@ -47,13 +48,12 @@ class Dashboard extends CI_Controller
 			$this->db->where('id',$rq->fromid);
 			$rq->from = $this->db->get($rq->fromtype)->row();
 			
-			$rq->quoteitems=$this->db->get_where('quoteitem',array('purchasingadmin'=>$rq->fromid))->result();
+			/*$rq->quoteitems=$this->db->get_where('quoteitem',array('purchasingadmin'=>$rq->fromid))->result();
 			$rq->awarditems=$this->db->get_where('awarditem',array('purchasingadmin'=>$rq->fromid))->result();
 			
 			$sql = "SELECT itemid FROM " . $this->db->dbprefix('quoteitem') ." where itemid 
 		   NOT IN (SELECT itemid FROM " . $this->db->dbprefix('awarditem')." where purchasingadmin='{$rq->fromid}') AND  purchasingadmin='{$rq->fromid}'GROUP BY itemid"; 			
-			$data['quoting']=$this->db->query($sql)->result();
-				
+			$data['quoting']=$this->db->query($sql)->result();*/				
 			$data['newrequests'][]=$rq;
 		} 
 
@@ -93,7 +93,34 @@ class Dashboard extends CI_Controller
 		}
 		//log_message("debug",var_export($data['newrequests'],true));
 		$data['logDetails'] = $logDetails;
-		$data['tago'] = $tago;
+		$data['tago'] = $tago;		
+			/*----------------------------------------------------------------*/
+			$users=$this->db->get('users')->result();
+			$data['userdata']=array();
+			if($users)
+			{
+			    
+				foreach ($users as $u)
+				{
+				  $awarded=0;
+				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
+				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
+			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
+			     	
+			      if( $u->quotes)
+			      {
+			         foreach($u->quotes as $quote)
+						{							
+							if($this->quote_model->getawardedbid($quote->id))
+								$awarded++;							
+						}
+			        $u->awarded = $awarded;
+			      }
+			     $data['userdata'][]=$u; 				
+				} 
+				 
+			}	
+		/*---------------------------------------------------*/
 
 		$this->load->view('dashboard/index',$data);
 	}

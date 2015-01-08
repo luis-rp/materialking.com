@@ -530,7 +530,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);  ?>						
-    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billing' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billings' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                                <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
 
@@ -624,7 +624,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                         </li>
                         
-                        <li <?php if ($menu == 'quote' && $function == 'billing') { ?>class="active"<?php } ?>>
+                        <li <?php if ($menu == 'quote' && $function == 'billings') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/quote/billings/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
                                     <span class="icon-hand-down"></span>BILLING
                                 </a>

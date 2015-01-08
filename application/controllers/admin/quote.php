@@ -5097,10 +5097,23 @@ class quote extends CI_Controller
         $data['shipments2'] = $shipments2;
         $data['heading'] = "TRACK Items";
         $data['adquoteid'] = $qid;
-        $data['bills'] = $this->db->select('sum(totalprice) as total, bill.billname, bill.id, bill.customerduedate, bill.quote')
+        $data['bills'] = $this->db->select('sum(totalprice) as total, bill.*')
 		             ->from('bill')->join('billitem','bill.id=billitem.bill','left')
 		             ->where('bill.quote',$qid)->group_by('billitem.bill')->get()->result();
-		             
+
+		$billeditems = $this->db->select('billitem.*')
+		             ->from('bill')->join('billitem','bill.id=billitem.bill')
+		             ->where('bill.quote',$qid)->get()->result();		             
+		
+		$billitemdata = array();
+		if($billeditems){
+		foreach($billeditems as $itemdata){
+			$billitemdata[$itemdata->company][] = $itemdata->itemid;
+		}
+		}
+
+		$data['billitemdata'] = $billitemdata;
+		 
 		$data['customerdata'] = $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'))				
 				->get('customer')->result();             
 		             
@@ -5150,17 +5163,17 @@ class quote extends CI_Controller
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
 
-        $company = $this->db->from('received')
+        /*$company = $this->db->from('received')
                     ->join('awarditem','received.awarditem=awarditem.id')
                     ->join('company','company.id=awarditem.company')
-                    ->get()->row();
+                    ->get()->row();*/
 
         $data['quote'] = $quote;
         $data['awarded'] = $awarded;
         $data['config'] = $config;
         $data['project'] = $project;
         $data['invoice'] = $invoice;
-        $data['company'] = $company;
+        //$data['company'] = $company;
         $data['heading'] = "Bill Details";
         $data['purchasingadmin'] = $pa;
         
@@ -9539,7 +9552,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(@$_POST['customerpayableto'])
 		$data['email_body_content'] .= "Payable To: ".$_POST['customerpayableto']."<br/>";
 
-		
+		$totalprice = 0;
+		$subtotal = 0;
+		$finaltotal = 0;
 		$emailitems = '<table BORDER CELLPADDING="12">';
 		$emailitems.= '<tr>';
 		$emailitems.= '<th> Itemcode  </th>';
@@ -9626,11 +9641,44 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $emailitems.= '<td style="padding-left:5;">'.$item['costcode'].'</td>';
                     
                     $emailitems.= '</tr>';
+                    $totalprice += $item['quantity'] * $item['ea'];
                     
     			}
     		}
     		
     	}
+    	
+    	$emailitems.= '<tr>';    	
+    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Markup Total ('.@$_POST['markuptotalpercent'].'%)</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$_POST['markuptotalpercent']/100).'</td>';
+		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+        $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+    	$emailitems.= '</tr>';
+    	
+    	$subtotal = @$totalprice + (@$totalprice*@$_POST['markuptotalpercent']/100);
+    	
+    	$emailitems.= '<tr>';    	
+    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Subtotal</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.@$subtotal.'</td>';    	
+		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+        $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+    	$emailitems.= '</tr>';
+    	
+    	
+    	$emailitems.= '<tr>';    	
+    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Tax</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$settings['taxrate']/100).'</td>';
+		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+        $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+    	$emailitems.= '</tr>';
+    	
+    	$finaltotal = $subtotal + (@$totalprice*@$settings['taxrate']/100);
+    	$emailitems.= '<tr>';    	
+    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.@$finaltotal.'</td>';
+		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+        $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
+    	$emailitems.= '</tr>';
     	
     	$emailitems .= '</table>';
     	
@@ -9647,8 +9695,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->subject('Bill');
 		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
-		$this->email->send();  
-    	
+		$this->email->send();      	
 		
 		/*-------------------------------------------------------------------*/
 		
@@ -9797,6 +9844,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 
                 $txtrefnum = "<input type=\"text\" id=\"refnum_$bill->id\" name=\"refnum\" value=\"$bill->refnum\"/>";
 
+                $txtamountpaid = "<input placeholder='Amount Paid' type=\"text\" id=\"amountpaid_$bill->id\" name=\"amountpaid\" value=\"$bill->amountpaid\"/>";
+                
+                $chkispaid = "<input type=\"text\" id=\"ispaid_$bill->id\" name=\"ispaid\" ".($bill->ispaid == '1'?" checked='checked'":'')." />";                
                 $update_button = "<button onclick=\"update_invoice_status('$bill->id')\">update</button>";
                 $update_payment_button = "<button onclick=\"update_bill_payment_status('$bill->id')\">update</button>";
 
@@ -9805,6 +9855,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 $payment_status_html = "<select id=\"invoice_payment_$bill->id\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
                 $payment_status_html .= "<select id=\"invoice_paymenttype_$bill->id\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$bill->id."','".$bill->total."');\">" . implode("", $options_paymenttype) . "</select>";
                 $payment_status_html .= $txtrefnum;
+                $payment_status_html .= $txtamountpaid;
+                $payment_status_html .= $chkispaid;
                 $payment_status_html .= $update_payment_button;
                 if($bill->paymentstatus=='Requested Payment')
                 {                	
@@ -9868,8 +9920,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $_POST['paymentstatus'] = 'Paid';
         $_POST['status'] = 'Pending';
         $this->db->where('id', $_POST['invoicenum']);
-        $amount = $_POST['amount'];
-        unset($_POST['amount']);
+        $amount = $_POST['amountpaid'];       
+        $ispaid = $_POST['ispaid'];
         unset($_POST['invoicenum']);
         $_POST['paymentdate'] = date('Y-m-d');
         $this->db->update('bill', $_POST);
@@ -9937,7 +9989,95 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $cust = $query->row();
         echo json_encode($cust);
     }
-	
+    
+    
+	function billdatedue()
+	{
+		if (!$this->session->userdata('id')) {
+            die;
+        }
+		$company = $this->session->userdata('id');
+		
+		$_POST['customerduedate'] = date('Y-m-d', strtotime($_POST['customerduedate']));
+		$this->db->where('id',$_POST['id'])->update('bill',$_POST);
+				
+		$invs = $this->quote_model->getbillsdetailsformail($_POST['id']);
+		//echo "<pre>",print_r($invs); die;
+		$subject = "Due Date Set For Invoice ".@$invs[0]->billname;
+		$data['email_body_title']  = "";
+		$data['email_body_content']  = "";
+		$gtotal = 0;
+				
+		foreach ($invs as $invoice)
+		{ 
+		    $config = (array)$this->settings_model->get_setting_by_admin ($invoice->purchasingadmin);
+		    $config = array_merge($config, $this->config->config); 		
+			$olddate=strtotime($invoice->billedon); $awarddate = date('m/d/Y', $olddate);
+			$data['email_body_title'] .= 'Dear '.$invoice->name.' ,<br><br>';
+			$data['email_body_content'] .= @$this->session->userdata('companyname').' has set Due Date for Bill '.$invoice->billname.' Billed on '.$awarddate.' to Due on  '.$invoice->customerduedate.'<br><br>';
+			$data['email_body_content'] .= 'Please see order details below :<br>';
+			$data['email_body_content'] .= '
+					<table class="table table-bordered span12" border="1">
+		            	<tr>
+		            		<th>Bill #</th>
+		            		<th>Received On</th>
+		            		<th>Company Name</th>
+		            		<th>Company Address</th>
+		            		<th>Company Phone</th>		            		
+		            		<th>Item</th>
+		            		<th>Quantity</th>
+		            		<th>Payment Status</th>
+		            		<th>Verification</th>
+		            		<th>Due Date</th>
+		            		<th>Price</th>
+		            	</tr>';
+			
+	        $data['email_body_content'] .= '<td>'.$invoice->billname.'</td>
+            		<td>'.$invoice->billedon.'</td>
+            		<td>'.@$this->session->userdata('companyname').'</td>
+            		<td>'.@$this->session->userdata('address').'</td>
+            		<td>'.@$this->session->userdata('phone').'</td>            		
+            		<td>'.$invoice->itemname.'</td>
+            		<td>'.$invoice->quantity.'</td>
+            		<td>'.$invoice->paymentstatus.'</td>
+            		<td>'.$invoice->status.'</td>
+            		<td>'.$invoice->customerduedate.'</td>
+            		<td align="right">'.number_format($invoice->ea,2).'</td>
+	            	  </tr>';
+	        $total = $invoice->ea*$invoice->quantity;
+            $gtotal+=$total;
+	        $tax = $gtotal * $config['taxpercent'] / 100;
+            $totalwithtax = number_format($tax+$gtotal,2);
+            $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Tax</td>
+            		<td style="text-align:right;">$'. number_format($tax,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'. $totalwithtax.'</td>
+            	</tr>';
+            $data['email_body_content'] .= '</table>';   
+	    }  
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$this->email->to(@$invs[0]->email);
+		$this->email->from($this->session->userdata('companyname'),$this->session->userdata('companyname'));
+		
+		$this->email->subject($subject);
+		$this->email->message($send_body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
+	}
 		
     // End
 }

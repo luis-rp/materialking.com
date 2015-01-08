@@ -632,20 +632,25 @@ $( document ).tooltip();
                              <div class="Quotedetail">
                          <?php echo (isset($totalQuote))?$totalQuote:"0";?> Lifetime Buying Leads Posted on MaterialKing.com
                     </div>
-                        <div>
+                    
+                    <div>
+                    
+                      <?php if(isset($cat_title))  { ?>
+	                        <div style="margin-top: 8px;margin-left: 2px;margin-bottom: 8px">
+								<div style="background:#007BC3;color:#FFFFFF;font-weight:bold!important;width:385px;height:23px;margin-left: 20px; padding:8px;"><?php if(isset($cat_title)) { echo $cat_title;} ?> </div>
+								<div style="background:#2A2A2A;opacity:.80;color:#FFFFFF;width:385px;height:45px;margin-left: 20px;padding:8px;"><?php if(isset($cat_text)) { echo $cat_text;} ?> </div>
+							</div>
+						<?php } ?>
+                        
                         <?php  if(isset($cat_image) && $cat_image!= "" && file_exists("./uploads/category-banners/".$cat_image)) { ?>
                         <div class="category-image" style="margin: 0px 0px 5px;">
                             <img src="<?php echo site_url('uploads/category-banners/'.$cat_image);?>" class="cat-image" style="width:830px; height:200px;">
                         </div>
                         <?php } ?>
-                         <?php if(isset($cat_title))  { ?>
-	                        <div style="margin-top: 8px;margin-left: 40px;margin-bottom: 8px">
-								<div style="background:#007BC3;color:#FFFFFF;font-weight:bold!important;width:385px;height:23px;margin-left: 20px; padding:8px;"><?php if(isset($cat_title)) { echo $cat_title;} ?> </div>
-								<div style="background:#2A2A2A;opacity:.80;color:#FFFFFF;width:385px;height:45px;margin-left: 20px;padding:8px;"><?php if(isset($cat_text)) { echo $cat_text;} ?> </div>
-							</div>
-						<?php } ?>
+                        
+                       
 						
-						</div>
+				    </div>
                         <div class="pull-left overview">
                             <div class="row">
                                 <div class="span3" style="text-align: center">

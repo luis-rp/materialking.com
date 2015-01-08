@@ -567,6 +567,10 @@ class Quote extends CI_Controller
 		}
 		
 		$quote = $this->quotemodel->getquotebyid($invitation->quote);
+		
+		if($quote){
+		$data['project']=$this->db->get_where('project',array('id'=>$quote->pid))->row();
+		}
 		if($this->quotemodel->checkbidcomplete($quote->id))
 		{
 			$message = 'Bid Already Completed, Thank You.';

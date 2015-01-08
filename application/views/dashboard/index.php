@@ -51,6 +51,7 @@ function invoice(invoicenum,quoteid)
 
 function preloadoptions(fromid)
 	 {
+	 	//alert("#smodal"+fromid);
     	$("#smodal"+fromid).modal();   	   
      }
 
@@ -243,7 +244,7 @@ function preloadoptions(fromid)
 							</form>
 
 							<?php
-							foreach($networkjoinedpurchasers as $njp){ ?>
+							foreach($networkjoinedpurchasers as $njp){   ?>
 
 							<div class="notification-messages">
 								<div class="date pull-right">
@@ -264,11 +265,12 @@ function preloadoptions(fromid)
 										<?php if($njp->wishtoapply){?>
 											/ <a href="<?php echo site_url('dashboard/creditapplication/'.$njp->purchasingadmin);?>">View Application</a>
 										<?php }?>
+						&nbsp;<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$njp->purchasingadmin)?>');">View Stats</a>&nbsp;
 										<br/>Resident of: <?php echo $njp->address;?>
 								</div>
 							</div>
 							</div>
-						<?php } }?>
+						<?php }  }?>
 					</div>
 				</div>
 
@@ -278,40 +280,40 @@ function preloadoptions(fromid)
 	</div>
 </div>
 
- <?php $oldfromid=""; $i=0; foreach ($newrequests as $requests){?>
- <div id="smodal<?php echo $requests->fromid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+ <?php $oldfromid=""; $i=0; foreach ($userdata as $u){ //echo "<pre>data-"; print_r($u->id);  ?>
+ <div id="smodal<?php echo $u->id;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->companyname;?></h4> 
-          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->fullname;?></h5>
-          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo $requests->from->address;?></h6>       
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->companyname;?></h4> 
+          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->fullname;?></h5>
+          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->address;?></h6>       
         </div>
         
         <div class="modal-body">       
         	<div>
           		<h6 class="semi-bold" id="myModalLabel" style="text-align:center">Member Since&nbsp;
-          		<?php $olddate1=strtotime($requests->from->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
+          		<?php $olddate1=strtotime(@$u->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
         	</div>
         
          	<div>
-        		<h4 class="semi-bold" id="myModalLabel">RFQ Award Statistics</h4>
+        		<h4 class="semi-bold" id="myModalLabel">User Statistics</h4>
         	</div>
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
-		        <div>
-		        	<p><?php echo count($requests->quoteitems)."&nbsp;RFQs Submitted and Processed";?></p>
+		       <div>
+		        	<p><?php echo "Total Number of Project&nbsp;".count(@$u->projects);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo count($requests->quoteitems)."&nbsp;RFQs Received Quotes Online";?></p>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$u->directquotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo count($requests->awarditems)."&nbsp;RFQs Awarded to Suppliers";?></p>
+		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$u->quotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo count($quoting)."&nbsp;RFQs Currently Open for Quoting";?></p>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$u->awarded;?></p>
 		        </div>  
 	        </div>	  
         </div>       
@@ -322,6 +324,6 @@ function preloadoptions(fromid)
       </div>   
     </div>
   </div>
-  <?php $oldfrommid=$requests->fromid; $i++; } ?> 
+  <?php $oldfrommid=$u->id; $i++; } //die;?> 
   
   
