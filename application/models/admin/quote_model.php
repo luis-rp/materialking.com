@@ -1106,7 +1106,7 @@ class quote_model extends Model {
     
        function getinvoicebybillnum($invoicenum,$invoicequote) {
 
-        $invoicesql = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, b.paymenttype, b.refnum,"
+  $invoicesql = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, " //b.paymenttype, b.refnum,
         			." b.customerduedate, c.name, c.email,c.address  
 				   FROM 			   
 				   " . $this->db->dbprefix('billitem') . " bi left join " . $this->db->dbprefix('bill') . " b on  bi.bill=b.id 
@@ -1123,7 +1123,7 @@ class quote_model extends Model {
         $invoice->quote = $invoicequote;
 
         $itemsql = "SELECT 
-					bi.*, c.title companyname, b.customerduedate     
+					bi.*, c.title companyname, b.customerduedate,  b.markuptotalpercent      
 				  FROM 				 
 				  " . $this->db->dbprefix('billitem') . " bi,
 				   " . $this->db->dbprefix('bill') . " b,
@@ -1865,8 +1865,8 @@ class quote_model extends Model {
 		$pafilter = '';
 		if(@$_POST['searchpurchasingadmin'])
 			$pafilter = " AND r.purchasingadmin='".$_POST['searchpurchasingadmin']."'";
-			
-		$query = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, b.paymenttype, b.refnum, b.customerduedate, b.purchasingadmin, bi.quantity, bi.ea, b.billedon, c.name, c.email, bi.itemid, bi.itemcode, bi.itemname  FROM 			   
+			//b.paymenttype, b.refnum,
+		$query = "SELECT billname, ROUND(SUM(bi.ea * bi.quantity),2) totalprice, b.status, b.paymentstatus, b.customerduedate, b.purchasingadmin, bi.quantity, bi.ea, b.billedon, c.name, c.email, bi.itemid, bi.itemcode, bi.itemname  FROM 			   
 				   " . $this->db->dbprefix('billitem') . " bi left join " . $this->db->dbprefix('bill') . " b on  bi.bill=b.id 
 				   left join " . $this->db->dbprefix('quote') . " q on b.quote=q.id left join  
 				   " . $this->db->dbprefix('customer') . " c on b.customerid = c.id    

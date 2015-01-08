@@ -5118,10 +5118,22 @@ class quote extends CI_Controller
         $data['shipments2'] = $shipments2;
         $data['heading'] = "TRACK Items";
         $data['adquoteid'] = $qid;
-        $data['bills'] = $this->db->select('sum(totalprice) as total, bill.*')
+        $dbills = $this->db->select('sum(totalprice) as total, bill.*')
 		             ->from('bill')->join('billitem','bill.id=billitem.bill','left')
 		             ->where('bill.quote',$qid)->group_by('billitem.bill')->get()->result();
-
+		foreach($dbills as $dbill){             
+		$resamountpaid = $this->db->select('sum(amountpaid) as amountpaid')
+		             ->from('bill')->join('pms_bill_payment_history','bill.id=pms_bill_payment_history.bill','left')
+		             ->where('bill.id',$dbill->id)->group_by('pms_bill_payment_history.bill')->get()->row();      
+			if($resamountpaid)             
+		     	$dbill->amountpaid =  $resamountpaid->amountpaid;             
+		    else 
+		    	$dbill->amountpaid = 0; 
+		}
+		//echo "<pre>",print_r($dbills); die;
+		
+		$data['bills'] = $dbills;
+		
 		$billeditems = $this->db->select('billitem.*')
 		             ->from('bill')->join('billitem','bill.id=billitem.bill')
 		             ->where('bill.quote',$qid)->get()->result();		             
@@ -9617,7 +9629,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $billarray['customerpayableto'] = @$_POST['customerpayableto'];                                   
                     $billarray['customerlogo'] = @$_POST['customerlogo'];       
 					$billarray['billedon'] = date('Y-m-d H:i:s');
-                    
+                    $billarray['project']=$this->session->userdata('managedprojectdetails')->id;
+					
                     $this->quote_model->db->insert('bill', $billarray);
 					$billid = $this->quote_model->db->insert_id();	
 					
@@ -9668,7 +9681,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		}
     		
     	}
-    	
+    	$settings = $this->settings_model->get_current_settings();
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Markup Total ('.@$_POST['markuptotalpercent'].'%)</td>';
     	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$_POST['markuptotalpercent']/100).'</td>';
@@ -9808,7 +9821,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $search = "  AND (" . implode(" AND ", $searches) . " )";
         }
         
-        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername from ". $this->db->dbprefix('bill') ." b left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id where 1=1 {$search} group by bi.bill";
+        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername from ". $this->db->dbprefix('bill') ." b left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id where 1=1 AND project = {$this->session->userdata('managedprojectdetails')->id} {$search} group by bi.bill";
         
         $billqryeres = $this->db->query($billquery);
         $bills = $billqryeres->result();
@@ -9834,13 +9847,27 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
                 $bill->bankaccount = $bankaccount;
 
+                if(@$bill->markuptotalpercent!="")
+                $bill->total = $bill->total + ($bill->total*$bill->markuptotalpercent/100);     
+                
                 $bill->companydetails = $company;
                 $bill->total = $bill->total + ($bill->total*$settings->taxpercent/100);
                           
+               	$payh = $this->db->select('sum(amountpaid) as amountpaid')->where('bill',$bill->id)->get('bill_payment_history')->row(); 
+                
+               	if($payh)
+               	$bill->totaldue = number_format($bill->total - $payh->amountpaid,2);
+               	else 
+               	$bill->totaldue = $bill->total;
+               	
+               	if($payh)
+               	$bill->totalpaid = number_format($payh->amountpaid,2);
+               	else 
+               	$bill->totalpaid = 0;
                	
                 $bill->actions = '<a href="javascript:void(0)" onclick="showBill(\'' . $bill->id . '\',\''.$bill->quote.'\')"><span class="icon-2x icon-search"></span></a>';
                 
-                $options = false;
+                /*$options = false;
                 foreach ($available_statuses as $status_key => $status_text)
                 {
 
@@ -9882,10 +9909,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 if($bill->paymentstatus=='Requested Payment')
                 {                	
                    	$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
-                }
+                }*/
 
-                $bill->status_selectbox = $status_html;
-                $bill->payment_status_selectbox = $payment_status_html;
+                //$bill->status_selectbox = $status_html;
+                //$bill->payment_status_selectbox = $payment_status_html;
 
                 $bill->total = number_format($bill->total,2);
 
@@ -9938,16 +9965,27 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     public function update_bill_payment_status()
     {
         //echo "<pre>",print_r($_POST);die;
+        if($_POST['total_due_amount_value'] - $_POST['amountpaid'] == 0)
         $_POST['paymentstatus'] = 'Paid';
-        $_POST['status'] = 'Pending';
+        else 
+        $_POST['paymentstatus'] = 'Partial';
+                
+        $billarray = array();    		
+		$billarray['status'] = "Pending";
+		$billarray['paymentstatus'] = $_POST['paymentstatus'];
+        $billarray['ispaid'] = $_POST['ispaid'];
         $this->db->where('id', $_POST['invoicenum']);
-        $amount = $_POST['amountpaid'];       
-        $ispaid = $_POST['ispaid'];
-        unset($_POST['invoicenum']);
-        $_POST['paymentdate'] = date('Y-m-d');
-        $this->db->update('bill', $_POST);
-
-
+        $this->db->update('bill', $billarray);
+      
+        
+        $billhistory = array();    		
+		$billhistory['bill'] = $_POST['invoicenum'];
+		$billhistory['paymenttype'] = $_POST['paymenttype'];
+        $billhistory['paymentdate'] = date('Y-m-d');
+        $billhistory['refnum'] = $_POST['refnum'];
+        $billhistory['amountpaid'] = $_POST['amountpaid'];        
+        $this->db->insert('pms_bill_payment_history', $billhistory);
+        
         /*if($_POST['paymentstatus'] == 'Paid')
         {
     		$company = $this->db->select('company.*')

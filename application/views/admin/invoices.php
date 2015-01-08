@@ -226,7 +226,35 @@ function jq( myid ) {
                     </form>
                     <?php if (!@$items) echo 'No Invoices Found.'; ?>
             	</div>
-                <div>
+                <div>          <?php if(@$items) { ?> 
+                				   <table style="width:24%;margin-left:74%;">
+                                    <thead>
+                                       <tr>
+                  	             			<th style="width:3%;padding: 0px;">Color</th>
+                  	             			<th style="padding: 0px;text-align:center;">Description</th>
+                                         </tr>
+									</thead>
+									<tbody>
+                                         <tr >
+                  	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment=Paid and Verification=Verified</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment=Unpaid/Requested Payment, Verification=Pending and Due Date is Past</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment=Paid and Verification=Pending</td>
+                                         </tr>
+                                         <tr>
+                  	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment=Unpaid and Verification=Pending</td>
+                                         </tr>                                                                               
+                                           </tbody>
+                                    </table>
+                                   <br>
+                                   <?php } ?> 
                     <table id="datatable" class="table table-bordered">
                     	<thead>
                     		<tr>
@@ -253,7 +281,8 @@ function jq( myid ) {
                     		//echo "<pre>",print_r($items);
                     		foreach($items as $item){ $i++;
                     		?>
-                    		<tr>
+                    		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
+ elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumberid_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
                     		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->invoicenum;?>"/>

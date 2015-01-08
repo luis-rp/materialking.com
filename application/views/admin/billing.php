@@ -65,6 +65,7 @@
         var invoice_payment_status_value = $('#invoice_payment_' + idnumber + " option:selected").val();
         var invoice_payment_type_value = $('#invoice_paymenttype_' + idnumber + " option:selected").val();
         var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
+        var total_due_amount_value = $('#total_due_' + idnumber).html();
         var invoice_number = $('#invoicenumber_' + idnumber).val();
         var refnum_value = $('#refnum_' + idnumber + "").val();
         var amountpaid = $('#amountpaid_' + idnumber).val();
@@ -77,15 +78,30 @@
 			return false;
 		if(invoice_payment_type_value=='')
 			return false;
+			
+		if(amountpaid == "" || amountpaid == 0)	
+			return false;
+		
+		invoice_payment_amount_value = invoice_payment_amount_value.replace('$', '');
+    	invoice_payment_amount_value = invoice_payment_amount_value.replace(/,/g, '');
+    	invoice_payment_amount_value = parseFloat(invoice_payment_amount_value,10);	
+    	
+    	total_due_amount_value = total_due_amount_value.replace('$', '');
+    	total_due_amount_value = total_due_amount_value.replace(/,/g, '');
+    	total_due_amount_value = parseFloat(total_due_amount_value,10);	
+				
         var url = "<?php echo base_url("admin/quote/update_bill_payment_status");?>";
         //alert(invoice_payment_status_value);
         $.ajax({
             type: "POST",
             url: url,
-            data: {invoicenum:invoice_number, paymentstatus: invoice_payment_status_value, paymenttype: invoice_payment_type_value, refnum: refnum_value, amountpaid: amountpaid, ispaid:ispaid }
+            data: {invoicenum:invoice_number, paymentstatus: invoice_payment_status_value, paymenttype: invoice_payment_type_value, refnum: refnum_value, amountpaid: amountpaid, ispaid:ispaid, invoice_payment_amount_value:invoice_payment_amount_value, total_due_amount_value:total_due_amount_value  }
         }).done(function(data) {
-        	$('#paymentstatus' + idnumber).html('Paid');
-            $('#message_div').html(data);
+        	if(total_due_amount_value - amountpaid == 0)	
+        		$('#paymentstatus' + idnumber).html('Paid');
+        	else
+        		$('#paymentstatus' + idnumber).html('Partial');
+            	$('#message_div').html(data);
         });
     }
     
@@ -295,6 +311,7 @@ function changeduedate(count,invoicenum,datedue)
                     			<th>Bill#</th>
                     			<th>Sent Date</th>
                     			<th>Due Date</th>
+                    			<th>Total Due</th>
                     			<th>Total Cost</th>
                     			<th>Payment</th>
                     			<!-- <th>Verification</th> -->
@@ -326,6 +343,9 @@ function changeduedate(count,invoicenum,datedue)
                     			
                     			<input type="hidden" id="canceldate" />
                     			</td>
+                    			
+                    			<td id="total_due_<?php echo $i;?>"><?php echo "$".$item->totaldue;?></td>
+                    			
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->total;?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
@@ -335,14 +355,14 @@ function changeduedate(count,invoicenum,datedue)
                     				<!-- <?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                     				<option <?php echo $item->paymenttype=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>
                     				<?php }?> -->
-                    				<option <?php echo $item->paymenttype=='Cash'?'SELECTED':'';?> value="Cash">Cash</option>
-                    				<option <?php echo $item->paymenttype=='Check'?'SELECTED':'';?> value="Check">Check</option>
+                    				<option <?php // echo $item->paymenttype=='Cash'?'SELECTED':'';?> value="Cash">Cash</option>
+                    				<option <?php // echo $item->paymenttype=='Check'?'SELECTED':'';?> value="Check">Check</option>
                     				</select>
-                    				<input type="hidden" id="hiddenpaytype<?php echo $i;?>" name="hiddenpaytype<?php echo $i;?>" value="<?php echo $item->paymenttype;?>" />
+                    				<input type="hidden" id="hiddenpaytype<?php echo $i;?>" name="hiddenpaytype<?php echo $i;?>" value="<?php // echo $item->paymenttype;?>" />
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
-                    				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
+                    				<input type="text" value="<?php // echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
                     				Total Value Paid? &nbsp;<input type="checkbox" name="ispaid" id="ispaid_<?php echo $i;?>" onclick="setpaidamount('<?php echo $i;?>',this.checked);" <?php if($item->ispaid ==1 ) { ?> checked='checked' <?php } ?> >
-                    				$ <input placeholder='Amount Paid' type="text" name="amountpaid" id="amountpaid_<?php echo $i;?>" value="<?php echo $item->amountpaid;?>" >
+                    				$ <input placeholder='Enter Amount' type="text" name="amountpaid" id="amountpaid_<?php echo $i;?>" value="<?php // echo $item->amountpaid;?>" >
                     				<button onclick="update_bill_payment_status('<?php echo $i;?>')">Save</button>
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
@@ -362,25 +382,28 @@ function changeduedate(count,invoicenum,datedue)
                     		<!--<?php
                     		$finaltotal += str_replace( ',', '', $item->total);
                     		
-                    		$totalpaid+= str_replace( ',', '', $item->amountpaid);
+                    		$totalpaid+= str_replace( ',', '', $item->totalpaid);
                     		
                     		/*if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
                     		{*/
                     			$item->total = str_replace( ',', '', $item->total );
-                    			$totalunpaid+= $item->total - $item->amountpaid;
+                    			
+                    			$item->totaldue = str_replace( ',', '', $item->totaldue );
+                    			
+                    			$totalunpaid+= str_replace( ',', '',($item->totaldue));
                     			
                     			$datediff = strtotime($item->customerduedate) - time();
      							$datediff = abs(floor($datediff/(60*60*24)));
                     			if($item->customerduedate>=date('Y-m-d')){                    			
-                    				$future[] = ($item->total-$item->amountpaid);
+                    				$future[] = ($item->totaldue);
                     			}elseif($datediff>=1 && $datediff<=30){ 
-                    				$current[] = ($item->total-$item->amountpaid);
+                    				$current[] = ($item->totaldue);
                     			}elseif($datediff>=31 && $datediff<=60){ 
-                    				$daysold60[] = ($item->total-$item->amountpaid);
+                    				$daysold60[] = ($item->totaldue);
                     			}elseif($datediff>=61 && $datediff<=90){ 
-                    				$daysold90[] = ($item->total-$item->amountpaid);
+                    				$daysold90[] = ($item->totaldue);
                     			}elseif($datediff>=91 && $datediff<=120){ 
-                    				$daysold120[] = ($item->total-$item->amountpaid);
+                    				$daysold120[] = ($item->totaldue);
                     			}
                     		//} ?>-->
 

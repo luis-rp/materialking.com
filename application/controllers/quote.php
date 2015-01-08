@@ -791,7 +791,7 @@ class Quote extends CI_Controller
 		
 		//for export link
 		$data['invitekey'] = $key;
-		
+		$data['invid']=$invitation->id;
 		$this->db->where('id',$invitation->purchasingadmin);
 		$pa = $this->db->get('users')->row();
 		if($pa)

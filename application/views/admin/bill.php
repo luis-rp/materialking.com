@@ -305,7 +305,13 @@ function shownotice(newval,oldval,id){
 						  </tr>
 						  ';
                 }
+                
+                if(@$invoiceitem['markuptotalpercent']!="")
+                $totalprice = $totalprice + ($totalprice*$invoiceitem['markuptotalpercent']/100);    
+                                
                 $taxtotal = $totalprice * $config['taxpercent'] / 100;
+                                
+                
                 $grandtotal = $totalprice + $taxtotal;
                 echo '<tr>
 					    <td colspan="7" rowspan="3">

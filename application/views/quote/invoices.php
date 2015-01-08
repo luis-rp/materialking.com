@@ -179,6 +179,34 @@ function invoice(invoicenum,invoicequote)
 
                             <div class="grid-body no-border">
  <?php //echo "<pre>"; print_r($invoices); die; ?>
+                                
+  									<table style="width:24%;margin-left:74%;">
+                                    <thead>
+                                       <tr>
+                  	             			<th style="width:3%;padding: 0px;">Color</th>
+                  	             			<th style="padding: 0px;text-align:center;">Description</th>
+                                         </tr>
+									</thead>
+									<tbody>
+                                         <tr >
+                  	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Verified</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid/Requested Payment, Status=Pending and Due Date is Past</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Pending</td>
+                                         </tr>
+                                         <tr>
+                  	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid and Status=Pending</td>
+                                         </tr>                                                                               
+                                           </tbody>
+                                    </table>
+                                   <br>
                                     <table id="datatable" class="table no-more-tables general">
                                     <thead>
                                        <tr>

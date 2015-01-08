@@ -1052,10 +1052,12 @@ function setcustomerdata(id)
 								$f_total=0;
                                 $p_total=0;
                                 $u_total=0;
-                                foreach ($bills as $invoice) {?>
+                                foreach ($bills as $invoice) {
+                                $invoice->total = $invoice->total + ($invoice->total * $invoice->markuptotalpercent/100);	
+                                ?>
                                 <tr>
                                     <td><?php echo $invoice->billname; ?></td>
-                                    <td><?php echo "$ ".$invoice->total; ?></td>
+                                    <td><?php echo "$ ".number_format(($invoice->total+ ($invoice->total * $config['taxpercent'] / 100) ),2); ?></td>
                                     <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->customerduedate){echo date("m/d/Y", strtotime($invoice->customerduedate));}else{ echo "No Date Set";} ?></td>
                                     <td><?php echo $invoice->status; ?></td>
@@ -1069,10 +1071,10 @@ function setcustomerdata(id)
                                 $f1_total=$invoice->total+number_format($invoice->total * $config['taxpercent'] / 100, 2);
                                 $f_total +=$f1_total;
                                 
-                                   $p1_total=$invoice->amountpaid+number_format($invoice->amountpaid * $config['taxpercent'] / 100, 2);
+                                   $p1_total=$invoice->amountpaid;
                                    $p_total +=$p1_total;
                                 
-                                	 $u1_total=($invoice->total - $invoice->amountpaid) +number_format(($invoice->total - $invoice->amountpaid) * $config['taxpercent'] / 100, 2);
+                                	 $u1_total=($invoice->total+number_format($invoice->total * $config['taxpercent'] / 100, 2) - $invoice->amountpaid);
                                      $u_total +=$u1_total;
                                 
 
