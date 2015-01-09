@@ -313,7 +313,12 @@ function shownotice(newval,oldval,id){
                                 
                 
                 $grandtotal = $totalprice + $taxtotal;
-                echo '<tr>
+                echo '  <tr>
+					    <td colspan="7" align="left">&nbsp;</td>
+					    <td align="left">Markup Total('.@$invoiceitem['markuptotalpercent'].' %)</td>
+					    <td align="left">$ ' . number_format($totalprice*@$invoiceitem['markuptotalpercent']/100,2) . '</td>
+					  </tr>
+                		<tr>
 					    <td colspan="7" rowspan="3">
                       		<div style="width:70%">
                           		<br/>
@@ -322,16 +327,16 @@ function shownotice(newval,oldval,id){
                                 <h5 class="text-right semi-bold">Thank you for your business</h5>
                       		</div>
                   		</td>
-					    <td align="right">Subtotal</td>
-					    <td align="right">$ ' . number_format($totalprice, 2) . '</td>
+					    <td align="left">Subtotal</td>
+					    <td align="left">$ ' . number_format($totalprice, 2) . '</td>
 					  </tr>
 					  <tr>
-					    <td align="right">Tax</td>
-					    <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
+					    <td align="left">Tax</td>
+					    <td align="left">$ ' . number_format($taxtotal, 2) . '</td>
 					  </tr>
 					  <tr>
-					    <td align="right">Total</td>
-					    <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
+					    <td align="left">Total</td>
+					    <td align="left">$ ' . number_format($grandtotal, 2) . '</td>
 					  </tr>
 					';
                 ?>

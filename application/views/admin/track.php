@@ -1,5 +1,6 @@
-<?php echo '<script>var createbillurl="'.site_url('admin/quote/createbill').'";</script>'?>
+<?php echo '<script type="text/javascript">var createbillurl="'.site_url('admin/quote/createbill').'";</script>'?>
 <?php echo '<script type="text/javascript">var getcustomerdataurl = "' . site_url('admin/quote/getcustomerdata') . '";</script>'; ?>
+<?php echo '<script type="text/javascript">var previewbillurl ="'.site_url('admin/quote/previewbill').'";</script>'?>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
@@ -355,17 +356,20 @@ function acceptall()
     });
 }
 
-function addalltobill(quoteid,cnt){
+function addalltobill(quoteid,cnt,prevbillitems,billcnt,currentbillitems){
 	
-	$('#billawarditems').val('');
+	$('#prevbillitemcount').val(billcnt);
+	$('#prevbillawarditems').val(prevbillitems);	
+	$('#billawarditems').val(currentbillitems);
 	$('#billwindow').html('');	
-	$('#billitemcount').val('0');	
+	$('#billitemcount').val(billcnt);	
 	$('#billwindow').html(cnt+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quoteid+')" id="createallbillbtn" />');
 	$('#billingtype').val('all');
-	
+	$('#rem'+quoteid).css('display','block');
 }
 
-function addtobill(quoteid, awardid){
+function addtobill(quoteid, awardid,isprev){
+		
 	awarditemstr = $('#billawarditems').val();
 	var res = awarditemstr.split(",");
 	if($.inArray(awardid,res) ==-1){
@@ -379,12 +383,29 @@ function addtobill(quoteid, awardid){
 	$('#billawarditems').val($('#billawarditems').val()+","+awardid);
 	$('#billwindow').html($('#billitemcount').val()+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quoteid+')" id="createallbillbtn" />');
 	$('#billingtype').val('single');
+	
+	
+	if(isprev=="1"){
+		if($('#prevbillitemcount').val()=="0")
+			$('#prevbillawarditems').val(awardid);
+		else
+			$('#prevbillawarditems').val($('#prevbillawarditems').val()+","+awardid);
+			
+		$('#prevbillitemcount').val(parseInt($('#prevbillitemcount').val())+1)	
+		
+	}
+	
 	}else
 	alert('item already exists');
+		
+	$('#rem'+awardid).css('display','block');
+	
 }
 
 function createallbill(quoteid){
 	
+	if($('#prevbillitemcount').val()>0)
+	$('#previtemmsg').html(($('#prevbillitemcount').val()+' item/s on Bill already exists on previous Bill'));
 	$('#billmodal').modal();
 	$('#customerquoteid').val(quoteid);	
 }
@@ -456,6 +477,97 @@ function setcustomerdata(id)
     	$('#customeraddress').prop("readonly",false);
     	$('#customeremail').prop("readonly",false);
     }
+}
+
+function previewbillitems(){
+	
+	var quote = $('#customerquoteid').val();
+	var awarditemstr = $('#billawarditems').val();
+	var res2 = awarditemstr.split(",");
+	var prevawarditemstr = $('#prevbillawarditems').val();
+	var prevres2 = prevawarditemstr.split(",");
+	
+	var itemstr = "";
+	
+	$.ajax({
+            type: "post",
+            url: previewbillurl,
+            sync:false,
+            data: "quote=" + quote,
+        }).done(function(data) {
+            if (data)
+            {  
+               itemstr += '<table id="previewtab">';	 
+               var obj = $.parseJSON(data);         
+               $.each(obj, function( index, value ) {
+               			
+				if($.inArray(value.id,res2) !=-1){	
+					itemstr +='<tr id="'+value.id+'" ><td>'+value.itemname+'</td><td>'+value.quantity+'</td><td>'+value.ea+'</td>';
+					if($.inArray(value.id,prevres2) !=-1){
+						itemstr +='<td>*already on previous bill</td><td><a href="javascript:void(0)" onclick="removeitem('+value.id+','+quote+')">Remove</a></td></tr>';	
+               		}else{
+               			itemstr +='<td>&nbsp;</td><td>&nbsp;</td></tr>';
+               		}
+				}
+               });
+               itemstr += '</table>';	 
+               $("#bpitems").html(itemstr);
+               $("#billmodal").modal('hide');
+               $("#billpreviewmodal").modal();
+            }
+            
+            
+            /*$('#billawarditems').val('');
+			$('#billwindow').html('');	
+			$('#billitemcount').val('0');	
+			$('#billingtype').val('');*/
+        });
+	
+}
+
+function removeitem(id,quote){
+	
+	var awarditemstr = $('#billawarditems').val();
+	var values = removeCsvVal(awarditemstr, id);
+	if(values!="")
+	$('#billawarditems').val(values);
+	else
+	$('#billawarditems').val('');
+	
+	$('#billitemcount').val(parseInt($('#billitemcount').val())-1);	
+	$('#prevbillitemcount').val(parseInt($('#prevbillitemcount').val())-1);	
+	$('#previtemmsg').html(parseInt($('#prevbillitemcount').val())+' item/s on Bill already exists on previous Bill');
+	$('#billwindow').html($('#billitemcount').val()+' items on bill <br> Done adding Bill items? <br> <input type="button" value="Create Bill" onclick="createallbill('+quote+')" id="createallbillbtn" />');
+	$("#"+id).css('display','none');
+	$("#"+id).remove();
+	$('#rem'+id).css('display','none');
+}
+
+
+function removeCsvVal(source,toRemove)      //source is a string of comma-seperated values,
+{                                                    //toRemove is the CSV to remove all instances of
+    var sourceArr = source.split(",");               //Split the CSV's by commas
+    var toReturn  = "";                              //Declare the new string we're going to create
+    for (var i = 0; i < sourceArr.length; i++)       //Check all of the elements in the array
+    {
+        if (sourceArr[i] != toRemove)                //If the item is not equal
+            toReturn += sourceArr[i] + ",";          //add it to the return string
+    }
+    return toReturn.substr(0, toReturn.length - 1);  //remove trailing comma
+}
+
+
+function removeallitems(quote){
+ 	
+	$('#billawarditems').val('');
+	$('#billwindow').html('');	
+	$('#billitemcount').val('0');	
+	$('#billingtype').val('');	
+	$('#prevbillitemcount').val('0');	
+	$('#previtemmsg').html(parseInt($('#prevbillitemcount').val())+' item/s on Bill already exists on previous Bill');
+	$('#rem'+quote).css('display','none');
+	$("#previewtab").css('display','none');
+	$("#previewtab").remove();
 }
 
 
@@ -590,8 +702,16 @@ function setcustomerdata(id)
 
 						$counter_kk = 1;
 						$billcnt = 0;
-						$alltotal = 0; $cnt = count($awarded->items); foreach ($awarded->items as $q) {
+						$alltotal = 0; $cnt = count($awarded->items); 
+						$prevbillitems = "";
+						$currentbillitems = "";
+						foreach ($awarded->items as $q) {
 
+						if($currentbillitems=="")						
+						$currentbillitems = $q->id;
+						else 
+						$currentbillitems .= ",".$q->id;
+						
 						$counter_kk++;
 
 						?>
@@ -658,7 +778,8 @@ function setcustomerdata(id)
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
                                 <td>$ <?php echo $q->totalprice; ?>
-                                <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>')" >+ Add to bill</a></span><br><?php if (array_key_exists($q->company, $billitemdata)){ if(in_array(@$q->itemid,$billitemdata[$q->company])){ echo "Already Billed"; $billcnt++;  } } ?>
+                                <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>','<?php if (array_key_exists($q->company, $billitemdata) && isset($billitemdata[$q->company][$q->award]) ){ if(in_array(@$q->itemid,$billitemdata[$q->company][$q->award])){ echo "1"; }else echo "0"; } else echo "0"; ?>')" >+ Add to bill</a></span><br><?php if (array_key_exists($q->company, $billitemdata) && isset($billitemdata[$q->company][$q->award]) ){ if(in_array(@$q->itemid,$billitemdata[$q->company][$q->award])){ echo "Already Billed"; $billcnt++; if($prevbillitems=="") $prevbillitems = $q->id; else $prevbillitems .= ",".$q->id;  } } ?>
+                                 <span style="display:none;" id="<?php echo 'rem'.$q->id;?>"><a href="javascript:void(0)" onclick="removeitem('<?php echo $q->id;?>','<?php echo $quote->id;?>')">- Remove</a></span>
                                 </td>
                                 <td><?php echo $q->daterequested;?><br/>
                                 
@@ -795,7 +916,7 @@ function setcustomerdata(id)
                     <tr>
                         <td colspan="6" style="text-align:right">Total: </td>
                         <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">
-                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>')" >+ Add all items to bill</a></span> <br> <?php if(@$billcnt == $cnt) { echo "All items already Billed"; } ?> </td>
+                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>','<?php echo htmlspecialchars(addslashes($prevbillitems));?>','<?php echo @$billcnt;?>','<?php  echo htmlspecialchars(addslashes($currentbillitems)); ?>')" >+ Add all items to bill</a></span> <br> <?php if(@$billcnt == $cnt) { echo "All items already Billed"; } ?>   <span style="display:none;" id="<?php echo 'rem'.$quote->id;?>"><a href="javascript:void(0)" onclick="removeallitems('<?php echo $quote->id;?>')">- Remove All</a></span> </td>
                         <td>
                         <span style="align:right;" id="billwindow"></span>
                         </td></tr></table>
@@ -1329,7 +1450,8 @@ function setcustomerdata(id)
 <div id="billmodal" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
     <div class="modal-header">
 		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-    	<h3>Bill <span id="billspan"></span></h3>
+    	<h3>Bill <span id="billspan"></span>&nbsp;<span style="text-align:center;"><a href="javascript:void(0)" onclick="previewbillitems();">Edit/Preview Bill</a></span></h3>
+    	<span style="text-align:center;" id="previtemmsg"></span>
 	</div>
 	<div class="modal-body" id="billwrapper">
 		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
@@ -1364,6 +1486,8 @@ function setcustomerdata(id)
 		<input type="hidden" name="billingtype" id="billingtype"/>
 		<input type="hidden" name="billitemcount" id="billitemcount" value="0" />
 		<input type="hidden" name="billawarditems" id="billawarditems"/>
+		<input type="hidden" name="prevbillitemcount" id="prevbillitemcount" value="0" />
+		<input type="hidden" name="prevbillawarditems" id="prevbillawarditems"/>
 		</tr> 
 		</table>
 		</form>
@@ -1392,3 +1516,14 @@ function setcustomerdata(id)
                 </div>
             </div>
         </div>
+        
+       
+        
+        <div class="modal hide fade" id="billpreviewmodal">
+		<div class="modal-header">
+		<button aria-hidden="true" data-dismiss="modal"  onclick="$('#billmodal').modal('show')" class="close" type="button">x</button>
+    	</div>
+          <div class="modal-body">
+          <span id="bpitems"></span>          
+          </div>
+        </div> 

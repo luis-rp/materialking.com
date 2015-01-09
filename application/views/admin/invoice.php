@@ -303,7 +303,7 @@ function shownotice(newval,oldval,id){
                       		<div style="width:70%">
                           		<br/>
                           		<h4 class="semi-bold">Terms and Conditions</h4>
-                                <p>'.$company->invoicenote.'</p>
+                                <p>'.@$company->invoicenote.'</p>
                                 <h5 class="text-right semi-bold">Thank you for your business</h5>
                       		</div>
                   		</td>

@@ -492,7 +492,7 @@ function clearall(id)
                                     	<?php }?>
                                     </select>
                                     </td><td>
-                                    &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My Iitems only
+                                    &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My items only
                                     </td>
                                     <td>Filter Options:</td>
                                     <td>
@@ -580,7 +580,7 @@ function clearall(id)
                                                 <td class="v-align-middle">
                                                 	<input type="text" style="width: 60px;" placeholder="Price" id="price1<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->ea?>"
-                                                	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                                                	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"/>
                                                 	<?php if(@$item->companyitem){?>
                                                 	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">
                                                 		<i class="fa fa-search"></i>

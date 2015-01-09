@@ -3957,17 +3957,19 @@ class quote extends CI_Controller
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
 
+        if(@$invoice->items[0]->companyid){
         $company = $this->db->from('received')
                     ->join('awarditem','received.awarditem=awarditem.id')
-                    ->join('company','company.id=awarditem.company')
+                    ->join('company','company.id=awarditem.company')->where('company',$invoice->items[0]->companyid)
                     ->get()->row();
-
+        $data['company'] = $company;            
+        }	
+                    
         $data['quote'] = $quote;
         $data['awarded'] = $awarded;
         $data['config'] = $config;
         $data['project'] = $project;
-        $data['invoice'] = $invoice;
-        $data['company'] = $company;
+        $data['invoice'] = $invoice;        
         $data['heading'] = "Invoice Details";
         $data['purchasingadmin'] = $pa;
         
@@ -5141,7 +5143,7 @@ class quote extends CI_Controller
 		$billitemdata = array();
 		if($billeditems){
 		foreach($billeditems as $itemdata){
-			$billitemdata[$itemdata->company][] = $itemdata->itemid;
+			$billitemdata[$itemdata->company][$itemdata->award][] = $itemdata->itemid;
 		}
 		}
 
@@ -9701,12 +9703,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Tax</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$settings['taxrate']/100).'</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$settings->taxrate/100).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
     	
-    	$finaltotal = $subtotal + (@$totalprice*@$settings['taxrate']/100);
+    	$finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
     	$emailitems.= '<td style="padding-left:5;">'.@$finaltotal.'</td>';
@@ -9724,7 +9726,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
 		$this->email->initialize($config);
-		$this->email->from($settings['adminemail']);
+		$this->email->from($settings->adminemail);
 		$this->email->to(@$_POST['customeremail']);
 		$this->email->subject('Bill');
 		$this->email->message($send_body);
@@ -10136,6 +10138,15 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
+	}
+	
+	
+	function previewbill(){
+		if(!$_POST)
+		die;
+		
+		$awardedbid = $this->quote_model->getawardedbidquote($_POST['quote']);
+		echo json_encode($awardedbid->items);
 	}
 		
     // End

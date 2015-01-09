@@ -446,11 +446,11 @@ class Quote extends CI_Controller
 		
 		$data['draft'] = $draftitems?1:0;
 		
-		$data['company'] = $company;
-		
+		$data['company'] = $company;	
 		$this->db->where('id',$invitation->purchasingadmin);
 		$pa = $this->db->get('users')->row();
 		$data['purchasingadmin'] = $pa;
+		$data['invid'] = $invitation->id;
 		$this->load->view('quote/review',$data);
 	}
 	
@@ -2459,7 +2459,8 @@ or edit your quote.</div></div></div>');
 		$data['itemslost'] = $itemslost;
 		$data['quote'] = $quote;
 		$data['bid'] = $bid;
-		$data['biditems'] = $biditems;
+		if(isset($biditems)){
+		$data['biditems'] = $biditems;}
 		$data['award'] = $award;
 		$data['quoteid'] = $quoteid;
 		

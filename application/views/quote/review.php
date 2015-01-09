@@ -138,8 +138,10 @@ function selectall(sel)
 											Quote#
 							    		</td>
 							    		<td colspan="7">
-											<input type="text" name="quotenum" value="<?php echo $quotenum?>" required/>
-							    		</td>
+							    		<?php $sub=strtoupper($this->session->userdata('company')->title); $subst=substr($sub,0,4); $fstr=$subst."Q";?>
+											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { 
+												echo $fstr;printf('%06d',($invid)); echo ".000";}?>" required/>
+							    		</td>							    		
 							    	</tr>
 							    	<tr>
 							    		<td>

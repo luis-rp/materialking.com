@@ -90,6 +90,10 @@
     	total_due_amount_value = total_due_amount_value.replace(/,/g, '');
     	total_due_amount_value = parseFloat(total_due_amount_value,10);	
 				
+    	if(amountpaid>total_due_amount_value){
+			$('#message_div').html('<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Amount to pay cannot be greater than Total Due Amout</div></div>');
+    		return false;
+    	}	
         var url = "<?php echo base_url("admin/quote/update_bill_payment_status");?>";
         //alert(invoice_payment_status_value);
         $.ajax({
@@ -109,11 +113,11 @@
     function setpaidamount(idnumber,chk){
     	    	
     	 if(chk == true){
-    	 var invoice_payment_amount_value = $('#invoice_paymentamount_' + idnumber).html();
-    	 invoice_payment_amount_value = invoice_payment_amount_value.replace('$', '');
-    	 invoice_payment_amount_value = invoice_payment_amount_value.replace(/,/g, '');
-    	 invoice_payment_amount_value = parseFloat(invoice_payment_amount_value,10);
-    	 $('#amountpaid_' + idnumber).val(invoice_payment_amount_value);
+    	 var total_due = $('#total_due_' + idnumber).html();
+    	 total_due = total_due.replace('$', '');
+    	 total_due = total_due.replace(/,/g, '');
+    	 total_due = parseFloat(total_due,10);
+    	 $('#amountpaid_' + idnumber).val(total_due);
     	 }else{
     	 	$('#amountpaid_' + idnumber).val('');
     	 }

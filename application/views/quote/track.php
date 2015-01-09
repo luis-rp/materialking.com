@@ -382,7 +382,7 @@ tr.still-due td
 					</td>
 					<td><?php echo $i->status;?></td>
 					<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
-					<td>$<?php echo $amount;?>z</td>
+					<td>$<?php echo $amount;?></td>
 					<td>
 						<?php echo $i->paymentstatus;?>
 

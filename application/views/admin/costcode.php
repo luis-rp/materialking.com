@@ -6,16 +6,19 @@ $(document).ready(function(){
 //-->
 
 function changeparent(projectid){
-	
 	$. ajax ({
 					type: "POST",					
 					data: {"projectid" : projectid},
 					url: "getcostcodefromproject",
 					success: function (data) {
 						if(data){
+							$('#changecost').hide();
+							$('#changeajaxcost').show();
+							$('#changeajaxcosttr').html(data);
 							$('#parent').empty();		
 							$('#parent').append( new Option("Top Parent","") ); 				
-							$('#parent').append(data);							
+							$('#parent').append(data);
+														
 							$('#parent').val('');
 						}
 					},
@@ -111,15 +114,19 @@ function changeparent(projectid){
   </form>
       
          </div><!-- End of Pull left -->
-   <?php if(isset($costcodes) && count($costcodes) > 0) { ?>
+    <?php if(isset($costcodes) && count($costcodes) > 0) { ?>
 	   <div class="pull-right" style="width:26%;">
 		   <div class="table-responsive">
 			   <h3>Existing Cost Codes</h3>
-				  <table class="table table-hover">
+				  <table id="changecost" class="table table-hover">
 				  <tr><th>Cost Code Name</th></tr>
 				    <?php foreach ($costcodes as $costcode) { ?>
-				  		<tr><td><?php echo $costcode->code; ?></td></tr>
+				  		<tr><td ><?php echo $costcode->code; ?></td></tr>
 				     <?php } ?>
+				  </table>
+				   <table id="changeajaxcost" class="table table-hover" style="display:none;">
+				        <tr><th>Cost Code Name</th></tr>				    
+				  		<tr id="changeajaxcosttr"></tr>				     
 				  </table>
 			</div>
 	   </div><!-- End of Pull right -->
