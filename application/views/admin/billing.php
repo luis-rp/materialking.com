@@ -236,6 +236,12 @@ function changeduedate(count,invoicenum,datedue)
 				
 		}
 	}
+	
+	
+	function showhistorymodal(billid){
+		
+		$('#billhistorymodal'+billid).modal();
+	}
 
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
@@ -371,6 +377,7 @@ function changeduedate(count,invoicenum,datedue)
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
                     				<?php }?>
+                    				<br/><a href="javascript:void(0)" onclick="showhistorymodal('<?php echo $item->id;?>');">view payment history</a>
                     				<?php if($item->paymentstatus=='Requested Payment'){?>
                     				<br/>
                     				<i class="icon-lightbulb">
@@ -523,6 +530,7 @@ function changeduedate(count,invoicenum,datedue)
 			    		<td><?php echo array_sum($daysold120); ?></td>
 			    		<td><?php echo array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120); ?></td>
 			    	</tr>
+			    </table>	
               <?php } ?>
               </div>  
                 
@@ -606,3 +614,53 @@ function changeduedate(count,invoicenum,datedue)
 	</div>
 
 </div>
+
+
+
+
+<?php foreach($items as $item){ ?>
+
+<div class="modal hide fade" id="billhistorymodal<?php echo $item->id;?>" style="display: none;">
+		<div class="modal-header">		
+		<h3>Bill History</h3>
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+    	</div>
+          <div class="modal-body">
+         <!-- <table>
+          <tr>
+          <th>Bill#&nbsp;<?php echo @$item->billname;?></th><th>Bill Total&nbsp;<?php echo @$item->total;?></th><th>Still Due&nbsp;<?php echo @$item->totaldue;?></th>
+          </tr>          
+          </table>-->
+          <div>
+          <span style="font-weight:bolder;font-size:14px;">Bill#:&nbsp;</span><span><?php echo @$item->billname.",";?></span>&nbsp;
+          <span style="font-weight:bolder;font-size:14px;">Bill Total:&nbsp;</span><span><?php echo @$item->total.",";?></span>&nbsp;
+          <span style="font-weight:bolder;font-size:14px;">Still Due:&nbsp;</span><span><?php echo @$item->totaldue;?></span>
+         
+          </div>
+          <table>          
+          <?php if(@$payment_history){ 
+          $htmlbd = "";
+          $htmlhd = "";
+          foreach ($payment_history as $pay_h){ if($pay_h->bill == $item->id){
+          
+          	$htmlhd = '<tr>
+          <th>Amount Paid</th><th>Payment Type</th><th>Date Paid</th>
+          </tr>';
+          	
+          	$htmlbd .='<tr>
+          <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.@$pay_h->paymentdate.'</td>
+          </tr>';
+           } } 
+          }else{ 
+          $htmlbd = "<tr><td>No Payment History Available</td></tr>";
+          }
+          
+          echo $htmlhd."".$htmlbd;     ?>     
+          
+          </table>
+          
+          </div>
+      </div>
+     
+
+<?php } ?>

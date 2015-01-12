@@ -883,7 +883,7 @@ $( document ).tooltip();
                                 </thead>
                                 <tbody>
                                 <?php                                    
-                                    if($inventory)
+                                    if($inventory)  
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
                                     	
@@ -919,7 +919,7 @@ $( document ).tooltip();
                                        <?php }else{?><?php //echo "<pre>"; print_r($inv); die;?>
                                     	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>)">
                                             <i class="icon icon-plus"></i>
-                                        </a>
+                                        </a><br><?php if($inv->hasdiscount==1) echo "Volume Discount.";?>
                                         <?php } ?>
                                     </td>
                                 </tr>

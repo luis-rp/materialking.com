@@ -99,7 +99,8 @@
                                                 <td class="v-align-middle"><?php echo $ai->quantity;?></td>
                                                 <td class="v-align-middle"><?php echo $ai->unit;?></td>
                                                 <td class="v-align-middle"><?php if(isset($biditems)) { foreach($biditems as $biditem) {  if($biditem->itemid == $ai->itemid) { echo "$".$biditem->ea; $bidea = $biditem->ea; } } } ?></td>
-                                                <td class="v-align-middle"><?php if($bidea!=0) { echo "$".round($ai->quantity * $bidea,2); } else { echo "$".round($ai->quantity * $ai->ea,2); } ?></td>
+                                                <td class="v-align-middle"><?php if($bidea!=0) { echo "$".round($ai->quantity * $bidea,2); } 
+                                                //else { echo "$".round($ai->quantity * $ai->ea,2); } ?></td>
                                                 <td class="v-align-middle"><?php echo $ai->daterequested;?></td>
                                                 <td class="v-align-middle"><?php echo $ai->notes;?></td>
                                             </tr>

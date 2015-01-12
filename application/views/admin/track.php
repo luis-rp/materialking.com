@@ -1189,13 +1189,13 @@ function removeallitems(quote){
                                     </td>
                                 </tr>
                                  <?php
-                                $f1_total=$invoice->total+number_format($invoice->total * $config['taxpercent'] / 100, 2);
+                                $f1_total=number_format($invoice->total+($invoice->total * $config['taxpercent'] / 100),2);
                                 $f_total +=$f1_total;
                                 
                                    $p1_total=$invoice->amountpaid;
                                    $p_total +=$p1_total;
                                 
-                                	 $u1_total=($invoice->total+number_format($invoice->total * $config['taxpercent'] / 100, 2) - $invoice->amountpaid);
+                                	 $u1_total=number_format(($invoice->total+($invoice->total * $config['taxpercent'] / 100) - $invoice->amountpaid),2);
                                      $u_total +=$u1_total;
                                 
 

@@ -1416,6 +1416,11 @@ function changetab(tabname){
                                      <img src="<?php echo site_url('uploads/item/big.png');?>" style="max-height: 120px; padding: 20px;width:120px; height:120px;" width="120" height="120">
                                      <?php }?>
                                     </div>
+                                     <?php if(isset($inv->hasdiscount)){ if($inv->hasdiscount) { ?>
+                                                <div class="price2" style="position:absolute; left:186px; top:5px;">
+                                                <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">
+                                                </div>
+                                                <?php } } ?>
                                 </div>
 
                                 <div class="body1 span6">

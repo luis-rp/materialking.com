@@ -7,6 +7,7 @@ $(document).ready(function(){
 
 function changeparent(projectid){
 	$. ajax ({
+		
 					type: "POST",					
 					data: {"projectid" : projectid},
 					url: "getcostcodefromproject",
@@ -20,6 +21,30 @@ function changeparent(projectid){
 							$('#parent').append(data);
 														
 							$('#parent').val('');
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+}
+
+function changeproject(catid){
+	$. ajax ({
+		           
+					type: "POST",					
+					data: {"catid" : catid},
+					url: "getprojectfromcostcode",
+					success: function (data) {
+						if(data){
+							/*$('#changecost').hide();
+							$('#changeajaxcost').show();
+							$('#changeajaxcosttr').html(data);*/
+							$('#project').empty();		
+							//$('#parent').append( new Option("Top Parent","") ); 				
+							$('#project').append(data);														
+							$('#project').val('');
 						}
 					},
 					error: function(x,y,z){
@@ -47,7 +72,7 @@ function changeparent(projectid){
     <div class="control-group">
     <label class="control-label">Select Parent</label>
     <div class="controls">
-      <select id="parent" name="parent">
+      <select id="parent" name="parent" onchange="changeproject(this.value);">
       	<option value="0">Top Parent</option>
       	<?php echo $parentcombooptions;?>
 	  </select>

@@ -213,7 +213,7 @@ function jq( myid ) {
             <table id="MyGrid" class="table table-bordered datagrid">
              <thead>
               <tr>
-                <th>
+                <td>
                 <div>
                
              <!--   <form class="form-inline" style="padding-top: 10px; padding-bottom:2px;" action="<?php echo site_url('admin/quote/index/'.$pid)?>" method="post">
@@ -259,7 +259,7 @@ function jq( myid ) {
                 </form>-->
                 
                 </div>
-                </th>
+                </td>
                </tr>
               </thead>
               <?php if ($counts) {?>
@@ -306,10 +306,12 @@ function jq( myid ) {
                 </th>
                </tr>
               </tfoot>
-              <?php }else{ ?>
-              <tr><th>No Shipments Pending Acknowledgement</th></tr>
               <?php } ?>
             </table>
+            
+ <?php if (!$counts) { ?>
+             <div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Shipments Pending Acknowledgement</div></div>              <?php } ?>
+           </div>
                        
            </div>
            

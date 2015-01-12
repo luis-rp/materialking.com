@@ -423,10 +423,10 @@
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	<div class="span7">
 	  <h3 class="box-header" style="width:94.5%">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
-	  <?php if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
-				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo $Totalawardedtotal; ?></strong></div>
+	  <?php // if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
+				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo @$Totalawardedtotal; ?></strong></div>
 
-				<?php } ?>
+				<?php// } ?>
 	    		<?php if(@$costcodesjson){?>
 	    		<div id="chart_pie" style="height: 420px;"></div>
 	    		<?php } else {?>

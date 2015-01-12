@@ -9960,6 +9960,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		    $this->data['message'] = 'No Records';
 		} */
 		
+		$payment_history = $this->db->select('bill_payment_history.*')->get('bill_payment_history')->result(); 
+		//echo "<pre>",print_r($payment_history);
+		$data['payment_history'] = $payment_history;
         $this->load->view('admin/billing', $data);
     }
     

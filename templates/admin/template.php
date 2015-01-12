@@ -495,7 +495,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                     <div class="input-append"  style="float: right;padding-right: 20px;">
                         <form id="searchfrm" class="form-inline" name="search" action="" method="post" style="margin-bottom: 0px;">
-                            <input type="text" style="width:150px;"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
+                            <input type="text" style="width:100px;"  class="span1" id="globalsearch" name="globalsearch" value="<?php echo @$_POST['globalsearch'] ?>"/>
                             <input type="hidden" id="searchponum" name="searchponum" value="<?php echo @$_POST['globalsearch'] ?>"/>
                             <input type="hidden" id="searchitemname" name="searchitemname" value="<?php echo @$_POST['globalsearch'] ?>"/>
                             <input type="hidden" id="searchinvoicenum" name="searchinvoicenum" value="<?php echo @$_POST['globalsearch'] ?>"/>

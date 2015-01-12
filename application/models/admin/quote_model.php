@@ -1357,7 +1357,8 @@ class quote_model extends Model {
         //echo $code;die;
         $code = urldecode($code);
 
-        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
+        //$sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
+        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode="' . $code . '"';
         /*
           if($this->session->userdata('usertype_id')>1)
           {

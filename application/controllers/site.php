@@ -501,6 +501,16 @@ class site extends CI_Controller
 
          foreach($inventory as $initem)
          {
+         	
+         	 $hasdiscount = $this->db
+                            ->where('itemid',$initem->itemid)
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount){
+              $initem->hasdiscount = true;}
+            else{
+             $initem->hasdiscount = false;}
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
 
@@ -1321,8 +1331,16 @@ class site extends CI_Controller
         //echo '<pre>';print_r($inventory);die;
         $inventorydata = array();
         foreach ($inventory as $initem)
-        {
-        	
+        {        	
+             $hasdiscount = $this->db
+                            ->where('itemid',$initem->itemid)
+                            ->get('qtydiscount')
+                            ->result();
+
+            if($hasdiscount){
+              $initem->hasdiscount = true;}
+            else{
+             $initem->hasdiscount = false;}
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
             if(!$initem->itemname)
