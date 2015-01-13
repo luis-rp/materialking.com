@@ -4123,12 +4123,15 @@ class quote extends CI_Controller
         $project = $this->project_model->get_projects_by_id($quote->pid);
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
-
+		
+        if(@$invoice->items[0]->companyid){
         $company = $this->db->from('received')
                     ->join('awarditem','received.awarditem=awarditem.id')
-                    ->join('company','company.id=awarditem.company')
+                    ->join('company','company.id=awarditem.company')->where('company',$invoice->items[0]->companyid)
                     ->get()->row();
-
+        $data['company'] = $company;            
+        }            
+                    
         $data['quote'] = $quote;
         $data['awarded'] = $awarded;
         $data['config'] = $config;
@@ -9963,6 +9966,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$payment_history = $this->db->select('bill_payment_history.*')->get('bill_payment_history')->result(); 
 		//echo "<pre>",print_r($payment_history);
 		$data['payment_history'] = $payment_history;
+		//echo "<pre>",print_r($_POST); die;
+		if(@$_POST['message_hidden_div'])
+		$data['message_hidden_div'] = $_POST['message_hidden_div'];
+		
         $this->load->view('admin/billing', $data);
     }
     

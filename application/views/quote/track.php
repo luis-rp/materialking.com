@@ -195,7 +195,15 @@ tr.still-due td
                                         <td class="v-align-middle"><?php echo $ai->unit;?></td>
                                         <td class="v-align-middle">$<?php echo $ai->ea;?></td>
                                         <td class="v-align-middle">$<?php echo round($ai->quantity * $ai->ea,2);?></td>
-                                        <td class="v-align-middle"><?php echo $ai->daterequested;?></td>
+                                        <td class="v-align-middle">
+                                        <?php echo $ai->daterequested;
+                                              $orgdate=date('Y-m-d', strtotime( $ai->daterequested));
+                                              $surrentdate=date('Y-m-d');                                     
+								              $date1 = date_create($surrentdate);
+											  $date2 = date_create($orgdate);
+											  $diff12 = date_diff($date1, $date2);
+											  //$days = $diff12->d;
+											  echo "<br>Due in&nbsp;".$diff12->format("%R%a days");?></td>
                                         <td class="v-align-middle"><?php echo $ai->notes;?></td>
                                         <td class="v-align-middle"><?php echo $ai->received;?><br>
                                         <?php if($ai->pendingshipments){?>

@@ -1112,7 +1112,7 @@ class site extends CI_Controller
             	$item->callmaxprice = $max->price;
             }
 
-			$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
+			$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' and ci.ea > 0 group by ci.itemid";
         	$countofitems = $this->db->query($cquery)->row();
         	//echo "<pre>",print_r($countofitems->countitem); die;
         	if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -1286,6 +1286,7 @@ class site extends CI_Controller
         $data['item'] = $item;
         $this->db->where('itemid', $id);
         $this->db->where('type', 'Supplier');
+        $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
 
@@ -1294,6 +1295,7 @@ class site extends CI_Controller
             $this->db->where('itemid', $id);
             $this->db->where('company', $item->featuredsupplier);
             $this->db->where('type', 'Supplier');
+            $this->db->where('ea >', 0);
             $item->featureditem = $this->db->get('companyitem')->row();
             if($item->featureditem)
             {
@@ -1332,15 +1334,16 @@ class site extends CI_Controller
         $inventorydata = array();
         foreach ($inventory as $initem)
         {        	
-             $hasdiscount = $this->db
+             $initem->hasdiscount = $this->db
+                            ->where('company',$initem->company)
                             ->where('itemid',$initem->itemid)
                             ->get('qtydiscount')
                             ->result();
 
-            if($hasdiscount){
+          /*  if($hasdiscount){
               $initem->hasdiscount = true;}
             else{
-             $initem->hasdiscount = false;}
+             $initem->hasdiscount = false;}*/
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
             if(!$initem->itemname)

@@ -1,4 +1,7 @@
 <?php //echo '<pre>'; print_r($quote);die;?>
+<?php echo "<script>var changetierurl='".site_url('company/changetier')."';</script>";?>
+<?php echo "<script>var changeitemtierurl='".site_url('company/changeitemtier')."';</script>";?>
+<?php echo "<script>var changepriceurl='".site_url('company/changeitemprice')."';</script>";?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 
 <?php echo "<script>var tier1=".$tiers->tier1.";</script>";?>
@@ -7,9 +10,9 @@
 <?php echo "<script>var tier4=".$tiers->tier4.";</script>";?>
 
 <script type="text/javascript">
-<!--
-$(document).ready(function(){
 
+$(document).ready(function(){
+$('.date').datepicker();
 });
 
 function selectall(sel)
@@ -20,6 +23,32 @@ function selectall(sel)
 		else
 			$(this).attr('checked',false);
 	});
+}
+
+
+function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
+	
+	if(confirm('Do you want to change the tier for this item?'))
+	{
+		url = changeitemtierurl;
+		var notes = '*Given '+tierlevel+' price';
+		var quote = $("#hiddenquoteid").val();
+		$.ajax({
+		      type:"post",
+		      data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes+'&quote='+quote,
+		      url: url
+		    }).done(function(data){
+			    alert(data);
+		    });
+		    
+		    $('#'+$("#hiddenpriceid").val()).val(tierprice);
+		    
+		    $('#'+$("#hiddennotesid").val()).html(notes);
+		    
+		    var priceidarr = $("#hiddenpriceid").val();
+			var uniid = priceidarr.split("ea");
+			calculatetotalprice(uniid[1]);		    
+	}
 }
 
 
@@ -34,22 +63,27 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
 	price = Number(price);
 	tier0price = price.toFixed(2);
 	
-	$("#pricelistdefault").html(tier0price+'&nbsp;&nbsp;&nbsp;');
+	var selectbuttondefault = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier0\","+tier0price+","+itemid+","+purchasingadmin+")' value='Select'>";
+	$("#pricelistdefault").html(tier0price+'&nbsp;&nbsp;&nbsp;'+selectbuttondefault);
 	
 	
 	tier1price = Number(price + (tier1 * price/100)).toFixed(2);
-	$("#pricelisttier1").html(tier1price+'&nbsp;&nbsp;&nbsp;&nbsp;');
+	var selectbuttontier1 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier1\","+tier1price+","+itemid+","+purchasingadmin+")' value='Select'>";
+	$("#pricelisttier1").html(tier1price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier1);
 	
 	tier2price = Number(price + (tier2 * price/100)).toFixed(2);
-	$("#pricelisttier2").html(tier2price+'&nbsp;&nbsp;&nbsp;&nbsp;');
+	var selectbuttontier2 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier2\","+tier2price+","+itemid+","+purchasingadmin+")' value='Select'>";
+	$("#pricelisttier2").html(tier2price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier2);
 	
 	
-	tier3price = Number(price + (tier3 * price/100)).toFixed(2);	
-	$("#pricelisttier3").html(tier3price+'&nbsp;&nbsp;&nbsp;&nbsp;');
+	tier3price = Number(price + (tier3 * price/100)).toFixed(2);
+	var selectbuttontier3 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier3\","+tier3price+","+itemid+","+purchasingadmin+")' value='Select'>";
+	$("#pricelisttier3").html(tier3price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier3);
 	
 	
 	tier4price = Number(price + (tier4 * price/100)).toFixed(2);
-	$("#pricelisttier4").html(tier4price+'&nbsp;&nbsp;&nbsp;&nbsp;');
+	var selectbuttontier4 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier4\","+tier4price+","+itemid+","+purchasingadmin+")' value='Select'>";
+	$("#pricelisttier4").html(tier4price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier4);
 	
 	
 	$("#hiddenitemid").val(itemid);
@@ -93,12 +127,59 @@ function showqtydiscount(companyid){
 }
 
 
+function selectquantity(qty, quant, price, priceid,notes,tierlevel)
+{ 
+ $("#"+quant).val(qty); 
+ $("#"+priceid).val(price); 
+
+ var uniid = priceid.split("ea");
+ calculatetotalprice(uniid[1]);	
+ 
+ $("#pricelist").css('display', 'block');
+ url = changeitemtierurl;
+ var itemid = $("#hiddenitemid").val();
+ var purchasingadmin = $("#hiddenpurchaser").val();
+ var quote = $("#hiddenquoteid").val();
+ 
+ $.ajax({
+ 	type:"post",
+ 	data: "purchasingadmin="+purchasingadmin+"&tier="+tierlevel+"&itemid="+itemid+'&notes='+notes+'&quote='+quote+'&qty='+qty,
+ 	url: url
+ }).done(function(data){
+ 	alert(data);
+ });
+ 
+ $('#'+$("#hiddennotesid").val()).html(notes);
+}
+
 function displaypricemodal(){
  
  $("#pricelist").css('display', 'block');
 }
 
-//-->
+
+
+function allowonlydigits(e,elementid,errorid){
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message                
+      $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
+      $("#"+errorid).css('color','red');
+      return false;
+    }
+
+}
+
+
+function calculatetotalprice(id)
+{
+	var quantityid = 'quantity'+id;
+	var eaid = 'ea'+id;
+	var totalpriceid = 'totalprice'+id;
+	document.getElementById(totalpriceid).value = document.getElementById(eaid).value * document.getElementById(quantityid).value;
+}
+
+
 </script>
 
 
@@ -176,18 +257,11 @@ function displaypricemodal(){
 									<?php foreach($quoteitems as $q){//print_r($q);?>
 							    	<tr>
 							    		<td>
-								    		<?php echo htmlentities($q->itemname);?>
+								    		<?php echo $q->itemname;?>
 							    		</td>
 							    		<td><?php echo $q->quantity;?></td>
 							    		<td><?php echo $q->unit;?></td>
-							    		<td><?php echo $q->ea;?>
-							    		<br/>
-							    		<?php  if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->itemcode!="" || @$q->companyitem->itemcode!="") echo "true"; else echo "false"; ?>')">
-							    				<i class="fa fa-search"></i>
-							    			</a>
-							    			<?php }?>
-							    		</td>
+							    		<td><?php echo $q->ea;?></td>
 							    		<td><?php echo $q->totalprice;?></td>
 							    		
 							    		<td>
@@ -213,6 +287,40 @@ function displaypricemodal(){
 							    		
 							    	</tr>
 							    	
+							    	
+							    	<tr>
+							    		<td>
+							    			<input type="hidden" name="costcode<?php echo $q->id;?>" value="<?php echo $q->costcode;?>"/>
+								    		<input type="hidden" name="itemid<?php echo $q->id;?>" value="<?php echo $q->itemid;?>"/>
+								    		<input type="hidden" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>"/>
+								    		<textarea id="itemname<?php echo $q->id;?>" style="width: 150px" name="itemname<?php echo $q->id;?>" required><?php echo htmlspecialchars_decode($q->itemname, ENT_COMPAT);//htmlentities($q->itemname);?></textarea>
+							    		</td>
+							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"/>
+							    								    		
+							    		</td>
+							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
+							    		<td>							    			
+							    		
+							    		   <?php  if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->itemcode!="" || @$q->companyitem->itemcode!="") echo "true"; else echo "false"; ?>')">
+							    				<i class="fa fa-search"></i>
+							    			</a>
+							    			<?php }?><br>
+							    		
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
+							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/>
+							    		</td>
+							    		<td>	
+											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
+							    		</td>
+							    		
+							    		<td>
+							    			<input type="text" class="date highlight nopad" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="$('#costcode<?php echo $q->id;?>').focus();" style="width: 100px;"/>		    			
+							    		</td>
+							    		<td><textarea style="width: 150px" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>	
+							    		<td>&nbsp;</td>						    		
+							    	</tr>
+							    	
 							    	<?php }?>
 							    	<tr>
 							    		<td colspan="7">
@@ -227,10 +335,10 @@ function displaypricemodal(){
 							    		<td>
 											Quote#
 							    		</td>
-							    		<td colspan="7">
-							    		<?php $sub=strtoupper($this->session->userdata('company')->title); $subst=substr($sub,0,4); $fstr=$subst."Q";?>
-											<input type="text" name="quotenum" value="<?php if(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { 
-												echo $fstr;printf('%06d',($invid)); echo ".000";}?>" required/>
+							    		<td colspan="7">							    		
+										<?php $sub=strtoupper($this->session->userdata('company')->title); $subst=substr($sub,0,4); $fstr=$subst."Q";?>
+											<input type="text" name="quotenum" value="<?php if(isset($revisionno) && isset($quotenum) && $quotenum!="") { $quotearr = explode(".",$bid->quotenum); echo $quotearr[0]."."; printf('%03d',($revisionno)); } elseif(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { echo $fstr;   printf('%06d',($invid)); echo ".000"; } ?>"/>		
+												
 							    		</td>							    		
 							    	</tr>
 							    	<tr>

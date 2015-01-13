@@ -581,7 +581,7 @@ function clearall(id)
                                                 	<input type="text" style="width: 60px;" placeholder="Price" id="price1<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"/>
-                                                	<?php if(@$item->companyitem){?>
+                                                	<?php if(@$item->companyitem->ea>0){?>
                                                 	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">
                                                 		<i class="fa fa-search"></i>
                                                 	</a>

@@ -445,10 +445,28 @@ class Quote extends CI_Controller
 		//print_r($tiers);die;
 		$data['tiers'] = $tiers;
 		
+		$this->db->where('company',$company->id);
 		$this->db->where('quote',$quote->id);
 		$bid = $this->db->get('bid')->row();
 	    $data['quotenum'] = $bid?$bid->quotenum:'';
 	    $data['quotefile'] = $bid?$bid->quotefile:'';
+	    	    
+	    if($bid){
+	    	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' order by id desc limit 1";
+	    	$revisionquote = $this->db->query($sqlq)->row();
+	    	if($revisionquote)
+	    	$data['revisionno'] = $revisionquote->revisionid;
+	    	
+	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$revisiondate = $this->db->query($sqlq)->result();
+	    	foreach($revisiondate as $revisedate){	    		
+	    		$revisionsid = $revisedate->revisionid;
+	    		$bid->$revisionsid = $revisedate->daterequested;
+	    	}
+	    	
+	    }
+	   	$data['bid'] = $bid; 
+	    
 		
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();
@@ -568,6 +586,9 @@ class Quote extends CI_Controller
         	else 
         	$item->noteslabel = "";
 			
+        	if(@$quote->id)
+        	$item->quote = $quote->id;
+        	
 			$data['quoteitems'][]=$item;
 		}
 		
@@ -632,7 +653,7 @@ class Quote extends CI_Controller
 		$quoteitems = $this->db->get('quoteitem')->result();
 		
 		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
-		//print_r($_POST);die;
+		//ECHO "<PRE>",print_r($_POST);die;
 		if(@$_POST['postatus'])
 		{
 	        if($draftitems)
@@ -642,6 +663,70 @@ class Quote extends CI_Controller
     	            $this->db->where('id',$k);
     	            $this->db->update('biditem',array('postatus'=>$v));
         	    }
+        	
+        	$sqlq = "SELECT revisionid FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".@$draftitems[0]->bid."' AND purchasingadmin='".$invitation->purchasingadmin."' order by id desc limit 1";
+			$revisionquote = $this->db->query($sqlq)->row();
+			if($revisionquote)
+			$revisionid = $revisionquote->revisionid+1;
+			else
+			$revisionid = 1;
+			
+			if($revisionid > 1){			
+				if(isset($_POST['quotenum'])){
+					$quotearr = explode(".",$_POST['quotenum']);
+					if(count($quotearr)>1){
+					$number = sprintf('%03d',$quotearr[1]+1);
+					$bidarray['quotenum'] = $quotearr[0].".".$number;
+					}else {
+						$bidarray['quotenum'] = "";
+					}
+				}else
+					$bidarray['quotenum'] = "";
+			}
+			else 
+				$bidarray['quotenum'] = $_POST['quotenum'];
+						
+				$this->db->where('id', @$draftitems[0]->bid);
+				$this->db->update('bid',$bidarray);
+        	    
+        	        
+        	foreach($draftitems as $item)
+			{
+				$bidid = $item->bid;
+				$updatearray = array();
+				$key = $item->id;
+				while(list($k,$v) = each($item))
+				{
+					if($k != 'invitation' && $k != 'id' && $k != 'bid' && $k != 'substitute' && $k != 'received' && $k != 'purchasingadmin')
+					{
+						$postkey = $k.$key;			
+						if(isset($_POST[$postkey]))				
+						$updatearray[$k] = @$_POST[$postkey];
+					}
+				}
+				$item = (array)$item;
+				if(isset($_POST['totalprice'.$key]))	
+    			$updatearray['totalprice'] = $_POST['totalprice'.$key];
+    			else
+    			$updatearray['totalprice'] = $updatearray['quantity'] * $updatearray['ea'];
+				
+				$updatearray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;
+				
+				$this->quotemodel->db->where('id',$key);
+				$this->quotemodel->db->update('biditem',$updatearray);
+				$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
+					
+							
+				if($revisionquote){ 
+						 $updatearray['daterequested'] = date('m/d/Y');	
+                         $updatearray['purchasingadmin'] = $invitation->purchasingadmin; 
+                         $updatearray['bid'] = $bidid; 
+                         $updatearray['revisionid'] = $revisionid; 
+                         $this->quotemodel->db->insert('quoterevisions',$updatearray); 
+                          
+                } 
+			 }
+        	    
 	        }
 	        else
 	        {
@@ -670,10 +755,17 @@ class Quote extends CI_Controller
     				{
     					if($k != 'invitation' && $k != 'id' && $k != 'quote' && $k != 'company')
     					{
+    						$postkey = $k.$key;
+							if(isset($_POST[$postkey]))	
+							$insertarray[$k] = $_POST[$postkey];
+							else 
     						$insertarray[$k] = $v;
     					}
     				}
     				$item = (array)$item;
+    				if(isset($_POST['totalprice'.$key]))	
+    				$insertarray['totalprice'] = $_POST['totalprice'.$key];
+    				else
     				$insertarray['totalprice'] = $item['quantity'] * $item['ea'];
     				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
     				$insertarray['postatus'] = $_POST['postatus'][$item['id']];
@@ -681,6 +773,10 @@ class Quote extends CI_Controller
 					$this->quotemodel->db->insert('biditem',$insertarray);
 					
 					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$insertarray['itemid'],$insertarray['itemcode'],$insertarray['itemname'],$insertarray['ea']);
+										
+					$insertarray['revisionid']=1; 
+                    $this->quotemodel->db->insert('quoterevisions',$insertarray); 
+					
 						
 	            }
 	        }
@@ -1016,9 +1112,6 @@ class Quote extends CI_Controller
     			
 				$selectbutton2 = "<input type='button' class='btn btn-small' onclick='selectquantity(\"$qtyres->qty\",\"{$quantiid}\",\"{$qtyres->price}\",\"{$priceid}\", \"{$notes}\",\"{$tierlvl}\")' value='Select' data-dismiss='modal'>";
     			
-				if(@$_POST['potype']=="direct")
-				$selectbutton2 = "";
-				
 				$strput .= '<tr >
 							 <td style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: </td><td>$'.$qtyres->price.'</td><td>'. $selectbutton2 . '</td></tr>';
     		}

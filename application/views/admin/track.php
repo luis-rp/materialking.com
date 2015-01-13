@@ -783,9 +783,11 @@ function removeallitems(quote){
                                 </td>
                                 <td><?php echo $q->daterequested;?><br/>
                                 
-                                <?php $greaterreceived = "";
+                                <?php $greaterreceived = ""; 
 									foreach ($awarded->invoices as $invoice) {
+										//$i=0;$myarr[$i]=array();
 										foreach ($invoice->items as $item) {
+											
 											if($item->awarditem==$q->id){
 												$receiveddate = $item->receiveddate;
 												if($greaterreceived!=""){
@@ -793,14 +795,21 @@ function removeallitems(quote){
 													$greaterreceived = $receiveddate;
 												}else
 												$greaterreceived = $receiveddate;
+												
 										    }
-									   }
-									}
-                                
-                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate));  ?>  </td>
+										    //$myarr[$i]['itemidi']=$item->itemid;
+										    //$i++;
+									   } 
+									   												
+									} 
+                                   
+                               echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->received)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
+ <?php   echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"*Item Past Due":""; ?></td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
-                                <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span></td>
+                                <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span>
+                               <br><?php if($q->quantity - $q->received!=0){                              
+                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"PAST DUE":""; } ?></td>
                                 <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
 							    				<i class="icon"></i><p style="padding-left:36px;">View</p>
 							    			</a>
@@ -890,7 +899,7 @@ function removeallitems(quote){
                                     </td>
                             <?php } ?>
                             </tr>
-                        <?php } ?>
+                        <?php  }  ?>
                         <?php if ($awarded->status == 'incomplete') { ?>
                             <tr>
                                 <td colspan="<?php echo $awarded->status == 'incomplete' ? 11 : 7//14:10; ?>" style="text-align:right"></td>
@@ -964,7 +973,7 @@ function removeallitems(quote){
            		<th>Reference #</th>
            		<th>Action</th>
            	</tr>
-           	<?php foreach($shipments as $s){?>
+           	<?php foreach($shipments as $s){ ?>
            	<tr>
            		<td><?php echo $s->itemname;?></td>
            		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
@@ -976,7 +985,7 @@ function removeallitems(quote){
            			<?php }?>
            		</td>
            	</tr>
-           	<?php }?>
+           	<?php } ?>
            </table>
             <?php
             }
@@ -1258,20 +1267,21 @@ function removeallitems(quote){
                         </tr>
                         <tr>
                             <td style="border-right:2px black solid;" width="10%">&nbsp;</td>
-                            <td >
-                                    <?php foreach ($awarded->invoices as $invoice) {?>
+                            <td >  <?php //echo "<pre>"; print_r($myarr); die;?>
+                                    <?php //$i=0; 
+                                    foreach ($awarded->invoices as $invoice) {?>
                                     <div class="label label-pink"><?php echo '#' . $invoice->invoicenum; ?></div>
                                     <div class="clear"></div>
                                     <table width="100%">
-                                            <?php
-                                            foreach ($invoice->items as $item) {
-                                            ?>
+                                            <?php  foreach ($invoice->items as $item) { ?>
                                             <tr><td  style="border-right:2px #dff0d8 solid;" width="15%">
-                                                    <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span><?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; ?></span></td>
+                                                <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span>													<?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received';                                 
+                                                      //if(in_array($item->itemid,$myarr[$i]['itemidi'])) { echo "&nbsp-LATE";  } ?></span></td>
                                             </tr>
-                                            <?php } ?>
+                                            <?php  }  ?>
                                     </table>
-                                    <?php } ?>
+                                    <?php //$i++; 
+                                    } ?>
                             </td>
                         </tr>
                     </table>

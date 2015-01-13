@@ -883,12 +883,11 @@ $( document ).tooltip();
                                 </thead>
                                 <tbody>
                                 <?php                                    
-                                    if($inventory)  
+                                    if($inventory) 
                                     foreach ($inventory as $inv)
                                     if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
                                     	
                                         $price = $inv->ea;
-
                                 ?>
                                 <tr>
                                     <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.$inv->companydetails->username);?>"><?php echo $inv->companydetails->title . $inv->joinstatus; ?></a> </td>
@@ -919,11 +918,11 @@ $( document ).tooltip();
                                        <?php }else{?><?php //echo "<pre>"; print_r($inv); die;?>
                                     	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>)">
                                             <i class="icon icon-plus"></i>
-                                        </a><br><?php if($inv->hasdiscount==1) echo "Volume Discount.";?>
+                                        </a><br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
                                         <?php } ?>
                                     </td>
                                 </tr>
-                                <?php } } ?>
+                                <?php } }    ?>
                                 </tbody>
                             </table>
 </div>

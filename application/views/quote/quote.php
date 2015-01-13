@@ -375,7 +375,7 @@ function allowonlydigits(e,elementid,errorid){
 							    	<tr>
 							    		<td>
 							    		<?php echo $originalitems[$q->itemid]->itemname;?>
-							    		<?php //if($q->showinventorylink){?>
+							    		<?php if(@$q->companyitem->ea<=0) $q->companyitem->ea=""; //if($q->showinventorylink){?>
 							    		<a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->itemid',
 							    		'".htmlentities(@$q->companyitem->itemcode)."',

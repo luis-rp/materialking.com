@@ -32,6 +32,12 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('.datefield').datepicker();        
+       
+       <?php if (@$message_hidden_div != ''): ?>
+			$('#message_div').html('<?php echo $message_hidden_div; ?>');				
+	   <?endif; ?>
+	   $('#message_hidden_div').val('');
+        
     });
     
     function showBill(invoiceid,invoicequote){
@@ -106,6 +112,8 @@
         	else
         		$('#paymentstatus' + idnumber).html('Partial');
             	$('#message_div').html(data);
+            	$('#message_hidden_div').val(data);
+            	$('#messageform').submit();
         });
     }
     
@@ -256,9 +264,12 @@ function changeduedate(count,invoicenum,datedue)
     <a href="<?php echo site_url('admin/quote/invoicepdf'); ?>" class="btn btn-green">View PDF</a><br />--></h3>
     <div class="box">
         <div class="span12">
+        	 <form id="messageform" method="post" action="<?php echo site_url('admin/quote/billings/'.$this->session->userdata('managedprojectdetails')->id); ?>">
             <div id="message_div">
-                <?php echo $this->session->flashdata('message'); ?>
+                <?php // echo $this->session->flashdata('message'); ?>
             </div>
+            <input type="hidden" name="message_hidden_div" id="message_hidden_div" value=""/>
+            </form>
             <div class="datagrid-example">
             	<div>
                      <form id="billform" method="post" action="<?php echo site_url('admin/quote/bill'); ?>">
