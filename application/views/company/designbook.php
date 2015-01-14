@@ -52,8 +52,8 @@ padding:5px 0px;
 #container2
 {
 	display: block;
-	width: 850px;
-	height: 300px;
+	width: 100%;;
+	/*height: 300px;*/
 	margin: 0 auto;
 }
 #imgtag
@@ -534,22 +534,23 @@ $(function() {
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>                 
         </div>
-        <div class="modal-body"  style="height:100%;width:30%;padding:12px;">
+        <div class="modal-body">
         <div id="container2">
         
-        <div id="imgtag" style="float:left;">  
-			<img id="pic1"  style="margin-left:27%;"/>
+        <div style="width:100%;">
+        <div id="imgtag" class="pull-left" style="width:48%;">  
+			<img id="pic1"/>
 			  <input type="hidden" name="taghidid" id="taghidid"/>
 			  <input type="hidden" id="pictureid" name="pictureid"/> 
 			  <div id="tagbox"></div>
 		</div> 
 		
-		<div  style="width:500px;height:300px;overflow-y:scroll;padding-left:150px;">
+		<div class="pull-right" style="overflow:auto;width:48%;height:500px;">
 			<div id="taglist"></div>
 		</div>
 		<div style="clear:both;"></div>
-	
-		<div>	
+	   </div>
+		<div><br>	
 	   Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
 		Select Item Code:
 			   <select id="e1" onchange="fetchItem(this);">        
@@ -566,7 +567,7 @@ $(function() {
         <div class="modal-footer">          
           <!-- <button data-dismiss="modal" class="btn btn-default" type="button">Close</button> -->
         </div>
-        <div style="margin-left:85%;margin-bottom:10px;height:300px;">          
+        <div style="margin-left:85%;margin-bottom:10px;">          
            <button data-dismiss="modal" class="btn btn-primary" type="button">Save Changes & Close</button> 
         </div>
       </div>

@@ -6,7 +6,6 @@ $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
 });
  </script>
-
 <?php
 $combocompanies = array();
 $messagecompanies = array();
@@ -25,7 +24,6 @@ foreach ($awarded->items as $q) {
             $combocompanies[$q->company]['label'] = $q->companyname;
         }
     }
-
     if (isset($messagecompanies[$q->company])) {
         $messagecompanies[$q->company]['value'][] = $q->id;
     } else {
@@ -35,7 +33,6 @@ foreach ($awarded->items as $q) {
         $messagecompanies[$q->company]['label'] = $q->companyname;
     }
 }
-
 if ($qntsum) {
     $per = number_format(($recsum / $qntsum) * 100, 2);
 }else{
@@ -46,41 +43,26 @@ $per .='%';
 //print_r($combocompanies);die;
 ?>
 <?php echo '<script type="text/javascript">var senderrorurl = "' . site_url('admin/message/senderror/' . $quote->id) . '";</script>'; ?>
-
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jquery-ui.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jRating.jquery.js"></script>
-
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <link href="<?php echo base_url(); ?>templates/admin/css/progressbar.css" media="all" rel="stylesheet" type="text/css" >
-
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/flipclock.css" media="all" type="text/css">
-
-
 <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 -->
-
 <script src="<?php echo base_url(); ?>templates/admin/js/flipclock.js"></script>
 <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
-
     <script src="<?php echo base_url(); ?>templates/admin/js/jquery.percentageloader-0.1.js"></script>
-
 <script type="text/javascript">
 	var clock;
 		$(document).ready(function() {
-
 			var currentDate = new Date("08 29, 2014");
-
 			var pastDate  = new Date("08 19, 2014");
-
 			var diff = currentDate.getTime() / 1000 - pastDate.getTime() / 1000;
-
-
 				clock = $('.clock').FlipClock(diff, {
 					clockFace: 'DailyCounter'
 				});
-
 				<?php $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
                     	 if(($q->quantity - $q->received) >0)
                     	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
@@ -103,28 +85,23 @@ $per .='%';
                     		//echo "g=".$greaterreceived."-G";
                     		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
                     	}
-
                     	if($greaterseconds!=""){
                     		if($greaterseconds<$seconds)
                     		$greaterseconds = $seconds;
                     	}else
                     	$greaterseconds = $seconds;
-
 						}
-
 						$days    = floor($greaterseconds / 86400);
                     	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
                     	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
                     	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));
                     	//echo $days." d"." ".$hours." h".$minutes." m"; ?>
-
 				clock.setTime(<?php echo $greaterseconds;?>);
 				clock.stop();
 				//setTimeout(function() { clock.stop(function() { }) }, 1000);
 			});
 			//setTimeout(function() { clock.stop(function() { }) }, 1000);
 </script>
-
 <script>
     $(document).ready(function() {
     	$("#feedbackformwrapper").hide();
@@ -144,7 +121,6 @@ $per .='%';
 				alert('Error : please retry');
 			}
 		});
-
     	$('.fixedrating').jRating({
 			length:5,
 			bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
@@ -154,13 +130,11 @@ $per .='%';
 			canRateAgain : false,
 			decimalLength:1,
 			 onClick : function(element,rate) {
-
 		        },
 			onError : function(){
 				alert('Error : please retry');
 			}
 		});
-
         <?php if ($per == '0.00%') { ?>
         //$("#timelineid").attr("class", "bar madras");
         $("#timelineid").attr("class", "bar");
@@ -169,7 +143,6 @@ $per .='%';
         $("#timelineid").css("width", '<?php echo $per; ?>');
         <?php } ?>
     });
-
     function defaultinvoicenum(qid,cnt)
     {
     	if(cnt > 1)
@@ -181,7 +154,6 @@ $per .='%';
 	        }
     	}
     }
-
     function defaultreceiveddate(qid,cnt)
     {
     	if(cnt > 1)
@@ -193,7 +165,6 @@ $per .='%';
 	        }
     	}
     }
-
     function selectbycompany()
     {
         var ids = $("#combocompany").val();
@@ -210,7 +181,6 @@ $per .='%';
         }
         completeselected();
     }
-
     function completeselected()
     {
         var selected = new Array();
@@ -223,9 +193,7 @@ $per .='%';
                 var selectid = $(this).attr('id');
                 var dueid = selectid.replace('select', 'due');
                 var dueamount = $("#" + dueid).html();
-
                 var receivedid = selectid.replace('select', 'received');
-
                 $("#" + receivedid).val(dueamount);
             }
         });
@@ -234,7 +202,6 @@ $per .='%';
             $('#completemodel').modal();
         }
     }
-
     function errorselected()
     {
         var selected = new Array();
@@ -257,7 +224,6 @@ $per .='%';
         {
             var errors = selected.join(',');
 			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();
-
             $.ajax({
                 type: "post",
                 data: d,
@@ -267,7 +233,6 @@ $per .='%';
             });
         }
     }
-
     function showErrorModal()
 	{
 		$('#commentmodal').modal();
@@ -279,7 +244,6 @@ $per .='%';
 		$("#comments").val(comments);
 		errorselected();
 	}
-
     function showInvoice(invoicenum,invoicequote)
     {
         $("#invoicenum").val(invoicenum);
@@ -311,7 +275,6 @@ $per .='%';
 		}
 		return true;
 	}
-
 </script>
 <?php echo '<script type="text/javascript">var accepturl = "' . site_url('admin/quote/acceptshipment') . '";</script>'; ?>
 <?php echo '<script type="text/javascript">var accepallturl = "' . site_url('admin/quote/acceptall') . '";</script>'; ?>
@@ -351,11 +314,9 @@ function acceptall()
 		<?php  } 
 		}
 		?>
-
 		$("#trackform").submit();
     });
 }
-
 function addalltobill(quoteid,cnt,prevbillitems,billcnt,currentbillitems){
 	
 	$('#prevbillitemcount').val(billcnt);
@@ -367,7 +328,6 @@ function addalltobill(quoteid,cnt,prevbillitems,billcnt,currentbillitems){
 	$('#billingtype').val('all');
 	$('#rem'+quoteid).css('display','block');
 }
-
 function addtobill(quoteid, awardid,isprev){
 		
 	awarditemstr = $('#billawarditems').val();
@@ -401,7 +361,6 @@ function addtobill(quoteid, awardid,isprev){
 	$('#rem'+awardid).css('display','block');
 	
 }
-
 function createallbill(quoteid){
 	
 	if($('#prevbillitemcount').val()>0)
@@ -409,13 +368,10 @@ function createallbill(quoteid){
 	$('#billmodal').modal();
 	$('#customerquoteid').val(quoteid);	
 }
-
-
 function billformsubmit()
 	{
 		var quote = $('#customerquoteid').val();
 		var d = $("#createbillform").serialize();
-
         $.ajax({
             type: "post",
             url: createbillurl,
@@ -439,14 +395,11 @@ function billformsubmit()
 function showbillpdf(data)
 	{
 		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
-
 		var string = '<h3>Bill sent to Customer</h3><div><a target="blank" href="<?php echo base_url()?>uploads/pdf/bill_'+data+'.pdf" class="btn btn-primary btn-xs btn-mini">View PDF</a><br/>';	
 		$("#modalhtm").html(string);	
 		$("#billsuccessmodal").modal();
-
 	}	
 	
-
 function setcustomerdata(id)
 {
 	$('#customername').val('');
@@ -478,7 +431,6 @@ function setcustomerdata(id)
     	$('#customeremail').prop("readonly",false);
     }
 }
-
 function previewbillitems(){
 	
 	var quote = $('#customerquoteid').val();
@@ -524,7 +476,6 @@ function previewbillitems(){
         });
 	
 }
-
 function removeitem(id,quote){
 	
 	var awarditemstr = $('#billawarditems').val();
@@ -542,8 +493,6 @@ function removeitem(id,quote){
 	$("#"+id).remove();
 	$('#rem'+id).css('display','none');
 }
-
-
 function removeCsvVal(source,toRemove)      //source is a string of comma-seperated values,
 {                                                    //toRemove is the CSV to remove all instances of
     var sourceArr = source.split(",");               //Split the CSV's by commas
@@ -555,8 +504,6 @@ function removeCsvVal(source,toRemove)      //source is a string of comma-sepera
     }
     return toReturn.substr(0, toReturn.length - 1);  //remove trailing comma
 }
-
-
 function removeallitems(quote){
  	
 	$('#billawarditems').val('');
@@ -569,10 +516,7 @@ function removeallitems(quote){
 	$("#previewtab").css('display','none');
 	$("#previewtab").remove();
 }
-
-
 </script>
-
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
 <?php //var_dump($awarded); exit;  ?>
@@ -583,11 +527,8 @@ function removeallitems(quote){
             <br/> <br/>
             <?php echo $this->session->flashdata('message'); ?>
             <?php echo @$message; ?>
-
-
             <div class="control-group">
                 <div class="controls">
-
                         <?php if ($awarded->status == 'incomplete') { ?>
                         <div class="pull-right">
                             Mark completed for All items of:
@@ -626,21 +567,17 @@ function removeallitems(quote){
                     		//echo "g=".$greaterreceived."-G";
                     		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
                     	}
-
                     	if($greaterseconds!=""){
                     		if($greaterseconds<$seconds)
                     		$greaterseconds = $seconds;
                     	}else
                     	$greaterseconds = $seconds;
-
 						}
-
 						$days    = floor($greaterseconds / 86400);
                     	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
                     	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
                     	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60))); */ ?>
                     	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->
-
                     <?php if (0) { ?>
                         &nbsp;  &nbsp;
                         <form action="<?php echo site_url('admin/quote/changestatus/' . $quote->id); ?>" method="post" class="form-horizontal">
@@ -659,9 +596,6 @@ function removeallitems(quote){
                     <?php } ?>
                 </div>
             </div>
-
-
-
             <div class="barBg">
                 <div class="bar carrot" id ="timelineid" >
                     <div class="barFill" ><div align="center" style="overflow: hidden;color:black;" class="myLink"><b><?php echo $per; ?> Received</b></div></div>
@@ -697,32 +631,30 @@ function removeallitems(quote){
                             <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
                         <?php } ?>
-
 					    <?php
-
 						$counter_kk = 1;
 						$billcnt = 0;
 						$alltotal = 0; $cnt = count($awarded->items); 
 						$prevbillitems = "";
 						$currentbillitems = "";
+						$itemdatearr = array();
 						foreach ($awarded->items as $q) {
-
+						
+						$itemdatearr[$q->itemid] = $q->daterequested;		
+							
 						if($currentbillitems=="")						
 						$currentbillitems = $q->id;
 						else 
 						$currentbillitems .= ",".$q->id;
 						
 						$counter_kk++;
-
 						?>
-
 					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
                                 <td><?php echo $q->itemcode; ?></td>
                                 <td><?php echo $q->itemname; ?></td>
                                 <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">
-
       <?php
       //$q->quantity;//100%
       if(@$q->quantity)
@@ -730,13 +662,11 @@ function removeallitems(quote){
       else 
       $new_pr_value = 0;	
    //   $new_pr_value = ($q->received/100) *10; ?>
-
        <script>
         $(function() {
           var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : false, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
               $topLoader.setValue(Math.round(<?php echo $q->received;?>));
             }});
-
           var topLoaderRunning = false;
           $("#animateButton").click(function() {
             if (topLoaderRunning) {
@@ -747,21 +677,17 @@ function removeallitems(quote){
             $topLoader.setValue('0kb');
             var kb = 0;
             var totalKb = 999;
-
             var animateFunc = function() {
               kb += 17;
               $topLoader.setProgress(kb / totalKb);
               $topLoader.setValue(kb.toString() + 'kb');
-
               if (kb < totalKb) {
                 setTimeout(animateFunc, 25);
               } else {
                 topLoaderRunning = false;
               }
             }
-
             setTimeout(animateFunc, 25);
-
           });
         });
       </script>
@@ -771,9 +697,6 @@ function removeallitems(quote){
                                 <?php if($q->received != '0.00' && $q->received != ''){?>
                                 <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
                                 <?php }?>
-
-
-
                                 </td>
                                 <td><?php echo $q->unit; ?></td>
                                 <td>$ <?php echo $q->ea; ?></td>
@@ -845,19 +768,14 @@ function removeallitems(quote){
                     	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
                     		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $days ?></p>
                     	</div>
-
                     	<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
-
                     	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
                     		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $hours ?></p>
                    		</div>
-
                    		<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
-
                     	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
                    			<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $minutes ?></p>
                     	</div>
-
                     	<div style="clear:left;"></div>
                     </div>
                     			<?php if(@$q->pendingshipments){?>
@@ -934,9 +852,6 @@ function removeallitems(quote){
                     </tr>
                 </table>
             </div>
-
-
-
             <?php
             if (@$shipments)
             {
@@ -964,7 +879,6 @@ function removeallitems(quote){
             <?php if(count($shipments2)>0){?>
            <button class="btn btn-primary" onclick="acceptall()">Accept All</button>
            <?php }?></h3>
-
            <table class="table table-bordered" >
            	<tr>
            		<th>Item</th>
@@ -975,7 +889,7 @@ function removeallitems(quote){
            	</tr>
            	<?php foreach($shipments as $s){ ?>
            	<tr>
-           		<td><?php echo $s->itemname;?></td>
+           		 <td><?php if($s->itemname=="") {echo $s->iii;} else { echo $s->itemname;}?></td>
            		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>
@@ -990,7 +904,6 @@ function removeallitems(quote){
             <?php
             }
             ?>
-
             <?php
             if (@$messages)
                 foreach ($messages as $c)
@@ -1017,9 +930,7 @@ function removeallitems(quote){
                                     <?php if ($msg->user_attachment != '') { ?>
                                         <a href="<?php echo site_url('uploads/messages') . '/' . $msg->user_attachment; ?>" target="_blank" title="View Attachment"><?php echo 'View Attachment'; ?></a>
                                     <?php } ?>
-
                                 </td>
-
                             </tr>
                             <?php
                             }
@@ -1028,15 +939,12 @@ function removeallitems(quote){
                         <?php
                         }
                         ?>
-
-
                 <div class="well" style="float:left">
                     <form class="form-horizontal" method="post" action="<?php echo site_url('admin/message/sendmessage/' . $quote->id . '/track') ?>" onsubmit="this.to.value = this.company.options[this.company.selectedIndex].innerHTML"  enctype="multipart/form-data">
                         <input type="hidden" name="quote" value="<?php echo $quote->id; ?>"/>
                         <input type="hidden" name="from" value="<?php echo $this->session->userdata('fullname') ?> (Admin)"/>
                         <input type="hidden" name="to" value=""/>
                         <input type="hidden" name="ponum" value="<?php echo $quote->ponum; ?>"/>
-
                         <div class="control-group">
                             <label class="control-label" for="company">Send Message To:</label>
                             <div class="controls">
@@ -1047,22 +955,18 @@ function removeallitems(quote){
                                 </select>
                             </div>
                         </div>
-
                         <div class="control-group">
                             <label class="control-label" for="message">Message</label>
                             <div class="controls">
                                 <textarea name="message" class="span8" rows="5" required></textarea>
                             </div>
                         </div>
-
                         <div class="control-group">
                             <label class="control-label" for="userfile">Attachment</label>
                             <div class="controls">
                                 <input type="file" name="userfile" size="13" />
                             </div>
                         </div>
-
-
                         <div class="control-group">
                             <label class="control-label" for="">&nbsp;</label>
                             <div class="controls">
@@ -1071,9 +975,7 @@ function removeallitems(quote){
                         </div>
                     </form>
                 </div>
-
                 <hr/>
-
         		<?php if($shippingdocs){?>
         		   <h3 class="box-header">Shipping Documents</h3>
         		<table class="table table-bordered col-md-4">
@@ -1094,7 +996,6 @@ function removeallitems(quote){
         		</table>
         		<?php }?>
         		<hr/>
-
                 <?php if ($awarded->invoices) { ?>
                 <div class="control-group">
                     <div class="controls">
@@ -1143,8 +1044,6 @@ function removeallitems(quote){
                                 	 $u1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
                                      $u_total +=$u1_total;
                                 }
-
-
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                 <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -1156,8 +1055,6 @@ function removeallitems(quote){
                         </form>
                     </div>
                 </div>
-
-
             <?php } ?>
             
             
@@ -1207,8 +1104,6 @@ function removeallitems(quote){
                                 	 $u1_total=number_format(($invoice->total+($invoice->total * $config['taxpercent'] / 100) - $invoice->amountpaid),2);
                                      $u_total +=$u1_total;
                                 
-
-
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                 <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -1220,8 +1115,6 @@ function removeallitems(quote){
                         </form>
                     </div>
                 </div>
-
-
             <?php } ?>
             
             
@@ -1267,7 +1160,7 @@ function removeallitems(quote){
                         </tr>
                         <tr>
                             <td style="border-right:2px black solid;" width="10%">&nbsp;</td>
-                            <td >  <?php //echo "<pre>"; print_r($myarr); die;?>
+                            <td >  <?php // echo $q->daterequested."-><pre>"; print_r($awarded->invoices); //die;?>
                                     <?php //$i=0; 
                                     foreach ($awarded->invoices as $invoice) {?>
                                     <div class="label label-pink"><?php echo '#' . $invoice->invoicenum; ?></div>
@@ -1275,8 +1168,9 @@ function removeallitems(quote){
                                     <table width="100%">
                                             <?php  foreach ($invoice->items as $item) { ?>
                                             <tr><td  style="border-right:2px #dff0d8 solid;" width="15%">
-                                                <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span>													<?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received';                                 
-                                                      //if(in_array($item->itemid,$myarr[$i]['itemidi'])) { echo "&nbsp-LATE";  } ?></span></td>
+                                                <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span>													<?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; 
+                                                               	if(@$itemdatearr[$item->itemid]) echo (date('Y-m-d H:i:s', strtotime( $itemdatearr[$item->itemid]."23:59:59")) < $item->receiveddate)? "&nbsp;- &nbsp;*Late": "";
+                                            ?></span></td>                                            
                                             </tr>
                                             <?php  }  ?>
                                     </table>
@@ -1346,7 +1240,6 @@ function removeallitems(quote){
             <?php }?>
              <div>
                 <?php
-
                 if(!empty($errorLog))
                 {
                     ?>
@@ -1416,8 +1309,6 @@ function removeallitems(quote){
 		<input type="button" value="Save" class="btn btn-primary" onclick="getCommentdata()"/>
 	</div>
 </div>
-
-
     <?php // echo "<pre>",print_r($backtrack['quote']); die;
     if(isset($awarded->items) && count($awarded->items)>0) { foreach($awarded->items as $q) { //if($q->etalog) {?>
   <div id="etalogmodal<?php echo $q->id?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none; min-width: 700px;">
@@ -1428,9 +1319,7 @@ function removeallitems(quote){
          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
          <tr><td style="border:0px;"><h3>ETA Update History</td></h3> <td style="border:0px;"><b>PO#: </b><?php if(isset($quote->ponum)) echo $quote->ponum; ?></td> <td style="border:0px;">Order Qty <?php if(isset($q->quantity)) echo number_format($q->quantity,0); ?></td></tr>
           <tr><td style="border:0px;"><b>Item Code:</b> <?php if(isset($q->itemcode)) echo $q->itemcode; ?></td> <td style="border:0px;"><b>Item Name: </b><?php if(isset($q->itemname)) echo $q->itemname ; ?></td> <td style="border:0px;"><b>Received Qty: </b><?php if(isset($q->received)) echo number_format($q->received,0) ; ?></td></tr>
-          <tr><td style="border:0px;">&nbsp;</td> <td style="border:0px;"><b>Company: </b><?php if(isset($q->companyname)) echo $q->companyname; ?> </td> <td style="border:0px;"><b>Due Qty: </b><?php if(isset($q->quantity) && isset($q->received) ) { echo number_format(($q->quantity - $q->received),0); } ?></td></tr><table>
-
-
+          <tr><td style="border:0px;">&nbsp;</td> <td style="border:0px;"><b>Company: </b><?php if(isset($q->companyname)) echo $q->companyname; ?> </td> <td style="border:0px;"><b>Due Qty: </b><?php if(isset($q->quantity) && isset($q->received) ) { echo number_format(($q->quantity - $q->received),0); } ?><br><?php if(@$q->pendingshipments){?> <br/><?php echo $q->pendingshipments;?> Pending Acknowledgement <?php }?></td></tr><table>
         </div>
         <div class="modal-body">
           <table class="table table-bordered">
@@ -1455,8 +1344,6 @@ function removeallitems(quote){
   </div>
 <?php //}
 } }?>
-
-
 <div id="billmodal" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
     <div class="modal-header">
 		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -1503,24 +1390,18 @@ function removeallitems(quote){
 		</form>
 	</div>
 </div>
-
-
-
 		<div class="modal hide fade" id="billsuccessmodal">
 		<div class="modal-header">
 		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
     	</div>
             <div class="modal-dialog">
                 <div class="modal-content">
-
                     <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
                         <input type="hidden" id="additemid" name="itemid" value=""/>
                         <div class="modal-body">
                         <div id="modalhtm">
-
                         </div>
                         </div>
-
                         </div>
                     </form>
                 </div>
@@ -1536,4 +1417,3 @@ function removeallitems(quote){
           <div class="modal-body">
           <span id="bpitems"></span>          
           </div>
-        </div> 

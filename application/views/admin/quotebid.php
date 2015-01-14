@@ -198,6 +198,12 @@ function saveitemname(id)
 
 function invite()
 {
+	var invname = $('input[name="supplyname[]"]').map(function(){return $(this).val();}).get();
+	$('#suna').val(invname); 
+	
+	var invemail = $('input[name="supplyemail[]"]').map(function(){return $(this).val();}).get();
+	$('#suem').val(invemail); 
+	
 	var matches = [];
 	$(".invite:checked").each(function() {
 	    matches.push(this.value);
@@ -479,6 +485,12 @@ function savclose()
     $('#selectItemWindow').dialog('close');
     $('.fg-menu-container').css({display: "none"});
 }
+
+function nextinvite(count) {
+	 	var count=parseInt(count)+1;
+	 	$("#supplydata"+count).show();
+	 	
+	}
 </script>
 
 <style>
@@ -507,6 +519,8 @@ function savclose()
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <input type="hidden" id="reminders" name="reminders" value=""/>
 		   <input type="hidden" id="revisions" name="revisions" value=""/>
+		   <input type="hidden" id="suem" name="suem" value=""/>
+		   <input type="hidden" id="suna" name="suna" value=""/>
 		   <br/>
 		    
 		    <div class="control-group">
@@ -618,6 +632,8 @@ function allowonlydigits(e,elementid,errorid){
       $("#"+errorid).css('color','red');
       return false;
     } }
+    
+    
 
 
 </script>
@@ -867,7 +883,23 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                               <div>
                                  Supply Network
                                  <input type="checkbox" name="supplynet" id="supplynet" checked >
-                                  </div>
+                                  </div><br>
+                                     
+                                Invite via Email:
+                                <div id="supplydata"> 
+                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">&nbsp;
+                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">&nbsp;
+                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')">                                            </div>
+                            
+                            <?php $i=1; while($i<=10) { ?>
+				
+                             <div id="supplydata<?php echo $i;?>" style="display:none;float:left;"> 
+                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">
+                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">
+                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                                </div>
+                            <br>
+                            	<?php $i++; }?>
+                            	
                               <br>
                               <div class="controls" id="invitecomp">
     					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>

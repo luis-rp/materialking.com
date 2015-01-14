@@ -172,9 +172,29 @@
 <script src="http://code.highcharts.com/modules/data.js"></script>
 <script src="http://code.highcharts.com/modules/drilldown.js"></script>
 
-		<span>Filter chart by month: </span>
+		<span>Filter chart: </span>
+		
+		<div class="select chart-year" data-resize="auto">
+			Year:&nbsp;&nbsp;&nbsp;<button type="button" data-toggle="dropdown" class="btn dropdown-toggle chart-year-trigger">
+			<span class="dropdown-label"></span>
+			<span class="caret"></span>
+			</button>
+			<ul id="chartYear" class="dropdown-menu" style="top:auto" >
+				<li class="chartYearItem" data-value="1" <?=(date("m")==1?'data-selected="true"':'')?>><a href="#"><?php echo date("Y"); ?></a></li>
+				<li class="chartYearItem" data-value="2" <?=(date("m")==2?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-1; ?></a></li>
+				<li class="chartYearItem" data-value="3" <?=(date("m")==3?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-2; ?></a></li>
+				<li class="chartYearItem" data-value="4" <?=(date("m")==4?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-3; ?></a></li>
+				<li class="chartYearItem" data-value="5" <?=(date("m")==5?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-4; ?></a></li>
+				<li class="chartYearItem" data-value="6" <?=(date("m")==6?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-5; ?></a></li>
+				<li class="chartYearItem" data-value="7" <?=(date("m")==7?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-6; ?></a></li>
+				<li class="chartYearItem" data-value="8" <?=(date("m")==8?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-7; ?></a></li>
+				<li class="chartYearItem" data-value="9" <?=(date("m")==9?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-8; ?></a></li>
+				<li class="chartYearItem" data-value="10" <?=(date("m")==10?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-9; ?></a></li>				
+			</ul>
+		</div>
+		<br>
 		<div class="select chart-month" data-resize="auto">
-			<button type="button" data-toggle="dropdown" class="btn dropdown-toggle chart-month-trigger">
+			Month:<button type="button" data-toggle="dropdown" class="btn dropdown-toggle chart-month-trigger">
 			<span class="dropdown-label"></span>
 			<span class="caret"></span>
 			</button>
@@ -246,8 +266,12 @@
 			{
 				month = ''+month+'';
 				var today = new Date();
-				var year  = new Date().getFullYear();
-
+				
+				if($('.chart-year').find('.dropdown-label').text()=="" || $('.chart-year').find('.dropdown-label').text()=="undefined")
+					var year  = new Date().getFullYear();
+				else
+					var year = $('.chart-year').find('.dropdown-label').text();
+					
 				var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
 
 				var firstdate = new Date(year, month-1,1);

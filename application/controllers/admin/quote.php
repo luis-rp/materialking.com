@@ -162,39 +162,41 @@ class quote extends CI_Controller
                     	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
                     else 
                     	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
-					/*
-                    $totalcount = count($quote->awardedbid->items);
-                    $lowcount = 0;
-                    foreach ($quote->awardedbid->items as $ai) {
-                        $itemlowest = $this->itemcode_model->getlowestquoteprice($ai->itemid);
+					
+                    	$totalcount = count($quote->awardedbid->items);
+                    	$lowcount = 0;
+                    	foreach ($quote->awardedbid->items as $ai) {
+                    		$itemlowest = $this->itemcode_model->getlowestquoteprice($ai->itemid);
 
-                        if ($ai->ea <= $itemlowest)
-                            $lowcount++;
-                    }
+                    		if ($ai->ea <= $itemlowest)
+                    		$lowcount++;
+                    	}
 
-                    if ($lowcount >= ($totalcount * 0.8))
-                        $quote->pricerank = 'great';
-                    elseif ($lowcount >= ($totalcount * 0.7))
-                        $quote->pricerank = 'good';
-                    elseif ($lowcount >= ($totalcount * 0.5))
-                        $quote->pricerank = 'fair';
-                    else
-                        $quote->pricerank = 'poor';
-                    */
-                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
-                    {
-                    	if ($quote->awardedbid->pricerank == 'great')
-                    	$quote->pricerank = 4;
-                    	elseif ($quote->awardedbid->pricerank == 'good')
-                    	$quote->pricerank = 3;
-                    	elseif ($quote->awardedbid->pricerank == 'fair')
-                    	$quote->pricerank = 2;
+                    	if ($lowcount >= ($totalcount * 0.8))
+                    	$quote->awardedbid->pricerank = 'great';
+                    	elseif ($lowcount >= ($totalcount * 0.7))
+                    	$quote->awardedbid->pricerank = 'good';
+                    	elseif ($lowcount >= ($totalcount * 0.5))
+                    	$quote->awardedbid->pricerank = 'fair';
                     	else
-                    	$quote->pricerank = 1;
-                    	
-	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
-	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
-                	}                	
+                    	$quote->awardedbid->pricerank = 'poor';
+
+                    	if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
+                    	{
+                    		if ($quote->awardedbid->pricerank == 'great')
+                    		$quote->pricerank = 5;
+                    		elseif ($quote->awardedbid->pricerank == 'good')
+                    		$quote->pricerank = 4;
+                    		elseif ($quote->awardedbid->pricerank == 'fair')
+                    		$quote->pricerank = 3;
+                    		elseif ($quote->awardedbid->pricerank == 'poor')
+                    		$quote->pricerank = 2;
+                    		else
+                    		$quote->pricerank = 1;
+
+                    		$quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
+                    		//$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
+                    	}
                 }
                 //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
                 $quote->podate = $quote->podate ? $quote->podate : '';
@@ -817,6 +819,7 @@ class quote extends CI_Controller
 
     function updatequote()
     {
+    	  
         $data ['heading'] = 'Update Quote Item';
         $data ['action'] = site_url('message/updatequote');
         $this->_set_fields();
@@ -943,6 +946,99 @@ class quote extends CI_Controller
                     $this->db->insert('notification', $notification);
                 }
                 $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
+
+            }
+            
+             if(isset($_POST['suem']))
+             {
+             	$trimemail=rtrim($_POST['suem'],',');            	
+             }
+             else 
+             {
+             	$trimemail="";
+             }
+             
+              if(isset($_POST['suna']))
+             {
+             	 $trimname=rtrim($_POST['suna'],',');            	 
+             }          
+             if(isset($trimemail) && $trimemail!="")
+             {
+               $supplyemailarr=explode(',',$trimemail);
+               $i=0;
+               $newarr[$i]=array();
+             	    if(isset($trimemail) && $trimemail!="")
+                    {
+             	     $supplynamearr=explode(',',$trimname);  
+             	       foreach ($supplyemailarr as $c)
+             	        { 
+             	 	     $a=0;        	 	
+             	         $newarr[$i]['email']=$c;         	 	          	 		
+             	 		    foreach ($supplynamearr as $n)
+             	 		      {            	 		 	
+             	 			   $newarr[$a]['name']=$n;
+             	 			   $a++;
+             	 		      }
+             	         $i++;
+             	        }
+                     }
+             }           
+                              
+          if(isset($newarr) && $newarr!='')  
+            {
+                foreach ($newarr as $eachsup)
+                {
+                    $key = md5('-' . $itemid . '-' . date('YmdHisu'));
+                    $insertarray = array(
+                        'quote' => $itemid,
+                        'senton' => date('Y-m-d'),
+                        'invitation' => $key,
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+                    );
+
+                    $this->quote_model->db->insert('invitation', $insertarray);
+                    $insert_inv_id = $this->db->insert_id();
+                    $link = base_url() . 'home/quote/' . $key;
+                    $data['email_body_title']= "Dear&nbsp;".$eachsup['name'].",";
+
+				  	$data['email_body_content'] = "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
+				    <a href='$link' target='blank'>$link</a>.<br><br/>
+				    Please find the details below:<br/><br/>
+		  	        $emailitems
+				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
+				  	$loaderEmail = new My_Loader();
+                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+                    $settings = (array) $this->settings_model->get_current_settings();
+                    $this->load->library('email');
+                    $config['charset'] = 'utf-8';
+                    $config['mailtype'] = 'html';
+                    $this->email->initialize($config);
+                    $this->email->from($settings['adminemail'], "Administrator");
+                    $this->email->to($settings['adminemail'] . ',' . $eachsup['email']);
+                    $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
+                    $this->email->message($send_body);
+                    $this->email->set_mailtype("html");
+                    $this->email->send();
+
+                    $notification = array(
+                        'quote' => $itemid,
+                        'ponum' => $this->input->post('ponum'),
+                        'category' => 'Invitation',
+                        'senton' => date('Y-m-d H:i'),
+                        'isread' => '0',
+                        'purchasingadmin' => $this->session->userdata('purchasingadmin')
+                    );
+                    $this->db->insert('notification', $notification);
+                    $insert_not_id = $this->db->insert_id();
+                    
+                          $invitmail = array(
+                        'invid' =>  $insert_inv_id,
+                        'notid' => $insert_not_id,
+                        'supplyemail' => $eachsup['email'],
+                        'supplyname' => $eachsup['name']);
+                    $this->db->insert('po_invitemail', $invitmail);                   
+                } 
+                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Email: ' . $trimemail . '</div></div>');
 
             }
 
@@ -1187,7 +1283,7 @@ class quote extends CI_Controller
                         'notify_type' => 'contract'      
                     );
                     $this->db->insert('notification', $notification);
-                } 
+                }              
                 $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Contract Quote Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
             }
     		
@@ -5051,9 +5147,13 @@ class quote extends CI_Controller
 		    }
 		}
 
-		$shipments = $this->db->select('shipment.*, item.itemname')
+		/*$shipments = $this->db->select('shipment.*, item.itemname')
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
-		             ->where('quote',$qid)->get()->result();
+		             ->where('quote',$qid)->get()->result();*/
+		             
+		             $shipments = $this->db->select('shipment.*, item.itemname,awarditem.itemname as iii')
+		             ->from('shipment')->join('item','shipment.itemid=item.id','left')->join('awarditem','awarditem.itemid=shipment.itemid','left')
+		             ->where('quote',$qid)->group_by("shipment.itemid")->get()->result();
 
 		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
         $shipments2 = $this->db->query($shipmentsquery)->result();

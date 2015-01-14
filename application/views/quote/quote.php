@@ -316,7 +316,7 @@ function allowonlydigits(e,elementid,errorid){
 									      PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
 									      <tr><td>
 									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
-									      <td>Project: <?php if(isset($project)) echo $project->title;?>
+									      <tr><td>Project: <?php if(isset($project)) echo $project->title;?>
 									      <br/>
 									      Company: <?php echo $company->title;?>
 									      <br/>
@@ -375,7 +375,7 @@ function allowonlydigits(e,elementid,errorid){
 							    	<tr>
 							    		<td>
 							    		<?php echo $originalitems[$q->itemid]->itemname;?>
-							    		<?php if(@$q->companyitem->ea<=0) $q->companyitem->ea=""; //if($q->showinventorylink){?>
+							    		<?php if(@$q->companyitem->ea){ if(@$q->companyitem->ea<=0){ $q->companyitem->ea=""; } } //if($q->showinventorylink){?>
 							    		<a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->itemid',
 							    		'".htmlentities(@$q->companyitem->itemcode)."',

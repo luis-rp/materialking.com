@@ -16,11 +16,58 @@
 		        //$("#itemsmodal").modal();
 		    });
 	}
+	
+function awardbiditems()
+{
+	var total = parseInt($('#selectedtotal').html());
+	if(total==0)
+	{
+		alert('Total amount cannot be 0');
+		return false;
+	}
+	var ids = [];
+	$('.selection-item:checked').each(function() {
+		ids.push($(this).val());
+    });
+	$("#awardbid").val('');
+    $("#itemids").val(ids.join(','));
+	$("#awardmodal").modal();
+}
+
+function usedefaultaddresscheckchange()
+{
+	if($("#usedefaultaddress").attr('checked'))
+		$("#shipto").val('<?php echo implode(' ',explode("\n",$project->address));?>');
+}
+	
 </script>
 <?php 
 	//print_r($bids);die;
 
 	$maxcountitems = count($quoteitems); 
+	
+	$oldcompany2 = "";
+	$companyarr = array();
+	foreach($bids as $bid){
+		
+		if($bid->company!="" && $bid->company!=$oldcompany2)
+		$companyarr[] = $bid->company;
+		$oldcompany2 = $bid->company;
+	}
+	
+	$companycount = 0;
+	$itemcount = 0;
+	if(count($companyarr)>0){
+	
+	foreach($quoteitems as $qitem){
+		
+		if(!in_array($qitem->company,$companyarr)){
+			$companycount++;
+			$itemcount++;
+		}
+	 }
+	}		
+	
 	
 	$isawarded = $isawarded=='Yes'?true:false;
 	$checkedarray = array();
@@ -91,10 +138,17 @@ $(document).ready(function(){
 		   </h4>
 		   <?php }else{?>
 		   <div class="span12">
+		   <table><tr><td>
 		   <form method="post" action="<?php echo site_url('admin/quote/confirmdirect');?>">
 		   	<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
-		   	<input type="submit" class="btn btn-primary" onclick="awardbiditems();" value="Confirm &amp; Proceed"/>
+		   	<input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Confirm &amp; Proceed"/>
 		   </form>
+		   </td><td>
+		   <?php if(@$companycount > 0){		   		   
+		   echo @$companycount." Company, Assigned to ".@$itemcount." item has not approved your P.O yet (current status is processing).<br> If you confirm and proceed now, the P.O will only include the items shown below and will be closed. <br> If you wish to issue the P.O with all items on your original order, please wait until all orders are approved from all vendors.";
+		   
+		   } ?>
+		   </td></tr></table>
 		   </div>
 		   <?php }?>
 		  <?php 
@@ -262,6 +316,39 @@ $(document).ready(function(){
 </section>
 
         
+		        <div id="awardmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	<form id="editform" class="stylemoduleform" method="post" action="<?php echo site_url('admin/quote/confirmdirect');?>">
+			<input type="hidden" id="awardbid" name="bid">
+            <input type="hidden" id="quoteid" name="quote" value="<?php echo $quote->id;?>">
+            <input type="hidden" id="pid" name="pid" value="<?php echo $quote->pid;?>">
+            <input type="hidden" id="itemids" name="itemids">
+            <div class="modal-header">
+        		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            	<h3>Award Bid</h3>
+        	</div>
+        	<div class="modal-body">
+
+        	<table>
+	        	<tr>
+		        	<td colspan="2"><strong>Shipping Address:</strong> <br/>
+			        	<input type="checkbox" value="1" id="usedefaultaddress" name="usedefaultaddress" onchange="usedefaultaddresscheckchange()"/>
+						<label for="usedefaultaddress">Use Default Project Address?</label>
+			        	<textarea class="span6" rows="2" id="shipto" name="shipto"></textarea>
+		        	</td>
+	        	</tr>
+
+        	</table>
+
+        	</div>
+        	<div class="modal-footer">
+        		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
+        		<input type="submit" class="btn btn-primary" value="Award"/>
+        	</div>
+            </form>
+        </div>
+
+
+
         <div id="itemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
         	
             <div class="modal-header">

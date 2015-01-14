@@ -675,7 +675,7 @@ class Quote extends CI_Controller
 				if(isset($_POST['quotenum'])){
 					$quotearr = explode(".",$_POST['quotenum']);
 					if(count($quotearr)>1){
-					$number = sprintf('%03d',$quotearr[1]+1);
+					$number = sprintf('%03d',$quotearr[1]);
 					$bidarray['quotenum'] = $quotearr[0].".".$number;
 					}else {
 						$bidarray['quotenum'] = "";
