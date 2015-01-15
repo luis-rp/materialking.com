@@ -884,23 +884,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                                  Supply Network
                                  <input type="checkbox" name="supplynet" id="supplynet" checked >
                                   </div><br>
-                                     
-                                Invite via Email:
-                                <div id="supplydata"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">&nbsp;
-                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">&nbsp;
-                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')">                                            </div>
-                            
-                            <?php $i=1; while($i<=10) { ?>
-				
-                             <div id="supplydata<?php echo $i;?>" style="display:none;float:left;"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">
-                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">
-                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                                </div>
-                            <br>
-                            	<?php $i++; }?>
-                            	
-                              <br>
+                           
                               <div class="controls" id="invitecomp">
     					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>
     					    		<input type="checkbox" class="invite" value="<?php echo $c->id;?>" />
@@ -935,7 +919,24 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		&nbsp;&nbsp; <?php echo $c->title;?>
 					    		<br/>
 					    	<?php }?>
-					    </div>
+					    </div><br/>
+					    
+					    
+					    <label class="control-label"><strong>Invite Via Email:</strong></label>
+					      <hr/>
+					    <div class="controls">
+					    	 <div id="supplydata"> 
+                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">&nbsp;
+                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">&nbsp;
+                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')">                                            </div>
+                            
+                            <?php $i=1; while($i<=10) { ?>			
+                             <div id="supplydata<?php echo $i;?>" style="display:none;float:left;"> 
+                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">
+                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">
+                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                </div><br>
+                            	<?php $i++; }?>
+					    </div>				    
 				    </div>
 				    <?php if(0){?>
 				    <div class="control-group span4">

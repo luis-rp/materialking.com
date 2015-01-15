@@ -11,6 +11,7 @@ class site extends CI_Controller
         $data['title'] = 'Home';
         $this->load->dbforge();
         $this->load->model('homemodel', '', TRUE);
+        $this->load->model('quotemodel', '', TRUE);
         $this->load->model('admin/banner_model', '', TRUE);
         $this->load->model('admin/itemcode_model', '', TRUE);
         $this->load->model('admin/catcode_model', '', TRUE);
@@ -2956,7 +2957,57 @@ class site extends CI_Controller
     {
     	$data = "";
     	$this->load->view('site/submitlist', $data);
-    }
+    }   
+    
+	public function unknown_user($key)
+	{		
+		$invitation = $this->quotemodel->getinvitation($key);
+		if(!$invitation)
+		{
+			$message = 'Wrong Access.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('site');
+		}
+		
+		$quote = $this->quotemodel->getquotebyid($invitation->quote);		
+		if($quote)
+		{
+		$data['project']=$this->db->get_where('project',array('id'=>$quote->pid))->row();
+		}
+		if($this->quotemodel->checkbidcomplete($quote->id))
+		{
+			$message = 'Bid Already Completed, Thank You.';
+			$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">'.$message.'</div></div></div>');
+			redirect('site');
+		}
+				
+		$quoteitems = $this->quotemodel->getquoteitems($quote->id);		
+		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);	
+		foreach($originalitems1 as $q)
+		{
+			$originalitems[$q->itemid] = $q;
+		}
+		$data['originalitems'] = $originalitems;	
+		$data['invitation'] = $key;
+		$data['quote'] = $quote;    
+		$items = $quoteitems;
+		$data['quoteitems'] = array();
+		foreach($items as $item)
+		{					
+			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();			
+			$item->itemcode = $orgitem->itemcode;
+		    $item->itemname = $orgitem->itemname;			
+			$price = $orgitem->ea;			
+			$data['quoteitems'][]=$item;
+		}		
+		$data['invitekey'] = $key;
+		$data['invid']=$invitation->id;
+		$this->db->where('id',$invitation->purchasingadmin);
+		$pa = $this->db->get('users')->row();
+		if($pa)
+		$data['purchasingadmin'] = $pa;	
+		$this->load->view('site/unknownuser',$data);
+	}
     
 
 }

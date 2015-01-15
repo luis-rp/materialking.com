@@ -94,9 +94,39 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
     $("#itemnamebox").html(itemcode+"  /  "+itemname);
     $("#hiddennotesid").val(notelabel);  
     $("#hiddenquoteid").val(quote); 
+    if(<?php echo @$company->id!="" ?>)
+    showqtydiscountprev('<?php echo $company->id; ?>');
+    
 }
 
 
+
+
+function showqtydiscountprev(companyid){
+ 
+ var itemid = $("#hiddenitemid").val();
+ var price = $("#hiddenprice").val();
+ var quantityid = $("#hiddenquantityid").val();
+ var priceid = $("#hiddenpriceid").val();
+ var purchaser = $("#hiddenpurchaser").val();
+ var quote = $("#hiddenquoteid").val();
+ 
+ var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price+"&quantityid="+quantityid+"&priceid="+priceid+"&purchaser="+purchaser+"&quote="+quote+"&potype=direct";
+
+ $("#qtypricebox").html("");
+ $.ajax({
+ type:"post",
+ data: data,
+ sync: false,
+ url: getpriceqtydetails
+ }).done(function(data){
+ if(data){ 
+ 	if(data!="No Quantity Discount Available")
+ 	$('#discountbtn').css('display','block');
+ }
+ });
+ 
+}
 
 
 function showqtydiscount(companyid){
@@ -449,7 +479,7 @@ function calculatetotalprice(id)
           </div>
         </div>
         <div class="modal-footer">
-         <button class="btn btn-default" style="float: left;" type="button" onclick="showqtydiscount(<?php echo $company->id; ?>);" >View available qty. discounts</button> <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+         <button id="discountbtn" class="btn btn-default" style="float: left;display:none;" type="button" onclick="showqtydiscount(<?php echo $company->id; ?>);" >View available qty. discounts</button> <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
         </div>
       </div>
       <!-- /.modal-content -->

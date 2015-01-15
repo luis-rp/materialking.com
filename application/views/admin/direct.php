@@ -184,8 +184,6 @@ function getminprice(companyid)
 {
 	var price = $('option:selected', $("#"+companyid)).attr('price');
 	//if(price=='')return;
-	
-
 	var eaid   = companyid.replace('company','ea');
 	var quantityid = companyid.replace('company','quantity');
 	var totalpriceid = companyid.replace('company','totalprice');
@@ -193,10 +191,19 @@ function getminprice(companyid)
     document.getElementById(eaid).value = price;
     var totalprice = document.getElementById(quantityid).value * price;
     totalprice = Math.round(totalprice * 100) / 100;
-    document.getElementById(totalpriceid).value = totalprice;
+    document.getElementById(totalpriceid).value = totalprice;    
+    var betterprice = companyid.replace('company','betterprice');
+    
+    $('#'+betterprice).html("");
+	$('select#'+companyid).find('option').each(function() {
+    		if(parseFloat(price)>parseFloat($(this).attr('price')) && parseFloat($(this).attr('price'))!=0){
+    		$('#'+betterprice).html("* There is a better price available");
+    		}
+   	});
+    
 }
 
-function getminpricecompanies(itemid, companyid, quantity, selected)
+function getminpricecompanies(itemid, companyid, quantity, selected, selectedea)
 {	
     $.ajax({
       type:"post",
@@ -204,12 +211,19 @@ function getminpricecompanies(itemid, companyid, quantity, selected)
       data: "itemid="+itemid+"&quantity="+quantity
     }).done(function(data){
         //alert(data);
+        var betterprice = companyid.replace('company','betterprice');
+        $('#'+betterprice).html("");
         var ophtml = '<option price="0">Select Company</option>';
     	$($.parseJSON(data)).map(function () {
         	sel = '';
-        	if(this.id==selected)
+        	if(this.id==selected){
             	sel = 'selected';
+        	}	
     		ophtml += '<option price="'+this.price+'" value="'+this.id+'" '+sel+'>'+this.title+'</option>';
+    		
+    		if(parseFloat(selectedea)>parseFloat(this.price)){    			
+    			$('#'+betterprice).html("* Lower price avaialble");
+    		}
     	});
     	
     	$('#'+companyid).html(ophtml);
@@ -631,13 +645,14 @@ function allowonlydigits(e,elementid,errorid){
 					</td>
 		    	</tr>
 		    	<tr>
-		    		<td colspan="10" style="text-align: center">
+		    		<td colspan="4" style="text-align:right;"><span id="betterprice<?php echo $q->id;?>"></span></td>
+		    		<td colspan="6" style="text-align: left">
 				    	<select id="company<?php echo $q->id;?>" name="company<?php echo $q->id;?>" onchange="getminprice('company<?php echo $q->id;?>')">
 				    	<?php if(0) foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>" <?php if($q->company==$company->id){echo 'selected="selected"';}?>><?php echo $company->title;?></option>
 				    	<?php }?>
 				    	</select>
-				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>');</script>
+				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>','<?php echo $q->ea;?>');</script>
 		    		</td>
 		    	</tr>
 		    	<?php }?>
@@ -700,7 +715,8 @@ function allowonlydigits(e,elementid,errorid){
 		    		<td></td>
 		    	</tr>
 		    	<tr>
-		    		<td colspan="10" style="text-align: center">
+		    		<td colspan="4" style="text-align:right;"><span id="betterprice"></span></td>
+		    		<td colspan="6" style="text-align:left">
 				    	<select id="company" name="company" onchange="getminprice('company')">
 				    	<?php foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>"><?php echo $company->title;?></option>

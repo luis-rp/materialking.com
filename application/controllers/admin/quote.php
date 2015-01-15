@@ -881,7 +881,7 @@ class quote extends CI_Controller
         		$emailitems.= '</tr>';
     		}
     		$emailitems .= '</table>';
-
+            $infolist="";
             $invitees = $this->input->post('invitees');
             if ($invitees)
             {
@@ -945,7 +945,8 @@ class quote extends CI_Controller
                     );
                     $this->db->insert('notification', $notification);
                 }
-                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
+                $infolist=implode(', ', $companynames)."&nbsp;"; 
+                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Companies: ' . $infolist . '</div></div>');
 
             }
             
@@ -989,18 +990,11 @@ class quote extends CI_Controller
                 foreach ($newarr as $eachsup)
                 {
                     $key = md5('-' . $itemid . '-' . date('YmdHisu'));
-                    $insertarray = array(
-                        'quote' => $itemid,
-                        'senton' => date('Y-m-d'),
-                        'invitation' => $key,
-                        'purchasingadmin' => $this->session->userdata('purchasingadmin'),
-                    );
-
+                    $insertarray = array('quote' => $itemid,'senton' => date('Y-m-d'),'invitation' => $key,'purchasingadmin' => $this->session->userdata('purchasingadmin'));
                     $this->quote_model->db->insert('invitation', $insertarray);
                     $insert_inv_id = $this->db->insert_id();
-                    $link = base_url() . 'home/quote/' . $key;
+                    $link = base_url() . 'home/unknown/' . $key;
                     $data['email_body_title']= "Dear&nbsp;".$eachsup['name'].",";
-
 				  	$data['email_body_content'] = "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
@@ -1013,6 +1007,7 @@ class quote extends CI_Controller
                     $config['charset'] = 'utf-8';
                     $config['mailtype'] = 'html';
                     $this->email->initialize($config);
+                    $this->email->clear(true);
                     $this->email->from($settings['adminemail'], "Administrator");
                     $this->email->to($settings['adminemail'] . ',' . $eachsup['email']);
                     $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
@@ -1038,7 +1033,8 @@ class quote extends CI_Controller
                         'supplyname' => $eachsup['name']);
                     $this->db->insert('po_invitemail', $invitmail);                   
                 } 
-                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Email: ' . $trimemail . '</div></div>');
+                $infolist .=$trimemail;
+                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Email: ' . $infolist . '</div></div>');
 
             }
 

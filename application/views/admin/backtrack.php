@@ -154,7 +154,7 @@
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->companyname;?></td>
 			    		<td><?php echo $item->duequantity;?>
-
+						<?php   echo (date('Y-m-d H:i:s', strtotime( $item->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"<br/>PAST DUE":""; ?>
 			    		<?php if($item->pendingshipments){?>
                                         <br/><?php echo $item->pendingshipments;?> - Pending Acknowledgement
                                         <?php }?>

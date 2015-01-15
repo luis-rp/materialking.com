@@ -978,6 +978,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             //$itemid = $this->itemcode_model->SaveItemcode();
             
             ini_set('display_errors', 1); error_reporting(E_ALL ^ E_NOTICE);
+            ini_set('memory_limit', '-1');
             include_once(APPPATH.'third_party/reader.php');
             $data = new Spreadsheet_Excel_Reader();
             $data->setOutputEncoding('CP1251');
@@ -994,19 +995,19 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$itemname = $data->sheets[0]["cells"][$x][3];
             	$description = $data->sheets[0]["cells"][$x][4];            	
             	$unit = $data->sheets[0]["cells"][$x][5];
-            	$ea = $data->sheets[0]["cells"][$x][6];
+            	/*$ea = $data->sheets[0]["cells"][$x][6];
             	$notes = $data->sheets[0]["cells"][$x][7];
-            	$keyword = $data->sheets[0]["cells"][$x][8];
+            	$keyword = $data->sheets[0]["cells"][$x][8];*/
             	$category = $defaultcategory;
-            	$item_img = $data->sheets[0]["cells"][$x][9];
+            	/*$item_img = $data->sheets[0]["cells"][$x][9];
             	$item_img_alt_text = $data->sheets[0]["cells"][$x][10];
             	$external_url = $data->sheets[0]["cells"][$x][11];
             	$length = $data->sheets[0]["cells"][$x][12];
             	$width = $data->sheets[0]["cells"][$x][13];
             	$height = $data->sheets[0]["cells"][$x][14];
-            	$weight = $data->sheets[0]["cells"][$x][15];
+            	$weight = $data->sheets[0]["cells"][$x][15];*/
             	$featuredsupplier = $_POST['featuredsuppliers'];
-            	$instore = $data->sheets[0]["cells"][$x][16];
+            	/*$instore = $data->sheets[0]["cells"][$x][16];
             	$zoom = $data->sheets[0]["cells"][$x][17];
             	$wiki = $data->sheets[0]["cells"][$x][18];
             	$listinfo = $data->sheets[0]["cells"][$x][19];
@@ -1014,9 +1015,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$files = $data->sheets[0]["cells"][$x][21];
             	$filename = $data->sheets[0]["cells"][$x][22];
             	$searchquery = $data->sheets[0]["cells"][$x][23];
-            	$increment = $data->sheets[0]["cells"][$x][24];
+            	$increment = $data->sheets[0]["cells"][$x][24];*/
+            	$weight = $data->sheets[0]["cells"][$x][6];
+            	$increment = $data->sheets[0]["cells"][$x][7];
             	
-				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'details'=>$details, 'unit'=>$unit, 'ea'=>$ea, 'notes'=>$notes, 'keyword'=>$keyword, 'category'=>$category, 'item_img'=>$item_img, 'item_img_alt_text'=>$item_img_alt_text, 'external_url'=>$external_url, 'length'=>$length, 'width'=>$width, 'height'=>$height, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'zoom'=>$zoom, 'wiki'=>$wiki, 'listinfo'=>$listinfo, 'tags'=>$tags, 'files'=>$files, 'filename'=>$filename, 'searchquery'=>$searchquery, 'increment'=>$increment);
+				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'increment'=>$increment);
             	$this->itemcode_model->add_massitem($data_user);
             }
             

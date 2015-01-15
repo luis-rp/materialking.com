@@ -349,8 +349,26 @@ class Quotemodel extends Model
 								$items[$quote->ponum]['quote'] = $quote;
 								$item->ponum = $quote->ponum;
 								$item->duequantity = $item->quantity - $item->received;
+
+								$item->etalog = $this->db->where('company',$company)
+								->where('quote',$quote->id)
+								->where('itemid',$item->itemid)
+								->get('etalog')->result();
+
+								$item->pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+								->from('shipment')
+								->where('quote',$quote->id)->where('company',$company)
+								->where('itemid',$item->itemid)->where('accepted',0)
+								->get()->row()->pendingshipments;
+
+								$item->quotedaterequested = $this->db->select('daterequested')
+								->where('purchasingadmin',$item->purchasingadmin)
+								->where('quote',$quote->id)
+								->where('itemid',$item->itemid)
+								->get('quoteitem')->row();
+
 								if(!isset($items[$quote->ponum]['items']))
-									$items[$quote->ponum]['items'] = array();
+								$items[$quote->ponum]['items'] = array();
 								$items[$quote->ponum]['items'][]=$item;
 							}
 						}

@@ -26,6 +26,11 @@ class Home extends CI_Controller
 		redirect('quote/invitation/'.$key);
 	}
 	
+	public function unknown($key)
+	{
+		redirect('site/unknown_user/'.$key);
+	}
+	
 	public function backtrack($key,$print='')
 	{
 		redirect('quote/backtrack/'.$key);
