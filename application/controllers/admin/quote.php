@@ -606,7 +606,8 @@ class quote extends CI_Controller
             foreach ($quoteitems as $item) {
                 $item = (array) $item;
                 $item['quote'] = $quoteid;
-                unset($item['id']);
+                unset($item['id']);                
+                unset($item['increment']);
                 $this->quote_model->db->insert('quoteitem', $item);
             }
         $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Purchase Order Duplicated Successfully</div></div>');
@@ -747,6 +748,9 @@ class quote extends CI_Controller
                
          $gusttotal=0; $message = "";
          foreach($data['quoteitems'] as $items){          
+         	
+         $minprices[$items->itemid] = $this->itemcode_model->getminimumprices($items->itemid);	
+        
          $totalSuppliers=0;
 		 $invcnt = 0; $total=0; $totalSuppliers=0;
 		 
@@ -804,7 +808,8 @@ class quote extends CI_Controller
          
          }
           
-                 
+		$data['minprices'] = $minprices;
+        
         $data['guesttotal'] = $gusttotal." ".$message."";
         
 	    if ($data['potype'] == 'Bid')

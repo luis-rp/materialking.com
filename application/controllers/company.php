@@ -1238,13 +1238,19 @@ class Company extends CI_Controller {
     	$res = $this->do_upload();
 
     	//$res = $this->do_upload();
-    	if(isset($res['error'])){
+    	/*if(isset($res['error'])){
     		$this->session->set_flashdata('message',$res['error']);
 
     	}
-    	else {
-    		$this->admodel->saveAd($res);
+    	else {*/
+    	$result = $this->admodel->saveAd($res);
+    	//}
+    	if($result){
+    		$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
+    		$res['message'] = $message;
+    		$this->session->set_flashdata('message', $message);
     	}
+    	
     	redirect("company/ads");
     }
     public function do_upload ()
@@ -1406,10 +1412,10 @@ class Company extends CI_Controller {
 
 	    	//$res = $this->do_upload();
 
-	    	if(isset($res['error'])){
+	    	/*if(isset($res['error'])){
 	    		$this->session->set_flashdata('message',$res['error']);
 	    		redirect("company/ads");
-	    	}
+	    	}*/
 
 	    		$this->admodel->updateAd($res);
 

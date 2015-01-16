@@ -47,6 +47,8 @@
 
 <?php echo '<script>var saleitemurl="'.site_url('inventory/saleitem').'";</script>'?>
 
+<?php echo '<script>var blockitemurl="'.site_url('inventory/blockitem').'";</script>'?>
+
 
 
 <script type="text/javascript" charset="utf-8">
@@ -309,6 +311,19 @@ function delqtydiscount(id,itemid){
 		    });
       }
       
+       function blockitem(blockitemdata)
+      {
+    	blockitemdata = blockitemdata==true?1:0;
+    	//document.write(saleitemdata);
+        var data = "blockitemdata="+blockitemdata;
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: blockitemurl
+		    }).done(function(data){
+		    });
+      }
+      
       function updatebackorder(itemid,backorder)
     {
     	backorder = backorder==true?1:0;
@@ -458,8 +473,13 @@ function clearall(id)
                                 <h4>&nbsp;</h4>
 
                                 <div class="pull-right">
+                 					<input type="checkbox" id ='blockitemdata' name ='blockitemdata' <?php echo $company->blockitemdata?'checked="CHECKED"':''?>"
+                                    onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>
+                 				
                  				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"
-                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>
+                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>&nbsp;&nbsp;
+                                                             
+                 			
                                 </div>
 
                                 <form action="<?php echo site_url('inventory');?>" method="post">

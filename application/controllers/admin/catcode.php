@@ -29,6 +29,7 @@ class catcode extends CI_Controller {
 		}
         $this->load->model('admin/quote_model');
         $this->load->model('admin/itemcode_model');
+        $this->load->model('items_model');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         //$data['cats'] = $this->catcode_model->get_catcodes();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
@@ -39,11 +40,16 @@ class catcode extends CI_Controller {
 
     private function list_categories(&$categories, $parent_id, $cats, $sub = '')
     {
-
         foreach ($cats[$parent_id] as $cat)
         {
-            $cat->id = $cat->id;
-            $cat->catname = $sub . $cat->catname;
+            $cat->id = $cat->id;           
+            $count=0;    
+            $subcategories = $this->items_model->getSubCategores($cat->id,true);
+            $itemdata= $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            $c=count($itemdata);
+            $count=$count+$c;
+            	          
+            $cat->catname = $sub . $cat->catname."<span style='color:red;'>(".$count.")</span>";
             $cat->cattype = $cat->parent_id?'Sub Category':'Parent Category';
             $cat->actions = anchor('admin/catcode/update/' . $cat->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
                     . ' ' .
@@ -55,7 +61,7 @@ class catcode extends CI_Controller {
                 $sub2 .= '&nbsp;&nbsp;&nbsp;&rarr;&nbsp;';
                 $this->list_categories($categories, $cat->id, $cats, $sub2);
             }
-        }
+        } 
     }
     
     private function list_designcategories(&$categories, $parent_id, $cats, $sub = '')
@@ -101,7 +107,7 @@ class catcode extends CI_Controller {
             $this->data['message'] = 'No Records';
         }
 
-        $data ['heading'] = 'Category Management';
+        $data ['heading'] = 'Category Management123';
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
         $data ['addlink'] .= '&nbsp;<a class="btn btn-green" href="' . base_url() . 'admin/catcode/adddesigncat">Add Design Book Category</a>';

@@ -386,10 +386,15 @@ function viewminpricesbrow(codeid)
 	    });
 }
 
-function selectcompany(codeid, company, price)
+function selectcompany(codeid, company, price, lowpricenote)
 {
+	
+	var betterprice = codeid.replace('itemid','betterprice');	
+	$('#'+betterprice).html('');
 	var priceid = codeid.replace('itemid','ea');
 	$("#"+priceid).val(price);
+	
+	$('#'+betterprice).html(lowpricenote);
 }
 
 
@@ -627,7 +632,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 </script>
 <script type="text/javascript">
 function allowonlydigits(e,elementid,errorid){
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {                
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which!=46) {                   
       $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
       $("#"+errorid).css('color','red');
       return false;
@@ -695,6 +700,12 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
 						<br/>
 		    			</div> <span id="eaerrmsg1<?php echo $q->id;?>" ></span>	
+		    			<br><?php $minpricenote = ""; if(@$minprices) foreach($minprices[$q->itemid] as $minp){
+		    						if($q->ea>$minp->price){
+		    							$minpricenote = "* Lower price available"; break;
+		    						}
+		    			}?>
+		    			<span id="betterprice<?php echo $q->id;?>"><?php echo @$minpricenote;?></span>
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
@@ -755,13 +766,14 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="span9 price" onblur="calculatetotalprice('')"  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+						<input type="text" id="ea" name="ea" class="span9 price" onblur="calculatetotalprice('')"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>						
 		    			</div>
+		    			<br><span id="betterprice"></span>
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="totalprice" name="totalprice" class="span9 price totalamount-new"  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+						<input type="text" id="totalprice" name="totalprice" class="span9 price totalamount-new"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>
 		    			</div>
 		    		</td>
 		    		<td>

@@ -1017,9 +1017,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$searchquery = $data->sheets[0]["cells"][$x][23];
             	$increment = $data->sheets[0]["cells"][$x][24];*/
             	$weight = $data->sheets[0]["cells"][$x][6];
+            	$instore = 1;
             	$increment = $data->sheets[0]["cells"][$x][7];
             	
-				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'increment'=>$increment);
+				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
             	$this->itemcode_model->add_massitem($data_user);
             }
             
@@ -1545,15 +1546,27 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             //if ($days > 30)
                 //$table .= "<b><font color='red'>Item has not been requited within 30 days.</font></b>";
             $table .= "<table class='table table-bordered'><tr><th>Company</th><th>Price</th><th width='30'></th></tr>";
+            
+            $mparr = array();
             foreach ($item->tierprices as $mp)
-            {
+            {	
+            	$mparr[] = $mp->price;
+            }
+            	
+            foreach ($item->tierprices as $mp)
+            {	
             	$priceqtyresult = $this->getpriceqtydetails($mp->companyid, $itemid,$quantiid,$priceid);
             	if($priceqtyresult){
             		$table2 .= "<table class='table table-bordered'><tr><th colspan='3'>Quantity Discounts</th></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $mp->companyname . "</td></tr>";
             		$table2 .= "<tr><td colspan='3'>" . $priceqtyresult . "</td></tr>";            	
             	}
-                $selectbutton = "<input type='button' class='btn btn-small' onclick='selectcompany(\"$codeid\",\"{$mp->companyid}\",\"{$mp->price}\")' value='Select' data-dismiss='modal'>";
+            	if($mp->price>min($mparr))
+            	$lowpricenote = "*There is a better price avialable";
+            	else 
+            	$lowpricenote = "";
+            	
+                $selectbutton = "<input type='button' class='btn btn-small' onclick='selectcompany(\"$codeid\",\"{$mp->companyid}\",\"{$mp->price}\",\"{$lowpricenote}\")' value='Select' data-dismiss='modal'>";
                 $table .= "<tr><td>" . $mp->companyname . "</td><td>" . $mp->price . "</td><td>" . $selectbutton . "</td></tr>";
             }
             $table .= "</table>";

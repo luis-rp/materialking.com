@@ -37,6 +37,16 @@
 	 });
  });
  // ]]>
+ 
+ 
+function checkEnter(event)
+{ 
+	if (event.keyCode == 13) 
+   {
+       return false;
+    }
+} 
+ 
 </script>
 
     <div class="content">  
@@ -71,14 +81,14 @@
                     <div style="float:left;">
                         <label class="control-label">Title</label>
                         <div class="controls">
-                            <input type="text" id="title" name="title" class="span10" value='<?php if(isset($ads[0]->title)) echo $ads[0]->title; else echo '';?>'>
+                            <input type="text" id="title" name="title" class="span10" value='<?php if(isset($ads[0]->title)) echo $ads[0]->title; else echo '';?>' onkeydown="return checkEnter(event);">
                             <?php //echo $this->validation->itemcode_error; ?>
                         </div>
                         </div>
                          <div style="float:left; margin-left:40px;">
                         <label class="">Address</label>
                         <div class="">
-                            <input type="text" id="address" name="address" class="span10" value='<?php if(isset($ads[0]->address)) echo $ads[0]->address; else echo '';?>' autocomplete="off" style="float:left;" >
+                            <input type="text" id="address" name="address" class="span10" value='<?php if(isset($ads[0]->address)) echo $ads[0]->address; else echo '';?>' autocomplete="off" style="float:left;" onkeydown="return checkEnter(event);" >
                             <p class="help-block" style="float:left;margin-left:10px;" >Start typing an address and select from the dropdown.</p>
                         </div>
                         </div>
@@ -87,7 +97,7 @@
                     <div class="control-group">
                         <label class="control-label">Price</label>
                         <div class="controls">
-                            <input type="text" id="price" name="price" class="span10" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>'>
+                            <input type="text" id="price" name="price" class="span10" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>' onkeydown="return checkEnter(event);">
                          
                         </div>
                     </div>

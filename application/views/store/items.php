@@ -416,8 +416,7 @@ $( document ).tooltip();
 
                     <div class="properties-rows">
                       <div class="row">
-                      
-                        <?php foreach ($inventory as $item) if ($item->ea) {  ?>
+                        <?php if($supplier->joinstatus=="" && $supplier->blockitemdata==0) { foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
                         <?php if(isset($item->itemcode)) {
                         $count=strlen($item->itemcode); if($count<=20){ ?>
@@ -541,6 +540,10 @@ $( document ).tooltip();
                                 </div>
                             </div>
                         </div>
+                        <?php } } else { ?>
+                        <div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a>
+                        <div class="msgBox">This Company is not in your network.</div></div>
+                        
                         <?php }?>
                         <div class="pagination pagination-centered">
                             <?php $this->view('site/paging'); ?>

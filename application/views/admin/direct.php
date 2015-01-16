@@ -691,7 +691,7 @@ function allowonlydigits(e,elementid,errorid){
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="totalprice" name="totalprice" class="highlight nonzero nopad width50 input-sm span9 price" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+						<input type="text" id="totalprice" name="totalprice" class="highlight nonzero nopad width50 input-sm span9 price" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>
 		    			</div>
 		    		</td>
 		    		<td>
