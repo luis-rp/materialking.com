@@ -1869,7 +1869,7 @@ class site extends CI_Controller
 		if(@$_POST['comments'])
 		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
 		if(@$_POST['hiddenad'])
-		$data['email_body_content'] .= "Ad Url: ".site_url($_POST['hiddenad'])."<br/>";
+		$data['email_body_content'] .= "Ad Url: ".site_url('site/ad/' .$_POST['hiddenad'])."<br/>";
 		if(@$_POST['phone'])
 		$data['email_body_content'] .= "Phone: ".$_POST['phone']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
@@ -2726,8 +2726,8 @@ class site extends CI_Controller
     	if ($result){
     		foreach ($result as $rs){
 
-    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
-    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
+    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;"></div>';
     			
     			
     			if($rs->itemid!=""){

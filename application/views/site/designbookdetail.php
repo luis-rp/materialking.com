@@ -93,7 +93,7 @@ padding:5px 0px;
 }
 .person
 {
-	background: #FFF;
+	background: #282828;
 	border-top: 1px solid #F10303;
 }
 #tagit
@@ -241,8 +241,16 @@ var id = $( img ).attr( 'id' );
       $('#tagit').fadeOut();
     });
     
+    
+    $('#taglist').on( 'mouseover', 'li', function( ) {
+      id = $(this).attr("id");
+      $('#view_' + id+'_').css({ opacity: 1.0 });
+    }).on( 'mouseout', 'li', function( ) {
+        $('#view_' + id+'_').css({ opacity: 0.0 });
+    });
+    
    	// mouseover the tagboxes that is already there but opacity is 0.
-	/*$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
+	$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
 		var pos = $( this ).position();
 		 id = $(this).attr("id");	
 		 // alert(id);	 
@@ -251,7 +259,7 @@ var id = $( img ).attr( 'id' );
 	}).on( 'mouseout', '.tagview', function( ) {
 		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
 		$('#' + id+'_').css({ opacity: 0.0 });
-	});*/
+	});
 
 	
 	// load the tags for the image when page loads.

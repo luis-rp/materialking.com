@@ -1002,12 +1002,16 @@ class Quote extends CI_Controller
 			$item->totalprice = $item->ea * $item->quantity;
 			$item->tiers = array();
 			$item->tiers['Tier0'] = number_format($price,2);
+			if(@$tiers->tier1)
 			$item->tiers['Tier1'] = number_format($price + ($price * $tiers->tier1/100),2);
 			//echo $item->tiers['Tier1'];echo '<br/>';
+			if(@$tiers->tier2)
 			$item->tiers['Tier2'] = number_format($price + ($price * $tiers->tier2/100),2);
 			//echo $item->tiers['Tier2'];echo '<br/>';
+			if(@$tiers->tier3)
 			$item->tiers['Tier3'] = number_format($price + ($price * $tiers->tier3/100),2);
 			//echo $item->tiers['Tier3'];echo '<br/>';
+			if(@$tiers->tier4)
 			$item->tiers['Tier4'] = number_format($price + ($price * $tiers->tier4/100),2);
 			//echo $item->tiers['Tier4'];echo '<br/>';echo '<br/>';echo '<br/>';
 			

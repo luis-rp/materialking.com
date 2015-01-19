@@ -560,10 +560,12 @@ class costcode extends CI_Controller {
         $postatus = "incomplete";
         $totalquantity = 0;
         $totalreceived = 0;
+        if ($count >= 1) {
         foreach ($costcodeitems as $row) {
         	
         	$totalquantity +=  $row->quantity;
         	$totalreceived += $row->received;
+        }
         }
         if($totalquantity-$totalreceived == 0)
         $postatus = "complete";

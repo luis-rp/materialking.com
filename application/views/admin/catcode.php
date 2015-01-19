@@ -57,6 +57,8 @@
                              ?>
                                     <img src="<?php echo site_url('uploads/category-banners/thumbs/'.$banner_image);?>" alt=""/>
                                     <input type="hidden" readonly="readonly" name="previous_image" id="previous_image" value="<?php echo $banner_image; ?>" />
+                                    &nbsp;&nbsp;
+                                    <a href="<?php echo site_url('admin/catcode/removeimage/'.$this->validation->id);?>">Remove Image</a>
                             <?php
                                 }   
                             ?>

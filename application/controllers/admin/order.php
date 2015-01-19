@@ -580,6 +580,7 @@ function orders_export()
 		foreach($orderdetails as $item)
 		{
 			$this->db->where('itemid',$item->itemid);
+			$this->db->where('company',$item->company);
 			$this->db->where('type','Supplier');
 			$itemdetails = $this->db->get('companyitem')->row();
 	
@@ -821,6 +822,7 @@ function orders_export()
 		foreach($orderdetails as $item)
 		{
 			$this->db->where('itemid',$item->itemid);
+			$this->db->where('company',$item->company);
 			$this->db->where('type','Supplier');
 			$itemdetails = $this->db->get('companyitem')->row();
 	
@@ -1060,7 +1062,7 @@ function orders_export()
 		if($prj)
 		$order->prjName = $prj->title;
 		else 
-		$order->prjName = "";		
+		$order->prjName = "";
 		}
 		$data['order'] = $order;
 		
@@ -1077,6 +1079,7 @@ function orders_export()
 		foreach($orderdetails as $item)
 		{
 			$this->db->where('itemid',$item->itemid);
+			$this->db->where('company',$item->company);
 			$this->db->where('type','Supplier');
 			$itemdetails = $this->db->get('companyitem')->row();
 		
@@ -1638,7 +1641,7 @@ with the transfer#{$tobj->id}.
 			redirect('admin/dashboard');
 		
 		if(@$this->session->flashdata('message'))
-			$data['message'] = $this->session->flashdata('message');	
+			$data['message'] = $this->session->flashdata('message');
 		
 		if($this->input->post('pid') != 0){
 			$this->db->where('id',$id);

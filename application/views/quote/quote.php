@@ -4,10 +4,10 @@
 <?php echo "<script>var changepriceurl='".site_url('company/changeitemprice')."';</script>";?>
 <?php // echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
-<?php echo "<script>var tier1=".$tiers->tier1.";</script>";?>
-<?php echo "<script>var tier2=".$tiers->tier2.";</script>";?>
-<?php echo "<script>var tier3=".$tiers->tier3.";</script>";?>
-<?php echo "<script>var tier4=".$tiers->tier4.";</script>";?>
+<?php echo "<script>var tier1=".@$tiers->tier1.";</script>";?>
+<?php echo "<script>var tier2=".@$tiers->tier2.";</script>";?>
+<?php echo "<script>var tier3=".@$tiers->tier3.";</script>";?>
+<?php echo "<script>var tier4=".@$tiers->tier4.";</script>";?>
 <script type="text/javascript">
 <!--
 $(document).ready(function(){

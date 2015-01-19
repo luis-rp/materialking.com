@@ -443,7 +443,8 @@
 	    	<?php if(isset($promembers)) {?>
 	    	<div class="span7" style="width:50%;">
 	    	  <table class="table table-bordered">
-				<caption><strong>Project Team Members<strong></caption>
+				<caption><strong>Project Team Members<strong>&nbsp;&nbsp;			
+				<a href="<?php echo base_url(); ?>admin/admin/index" target="_blank">Manage Users</a></caption>	
 				<tr><th>Username</th><th>Position</th></tr>
 				<tr>
 				<td><?php echo $mainuser->username; ?></td>

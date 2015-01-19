@@ -45,6 +45,42 @@ class Store extends CI_Controller
         $this->data['supplier'] = $this->supplier_model->get_supplier($username);
         
         $id = $this->data['supplier']->id;
+        $this->data['status']="";
+        
+        if ($this->session->userdata('site_loggedin') &&  $this->data['supplier'])
+        {
+            $this->data['supplier']->joinstatus = '<input type="button" value="Join Network" onclick="joinnetwork(' . $this->data['supplier']->id . ')" class="btn btn-primary arrow-right"/>';
+
+            $currentpa = $this->session->userdata('site_loggedin')->id;
+
+            $this->db->where('fromid', $currentpa);
+            $this->db->where('toid', $this->data['supplier']->id);
+            $this->db->where('fromtype', 'users');
+            $this->db->where('totype', 'company');
+            $checkrequest = $this->db->get('joinrequest')->result();
+            if($checkrequest)
+                $this->data['supplier']->joinstatus = 'Already sent request';
+
+            $this->db->where('purchasingadmin', $currentpa);
+            $this->db->where('company', $this->data['supplier']->id);
+            if ($this->db->get('network')->result())
+                $this->data['supplier']->joinstatus = 'Already in Network';
+                
+               
+                if($this->data['supplier']->joinstatus=='Already in Network'){
+                	$this->data['status']=1;
+                }
+                elseif(($this->data['supplier']->joinstatus=='Already sent request' || $this->data['supplier']->joinstatus == '<input type="button" value="Join Network" onclick="joinnetwork(' . $this->data['supplier']->id . ')" class="btn btn-primary arrow-right"/>') && $this->data['supplier']->blockitemdata==0){
+                	$this->data['status']=1;
+                }
+               elseif(($this->data['supplier']->joinstatus=='Already sent request' || $this->data['supplier']->joinstatus == '<input type="button" value="Join Network" onclick="joinnetwork(' . $this->data['supplier']->id . ')" class="btn btn-primary arrow-right"/>') && $this->data['supplier']->blockitemdata==1){
+                	$this->data['status']=0;
+                }
+        }
+        elseif($this->data['status']=="" && $this->data['supplier']->blockitemdata==0)
+        {
+        	$this->data['status']=1;
+        }
         
         $sql = "SELECT t.* FROM " . $this->db->dbprefix('type') . " t, " . $this->db->dbprefix('companytype') . " ct
 			    WHERE ct.typeid=t.id AND ct.companyid=" . $id;

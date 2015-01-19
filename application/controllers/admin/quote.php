@@ -747,10 +747,13 @@ class quote extends CI_Controller
         //$this->load->view ('admin/quotebid', $data);
                
          $gusttotal=0; $message = "";
+         $minprices = array();
          foreach($data['quoteitems'] as $items){          
          	
-         $minprices[$items->itemid] = $this->itemcode_model->getminimumprices($items->itemid);	
-        
+         $minpriceresult = $this->itemcode_model->getminimumprices($items->itemid);	
+         if($minpriceresult)
+         $minprices[$items->itemid] = $minpriceresult;
+         
          $totalSuppliers=0;
 		 $invcnt = 0; $total=0; $totalSuppliers=0;
 		 
@@ -822,6 +825,18 @@ class quote extends CI_Controller
         }
     }
 
+    function getRandomPassword()
+{
+    $acceptablePasswordChars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    $randomPassword = "";
+
+    for($i = 0; $i < 8; $i++)
+    {
+        $randomPassword .= substr($acceptablePasswordChars, rand(0, strlen($acceptablePasswordChars) - 1), 1);  
+    }
+    return $randomPassword; 
+}
+    
     function updatequote()
     {
     	  
@@ -888,6 +903,72 @@ class quote extends CI_Controller
     		$emailitems .= '</table>';
             $infolist="";
             $invitees = $this->input->post('invitees');
+            //echo "<pre>",print_r($invitees);
+            
+             if(isset($_POST['suem']))
+             {
+             	$trimemail=rtrim($_POST['suem'],',');            	
+             }
+             else 
+             {
+             	$trimemail="";
+             }
+             
+              if(isset($_POST['suna']))
+             {
+             	 $trimname=rtrim($_POST['suna'],',');            	 
+             }          
+             if(isset($trimemail) && $trimemail!="")
+             {
+               $supplyemailarr=explode(',',$trimemail);
+               $i=0;
+               $newarr[$i]=array();
+             	    if(isset($trimemail) && $trimemail!="")
+                    {
+             	     $supplynamearr=explode(',',$trimname);  
+             	       foreach ($supplyemailarr as $c)
+             	        { 
+             	 	     $a=0;        	 	
+             	         $newarr[$i]['email']=$c;         	 	          	 		
+             	 		    foreach ($supplynamearr as $n)
+             	 		      {            	 		 	
+             	 			   $newarr[$a]['name']=$n;
+             	 			   $a++;
+             	 		      }
+             	         $i++;
+             	        }
+                     }
+             }  
+            
+            if(isset($newarr) && $newarr!='')  
+            {   $limitcompany = array();
+                foreach ($newarr as $eachsup)
+                {      		
+                	$password = $this->getRandomPassword();
+                	
+                	$username = str_replace(' ', '-', strtolower($eachsup['name']));                	
+                	
+            		$limitedcompany = array(
+            		   'primaryemail' => $eachsup['email'],  	
+            		   'title' => $eachsup['name'],
+                       'regkey' => '',
+                       'username' => $username,
+                       'pwd' => md5($password),
+                       'password' => md5($password),
+                       'company_type' => '3',
+                       'regdate' => date('Y-m-d')                       
+                    );
+                    $this->db->insert('company', $limitedcompany);
+            		$lastid = $this->db->insert_id();
+            		if($lastid){
+            		$invitees = $invitees.",".$lastid;
+            		$limitcompany[$lastid]['username'] = $username;
+            		$limitcompany[$lastid]['password'] = $password;
+            		}
+                }
+            }
+			//echo "<pre>",print_r($invitees); echo "<pre>",print_r($limitcompany); die;
+                       
             if ($invitees)
             {
                 $companies = $this->quote_model->getcompanylistbyids($invitees);
@@ -909,8 +990,16 @@ class quote extends CI_Controller
 
                     $link = base_url() . 'home/quote/' . $key;
                     $data['email_body_title']= "Dear " . $c->title;
-
-				  	$data['email_body_content'] = "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
+					
+                    $data['email_body_content'] = "";
+                    
+                    if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password']){
+                    	
+                    	$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+                    	
+                    }
+                    
+				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
@@ -955,7 +1044,7 @@ class quote extends CI_Controller
 
             }
             
-             if(isset($_POST['suem']))
+             /*if(isset($_POST['suem']))
              {
              	$trimemail=rtrim($_POST['suem'],',');            	
              }
@@ -1041,7 +1130,7 @@ class quote extends CI_Controller
                 $infolist .=$trimemail;
                 $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Email: ' . $infolist . '</div></div>');
 
-            }
+            }*/
 
             $reminders = $this->input->post('reminders');
             if ($reminders)

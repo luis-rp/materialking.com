@@ -225,6 +225,7 @@ class catcode extends CI_Controller {
         }
          return $data_image['upload_data']['file_name'];
     }
+    
     function add_catcode()
     {
         $image_name = "";
@@ -260,6 +261,20 @@ class catcode extends CI_Controller {
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Category Added Successfully</div></div>');
             redirect('admin/catcode');
         }
+    }
+    
+    function removeimage($id)
+    {
+    	$image=$this->db->get_where('category',array('id'=>$id))->row()->banner_image;
+    	$this->db->where('id', $id);
+    	$this->db->update('category',array('banner_image'=>""));
+    	if($image!= "")
+                {
+                   unlink('./uploads/category-banners/'.$image);
+                   unlink('./uploads/category-banners/thumbs/'.$image);
+                }
+        $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Category Image Removed Successfully.</div></div>');
+        redirect('admin/catcode');  	
     }
     
     function add_designcatcode()

@@ -305,6 +305,7 @@ class Order extends CI_Controller
 			if($item->company == $company->id)
 			{
 				$this->db->where('itemid',$item->itemid);
+				$this->db->where('company',$item->company);
 				$this->db->where('type','Supplier');
 				$itemdetails = $this->db->get('companyitem')->row();
 			
