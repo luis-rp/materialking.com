@@ -735,7 +735,10 @@ class quote extends CI_Controller
         foreach ($invitations as $inv) {
             $data['invitations'][$inv->company] = $inv;
         }
-
+         
+         $non = "SELECT c.primaryemail FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";
+        $data['nonnetuser'] = $this->db->query($non)->result();
+        
         $data['awarded'] = $this->quote_model->getawardedbid($id);
         $data['bids'] = $this->quote_model->getbids($id);
 
@@ -903,7 +906,7 @@ class quote extends CI_Controller
     		$emailitems .= '</table>';
             $infolist="";
             $invitees = $this->input->post('invitees');
-            //echo "<pre>",print_r($invitees);
+            //echo "<pre>",print_r($_POST); die;
             
              if(isset($_POST['suem']))
              {
@@ -928,21 +931,23 @@ class quote extends CI_Controller
              	     $supplynamearr=explode(',',$trimname);  
              	       foreach ($supplyemailarr as $c)
              	        { 
-             	 	     $a=0;        	 	
-             	         $newarr[$i]['email']=$c;         	 	          	 		
-             	 		    foreach ($supplynamearr as $n)
-             	 		      {            	 		 	
-             	 			   $newarr[$a]['name']=$n;
-             	 			   $a++;
-             	 		      }
-             	         $i++;
+             	          if($c !="undefined"){	
+             	        	$a=0;
+             	        	$newarr[$i]['email']=$c;
+             	        	foreach ($supplynamearr as $n)
+             	        	{
+             	        		$newarr[$a]['name']=$n;
+             	        		$a++;
+             	        	}
+             	        	$i++;
+             	          }	
              	        }
                      }
              }  
             
-            if(isset($newarr) && $newarr!='')  
+            if(isset($newarr[0]['name']) && @$newarr[0]['name']!='')  
             {   $limitcompany = array();
-                foreach ($newarr as $eachsup)
+               foreach ($newarr as $eachsup)
                 {      		
                 	$password = $this->getRandomPassword();
                 	
@@ -961,11 +966,25 @@ class quote extends CI_Controller
                     $this->db->insert('company', $limitedcompany);
             		$lastid = $this->db->insert_id();
             		if($lastid){
+            		if($invitees!=""){	
             		$invitees = $invitees.",".$lastid;
+            		}else{ 
+            		$invitees = $lastid;
+            		
+            		}
             		$limitcompany[$lastid]['username'] = $username;
             		$limitcompany[$lastid]['password'] = $password;
+            		
+            		$insert = array();
+            		$insert['company'] = $lastid;
+            		$insert['purchasingadmin'] = $this->session->userdata('id');            		
+            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		$insert['status'] = 'Active';
+            		$this->db->insert('network',$insert);
+            		
             		}
-                }
+                } //$invitees=rtrim($invitees,",");
+
             }
 			//echo "<pre>",print_r($invitees); echo "<pre>",print_r($limitcompany); die;
                        
@@ -993,10 +1012,11 @@ class quote extends CI_Controller
 					
                     $data['email_body_content'] = "";
                     
+                    if(isset($limitcompany)){
                     if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password']){
                     	
                     	$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
-                    	
+                    }
                     }
                     
 				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
@@ -9775,8 +9795,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['email_body_content'] .= "Paypal Email: ".$_POST['customerpaypalemail']."<br/>";
 		if(@$_POST['markuptotalpercent'])
 		$data['email_body_content'] .= "Mark up total %: ".$_POST['markuptotalpercent']."<br/>";
-		if(@$_POST['markupitempercent'])
-		$data['email_body_content'] .= "Mark up each item %: ".$_POST['markupitempercent']."<br/>";
+		/*if(@$_POST['markupitempercent'])
+		$data['email_body_content'] .= "Mark up each item %: ".$_POST['markupitempercent']."<br/>";*/
 		if(@$_POST['customerpayableto'])
 		$data['email_body_content'] .= "Payable To: ".$_POST['customerpayableto']."<br/>";
 
@@ -9820,7 +9840,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $billarray['customerpaymenttype'] = @$_POST['customerpaymenttype'];
                     $billarray['customerpaypalemail'] = @$_POST['customerpaypalemail'];
                     $billarray['markuptotalpercent'] = @$_POST['markuptotalpercent'];
-                    $billarray['markupitempercent'] = @$_POST['markupitempercent'];     
+                    //$billarray['markupitempercent'] = @$_POST['markupitempercent'];     
                     $billarray['customerpayableto'] = @$_POST['customerpayableto'];                                   
                     $billarray['customerlogo'] = @$_POST['customerlogo'];       
 					$billarray['billedon'] = date('Y-m-d H:i:s');
@@ -9896,12 +9916,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Tax</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.(@$totalprice*@$settings->taxrate/100).'</td>';
+    	$emailitems.= '<td style="padding-left:5;">'.(@$subtotal*@$settings->taxrate/100).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
     	
-    	$finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
+    	$finaltotal = $subtotal + (@$subtotal*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
     	$emailitems.= '<td style="padding-left:5;">'.@$finaltotal.'</td>';
@@ -10348,7 +10368,43 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$awardedbid = $this->quote_model->getawardedbidquote($_POST['quote']);
 		echo json_encode($awardedbid->items);
 	}
+	
+	
+	function checkuserexist(){
 		
+		if(!$_POST)
+		die;
+		
+		$username = $_POST['username'];
+		$username = str_replace(' ', '-', strtolower($username));  
+        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.username='".$username."'";
+        $query = $this->db->query($sql);
+        $cust = $query->row();
+        if($cust)
+        echo 1;
+        else 
+        echo 0; die;
+		
+	}
+		
+	
+	function checkemailexist(){
+		
+		if(!$_POST)
+		die;
+		
+		$email = $_POST['email'];
+		
+        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.primaryemail='".$email."'";
+        $query = $this->db->query($sql);
+        $cust = $query->row();
+        if($cust)
+        echo 1;
+        else 
+        echo 0; die;
+		
+	}
+	
     // End
 }
 

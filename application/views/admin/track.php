@@ -1376,7 +1376,7 @@ function removeallitems(quote){
         							</select></td></tr>
 		<tr><td>Paypal e-mail:</td><td><input type="text" name="customerpaypalemail" id="customerpaypalemail" style="width: 250px;" /> </td></tr>
 		<tr><td>Mark up total %:</td><td><input type="text" name="markuptotalpercent" id="markuptotalpercent" style="width: 75px;" /> </td></tr>
-		<tr><td>Mark up each item %:</td><td><input type="text" name="markupitempercent" id="markupitempercent" style="width: 75px;" /></td></tr>
+		<!-- <tr><td>Mark up each item %:</td><td><input type="text" name="markupitempercent" id="markupitempercent" style="width: 75px;" /></td></tr> -->
 		<tr><td>Payable To:</td><td><input type="text" name="customerpayableto" id="customerpayableto" value="<?php echo @$this->session->userdata('companyname');?>" style="width: 250px;" /></td></tr> 		
 		<tr><td colspan="2" style="text-align:center;"><input type="button" value="Savebill" class="btn btn-primary" onclick="billformsubmit();"/></td>
 		<input type="hidden" name="customerquoteid" id="customerquoteid"/>

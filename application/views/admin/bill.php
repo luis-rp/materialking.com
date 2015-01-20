@@ -307,12 +307,12 @@ function shownotice(newval,oldval,id){
                 }
                 
                 if(@$invoiceitem['markuptotalpercent']!="")
-                $totalprice = $totalprice + ($totalprice*$invoiceitem['markuptotalpercent']/100);    
+                $subtotal = $totalprice + ($totalprice*$invoiceitem['markuptotalpercent']/100);    
                                 
-                $taxtotal = $totalprice * $config['taxpercent'] / 100;
+                $taxtotal = $subtotal * $config['taxpercent'] / 100;
                                 
                 
-                $grandtotal = $totalprice + $taxtotal;
+                $grandtotal = $subtotal + $taxtotal;
                 echo '  <tr>
 					    <td colspan="7" align="left">&nbsp;</td>
 					    <td align="left">Markup Total('.@$invoiceitem['markuptotalpercent'].' %)</td>
@@ -328,7 +328,7 @@ function shownotice(newval,oldval,id){
                       		</div>
                   		</td>
 					    <td align="left">Subtotal</td>
-					    <td align="left">$ ' . number_format($totalprice, 2) . '</td>
+					    <td align="left">$ ' . number_format($subtotal, 2) . '</td>
 					  </tr>
 					  <tr>
 					    <td align="left">Tax</td>

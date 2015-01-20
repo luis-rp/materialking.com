@@ -518,7 +518,7 @@
                             <?php if ($data2['norecords']) { ?>
                                 <div class="alert alert-error" style="margin-left:30px;">
                                     <button data-dismiss="alert" class="close" type="button">X</button>
-                                    <strong> <?php echo $data2['norecords']; ?></strong> <a href="<?php echo site_url('site/items'); ?>">View All Listing</a>
+                                    <strong> <?php echo $data2['norecords']; ?></strong> <a href="<?php echo site_url('site/suppliers'); ?>">View All Listing</a>
                                 </div>
                             <?php } ?>
 

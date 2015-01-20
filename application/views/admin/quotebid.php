@@ -199,10 +199,65 @@ function saveitemname(id)
 function invite()
 {
 	var invname = $('input[name="supplyname[]"]').map(function(){return $(this).val();}).get();
-	$('#suna').val(invname); 
+	//var invemail = $('input[name="supplyemail"]').map(function(){return $(this).val();}).get();
+	var invemail = "";
+	$('#suna').val(invname); 	
+	$('#nonnetworkmessage').html('');
+	var i =0;
+	var msg = "";
+	$('#finalreturn').val('');
+	$('input[name^=supplyname]').each(function() {
+    	if( this.value !=""){
+    		if($('input[name="supplyemail['+i+']"]').val()==""){
+    		$('#nonnetworkmessage').html("Please enter EmailId along with the Name");    		
+    		$('#finalreturn').val('false');
+    		return false;    		
+    		}
+    		var user = this.value;
+    		var usercheckurl = '<?php echo base_url()?>admin/quote/checkuserexist/';    		
+    		$.ajax({
+    			type:"post",
+    			url: usercheckurl,
+    			async: false,
+    			data: "username="+this.value
+    		}).done(function(data){
+    			if(data == 1){
+    				$('#nonnetworkmessage').html("Username "+user+" already exists");    				
+    				$('#finalreturn').val('false');  				
+    				return false;  
+    			}
+    			    			
+    		});    		
+    	}
+    	
+    	if($('input[name="supplyemail['+i+']"]').val() !=""){
+    		if(this.value ==""){
+    		$('#nonnetworkmessage').html("Please enter Name along with the EmailId");    		
+    		$('#finalreturn').val('false');
+    		return false;    		
+    		}
+    		var email = $('input[name="supplyemail['+i+']"]').val();
+    		var emailcheckurl = '<?php echo base_url()?>admin/quote/checkemailexist/';    		
+    		$.ajax({
+    			type:"post",
+    			url: emailcheckurl,
+    			async: false,
+    			data: "email="+email
+    		}).done(function(data){
+    			if(data == 1){
+    				$('#nonnetworkmessage').html("Email "+email+" already exists");    						
+    				$('#finalreturn').val('false');		
+    				return false;    
+    			}
+    			    			
+    		});
+    		
+    	}
+    	invemail += user+",";
+    	i++;
+	});
 	
-	var invemail = $('input[name="supplyemail[]"]').map(function(){return $(this).val();}).get();
-	$('#suem').val(invemail); 
+	$('#suem').val(invemail);
 	
 	var matches = [];
 	$(".invite:checked").each(function() {
@@ -222,9 +277,25 @@ function invite()
 	});
 	$('#revisions').val(revise.join(','));
 	
-	$('#mainform').submit();
-
+	
+	var callback = function () {
+            if ($.active !== 0) {
+                setTimeout(callback, '500');
+                return;
+            }
+            
+            if($('#finalreturn').val()==""){
+            	$('#mainform').submit();
+            	return false;
+            }
+            //whatever you need to do here
+            //...
+        };
+  callback();	
+	
+	//$('#mainform').submit();
 	return false;
+
 }
 function fetchItem(codeid)
 {
@@ -932,26 +1003,29 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		<br/>
 					    	<?php }?>
 					    </div><br/>
-					    
-					    
-					    <label class="control-label"><strong>Invite Via Email:</strong></label>
-					      <hr/>
+					    				    
+					    <label class="control-label"><strong>Invite Via Email</strong></label><hr/>
+					    <span style="color:red" id="nonnetworkmessage"></span> 				      
 					    <div class="controls">
-					    	 <div id="supplydata"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">&nbsp;
-                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">&nbsp;
+					    	   <div id="supplydata"> 
+                                 Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">&nbsp;
+                                 Email:<input type="email" name="supplyemail[0]" id="supplyemail0" style="width:120px;">&nbsp;
                                  <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')">                                            </div>
                             
                             <?php $i=1; while($i<=10) { ?>			
                              <div id="supplydata<?php echo $i;?>" style="display:none;float:left;"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname"  style="width:80px;">
-                                 Email:<input type="email" name="supplyemail[]" id="supplyemail"  style="width:120px;">
-                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                </div><br>
-                            	<?php $i++; }?>
-					    </div>				    
+                                 Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">
+                                 Email:<input type="email" name="supplyemail[<?php echo $i;?>]" id="supplyemail<?php echo $i;?>"  style="width:120px;">
+                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                </div>
+                              <br>
+                            <?php $i++; }?>
+                            <input type="hidden" id="finalreturn"/>
+					    </div>
+					    				    
 				    </div>
-				    <?php if(0){?>
+				    				   
 				    <div class="control-group span4">
+				     <?php if(0){?>
 					    <label class="control-label"><strong>Send Revision to:</strong></label>
 					      <hr/>
 					    <div class="controls">
@@ -963,12 +1037,24 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		<br/>
 					    	<?php }?>
 					    </div>
+					     <?php }?>
+					      <label class="control-label"><strong>Non Network Invitations:</strong></label>
+					      <hr/>
+					    <div class="controls">
+					    	<?php  if(isset($nonnetuser)){
+					    	          foreach($nonnetuser as $c) {
+					    	          	
+					    		         echo $c->primaryemail;?>
+					    		<br/>
+					    	<?php }  }?>
+					    </div><br/>
+					     
 				    </div>
-				    <?php }?>
+				   
 				</div>
 			    <?php if($i){?>
 		    	<br/><br/>
-		    	<input name="add" type="button" class="btn btn-primary" value="Submit Proposal" onclick="invite();"/>
+		    	<input name="add" type="submit" class="btn btn-primary" value="Submit Proposal" onclick="return invite();"/>
 		    	<?php }?>
 
 		    <?php }?>
