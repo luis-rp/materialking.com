@@ -720,6 +720,7 @@ class quote extends CI_Controller
 
         $data['quoteitems'] = $this->quote_model->getitems($id);
         $data['companylist'] = $this->quote_model->getcompanylist();
+        $data['company_for_reminder'] = $this->quote_model->getcompanylistforreminder();
         $data['invited'] = $this->quote_model->getInvited($id);
         $data['reminder'] = $this->quote_model->getInvitedButNotBid($id);
         $data['costcodes'] = $this->db->where('project',$item->pid)->get('costcode')->result();        
@@ -736,7 +737,7 @@ class quote extends CI_Controller
             $data['invitations'][$inv->company] = $inv;
         }
          
-         $non = "SELECT c.primaryemail FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";
+         $non = "SELECT c.title FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";
         $data['nonnetuser'] = $this->db->query($non)->result();
         
         $data['awarded'] = $this->quote_model->getawardedbid($id);
@@ -816,7 +817,7 @@ class quote extends CI_Controller
           
 		$data['minprices'] = $minprices;
         
-        $data['guesttotal'] = $gusttotal." ".$message."";
+        $data['guesttotal'] = number_format($gusttotal,2)." ".$message."";
         
 	    if ($data['potype'] == 'Bid')
             $this->load->view('admin/quotebid', $data);
@@ -3991,6 +3992,7 @@ class quote extends CI_Controller
         //print_r($invoices);die;
         $count = count($invoices);
         $items = array();
+        $companylist=array();
         if ($count >= 1)
         {
             $settings = $this->settings_model->get_current_settings();
@@ -3999,6 +4001,11 @@ class quote extends CI_Controller
             foreach ($invoices as $invoice)
             if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
             {
+            	
+            	$sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('awarditem') . " ai
+					  WHERE c.id=ai.company AND ai.id='{$invoice->quote->awarditemid}'";           
+            	$result= $this->db->query($sql)->row();
+            	    	
                 $invoice->ponum = $invoice->quote->ponum;
 
                 if($invoice->quote->potype=='Contract'){
@@ -4076,7 +4083,9 @@ class quote extends CI_Controller
                 $invoice->totalprice = number_format($invoice->totalprice,2);
 
                 $items[] = $invoice;
-            }
+                $companylist[]=$result;
+                
+            } $data['companylist1']=$companylist; 
 
             $data['items'] = $items;
             $data['jsfile'] = 'invoicejs.php';
@@ -4116,6 +4125,8 @@ class quote extends CI_Controller
 		    $this->data['message'] = 'No Records';
 		}
 		//-------------
+		
+		
         $this->load->view('admin/invoices', $data);
     }
 
@@ -10404,6 +10415,189 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         echo 0; die;
 		
 	}
+	
+	
+	
+	function payquotebycc()
+    {
+        $company = $this->db->select('company.*')->from('bid')                  
+                   ->join('company','bid.company=company.id')
+                   ->where('bid.quote',$_POST['invoicenum'])
+                   ->get()->row()
+                   ;
+        $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
+        if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
+		{
+		    $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bank account missing for credit card payment.</div></div>');
+		    redirect('admin/quote/bids/'.$_POST['invoicenum']);
+		}
+        //print_r($company);die;
+		ini_set('max_execution_time', 300);
+		$config = (array)$this->settings_model->get_current_settings();
+		$config = array_merge($config, $this->config->config);
+
+		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+		Stripe::setApiKey($config['STRIPE_API_KEY']);
+		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
+		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $_POST['amount'] * 100, 'currency' => 'usd' ));
+		//echo $charge;
+		$chargeobj = json_decode($charge);
+		if(@$chargeobj->paid)
+		{
+			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+			{
+	          $recbankInfo = array(
+	          			'country' =>'US',
+	          			'routing_number' => $bankaccount->routingnumber,
+	          			'account_number' => $bankaccount->accountnumber
+	          );
+
+              $recObj = Stripe_Recipient::create(array(
+              "name" => $company->title,
+              "type" => "individual",
+              "email" => $company->primaryemail,
+              "bank_account" => $recbankInfo)
+              );
+
+              $obj = json_decode($recObj);
+              $_POST['amount'] = round($_POST['amount'],2);
+              $transferObj = Stripe_Transfer::create(array(
+                  "amount" => $_POST['amount'] * 100,
+                  "currency" => "usd",
+                  "recipient" => $obj->id,
+                  "description" => "Transfer for ".$company->primaryemail )
+              );
+              $tobj = json_decode($transferObj);
+              
+              $getnewarardid = $this->confirmdirectfrompaycc($_POST['invoicenum'],@$_POST['shiptocopy']);
+              
+              $update = array(
+                          'purchasingadmin' => $this->session->userdata('purchasingadmin'),
+              			  'quoteid' => $_POST['invoicenum'],	
+              			  'awardid' => $getnewarardid,	
+                          'paymentstatus'=>'Paid',
+                          'paymentdate' => date('Y-m-d'),
+                          'paymenttype' =>'Credit Card',
+                          'refnum'=>$chargeobj->balance_transaction,
+                          'amount' => $_POST['amount']
+                          );
+              //echo $_POST['invoicenum'];
+              //print_r($update);die;
+              
+              $this->quote_model->db->insert('quote_payment', $update);
+        	  $awardid = $this->quote_model->db->insert_id();
+              
+              /*$query = "insert into ".$this->db->dbprefix('quote_payment')." values 
+              			paymentstatus='Paid',              			
+              			paymentdate='".date('Y-m-d')."',
+              			paymenttype='Credit Card',
+              			refnum='".$chargeobj->balance_transaction."'
+              			WHERE invoicenum='".$_POST['invoicenum']."'";
+              //echo $query;die;
+              $this->db->query($query);*/
+    		  $quote = $this->db->select('quote.*')
+    		            ->from('quote')    		            
+    		            ->where('id',$_POST['invoicenum'])
+    		            ->get()->row();
+
+    		  $pa = $this->db->where('id',$this->session->userdata('id'))->get('users')->row();
+
+
+              $data['email_body_title']  = "Dear {$company->title}";
+$data['email_body_content'] = "$ {$_POST['amount']} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
+with the transfer# {$tobj->id}.
+<br>Payment by: ".$pa->companyname."
+<br>PO#: ".$quote->ponum."
+";
+$loaderEmail = new My_Loader();
+              $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+              $settings = (array)$this->settings_model->get_current_settings ();
+    	      $this->load->library('email');
+    	      $config['charset'] = 'utf-8';
+    	      $config['mailtype'] = 'html';
+    	      $this->email->initialize($config);
+              $this->email->from($settings['adminemail'], "Administrator");
+              $this->email->to($company->primaryemail);
+              $this->email->subject('Bank transfer notification from ezpzp');
+              $this->email->message($send_body);
+              $this->email->set_mailtype("html");
+              $this->email->send();
+
+              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
+        	}
+		}
+		redirect('admin/quote/bids/'.$_POST['invoicenum']);
+    }
+    
+    
+    
+    
+    function confirmdirectfrompaycc($qid,$shiptocopy="")
+    {        
+        if(!$qid)
+            die;
+        if ($this->session->userdata('usertype_id') == 3)
+            redirect('admin/purchasingadmin/bids/' . $qid);
+        $bids = $this->quote_model->getbids($qid);
+
+        $quote = $this->quote_model->get_quotes_by_id($qid);
+        //echo '<pre>';print_r($qutoe);//die;
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {die;
+            redirect('admin/dashboard1', 'refresh');
+        }
+        //echo '<pre> bids ';print_r($awarded);echo '</pre>';//die;
+        if (!$bids) {
+            $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Bids Yet Placed.</div></div>');
+            redirect('admin/quote/update/' . $qid);
+        }
+
+
+        $awardarray = array();
+        $awardarray['quote'] = $qid;
+        $awardarray['shipto'] = $shiptocopy;
+        $awardarray['awardedon'] = date('Y-m-d H:i:s');
+        $awardarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        $this->quote_model->db->insert('award', $awardarray);
+        $awardid = $this->quote_model->db->insert_id();
+
+        foreach($bids as $bid)
+        {
+            foreach($bid->items as $item)
+            {
+                if($item->postatus=='Accepted')
+                {
+                    $item = (array) $item;
+                    $itemarray = array();
+                    $itemarray['award'] = $awardid;
+                    $itemarray['company'] = $bid->company;
+                    $itemarray['itemid'] = $item['itemid'];
+                    $itemarray['itemcode'] = $item['itemcode'];
+                    $itemarray['itemname'] = $item['itemname'];
+                    $itemarray['quantity'] = $item['quantity'];
+                    $itemarray['unit'] = $item['unit'];
+                    $itemarray['ea'] = $item['ea'];
+                    $itemarray['totalprice'] = $item['quantity'] * $item['ea'];
+                    $itemarray['daterequested'] = $item['daterequested'];
+                    $itemarray['costcode'] = $item['costcode'];
+                    $itemarray['notes'] = $item['notes'];
+                    $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+
+                    $this->quote_model->db->insert('awarditem', $itemarray);
+                }
+                else
+                {
+                    $this->db->where('id',$item->id);
+                    $this->db->delete('biditem');
+                }
+            }
+        }
+
+        $this->quote_model->db->where('quote', $bid->quote);
+        $this->quote_model->db->update('bid', array('complete' => 'Yes'));
+        $this->sendawardemail($bid->quote);
+        return $awardid;
+    }
 	
     // End
 }

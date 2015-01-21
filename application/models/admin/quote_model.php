@@ -172,6 +172,15 @@ class quote_model extends Model {
         $ret = $query->result();
         return $ret;
     }
+    
+    function getcompanylistforreminder() {
+        $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('network') . " n
+			WHERE c.id=n.company AND c.company_type is null AND n.status='Active' AND n.purchasingadmin=" . $this->session->userdata('id');
+        $query = $this->db->query($sql);
+        $ret = $query->result();
+         //echo "<pre>"; print_r($ret); die;
+        return $ret;
+    }
 
     function getallCategories () 
     {
@@ -811,7 +820,7 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
+       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -825,7 +834,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -846,13 +855,13 @@ class quote_model extends Model {
 
         $invoices = array();
         foreach ($items as $invoice) {
-            $quotesql = "SELECT q.*
+             $quotesql = "SELECT q.*,ai.id as awarditemid
 					   FROM 
 					   " . $this->db->dbprefix('received') . " r,
 					   " . $this->db->dbprefix('awarditem') . " ai,
 					   " . $this->db->dbprefix('award') . " a,
 					   " . $this->db->dbprefix('quote') . " q
-					  WHERE r.awarditem=ai.id AND ai.award=a.id 
+					  WHERE r.awarditem=ai.id AND ai.award=a.id
 					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
 					  ";
             

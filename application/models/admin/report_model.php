@@ -215,7 +215,7 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,

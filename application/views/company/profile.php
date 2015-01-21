@@ -27,10 +27,7 @@ $(document).ready(function(){
 	   $.ajax({
 		    url:"<?php echo base_url("company/getMemberInfo/");?>/"+id,
 		    type:"GET",
-		    success:function(msg){
-			    
-			
-			    
+		    success:function(msg){		    
 		    	$("#idMember","#editMember").val(msg.id);
 		    	$("#memberName","#editMember").val(msg.name);
 		   		$("#memberTitle","#editMember").val(msg.title);
@@ -135,12 +132,14 @@ function addEmail()
 				                     
 				                     <div class="col-md-10 col-sm-8 col-xs-10">
                     				  <div>
-				                        <label class="form-label">Username : <?php echo $company->username;?></label>
+				                        <label class="form-label"><strong>Username :</strong> <?php echo $company->username;?></label>
 				                        <div class="controls">
 				                         
 				                        </div>
 				                      </div>
 				                     </div>
+
+				                     
 				                     
                     				<div class="col-md-10 col-sm-10 col-xs-10">
                     				  <div class="form-group">
@@ -157,7 +156,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
-				             
+				                      <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 				                        <label class="form-label">Other Emails:</label>
 				                        <div class="controls">
@@ -188,6 +187,7 @@ function addEmail()
 				                        </div>
 				                      </div>
                     				
+				                       <?php } ?>
 				                      <div class="form-group">
 				                        <label class="form-label">Contact</label>
 				                        <div class="controls">
@@ -195,6 +195,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
+				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                       <div class="form-group">
 				                        <label class="form-label">Company Type:</label>
 				                        <div class="controls">
@@ -222,7 +223,9 @@ function addEmail()
 									      </table>
 				                        </div>
 				                      </div>
-
+                                     
+				                      <?php } ?>
+				                      
                     				 <?php if(1){?>
                     				 <div class="form-group">
 				                        <label class="form-label">City</label>
@@ -272,6 +275,7 @@ function addEmail()
 				                        </div>
 				                      </div>
                     				
+				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 				                        <label class="form-label">Logo</label>
 				                        
@@ -354,6 +358,7 @@ function addEmail()
 											</table>
 				                      </div>
 				                      
+				                      <?php } ?>
 				                      <div class="form-group">
 				                        <label class="form-label">Invoice Notes:</label>
 				                        <div class="controls">
@@ -361,6 +366,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
+				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 				                        <label class="form-label">Team:</label>
 				                        <div class="controls">
@@ -478,7 +484,7 @@ function addEmail()
 													<input name="pagetour" type="checkbox" <?php echo $company->pagetour==1?'checked="checked"':'';?>>	
 										    	</div>
 										    </div>
-    								 
+    								 <?php } ?>
     								 
 				                      <div class="form-group">
 				                        <label class="form-label"></label>

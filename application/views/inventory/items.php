@@ -475,10 +475,10 @@ function clearall(id)
                                 <div class="pull-right">
                  					<input type="checkbox" id ='blockitemdata' name ='blockitemdata' <?php echo $company->blockitemdata?'checked="CHECKED"':''?>"
                                     onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>
-                 				
+                 				<?php if($this->session->userdata('company')->company_type!='3') {?>
                  				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"
                                     onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>&nbsp;&nbsp;
-                                                             
+                                 <?php } ?>                            
                  			
                                 </div>
 
@@ -553,8 +553,10 @@ function clearall(id)
                                                 <th style="width:10%"><font color="#fff">List Price</font></th>
                                                 <th style="width:15%"><font color="#fff">Min. Qty.</font></th>
                                                 <th style="width:5%"><font color="#fff">Stock</font></th>
+                                                <?php if($this->session->userdata('company')->company_type!='3') {?>
                                                 <th style="width:5%"><font color="#fff">Store/<br/>Featured</font></th>
                                                 <th style="width:5%"><font color="#fff">Action</font></th>
+                                                <?php } ?>
                                             </tr>
                                         </thead>
 
@@ -620,7 +622,7 @@ function clearall(id)
                                                 	<input type="checkbox" id = 'tierprice<?php echo $item->id;?>' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
                   											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc. <?php if(@$item->increment) echo "<br> *This qty. has been set to be sold in increments of ".$item->increment." only"; ?>
                                                 </td>
-
+                                                
                                                 <td class="v-align-middle">
                                                 	<input type="checkbox"
                                                 	<?php echo @$item->companyitem->instock?'checked="CHECKED"':''?>" id="instock<?php echo $item->id;?>"
@@ -638,7 +640,8 @@ function clearall(id)
                                                 	<?php echo @$item->companyitem->shipfrom?'checked="CHECKED"':''?>"
                                                 	onchange="updateshipfrom('<?php echo $item->id?>',this.checked);"/>Ships From Manufacturer.
                                                 </td>
-
+                                                
+                                                <?php if($this->session->userdata('company')->company_type!='3') {?>  
                                                 <td class="v-align-middle">
                                                 	<input type="checkbox"
                                                 	<?php echo @$item->companyitem->instore?'checked="CHECKED"':''?>" id="instore<?php echo $item->id;?>"
@@ -648,7 +651,8 @@ function clearall(id)
                                                 	<?php echo @$item->companyitem->isfeature?'checked="CHECKED"':''?>" id="isfeature<?php echo $item->id;?>"
                                                 	onchange="updateItemisfeature('<?php echo $item->id?>',this.checked);"/>
                                                 </td>
-
+												
+												
                                                 <td class="v-align-middle">
                                                 	<a href="javascript:void(0);" onclick="updateitem('<?php echo $item->id;?>')">My Store</a>
                                                 	<br/>
@@ -656,7 +660,8 @@ function clearall(id)
                                                 	<br/>
                                                 	<a href="javascript:void(0);" onclick="clearall('<?php echo $item->id;?>')">Clear Fields</a>
                                                 </td>
-
+                                               <?php } ?>
+                                               
                                             </tr>
                                           <?php } ?>
                                         </tbody>

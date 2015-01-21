@@ -190,7 +190,7 @@ function jq( myid ) {
                         Company:
                         <select id="searchcompany" name="searchbycompany" style="width: 120px;">
                             <option value=''>All Companies</option>
-                            <?php foreach ($companies as $company) { ?>
+                            <?php foreach ($companylist1 as $company) { ?>
                                 <option value="<?php echo $company->id ?>"
                                 <?php
                                 if (@$_POST['searchbycompany'] == $company->id) {

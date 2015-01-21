@@ -40,6 +40,36 @@ function usedefaultaddresscheckchange()
 		$("#shipto").val('<?php echo implode(' ',explode("\n",$project->address));?>');
 }
 	
+
+	function validatecc()
+	{
+	  cn = $("#card").val();
+	  ct =  $("#creditcardtypes").val();
+	  //alert(cn+'-'+ct);return false;
+	  if (!checkCreditCard (cn,ct)) {
+		alert (ccErrors[ccErrorNo]);
+		return false;
+	  }
+	  cvc = $("#cvc").val();
+	  if(cvc.length != 3 || isNaN(cvc))
+	  {
+		  alert('Wrong cvc code');
+		  return false;
+	  }
+	  return true;
+	}
+
+function paycc(amount)
+{			
+		var invoicenumber = $('#quoteid').val();
+		$("#ccpayinvoicenumber").val(invoicenumber);
+		$("#ccpayinvoiceamount").val(amount);
+		$("#ccpayamountshow").html(amount);
+		$("#awardmodal").hide();	
+		$("#paymodal").modal();		
+}
+
+
 </script>
 <?php 
 	//print_r($bids);die;
@@ -342,7 +372,8 @@ $(document).ready(function(){
         	</div>
         	<div class="modal-footer">
         		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
-        		<input type="submit" class="btn btn-primary" value="Award"/>
+        		<!-- <input type="submit" class="btn btn-primary" value="Award"/> -->
+        		<input type="button" class="btn btn-primary" value="Award" onclick="paycc('<?php echo @$alltotal?>');"" />
         	</div>
             </form>
         </div>
@@ -358,3 +389,82 @@ $(document).ready(function(){
         	</div>
             
         </div>
+        
+        
+        
+        <div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    	<h3>
+    	Pay by credit card
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+		</h3>
+	</div>
+	<div class="modal-body" id="quoteitems">
+        <form method="post" action="<?php echo site_url('admin/quote/payquotebycc/');?>" onsubmit="return validatecc();">
+	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
+	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Total Amount to pay
+                </label>
+                <div class="controls">
+                   $<span id="ccpayamountshow"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Number
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="card" name="card" required style="width: 250px;">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Type
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+		            <select id="creditcardtypes" name="creditcardtypes">
+			            <option value="visa">Visa</option>
+			            <option value="mastercard">Master Card</option>
+			            <option value="amex">American Express</option>
+			            <option value="dinersclub">Diners club</option>
+			            <option value="discover">Discover</option>
+		            </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">
+                   CVC Code:
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="cvc" name="cvc" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMessage">
+                    Expiry Date
+                </label>
+                <div class="controls">
+                    <select id="month" name="month" style="width: 95px;">
+                    	<?php for($i=1; $i<13; $i++){?>
+	                    <option value="<?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?>"><?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?></option>
+	                    <?php }?>
+                    </select>
+                    <select id="year" name="year" style="width: 125px;">
+                    	<?php for($i = date('Y'); $i < date('Y')+10; $i++){?>
+	                    <option value="<?php echo $i;?>"><?php echo $i;?></option>
+	                    <?php }?>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary arrow-right" value="Process">
+            </div>
+        </form>
+	</div>
+
+</div>

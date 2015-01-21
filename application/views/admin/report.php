@@ -28,7 +28,7 @@
                 Company:
 				<select id="searchcompany" name="searchcompany">
 					<option value=''>All Companies</option>
-					<?php foreach($companies as $company){?>
+					<?php foreach($companylist1 as $company){?>
 						<option value="<?php echo $company->id?>"
 							<?php if(@$_POST['searchcompany']==$company->id){echo 'SELECTED';}?>
 							>

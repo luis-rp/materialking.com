@@ -331,16 +331,27 @@ class report extends CI_Controller
 		$uri_segment = 4;
 		$offset = $this->uri->segment ($uri_segment);
 		$reports = $this->report_model->get_reports ();
-		
+		//echo '<pre>';print_r($reports);die;
 		$count = count ($reports);
 		$items = array();
 		if ($count >= 1) 
 		{
+			$companylist=array();
 			foreach ($reports as $report) 
-			{
+			{			
+				foreach ($report->items as $value) 
+				{
+					$sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('awarditem') . " ai
+					  WHERE c.id=ai.company AND ai.id='{$value->awarditem}'";           
+            	    $result= $this->db->query($sql)->row();	
+            	    $companylist[]=$result;			
+				}
+				
 				$items[] = $report;
+				
 			}
-			//echo '<pre>';print_r($items);die;
+			$companylist = array_map("unserialize", array_unique(array_map("serialize", $companylist)));
+			$data['companylist1'] = $companylist;
 		    $data['reports'] = $items;
 		}
 		if(!$items)
