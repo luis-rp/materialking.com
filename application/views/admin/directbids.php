@@ -65,6 +65,7 @@ function paycc(amount)
 		$("#ccpayinvoicenumber").val(invoicenumber);
 		$("#ccpayinvoiceamount").val(amount);
 		$("#ccpayamountshow").html(amount);
+		$('#shiptocopy').val($('#shipto').val());
 		$("#awardmodal").hide();	
 		$("#paymodal").modal();		
 }
@@ -372,8 +373,8 @@ $(document).ready(function(){
         	</div>
         	<div class="modal-footer">
         		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
-        		<!-- <input type="submit" class="btn btn-primary" value="Award"/> -->
-        		<input type="button" class="btn btn-primary" value="Award" onclick="paycc('<?php echo @$alltotal?>');"" />
+        		<input type="submit" class="btn btn-primary" value="Award"/>
+        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>');"" />
         	</div>
             </form>
         </div>
@@ -462,6 +463,7 @@ $(document).ready(function(){
                 </div>
             </div>
             <div class="form-actions">
+            	<input type="hidden" id="shiptocopy" name="shiptocopy"></textarea>
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
             </div>
         </form>

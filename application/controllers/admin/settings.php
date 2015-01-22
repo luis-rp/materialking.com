@@ -110,7 +110,7 @@ class Settings extends CI_Controller
 		{
 			$data ['message'] = $this->validation->error_string;
 		    $data ['action'] = site_url ('admin/settings/update');
-			$this->load->view ('admin/setting', $data);
+			$this->load->view ('admin/settings', $data);
 		}
 		else
 		{

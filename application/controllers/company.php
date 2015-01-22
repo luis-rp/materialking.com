@@ -437,9 +437,10 @@ class Company extends CI_Controller {
     	$row = $this->db->get("companyteam")->row();
     	echo json_encode($row);
     }
+    
     function saveprofile() {
     	
-    	
+    	//echo "<pre>"; print_r($_POST); die;
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
@@ -461,6 +462,14 @@ class Company extends CI_Controller {
 		else 
 		{
 			$_POST['pagetour']=0;
+		}
+		
+		$orgpwd="";
+		if(isset($_POST['password']))
+		{
+			$orgpwd=$_POST['password'];
+			$_POST['password']=md5($_POST['password']);
+			$_POST['pwd']=$_POST['password'];
 		}
         
         if (isset($_FILES['logo']['tmp_name']))
@@ -679,11 +688,41 @@ class Company extends CI_Controller {
             }
         }
 
+        $sms="";
+        if($this->session->userdata('company')->company_type=='3')
+        {   	  	
+        	$data['email_body_title']  = "Dear " .@$_POST['title'];
+		  	$data['email_body_content']  = "You have updated Company Information as Follow:  <br><br>
+		  	Username : ".@$company->username."<br/>
+		  	Password : ".@$orgpwd."<br/>
+		  	Title : ".@$_POST['title']."<br/>
+		  	Primaryemail : ".@$_POST['primaryemail']."<br/>
+		  	Contact : ".@$_POST['contact']."<br/>
+		  	City : ".@$_POST['city']."<br/>
+		  	Zip : ".@$_POST['zip']."<br/>
+		  	Street : ".@$_POST['street']."<br/>
+		  	Phone : ".@$_POST['phone']."<br/>
+		  	Fax : ".@$_POST['fax']."<br/>
+		  	Invoicenote : ".@$_POST['invoicenote']."<br/>";
+		  	$loaderEmail = new My_Loader();
+	        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+	        $settings = (array) $this->companymodel->getconfigurations(1);
+	        $this->load->library('email');
+	        $config['charset'] = 'utf-8';
+	        $config['mailtype'] = 'html';
+	        $this->email->initialize($config);
+	        $this->email->from($settings['adminemail'], "Administrator");
+	        $this->email->to(@$_POST['title'] . ',' . @$_POST['primaryemail']);
+	        $this->email->subject('Updated Company Information');
+	        $this->email->message($send_body);
+	        $this->email->set_mailtype("html");
+	        $this->email->send();
+	        $sms="Email Sent Successfully.";
+        }
 
-        $company = $this->supplier_model->get_supplier($company->id);
-
-
-        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Your profile has been saved.</div></div></div>');
+        $company = $this->supplier_model->get_supplier($company->id);    
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">
+        </a><div class="msgBox">Your profile has been saved.'.$sms.'</div></div></div>');
         redirect('company/profile');
     }
 
@@ -2150,6 +2189,54 @@ class Company extends CI_Controller {
         $this->validation->set_fields($fields);
     }
     
-   
+    function customerlogin()
+    {
+    	$data['message'] = '';
+        $this->load->template('../../templates/front/register', $data);
+        $this->load->view('company/customerlogin', $data);
+    }
+    
+    function checkcustomerlogin() {
+    	
+        if (!@$_POST)
+            die('Wrong access');
+        $errormessage = '';
+        if (!@$_POST['username'])
+            $errormessage = 'Please Provide Username';
+        if (!@$_POST['password'])
+            $errormessage = 'Please Provide Password';
+
+        if ($errormessage) {
+        	
+            $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
+            redirect('company/customerlogin/');
+        }
+
+        $_POST['password'] = md5($_POST['password']);
+        $this->db->where($_POST);
+        $check = $this->db->get('customer')->row();
+
+        if ($check) {
+            $data['customer'] = $check;
+            $data['logintype'] = 'customer';
+
+            $data['comet_user_id'] = $check->id;
+            $data['comet_user_email'] = $check->email;
+
+            $this->session->set_userdata($data);
+
+			@session_start();
+			$_SESSION['comet_user_id']=$check->id;
+			$_SESSION['comet_user_email']=$check->email;
+			$_SESSION['userid']=$check->id;
+			$_SESSION['logintype']='customer';
+
+            redirect('site/customerbill');
+        } else {
+            $data['message'] = 'Invalid Login';
+            $this->load->template('../../templates/front/register', $data);
+            $this->load->view('company/customerlogin', $data);
+        }
+    }
 
 }

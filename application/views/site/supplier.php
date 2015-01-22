@@ -1053,7 +1053,7 @@ function changetab(tabname){
 <form id="supplierform" method="post" action="<?php echo site_url('site/suppliers')?>">
 	<input type="hidden" id="typei" name="typei"/>
 </form>
-
+ 
 <div id="content">
     <div class="container">
         <div id="main">
@@ -1146,7 +1146,7 @@ function changetab(tabname){
                               </div>
                         </div><!-- End of pull-left overview effect5 -->
 
-                      
+                    <?php if($supplier->company_type!='3') {?>  
                    <?php  if(isset($image) && count($image)>0) { ?>
                      <div style="float:left; height:310px;width:395px;">
                         <ul class="bxslider">
@@ -1158,13 +1158,14 @@ function changetab(tabname){
 						  <?php } ?>
 						</ul>
                       </div>
-                   <?php }   ?>
+                   <?php }  } ?>
                    <br><br><br>
 
                          <div class="row expe" style="margin-left: 3px;">
                             <p><?php echo $supplier->about; ?></p>
                         </div>
-
+                     
+                        <?php if($supplier->company_type!='3') {?>
                          <?php  if(isset($gallery) && count($gallery)>0) { ?>
 					 <div class="content">
                          <h3 class="titlebox" style="padding:0px 0px 0px 8px">Gallery</h3>
@@ -1486,7 +1487,7 @@ function changetab(tabname){
                          <?php } ?>
                         <?php }?>
 						<br/>
-
+                        <?php } ?>
                        <h3 class="titlebox" style="padding:0px 0px 0px 8px">Map
                         <a name="map" id="map"></a>
                         <?php $addressarray = explode(" ",$supplier->address);
@@ -1697,7 +1698,7 @@ function changetab(tabname){
                 </div>
 
                 
-                
+              <?php if($supplier->company_type!='3') {?>  
                  <?php if(@$businesshrs){ ?>
                  <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>
                  <div class="sidebar span3">
@@ -1999,7 +2000,7 @@ function changetab(tabname){
                  </div>
               </div>
               </div>
-
+             <?php } ?>
 
                               <!-- Start Dialog Form -->
                <div class="dialog-form" id="dialog-form">

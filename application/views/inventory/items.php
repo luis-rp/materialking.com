@@ -471,17 +471,17 @@ function clearall(id)
                         <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-
+                                
+							<?php if($this->session->userdata('company')->company_type!='3') {?>
                                 <div class="pull-right">
                  					<input type="checkbox" id ='blockitemdata' name ='blockitemdata' <?php echo $company->blockitemdata?'checked="CHECKED"':''?>"
                                     onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>
-                 				<?php if($this->session->userdata('company')->company_type!='3') {?>
+                 				
                  				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"
-                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>&nbsp;&nbsp;
-                                 <?php } ?>                            
-                 			
+                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>&nbsp;&nbsp;              			
                                 </div>
-
+                            <?php } ?>  
+                            
                                 <form action="<?php echo site_url('inventory');?>" method="post">
                                 <table>
 
@@ -630,7 +630,7 @@ function clearall(id)
 
                                                 	<input type="text"  style="width: 60px;" placeholder="Stock" id="stock<?php echo $item->id;?>"
                                                 	value="<?php echo @$item->companyitem->qtyavailable?>"
-                                                	onchange="updateqtyavailable('<?php echo $item->id?>',this.value);"/>
+                                                	onchange="updateqtyavailable('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"/>
                                                 	
                                                 	<input type="checkbox" name="backorder" id="backorder<?php echo $item->id;?>" 
                                                 	<?php echo @$item->companyitem->backorder?'checked="CHECKED"':''?>" 

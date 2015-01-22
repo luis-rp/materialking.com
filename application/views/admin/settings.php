@@ -23,12 +23,12 @@
     </div>
     </div>
 
-    <div class="control-group">
+   <!-- <div class="control-group">
     <label class="control-label" for="pricepercent">Target Price</label>
     <div class="controls">
-     <input type="text" id="pricepercent" name="pricepercent" class="span2" value="<?php echo $this->validation->pricepercent;?>"> %
+     <input type="text" id="pricepercent" name="pricepercent" class="span2" value="<?php //echo $this->validation->pricepercent;?>"> %
     </div>
-    </div>
+    </div>-->
 
 
     <div class="control-group">

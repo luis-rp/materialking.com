@@ -190,6 +190,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     </ul>
                                     <div class="account pull-right">
                                         <ul class="nav nav-pills">
+                                            <li><a href="<?php echo base_url('company/customerlogin'); ?>">Login as Customer</a></li>
                                             <li><a href="<?php echo base_url('company/login'); ?>">Login as Supplier</a></li>
                                             <?php if (!$this->session->userdata('site_loggedin')) { ?>
                                                 <li><a href="javascript:void(0);" onclick="$('#loginmodal').modal('show');">Login as Purchaser</a></li>
@@ -311,7 +312,9 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
 										<li>
 											<a href="<?php echo base_url('site/submitlist'); ?>">Submit A List</a>
 										</li>
-                                        	
+                                        <li>
+											<a href="<?php echo base_url('site/customerbill'); ?>">Customer Billing</a>
+										</li>	
                                         
                                     </ul>
 

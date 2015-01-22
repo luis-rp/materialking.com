@@ -156,6 +156,13 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
+				                       <div class="form-group">
+				                        <label class="form-label">Password:</label>
+				                        <div class="controls">
+				                          <input type="password" class="form-control input-sm" name="password" value="" autocomplete="off">
+				                        </div>
+				                      </div>
+				                      
 				                      <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 				                        <label class="form-label">Other Emails:</label>
@@ -275,7 +282,7 @@ function addEmail()
 				                        </div>
 				                      </div>
                     				
-				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
+				                      
 				                      <div class="form-group">
 				                        <label class="form-label">Logo</label>
 				                        
@@ -289,6 +296,7 @@ function addEmail()
 				                        </div>
 				                      </div>
 				                      
+				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 										<label class="form-label">Add Images</label>
 										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">

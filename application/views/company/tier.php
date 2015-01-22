@@ -175,6 +175,7 @@ function allowonlydigits(e,elementid,errorid){
 								
 								</td>
 								
+								 <?php if($this->session->userdata('company')->company_type!='3') {?>
 								<td>
 									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  /> 
 									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span>	
@@ -190,6 +191,15 @@ function allowonlydigits(e,elementid,errorid){
 								<td>
 									<?php echo $admin->creditlimit;?>
 								</td>
+								<?php } else { ?>
+								
+								<td colspan="4">
+									<span style="color:red;">*Credit Card Only Account.</span>
+								</td>
+								
+								<?php } ?>
+								
+								
 								<td>
 									<?php echo $admin->amountdue;?>
 								</td>

@@ -412,7 +412,7 @@ $( document ).tooltip();
 
                 	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>
                 	<br/>
-                	<?php echo @$norecords;?>
+                	<?php echo @$norecords; if($company->company_type=='3'){ echo "<br/><p style='color:red;'>Store is Under Construction. Supplier has not set up an online Store.</p>"; }?>
 
                     <div class="properties-rows"><?php //echo "<pre>Status-"; print_r($supplier->joinstatus); die;?>
                       <div class="row">

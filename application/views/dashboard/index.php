@@ -244,8 +244,8 @@ function preloadoptions(fromid)
 							</form>
 
 							<?php
-							foreach($networkjoinedpurchasers as $njp){   ?>
-
+							foreach($networkjoinedpurchasers as $njp){ ?>
+                                       
 							<div class="notification-messages">
 								<div class="date pull-right">
 								<a class="remove" href="<?php echo site_url('dashboard/networkdelete/'.$njp->purchasingadmin);?>"
@@ -254,6 +254,8 @@ function preloadoptions(fromid)
 								<div class="message-wrapper">
 									<div class="heading">
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>
+										 <?php if($this->session->userdata('company')->company_type=='3') {?>
+										 &nbsp;&nbsp;&nbsp;<span style="color:red;">*Credit Card Only Account.</span><?php } ?>
 										<br/><a href="<?php echo site_url('company/tier');?>">Manage Connection</a>
 										<?php if($njp->accountnumber){?>
 										/ Account Number: <?php echo $njp->accountnumber;?>

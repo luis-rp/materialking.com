@@ -134,14 +134,16 @@ padding:5px 0px;
 }
 #taglist
 {
-	width: 30px;
+	width: 100%;
 	min-height: 200px;
-	height: auto !important;
+	height: 250px; !important;
 	height: 20px;
-	float: left;
+	/*float: left;*/
 	padding: 10px;
 	margin-left: 20px;
 	color: #000;
+	overflow:scroll;
+	
 }
 #taglist OL
 {
@@ -484,8 +486,9 @@ function viewtag(pic_id,company)
                   <br> 
                </div>
                </div>
-               <div style="width:50%;height:300px;overflow:auto;">
-               <div id="taglist"></div>
+               
+               <div>
+               	<div id="taglist"></div>
                </div> 
              
               

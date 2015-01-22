@@ -90,10 +90,12 @@ function refreshtotal()
     $("#selectedtotal").html(grandtotal);
     return grandtotal;
 }
-function awardbidbyid(bidid)
+function awardbidbyid(bidid,grandtotal)
 {
 	$("#itemids").val('');
 	$("#awardbid").val(bidid);
+	$('#paytype').val('awardbidbyid');
+	$("#grandtotal").val(grandtotal);
 	$("#awardmodal").modal();
 }
 
@@ -111,6 +113,7 @@ function awardbiditems()
     });
 	$("#awardbid").val('');
     $("#itemids").val(ids.join(','));
+    $('#paytype').val('awardbiditems');
 	$("#awardmodal").modal();
 }
 function usedefaultaddresscheckchange()
@@ -186,6 +189,47 @@ function viewitems(itemid, bidid)
 	        //$("#itemsmodal").modal();
 	    });
 }
+
+function validatecc()
+	{
+	  cn = $("#card").val();
+	  ct =  $("#creditcardtypes").val();
+	  //alert(cn+'-'+ct);return false;
+	  if (!checkCreditCard (cn,ct)) {
+		alert (ccErrors[ccErrorNo]);
+		return false;
+	  }
+	  cvc = $("#cvc").val();
+	  if(cvc.length != 3 || isNaN(cvc))
+	  {
+		  alert('Wrong cvc code');
+		  return false;
+	  }
+	  return true;
+	}
+
+
+function paycc()
+{			
+	    if($('#paytype').val() == "awardbiditems"){
+	    	amount = parseInt($('#selectedtotal').html());
+	    }
+	    
+	    if($('#paytype').val() == "awardbidbyid"){
+	    	amount = $('#grandtotal').val();
+	    }
+	    
+		var invoicenumber = $('#quoteidcopy').val();
+		$("#ccpayinvoicenumber").val(invoicenumber);
+		$("#ccpayinvoiceamount").val(parseInt($('#selectedtotal').html()));
+		$("#ccpayamountshow").html(amount);
+		$('#shiptocopy').val($('#shipto').val());
+		$('#awardbidcopy').val($('#awardbid').val());
+		$('#itemidscopy').val($('#itemids').val());		
+		$("#awardmodal").hide();	
+		$("#paymodal").modal();		
+}
+
 </script>
 
 <script type="text/javascript">
@@ -556,7 +600,7 @@ $(function() {
 				    <?php if(!$isawarded){?>
 				    <div align="right">
 					    <form method="post" action="<?php echo site_url('admin/quote/awardbid')?>">
-					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>')" class="btn btn-primary"/>
+					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>')" class="btn btn-primary"/>
 					    </form>
 				    </div>
 				    <?php }?>
@@ -666,6 +710,8 @@ $(function() {
 
 	    </div>
 	    <?php }?>
+	    <input type="hidden" id="paytype"/>
+	    <input type="hidden" id="grandtotal"/>
     </div>
 </section>
         <div id="awardmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
@@ -694,6 +740,7 @@ $(function() {
         	</div>
         	<div class="modal-footer">
         		<input type="submit" class="btn btn-primary" value="Award"/>
+        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc();"" />
         	</div>
             </form>
         </div>
@@ -707,3 +754,88 @@ $(function() {
         	</div>
 
         </div>
+        
+        
+        
+        
+   <div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    	<h3>
+    	Pay by credit card
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+		</h3>
+	</div>
+	<div class="modal-body" id="quoteitems">
+        <form method="post" action="<?php echo site_url('admin/quote/payquotebidbycc/');?>" onsubmit="return validatecc();">
+	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
+	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Total Amount to pay
+                </label>
+                <div class="controls">
+                   $<span id="ccpayamountshow"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Number
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="card" name="card" required style="width: 250px;">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Type
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+		            <select id="creditcardtypes" name="creditcardtypes">
+			            <option value="visa">Visa</option>
+			            <option value="mastercard">Master Card</option>
+			            <option value="amex">American Express</option>
+			            <option value="dinersclub">Diners club</option>
+			            <option value="discover">Discover</option>
+		            </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">
+                   CVC Code:
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="cvc" name="cvc" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMessage">
+                    Expiry Date
+                </label>
+                <div class="controls">
+                    <select id="month" name="month" style="width: 95px;">
+                    	<?php for($i=1; $i<13; $i++){?>
+	                    <option value="<?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?>"><?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?></option>
+	                    <?php }?>
+                    </select>
+                    <select id="year" name="year" style="width: 125px;">
+                    	<?php for($i = date('Y'); $i < date('Y')+10; $i++){?>
+	                    <option value="<?php echo $i;?>"><?php echo $i;?></option>
+	                    <?php }?>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+            	<input type="hidden" id="shiptocopy" name="shiptocopy"></textarea>
+            	<input type="hidden" id="awardbidcopy" name="bidcopy">
+                <input type="hidden" id="quoteidcopy" name="quotecopy" value="<?php echo $quote->id;?>">
+                <input type="hidden" id="pidcopy" name="pidcopy" value="<?php echo $quote->pid;?>">
+                <input type="hidden" id="itemidscopy" name="itemidscopy">
+                <input type="submit" class="btn btn-primary arrow-right" value="Process">
+            </div>
+        </form>
+	</div>
+
+</div>

@@ -261,7 +261,7 @@ function invite()
     		});
     		
     	}
-    	invemail += user+",";
+    	invemail += email+",";
     	i++;
 	});
 	

@@ -2726,15 +2726,15 @@ class site extends CI_Controller
     	if ($result){
     		foreach ($result as $rs){
 
-    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
-    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;"></div>';
+    			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" >
+    			 <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
+    			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			
     			
-    			if($rs->itemid!=""){
-
+    			if($rs->itemid!="")
+    			{
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$_POST[ 'company' ]);
@@ -2748,6 +2748,7 @@ class site extends CI_Controller
     					if($companyitem->itemcode!="")
     					$item->itemcode = $companyitem->itemcode;    					
     				}
+    				
                     if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
                     {
                     	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
@@ -2763,23 +2764,22 @@ class site extends CI_Controller
     				
     				
     				$data['boxes'] .= $itemdata;
-    			}else 
-    			$data['boxes'] .= '<div style="margin-top:20px;" class="person"><strong>' . $rs->name . '</strong></div></div>';
-    			
-    			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
+    			}
+    			else
+    			{ 
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person"><strong>' . $rs->name . '</strong></div></div></div>';
+    			}
 
     			$itemdata = "";
-    			if($rs->itemid!=""){
-
+    			if($rs->itemid!="")
+    			{
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$_POST['company']);
     				$companyitem = $this->db->get('companyitem')->row();
-    				//print_r($companyitem);
-
+    				
     				if($companyitem)
     				{
     					$item->ea = $companyitem->ea;
@@ -2789,7 +2789,10 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table class="table table-bordered;" style="background-color:white;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td><strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr><tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'"><strong>ViewItem</strong></a></td></tr>';
+    				$itemdata = '<table class="table table-bordered;" style="background-color:white;width:98%;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td>
+    				<strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr>
+    				<tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">
+    				<strong>ViewItem</strong></a></td></tr>';
     				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2799,11 +2802,12 @@ class site extends CI_Controller
     				
                     $itemdata .='</table>';
     				
-    				$data['lists'] .= '<div>'.$itemdata.'</div>';
+    				$data['lists'] .= '<div style="float:left;">'.$itemdata.'</div>&nbsp;';
     				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
     			}else
-    			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+    			//$data['lists'] .= '<div style="float:left;margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
+    			$data['lists'] .= '<div style="float:left;padding-left:5px;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
 
 				$margin +=150;
     		}
@@ -3008,6 +3012,48 @@ class site extends CI_Controller
 		$data['purchasingadmin'] = $pa;	
 		$this->load->view('site/unknownuser',$data);
 	}
-    
 
+	function customerbill()
+	{		
+		$customer = $this->session->userdata('customer');
+		$billid = '';
+		
+		if(!$customer)
+			redirect('company/customerlogin');
+			
+		$this->db->where('customerid',$this->session->userdata('customer')->id);
+		$this->db->get('bill')->row();
+		$sql1 = "SELECT b.*,c.*,b.id as billid 
+				FROM ".$this->db->dbprefix('bill'). " b 
+				JOIN ".$this->db->dbprefix('customer'). " c ON c.id = b.customerid
+				WHERE c.id = '{$this->session->userdata('customer')->id}' AND c.purchasingadmin = '{$this->session->userdata('customer')->purchasingadmin}'";
+		
+        $billdetails = $this->db->query($sql1)->result_array();
+       
+        $data['billdetails'] = $billdetails;
+       
+        if(isset($_POST['billid']) && $_POST['billid'] != '')	
+        {
+        	$sql = "SELECT b.*,c.*,b.id as billid 
+				FROM ".$this->db->dbprefix('bill'). " b 
+				JOIN ".$this->db->dbprefix('customer'). " c ON c.id = b.customerid
+				WHERE c.id = '{$this->session->userdata('customer')->id}' AND c.purchasingadmin = '{$this->session->userdata('customer')->purchasingadmin}' AND b.id = ".$_POST['billid'];
+		
+        	$data['billinfo'] = $this->db->query($sql)->result_array();
+         	$data['selectedbill'] = $_POST['billid'];
+			$sql2 = "SELECT * FROM ".$this->db->dbprefix('billitem'). " WHERE bill = ".$_POST['billid'];					
+        	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
+        }
+        
+        /*if(isset($_POST['billid']) && $_POST['billid'] != '')
+        {
+        	 $billid = $_POST['billid'];	
+        }
+        else 
+        {
+        	$billid = '';
+        }
+        $data['selectedbill'] = $billid;*/
+		$this->load->view('site/customerbill',$data);
+	}
 }
