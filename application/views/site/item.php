@@ -792,7 +792,24 @@ $( document ).tooltip();
                                   <td>Sold By:&nbsp;<a href="<?php echo site_url('site/supplier/'.$item->featuredsupplierdetails->username); ?>" target="_blank" style="text-decoration:none;">
                                   <span style="font-size:18px;font-weight:bolder;font-family: Arial, Helvetica, sans-serif;">
                                   <?php echo $item->featuredsupplierdetails->title;?></span></a>&nbsp;
-                                  <?php if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }?></td>
+                                  <?php 
+                                  if($this->session->userdata('site_loggedin'))
+                                  {
+                                  	if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }
+                                  }
+                                  else 
+                                  {
+                                  	if($item->featuredsupplierdetails->availprice==1)
+                                  	{
+                                  		echo "at&nbsp;<span style='color:red;'>Members Only.</span>";
+                                  	}
+                                  	else {
+                                  		
+                                  		if($item->featureditem->price){ echo ' at "CALL"'; } else { echo " at $".$item->featureditem->ea; }
+                                  	}
+                                  	
+                                  }
+                                  ?></td>
                                  <td>
 
                                       <?php if($item->featureditem->price){?>
@@ -896,10 +913,38 @@ $( document ).tooltip();
                                     <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>
                                     <td style="padding:0px;">
-                                    	<?php if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;} ?>
-                                    	<?php if($inv->ea != $inv->listprice && $inv->listprice != ''){?>
-                                    		<br/><strike>$<?php echo $inv->listprice ?></strike>
-                                    	<?php }?>
+                                             	
+                                  <?php   	
+                                    	
+                                  if($this->session->userdata('site_loggedin'))
+                                  {
+                                  	if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;}
+                                  	 if($inv->ea != $inv->listprice && $inv->listprice != ''){ ?>
+                                  	 <br/><strike>$<?php echo $inv->listprice ?></strike><?php }
+                                  }
+                                  else 
+                                  {
+                                  	if($item->featuredsupplierdetails->availprice==1)
+                                  	{
+                                  		echo "<span style='color:red;'>Members Only.</span>";
+                                  	}
+                                  	else {
+                                  		
+                                  		if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;} 
+                                    			if($inv->ea != $inv->listprice && $inv->listprice != ''){ ?>
+                                    		<br/><strike>$<?php echo $inv->listprice ?></strike><?php }
+                                  	}
+                                  	
+                                  }
+                                    	
+                                  ?>  	
+                                    	
+                                    	
+                                    	
+                                    	
+                                    	
+                                    	
+                                    	
                                     	<br>Min.Order:<?php echo $inv->minqty;?>
                                     </td>
                                     <td style="padding:0px;">

@@ -49,6 +49,8 @@
 
 <?php echo '<script>var blockitemurl="'.site_url('inventory/blockitem').'";</script>'?>
 
+<?php echo '<script>var availpriceurl="'.site_url('inventory/availprice').'";</script>'?>
+
 
 
 <script type="text/javascript" charset="utf-8">
@@ -324,6 +326,19 @@ function delqtydiscount(id,itemid){
 		    });
       }
       
+      function availableprice(availprice)
+      {
+    	availprice = availprice==true?1:0;
+    	//document.write(saleitemdata);
+        var data = "availprice="+availprice;
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: availpriceurl
+		    }).done(function(data){
+		    });
+      }
+      
       function updatebackorder(itemid,backorder)
     {
     	backorder = backorder==true?1:0;
@@ -474,12 +489,18 @@ function clearall(id)
                                 
 							<?php if($this->session->userdata('company')->company_type!='3') {?>
                                 <div class="pull-right">
+                                
+                                	<input type="checkbox" id ='availprice' name ='availprice' <?php echo $company->availprice?'checked="CHECKED"':''?>"
+                                    onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to members only.</span>&nbsp;&nbsp;
+                                	
                  					<input type="checkbox" id ='blockitemdata' name ='blockitemdata' <?php echo $company->blockitemdata?'checked="CHECKED"':''?>"
-                                    onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>
+                                    onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>&nbsp;&nbsp;
+
                  				
                  				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"
-                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>&nbsp;&nbsp;              			
+                                    onchange="saleitem(this.checked);"/>&nbsp;&nbsp;<span>Do Not List My Items For Sale Online.</span>              			
                                 </div>
+                                <div style="clear:both;"></div>
                             <?php } ?>  
                             
                                 <form action="<?php echo site_url('inventory');?>" method="post">

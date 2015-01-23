@@ -473,7 +473,7 @@ function savclose()
 
 <script type="text/javascript">
 function allowonlydigits(e,elementid,errorid){
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {                
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which!=46) {              
       $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
       $("#"+errorid).css('color','red');
       return false;
@@ -685,7 +685,7 @@ function allowonlydigits(e,elementid,errorid){
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span9 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" readonly required/>
+						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span9 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" readonly required/>
 		    			</div>
 		    		</td>
 		    		<td>

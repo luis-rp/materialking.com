@@ -85,6 +85,7 @@ class company_model extends Model {
     	{
     		$completeaddress.=$_POST['zip'];
     	}
+    	
 
     	$_POST['regdate'] = date('Y-m-d');
     	$_POST['address'] = $completeaddress;
@@ -97,6 +98,17 @@ class company_model extends Model {
         $_POST['pwd'] = $_POST['password'];
 
         $options = $this->input->post();
+        
+        
+    	 if(isset($options['company_type']))
+			{
+				$options['company_type']=1;
+			}
+			else 
+			{
+				$options['company_type']=3;
+			}
+		
         $address = ($this->input->post('address'));
         if($address)
         {
@@ -163,6 +175,16 @@ class company_model extends Model {
             unset($options['password']);
             unset($options['pwd']);
         }
+        
+       
+        if(isset($options['company_type']))
+		{
+			$options['company_type']=1;
+		}
+		else 
+			{
+				$options['company_type']=3;
+			}
         //print_r($options);die;
         if (isset($options['types']))
             unset($options['types']);

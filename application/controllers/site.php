@@ -3015,7 +3015,11 @@ class site extends CI_Controller
 
 	function customerbill()
 	{		
+		$this->load->model('admin/settings_model');
+		
 		$customer = $this->session->userdata('customer');
+		$data['settings'] = $this->settings_model->get_current_settings();
+		
 		$billid = '';
 		
 		if(!$customer)
@@ -3041,11 +3045,17 @@ class site extends CI_Controller
 		
         	$data['billinfo'] = $this->db->query($sql)->result_array();
          	$data['selectedbill'] = $_POST['billid'];
-			$sql2 = "SELECT * FROM ".$this->db->dbprefix('billitem'). " WHERE bill = ".$_POST['billid'];					
+         	
+			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*
+					 FROM ".$this->db->dbprefix('billitem')." bi 
+					 LEFT JOIN ".$this->db->dbprefix('bill')." b ON b.id=bi.bill 
+					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id 
+					 WHERE b.id = ".$_POST['billid'];	
+							
         	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
         }
         
-        /*if(isset($_POST['billid']) && $_POST['billid'] != '')
+        if(isset($_POST['billid']) && $_POST['billid'] != '')
         {
         	 $billid = $_POST['billid'];	
         }
@@ -3053,7 +3063,13 @@ class site extends CI_Controller
         {
         	$billid = '';
         }
-        $data['selectedbill'] = $billid;*/
+        $this->session->set_flashdata('billid',$billid);
+        $data['selectedbill'] = $billid;
 		$this->load->view('site/customerbill',$data);
+	}
+	
+	function update_customer_bill_payment_status()
+	{
+		
 	}
 }

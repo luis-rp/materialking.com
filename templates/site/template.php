@@ -319,7 +319,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                     </ul>
 
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
-                                        <div class="input-append" style="margin-right:-35px;">
+                                        <div class="input-append" style="margin-right:-195px;">
                                             <input type="hidden" name="search_type" id="search_type">
                                             <select style="width:160px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>

@@ -209,10 +209,14 @@ function validatecc()
 	}
 
 
-function paycc()
+function paycc(bankaccounarr, bankcnt)
 {			
+	   if(bankcnt>0){
+	   		alert(" You can't proceed. These Supplier/s have not set their account details: "+bankaccounarr);	
+	   }else{
+		
 	    if($('#paytype').val() == "awardbiditems"){
-	    	amount = parseInt($('#selectedtotal').html());
+	    	amount = parseFloat($('#selectedtotal').html());
 	    }
 	    
 	    if($('#paytype').val() == "awardbidbyid"){
@@ -221,13 +225,14 @@ function paycc()
 	    
 		var invoicenumber = $('#quoteidcopy').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
-		$("#ccpayinvoiceamount").val(parseInt($('#selectedtotal').html()));
+		$("#ccpayinvoiceamount").val(parseFloat($('#selectedtotal').html()));
 		$("#ccpayamountshow").html(amount);
 		$('#shiptocopy').val($('#shipto').val());
 		$('#awardbidcopy').val($('#awardbid').val());
 		$('#itemidscopy').val($('#itemids').val());		
 		$("#awardmodal").hide();	
-		$("#paymodal").modal();		
+		$("#paymodal").modal();	
+	   }
 }
 
 </script>
@@ -740,7 +745,7 @@ $(function() {
         	</div>
         	<div class="modal-footer">
         		<input type="submit" class="btn btn-primary" value="Award"/>
-        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc();"" />
+        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />
         	</div>
             </form>
         </div>

@@ -59,8 +59,11 @@ function usedefaultaddresscheckchange()
 	  return true;
 	}
 
-function paycc(amount)
+function paycc(amount,bankaccounarr, bankcnt)
 {			
+	   if(bankcnt>0){
+	   		alert(" You can't proceed. These Supplier/s have not set their account details: "+bankaccounarr);	
+	   }else{
 		var invoicenumber = $('#quoteid').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
 		$("#ccpayinvoiceamount").val(amount);
@@ -68,6 +71,7 @@ function paycc(amount)
 		$('#shiptocopy').val($('#shipto').val());
 		$("#awardmodal").hide();	
 		$("#paymodal").modal();		
+	   }
 }
 
 
@@ -374,7 +378,7 @@ $(document).ready(function(){
         	<div class="modal-footer">
         		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
         		<input type="submit" class="btn btn-primary" value="Award"/>
-        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>');"" />
+        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />
         	</div>
             </form>
         </div>

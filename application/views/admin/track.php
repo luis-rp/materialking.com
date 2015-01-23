@@ -1369,12 +1369,12 @@ function removeallitems(quote){
 		<tr><td>Due Date:</td><td><input type="text" name="customerduedate" id="customerduedate" style="width: 150px;" /> </td></tr>
 		<tr><td>Bill Note:</td><td><input type="text" name="customerbillnote" id="customerbillnote" style="width: 250px;" /></td></tr>
 		<tr><td>Include logo:</td><td><input type="radio" name="customerlogo" id="customerlogoyes" value="yes" /> Yes <input type="radio" name="customerlogo" id="customerlogono" value="no" checked="checked" /> No </td></tr>
-		<tr><td>Payable via:</td><td><select id="customerpaymenttype" name="customerpaymenttype" style="width: 150px;" >
+		<!--<tr><td>Payable via:</td><td><select id="customerpaymenttype" name="customerpaymenttype" style="width: 150px;" >
         							<option value="cash">Cash</option>
         							<option value="cheque">Cheque</option>
         							<option value="paypal">Paypal</option>
         							</select></td></tr>
-		<tr><td>Paypal e-mail:</td><td><input type="text" name="customerpaypalemail" id="customerpaypalemail" style="width: 250px;" /> </td></tr>
+		<tr><td>Paypal e-mail:</td><td><input type="text" name="customerpaypalemail" id="customerpaypalemail" style="width: 250px;" /> </td></tr>-->
 		<tr><td>Mark up total %:</td><td><input type="text" name="markuptotalpercent" id="markuptotalpercent" style="width: 75px;" /> </td></tr>
 		<!-- <tr><td>Mark up each item %:</td><td><input type="text" name="markupitempercent" id="markupitempercent" style="width: 75px;" /></td></tr> -->
 		<tr><td>Payable To:</td><td><input type="text" name="customerpayableto" id="customerpayableto" value="<?php echo @$this->session->userdata('companyname');?>" style="width: 250px;" /></td></tr> 		

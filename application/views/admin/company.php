@@ -100,7 +100,7 @@ $(document).ready(function(){
 	    </div>
     </div>
 
-   <div class="control-group">
+    <div class="control-group">
         <label class="control-label" >State*</label>
            <select name="state" id="state" required  style="margin-left: 19px;">
             <?php foreach ($company as $com) { $fetchstate=$com->state; } ?>
@@ -110,7 +110,7 @@ $(document).ready(function(){
 
            </select>
      </div>
-
+   
     <div class="control-group">
 	    <label class="control-label">Zip*</label>
 	    <div class="controls">
@@ -144,6 +144,14 @@ $(document).ready(function(){
 	      	</tr>
 	      </table>
 	    </div>
+    </div>
+    
+    <div class="control-group">
+    <label class="control-label">Make it Premium</label>
+    <div class="controls">
+     <input type="checkbox" name="company_type" value="<?php echo $this->validation->company_type; ?>"
+    <?php echo @$this->validation->company_type==1?'checked="checked"':'';?>>
+    </div>
     </div>
 
     <div class="control-group">

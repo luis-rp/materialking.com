@@ -269,7 +269,7 @@ function displaypricemodal(){
 
 function allowonlydigits(e,elementid,errorid){
      //if the letter is not digit then display error and don't type anything
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which!=46) {    
         //display error message                
       $("#"+errorid).html("Digits Only").show().fadeOut("slow");  
       $("#"+errorid).css('color','red');

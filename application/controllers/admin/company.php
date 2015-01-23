@@ -154,7 +154,7 @@ class company extends CI_Controller {
             $settings['defaultemail'] ? $mail=$settings['defaultemail'] : $mail=$settings['adminemail'];
             $this->load->library('email');
             $this->email->clear(true);
-            $this->email->from($mail, "Administrator");            
+            $this->email->from($mail, "Administrator");
             $this->email->to($company->primaryemail);
             $company->pwd1?$pwd=$company->pwd1:$pwd=$company->password;
             $body = "Dear " . $company->contact . ",<br><br>
@@ -192,6 +192,7 @@ class company extends CI_Controller {
         $this->validation->city = $item->city;
         $this->validation->zip = $item->zip;
         $this->validation->pwd = $item->pwd;
+        $this->validation->company_type = $item->company_type;
         $types = $this->db->get('type')->result();
         $data['types'] = array();
         foreach ($types as $type) {
@@ -215,6 +216,7 @@ class company extends CI_Controller {
 
     function updatecompany()
     {
+    	
         $data ['heading'] = 'Update Company Item';
         $data ['action'] = site_url('message/updatecompany');
         $this->_set_fields();
@@ -266,6 +268,7 @@ class company extends CI_Controller {
         $fields ['zip'] = 'zip';
         $fields ['password'] = 'password';
         $fields ['primaryemail'] = 'primaryemail';
+        $fields ['company_type'] = 'company_type';
         $this->validation->set_fields($fields);
     }
 

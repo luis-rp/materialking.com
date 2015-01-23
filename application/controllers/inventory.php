@@ -937,6 +937,20 @@ class Inventory extends CI_Controller
 
 	}
 	
+	public function availprice()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!@$_POST)
+		{
+			die;
+		}
+		$this->db->where('id',$company->id);
+		$this->db->update('company',$_POST);
+
+	}
+	
 	function updatetierprice(){
 		
 		$company = $this->session->userdata('company');

@@ -703,7 +703,7 @@ class Company extends CI_Controller {
 		  	Street : ".@$_POST['street']."<br/>
 		  	Phone : ".@$_POST['phone']."<br/>
 		  	Fax : ".@$_POST['fax']."<br/>
-		  	Invoicenote : ".@$_POST['invoicenote']."<br/>";
+		  	Invoice Note : ".@$_POST['invoicenote']."<br/>";
 		  	$loaderEmail = new My_Loader();
 	        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	        $settings = (array) $this->companymodel->getconfigurations(1);
