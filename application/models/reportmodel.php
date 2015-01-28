@@ -27,18 +27,18 @@ class reportmodel extends Model
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
- 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
+ 				$search = " HAVING (STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
+ 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'  OR receiveddate IS NULL )";
  			}
  			elseif(@$_POST['searchfrom'])
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'";
+ 				$search = "  HAVING (STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'  OR receiveddate IS NULL ) ";
  			}
  			elseif(@$_POST['searchto'])
  			{
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
+ 				$search = "  HAVING (STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'  OR receiveddate IS NULL ) ";
  			}
  			if(@$_POST['purchasingadmin'])
  			{
@@ -74,14 +74,14 @@ class reportmodel extends Model
  			     else 
  			     {
 	 			    $fromdate = date('Y-m-d', strtotime($_POST['datebymonth']));
-	 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'"; 			     	
+	 				$search = " HAVING (STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'  OR receiveddate IS NULL ) "; 			     	
  			     } 				
  			} 			
  		}
  		//print_r($_POST);die;
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(r.quantity) totalquantity,
- 						ROUND(SUM(ai.ea * r.quantity),2) totalprice
+ 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -107,7 +107,7 @@ class reportmodel extends Model
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, u.companyname, q.ponum, a.awardedon, q.purchasingadmin,
 						s.taxrate taxpercent,
-						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,p.title,q.id as quote,ai.award  
+						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,p.title,q.id as quote,ai.award, ai.quantity as aiquantity   
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -123,10 +123,9 @@ class reportmodel extends Model
 					  u.id=q.purchasingadmin AND
 					  s.purchasingadmin=q.purchasingadmin AND
 					  p.purchasingadmin=q.purchasingadmin AND
-					  p.id=q.pid AND 
-					  r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
+					  p.id=q.pid $filter ";
+			if($sepdate->receiveddate != null)			 
+			$itemsql .= "AND r.receiveddate='{$sepdate->receiveddate}' ";
 			
 			$itemquery = $this->db->query($itemsql);
 			$items = $itemquery->result();
@@ -134,7 +133,7 @@ class reportmodel extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * r.quantity),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -144,11 +143,11 @@ class reportmodel extends Model
 					  WHERE r.awarditem=ai.id AND ai.company='".$company->id."'
 					  AND ai.award=a.id AND a.quote=q.id 
 					  AND p.purchasingadmin=q.purchasingadmin 
-					  AND r.paymentstatus='Paid'
-					  AND r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
+					  AND r.paymentstatus='Paid'  $filter ";
  		    
+ 		    if($sepdate->receiveddate != null)			 
+			$datepaidsql .= "AND r.receiveddate='{$sepdate->receiveddate}' ";
+			 
  		    $sepdate->totalpaid = @$this->db->query($datepaidsql)->row()->totalpaid;
 			
 			$dates[]=$sepdate;

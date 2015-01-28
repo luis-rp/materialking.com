@@ -812,7 +812,7 @@ class site extends CI_Controller
 
     public function search ($keyword = false)
     {
-        if (! $keyword)
+        if ($this->input->post('keyword') != '')
         {
             $keyword = $this->input->post('keyword');
         }
@@ -1097,7 +1097,7 @@ class site extends CI_Controller
         
         foreach ($items as $item)
         {
-            $query = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            $query = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' AND ea > '0')";
             $min = $this->db->query($query)->row();
             if($min){
             	$item->minprice = $min->minea;
@@ -1360,6 +1360,7 @@ class site extends CI_Controller
             $initem->joinstatus = '';
             $initem->dist = '';
             $this->db->where('id', $initem->company);
+            $this->db->where('company_type', '1');
             $initem->companydetails = $this->db->get('company')->row();
             $this->db->where('id', $initem->company);
             $company = $this->db->get('company')->row();
@@ -3021,7 +3022,7 @@ class site extends CI_Controller
 		$data['settings'] = $this->settings_model->get_current_settings();
 		
 		$billid = '';
-		
+	
 		if(!$customer)
 			redirect('company/customerlogin');
 			
@@ -3046,7 +3047,7 @@ class site extends CI_Controller
         	$data['billinfo'] = $this->db->query($sql)->result_array();
          	$data['selectedbill'] = $_POST['billid'];
          	
-			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*
+			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid
 					 FROM ".$this->db->dbprefix('billitem')." bi 
 					 LEFT JOIN ".$this->db->dbprefix('bill')." b ON b.id=bi.bill 
 					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id 
@@ -3059,17 +3060,27 @@ class site extends CI_Controller
         {
         	 $billid = $_POST['billid'];	
         }
+        elseif(isset($_POST['billnumber']) && $_POST['billnumber'] != '')
+        {
+        	 $billid = $_POST['billnumber'];	
+        }
         else 
         {
         	$billid = '';
         }
-        $this->session->set_flashdata('billid',$billid);
-        $data['selectedbill'] = $billid;
+       
+		if(isset($_POST['btnSave']) && $_POST['btnSave'] == 'Save')
+		{
+			$insertArr['bill'] = $billid;
+			$insertArr['refnum'] = @$_POST['refnum'];
+			$insertArr['amountpaid'] = @$_POST['amountpaid'];
+			$insertArr['paymenttype'] = @$_POST['paymenttype'];
+			$insertArr['paymentdate'] = date('Y-m-d');
+			$data['selectedbill'] = $billid;
+			$this->db->insert('bill_payment_history',$insertArr);
+		}
+        	
+        $this->session->set_flashdata('billid',$billid);       
 		$this->load->view('site/customerbill',$data);
-	}
-	
-	function update_customer_bill_payment_status()
-	{
-		
-	}
+	}	
 }

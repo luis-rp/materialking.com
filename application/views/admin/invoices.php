@@ -285,12 +285,18 @@ function jq( myid ) {
  elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumberid_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
-                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->invoicenum;?>"/>
+                    		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a> &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->invoicenum;?>"/>
                     			</td>
-                    			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
-                    			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
-                    			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
-                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->totalprice;?></td>
+                    			<td><?php if(@$item->receiveddate) echo date('m/d/Y', strtotime($item->receiveddate));?>
+                    			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
+                    			</td>
+                    			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>                                
+                    			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?>
+                    			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
+                    			</td>
+                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->totalprice;?>
+                    			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
+                    			</td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>
@@ -381,7 +387,7 @@ function jq( myid ) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = $item->quantity * $item->ea; ?>
+				    		$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea; ?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -389,7 +395,9 @@ function jq( myid ) {
 				    		<td><?php echo $item->itemcode;?></td>
 				    		<td><?php echo $item->itemname;?></td>
 				    		<td><?php echo $item->unit;?></td>
-				    		<td><?php echo $item->quantity;?></td>
+				    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+				    		<?php if(strpos(@$item->invoicenum,"paid-in-full-already") !== false) echo "<br>*Pre-Paid Order"; else echo "";?>
+				    		</td>
 				    		<td><?php echo round($item->ea,2);?></td>
 				    		<td>$<?php echo round($amount,2);?></td>
 				    		<td><?php echo $item->paymentstatus;?></td>
@@ -425,7 +433,7 @@ function jq( myid ) {
 				    		<td>'.$item->itemcode.'</td>
 				    		<td>'.$item->itemname.'</td>
 				    		<td>'.$item->unit.'</td>
-				    		<td>'.$item->quantity.'</td>
+				    		<td>'.($item->quantity)?$item->quantity:$item->aiquantity.'</td>
 				    		<td>'.round($item->ea,2).'</td>
 				    		<td>$'.round($amount,2).'</td>
 				    		<td>'.$item->paymentstatus.'</td>

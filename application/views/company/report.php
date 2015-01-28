@@ -226,11 +226,11 @@ function submitForm(val,invoicequote)
 
 			    		foreach($report->items as $item)
 			    		{
-			    			$amount = $item->quantity * $item->ea;
+			    			$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea;
 			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
 			    			$totalallprice += $amount;
 
-			    			$totalquantity += $item->quantity;
+			    			$totalquantity += ($item->quantity)?$item->quantity:$item->aiquantity;
 			    			$totalprice += $amount;
 			    			if($item->paymentstatus=='Paid')
 			    			{
@@ -246,7 +246,9 @@ function submitForm(val,invoicequote)
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo $item->quantity;?></td>
+			    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
+			    		</td>
 			    		<td><?php echo $item->ea;?></td>
 			    		<td>$<?php echo round($amount,2);?></td>
 			    		<td><?php echo $item->paymentstatus;?></td>

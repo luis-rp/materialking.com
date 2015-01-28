@@ -1023,7 +1023,10 @@ function removeallitems(quote){
                                     <td><?php echo "$ ".$invoice->totalprice; ?></td>
                                     <!-- <td><?php // echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td> -->
                                     <td><?php echo $invoice->paymentstatus; ?></td>
-                                    <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";} ?></td>
+                                    <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";}
+                                    if($invoice->invoicenum == "paid-in-full-already".$awarded->id)	
+                                                               echo "<br> Pre-Paid";?>
+                                    </td>
                                     <td><?php echo $invoice->status; ?></td>
                                     <td>
                                         <a href="javascript:void(0);" onclick="showInvoice('<?php echo $invoice->invoicenum; ?>',<?php echo $awarded->quote; ?>);">
@@ -1168,8 +1171,11 @@ function removeallitems(quote){
                                     <table width="100%">
                                             <?php  foreach ($invoice->items as $item) { ?>
                                             <tr><td  style="border-right:2px #dff0d8 solid;" width="15%">
-                                                <span><?php echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span>													<?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; 
+                                                <span><?php if(@$item->receiveddate) echo date('m/d/Y', strtotime($item->receiveddate)); ?></span>&nbsp;</td><td> &nbsp;&nbsp;&nbsp;<span>													<?php echo '<b>' . $item->itemname . '</b> - ' . $item->quantity . ' Received'; 
                                                                	if(@$itemdatearr[$item->itemid]) echo (date('Y-m-d H:i:s', strtotime( $itemdatearr[$item->itemid]."23:59:59")) < $item->receiveddate)? "&nbsp;- &nbsp;*Late": "";
+                                                               	
+                                                               if($invoice->invoicenum == "paid-in-full-already".$awarded->id)	
+                                                               echo "&nbsp;&nbsp;(PO #".@$quote->ponum."&nbsp;Paid In Full, All Invoices are Pre-Paid)";
                                             ?></span></td>                                            
                                             </tr>
                                             <?php  }  ?>

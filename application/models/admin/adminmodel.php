@@ -104,7 +104,7 @@ class adminmodel extends Model
 	{
 		$options = $this->input->post();
 		$options['password'] = md5($options['password']);
-		if($this->session->userdata('usertype_id') == 2)		
+		//if($this->session->userdata('usertype_id') == 2)		
 			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 			$options['created_date'] = date ( "Y-m-d h:i:s" );
 		//unset($options['_wysihtml5_mode']);

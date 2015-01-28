@@ -116,9 +116,13 @@
 			    	</tr>
 			    	<tr>
 			    		<td><?php echo date('m/d/Y', strtotime($report->receiveddate));?></td>
-			    		<td><?php echo $report->totalquantity;?></td>
-			    		<td>$<?php echo $report->totalprice;?></td>
-			    		<td>$<?php echo $report->totalpaid;?></td>
+			    		<td><?php echo $report->totalquantity;?>
+			    		<?php if (strpos(@$report->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
+			    		</td>
+			    		<td>$<?php echo $report->totalprice;?>
+			    		<?php if (strpos(@$report->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	</td>
+			    		<td>$<?php echo $report->totalpaid;?>
+			    		<?php if (strpos(@$report->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	</td>
 			    		<td>$<?php echo $report->totalprice - $report->totalpaid;?></td>
 			    	</tr>
 			 </table>
@@ -148,7 +152,7 @@
 			    			if($item->potype == "Contract" )
 			    			$amount = $item->ea;
 			    			else 
-			    			$amount = $item->quantity * $item->ea;
+			    			$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea;
 			    			$amount = round($amount + ($amount*$tax/100),2);
 			    			$totalallprice += $amount;
 			    	?>
@@ -158,7 +162,9 @@
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo $item->quantity;?></td>
+			    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
+			    		</td>
 			    		<td><?php echo round($item->ea,2);?></td>
 			    		<td>$<?php echo round($amount,2);?></td>
 			    		<td><?php echo $item->paymentstatus;?></td>

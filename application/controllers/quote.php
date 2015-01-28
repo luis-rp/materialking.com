@@ -3413,10 +3413,13 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		else 
 			$invoicenum = "";
 		
-		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
+		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	{
 			$invoicequote = $_POST['invoicequote'];
-		else 
+			unset($_POST['invoicequote']);	
+		}else 
 			$invoicequote = "";	
+
+			
 				
 		if(!$invoicenum)
 		{

@@ -445,7 +445,7 @@ class quote_model extends Model {
              */
             $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
             				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,  
-            				   ROUND(SUM(ai.ea * r.quantity),2) totalprice
+            				  ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,
 							   " . $this->db->dbprefix('awarditem') . " ai
@@ -775,8 +775,8 @@ class quote_model extends Model {
  		{
  			$fromdate = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );;
  			$todate = date('Y-m-d');
- 			$searches[] = " (receiveddate >= '$fromdate'
-						AND receiveddate <= '$todate')";
+ 			$searches[] = " ( (receiveddate >= '$fromdate'
+						AND date(receiveddate) <= '$todate') OR receiveddate IS NULL ) ";
  		}
         
         if (@$_POST['searchbycompany']) {
@@ -795,14 +795,14 @@ class quote_model extends Model {
         if (@$_POST['searchfrom'] && @$_POST['searchto']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " (receiveddate >= '$fromdate'
-						AND receiveddate <= '$todate')";
+            $searches[] = " ( (receiveddate >= '$fromdate'
+						AND date(receiveddate) <= '$todate') OR receiveddate IS NULL ) ";
         } elseif (@$_POST['searchfrom']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-            $searches[] = " receiveddate >= '$fromdate'";
+            $searches[] = " ( receiveddate >= '$fromdate' OR receiveddate IS NULL ) ";
         } elseif (@$_POST['searchto']) {
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " receiveddate <= '$todate'";
+            $searches[] = " ( date(receiveddate) <= '$todate' OR receiveddate IS NULL ) ";
         }
         if ($this->session->userdata('usertype_id') > 1) {
             $searches[] = " r.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";
@@ -820,7 +820,7 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
+       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -834,7 +834,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -899,7 +899,7 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, 
+        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -913,7 +913,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity/100),2) totalprice, receiveddate, 
+        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -988,7 +988,7 @@ class quote_model extends Model {
 
     function getinvoicebynum($invoicenum,$invoicequote) {
 
-        $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, 
+        $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -1027,7 +1027,7 @@ class quote_model extends Model {
         
          $itemsql = "SELECT 
 					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate   
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate, ai.quantity as aiquantity    
 				  FROM 
 				  " . $this->db->dbprefix('received') . " r  
 				    LEFT JOIN " . $this->db->dbprefix('shipment') . " s ON r.awarditem = s.awarditem AND r.invoicenum = s.invoicenum

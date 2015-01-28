@@ -1372,7 +1372,7 @@ class Dashboard extends CI_Controller
 		$this->db->where('id',$id);
 		$this->db->where('company',$company);
 		$this->db->update('notification',array('isread'=>1));
-		redirect('admin/dashboard');
+		redirect('admin/quote/contractbids');
 	}
 	
 	 function allclear()
@@ -1381,7 +1381,7 @@ class Dashboard extends CI_Controller
         $this->db->where('notify_type','contract');
 		$this->db->where('company',$company);	
 		$this->db->update('notification',array('isread'=>1));
-		redirect('admin/dashboard');
+		redirect('admin/quote/contractbids');
 	 }
 	 
 	 function closeallmessage()

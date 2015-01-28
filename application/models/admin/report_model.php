@@ -22,18 +22,18 @@ class report_model extends Model
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
- 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
+ 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
+ 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate' OR receiveddate IS NULL ) ";
  			}
  			elseif(@$_POST['searchfrom'])
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'";
+ 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate' OR receiveddate IS NULL ) ";
  			}
  			elseif(@$_POST['searchto'])
  			{
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate'";
+ 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate' OR receiveddate IS NULL ) ";
  			}
  			if(@$_POST['searchcompany'])
  			{
@@ -47,8 +47,8 @@ class report_model extends Model
 		}
  		
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(r.quantity) totalquantity,
- 						ROUND(SUM(ai.ea * r.quantity),2) totalprice
+ 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -63,8 +63,8 @@ class report_model extends Model
  		
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(r.quantity) totalquantity,
- 						ROUND(SUM(ai.ea * r.quantity/100),2) totalprice
+ 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -87,7 +87,7 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid   
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid, ai.quantity as aiquantity    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -97,14 +97,16 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  a.quote=q.id AND q.potype <> 'Contract'  AND  
-					  r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
+					  a.quote=q.id AND q.potype <> 'Contract' $filter ";
+			if(@$sepdate->receiveddate)
+			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$itemsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}			  		
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea*r.quantity/100) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid   
+						ai.itemname, (ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100)) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -114,11 +116,13 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  a.quote=q.id AND q.potype = 'Contract' AND 
-					  r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
-			
+					  a.quote=q.id AND q.potype = 'Contract' $filter ";
+			if(@$sepdate->receiveddate)
+			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$itemcontractsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";		
+			}
+					
 			$itemcombo = $itemsql." UNION ".$itemcontractsql;
 			
 			$itemquery = $this->db->query($itemcombo);
@@ -127,7 +131,7 @@ class report_model extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * r.quantity),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -136,12 +140,15 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
 					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype <> 'Contract' 
-					  AND r.paymentstatus='Paid'
-					  AND r.receiveddate='{$sepdate->receiveddate}'
-					  ";
- 		    
+					  AND r.paymentstatus='Paid'";
+ 		    if(@$sepdate->receiveddate)
+			$datepaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$datepaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";				  
+			}
+			
  		    $datecontractpaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * r.quantity/100),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -150,10 +157,12 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
 					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype = 'Contract' 
-					  AND r.paymentstatus='Paid'
-					  AND r.receiveddate='{$sepdate->receiveddate}'
-					  ";
- 		    
+					  AND r.paymentstatus='Paid'";
+ 		     if(@$sepdate->receiveddate)
+			$datecontractpaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$datecontractpaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";				  
+			}
  		    //echo $datepaidsql.'<br/>';
  		    
  		    $paidcombo = $datepaidsql." UNION ".$datecontractpaidsql;
@@ -177,8 +186,8 @@ class report_model extends Model
 		}
  		
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(r.quantity) totalquantity,
- 						ROUND(SUM(ai.ea * r.quantity),2) totalprice
+ 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -192,8 +201,8 @@ class report_model extends Model
  		
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(r.quantity) totalquantity,
- 						ROUND(SUM(ai.ea * r.quantity/100),2) totalprice
+ 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -215,7 +224,7 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -225,14 +234,17 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  a.quote=q.id AND q.potype <> 'Contract'  AND  
-					  r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
+					  a.quote=q.id AND q.potype <> 'Contract' $filter ";					  
+			if(@$sepdate->receiveddate)
+			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$itemsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}
+					
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea*r.quantity/100) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes 
+						ai.itemname, (ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100)) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -242,10 +254,13 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  a.quote=q.id AND q.potype = 'Contract' AND 
-					  r.receiveddate='{$sepdate->receiveddate}'
-					  $filter
-					  ";
+					  a.quote=q.id AND q.potype = 'Contract'  $filter ";
+					  
+			if(@$sepdate->receiveddate)
+			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$itemcontractsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}
 			
 			$itemcombo = $itemsql." UNION ".$itemcontractsql;
 			
@@ -255,7 +270,7 @@ class report_model extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * r.quantity),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -264,12 +279,16 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
 					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype <> 'Contract' 
-					  AND r.paymentstatus='Paid'
-					  AND r.receiveddate='{$sepdate->receiveddate}'
-					  ";
+					  AND r.paymentstatus='Paid'";
+ 		    if(@$sepdate->receiveddate)
+			$datepaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$datepaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}
+					  
  		    
  		    $datecontractpaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * r.quantity/100),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -278,9 +297,12 @@ class report_model extends Model
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
 					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype = 'Contract' 
-					  AND r.paymentstatus='Paid'
-					  AND r.receiveddate='{$sepdate->receiveddate}'
-					  ";
+					  AND r.paymentstatus='Paid'";
+ 		    if(@$sepdate->receiveddate)
+			$datecontractpaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$datecontractpaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}					  
  		    
  		    //echo $datepaidsql.'<br/>';
  		    

@@ -287,7 +287,10 @@ $( document ).tooltip();
         			$("#qtypricebox").html(data);
         		}
         	});
-
+			if($("#qtycart").val() != '')
+        	{
+        		minqty = $("#qtycart").val()
+        	}
         	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
 
         	$.ajax({
@@ -924,7 +927,7 @@ $( document ).tooltip();
                                   }
                                   else 
                                   {
-                                  	if($item->featuredsupplierdetails->availprice==1)
+                                  	if($inv->companydetails->availprice==1)
                                   	{
                                   		echo "<span style='color:red;'>Members Only.</span>";
                                   	}
@@ -1000,7 +1003,7 @@ $( document ).tooltip();
 						<?php
 						$invcnt = 0;
 						foreach ($inventory as $inv)
-						if ($inv->ea && $inv->ea>0)
+						if ($inv->ea && $inv->ea>0 &&  $inv->companydetails->company_type==1)
 						{
 							$invcnt++;
 							$price = $inv->ea;

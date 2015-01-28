@@ -19,6 +19,11 @@ $(document).ready(function(){
 	$('.substituterow').hide();
 });
 
+function onover()
+{
+	$('.date').datepicker();
+}
+
 function setExpDate(interval){
     
     var today = new Date();
@@ -412,7 +417,7 @@ function allowonlydigits(e,elementid,errorid){
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
 							    			<?php if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->itemcode!="" || @$q->companyitem->itemcode!="") echo "true"; else echo "false"; ?>')">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->ea!="" || @$q->companyitem->ea!="") echo "true"; else echo "false"; ?>')">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -424,7 +429,7 @@ function allowonlydigits(e,elementid,errorid){
 							    		</td>
 							    		
 							    		<td>
-							    			<input type="text" class="date highlight nopad" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="$('#costcode<?php echo $q->id;?>').focus();" style="width: 100px;"/>
+							    			<input type="text" class="date highlight nopad" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onclick="onover()" onchange="$('#costcode<?php echo $q->id;?>').focus();" style="width: 100px;"/>
 							    			
 							    			<?php if($q->willcall){
 							    			    echo '<br/>For Pickup/Will Call';

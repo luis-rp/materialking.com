@@ -431,7 +431,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <ul class="messages">
                             <li>
                                 <a href="<?php echo site_url('admin/quote/calendar'); ?>">
-                                    <i class="icon-calendar"></i>PO Calendar
+                                    <i class="icon-calendar"></i>PO Calendaraaa
                                 </a>
                             </li>
 
@@ -481,7 +481,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<img alt="User" src="<?php echo base_url(); ?>templates/admin/images/avatar.png" height="23px" width="23px">
 							&nbsp;
-							<?php echo $this->session->userdata('fullname'); ?> <i class=" icon-caret-down"></i></a>
+							<?php echo $this->session->userdata('fullname').' - '.$this->session->userdata('position'); ?> <i class=" icon-caret-down"></i></a>
 							<ul class="dropdown-menu">
 								 <li><a href="<?php echo base_url(); ?>admin/admin/changepwd"><span class="icon-key1"></span> &nbsp; Change Password</a></li>
                                     <li><a href="<?php echo base_url(); ?>admin/admin/profile"><span class="icon-edit1"></span> &nbsp; Edit Profile</a></li>
@@ -566,9 +566,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
                                 </li>
-                                <li <?php if ($menu == 'manage_network') { ?>class="active"<?php } ?>>
+                               <!-- <li <?php if ($menu == 'manage_network') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/manage_network"><i class="icon-th-list"></i>&nbsp;&nbsp;Manage Network Connection</a>
-                                </li>
+                                </li>-->
                                 <?php } else { ?>
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-briefcase"></i>&nbsp;&nbsp;Items</a>

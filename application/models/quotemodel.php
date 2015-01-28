@@ -592,12 +592,12 @@ class Quotemodel extends Model
 		if(@$_POST['searchfrom'])
 		{
 			$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-			$searches[] = " date(receiveddate) >= '$fromdate'";
+			$searches[] = " ( date(receiveddate) >= '$fromdate'  OR receiveddate IS NULL) ";
 		}
 		if(@$_POST['searchto'])
 		{
 			$todate = date('Y-m-d', strtotime($_POST['searchto']));
-			$searches[] = " date(receiveddate) <= '$todate'";
+			$searches[] = " ( date(receiveddate) <= '$todate'  OR receiveddate IS NULL) ";
 		}
 
 
@@ -641,7 +641,7 @@ class Quotemodel extends Model
 
 
 
-		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,s.taxrate,
+		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice,s.taxrate,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM
 				   ".$this->db->dbprefix('received')." r,

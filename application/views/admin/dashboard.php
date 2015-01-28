@@ -236,18 +236,19 @@
 		<div class="span12">
 		<?php if(!$this->session->userdata('managedprojectdetails')){?>
        <div style="text-align:center;">
+       <?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>
           <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a></div>
-          <?php } ?>
+          <?php } } ?>
 			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">
 						<label for="inputEmail" class="control-label">
 						<strong>Select Your Project</strong>
 						</label>
-						<div class="controls">
+						<div class="controls" style="text-align:left;">
 							<select name="pid" id="pid" onchange="changeproject();">
 								<option value="0">Company Dashboard</option>
 								<?php foreach($projects as $p){?>
@@ -375,12 +376,12 @@
     				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">Browse Suppliers</a>
 				<?php } ?>
 			
-			 
+		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a><br><br>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
 				<a class="btn btn-green"  href="javascript:void(0)" onclick="preloadoptions();">Invite Your Supplier</a>
-			
-							
+		<?php } ?>	
+			<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>				
 				<?php if(@$this->session->userdata('managedprojectdetails')){?>
 				<br><br>
 				     <h3 class="box-header" style="width:94.5%">Filter Recommended Suppliers</h3>
@@ -396,8 +397,9 @@
 					</table>
 					</form>
 		 		
-			   <?php } ?>	
+			   <?php } } ?>	
 				<br><br>
+		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>		
 				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
 				<table class="table table-bordered">
 				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
@@ -413,7 +415,7 @@
 				  <?php } } else{ ?>
 				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
 				</table>
-						
+			<?php } ?>			
 		</div>
 			
 	    	
@@ -471,7 +473,7 @@
 							<a class="reload" href="javascript:;"></a>
 							<a class="remove" href="javascript:;"></a>
 						</div>
-						<div class="tiles-title">
+				<!--		<div class="tiles-title">
 					<?php if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo " Contract Notifications"?>&nbsp;&nbsp;									<?php if($newcontractnotifications){?>
 							 <a class="remove" href="<?php echo site_url('admin/dashboard/allclear');?>">Clear Notifications</a>	
 						<?php }?>				
@@ -501,7 +503,7 @@
 							</div>
 							</a>
 						<?php }?>
-					</div></div>
+					</div></div>-->
 					
 					
 					<h5>Recent Messages&nbsp;&nbsp;<?php if(isset($msgs)) { ?>
@@ -690,7 +692,7 @@
 		</div>
 
 		<div  class="span12">	
-				
+			 <?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>	
 				<!--<div class="well span4" style="width:100% !important;" >-->
                 <div class="well span3"  style="width:30%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
@@ -722,7 +724,7 @@
 				<tr><td>No Invoices Found</td></tr>
 				<?php } ?>
 				</table>
-				
+			<?php } ?>	
 				</div>
 
 				

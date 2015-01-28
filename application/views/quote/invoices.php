@@ -237,7 +237,7 @@ function invoice(invoicenum,invoicequote)
                                                 			<?php echo $i->invoicenum;?>
                                                 			</a>
                                                 			</td>
-                                                			<td><?php echo date('m/d/Y', strtotime($i->receiveddate));?></td>
+                                                			<td><?php if(@$i->receiveddate) echo date('m/d/Y', strtotime($i->receiveddate));?></td>
                                <td>$<?php $total=(($i->totalprice*$i->taxrate)/100); $gtotal=$total+$i->totalprice; echo number_format($gtotal,2); ?></td>
                                
                                                 			<td><?php echo $i->paymentstatus;?><br>

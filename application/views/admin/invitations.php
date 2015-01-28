@@ -44,7 +44,7 @@
 	    <div class="span12">    
 
 	      <form class="form-inline" action="<?php echo site_url('admin/quote/contractbids') ?>" method="post">
-	      
+	      <table ><tr><td width="20%" valign="top"> 
               <!-- <div class="form-group">-->
                    <label class="form-label">Select Status</label>
                       <!--<span>-->
@@ -58,6 +58,42 @@
                      <option value='Partially Completed' <?php if(@$_POST['searchstatus'] =='Partially Completed'){echo 'SELECTED';}?>>Partially Completed</option>
                             	<option value='Completed' <?php if(@$_POST['searchstatus'] =='Completed'){echo 'SELECTED';}?>>Completed</option>
                             </select>
+                  </td>
+                  <td width="80%" valign="top">
+                     <div style="height:150px;overflow-y:auto;">
+					  <div class="tiles-body">               
+                            <div class="tiles-title">
+					<?php if(isset($newcontractnotifications) && @$newcontractnotifications[0]!='') {  if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo " Contract Notifications"?>&nbsp;&nbsp;									<?php if(isset($newcontractnotifications) && $newcontractnotifications!=''){?>
+							 <a class="remove" href="<?php echo site_url('admin/dashboard/allclear');?>">Clear Notifications</a>	
+						<?php }?>				
+						</div>	
+							 
+						<?php if(!$newcontractnotifications){?>
+							<span class="label label-important">No New Contract Notifications</span>
+						<?php }?>
+						<?php foreach($newcontractnotifications as $newnote){?>
+
+						<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('admin/dashboard/close/'.$newnote->id);?>">X</a>
+						  </div>
+							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
+							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
+								<div class="user-profile">
+									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/alert.png">
+								</div>
+								<div class="message-wrapper">
+									<div class="heading">
+										<?php echo $newnote->message;?>
+									</div>
+									<div class="description">
+										<?php echo $newnote->submessage;?> / <?php echo $newnote->tago;?>
+									</div>
+								</div>
+							</div>
+							</a>
+						<?php } }?>
+					</div></div>
+					</td> </tr>  </table>
                         <!--</span>
                       </div>-->
                       

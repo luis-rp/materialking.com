@@ -542,7 +542,7 @@ $( document ).tooltip();
                         </div>
                         <?php } } else { ?>
                         <div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a>
-                        <div class="msgBox">Please Login/Join to view His Store Items.</div></div>
+                        <div class="msgBox">This Store is locked and available to registered members only.<br />Please Join or Login to access (company names) store.</div></div>
                         
                         <?php }?>
                         <div class="pagination pagination-centered">
