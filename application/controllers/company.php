@@ -970,7 +970,7 @@ class Company extends CI_Controller {
         }
 
         $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
-        			   tier, creditlimit, totalcredit, creditfrom, creditto
+        			   tier, creditlimit, totalcredit, creditfrom, creditto,creditonly,pt.purchasingadmin as prid
 				FROM " . $this->db->dbprefix('users') . " u
 				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
 				LEFT JOIN " . $this->db->dbprefix('purchasingtier') . " pt ON pt.purchasingadmin=u.id AND pt.company='" . $company->id . "'
@@ -1172,30 +1172,48 @@ class Company extends CI_Controller {
     {
         $company = $this->session->userdata('company');
         if (!$company)
-            redirect('company/login');
-        //print_r($_POST);die;
-		if(@$_POST['tier']){
-        foreach ($_POST['tier'] as $admin => $tier) {
-            //echo $admin.'-'.$tier.'<br/>';
-            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
-            $this->db->where($arr);
-            $this->db->delete('purchasingtier');
-            $arr['tier'] = $tier;
-            $arr['creditlimit'] = $_POST['creditlimit'][$admin];
-            $arr['totalcredit'] = $_POST['creditlimit'][$admin];//this is not a mistake, same value is fed to both fields.
-            if($_POST['creditfrom'][$admin])
-            	$arr['creditfrom'] = date('Y-m-d', strtotime($_POST['creditfrom'][$admin]));
-            if($_POST['creditto'][$admin])
-            	$arr['creditto'] = date('Y-m-d', strtotime($_POST['creditto'][$admin]));
-
-            //print_r($arr);die;
-            $this->db->insert('purchasingtier', $arr);
-        }
+            redirect('company/login');      
+		if(@$_POST['tier'])
+		{
+	        foreach ($_POST['tier'] as $admin => $tier)
+	         {
+	            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
+	            $this->db->where($arr);
+	            $this->db->delete('purchasingtier');
+	            $arr['tier'] = $tier;
+	            $arr['creditlimit'] = $_POST['creditlimit'][$admin];
+	            $arr['totalcredit'] = $_POST['creditlimit'][$admin];//this is not a mistake, same value is fed to both fields.
+	            if($_POST['creditfrom'][$admin])
+	            	$arr['creditfrom'] = date('Y-m-d', strtotime($_POST['creditfrom'][$admin]));
+	            if($_POST['creditto'][$admin])
+	            	$arr['creditto'] = date('Y-m-d', strtotime($_POST['creditto'][$admin]));  
+	            $this->db->insert('purchasingtier', $arr);
+	        }
+        
 		}
 
         $message = 'Tier price settings updated for purchasing companies.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/tier');
+    }
+    
+    function creditonlyform()
+    {
+    	$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!@$_POST)
+		{
+			die;
+		}
+		if(!@$_POST['purchaserid'])
+		{
+			die;
+		}
+		
+		$this->db->where('purchasingadmin',$_POST['purchaserid']);
+		$this->db->where('company',$company->id);
+		$this->db->update('purchasingtier',array('creditonly'=>$_POST['creditonly']));
     }
 
     ///bankaccount

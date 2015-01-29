@@ -904,13 +904,13 @@ $( document ).tooltip();
                                 <tbody>
                                 <?php                                    
                                     if($inventory) 
-                                    foreach ($inventory as $inv)
-                                    if ($inv->ea) {  if($inv->companydetails->saleitemdata==0){
+                                    foreach ($inventory as $inv) { 
+                                    if ($inv->ea) {  if(@$inv->companydetails->saleitemdata==0){
                                     	
                                         $price = $inv->ea;
                                 ?>
                                 <tr>
-                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.$inv->companydetails->username);?>"><?php echo $inv->companydetails->title . $inv->joinstatus; ?></a> </td>
+                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> </td>
                                     <td style="padding:0px;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
                                     <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
                                     <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
@@ -927,7 +927,7 @@ $( document ).tooltip();
                                   }
                                   else 
                                   {
-                                  	if($inv->companydetails->availprice==1)
+                                  	if(@$inv->companydetails->availprice==1)
                                   	{
                                   		echo "<span style='color:red;'>Members Only.</span>";
                                   	}
@@ -958,7 +958,7 @@ $( document ).tooltip();
                                     
 
                                     </td>
-                                    <td style="padding:0px;" class="tinyfont"><?php echo nl2br($inv->companydetails->address); ?> </td>
+                                    <td style="padding:0px;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
                                         <?php if($inv->price){?>
@@ -970,7 +970,7 @@ $( document ).tooltip();
                                         <?php } ?>
                                     </td>
                                 </tr>
-                                <?php } }    ?>
+                                <?php } } }  ?>
                                 </tbody>
                             </table>
 </div>
@@ -1003,14 +1003,27 @@ $( document ).tooltip();
 						<?php
 						$invcnt = 0;
 						foreach ($inventory as $inv)
-						if ($inv->ea && $inv->ea>0 &&  $inv->companydetails->company_type==1)
+						if ($inv->ea && $inv->ea>0 &&  @$inv->companydetails->company_type==1)
 						{
+							if($this->session->userdata('site_loggedin'))
+							{
 							$invcnt++;
 							$price = $inv->ea;
 							?>
-							ser.push({name:"<?php echo $inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
+							ser.push({name:"<?php echo @$inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
 							total = total + <?php echo $price;?>;
 							<?php
+							}
+							 elseif (@$inv->companydetails->availprice==0)
+							  { 
+							    	$invcnt++;
+							$price = $inv->ea;
+							?>
+							ser.push({name:"<?php echo @$inv->companydetails->title; ?>",data:[parseFloat("<?php echo $price; ?>")]});
+							total = total + <?php echo $price;?>;
+							<?php
+							  
+							  }
 						}
 						?>
 			          var totalSuppliers = <?php echo $invcnt; ?>;
@@ -1069,7 +1082,8 @@ $( document ).tooltip();
 					    });
 					     </script>
 					    <?php if($invcnt>0){?> 
-					    <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>					<?php }  } ?>
+					    <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>				
+					    	<?php }  } ?>
 					  
 					   
 					    					

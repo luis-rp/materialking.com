@@ -387,7 +387,7 @@ function jq( myid ) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea; ?>
+				    		$amount = ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity * $item->ea; ?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -395,7 +395,7 @@ function jq( myid ) {
 				    		<td><?php echo $item->itemcode;?></td>
 				    		<td><?php echo $item->itemname;?></td>
 				    		<td><?php echo $item->unit;?></td>
-				    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+				    		<td><?php echo ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity;?>
 				    		<?php if(strpos(@$item->invoicenum,"paid-in-full-already") !== false) echo "<br>*Pre-Paid Order"; else echo "";?>
 				    		</td>
 				    		<td><?php echo round($item->ea,2);?></td>
@@ -425,7 +425,7 @@ function jq( myid ) {
 				    	if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = $item->quantity * $item->ea;
+				    		$amount = ($item->invoice_type != "fullpaid")?$item->quantity:$item->Aiquantity * $item->ea;
 				    	
 				    	$newhtmltable .= '<tr>
 				    		<td>'.$item->companyname.'</td>
@@ -433,7 +433,7 @@ function jq( myid ) {
 				    		<td>'.$item->itemcode.'</td>
 				    		<td>'.$item->itemname.'</td>
 				    		<td>'.$item->unit.'</td>
-				    		<td>'.($item->quantity)?$item->quantity:$item->aiquantity.'</td>
+				    		<td>'.($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity.'</td>
 				    		<td>'.round($item->ea,2).'</td>
 				    		<td>$'.round($amount,2).'</td>
 				    		<td>'.$item->paymentstatus.'</td>

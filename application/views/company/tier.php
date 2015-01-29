@@ -2,7 +2,11 @@
 $.noConflict();
  </script>
 
-<script>
+ 
+<?php echo '<script>var updatecreditonlyurl="'.site_url('company/creditonlyform').'";</script>'?>
+<script type="text/javascript">
+
+
 $(document).ready(function(){
 	$('.date').datepicker({dateFormat:'mm/dd/yy'});
 });
@@ -27,6 +31,21 @@ function allowonlydigits(e,elementid,errorid){
     }
 
 }
+
+function updatecreditonly(purchaserid,creditonly)
+    {
+    	//alert(purchaserid);
+    	creditonly = creditonly==true?1:0;
+        var data = "purchaserid="+purchaserid+"&creditonly="+creditonly;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updatecreditonlyurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
 
 </script>
     <div class="content">  
@@ -122,10 +141,11 @@ function allowonlydigits(e,elementid,errorid){
 								<th>End Date</th>
 								<th>Credit remaining</th>
 								<th>Amount Due</th>
+								<th>Credit Card Only</th>
 							</tr>
 							<?php 
 							foreach($admins as $admin)
-							{
+							{ //echo "<pre>"; print_r($admin);
 								if(!@$admin->tier)
 								{
 									$admin->tier='tier0';
@@ -175,7 +195,7 @@ function allowonlydigits(e,elementid,errorid){
 								
 								</td>
 								
-								 <?php if($this->session->userdata('company')->company_type!='3') {?>
+								 <?php if($admin->creditonly==0) {?>
 								<td>
 									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  /> 
 									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span>	
@@ -203,11 +223,16 @@ function allowonlydigits(e,elementid,errorid){
 								<td>
 									<?php echo $admin->amountdue;?>
 								</td>
+								<td>					
+									<input type="checkbox" name="creditonly" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?>
+						id="creditonly" onchange="updatecreditonly('<?php echo $admin->prid;?>',this.checked);" />
+									
+								</td>
 							</tr>
-							<?php }?>
+							<?php } //die; ?>
 							<tr>
 								
-								<td colspan="8" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>
+								<td colspan="10" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>
 							</tr>
 						</table>
 						</form>

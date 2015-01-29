@@ -222,14 +222,14 @@ tr.still-due td
                                         	<?php }?>
                                         </td>
                                         <td>
-                                        	<?php $isupfrontinvoice = 0; if($ai->quantity - $ai->received){?>
-                                        	<?php if($invoices) { foreach($invoices as $i){
+                                        	<?php  $isupfrontinvoice = 0; if($ai->quantity - $ai->received){?>
+                                        	<?php /* if($invoices) { foreach($invoices as $i){
                                         		
                                         		if($i->invoicenum == "paid-in-full-already".$award)
                                         		$isupfrontinvoice = 1;
                                         		
-                                        	} } ?>
-                                        	<input style="width:100px" type="text" name="invoicenum<?php echo $ai->id;?>" value="<?php if(@$isupfrontinvoice==1) echo "paid-in-full-already".$award ?>" <?php if(@$isupfrontinvoice==1) echo "readonly"; ?> />
+                                        	} }*/ ?>
+                                        	<input style="width:100px" type="text" name="invoicenum<?php echo $ai->id;?>" value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$award ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?> />
                                         	<?php }?>
                                         </td>
                                     </tr>

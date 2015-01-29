@@ -80,8 +80,8 @@ class reportmodel extends Model
  		}
  		//print_r($_POST);die;
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
+ 						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -126,6 +126,9 @@ class reportmodel extends Model
 					  p.id=q.pid $filter ";
 			if($sepdate->receiveddate != null)			 
 			$itemsql .= "AND r.receiveddate='{$sepdate->receiveddate}' ";
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$itemsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			}
 			
 			$itemquery = $this->db->query($itemsql);
 			$items = $itemquery->result();
@@ -133,7 +136,7 @@ class reportmodel extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -147,7 +150,10 @@ class reportmodel extends Model
  		    
  		    if($sepdate->receiveddate != null)			 
 			$datepaidsql .= "AND r.receiveddate='{$sepdate->receiveddate}' ";
-			 
+			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
+			$datepaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			} 
+			
  		    $sepdate->totalpaid = @$this->db->query($datepaidsql)->row()->totalpaid;
 			
 			$dates[]=$sepdate;

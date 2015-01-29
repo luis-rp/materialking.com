@@ -47,8 +47,8 @@ class report_model extends Model
 		}
  		
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
+ 						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -63,8 +63,8 @@ class report_model extends Model
  		
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice
+ 						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -106,7 +106,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100)) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -131,7 +131,7 @@ class report_model extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -148,7 +148,7 @@ class report_model extends Model
 			}
 			
  		    $datecontractpaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -185,9 +185,8 @@ class report_model extends Model
 			$filter .= " AND r.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
 		}
  		
- 		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
+ 		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum, SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
+ 					ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -201,8 +200,8 @@ class report_model extends Model
  		
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
- 						SUM(if(r.quantity=0,ai.quantity,r.quantity)) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice
+ 						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -244,7 +243,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100)) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -270,7 +269,7 @@ class report_model extends Model
 			
  		
  		    $datepaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -288,7 +287,7 @@ class report_model extends Model
 					  
  		    
  		    $datecontractpaidsql = "SELECT 
- 						ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalpaid
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalpaid
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,

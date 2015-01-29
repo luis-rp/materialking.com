@@ -176,7 +176,7 @@ function submitForm(val,invoicequote)
 			    	</tr>
 
 		             <tr>
-			    		<td><?php echo date('m/d/Y', strtotime( $report->receiveddate));?></td>
+			    		<td><?php if(@$report->receiveddate) echo date('m/d/Y', strtotime( $report->receiveddate));?></td>
 			    		<td><span id="totalquantity<?php echo $i;?>"></span></td>
 			    		<td>$<span id="totalprice<?php echo $i;?>"></span></td>
 			    		<td>$<span id="totalpaid<?php echo $i;?>"></span></td>
@@ -226,11 +226,11 @@ function submitForm(val,invoicequote)
 
 			    		foreach($report->items as $item)
 			    		{
-			    			$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea;
+			    			$amount = ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity * $item->ea;
 			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
 			    			$totalallprice += $amount;
 
-			    			$totalquantity += ($item->quantity)?$item->quantity:$item->aiquantity;
+			    			$totalquantity += ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
 			    			$totalprice += $amount;
 			    			if($item->paymentstatus=='Paid')
 			    			{
@@ -246,7 +246,7 @@ function submitForm(val,invoicequote)
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+			    		<td><?php echo ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
 			    		</td>
 			    		<td><?php echo $item->ea;?></td>

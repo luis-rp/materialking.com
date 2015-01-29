@@ -5287,7 +5287,7 @@ class quote extends CI_Controller
 		             
 		             $shipments = $this->db->select('shipment.*, item.itemname,awarditem.itemname as iii')
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')->join('awarditem','awarditem.itemid=shipment.itemid','left')
-		             ->where('quote',$qid)->group_by("shipment.itemid")->get()->result();
+		             ->where('quote',$qid)->where('accepted',0)->group_by("shipment.itemid")->get()->result();
 
 		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('item')." i WHERE s.itemid=i.id and quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
         $shipments2 = $this->db->query($shipmentsquery)->result();
@@ -6331,7 +6331,7 @@ $loaderEmail = new My_Loader();
 
                                 $invoicearr = array();
                 $invoicearr = explode(",",$_POST['invoicenum' . $key]);
-
+				//echo "<pre>",print_r($invoicearr); echo "<pre>",print_r($_POST); die;				
                 if(count($invoicearr)>1) {
                 	foreach($invoicearr as $inv) {
 
@@ -6346,11 +6346,11 @@ $loaderEmail = new My_Loader();
                 		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 		
-                		 if (strpos(@$inv,'paid-in-full-already') !== false) {                		 	
+                		 /*if (strpos(@$inv,'paid-in-full-already') !== false) {                		 	
                 		 	 $this->db->where('invoicenum', $inv);
                 		 	 $this->db->where('awarditem', $item->id);
             				 $this->quote_model->db->update('received', $insertarray);                		 	
-                		 }else                		
+                		 }else*/                		
                 			$this->quote_model->db->insert('received', $insertarray);
 
                 		$insertarray['id'] = $item->id;
@@ -6387,11 +6387,22 @@ $loaderEmail = new My_Loader();
                 $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
                 
-                if (strpos(@trim($_POST['invoicenum' . $key]),'paid-in-full-already') !== false) {                		 	
+                /*if (strpos(@trim($_POST['invoicenum' . $key]),'paid-in-full-already') !== false) {                		 	
                 		 	 $this->db->where('invoicenum', trim($_POST['invoicenum' . $key]));
                 		 	 $this->db->where('awarditem', $item->id);
             				 $this->quote_model->db->update('received', $insertarray);                		 	
-                }else                
+                }else*/   
+                
+                if($_POST['invoicetype' . $key] == "fullpaid"){
+                $insertarray['invoice_type'] = "alreadypay";
+                $insertarray['paymentstatus']='Paid';
+                $insertarray['paymentdate'] = $_POST['paymentdate' . $key];
+                $insertarray['paymenttype'] = 'Credit Card';
+                $insertarray['refnum'] = $_POST['refnum' . $key];
+                $insertarray['status'] = 'Verified';
+                $insertarray['datedue'] = $_POST['datedue' . $key];
+                }
+                             
                 $this->quote_model->db->insert('received', $insertarray);
 
 
@@ -10844,7 +10855,8 @@ $loaderEmail = new My_Loader();
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',
-                          'datedue' => date('Y-m-d')
+                          'datedue' => date('Y-m-d'),
+                          'invoice_type' => 'fullpaid'
                           );                    
                           
               $this->quote_model->db->insert('received', $insertarray);        	  
@@ -11058,7 +11070,8 @@ $loaderEmail = new My_Loader();
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',
-                          'datedue' => date('Y-m-d')
+                          'datedue' => date('Y-m-d'),
+                          'invoice_type' => 'fullpaid'
                           );                    
                           
               $this->quote_model->db->insert('received', $insertarray);        	  

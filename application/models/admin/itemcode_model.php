@@ -955,13 +955,16 @@ class itemcode_model extends Model {
     }
 
     
-    public function add_massitem($data_user)
+    public function add_massitem($data_user,$master_data)
     {	
         $this->load->database();
 
         $this->db->insert('item',$data_user);
         $id = $this->db->insert_id();
-
+		
+        $master_data['itemid'] = $id; 
+        $this->db->insert('masterdefault',$master_data);
+       
         foreach ($_POST['categories'] as $category){
         	$options2 = array();
         	$options2['itemid'] = $id;
@@ -969,6 +972,13 @@ class itemcode_model extends Model {
         	$this->db->insert('item_category', $options2);
         }
         
+    }
+    
+    public function getManufacturerId($str)
+    {
+    	$this->db->where(array('title'=>$str));
+    	$query = $this->db->get('manufacturer');
+    	return  $query->result();
     }
     
 //End By Dhruvisha

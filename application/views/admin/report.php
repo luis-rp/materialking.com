@@ -152,7 +152,7 @@
 			    			if($item->potype == "Contract" )
 			    			$amount = $item->ea;
 			    			else 
-			    			$amount = ($item->quantity)?$item->quantity:$item->aiquantity * $item->ea;
+			    			$amount = ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity * $item->ea;
 			    			$amount = round($amount + ($amount*$tax/100),2);
 			    			$totalallprice += $amount;
 			    	?>
@@ -162,7 +162,7 @@
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo ($item->quantity)?$item->quantity:$item->aiquantity;?>
+			    		<td><?php echo ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
 			    		</td>
 			    		<td><?php echo round($item->ea,2);?></td>

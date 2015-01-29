@@ -444,8 +444,7 @@ class quote_model extends Model {
               $invoices = $invoicequery->result();
              */
             $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
-            				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,  
-            				  ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice
+            				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,
 							   " . $this->db->dbprefix('awarditem') . " ai
@@ -457,7 +456,7 @@ class quote_model extends Model {
             $invoicenums = $invoicequery->result();
             $invoices = array();
             foreach ($invoicenums as $invoicenum) {
-                $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea 
+                $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea, ai.award  
 							  FROM 
 							  " . $this->db->dbprefix('received') . " r, 
 							  " . $this->db->dbprefix('awarditem') . " ai,
@@ -820,7 +819,7 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
+       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -834,7 +833,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -899,7 +898,7 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, receiveddate, 
+        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -913,7 +912,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity/100,r.quantity/100) ),2) totalprice, receiveddate, 
+        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2)  totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -988,7 +987,7 @@ class quote_model extends Model {
 
     function getinvoicebynum($invoicenum,$invoicequote) {
 
-        $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice, 
+        $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,

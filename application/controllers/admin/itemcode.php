@@ -988,7 +988,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             if($_POST['categories']){
             	$defaultcategory = @$_POST['categories'][0];
             }
-            
+           
             for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) {
             	$itemcode = $data->sheets[0]["cells"][$x][1];
             	$url = $data->sheets[0]["cells"][$x][2];
@@ -1020,8 +1020,35 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$instore = 1;
             	$increment = $data->sheets[0]["cells"][$x][7];
             	
+            //	$manufacturer = $data->sheets[0]["cells"][$x][8];
+            	$itemcode1 = $data->sheets[0]["cells"][$x][9];
+            	$part = $data->sheets[0]["cells"][$x][10];
+            	$itemname1 = $data->sheets[0]["cells"][$x][11];
+            	$listprice = $data->sheets[0]["cells"][$x][12];
+            	$minquantity = $data->sheets[0]["cells"][$x][13];
+            	
+            	$manufacturerResult = $this->itemcode_model->getManufacturerId($data->sheets[0]["cells"][$x][8]);
+            	if(!empty($manufacturerResult))
+            	{
+            		$manufacturer = $manufacturerResult[0]->id;
+            	}
+            	else 
+            	{
+            		$manufacturer = '';
+            	}
+            	
 				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
-            	$this->itemcode_model->add_massitem($data_user);
+				
+				$master_data = array(
+								'itemname'=>$itemname1,
+								'minqty'=>$minquantity,
+								'manufacturer'=>$manufacturer,
+								'partnum'=>$part,
+								'price'=>$listprice,
+								'itemcode'=>$itemcode1
+								);			
+				
+            	$this->itemcode_model->add_massitem($data_user,$master_data);
             }
             
             $this->session->set_flashdata('message',

@@ -529,7 +529,7 @@ class Quotemodel extends Model
 
 		//----------edit ends------------------	----------------------------------------------------
 
-		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice,
+		$query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
@@ -641,7 +641,7 @@ class Quotemodel extends Model
 
 
 
-		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.quantity=0,ai.quantity,r.quantity) ),2) totalprice,s.taxrate,
+		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice,s.taxrate,
 					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
@@ -707,7 +707,7 @@ class Quotemodel extends Model
                   ORDER BY STR_TO_DATE(r.receiveddate, '%m/%d/%Y') DESC
 				  ";*/
 		
-		$query = "SELECT r.invoicenum,q.ponum,r.quantity,o.taxpercent, ROUND(SUM(ai.ea * r.quantity),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,u.email,a.awardedon,ai.ea,r.purchasingadmin
+		$query = "SELECT r.invoicenum,q.ponum,r.quantity,o.taxpercent, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,u.username,ai.company,c.title,c.username as supplierusername,ai.itemid,od.orderid,o.ordernumber,ai.itemcode,i.itemname,od.price,c.address,c.phone,date_format(datedue,'%m/%d/%Y') as DueDate,u.email,a.awardedon,ai.ea,r.purchasingadmin
 				   FROM
 				   ".$this->db->dbprefix('received')." r
 				   LEFT JOIN  ".$this->db->dbprefix('awarditem')." ai ON r.awarditem =ai.id
@@ -733,7 +733,7 @@ class Quotemodel extends Model
 	function getinvoicebynum($invoicenum, $company,$invoicequote)
 	{
 
-		$invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.status,
+		$invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, r.status,
 					 r.paymentstatus, r.paymenttype, r.refnum, receiveddate, r.datedue, r.paymentdate
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
@@ -761,7 +761,7 @@ class Quotemodel extends Model
 
 		$itemsql = "SELECT
 					r.*, ai.itemcode, c.title companyname,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity as aiquantity 
 				  FROM
 				  ".$this->db->dbprefix('received')." r,
 				  ".$this->db->dbprefix('awarditem')." ai,
@@ -780,7 +780,7 @@ class Quotemodel extends Model
 	function getpendinginvoices($company)
 	{
 
-		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin,  ROUND(SUM(ai.ea * r.quantity),2) totalprice, r.alertsentdate, q.ponum, q.id as quoteid 
+		$invoicesql = "SELECT r.id, invoicenum, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, r.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, r.alertsentdate, q.ponum, q.id as quoteid 
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,

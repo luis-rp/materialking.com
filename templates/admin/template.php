@@ -431,7 +431,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         <ul class="messages">
                             <li>
                                 <a href="<?php echo site_url('admin/quote/calendar'); ?>">
-                                    <i class="icon-calendar"></i>PO Calendaraaa
+                                    <i class="icon-calendar"></i>PO Calendar
                                 </a>
                             </li>
 

@@ -785,13 +785,26 @@ function removeallitems(quote){
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
-                                    	<input type="hidden" name="comments" id="comments" value=""/>
+                                    	<input type="hidden" name="comments" id="comments" value=""/>                                    	
                                     </td>
                                     <td>
+                                    <?php $isupfrontinvoice = 0; 
+                                               if($awarded->invoices) { foreach($awarded->invoices as $i){
+												foreach($i->items as $items){
+                                               	if($items->invoice_type == "fullpaid" && $items->awarditem==$q->id){
+                                               	echo '<input type="hidden" name="invoicetype'.$q->id.'" id="invoicetype'.$q->id.'" value="'.$items->invoice_type.'" >';
+                                               	echo '<input type="hidden" name="paymentdate'.$q->id.'" id="paymentdate'.$q->id.'" value="'.$items->paymentdate.'" >';
+                                               	echo '<input type="hidden" name="refnum'.$q->id.'" id="refnum'.$q->id.'" value="'.$items->refnum.'" >';
+                                               	echo '<input type="hidden" name="datedue'.$q->id.'" id="datedue'.$q->id.'" value="'.$items->datedue.'" >';
+                                               	$isupfrontinvoice = 1;
+												}
+												}
+
+                                    } }?>
                                         <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>"
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"';
                                                else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
-                                               value="<?php //if($this->session->userdata('defaultinvoicenum')) echo $this->session->userdata('defaultinvoicenum'); ?>"
+                                              value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$awarded->id; ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?>
                                                onchange="defaultinvoicenum('<?php echo $q->id; ?>');"/>
                                     </td>
                                     <td>
