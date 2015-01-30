@@ -134,6 +134,8 @@ $(document).ready(function(){
         }
         
     });	
+    
+    $("#newitemrow").css('display','');
 	
 });
 
@@ -272,6 +274,12 @@ function invite()
 	    matches.push(this.value);
 	});
 	$('#invitees').val(matches.join(','));
+	
+	var nonnet = [];
+	$(".nonexist:checked").each(function() {
+	    nonnet.push(this.value);
+	});
+	$('#nonnetuser').val(nonnet.join(','));
 
 	var remind = [];
 	$(".remind:checked").each(function() {
@@ -612,6 +620,7 @@ function nextinvite(count) {
 		   <input type="hidden" id="revisions" name="revisions" value=""/>
 		   <input type="hidden" id="suem" name="suem" value=""/>
 		   <input type="hidden" id="suna" name="suna" value=""/>
+		   <input type="hidden" id="nonnetuser" name="nonnetuser" value=""/>
 		   <br/>
 		    
 		    <div class="control-group">
@@ -725,7 +734,10 @@ function allowonlydigits(e,elementid,errorid){
     } }
     
     
-
+function displayBlankRow()
+{
+	$("#newitemrow").css('display','');
+}
 
 </script>
                      <hr/>
@@ -786,11 +798,11 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
 						<br/>
 		    			</div> <span id="eaerrmsg1<?php echo $q->id;?>" ></span>	
-		    			<br><?php $minpricenote = ""; if(count($minprices)>0) foreach($minprices[$q->itemid] as $minp){
+		    			<br><?php $minpricenote = ""; if(count($minprices)>0){ foreach($minprices[@$q->itemid] as $minp){
 		    						if($q->ea>$minp->price){
 		    							$minpricenote = "* Lower price available"; break;
 		    						}
-		    			}?>
+		    			} }?>
 		    			<span id="betterprice<?php echo $q->id;?>"><?php echo @$minpricenote;?></span>
 		    		</td>
 		    		<td>
@@ -835,7 +847,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 			  	<form id="newitemform" class="form-horizontal" method="post"
 			  	action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>"> 
 			  	
-		    	<tr>
+		    	<tr id="newitemrow" style="display:none;">
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="hidden" id="itemincrement" name="itemincrement" />
@@ -888,7 +900,8 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<td colspan="15">
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
                                 
-		    		<input type="submit" value="Add Next Item" class="btn btn-primary"/>
+		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
+		    		<input type="submit" value="Save & Continue" class="btn btn-primary"/>
 					</td>
 		    	</tr>
 		    	</form>
@@ -1053,15 +1066,18 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    	<?php }?>
 					    </div>
 					     <?php }?>
-					      <label class="control-label"><strong>Non Network Invitations:</strong></label>
+					      <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
 					      <hr/>
 					    <div class="controls">
 					    	<?php  if(isset($nonnetuser)){
-					    	          foreach($nonnetuser as $c) {
-					    	          	
-					    		         echo "*&nbsp;".$c->title;?>
+					    	          foreach($nonnetuser as $c) { ?>					    	          	
+					    		        <input type="checkbox" class="nonexist" value="<?php echo $c->id;?>" />
+    					    		&nbsp;&nbsp; <?php echo $c->title;?>
 					    		<br/>
 					    	<?php }  }?>
+					    	
+					    	
+					    	
 					    </div><br/>
 					     
 				    </div>

@@ -246,7 +246,7 @@ function submitForm(val,invoicequote)
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;?>
+			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
 			    		</td>
 			    		<td><?php echo $item->ea;?></td>

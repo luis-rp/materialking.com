@@ -158,16 +158,20 @@
 			    	?>
 			    	<tr>
 			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->ponum;?></td>
+			    		<td><?php echo $item->ponum;?>
+			    		<?php echo ($item->invoice_type == "fullpaid" || $item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
+			    		</td>
 			    		<td><?php echo $item->itemcode;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;?>
+			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
 			    		</td>
 			    		<td><?php echo round($item->ea,2);?></td>
 			    		<td>$<?php echo round($amount,2);?></td>
-			    		<td><?php echo $item->paymentstatus;?></td>
+			    		<td><?php echo $item->paymentstatus;?>
+			    		<?php echo (@$item->invoice_type == "fullpaid" || @$item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
+			    		</td>
 			    		<td><?php echo $item->status;?></td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>

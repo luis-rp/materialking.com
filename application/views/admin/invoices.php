@@ -387,7 +387,7 @@ function jq( myid ) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity * $item->ea; ?>
+				    		$amount = (($item->invoice_type != "fullpaid")?($item->invoice_type == "alreadypay"?0:$item->quantity):$item->aiquantity) * $item->ea; ?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -425,7 +425,7 @@ function jq( myid ) {
 				    	if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = ($item->invoice_type != "fullpaid")?$item->quantity:$item->Aiquantity * $item->ea;
+				    		$amount = (($item->invoice_type != "fullpaid")?($item->invoice_type == "alreadypay"?0:$item->quantity):$item->aiquantity) * $item->ea;
 				    	
 				    	$newhtmltable .= '<tr>
 				    		<td>'.$item->companyname.'</td>

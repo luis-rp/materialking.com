@@ -145,9 +145,18 @@ function jq( myid ) {
 	<?php	
 			$totalprice = 0;	
 			$markuptotalpercent = 0;
+			$subtotal = 0;
+			$subtotal1 = 0;
+			$finaltotal = 0;
+			$finaltotal1 = 0;
+			
 			foreach ($billItemdetails as $k=>$value)
 			{  
-				//echo '<pre>',print_r($value);
+				$markuptotalpercent = (isset($value['markuptotalpercent']) && $value['markuptotalpercent'] != '') ? $value['markuptotalpercent'] : 0;
+				$totalprice += $value['quantity'] * $value['ea']; 
+				$subtotal1 = $totalprice + ($totalprice * $markuptotalpercent/100);
+		     	$finaltotal1 = $subtotal1 + (@$subtotal1*@$settings->taxrate/100);
+				
 				?>
 				<tr> 
 					<td id="billdetailid_<?php echo $value['billitemid'];?>"><?php echo $value['billname'];?> 
@@ -157,13 +166,11 @@ function jq( myid ) {
 					<!--<td><?php echo $value['itemname'];?> </td>-->
 					<td><?php echo date('m/d/Y', strtotime($value['billedon']));?> </td>
 					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
-					<td><?php echo number_format(($value['quantity'] * $value['ea']),2);?> </td>
+					<td><?php echo number_format($finaltotal1,2);?> </td>
 					<!---->
 					<!--<td><?php //echo $value['costcode'];?> </td>-->
 				</tr>
-	<?php	 $totalprice += $value['quantity'] * $value['ea']; 
-			 $markuptotalpercent = (isset($value['markuptotalpercent']) && $value['markuptotalpercent'] != '') ? $value['markuptotalpercent'] : 0;
-			 
+	<?php	 			 
 		  } 		 
 		     $subtotal = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     $finaltotal = $subtotal + (@$subtotal*@$settings->taxrate/100);

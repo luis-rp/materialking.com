@@ -212,7 +212,7 @@ function validatecc()
 function paycc(bankaccounarr, bankcnt)
 {			
 	   if(bankcnt>0){
-	   		alert(" You can't proceed. These Supplier/s have not set their account details: "+bankaccounarr);	
+	   		alert(" You can't proceed. These Supplier/s have not set their bank account details: "+bankaccounarr);	
 	   }else{
 		
 	    if($('#paytype').val() == "awardbiditems"){

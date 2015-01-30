@@ -614,9 +614,9 @@ class quote extends CI_Controller
         redirect('admin/quote/update/' . $quoteid);
     }
 
-    function checkpo($ponum)
+    function checkpo($ponum,$pid="")
     {
-        if ($this->quote_model->checkDuplicatePonum($ponum, 0))
+        if ($this->quote_model->checkDuplicatePonum($ponum, 0,$pid))
             echo 'Duplicate';
         else
             echo 'Allow';
@@ -736,10 +736,12 @@ class quote extends CI_Controller
         foreach ($invitations as $inv) {
             $data['invitations'][$inv->company] = $inv;
         }
+         /*
+         $non = "SELECT c.title FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";*/
          
-         $non = "SELECT c.title FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";
+         $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n where c.id NOT IN(n.company) AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}'";
+         
         $data['nonnetuser'] = $this->db->query($non)->result();
-        
         $data['awarded'] = $this->quote_model->getawardedbid($id);
         $data['bids'] = $this->quote_model->getbids($id);
 
@@ -909,8 +911,12 @@ class quote extends CI_Controller
     		$emailitems .= '</table>';
             $infolist="";
             $invitees = $this->input->post('invitees');
-            //echo "<pre>",print_r($_POST); die;
-            
+            $nonnetuser=$this->input->post('nonnetuser');
+            if(isset($nonnetuser))
+            {
+            	$invitees .=",".$nonnetuser;
+            }
+            $invitees=ltrim($invitees,",");
              if(isset($_POST['suem']))
              {
              	$trimemail=rtrim($_POST['suem'],',');            	
@@ -6393,7 +6399,7 @@ $loaderEmail = new My_Loader();
             				 $this->quote_model->db->update('received', $insertarray);                		 	
                 }else*/   
                 
-                if($_POST['invoicetype' . $key] == "fullpaid"){
+                if(@$_POST['invoicetype' . $key] == "fullpaid"){
                 $insertarray['invoice_type'] = "alreadypay";
                 $insertarray['paymentstatus']='Paid';
                 $insertarray['paymentdate'] = $_POST['paymentdate' . $key];
@@ -10856,7 +10862,8 @@ $loaderEmail = new My_Loader();
                           'quantity' => 0,
                           'status' => 'Verified',
                           'datedue' => date('Y-m-d'),
-                          'invoice_type' => 'fullpaid'
+                          'invoice_type' => 'fullpaid',
+                          'receiveddate' => date('Y-m-d H:i:s')
                           );                    
                           
               $this->quote_model->db->insert('received', $insertarray);        	  
@@ -11071,7 +11078,8 @@ $loaderEmail = new My_Loader();
                           'quantity' => 0,
                           'status' => 'Verified',
                           'datedue' => date('Y-m-d'),
-                          'invoice_type' => 'fullpaid'
+                          'invoice_type' => 'fullpaid',
+                          'receiveddate' => date('Y-m-d H:i:s')
                           );                    
                           
               $this->quote_model->db->insert('received', $insertarray);        	  

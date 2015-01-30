@@ -22,6 +22,11 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
+    			property: 'qty',
+    			label: 'QTY',
+    			sortable: true
+    		},
+    		{
     			property: 'specs',
     			label: 'Specs',
     			sortable: true

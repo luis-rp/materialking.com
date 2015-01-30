@@ -95,7 +95,7 @@ $(document).ready(function(){
 		}
 		else
 		{
-			var url = '<?php echo base_url()?>admin/quote/checkpo/'+$("#ponum").val();
+			var url = '<?php echo base_url()?>admin/quote/checkpo/'+$("#ponum").val()+'/<?php echo $this->session->userdata('managedprojectdetails')->id;?>';
 			
 			$.ajax({
 			     type: "GET",

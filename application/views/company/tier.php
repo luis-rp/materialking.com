@@ -2,8 +2,6 @@
 $.noConflict();
  </script>
 
- 
-<?php echo '<script>var updatecreditonlyurl="'.site_url('company/creditonlyform').'";</script>'?>
 <script type="text/javascript">
 
 
@@ -32,20 +30,7 @@ function allowonlydigits(e,elementid,errorid){
 
 }
 
-function updatecreditonly(purchaserid,creditonly)
-    {
-    	//alert(purchaserid);
-    	creditonly = creditonly==true?1:0;
-        var data = "purchaserid="+purchaserid+"&creditonly="+creditonly;
-        //alert(data);
-        $.ajax({
-		      type:"post",
-		      data: data,
-		      url: updatecreditonlyurl
-		    }).done(function(data){
-				//alert(data);
-		    });
-    }
+
 
 </script>
     <div class="content">  
@@ -119,6 +104,9 @@ function updatecreditonly(purchaserid,creditonly)
 			</div>
 		</div>
 		
+		
+	
+		
 		<div class="row">
 			<div class="col-md-12">
 				<div class="grid simple ">
@@ -145,7 +133,7 @@ function updatecreditonly(purchaserid,creditonly)
 							</tr>
 							<?php 
 							foreach($admins as $admin)
-							{ //echo "<pre>"; print_r($admin);
+							{ 
 								if(!@$admin->tier)
 								{
 									$admin->tier='tier0';
@@ -194,42 +182,33 @@ function updatecreditonly(purchaserid,creditonly)
 </select>
 								
 								</td>
-								
-								 <?php if($admin->creditonly==0) {?>
-								<td>
-									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  /> 
-									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span>	
+								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
+									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  
+							 /> 
+									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span></p>	
+									<?php if($admin->creditonly==1) { ?><span style="color:red;">*Credit</span><?php } ?>
 								</td>
-								<td>
+								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
 									<input  style="width:70px" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy"/>
+									value="<?php echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
+									<?php if($admin->creditonly==1) { ?><span style="color:red;">Card</span><?php } ?>
 								</td>
-								<td>
+								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
 									<input  style="width:70px" type="text" name="creditto[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy"/>
+									value="<?php echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
+									<?php if($admin->creditonly==1) { ?><span style="color:red;">only</span><?php } ?>
 								</td>
-								<td>
-									<?php echo $admin->creditlimit;?>
-								</td>
-								<?php } else { ?>
-								
-								<td colspan="4">
-									<span style="color:red;">*Credit Card Only Account.</span>
-								</td>
-								
-								<?php } ?>
-								
-								
+								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
+									<?php echo $admin->creditlimit;?></p><?php if($admin->creditonly==1) { ?><span style="color:red;">Account</span><?php } ?>
+								</td>								
 								<td>
 									<?php echo $admin->amountdue;?>
 								</td>
 								<td>					
-									<input type="checkbox" name="creditonly" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?>
-						id="creditonly" onchange="updatecreditonly('<?php echo $admin->prid;?>',this.checked);" />
-									
+<input type="checkbox" name="creditonly[<?php echo $admin->purchasingadmin;?>]" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?> />
 								</td>
 							</tr>
-							<?php } //die; ?>
+							<?php }?>
 							<tr>
 								
 								<td colspan="10" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>

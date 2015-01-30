@@ -174,7 +174,7 @@
 							    </tr>
 							    </table>
 							   <br/>
-
+							   <table><tr><td style="text-align:center;"><?php echo ($invoice->invoice_type == "fullpaid" || $invoice->invoice_type == "alreadypay")?"* Pre-Paid Invoice":"";?></td></tr></table>		
 							   <br/>
 
 							<table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
@@ -196,7 +196,7 @@
 							  	foreach($invoice->items as $invoiceitem)
 								{
 									$invoiceitem = (array)$invoiceitem;
-									$totalprice += $invoiceitem['ea'] * ($invoiceitem['invoice_type'] != "fullpaid")?(($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
+									$totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")?(($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
 									$quantity = ($invoiceitem['invoice_type'] != "fullpaid")?(($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
 									$olddate=strtotime($invoiceitem['receiveddate']); $newdate = date('m/d/Y', $olddate);
 									echo '<tr nobr="true">
@@ -204,7 +204,7 @@
 									    <td>'.htmlentities($invoiceitem['itemname']).'</td>
 									    <td>'.$invoiceitem['daterequested'].'</td>
 									    <td>'.$newdate.'</td>
-									    <td>'.$quantity.'</td>
+									    <td>'.(($invoiceitem['invoice_type'] != "fullpaid")?$invoiceitem['quantity']:$invoiceitem['aiquantity']).'</td>
 									    <td>'.$invoiceitem['unit'].'</td>
 									    <td align="right">$ '.$invoiceitem['ea'].'</td>
 									    <td align="right">$ '.$invoiceitem['ea'] * $quantity.'</td>

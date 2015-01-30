@@ -478,6 +478,7 @@
                             <th style="width:15%">Order#</th>
                             <th style="width:20%">Ordered On</th>
                             <th style="width:20%">Order Total</th>
+                            <th style="width:20%">Qty</th>
                             <th style="width:20%">Project</th>
                             <th style="width:10%">Type</th>
                             <th style="width:10%">Txn ID</th>
@@ -511,6 +512,7 @@
                       ?>
                             <td>$<?php echo number_format($orderdetails[0]->totalprice + $orderdetails[0]->shipping + ($orderdetails[0]->totalprice * $order->taxpercent/100),2)
 ;?></td>
+							<td><?php echo $order->quantity;?></td>
                              <!-- <td>$<?php echo number_format($totalwithtax,2);?></td> -->
                             <td><?php if(isset($order->prjName)) echo $order->prjName;?></td>
                             <td><?php echo $order->type;?></td>

@@ -1033,7 +1033,7 @@ function removeallitems(quote){
                                 foreach ($awarded->invoices as $invoice) {?>
                                 <tr>
                                     <td><?php echo $invoice->invoicenum; ?></td>
-                                    <td><?php echo "$ ".$invoice->totalprice; ?></td>
+                                    <td><?php echo "$ ".number_format($invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100, 2); ?></td>
                                     <!-- <td><?php // echo number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);?></td> -->
                                     <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->datedue){echo date("m/d/Y", strtotime($invoice->datedue));}else{ echo "No Date Set";}

@@ -1285,10 +1285,13 @@ class site extends CI_Controller
         }
         array_unshift($item->images, $mainimg);
         $data['item'] = $item;
-        $this->db->where('itemid', $id);
+        /*$this->db->where('itemid', $id);
         $this->db->where('type', 'Supplier');
         $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
+        */
+        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND ci.ea > '0' AND c.company_type='1'";
+        $inventory = $this->db->query($sql)->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
 
         if($item->featuredsupplier)

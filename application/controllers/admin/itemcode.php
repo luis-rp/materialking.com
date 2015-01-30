@@ -1020,33 +1020,42 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$instore = 1;
             	$increment = $data->sheets[0]["cells"][$x][7];
             	
-            //	$manufacturer = $data->sheets[0]["cells"][$x][8];
-            	$itemcode1 = $data->sheets[0]["cells"][$x][9];
-            	$part = $data->sheets[0]["cells"][$x][10];
-            	$itemname1 = $data->sheets[0]["cells"][$x][11];
-            	$listprice = $data->sheets[0]["cells"][$x][12];
-            	$minquantity = $data->sheets[0]["cells"][$x][13];
-            	
-            	$manufacturerResult = $this->itemcode_model->getManufacturerId($data->sheets[0]["cells"][$x][8]);
-            	if(!empty($manufacturerResult))
-            	{
-            		$manufacturer = $manufacturerResult[0]->id;
-            	}
-            	else 
-            	{
-            		$manufacturer = '';
-            	}
             	
 				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
 				
-				$master_data = array(
-								'itemname'=>$itemname1,
-								'minqty'=>$minquantity,
-								'manufacturer'=>$manufacturer,
-								'partnum'=>$part,
-								'price'=>$listprice,
-								'itemcode'=>$itemcode1
-								);			
+           		$Totalcnt = count($data->sheets[0]["cells"][1]);
+				$index = 0;
+				$cnt = ($Totalcnt - 7) / 6;
+				$newTotal = $Totalcnt;
+								
+				for ($i=8;$i<=$Totalcnt;$i+= 6)
+				{					
+					$itemcode1 = $data->sheets[0]["cells"][$x][$i+1];
+	            	$part = $data->sheets[0]["cells"][$x][$i+2];
+	            	$itemname1 = $data->sheets[0]["cells"][$x][$i+3];
+	            	$listprice = $data->sheets[0]["cells"][$x][$i+4];
+	            	$minquantity = $data->sheets[0]["cells"][$x][$i+5];
+	            	
+	            
+	            	$manufacturerResult = $this->itemcode_model->getManufacturerId($data->sheets[0]["cells"][$x][$i]);
+	            	if(!empty($manufacturerResult))
+	            	{
+	            		$manufacturer = $manufacturerResult[0]->id;
+	            	}
+	            	else 
+	            	{
+	            		$manufacturer = '';
+	            	}
+	            	$master_data[] = array(
+									'itemname'=>$itemname1,
+									'minqty'=>$minquantity,
+									'manufacturer'=>$manufacturer,
+									'partnum'=>$part,
+									'price'=>$listprice,
+									'itemcode'=>$itemcode1
+									);
+					
+				}	
 				
             	$this->itemcode_model->add_massitem($data_user,$master_data);
             }

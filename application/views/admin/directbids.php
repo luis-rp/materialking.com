@@ -62,7 +62,7 @@ function usedefaultaddresscheckchange()
 function paycc(amount,bankaccounarr, bankcnt)
 {			
 	   if(bankcnt>0){
-	   		alert(" You can't proceed. These Supplier/s have not set their account details: "+bankaccounarr);	
+	   		alert(" You can't proceed. These Supplier/s have not set their bank account details: "+bankaccounarr);	
 	   }else{
 		var invoicenumber = $('#quoteid').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);

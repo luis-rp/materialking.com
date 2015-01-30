@@ -282,7 +282,7 @@ function shownotice(newval,oldval,id){
                 $i = 0;
                 foreach ($invoice->items as $invoiceitem) {
                     $invoiceitem = (array) $invoiceitem;
-                    $totalprice += $invoiceitem['ea'] * ($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
+                    $totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
                     
                     $quantity = ($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
                     
@@ -292,7 +292,7 @@ function shownotice(newval,oldval,id){
 						    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
 						    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
 						    <td style="border: 1px solid #000000;">' . ((@$invoiceitem['shipdate'])?date("m/d/Y h:i A", strtotime($invoiceitem['shipdate'])):'') . '</td>
-						    <td style="border: 1px solid #000000;">' . $quantity . '</td>
+						    <td style="border: 1px solid #000000;">' . (($invoiceitem['invoice_type'] != "fullpaid")?$invoiceitem['quantity']:$invoiceitem['aiquantity']) . '</td>
 						    <td style="border: 1px solid #000000;">' . $invoiceitem['unit'] . '</td>
 						    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] . '</td>
 						    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $quantity . '</td>
