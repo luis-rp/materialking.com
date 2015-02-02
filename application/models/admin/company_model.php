@@ -15,7 +15,7 @@ class company_model extends Model {
 
         $sql = "SELECT *
 		FROM
-		" . $this->db->dbprefix('company') . " ORDER BY title";
+		" . $this->db->dbprefix('company') . " WHERE isdeleted=0 ORDER BY title";
 
         $query = $this->db->query($sql);
         if ($query->result()) {
@@ -205,10 +205,11 @@ class company_model extends Model {
 
     // removing product
     function remove_company($id) {
+    	$updateArr = array('isdeleted'=>1);
         $this->db->where('id', $id);
-        $this->db->delete('company');
+        $this->db->update('company',$updateArr);
 
-        $this->db->where('companyid', $id);
+       /* $this->db->where('companyid', $id);
         $this->db->delete('companytype');
 
         $this->db->where('company', $id);
@@ -262,7 +263,7 @@ class company_model extends Model {
         $this->db->delete('quoteitem');
 
         $this->db->where('company', $id);
-        $this->db->delete('tierpricing');
+        $this->db->delete('tierpricing');*/
     }
 
     // retrieve product by their id

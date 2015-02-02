@@ -402,7 +402,7 @@ $link
 		$data['config'] = (array)$this->settings_model->get_current_settings ();
 		$data['messages'] = $messages;
 		$data['awarded'] = $awarded;
-		$data['heading'] = "REQ. B/O ETA";
+		$data['heading'] = "TRACK Items";
 		$this->load->view ('admin/purchaseuser/track', $data);
 	}
 	

@@ -1043,9 +1043,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	            		$manufacturer = $manufacturerResult[0]->id;
 	            	}
 	            	else 
-	            	{
+	            	{	  
 	            		$manufacturer = '';
 	            	}
+	            	
 	            	$master_data[] = array(
 									'itemname'=>$itemname1,
 									'minqty'=>$minquantity,

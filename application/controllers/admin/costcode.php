@@ -757,20 +757,8 @@ class costcode extends CI_Controller {
     
     function getprojectfromcostcode()
      { 
-     	$temp="";
-		$result=$this->db->get_where('costcode',array('id'=>$_POST['catid']))->row();
-		if($this->session->userdata('usertype_id')>1)
-		{
-			$result=$this->db->get_where('costcode',array('id'=>$_POST['catid'],'purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
-		}
-		if(isset($result)){
-		 $resultpro=$this->db->get_where('project',array('id'=>$result->project))->row();			
-		}		
-		if($resultpro)
-		{	
-	$temp = "<option value=".$resultpro->id." style ='BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;'>".$resultpro->title."</option>";
-       }
-       echo $temp; die;
+     	 $resultpro = $this->costcode_model->listHeirarchicalComboPro($_POST['catid']);
+    	 echo $resultpro; die; 	
      }
 
     function add_costcode() {

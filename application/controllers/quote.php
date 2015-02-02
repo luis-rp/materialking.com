@@ -4280,8 +4280,37 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->load->view ('quote/performance', $data);
 	}
 	//
-	function directs()
-	{
-	    
+	
+	function setcompanyprice(){
+
+		if(!$_POST)
+		die;
+
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('type','Supplier');
+		$this->db->where('company',$_POST['companyid']);
+		$companyitem = $this->db->get('companyitem')->row();
+
+		if($companyitem)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('type','Supplier');
+			$this->db->where('company',$_POST['companyid']);
+			$companyresult = $this->db->update('companyitem',array('ea'=>$_POST['val']));
+		}else{
+			$updatearray = array();
+			$updatearray['itemid'] = $_POST['itemid'];
+			$updatearray['company'] = $_POST['companyid'];
+			$updatearray['type'] = 'Supplier';
+			$updatearray['ea'] = $revisionid;
+			$companyresult = $this->quotemodel->db->insert('companyitem',$_POST['val']);
+
+		}
+		
+		if($companyresult)
+		echo 1;
+		else 
+		echo 0; die;
 	}
+	
 }

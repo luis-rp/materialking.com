@@ -362,7 +362,7 @@ $(document).ready(function(){
             	<h3>Award Bid</h3>
         	</div>
         	<div class="modal-body">
-
+          
         	<table>
 	        	<tr>
 		        	<td colspan="2"><strong>Shipping Address:</strong> <br/>
@@ -372,13 +372,18 @@ $(document).ready(function(){
 		        	</td>
 	        	</tr>
 
-        	</table>
+        	</table>	
 
         	</div>
         	<div class="modal-footer">
         		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
-        		<input type="submit" class="btn btn-primary" value="Award"/>
-        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />
+        		&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
+        		 <?php if($bid->creditonly==1) {?>
+        		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
+        		<?php } else {?>
+        		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;
+        		<?php }?>
+        		
         	</div>
             </form>
         </div>

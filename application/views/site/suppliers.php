@@ -1,6 +1,6 @@
 
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<?php echo '<script>var getmanufacturersurl="' . site_url('admin/type/getmanufacturers') . '";</script>' ?>
+<?php echo '<script>var getmanufacturersurl="' . site_url('site/getmanufacturers') . '";</script>' ?>
 <script>
 	function getlatlong()
 	{

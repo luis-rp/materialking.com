@@ -40,24 +40,29 @@ class costcode_model extends Model
 				$sql ="SELECT SUM(ai.quantity*ai.ea) totalcost
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, 
-				".$this->db->dbprefix('award')." a
+				".$this->db->dbprefix('award')." a,  
+				".$this->db->dbprefix('quote')." q 
 				WHERE
-				ai.award=a.id AND ai.costcode='".$item->code."'";
+				ai.award=a.id AND ai.costcode='".$item->code."' and a.quote=q.id ";
 				
 				if($item->forcontract==1){
 					
 				$sql ="SELECT SUM(ai.ea) totalcost
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, 
-				".$this->db->dbprefix('award')." a
+				".$this->db->dbprefix('award')." a,  
+				".$this->db->dbprefix('quote')." q 
 				WHERE
-				ai.award=a.id AND ai.costcode='".$item->code."'";
+				ai.award=a.id AND ai.costcode='".$item->code."' and a.quote=q.id ";
 					
 				}
 				
 				if($this->session->userdata('usertype_id')>1)
 					$sql .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 				
+				if(@$_POST['projectfilter'])
+					$sql .= " AND q.pid ='{$_POST['projectfilter']}'";	
+					
 				$query = $this->db->query ($sql);
 				$item->totalspent = $query->row ('totalcost');
 				/****/
@@ -80,6 +85,9 @@ class costcode_model extends Model
 							
 					}
 						
+					if(@$_POST['projectfilter'])
+					$sql2 .= " AND o.project ='{$_POST['projectfilter']}'";	
+					
 						$query2 = $this->db->query ($sql2);
 						
 						if($query2->result()){
@@ -147,6 +155,71 @@ class costcode_model extends Model
 		return $temp;
 	}
 	
+	
+	function listHeirarchicalComboPro($catid='',$parent_id = 0, $level = 0, $selected = ''){
+		static $temp = '';
+		$where = "";
+		if($catid=='0' || $catid=='')
+		{
+			$where = '';
+		}
+		else 
+		{
+			$where = 'AND id = '.$catid;
+		}
+		
+		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." where 1=1 {$where} ";
+		
+		if($this->session->userdata('usertype_id')>1)
+		{
+			$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')." 
+			WHERE  purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where} ";
+		}
+		
+  		$result11 = $this->db->query($sql)->result(); 		
+		$pids = array();
+		foreach ($result11 as $h) {
+		    $pids[] = $h->project;
+		}
+		$uniquePids = array_unique($pids);
+		if($uniquePids)
+		{
+			$result=array();
+			foreach ($uniquePids as $re)
+			{			
+				 $sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('project')." 
+			WHERE  id='".$re."'
+			";
+			$resultpro = $this->db->query($sql)->row();		 
+				 
+				 $result[]=$resultpro;	
+			}
+		}
+		 
+		
+		$res=array_filter($result);		
+		if($res)
+		foreach($res as $row)
+		{
+			if($row->id == 0){				
+				$opt_style = "style = \"BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;\"";
+			}else{
+				$opt_style = "";
+			}	
+					
+			//$opt_style = "style = \"BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;\"";					
+			$separator = str_repeat("&raquo;&nbsp;", $level);
+			$temp .= "\t<option value=\"{$row->id}\" {$opt_style}> {$separator} {$row->title}</option>\r\n";						
+		} 
+		
+		return $temp;
+				
+	}
+	
 	// counting total costcodes
 	function total_costcode()
 	{
@@ -171,6 +244,10 @@ class costcode_model extends Model
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				AND ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
 		}
+		
+		if(@$this->session->userdata('managedprojectdetails')->id)
+			$sql .=" and q.pid='".$this->session->userdata('managedprojectdetails')->id." ' ";
+		
 		//echo $sql;
 		$query = $this->db->query ($sql);
 		if ($query->result ()) {
@@ -207,6 +284,10 @@ class costcode_model extends Model
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				AND ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
 		}
+		
+		if(@$this->session->userdata('managedprojectdetails')->id)
+			$sql .=" and q.pid='".$this->session->userdata('managedprojectdetails')->id." ' ";
+		
 		//echo $sql;
 		$query = $this->db->query ($sql);
 		if ($query->result ()) {

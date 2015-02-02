@@ -744,8 +744,11 @@ $(function() {
 
         	</div>
         	<div class="modal-footer">
-        		<input type="submit" class="btn btn-primary" value="Award"/>
-        		<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />
+        	&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
+        	 <?php if($bid->creditonly==1) {?>
+        	<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />&nbsp;<?php } else {?>
+        		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;<?php } ?>
+        		
         	</div>
             </form>
         </div>

@@ -187,10 +187,22 @@ function jq( myid ) {
                         &nbsp;&nbsp;
                         To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
-                        Company:
+                        Company:<?php 
+                        
+                        if(isset($companylist1) && $companylist1 != '')
+                        {
+                        	foreach ($companylist1 as $key=>$val)
+                        	{
+                        		$newCompanylist[$val->id] = $val; 
+                        	}
+                        }
+                       
+                        ?>
+                        
+                        
                         <select id="searchcompany" name="searchbycompany" style="width: 120px;">
                             <option value=''>All Companies</option>
-                            <?php foreach ($companylist1 as $company) { ?>
+                            <?php foreach ($newCompanylist as $company) { ?>
                                 <option value="<?php echo $company->id ?>"
                                 <?php
                                 if (@$_POST['searchbycompany'] == $company->id) {
@@ -278,7 +290,8 @@ function jq( myid ) {
                     		$daysold60 = array();
                     		$daysold90 = array();
                     		$daysold120 = array();
-                    		//echo "<pre>",print_r($items);
+                    		/*echo "<pre>",print_r($items);
+                    		echo "<pre>",print_r($aginginvoices); die;*/
                     		foreach($items as $item){ $i++;
                     		?>
                     		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
@@ -339,7 +352,7 @@ function jq( myid ) {
                     			$item->totalprice = str_replace( ',', '', $item->totalprice );
                     			$totalunpaid+= $item->totalprice;
                     			
-                    			$datediff = strtotime($item->datedue) - time();
+                    			/*$datediff = strtotime($item->datedue) - time();
      							$datediff = abs(floor($datediff/(60*60*24)));
                     			if($item->datedue>=date('Y-m-d')){                    			
                     				$future[] = $item->totalprice;
@@ -351,10 +364,37 @@ function jq( myid ) {
                     				$daysold90[] = $item->totalprice;
                     			}elseif($datediff>=91 && $datediff<=120){ 
                     				$daysold120[] = $item->totalprice;
-                    			}
+                    			}*/
                     		}
 
-                    		}                 		
+                    		}
+                    		
+                    		foreach($aginginvoices as $ainvoice){
+								  
+                    			if($ainvoice->paymentstatus=='Unpaid' || $ainvoice->paymentstatus=='Requested Payment')
+                    			{  
+                    				if(@$taxpercent)
+                    				$ainvoice->totalprice = number_format($ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100),2);
+                    				else 
+                    				$ainvoice->totalprice = number_format($ainvoice->totalprice,2);
+                    				
+                    				$datediff = strtotime($ainvoice->datedue) - time();
+                    				$datediff = abs(floor($datediff/(60*60*24)));
+                    				if($ainvoice->datedue>=date('Y-m-d') || $ainvoice->datedue==""){
+                    					$future[] = $ainvoice->totalprice;
+                    				}elseif($datediff>=1 && $datediff<=30){
+                    					$current[] = $ainvoice->totalprice;
+                    				}elseif($datediff>=31 && $datediff<=60){
+                    					$daysold60[] = $ainvoice->totalprice;
+                    				}elseif($datediff>=61 && $datediff<=90){
+                    					$daysold90[] = $ainvoice->totalprice;
+                    				}elseif($datediff>=91 && $datediff<=120){
+                    					$daysold120[] = $ainvoice->totalprice;
+                    				}
+                    			}
+                    			
+                    		}
+                    		                 		
                     		?>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>

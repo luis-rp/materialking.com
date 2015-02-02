@@ -3085,5 +3085,22 @@ class site extends CI_Controller
         	
         $this->session->set_flashdata('billid',$billid);       
 		$this->load->view('site/customerbill',$data);
-	}	
+	}
+
+	
+	function getmanufacturers(){
+		
+		if(@$_POST[ 'industryid' ]==0){
+			
+			$result = $this->db->get_where('type', array('category'=>'Manufacturer'))->result();
+		}else{			
+		
+		$checkauth = array('parent_id' => $_POST[ 'industryid' ]);
+    	$this->db->where($checkauth);
+    	$result = $this->db->get('type')->result();
+		}
+
+		echo json_encode($result);
+	}
+	
 }

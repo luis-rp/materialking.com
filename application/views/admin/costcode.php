@@ -18,8 +18,16 @@ function changeparent(projectid){
 							$('#changeajaxcosttr').html(data);
 							$('#parent').empty();		
 							$('#parent').append( new Option("Top Parent","") ); 				
-							$('#parent').append(data);
-														
+							$('#parent').append(data);														
+							$('#parent').val('');
+						} else 
+						{
+							$('#changecost').hide();
+							$('#changeajaxcost').show();
+							$('#changeajaxcosttr').html("<p>No Cost Code is Present</p>");
+							$('#parent').empty();		
+							$('#parent').append( new Option("Top Parent","") ); 				
+							$('#parent').append(data);														
 							$('#parent').val('');
 						}
 					},
@@ -32,17 +40,14 @@ function changeparent(projectid){
 
 function changeproject(catid){
 	$. ajax ({
-		           
+		
 					type: "POST",					
 					data: {"catid" : catid},
 					url: "getprojectfromcostcode",
 					success: function (data) {
 						if(data){
-							/*$('#changecost').hide();
-							$('#changeajaxcost').show();
-							$('#changeajaxcosttr').html(data);*/
 							$('#project').empty();		
-							//$('#parent').append( new Option("Top Parent","") ); 				
+							//$('#parent').append( new Option("Select Project","") ); 				
 							$('#project').append(data);														
 							$('#project').val('');
 						}

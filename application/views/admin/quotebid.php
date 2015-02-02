@@ -134,9 +134,10 @@ $(document).ready(function(){
         }
         
     });	
-    
-    $("#newitemrow").css('display','');
-	
+   if($("#quoteCnt").val() == 0)
+   {
+    	$("#newitemrow").css('display','');
+   }
 });
 
 
@@ -752,7 +753,7 @@ function displayBlankRow()
 			     <h3 class="box-header" style="display:inline;""> <label class="control-label">Items</label></h3>
                             
 		    </div>
-                  
+           <input type="hidden" name="quoteCnt" id="quoteCnt" value="<?php echo count($quoteitems);?>">       
                   <!-- <div align="right" style="padding-right: 20px;padding-bottom:10px;  ">
                       <b>Include Item Attachments <input type="checkbox" name="attachchkbox"  id="attachchkbox" onchange="xmltype6()" ></b></div> -->
 		  <div class="control-group">

@@ -25,6 +25,7 @@
 	.fg-button-icon-solo { display:block; width:8px; text-indent: -9999px; }	 /* solo icon buttons must have block properties for the text-indent to work */
 
 	.fg-button.ui-state-loading .ui-icon { background: url(spinner_bar.gif) no-repeat 0 0; }
+	.small-content{ margin:0px; padding:0px; float:left; width:254px;}
 </style>
 
 
@@ -317,8 +318,9 @@
                                                         <?php echo $item->notes; ?>
                                                     </p>
                                                     <div class="area">
+                                                    <div class="small-content">
                                                         <span class="key"><strong>Item Name:</strong></span>
-                                                        <span class="value" style='word-break:break-all;'>
+                                                        <span class="value">
                                                          <?php //echo $item->itemname;
                                                          $arr2="";
                                                          $str2="";
@@ -331,7 +333,7 @@
 																$str2=implode("",$arr2);
                                         						echo $str2;                                                                                                                                                   ?>
                                                          </span>
-
+                                                         </div>
                                                         <span class="key"><strong>Unit:</strong></span>
                                                         <span class="value"><?php echo $item->unit; ?></span>
 

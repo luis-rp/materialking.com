@@ -120,7 +120,7 @@ class quote extends CI_Controller
         $this->table->set_empty("&nbsp;");
         $this->table->set_heading('ID', 'Name', 'Actions');
 		// Save rating into award table
-		if(isset($_POST['idBox'])){
+		/*if(isset($_POST['idBox'])){
 			$pricerank = "";
 			if($_POST['rate'] <=1.4)
 			$pricerank = 'poor';
@@ -134,7 +134,7 @@ class quote extends CI_Controller
 			$updatearray['pricerank'] = $pricerank;
 			$this->quote_model->db->where('quote', $_POST['idBox']);
 			$this->quote_model->db->update('award', $updatearray);
-		}
+		}*/
 		
         $data['counts'] = count($quotes);
 
@@ -171,7 +171,8 @@ class quote extends CI_Controller
                     		if ($ai->ea <= $itemlowest)
                     		$lowcount++;
                     	}
-
+						if($quote->awardedbid->pricerank==""){	                    
+								                    	
                     	if ($lowcount >= ($totalcount * 0.8))
                     	$quote->awardedbid->pricerank = 'great';
                     	elseif ($lowcount >= ($totalcount * 0.7))
@@ -180,7 +181,15 @@ class quote extends CI_Controller
                     	$quote->awardedbid->pricerank = 'fair';
                     	else
                     	$quote->awardedbid->pricerank = 'poor';
-
+						
+                    	$updatearray = array();
+                    	$updatearray['pricerank'] = $quote->awardedbid->pricerank;
+                    	$this->quote_model->db->where('quote', $quote->id);
+                    	$this->quote_model->db->update('award', $updatearray);
+                    	
+						}
+						
+						
                     	if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
                     	{
                     		if ($quote->awardedbid->pricerank == 'great')
@@ -916,7 +925,7 @@ class quote extends CI_Controller
             {
             	$invitees .=",".$nonnetuser;
             }
-            $invitees=ltrim($invitees,",");
+            $invitees=trim($invitees,",");
              if(isset($_POST['suem']))
              {
              	$trimemail=rtrim($_POST['suem'],',');            	
@@ -4009,6 +4018,7 @@ class quote extends CI_Controller
     {
         $invoices = $this->quote_model->getinvoices();
         //echo "<pre>",print_r($invoices);die;
+        $aginginvoices = $this->quote_model->getinvoicesforagingtable();
         $count = count($invoices);
         $items = array();
         $companylist=array();
@@ -4112,6 +4122,10 @@ class quote extends CI_Controller
         	$data['items'] = array();
             $data['message'] = 'No Records';
         }
+        
+        $data['aginginvoices'] = $aginginvoices;
+        $settings = $this->settings_model->get_current_settings();
+        $data['taxpercent'] = $settings->taxpercent;
         //print_r($items);die;
         $data ['addlink'] = '';
         $data ['heading'] = 'Invoices';
@@ -10216,8 +10230,13 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
        
        // $data ['addlink'] = '';
         $data ['heading'] = 'Customer Bills';
-        
-        $query = "SELECT c.* FROM ".$this->db->dbprefix('customer')." c WHERE c.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+               
+        $query = "SELECT c.* 
+        		  FROM ".$this->db->dbprefix('customer')." c 
+        		  JOIN ".$this->db->dbprefix('bill')."   b ON c.id = b.customerid AND c.purchasingadmin=b.purchasingadmin
+				  JOIN ".$this->db->dbprefix('project')."   p ON p.id = b.project AND c.purchasingadmin=p.purchasingadmin	
+        		  WHERE c.purchasingadmin='".$this->session->userdata('purchasingadmin')."' AND p.id='".$this->session->userdata('managedprojectdetails')->id."'";
+       
         $data['customers'] = $this->db->query($query)->result();
         /*
         $uid = $this->session->userdata('id');

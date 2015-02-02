@@ -982,8 +982,8 @@ class itemcode_model extends Model {
     
     public function getManufacturerId($str)
     {
-    	$this->db->where(array('title'=>$str));
-    	$query = $this->db->get('manufacturer');
+    	$this->db->where(array('title'=>$str,'category'=>'Manufacturer'));
+    	$query = $this->db->get('type');
     	return  $query->result();
     }
     

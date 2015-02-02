@@ -246,6 +246,7 @@ class Company extends CI_Controller {
         }
 
         $_POST['password'] = md5($_POST['password']);
+        $_POST['isdeleted']= 0;
         $this->db->where($_POST);
         $check = $this->db->get('company')->row();
 //echo "<pre>";print_r($check);exit;
