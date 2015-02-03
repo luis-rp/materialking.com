@@ -675,7 +675,7 @@ class Dashboard extends CI_Controller
 					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
 							".$this->db->dbprefix('orderdetails')." od
-					WHERE cc.code =  '".$c->label."'
+					WHERE cc.code =  '".$c->label."' and o.project='".$this->session->userdata('managedprojectdetails')->id."'
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";

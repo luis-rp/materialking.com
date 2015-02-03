@@ -2665,7 +2665,7 @@ class site extends CI_Controller
     				
     				$data['boxes'] .= $itemdata;
     			}else 
-    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div>';
+    			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div></div>';
     			
     			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
 

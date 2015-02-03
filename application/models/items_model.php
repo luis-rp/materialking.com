@@ -481,7 +481,7 @@ class items_model extends Model {
             $where[]=" (category IN ($inclause) OR ic.categoryid IN ($inclause) )";
             //$where[] = " category='{$_POST['category']}'";
         }
-        
+        $orderlookup = "";
         if ($where)
             $where = " WHERE " . implode(' AND ', $where) . " ";
         else
@@ -489,14 +489,24 @@ class items_model extends Model {
         
         if($this->keyword){
             $lookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' or `keyword` like '%$this->keyword%')";
+            $orderlookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%')";
             
             $arrkeyword = explode(" ",$this->keyword);
             if(count($arrkeyword>1)){
             $lookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' or `keyword` like '%$this->keyword%' ";
+            $orderlookup = " (`itemcode` like '%$this->keyword%' OR `itemname` like '%$this->keyword%' ";
+            
+            $keyword = str_replace(' ', '', $this->keyword);
+            $lookup .= " or `itemcode` like '%$keyword%' OR `itemname` like '%$keyword%' or `keyword` like '%$keyword%' ";
+            
             foreach($arrkeyword as $keyw){
             	$lookup .= " or `itemcode` like '%$keyw%' OR `itemname` like '%$keyw%' or `keyword` like '%$keyw%' ";
+            	//$orderlookup .= " or `itemcode` like '%$keyw%' OR `itemname` like '%$keyw%' ";
             } }
+            
             $lookup .= " ) ";
+            $orderlookup .= " ) ";
+            
             if(trim($where)){
                 $where .= " AND ".$lookup;
             }else{
@@ -508,7 +518,10 @@ class items_model extends Model {
         
         $return->totalresult = $this->db->query($query)->num_rows();
         
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid $where LIMIT $start, $limit";
+        if(@$orderlookup!="")
+        $orderlookup = "order by ".$orderlookup." desc";
+        
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid $where $orderlookup LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
         return $return;

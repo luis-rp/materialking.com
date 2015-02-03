@@ -278,10 +278,14 @@ class costcode extends CI_Controller {
         $uri_segment = 4;
         $offset = $this->uri->segment($uri_segment);
         $mp = $this->session->userdata('managedprojectdetails');
-        if(!@$_POST && @$mp->id)
+        if(!@$_POST['projectfilter'] && @$mp->id)
         {
         	@$_POST['projectfilter'] = $mp->id;
         }
+        
+        if(@$_POST['projectfilter'] == "viewall")
+        $_POST['projectfilter'] = "";
+        
         $costcodes = $this->costcode_model->get_costcodes($this->limit, $offset);
 
         $this->load->library('pagination');
@@ -343,7 +347,7 @@ class costcode extends CI_Controller {
                 	$costcode->code = trim($costcode->code);
                     $costcode->totalspent = $costcode->totalspent;
                     $costcode->actions .= ' ' .
-                            anchor('admin/costcode/items/' . str_replace('%2F', '/', urlencode(urlencode($costcode->code))), '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
+                            anchor('admin/costcode/items/' . str_replace('%2F', '/', urlencode(urlencode($costcode->code))).'/'. str_replace('%2F', '/', urlencode(urlencode($costcode->project))), '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
                     ;
                 }
                 $costcode->manualprogress = $costcode->manualprogress ? $costcode->manualprogress : 0;
@@ -473,7 +477,7 @@ class costcode extends CI_Controller {
     }
 
 //CUST PDF
-    function custPDF($costcode)
+    function custPDF($costcode,$project)
     {
     	$costcode = urldecode($costcode);
     	$costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
@@ -547,13 +551,18 @@ class costcode extends CI_Controller {
 
     }
 
-    function items($costcode) {
+    function items($costcode,$project) {
     	$costcode = str_replace('%7C', '/', $costcode);
     	$costcode=urldecode($costcode);
         $costcode = urldecode($costcode);
+        
+        $project = str_replace('%7C', '/', $project);
+    	$project=urldecode($project);
+        $project = urldecode($project);
 
-        $costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
-        $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode);
+
+        $costcodeitems = $this->costcode_model->getcostcodeitems($costcode,$project);
+        $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode,$project);
 		//echo "<pre>",print_r($costcodeitems); die;
         $count = count($costcodeitems);
         
@@ -695,7 +704,7 @@ class costcode extends CI_Controller {
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['bottomheading'] = "Store Orders With Costcode '$costcode'";
 
-        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode.'">View PDF</a>';
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode."/".$project.'">View PDF</a>';
 
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
@@ -745,6 +754,16 @@ class costcode extends CI_Controller {
         $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
         $data['viewname'] = 'costcode';
         $data['costcodes'] = $this->costcode_model->get_costcodes();
+        
+        if($this->session->userdata('managedprojectdetails')) 
+        {
+        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' AND project='".$mp->id."'";         }
+        else 
+        {
+        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+        }
+        $data['costcodesdata'] = $this->db->query ($sql)->result();
+        
         $this->load->view('admin/costcode', $data);
     }
 
@@ -779,7 +798,7 @@ class costcode extends CI_Controller {
             if ($this->session->userdata('usertype_id') > 1)
                 $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
             $data['projects'] = $this->db->get('project')->result();
-            $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();
+            $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo();            
             $this->load->view('admin/costcode', $data);
         }
         elseif ($this->costcode_model->checkDuplicateCode($this->input->post('code'), 0,$this->input->post('project'))) {       	

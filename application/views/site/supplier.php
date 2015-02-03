@@ -2186,7 +2186,7 @@ function changetab(tabname){
 		        <div class="modal-body">        
 		          <div id="container2">		            
 				        <div id="imgtag" style="float:left;">  
-				  			<img id="pic1" src="" style="margin-left:27%;"/>
+				  			<img id="pic1" src=""/>
 				 		    <div id="tagbox"></div>
 						</div>								
 					<div  style="width:400px;height:300px;overflow-y:scroll;padding-left:150px;">

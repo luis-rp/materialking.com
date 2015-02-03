@@ -78,7 +78,7 @@ class backtrack extends CI_Controller
 						    }
 						    
 					        if($item->company){
-					        $companyarr[] = $item->company;	
+					       // $companyarr[] = $item->company;	
 						    $item->etalog = $this->db->where('company',$item->company)
                             			->where('quote',$quote->id)
                             			->where('itemid',$item->itemid)
@@ -101,6 +101,7 @@ class backtrack extends CI_Controller
 					        
 							if($item->received < $item->quantity && $checkcompany && $checkitemname)
 							{
+								$companyarr[] =  @$item->companydetails->id;	
 								$item->companyname = @$item->companydetails->title;
 								if(!$item->companyname)
 									$item->companyname = '&nbsp;';
@@ -155,8 +156,8 @@ class backtrack extends CI_Controller
 		{
 		    $this->data['message'] = 'No Records';
 		}
-		
-		if(count($companyarr)>1){
+		//echo "<pre>",print_r($companyarr); die;
+		if(count($companyarr)>0){
         	$companyimplode = implode(",",$companyarr);
         	$companystr = "AND c.id in (".$companyimplode.")";
         }else 
@@ -164,6 +165,9 @@ class backtrack extends CI_Controller
 		
         $query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
         		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
+        if($companystr=="")
+        $data['companies'] = "";
+        else
         $data['companies'] = $this->db->query($query)->result();
         
         $data['quotes'] = $quotes;

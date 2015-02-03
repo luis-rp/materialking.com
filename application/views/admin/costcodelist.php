@@ -128,7 +128,7 @@ function endTour(){
 							</select>
 							Filter by Project:
 							<select name="projectfilter" onchange="this.form.submit()">
-								<option value="">View All</option>
+								<option value="viewall">View All</option>
 								<?php foreach($projects as $p){?>
 						      	<option value="<?php echo $p->id;?>" <?php if($p->id==@$_POST['projectfilter']){echo 'SELECTED';}?>>
 						      		<?php echo $p->title;?>

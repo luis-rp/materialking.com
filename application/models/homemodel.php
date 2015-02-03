@@ -213,7 +213,7 @@ class Homemodel extends Model {
                                     . " FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct ON c.id=ct.companyid, " . $this->db->dbprefix('network') . " n
                             
                 		WHERE
-                            n.company=c.id AND n.status='Active' AND n.purchasingadmin='" . $user_id . "' AND 
+                            n.company=c.id AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='" . $user_id . "' AND 
                             c.id=ct.companyid AND address !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
@@ -227,7 +227,7 @@ class Homemodel extends Model {
                         pi()/180))))*180/pi())*60*1.1515
                     ) as distance "
                                 . " FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct ON c.id=ct.companyid
-            		WHERE c.address !='' $where_2" . " ORDER BY  "
+            		WHERE 1=1  AND c.isdeleted=0 AND c.address !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
             ;

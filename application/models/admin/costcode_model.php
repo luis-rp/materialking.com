@@ -62,7 +62,9 @@ class costcode_model extends Model
 				
 				if(@$_POST['projectfilter'])
 					$sql .= " AND q.pid ='{$_POST['projectfilter']}'";	
-					
+				elseif (@$item->project)					
+					$sql .= " AND q.pid ='{$item->project}'";	
+						
 				$query = $this->db->query ($sql);
 				$item->totalspent = $query->row ('totalcost');
 				/****/
@@ -227,14 +229,14 @@ class costcode_model extends Model
 		return $query;
 	}
 	
-	function getcostcodeitems($costcode)
+	function getcostcodeitems($costcode,$project)
 	{
 		$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
 			WHERE a.quote=q.id AND
-			ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
+			ai.award=a.id AND ai.costcode='$costcode' ";
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived
@@ -242,12 +244,13 @@ class costcode_model extends Model
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				AND ai.award=a.id AND ai.costcode='$costcode' order by ai.daterequested";
+				AND ai.award=a.id AND ai.costcode='$costcode' ";
 		}
 		
-		if(@$this->session->userdata('managedprojectdetails')->id)
-			$sql .=" and q.pid='".$this->session->userdata('managedprojectdetails')->id." ' ";
+		if(@$project)
+			$sql .=" and q.pid='".$project." ' ";
 		
+			$sql .="  order by ai.daterequested";
 		//echo $sql;
 		$query = $this->db->query ($sql);
 		if ($query->result ()) {
@@ -267,14 +270,14 @@ class costcode_model extends Model
 		*/
 	}
 	
-		function getcostcodeitems2($costcode)
+		function getcostcodeitems2($costcode,$project)
 	{
 		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
 			WHERE a.quote=q.id AND
-			ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
+			ai.award=a.id AND ai.costcode='$costcode' ";
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived
@@ -282,12 +285,14 @@ class costcode_model extends Model
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				AND ai.award=a.id AND ai.costcode='$costcode' group by ai.daterequested order by ai.daterequested";
+				AND ai.award=a.id AND ai.costcode='$costcode' ";
 		}
 		
-		if(@$this->session->userdata('managedprojectdetails')->id)
-			$sql .=" and q.pid='".$this->session->userdata('managedprojectdetails')->id." ' ";
+		if(@$project)
+			$sql .=" and q.pid='".$project." ' ";
 		
+		$sql .="  group by ai.daterequested order by ai.daterequested";	
+			
 		//echo $sql;
 		$query = $this->db->query ($sql);
 		if ($query->result ()) {

@@ -90,7 +90,7 @@ function changeproject(catid){
     <div class="controls">
       <select id="project" name="project" onchange="changeparent(this.value);">
       	<?php foreach($projects as $p){?>
-      	<option value="<?php echo $p->id;?>" <?php if(isset($parents[0]->project)) { if($p->id==$parents[0]->project){echo 'SELECTED';} } ?>>
+      	<option value="<?php echo $p->id;?>" <?php if(isset($parents)) { if($p->id==$parents){?>selected<?php } } ?>>
       		<?php echo $p->title;?>
       	</option>
       	<?php }?>
@@ -144,13 +144,13 @@ function changeproject(catid){
   </form>
       
          </div><!-- End of Pull left -->
-    <?php if(isset($costcodes) && count($costcodes) > 0) { ?>
+    <?php if(isset($costcodesdata) && count($costcodesdata) > 0) { ?>
 	   <div class="pull-right" style="width:26%;">
 		   <div class="table-responsive">
 			   <h3>Existing Cost Codes</h3>
 				  <table id="changecost" class="table table-hover">
 				  <tr><th>Cost Code Name</th></tr>
-				    <?php foreach ($costcodes as $costcode) { ?>
+				    <?php foreach ($costcodesdata as $costcode) { ?>
 				  		<tr><td ><?php echo $costcode->code; ?></td></tr>
 				     <?php } ?>
 				  </table>

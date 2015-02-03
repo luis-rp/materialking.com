@@ -2247,5 +2247,55 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$this->load->library('image_lib', $config);
 		if(!$this->image_lib->resize()) echo $this->image_lib->display_errors();
 	}
+	
+	function addnewserviceandlabor()
+	{		
+		$qtyresult = $this->db->where('isdeleted',0)->get('servicelaboritems')->result();
+    	if($qtyresult){
+    		$strput = "";
+    		$strput .= '<div class="row form-row"  style="margin-left:50px">
+							 <div class="col-md-8"><table width="100%" align="center"><tr><th>Name</th><th>Price</th><th>Tax</th><th>&nbsp;</th>';
+    		foreach($qtyresult as $qtyres)
+    		{
+				$strput .= '<tr id="isdefault'.$qtyres->id.'"><td>'.$qtyres->name.'</td><td>'.$qtyres->price.'</td><td>'.$qtyres->tax.'</td><td><a class=""><span class="icon-2x icon-edit" onclick="editserviceitem('.$qtyres->id.')" ></span></a><a href="#"><img style="margin-left:5px;width:14px;" onclick="delserviceitem('.$qtyres->id.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></td></tr>';		
+				
+				$strput .= '<tr id="isEdit'.$qtyres->id.'" style="display:none"><td><input type="text" name="servicename'.$qtyres->id.'" id="servicename'.$qtyres->id.'"  value="'.$qtyres->name.'"></td><td><input type="text" name="serviceprice'.$qtyres->id.'" id="serviceprice'.$qtyres->id.'"  value="'.$qtyres->price.'"></td><td><input type="text" name="servicetax'.$qtyres->id.'" id="servicetax'.$qtyres->id.'"  value="'.$qtyres->tax.'"></td><td><a class=""><span class="icon-2x icon-edit" onclick="editserviceitem('.$qtyres->id.')" ></span></a><a href="#"><img style="margin-left:5px;width:14px;" onclick="delserviceitem('.$qtyres->id.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a><input type="button" name="btnsave" id="btnsave" value="Save"  onclick="saveserviceitem('.$qtyres->id.')" ></td></tr>';				   		}
+    		
+    		$strput .= '</table></div>';
+    		echo $strput; die;
+    	}
+	}
+	
+	function insertserviceandlabor()
+	{
+    	$insertArr = array('name'=> $_POST['name'],
+    						'price'=> $_POST['serviceprice'],
+    						'tax'=> $_POST['servicetax']
+    					  );
+		$result = $this->db->insert('servicelaboritems',$insertArr);	
+		$this->addnewserviceandlabor();
+	}
+	
+	function delserviceitem()
+	{
+		if(isset($_POST['id']) && @$_POST['id']!= '')
+		{
+			$updArr = array('isdeleted'=>1);
+			$where = $this->db->where('id',@$_POST['id']);
+			$this->db->update('servicelaboritems',$updArr,$where);	
+			$this->addnewserviceandlabor();
+		}		
+	}
+	
+	function updateserviceandlabor()
+	{
+		$where = $this->db->where('id',@$_POST['id']);
+		$insertArr = array('name'=> $_POST['name'],
+    						'price'=> $_POST['serviceprice'],
+    						'tax'=> $_POST['servicetax']
+    					  );
+		$result = $this->db->update('servicelaboritems',$insertArr,$where);	
+		
+	}
 }
 ?>
