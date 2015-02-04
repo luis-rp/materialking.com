@@ -59,12 +59,11 @@ class Dashboard extends CI_Controller
 
 		if(isset($_POST['allcompany']))
 		{
-		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
-			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc";
+		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc";
 		}
 		else
 		{
-		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n
+		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin
 			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc limit 5";
 		}
 
@@ -73,7 +72,7 @@ class Dashboard extends CI_Controller
 
 		$data['networkjoinedpurchasers'] = $query->result();
 		$invoices = $this->quotemodel->getpendinginvoices($company->id);
-		//echo "<pre>",print_r($invoices);	die;
+		//echo "<pre>",print_r($data['networkjoinedpurchasers']);	die;
 		$data['invoices'] = $invoices;
 
 		$errorLogSql = "SELECT qe.*,q.ponum,ai.award

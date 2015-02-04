@@ -491,10 +491,10 @@ function clearall(id)
                                 <div class="pull-right">
                                 
                                 	<input type="checkbox" id ='availprice' name ='availprice' <?php echo $company->availprice?'checked="CHECKED"':''?>"
-                                    onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to members only.</span>&nbsp;&nbsp;
+                                    onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to site members only.</span>&nbsp;&nbsp;
                                 	
                  					<input type="checkbox" id ='blockitemdata' name ='blockitemdata' <?php echo $company->blockitemdata?'checked="CHECKED"':''?>"
-                                    onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to members only.</span>&nbsp;&nbsp;
+                                    onchange="blockitem(this.checked);"/>&nbsp;&nbsp;<span>Lock my store to my members only.</span>&nbsp;&nbsp;
 
                  				
                  				<input type="checkbox" id ='saleitemdata' name ='saleitemdata' <?php echo $company->saleitemdata?'checked="CHECKED"':''?>"

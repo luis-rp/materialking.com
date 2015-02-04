@@ -799,11 +799,11 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
 						<br/>
 		    			</div> <span id="eaerrmsg1<?php echo $q->id;?>" ></span>	
-		    			<br><?php $minpricenote = ""; if(count($minprices)>0){ foreach($minprices[@$q->itemid] as $minp){
+		    			<br><?php $minpricenote = ""; if(count($minprices)>0){ if (array_key_exists($q->itemid, $minprices)){ foreach($minprices[@$q->itemid] as $minp){
 		    						if($q->ea>$minp->price){
 		    							$minpricenote = "* Lower price available"; break;
 		    						}
-		    			} }?>
+		    			} } }?>
 		    			<span id="betterprice<?php echo $q->id;?>"><?php echo @$minpricenote;?></span>
 		    		</td>
 		    		<td>

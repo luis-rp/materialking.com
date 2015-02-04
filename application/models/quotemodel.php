@@ -243,7 +243,7 @@ class Quotemodel extends Model
 
 	function getdraftitems($quote,$company)
 	{
-		$sql = "SELECT bi.* FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b
+		$sql = "SELECT bi.*,b.quote FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b
 			   WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company'
 		 	   ";
 		$query = $this->db->query ($sql);
@@ -437,9 +437,10 @@ class Quotemodel extends Model
 		if ($query->result ())
 		{
 			foreach($query->result () as $item)
-				if($item->received)
+				if($item->received>0)
 					return true;
-
+				if( (date('Y-m-d H:i:s', strtotime( @$item->daterequested."23:59:59")) < date('Y-m-d H:i:s')) && @$item->received==0 )
+					return true;	
 		}
 		return false;
 	}

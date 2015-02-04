@@ -18,11 +18,17 @@ function removefromcart(itemid, companyid)
 	    });
 }
 
-function updatecart(itemid,companyid,quantity,incrementval)
-{
-	var data = "itemid="+itemid+"&company="+companyid+"&quantity="+quantity;
+function updatecart(itemid,companyid,quantity,incrementval,qtyreqd)
+{   	
+	var data = "itemid="+itemid+"&company="+companyid+"&quantity="+quantity+"&qtyreqd="+qtyreqd;
     //alert(data);return;
       
+     if(quantity < qtyreqd)
+        {
+            alert('Minimum quantity to order is '+ qtyreqd);
+            return false;
+        }
+        
 	if(incrementval>0){
 		if((quantity%incrementval)!=0){
 			alert('Sorry this item is only available in increments of '+incrementval);
@@ -92,14 +98,14 @@ function updatecart(itemid,companyid,quantity,incrementval)
             		<th>Action</th>
             	</tr>
             	<?php 
-            	    $gtotal=0; foreach ($cart as $item){$total = $item['quantity']*$item['price'];$gtotal+=$total;
+            	    $gtotal=0; foreach ($cart as $item){  $total = $item['quantity']*$item['price'];$gtotal+=$total;
             	    $companyid = $item['companydetails']->id;  
             	?>
             	<tr>
             		<td><?php echo $item['itemdetails']->itemname;?></td>
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
-            		<td><input class="span1" type="text" value="<?php echo $item['quantity']?>" onchange="updatecart(<?php echo $item['itemid'];?>,<?php echo $item['company'];?>,this.value, <?php echo $item['increment'];?>)"/></td>
+            		<td><input class="span1" type="text" value="<?php echo $item['quantity']?>" onchange="updatecart(<?php echo $item['itemid'];?>,<?php echo $item['company'];?>,this.value, <?php echo $item['increment'];?>,<?php echo $item['dealitems']->qtyreqd? $item['dealitems']->qtyreqd : 0; ?>)"/></td>
             		<td>$<?php echo number_format($total,2);?></td>
             		<td align="center">
 	            		<a class="btn btn-primary" href="javascript:void(0)" onclick="removefromcart(<?php echo $item['itemid'];?>, <?php echo $item['company'];?>)">
@@ -107,7 +113,7 @@ function updatecart(itemid,companyid,quantity,incrementval)
 	            		</a>
             		</td>
             	</tr>
-            	<?php }?>
+            	<?php } ?>
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
             	    

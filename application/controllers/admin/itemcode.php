@@ -991,7 +991,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
            
             for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) {
             	$itemcode = $data->sheets[0]["cells"][$x][1];
-            	$url = $data->sheets[0]["cells"][$x][2];
+            	$url = str_replace("/","-",$data->sheets[0]["cells"][$x][2]);
             	$itemname = $data->sheets[0]["cells"][$x][3];
             	$description = $data->sheets[0]["cells"][$x][4];            	
             	$unit = $data->sheets[0]["cells"][$x][5];
@@ -1022,7 +1022,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	
             	
 				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
-				
+				//echo '<pre>',print_r($data_user);die;
            		$Totalcnt = count($data->sheets[0]["cells"][1]);
 				$index = 0;
 				$cnt = ($Totalcnt - 7) / 6;

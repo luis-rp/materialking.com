@@ -527,11 +527,17 @@ class Quote extends CI_Controller
 			}
 			$price = $item->ea;
 			
-			$sql1 = "select tier,qty from " . $this->db->dbprefix('purchasingtier_item') . "
+			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
 				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
 			$tier1 = $this->db->query($sql1)->row();
 			if($tier1)
 			{
+				
+				if($tier1->price){
+					
+					$item->ea = $tier1->price;
+				}
+				
 				if($tier1->qty){
 					$this->db->where('company',$company->id);
 					$this->db->where('itemid',$item->itemid);
@@ -963,11 +969,16 @@ class Quote extends CI_Controller
 			}
 			$price = $item->ea;
 			
-			$sql1 = "select tier,qty from " . $this->db->dbprefix('purchasingtier_item') . "
+			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
 				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
 			$tier1 = $this->db->query($sql1)->row();
 			if($tier1)
 			{
+				
+				if(@$tier1->price){					
+					$item->ea = $tier1->price;
+				}
+				
 				if($tier1->qty){
 					$this->db->where('company',$company->id);
 					$this->db->where('itemid',$item->itemid);
@@ -4286,31 +4297,42 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(!$_POST)
 		die;
 
-		$this->db->where('itemid',$_POST['itemid']);
-		$this->db->where('type','Supplier');
-		$this->db->where('company',$_POST['companyid']);
-		$companyitem = $this->db->get('companyitem')->row();
+		$this->db->where('company', $_POST['companyid']);
+        $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+        $this->db->where('itemid', $_POST['itemid']);
+        $this->db->where('quote', $_POST['quote']);
+        if($this->db->get('purchasingtier_item')->row())
+        {        	
+            if(isset($_POST['val'])){
+            $update['price'] = $_POST['val'];            
+            $update['notes'] = ""; 
+            }
 
-		if($companyitem)
-		{
-			$this->db->where('itemid',$_POST['itemid']);
-			$this->db->where('type','Supplier');
-			$this->db->where('company',$_POST['companyid']);
-			$companyresult = $this->db->update('companyitem',array('ea'=>$_POST['val']));
-		}else{
-			$updatearray = array();
-			$updatearray['itemid'] = $_POST['itemid'];
-			$updatearray['company'] = $_POST['companyid'];
-			$updatearray['type'] = 'Supplier';
-			$updatearray['ea'] = $revisionid;
-			$companyresult = $this->quotemodel->db->insert('companyitem',$_POST['val']);
+            $this->db->where('company', $_POST['companyid']);
+        	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+        	$this->db->where('itemid', $_POST['itemid']);
+        	$this->db->where('quote', $_POST['quote']);
+            $this->db->update('purchasingtier_item', $update);
+            echo "Item price Changed";
+        }
+        else
+        {
+            $insert = array();
+           
+            if(isset($_POST['val'])){
+            $update['price'] = $_POST['val']; 
+            $update['notes'] = "";
+            }
 
-		}
-		
-		if($companyresult)
-		echo 1;
-		else 
-		echo 0; die;
+            $insert['company'] = $_POST['companyid'];
+            $insert['itemid'] = $_POST['itemid'];
+            $insert['quote'] = $_POST['quote'];
+            $insert['purchasingadmin'] = $_POST['purchasingadmin'];
+            $this->db->insert('purchasingtier_item', $insert);
+            echo "Item price Set";
+        }
+        
+		die;
 	}
 	
 }

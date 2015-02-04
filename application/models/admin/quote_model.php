@@ -167,7 +167,7 @@ class quote_model extends Model {
 
     function getcompanylist() {
         $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('network') . " n
-			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin=" . $this->session->userdata('id');
+			WHERE c.id=n.company AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin=" . $this->session->userdata('id');        
         $query = $this->db->query($sql);
         $ret = $query->result();
         return $ret;
@@ -175,9 +175,9 @@ class quote_model extends Model {
     
     function getcompanylistforreminder() {
         $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('network') . " n
-			WHERE c.id=n.company AND c.company_type='1' AND n.status='Active' AND n.purchasingadmin=" . $this->session->userdata('id');
+			WHERE c.id=n.company AND c.isdeleted=0 AND c.company_type='1' AND n.status='Active' AND n.purchasingadmin=" . $this->session->userdata('id');
         $query = $this->db->query($sql);
-        $ret = $query->result();
+        $ret = $query->result();        
          //echo "<pre>"; print_r($ret); die;
         return $ret;
     }

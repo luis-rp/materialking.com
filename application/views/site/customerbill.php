@@ -204,6 +204,20 @@ function jq( myid ) {
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Tax</td>
 		    	<td style="padding-left:5;"><?php echo number_format(($totalprice*$settings->taxrate/100),2); ?></td>
 	       </tr>
+			<?php 
+			if(isset($billservicedetails) && @$billservicedetails != '')
+			{
+				foreach ($billservicedetails as $key1=>$v)
+				{ ?>
+					 <tr>   	
+				    	<td colspan="3" style="padding-left:5; text-align:right;"><?php echo $v['name'];?></td>
+				    	<td colspan="3" style="padding-left:5; "><?php echo number_format($v['price'],2);?></td>
+				    </tr>
+				    <tr>
+				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax (<?php echo $v['tax'];?> % )</td> <td><?php echo $v['price'] * ($v['tax']/100); ?></td>
+			       	</tr>
+<?php 				}
+			} ?>
 	        <tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Total</td>
 		    	<td style="padding-left:5;"><?php echo number_format($finaltotal,2); ?></td>

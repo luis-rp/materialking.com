@@ -1943,6 +1943,7 @@ class Company extends CI_Controller {
     		
     	}
     	
+    	
     	if(@$_POST['senderid']){
     		$insertarray['from_type'] = $_POST['logintype'];
     		$insertarray['from'] = $_POST['senderid'];
@@ -1952,13 +1953,40 @@ class Company extends CI_Controller {
     		$insertarray['to_type'] = $_POST['messageto'];
     		$insertarray['to'] = $_POST['receiverid'];
     	}  
-    	
+    	$name="";
+    	if(@$_POST['senderid']!='guest'){
+    		$udata=$this->db->get_where('users',array('id'=>$_POST['senderid']))->row();
+    		$name=$udata->companyname;
+    	} 
+    	else 
+    	{
+    		$name=$_POST['senderid'];
+    	}
+    	//echo "<pre>"; print_r($name); die;
     	$insertarray['company'] = $_POST['companyid'];
     	$insertarray['message'] = $_POST['commentsection'];    	
     	$insertarray['senton'] = date('Y-m-d H:i');
-    	$insertarray['threadsenton'] = date('Y-m-d H:i');
-    	
-    	$this->db->insert('fb_comment', $insertarray);    	
+    	$insertarray['threadsenton'] = date('Y-m-d H:i');   	
+    	$cdata=$this->db->get_where('company',array('id'=>$_POST['receiverid']))->row(); 
+    	$this->db->insert('fb_comment', $insertarray);
+    	$data['email_body_title'] = "Dear " . $cdata->title ;
+	  	$data['email_body_content'] = "You have a new comment from ".$name."  <br><br>
+	 <strong>Comment:</strong>".$_POST['commentsection']."";
+	  	$settings = (array) $this->companymodel->getconfigurations(1);
+	  	$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
+        $this->email->from($settings['adminemail'], $name);
+        $this->email->to($cdata->primaryemail);
+        $this->email->subject('FB Wall Comment.');
+        $this->email->message($send_body);
+        $this->email->set_mailtype("html");
+        $this->email->send();
+        
+        echo "<pre>"; print_r($this->email); die;   	
     	//echo $_POST['about']; die;
     	
     	if(@$_POST['reply']){

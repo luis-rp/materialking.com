@@ -748,7 +748,7 @@ class quote extends CI_Controller
          /*
          $non = "SELECT c.title FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";*/
          
-         $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n where c.id NOT IN(n.company) AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}'";
+         $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n where c.isdeleted=0 AND c.id not in(select company from ".$this->db->dbprefix('network')." where purchasingadmin='{$this->session->userdata('purchasingadmin')}') AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' group by c.id";
          
         $data['nonnetuser'] = $this->db->query($non)->result();
         $data['awarded'] = $this->quote_model->getawardedbid($id);
@@ -921,6 +921,22 @@ class quote extends CI_Controller
             $infolist="";
             $invitees = $this->input->post('invitees');
             $nonnetuser=$this->input->post('nonnetuser');
+             
+            if(isset($nonnetuser)){
+            		
+            		$nonarray=explode(",",$nonnetuser);
+            		
+            		foreach ($nonarray as $non)
+            		{
+            			$insert = array();
+            			$insert['company'] = $non;
+	            		$insert['purchasingadmin'] = $this->session->userdata('id');            		
+	            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+	            		$insert['status'] = 'Active';
+	            		$this->db->insert('network',$insert);         			
+            		}          		
+            }
+            
             if(isset($nonnetuser))
             {
             	$invitees .=",".$nonnetuser;
@@ -7264,7 +7280,7 @@ $loaderEmail = new My_Loader();
     
     
     
-    function sendawardemail($quoteid)
+    function sendawardemail($quoteid,$paystatus="")
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
         $quote = $awarded->quotedetails;
@@ -7441,7 +7457,15 @@ $loaderEmail = new My_Loader();
 				      </tr>
 				    </table></td>
 				    <td align="left" valign="top">&nbsp;</td>
-				    <td align="left" valign="top">&nbsp;</td>
+				    <td align="left" valign="top">
+				    
+				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">				     
+				      <tr>
+				        <td>' . ($paystatus=="fullpaid")?" PAID IN FULL ":"". '</td>
+				      </tr>
+				    </table>   
+				    
+				    </td>
 				  </tr>
 
 			</table>
@@ -7540,6 +7564,10 @@ $loaderEmail = new My_Loader();
             $link = '<a href="' . site_url('quote/track/' . $quote->id) . '"></a>';
             $data['email_body_title']  = "Please find the attachment for your Purchase order (PO#: " . $quote->ponum . ").<br/><br/>";
             $data['email_body_content'] = "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/>";
+            
+            if($paystatus=="fullpaid")
+            $data['email_body_content'] .= "<br> This Order has been Paid in Full <br/>";
+            
             $loaderEmail = new My_Loader();
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $settings = (array) $this->settings_model->get_current_settings();
@@ -9832,6 +9860,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     
     function createbill(){
     	
+    	//echo '<pre>',print_r($_POST);die;
+    	
     	if(!$_POST)
             die;
 
@@ -9896,7 +9926,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$emailitems.= '<th>Cost Code</th>';
 		$emailitems.= '</tr>';		
 
-		   	
+		$emailitems1 = '';   
+	
     	$awardedbid = $this->quote_model->getawardedbidquote($_POST['customerquoteid']);
 		// echo "<pre>",print_r($awardedbid->items); die;
 		
@@ -9933,6 +9964,28 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 					
                     $this->quote_model->db->insert('bill', $billarray);
 					$billid = $this->quote_model->db->insert_id();	
+					
+					if(isset($_POST['servicelaboritemsflag']) && @$_POST['servicelaboritemsflag'] == 1 && $billid != '')
+					{
+						$res = $this->db->where('isdeleted',0)->get('servicelaboritems')->result_array();
+						
+						if(isset($res) && $res != '')
+						{
+							foreach ($res as $k=>$v)
+							{
+								$insertArr = array('billid'=>$billid,
+												   'servicelaboritems'=>$v['id']);
+													
+								$this->quote_model->db->insert('bill_servicelaboritems', $insertArr);			
+								
+								$emailitems1 .= '<tr>';
+								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.$v['name'].'</td>';
+								$emailitems1 .= '<td style="padding-left:5;">'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
+								$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+										
+							}
+						}
+					}
 					
 					$awarditemsarr = array();
 					if(@$_POST['billawarditems']){
@@ -10006,16 +10059,18 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
     	
-    	$finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
+    	$emailitems.= $emailitems1;
+    	
+    	$finaltotal = $subtotal + (@$subtotal*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
     	$emailitems.= '<td style="padding-left:5;">'.number_format(@$finaltotal,2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
-    	
+  
     	$emailitems .= '</table>';
-    	
+    
     	$data['email_body_content'] .= "<br><br>{$emailitems}";
     	$data['email_body_content2'] = $email_body_content." <br>".$data['email_body_content'];
     	$loaderEmail = new My_Loader();
@@ -10023,7 +10078,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
-	//	echo '<pre>',print_r($send_body);die;
+	
 		$this->email->initialize($config);
 		$this->email->from($settings->adminemail);
 		$this->email->to(@$_POST['customeremail']);
@@ -10507,7 +10562,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $quote = $this->quote_model->get_quotes_by_id($qid);
         //echo '<pre>';print_r($qutoe);//die;
         if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {die;
-        redirect('admin/dashboard1', 'refresh');
+        redirect('admin/dashboard', 'refresh');
         }
         //echo '<pre> bids ';print_r($awarded);echo '</pre>';//die;
         if (!$bids) {
@@ -10543,11 +10598,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(@$chargeobj->paid)
 		{			
 			$awardid = 0;	
-      	
+      	$companiesamount = array();
+		$ararditemarr = array();
         foreach($bids as $bid)
-        {   
-        	$totalbidprice = 0;
-        	$itemarray = array();
+        {           	
         	$i=0;
             foreach($bid->items as $item)
             {
@@ -10567,20 +10621,28 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 	}
                 	
                     $item = (array) $item;                    
-                    $itemarray[$i]['award'] = $awardid;
-                    $itemarray[$i]['company'] = $bid->company;
-                    $itemarray[$i]['itemid'] = $item['itemid'];
-                    $itemarray[$i]['itemcode'] = $item['itemcode'];
-                    $itemarray[$i]['itemname'] = $item['itemname'];
-                    $itemarray[$i]['quantity'] = $item['quantity'];
-                    $itemarray[$i]['unit'] = $item['unit'];
-                    $itemarray[$i]['ea'] = $item['ea'];
-                    $itemarray[$i]['totalprice'] = $item['quantity'] * $item['ea'];
-                    $itemarray[$i]['daterequested'] = $item['daterequested'];
-                    $itemarray[$i]['costcode'] = $item['costcode'];
-                    $itemarray[$i]['notes'] = $item['notes'];
-                    $itemarray[$i]['purchasingadmin'] = $this->session->userdata('purchasingadmin');                   
-                    $i++;
+                    $itemarray['award'] = $awardid;
+                    $itemarray['company'] = $bid->company;
+                    $itemarray['itemid'] = $item['itemid'];
+                    $itemarray['itemcode'] = $item['itemcode'];
+                    $itemarray['itemname'] = $item['itemname'];
+                    $itemarray['quantity'] = $item['quantity'];
+                    $itemarray['unit'] = $item['unit'];
+                    $itemarray['ea'] = $item['ea'];
+                    $itemarray['totalprice'] = $item['quantity'] * $item['ea'];
+                    $itemarray['daterequested'] = $item['daterequested'];
+                    $itemarray['costcode'] = $item['costcode'];
+                    $itemarray['notes'] = $item['notes'];
+                    $itemarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');                   
+                    
+                    $this->quote_model->db->insert('awarditem', $itemarray);
+					$awarditemid = $this->quote_model->db->insert_id();
+					
+					if(!isset($companiesamount[$bid->company]))
+				    $companiesamount[$bid->company] = 0;
+					$companiesamount[$bid->company] += $item['quantity'] * $item['ea'];
+       				$ararditemarr[$bid->company][] = $awarditemid;
+					
                 }
                 else
                 {
@@ -10588,35 +10650,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $this->db->delete('biditem');
                 }
             }
-             $j=0;
-             if(count($itemarray>0)){
-             $ararditemarr = array();	
-             foreach($itemarray as $items){
-
-             	$totalbidprice += $items['totalprice'];             	
-             	$this->quote_model->db->insert('awarditem', $items);
-             	$awarditemsid = $this->quote_model->db->insert_id();
-             	$itemarray[$j]['awarditem'] = $awarditemsid;
-             	
-             	if(!isset($ararditemarr[$item['company']]))
-             	$ararditemarr[$item['company']] = 0;
-
-             	if($ararditemarr[$item['company']] == 0)
-             	$ararditemarr[$item['company']] =   $awarditemid;
-             	else
-             	$ararditemarr[$item['company']] =   $ararditemarr[$item['company']].",".$awarditemid;           
-             	
-             }
-             }
-             
+        }
+        
+        foreach($companiesamount as $caid=>$amount){     
              
              $company = $this->db->select('company.*')->from('company')			
-			->where('company.id',$bid->company)
+			->where('company.id',$caid)
 			->get()->row();
-			
-			$totalbidprice = $totalbidprice + $totalbidprice*$config['taxpercent']/100;
-			$totalbidprice=$totalbidprice-.55-($totalbidprice*2.9/100);
-			$totalbidprice = round($totalbidprice,2);
+					
+			$amount = $amount + $amount*$config['taxpercent']/100;
+			$amount=$amount-.55-($amount*2.9/100);
+			$amount = round($amount,2);							
 			
 			$bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
 			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
@@ -10643,33 +10687,48 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
               $obj = json_decode($recObj);
               
               $transferObj = Stripe_Transfer::create(array(
-                  "amount" => $totalbidprice * 100,
+                  "amount" => $amount * 100,
                   "currency" => "usd",
                   "recipient" => $obj->id,
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
                            
-              //echo $_POST['invoicenum'];
-              //print_r($update);die;
-              if(count($itemarray>0)){      
               
-              	
-              	$update = array(
+              foreach($ararditemarr[$caid] as $awarditemid){
+              $update = array(
                           'purchasingadmin' => $this->session->userdata('purchasingadmin'),
               			  'quoteid' => $_POST['invoicenum'],	
-              			  'company' => $items['company'],	
+              			  'company' => $caid,	
               			  'awardid' => $awardid,	
-              			  'awarditem' => mysql_real_escape_string($ararditemarr[$bid->company]),	
+              			  'awarditem' => $awarditemid,	
                           'paymentstatus'=>'Paid',
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
                           'refnum'=>$chargeobj->balance_transaction,
-                          'amount' => $totalbidprice
+                          'amount' => $amount
                           );
-              	
-              $this->quote_model->db->insert('quote_payment', $update);        	  
-              }                    
+              
+              $this->quote_model->db->insert('quote_payment', $update);                              
+                          	
+              $insertarray = array(
+                          'purchasingadmin' => $this->session->userdata('purchasingadmin'),          			 
+              			  'awarditem' => $awarditemid,	
+                          'paymentstatus'=>'Paid',
+                          'paymentdate' => date('Y-m-d'),
+                          'paymenttype' =>'Credit Card',
+                          'refnum'=>$chargeobj->balance_transaction,
+                          'invoicenum' => 'paid-in-full-already'.$awardid,
+                          'quantity' => 0,
+                          'status' => 'Verified',
+                          'datedue' => date('Y-m-d'),
+                          'invoice_type' => 'fullpaid',
+                          'receiveddate' => date('Y-m-d H:i:s')
+                          );                    
+                          
+              $this->quote_model->db->insert('received', $insertarray);        	  
+                 
+              }                           
               
     		  $quote = $this->db->select('quote.*')
     		            ->from('quote')    		            
@@ -10680,7 +10739,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 
 
               $data['email_body_title']  = "Dear {$company->title}";
-$data['email_body_content'] = "$ {$totalbidprice} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
+$data['email_body_content'] = "$ {$amount} has been transfered to your bank account for invoice#paid-in-full-already{$awardid},
 with the transfer# {$tobj->id}.
 <br>Payment by: ".$pa->companyname."
 <br>PO#: ".$quote->ponum."
@@ -10707,7 +10766,7 @@ $loaderEmail = new My_Loader();
 		
         	$this->quote_model->db->where('quote', $_POST['invoicenum']);
             $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-            $this->sendawardemail($_POST['invoicenum']);
+            $this->sendawardemail($_POST['invoicenum'],'fullpaid');
         	
 		}
 		redirect('admin/quote/bids/'.$_POST['invoicenum']);
@@ -10898,7 +10957,7 @@ $loaderEmail = new My_Loader();
 
 
               $data['email_body_title']  = "Dear {$company->title}";
-$data['email_body_content'] = "$ {$amount} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
+$data['email_body_content'] = "$ {$amount} has been transfered to your bank account for invoice#paid-in-full-already{$awardid},
 with the transfer# {$tobj->id}.
 <br>Payment by: ".$pa->companyname."
 <br>PO#: ".$quote->ponum."
@@ -10925,7 +10984,7 @@ $loaderEmail = new My_Loader();
         }
         $this->quote_model->db->where('quote', $_POST['invoicenum']);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($_POST['invoicenum']);
+        $this->sendawardemail($_POST['invoicenum'],'fullpaid');
 		}
         $quote = $this->quote_model->get_quotes_by_id($_POST['invoicenum']);     
        
@@ -11042,8 +11101,7 @@ $loaderEmail = new My_Loader();
 			
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
 			{
-			  $totalbidprice = 
-							
+			  							
 	          $recbankInfo = array(
 	          			'country' =>'US',
 	          			'routing_number' => $bankaccount->routingnumber,
@@ -11114,7 +11172,7 @@ $loaderEmail = new My_Loader();
 
 
               $data['email_body_title']  = "Dear {$company->title}";
-$data['email_body_content'] = "$ {$amount} has been transfered to your bank account for invoice#{$_POST['invoicenum']},
+$data['email_body_content'] = "$ {$amount} has been transfered to your bank account for invoice#paid-in-full-already{$awardid},
 with the transfer# {$tobj->id}.
 <br>Payment by: ".$pa->companyname."
 <br>PO#: ".$quote->ponum."
@@ -11144,7 +11202,7 @@ $loaderEmail = new My_Loader();
        	
        	$this->quote_model->db->where('quote', $_POST['invoicenum']);
        	$this->quote_model->db->update('bid', array('complete' => 'Yes'));
-       	$this->sendawardemail($_POST['invoicenum']);
+       	$this->sendawardemail($_POST['invoicenum'],'fullpaid');
        	
        	
        	

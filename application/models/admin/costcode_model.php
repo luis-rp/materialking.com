@@ -115,11 +115,44 @@ class costcode_model extends Model
 	}
 	
 	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = ''){
+		if($this->session->userdata('managedprojectdetails')){
+		$pid=$this->session->userdata('managedprojectdetails')->id;}
 		static $temp = '';
 		# retrieve all children of $parent
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
 		$where = "";
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			if($projectid!="")
+			{ //echo "sif-";
+				$where = 'and project = '.$projectid;
+			}
+			else 
+			{ //echo "selse-";
+				$where = 'and project = '.@$pid;
+			}
+		}
+		else 
+		{
+			if($projectid=="" || $projectid=='0')
+			{ //echo "elseif-";
+				$where = "";
+			}
+			else 
+			{ //echo "elseelse-";
+				$where = 'and project = '.$projectid;
+			}
+			
+		}
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
+		/*
+		$where = "";	
 		if($projectid!="")
-		$where = 'and project = '.$projectid;
+		$where = 'and project = '.$projectid;*/
 		
 		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' {$where} ORDER BY code ASC";
 		

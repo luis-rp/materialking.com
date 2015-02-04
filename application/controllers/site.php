@@ -1290,7 +1290,7 @@ class site extends CI_Controller
         $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
         */
-        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND ci.ea > '0' AND c.company_type='1'";
+        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND ci.ea > '0' AND c.company_type='1' AND isdeleted=0";
         $inventory = $this->db->query($sql)->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
 
@@ -1364,6 +1364,7 @@ class site extends CI_Controller
             $initem->dist = '';
             $this->db->where('id', $initem->company);
             $this->db->where('company_type', '1');
+           // $this->db->where('isdeleted', '0');
             $initem->companydetails = $this->db->get('company')->row();
             $this->db->where('id', $initem->company);
             $company = $this->db->get('company')->row();
@@ -3048,6 +3049,7 @@ class site extends CI_Controller
 				WHERE c.id = '{$this->session->userdata('customer')->id}' AND c.purchasingadmin = '{$this->session->userdata('customer')->purchasingadmin}' AND b.id = ".$_POST['billid'];
 		
         	$data['billinfo'] = $this->db->query($sql)->result_array();
+        	        	
          	$data['selectedbill'] = $_POST['billid'];
          	
 			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid
@@ -3057,6 +3059,11 @@ class site extends CI_Controller
 					 WHERE b.id = ".$_POST['billid'];	
 							
         	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
+        	
+        	$sql3 = "SELECT bsl.* FROM ".$this->db->dbprefix('bill'). " b 
+        			JOIN ".$this->db->dbprefix('bill_servicelaboritems'). " bs ON bs.billid = b.id 
+        			JOIN ".$this->db->dbprefix('servicelaboritems'). " bsl ON bsl.id = bs.servicelaboritems  WHERE b.id = ". $_POST['billid'];
+        	$data['billservicedetails'] = $this->db->query($sql3)->result_array();        	
         }
         
         if(isset($_POST['billid']) && $_POST['billid'] != '')

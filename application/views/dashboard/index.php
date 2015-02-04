@@ -140,7 +140,11 @@ function preloadoptions(fromid)
 					
 					<div class="tiles-title extrabox">
 					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>
+					
 					<table cellpadding="3">
+					<?php 
+					if(isset($invoices) && count($invoices)>0)
+					{ ?>
 					  <tr>
 					  <td>Invoice</td>
 					  <td>Due Date</td>
@@ -157,7 +161,10 @@ function preloadoptions(fromid)
 
 
 				<?php } ?>
+				<?php } else {?> <tr><td class="label label-important">No Past Due Invoices </td> </tr> <?php } ?>
+				
 				</table>
+				
 				</div>
 
 				</div>
@@ -254,7 +261,7 @@ function preloadoptions(fromid)
 								<div class="message-wrapper">
 									<div class="heading">
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>
-										 <?php if($this->session->userdata('company')->company_type=='3') {?>
+										 <?php if($njp->creditonly=='1') {?>
 										 &nbsp;&nbsp;&nbsp;<span style="color:red;">*Credit Card Only Account.</span><?php } ?>
 										<br/><a href="<?php echo site_url('company/tier');?>">Manage Connection</a>
 										<?php if($njp->accountnumber){?>

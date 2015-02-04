@@ -742,14 +742,15 @@ $( document ).tooltip();
                                         <strong>Unit:</strong> <?php echo $item->unit; ?><br/>
                                         <?php if(isset($item->increment)) {  ?>
                                         <strong>Increment:</strong> <?php if($item->increment==0) { echo "1";} else { echo $item->increment;} ?><?php } ?>
-                                        <div><strong>Tags:</strong><?php if(!empty($item->tags)){?><ul class="tags"><?php
+                                        
+                                        <?php if(!empty($item->tags)){?><div><strong>Tags:</strong><ul class="tags"><?php
                                         $tags = explode(",",$item->tags);
                                         foreach ($tags as $tag){
 										$tag = trim($tag);
 
 										?>
                                          <li><a class="tag" href="<?php echo site_url("site/tag/".str_replace('%2F', '/', urlencode(urlencode($tag))));?>"><?php echo $tag;?></a></li>
-                                        <?php } ?></ul><?php } ?></div>
+                                        <?php } ?></ul></div><?php } ?>
                                     </p>
                                 </div>
                                 <div class="tab-pane" id="tab2">
@@ -905,7 +906,8 @@ $( document ).tooltip();
                                 <?php                                    
                                     if($inventory) 
                                     foreach ($inventory as $inv) { 
-                                    if ($inv->ea) {  if(@$inv->companydetails->saleitemdata==0){
+                                    if ($inv->ea) {  
+                                    	if(@$inv->companydetails->saleitemdata==0){
                                     	
                                         $price = $inv->ea;
                                 ?>
@@ -970,7 +972,7 @@ $( document ).tooltip();
                                         <?php } ?>
                                     </td>
                                 </tr>
-                                <?php } } }  ?>
+                                <?php } } }   ?>
                                 </tbody>
                             </table>
 </div>

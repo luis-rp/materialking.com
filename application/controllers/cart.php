@@ -40,12 +40,13 @@ class cart extends CI_Controller
 			$this->db->where('company',$item['company']);
 			$this->db->where('type','Supplier');
 			$itemdetails = $this->db->get('companyitem')->row();
-			
+			$dealitems = $this->db->get_where('dealitem',array('itemid'=>$item['itemid'],'company'=>$item['company']))->row();
 			$orgitem = $this->db->where('id',$item['itemid'])->get('item')->row();
 			
 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
 			
 			$item['itemdetails'] = $itemdetails;
+			$item['dealitems'] = $dealitems;
 			$item['increment'] = $orgitem->increment;
 			
 			$this->db->where('id',$item['company']);

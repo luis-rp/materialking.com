@@ -516,6 +516,11 @@ function removeallitems(quote){
 	$("#previewtab").css('display','none');
 	$("#previewtab").remove();
 }
+
+function setServicelaboritemsFlag()
+{
+	$("#servicelaboritemsflag").val(1);
+}
 </script>
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
@@ -1371,7 +1376,9 @@ function removeallitems(quote){
 	</div>
 	<div class="modal-body" id="billwrapper">
 		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
+		<input type="hidden" name="servicelaboritemsflag" id="servicelaboritemsflag" value="0">
 		<table>
+		<tr style="cursor:pointer;"><td colspan="2"><a onclick="setServicelaboritemsFlag()"> Add Service/Labor Items to bill </a>  </td> </tr>
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
 		<?php if($customerdata){ ?>
 		<tr><td>Select Customer:</td><td><select id="customerid" name="customerid" onchange="setcustomerdata(this.value);">
