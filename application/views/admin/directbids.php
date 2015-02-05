@@ -186,7 +186,7 @@ $(document).ready(function(){
 		   </td></tr></table>
 		   </div>
 		   <?php }?>
-		  <?php 
+		  <?php $creditstatus = array();
 		  	foreach($bids as $bid)
 		  	if($bid->items)
 		  	{
@@ -223,9 +223,13 @@ $(document).ready(function(){
 				    		<th>Notes</th>
 				    		<th>Status</th>
 				    	</tr>
-				    	<?php $alltotal=0; foreach($bid->items as $q) if($q->itemcode){?>
+				    	<?php $alltotal=0; $allcctotal=0; foreach($bid->items as $q) if($q->itemcode){?>
 				    	<?php $alltotal += $q->quantity * $q->ea;?>
 		    			<?php 
+		    				if($bid->creditonly==1){
+		    				$allcctotal += $q->quantity * $q->ea;
+		    				$creditstatus[] = "creditonly";
+		    				}
 							$key = $q->itemcode;
 		    				$diff = $q->ea - $minimum[$key];
 		    			?>
@@ -378,8 +382,13 @@ $(document).ready(function(){
         	<div class="modal-footer">
         		<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
         		&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
-        		 <?php if($bid->creditonly==1) {?>
-        		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$alltotal?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
+        		 <?php if(in_array("creditonly",$creditstatus)) { 
+        		 		$taxtotal = $allcctotal * $config['taxpercent'] / 100;
+				    	$taxtotal = round($taxtotal,2);
+						$allcctotal = number_format(($allcctotal + $taxtotal),2);	
+        		  
+        		 ?>
+        		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$allcctotal;?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
         		<?php } else {?>
         		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;
         		<?php }?>

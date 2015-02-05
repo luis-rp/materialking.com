@@ -566,6 +566,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
                                 </li>
+                                
                                <!-- <li <?php if ($menu == 'manage_network') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/manage_network"><i class="icon-th-list"></i>&nbsp;&nbsp;Manage Network Connection</a>
                                 </li>-->
@@ -596,6 +597,10 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 		Events
                                 	</a>
                             	</li>
+                            	
+                            	 <li <?php if ($menu == 'set_bank_purchaser') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/admin/set_bank_purchaser"><i class="icon-picture"></i>&nbsp;&nbsp;Bank Account</a>
+                                </li>
                             </ul>
                         </li>
 

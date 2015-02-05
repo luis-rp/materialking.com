@@ -528,7 +528,7 @@ class Quote extends CI_Controller
 			$price = $item->ea;
 			
 			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
-				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
+				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' ";				
 			$tier1 = $this->db->query($sql1)->row();
 			if($tier1)
 			{
@@ -583,8 +583,7 @@ class Quote extends CI_Controller
 			
 			$this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $quote->purchasingadmin);
-        	$this->db->where('itemid', $item->itemid);
-        	$this->db->where('quote', $quote->id);
+        	$this->db->where('itemid', $item->itemid);        	
         	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
 			
         	if(@$itemtierresult)
@@ -970,7 +969,7 @@ class Quote extends CI_Controller
 			$price = $item->ea;
 			
 			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
-				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' AND quote = '$quote->id' ";				
+				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' ";				
 			$tier1 = $this->db->query($sql1)->row();
 			if($tier1)
 			{
@@ -1028,8 +1027,7 @@ class Quote extends CI_Controller
 			
 			$this->db->where('company', $company->id);
         	$this->db->where('purchasingadmin', $quote->purchasingadmin);
-        	$this->db->where('itemid', $item->itemid);
-        	$this->db->where('quote', $quote->id);
+        	$this->db->where('itemid', $item->itemid);        	
         	$itemtierresult = $this->db->get('purchasingtier_item')->row();            
 			
         	if(@$itemtierresult)
@@ -1082,7 +1080,7 @@ class Quote extends CI_Controller
     			if(isset($purchasingadmin)){
     				
     				$sql1 = "select tier from " . $this->db->dbprefix('purchasingtier_item') . "
-				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "' AND itemid='" . $_POST['itemid'] . "' AND quote = '".$_POST['quote']."'";
+				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "' AND itemid='" . $_POST['itemid'] . "' ";
     				
     				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
@@ -4299,19 +4297,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 
 		$this->db->where('company', $_POST['companyid']);
         $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
-        $this->db->where('itemid', $_POST['itemid']);
-        $this->db->where('quote', $_POST['quote']);
+        $this->db->where('itemid', $_POST['itemid']);        
         if($this->db->get('purchasingtier_item')->row())
         {        	
             if(isset($_POST['val'])){
             $update['price'] = $_POST['val'];            
-            $update['notes'] = ""; 
+            $update['notes'] = "*Given Company Price"; 
             }
 
             $this->db->where('company', $_POST['companyid']);
         	$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
-        	$this->db->where('itemid', $_POST['itemid']);
-        	$this->db->where('quote', $_POST['quote']);
+        	$this->db->where('itemid', $_POST['itemid']);        	
             $this->db->update('purchasingtier_item', $update);
             echo "Item price Changed";
         }
@@ -4327,6 +4323,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $insert['company'] = $_POST['companyid'];
             $insert['itemid'] = $_POST['itemid'];
             $insert['quote'] = $_POST['quote'];
+            $insert['notes'] = "*Given Company Price";
             $insert['purchasingadmin'] = $_POST['purchasingadmin'];
             $this->db->insert('purchasingtier_item', $insert);
             echo "Item price Set";

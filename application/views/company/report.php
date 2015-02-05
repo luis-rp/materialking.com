@@ -226,7 +226,7 @@ function submitForm(val,invoicequote)
 
 			    		foreach($report->items as $item)
 			    		{
-			    			$amount = ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity * $item->ea;
+			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
 			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
 			    			$totalallprice += $amount;
 

@@ -130,7 +130,7 @@
 <script type="text/javascript">
 
   <?php  if(isset($pagetour->pagetour)) {
-					if($pagetour->pagetour==0) { ?>
+					if($pagetour->pagetour==2) { ?>
 	 $(document).ready(function(){
 		tourCompany = new Tour({
 			  steps: [
@@ -279,6 +279,9 @@
 	
     <ul>	
       <li class="start <?php if($menu=='dashboard'){echo 'active';}?>"> <a href="<?php echo site_url('dashboard/index');?>"> <i class="fa fa-dashboard1"></i> <span class="title">Dashboard</span> <span class="selected"></span></a> </li>
+      
+        <?php if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
+      
 	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i><span class="title">Tier Pricing  & Connections</span> </a> </li>      
 	  <li class="<?php if($menu=='message'){echo 'active';}?>"> <a href="<?php echo site_url('message');?>"> <i class="fa fa-envelope1"></i><span class="title">My Messages</span> </a> </li>      
 	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal1"></i><span class="title">Quotes, P.O's & Tracking</span></a></li>  
@@ -304,7 +307,7 @@
 	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i><span class="title">Form Builder</span></a></li>
 	  <li class="<?php if($menu=='mailinglist'){echo 'active';}?>"> <a href="<?php echo site_url('company/mailinglist');?>"> <i class="fa fa-formmailing"></i><span class="title">Mailing List</span></a></li>
 	  <li class="<?php if($menu=='events'){echo 'active';}?>"> <a href="<?php echo site_url('event');?>"> <i class="fa"></i><span class="title">Manage Events</span></a></li>
-	    <?php } ?>
+	    <?php } } ?>
 	     
     </ul>
     

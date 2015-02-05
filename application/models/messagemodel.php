@@ -54,7 +54,7 @@ class Messagemodel extends Model
 				$ordertype = $ordertyperesult[0]->type;
 				else 
 				$ordertype = "";
-				$not->message =  "You have received a new order request store with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
+				$not->message =  "You have received a new store order request with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
 				$this->db->where('orderid',$not->quote);
 				$this->db->where('company',$company->id);
 				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";
@@ -136,7 +136,7 @@ class Messagemodel extends Model
 				$ordertype = $ordertyperesult[0]->type;
 				else 
 				$ordertype = "";
-				$not->message =  "You have received a new order request store with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
+				$not->message =  "You have received a new store order request with order# $not->ponum"."&nbsp;&nbsp;&nbsp;&nbsp;Type:&nbsp;".$ordertype;
 				$this->db->where('orderid',$not->quote);
 				$this->db->where('company',$company->id);
 				$not->submessage = $this->db->count_all_results('orderdetails') . " items requested.";

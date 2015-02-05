@@ -2013,7 +2013,7 @@ class quote extends CI_Controller
             $biditem['purchasingadmin'] = $this->session->userdata('purchasingadmin');
             $this->quote_model->db->insert('biditem', $biditem);
         }
-        $this->sendawardemail($quote->id);
+        $this->sendawardemail($quote->id,'nonpaid');
         $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
 													<div class="msgBox">Purcnase Order Assigned Sucessfully.</div></div>');
 		*/
@@ -3298,7 +3298,7 @@ class quote extends CI_Controller
 
         $this->quote_model->db->where('quote', $bid->quote);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($bid->quote);
+        $this->sendawardemail($bid->quote,'nonpaid');
         $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bid awarded to the company.</div></div>');
         redirect('admin/quote/index/' . $quote->pid);
     }
@@ -3440,7 +3440,7 @@ class quote extends CI_Controller
         }
         $this->quote_model->db->where('quote', $bid->quote);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($bid->quote);
+        $this->sendawardemail($bid->quote,'nonpaid');
     }
 
     function awardbidbyitems()
@@ -3498,7 +3498,7 @@ class quote extends CI_Controller
         }
         $this->quote_model->db->where('quote', $_POST['quote']);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
-        $this->sendawardemail($_POST['quote']);
+        $this->sendawardemail($_POST['quote'],'nonpaid');
     }
 
     
@@ -7343,7 +7343,11 @@ $loaderEmail = new My_Loader();
         $this->db->where('id',$this->session->userdata('purchasingadmin'));
         $cpa = $this->db->get('users')->row();
         foreach ($companies as $company) {
-            $pdfhtml = '
+			$showpaystatus = "";
+			if($paystatus=="fullpaid")
+				$showpaystatus = " PAID IN FULL ";
+            
+			$pdfhtml = '
 				<table width="100%" cellspacing="2" cellpadding="2">
 				  <tr>
 				    <td width="33%" align="left" valign="top">
@@ -7459,9 +7463,9 @@ $loaderEmail = new My_Loader();
 				    <td align="left" valign="top">&nbsp;</td>
 				    <td align="left" valign="top">
 				    
-				    <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">				     
+				    <table width="100%" cellspacing="0" cellpadding="4">				     
 				      <tr>
-				        <td>' . ($paystatus=="fullpaid")?" PAID IN FULL ":"". '</td>
+				        <td>' . $showpaystatus. '</td>
 				      </tr>
 				    </table>   
 				    
@@ -10574,12 +10578,19 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$config = (array)$this->settings_model->get_current_settings();
 		$config = array_merge($config, $this->config->config);
 		$totalprice = 0;
+		$currentpa = $this->session->userdata('site_loggedin')->id;
+		
 		foreach($bids as $bid)
-        {           	
+        {        	
+        	$this->db->where('company', $bid->company);
+        	$this->db->where('purchasingadmin', $currentpa);
+        	$creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+        	
             foreach($bid->items as $item)
             {
-            	if($item->postatus=='Accepted')                
+            	if($item->postatus=='Accepted' && (@$creditonly==1)){                
             	$totalprice+= $item->quantity * $item->ea;
+            	}
             	
             }
         }    
@@ -10662,6 +10673,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$amount=$amount-.55-($amount*2.9/100);
 			$amount = round($amount,2);							
 			
+			$currentpa = $this->session->userdata('site_loggedin')->id;
+            $this->db->where('company', $caid);
+            $this->db->where('purchasingadmin', $currentpa);
+            $creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+			
 			$bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
 			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
 			{
@@ -10671,6 +10687,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
 			{
+			  if(@$creditonly==1){	
 	          $recbankInfo = array(
 	          			'country' =>'US',
 	          			'routing_number' => $bankaccount->routingnumber,
@@ -10761,7 +10778,7 @@ $loaderEmail = new My_Loader();
               $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
         	}
              
-            
+		  } 
         }      
 		
         	$this->quote_model->db->where('quote', $_POST['invoicenum']);
@@ -10793,9 +10810,15 @@ $loaderEmail = new My_Loader();
         ini_set('max_execution_time', 300);
 		$config = (array)$this->settings_model->get_current_settings();
 		$config = array_merge($config, $this->config->config);
-
+	
+		$currentpa = $this->session->userdata('site_loggedin')->id;
+		$this->db->where('company', $bid->company);
+		$this->db->where('purchasingadmin', $currentpa);
+		$creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+		
 		$totalprice = 0;
 		foreach ($bid->items as $item) {
+			if(@$creditonly==1)
 			$totalprice+= $item->quantity * $item->ea;
 		} 		
 		
@@ -10880,6 +10903,12 @@ $loaderEmail = new My_Loader();
 			$amount = round($amount,2);
 						
 			$bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
+			
+			$currentpa = $this->session->userdata('site_loggedin')->id;
+            $this->db->where('company', $caid);
+            $this->db->where('purchasingadmin', $currentpa);
+            $creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+			
 			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
 			{
 				$this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bank account missing for credit card payment.</div></div>');
@@ -10887,7 +10916,8 @@ $loaderEmail = new My_Loader();
 			}
 			
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
-			{			  						
+			{	
+			  if(@$creditonly==1){			  						
 	          $recbankInfo = array(
 	          			'country' =>'US',
 	          			'routing_number' => $bankaccount->routingnumber,
@@ -10977,6 +11007,7 @@ $loaderEmail = new My_Loader();
               $this->email->send();
 
               $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
+			}
         	}
             
             
@@ -11010,7 +11041,14 @@ $loaderEmail = new My_Loader();
 		$config = array_merge($config, $this->config->config);
 
 		$totalprice = 0;
-		foreach ($items as $item) {
+		$currentpa = $this->session->userdata('site_loggedin')->id;
+		
+		foreach ($items as $item) {			
+			
+			$this->db->where('company', $item->company);
+			$this->db->where('purchasingadmin', $currentpa);
+			$creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+			if(@$creditonly==1)
 			$totalprice+= $item->quantity * $item->ea;
 		} 		
 		
@@ -11092,6 +11130,11 @@ $loaderEmail = new My_Loader();
 			$amount=$amount-.55-($amount*2.9/100);
 			$amount = round($amount,2);
 			
+			$currentpa = $this->session->userdata('site_loggedin')->id;
+            $this->db->where('company', $caid);
+            $this->db->where('purchasingadmin', $currentpa);
+            $creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
+			
 			$bankaccount = $this->db->where('company',$caid)->get('bankaccount')->row();
 			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
 			{
@@ -11101,7 +11144,7 @@ $loaderEmail = new My_Loader();
 			
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
 			{
-			  							
+			  if(@$creditonly==1){							
 	          $recbankInfo = array(
 	          			'country' =>'US',
 	          			'routing_number' => $bankaccount->routingnumber,
@@ -11192,12 +11235,9 @@ $loaderEmail = new My_Loader();
               $this->email->send();
 
               $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
-        	}
+        	} 		
        		
-       		
-       		
-       		
-       		
+			}	
        	}
        	
        	$this->quote_model->db->where('quote', $_POST['invoicenum']);

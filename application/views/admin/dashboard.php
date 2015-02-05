@@ -506,33 +506,36 @@
 					</div></div>-->
 					
 					
-					<h5>Recent Messages&nbsp;&nbsp;<?php if(isset($msgs)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallmessage');?>">Clear Messages</a><?php } ?></h5>
+					<?php if(isset($msgs)){ ?>
+					<h5>Recent Messages&nbsp;&nbsp;
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallmessage');?>">Clear Messages</a>
+					</h5>
+					
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($msgs)) { ?>
 					  <tr>
-					  <td>Message</td>
-					  <td>From</td>
-					  <td>To</td>
-					  <td>Sent On</td>
-					  <td>&nbsp;</td>
+						  <td>Message</td>
+						  <td>From</td>
+						  <td>To</td>
+						  <td>Sent On</td>
+						  <td>&nbsp;</td>
 					  </tr>
-				<?php foreach($msgs as $msg) { // if(strpos($msg->to, '(Admin)') > 0) { ?>
-
+				     <?php foreach($msgs as $msg) { ?>
 					  <tr>
-					  <td><?php echo $msg->message; ?></td>
-					  <td><?php echo $msg->from; ?></td>
-					  <td><?php echo $msg->to; ?></td>
-					  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closemessage/'.$msg->id);?>">X</a></td>
+						  <td><?php echo $msg->message; ?></td>
+						  <td><?php echo $msg->from; ?></td>
+						  <td><?php echo $msg->to; ?></td>
+						  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
+						  <td style="text-align:right;">
+						  <a class="remove" href="<?php echo site_url('admin/dashboard/closemessage/'.$msg->id);?>">X</a>
+						  </td>
 					  </tr>
-
-				<?php // }
-				 } ?>
-				<?php } else { ?>
-				<tr><td>No Messages Found</td></tr>
+                     <?php } ?>
+				 </table>
 				<?php } ?>
-				</table>
+				
+				
+				
+				
 
 				<h5>Recent Quotes Sent&nbsp;&nbsp;<?php if(isset($newquotes)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallquote');?>">Clear Recent Quotes Sent</a><?php } ?></h5>
@@ -640,29 +643,26 @@
 
 
 
-				<h5>Recent Users Created&nbsp;&nbsp;<?php if(isset($users)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallusers');?>">Clear Recent Users Created</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($users)) { ?>
+				<?php if(isset($users)) { ?>
+					<h5>Recent Users Created&nbsp;&nbsp;
+					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallusers');?>">Clear Recent Users Created</a></h5>
+					<table cellpadding="3" class="table table-bordered stat">				
 					  <tr>
-					  <td>User</td>
-					  <td>Creation Date</td>
-					  <td>&nbsp;</td>
+						  <td>User</td>
+						  <td>Creation Date</td>
+						  <td>&nbsp;</td>
 					  </tr>
 				<?php foreach($users as $user) { ?>
 
 					  <tr>
-					  <td><?php echo $user->username; ?></td>
-					  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeusers/'.$user->id);?>">X</a></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Users Created</td></tr>
-				<?php } ?>
+						  <td><?php echo $user->username; ?></td>
+						  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
+						  <td style="text-align:right;">
+						 <a class="remove" href="<?php echo site_url('admin/dashboard/closeusers/'.$user->id);?>">X</a></td>
+					  </tr>			
+				<?php }  ?>			
 				</table>
-
+              <?php } ?>
 
 				<h5>Recent Network Connections&nbsp;&nbsp;<?php if(isset($networks)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallnetwork');?>">Clear Recent Network Connections</a><?php } ?></h5>
@@ -673,8 +673,8 @@
 					  <td>Accepted On</td>
 					  <td>&nbsp;</td>
 					  </tr>
-				<?php foreach($networks as $network) { ?>
-
+				<?php foreach($networks as $network) {  ?>
+                   
 					  <tr>
 					  <td><?php echo $network->title; ?></td>
 					  <td><?php $datetime = strtotime($network->acceptedon); echo date("m/d/Y", $datetime);?></td>
@@ -692,13 +692,16 @@
 		</div>
 
 		<div  class="span12">	
-			 <?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>	
-				<!--<div class="well span4" style="width:100% !important;" >-->
+		
+			 <?php if($this->session->userdata('usertype_id') != 3) 
+			         {	
+			         	if(isset($invoices)) {  ?>	
+			    
                 <div class="well span3"  style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
 					
-					<?php if(isset($invoices)) { ?>
+					
 					  <tr>
 					  <td>Invoice</td>
 					  <td>Due Date</td>
@@ -720,23 +723,18 @@
 					  </tr>
 
 				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Invoices Found</td></tr>
-				<?php } ?>
+				
+				
 				</table>
-			<?php } ?>	
+			<?php } } ?>	
 				</div>
 
 				
-				
-			<!--	<div style="clear:both;"></div>-->
-				
-				
-	<!--			<div class="well span4" style="width:100% !important; margin-left:0px; " >-->
+		<?php if(isset($backtracks)) { ?>
     			<div class="well span3" style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
 					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($backtracks)) { ?>
+					
 					 
 				<?php $i=0; foreach($backtracks as $backtrack) { ?>
 					<?php if(isset($backtrack['items'])) { ?>
@@ -772,14 +770,10 @@
 				
 				<?php if($i== 0) { ?>
 				<tr><td>No Overdue Backorders Found</td></tr>
-				<?php } ?>
-				
-				<?php } else { ?>
-				<tr><td>No Overdue Backorders Found</td></tr>
-				<?php } ?>
+				<?php } ?>		
 				</table>
 				</div>
-
+             <?php } ?>
 				
 				
 				

@@ -198,7 +198,7 @@ function addEmail()
 				                      <div class="form-group">
 				                        <label class="form-label">Contact</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="contact" value="<?php echo $company->contact;?>">
+				                          <input type="text" class="form-control" name="contact" value="<?php echo $company->contact;?>" required>
 				                        </div>
 				                      </div>
 				                      

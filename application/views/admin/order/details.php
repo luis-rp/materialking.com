@@ -174,7 +174,7 @@ function paycc(ptype,company, amount)
                             	<?php }else{echo $item->paymentstatus;}?>
                             </td>
                             <td>
-                                <select id="paymenttype<?php echo $item->id;?>" name="paymenttype" required onchange="paycc(this.value, <?php echo $item->id;?>, <?php echo $item->amount+$tax;?>)">
+                                <select id="paymenttype<?php echo $item->id;?>" name="paymenttype" required onchange="paycc(this.value, <?php echo $item->id;?>, <?php echo $item->amount+$tax+$order->shipping;?>)">
                                     <option value="">Select Payment Type</option>
                                     <?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                                     <option value="Credit Card">Credit Card</option>

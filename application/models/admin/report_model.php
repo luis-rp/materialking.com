@@ -23,17 +23,17 @@ class report_model extends Model
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
  				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate'
- 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate' OR receiveddate IS NULL ) ";
+ 						    AND STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate') ";
  			}
  			elseif(@$_POST['searchfrom'])
  			{
  				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
- 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate' OR receiveddate IS NULL ) ";
+ 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') >= '$fromdate' ) ";
  			}
  			elseif(@$_POST['searchto'])
  			{
  				$todate = date('Y-m-d', strtotime($_POST['searchto']));
- 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate' OR receiveddate IS NULL ) ";
+ 				$search = " HAVING ( STR_TO_DATE(receiveddate, '%Y-%m-%d') <= '$todate' ) ";
  			}
  			if(@$_POST['searchcompany'])
  			{
@@ -101,7 +101,7 @@ class report_model extends Model
 			if(@$sepdate->receiveddate)
 			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$itemsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			$itemsql .= " and r.invoicenum='".$sepdate->invoicenum."'";
 			}			  		
 			
 			$itemcontractsql = "SELECT 
@@ -120,7 +120,7 @@ class report_model extends Model
 			if(@$sepdate->receiveddate)
 			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$itemcontractsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";		
+			$itemcontractsql .= " and r.invoicenum='".$sepdate->invoicenum."'";		
 			}
 					
 			$itemcombo = $itemsql." UNION ".$itemcontractsql;
@@ -144,7 +144,7 @@ class report_model extends Model
  		    if(@$sepdate->receiveddate)
 			$datepaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$datepaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";				  
+			$datepaidsql .= " and r.invoicenum='".$sepdate->invoicenum."'";				  
 			}
 			
  		    $datecontractpaidsql = "SELECT 
@@ -161,7 +161,7 @@ class report_model extends Model
  		     if(@$sepdate->receiveddate)
 			$datecontractpaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$datecontractpaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";				  
+			$datecontractpaidsql .= " and r.invoicenum='".$sepdate->invoicenum."'";				  
 			}
  		    //echo $datepaidsql.'<br/>';
  		    
@@ -237,7 +237,7 @@ class report_model extends Model
 			if(@$sepdate->receiveddate)
 			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$itemsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			$itemsql .= " and r.invoicenum='".$sepdate->invoicenum."'";
 			}
 					
 			
@@ -258,7 +258,7 @@ class report_model extends Model
 			if(@$sepdate->receiveddate)
 			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$itemcontractsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			$itemcontractsql .= " and r.invoicenum='".$sepdate->invoicenum."'";
 			}
 			
 			$itemcombo = $itemsql." UNION ".$itemcontractsql;
@@ -282,7 +282,7 @@ class report_model extends Model
  		    if(@$sepdate->receiveddate)
 			$datepaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$datepaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			$datepaidsql .= " and r.invoicenum='".$sepdate->invoicenum."'";
 			}
 					  
  		    
@@ -300,7 +300,7 @@ class report_model extends Model
  		    if(@$sepdate->receiveddate)
 			$datecontractpaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
 			elseif (strpos(@$sepdate->invoicenum,'paid-in-full-already') !== false) { 
-			$datecontractpaidsql .= " AND  r.receiveddate is NULL and r.invoicenum='".$sepdate->invoicenum."'";
+			$datecontractpaidsql .= " and r.invoicenum='".$sepdate->invoicenum."'";
 			}					  
  		    
  		    //echo $datepaidsql.'<br/>';

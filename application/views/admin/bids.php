@@ -66,14 +66,20 @@ $(document).ready(function(){
 function refreshtotal()
 {
 	var total = 0;
+	var cctotal = 0;
 	$('.selection-item:checked').each(function(obj) {
 		var selectionid = $(this).attr('id');
 		var quantityid = selectionid.replace('selection','quantity');
 		var eaid = selectionid.replace('selection','ea');
-
+		var creditonlyval = selectionid.replace('selection','creditonly');
+		
 		var quantity = Number($("#"+quantityid).val());
 		var ea = Number($("#"+eaid).html());
-
+		var creditonly = $("#"+creditonlyval).val();
+		
+		if(creditonly==1)
+		cctotal += quantity*ea;
+		
 		total += quantity*ea;
 		//alert(total);
     });
@@ -85,16 +91,32 @@ function refreshtotal()
 	taxtotal = Math.round(taxtotal*100)/100;
 	grandtotal = Math.round(grandtotal*100)/100;
 
+	
+	var cctaxtotal = cctotal * tax / 100;
+    var ccgrandtotal = cctotal + cctaxtotal;	
+	ccgrandtotal = Math.round(ccgrandtotal*100)/100;
+	
     $("#selectedsubtotal").html(total);
     $("#selectedtax").html(taxtotal);
     $("#selectedtotal").html(grandtotal);
+    $("#selectedcctotal").val(ccgrandtotal);
     return grandtotal;
 }
-function awardbidbyid(bidid,grandtotal)
+function awardbidbyid(bidid,grandtotal,creditonly)
 {
 	$("#itemids").val('');
 	$("#awardbid").val(bidid);
 	$('#paytype').val('awardbidbyid');
+	
+	$('#paybtn').css('display','none');
+	$('#awardbtn').css('display','none');
+	if(creditonly==1){
+		$('#paybtn').css('display','block');
+		$('#awardbtn').css('display','none');
+	}else{
+		$('#paybtn').css('display','none');
+		$('#awardbtn').css('display','block');
+	}
 	$("#grandtotal").val(grandtotal);
 	$("#awardmodal").modal();
 }
@@ -113,7 +135,17 @@ function awardbiditems()
     });
 	$("#awardbid").val('');
     $("#itemids").val(ids.join(','));
+    $('#paybtn').css('display','none');
+	$('#awardbtn').css('display','none');
     $('#paytype').val('awardbiditems');
+    var tot = $('#selectedcctotal').val();
+    if(tot>0){
+		$('#paybtn').css('display','block');
+		$('#awardbtn').css('display','none');
+	}else{
+		$('#paybtn').css('display','none');
+		$('#awardbtn').css('display','block');
+	}
 	$("#awardmodal").modal();
 }
 function usedefaultaddresscheckchange()
@@ -216,7 +248,7 @@ function paycc(bankaccounarr, bankcnt)
 	   }else{
 		
 	    if($('#paytype').val() == "awardbiditems"){
-	    	amount = parseFloat($('#selectedtotal').html());
+	    	amount = $('#selectedcctotal').val();
 	    }
 	    
 	    if($('#paytype').val() == "awardbidbyid"){
@@ -225,7 +257,7 @@ function paycc(bankaccounarr, bankcnt)
 	    
 		var invoicenumber = $('#quoteidcopy').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
-		$("#ccpayinvoiceamount").val(parseFloat($('#selectedtotal').html()));
+		$("#ccpayinvoiceamount").val(amount);
 		$("#ccpayamountshow").html(amount);
 		$('#shiptocopy').val($('#shipto').val());
 		$('#awardbidcopy').val($('#awardbid').val());
@@ -283,7 +315,9 @@ $(function() {
 			   <tr><th colspan="2"><strong>Select items below</strong></th></tr>
 			   <tr><td class="span4">Subtotal:</td><td class="span8">$<span id="selectedsubtotal"></span></td>
 			   <tr><td>Tax:</td><td>$<span id="selectedtax"></span></td>
-			   <tr><td>Total:</td><td>$<span id="selectedtotal"></span></td>
+			   <tr><td>Total:</td><td>$<span id="selectedtotal"></span>
+			   <input type="hidden" id="selectedcctotal">
+			   </td>
 			   <tr><td colspan="2"><input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Award"/></td>
 		   </table>
 		   
@@ -507,7 +541,9 @@ $(function() {
 		    				$diff = number_format($diff,2);
 		    			?>
 				    	<tr class="<?php if(in_array($q->itemcode.$bid->company, $awardeditemcompany)){echo 'awarded-item';} elseif($q->substitute){echo 'substitute-item';}?>">
-				    		<td><?php echo $sn++;?></td>
+				    		<td><?php echo $sn++;?>
+				    		<input type="hidden" id="creditonly<?php echo $q->id;?>" value="<?php echo $bid->creditonly;?>" >
+				    		</td>
 				    		<?php if(!$isawarded){?>
 				    		<td>
 				    			<input type="radio" id="selection<?php echo $q->id;?>" class="selection-item" value="<?php echo $q->id;?>" name="<?php echo $key;?>" <?php if($diff==0 && !isset($checkedarray[$key])){ echo 'checked';$checkedarray[$key]='1'; }?>/>
@@ -605,7 +641,7 @@ $(function() {
 				    <?php if(!$isawarded){?>
 				    <div align="right">
 					    <form method="post" action="<?php echo site_url('admin/quote/awardbid')?>">
-					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>')" class="btn btn-primary"/>
+					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>','<?php echo $bid->creditonly;?>')" class="btn btn-primary"/>
 					    </form>
 				    </div>
 				    <?php }?>
@@ -745,9 +781,9 @@ $(function() {
         	</div>
         	<div class="modal-footer">
         	&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
-        	 <?php if($bid->creditonly==1) {?>
-        	<input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />&nbsp;<?php } else {?>
-        		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;<?php } ?>
+        	
+        	<input type="button" id="paybtn"  style="display:none;" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />&nbsp;
+        		<input id="awardbtn" style="display:none;" type="submit" class="btn btn-primary" value="Award"/>&nbsp;
         		
         	</div>
             </form>

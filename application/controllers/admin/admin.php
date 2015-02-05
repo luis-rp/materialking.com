@@ -189,6 +189,7 @@ $loaderEmail = new My_Loader();
 		    $this->email->subject("EZPZ-P Account Created");
 	        $this->email->message($send_body);
 	        $this->email->set_mailtype("html");
+	        //echo "<pre>"; print_r($this->email); die;
 	        $this->email->send();
 				//}
 				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">User Added Successfully</div></div>');
@@ -441,5 +442,35 @@ $loaderEmail = new My_Loader();
 		$this->session->set_userdata('tour','unfinished');
 		redirect("admin");
 	}
+	
+	function set_bank_purchaser()
+	{
+		$id = 	$this->session->userdata ( 'id' );
+		$bankaccount = $this->db->where('purchasingadmin',$id)->get('purchaserbank')->row();
+        if(!$bankaccount)
+        {
+            $this->db->insert('purchaserbank',array('purchasingadmin'=>$id));
+            $bankaccount = $this->db->where('purchasingadmin',$id)->get('purchaserbank')->row();
+        }
+        $data['bankaccount'] = $bankaccount;
+        $this->load->view('admin/purchaserbankaccount',$data);
+       
+		
+	}
+	
+	 function savebankaccount()
+    {
+    	//echo "<pre>"; print_r($_POST); die;
+        $id = $this->session->userdata ( 'id' );
+        $this->db->where('purchasingadmin',$id)->update('purchaserbank',$_POST);
+        $message = 'Bank Account settings updated.';
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close">X</button><div class="msgBox">' . $message . '</div></div></div>');
+        redirect('admin/admin/set_bank_purchaser');
+    }
+
+	
+	
+	
+	
 }
 ?>

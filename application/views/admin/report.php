@@ -152,7 +152,7 @@
 			    			if($item->potype == "Contract" )
 			    			$amount = $item->ea;
 			    			else 
-			    			$amount = ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity * $item->ea;
+			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
 			    			$amount = round($amount + ($amount*$tax/100),2);
 			    			$totalallprice += $amount;
 			    	?>
