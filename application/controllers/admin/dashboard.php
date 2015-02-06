@@ -843,6 +843,7 @@ class Dashboard extends CI_Controller
 
     		if($this->session->userdata('usertype_id')==3)
     		{
+    			
     			$data['backtracks'] = array();
     			foreach($items as $item)
     			{
@@ -852,12 +853,14 @@ class Dashboard extends CI_Controller
     			    if($check)
     			    {
     			        $data['backtracks'][]=$item;
+    			        $data['backtracksCnt'] = 0;
     			    }
     			}
     		}
     		else
     		{
 		        $data['backtracks'] = $items;
+		        $data['backtracksCnt'] = 0;
     		}
 		}
 
@@ -925,8 +928,20 @@ class Dashboard extends CI_Controller
 
 		$networks = $this->db->query($networksql)->result();
 
+		
 		if($invoices)
-		$data['invoices'] = $invoices;
+		{
+			$invoiceCntr = 0;
+			foreach ($invoices as $invoice)
+			{
+	            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
+	            {
+	            	$invoiceCntr++;
+	            }
+			}
+            $data['invoices'] = $invoices;
+            $data['invoiceCntr'] = $invoiceCntr;
+		}		
 		/*if($invoicespay)
 		$data['invoicespay'] = $invoicespay;
 		if($backtracks)
@@ -991,14 +1006,14 @@ class Dashboard extends CI_Controller
 				$this->homemodel->set_search_criteria($search);
 			}
 		}
-		$this->homemodel->set_distance(20);
+		$this->homemodel->set_distance(240);
 		$query_suppliers = $this->homemodel->get_nearest_suppliers();
 		//echo "<pre>",print_r($query_suppliers); die;
 		if (! $query_suppliers->totalresult)
 		{
 			$this->homemodel->set_distance(15000);
 			$query_suppliers = $this->homemodel->get_nearest_suppliers($ignore_location = true);
-			$this->homemodel->set_distance(20);
+			$this->homemodel->set_distance(240);
 			//$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
 		}
 		/*else

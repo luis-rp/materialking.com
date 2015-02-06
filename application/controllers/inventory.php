@@ -982,6 +982,28 @@ class Inventory extends CI_Controller
 			$this->db->insert('companyitem',$_POST);
 		}
 	}
+	
+	
+	function getallcompanyprices(){
+		
+		if(!$_POST)
+		die;
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		/*$this->db->where('company', $company->id);       
+        $this->db->where('itemid', $_POST['itemid']);        
+        $resultprice = $this->db->get('purchasingtier_item')->row()->price;*/
+        
+        $resultprice = $this->db->select('p.*,u.username')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('itemid', $_POST['itemid'])->get()->result();
+        if($resultprice)
+		echo json_encode($resultprice); 
+		else 
+		echo "";
+		die;
+	}
 
     
 }

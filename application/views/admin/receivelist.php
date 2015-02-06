@@ -210,11 +210,11 @@ function jq( myid ) {
 	    
 	    <div class="datagrid-example">
 		<div style="width:100%;margin-bottom:20px;">
-            <table id="MyGrid" class="table table-bordered datagrid">
+            <table id="MyGrid" class="table table-bordered datagrid" style="border-style: none !important;">
              <thead>
               <tr>
-                <td>
-                <div>
+                <!-- <td>
+               <div>-->
                
              <!--   <form class="form-inline" style="padding-top: 10px; padding-bottom:2px;" action="<?php echo site_url('admin/quote/index/'.$pid)?>" method="post">
                 	
@@ -258,8 +258,8 @@ function jq( myid ) {
                 	<input type="submit" value="Filter" class="btn btn-primary"/>
                 </form>-->
                 
-                </div>
-                </td>
+              <!--  </div>
+                </td>-->
                </tr>
               </thead>
               <?php if ($counts) {?>

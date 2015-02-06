@@ -5,6 +5,7 @@
 <?php // echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
+<?php echo '<script>var getcompanypriceurl ="' . site_url('quote/getcompanyprice') . '";</script>' ?>
 <?php echo "<script>var tier1=".@$tiers->tier1.";</script>";?>
 <?php echo "<script>var tier2=".@$tiers->tier2.";</script>";?>
 <?php echo "<script>var tier3=".@$tiers->tier3.";</script>";?>
@@ -302,6 +303,53 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 	}
 }
 
+
+function showcompanyprice(companyid,itemid,purchasingadmin){
+	
+	$.ajax({
+		type:"post",
+		data: "companyid="+companyid+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
+		url: getcompanypriceurl
+	}).done(function(data){
+		
+		if(data){
+			$("#myModalbody").css('display','block');
+			$("#myModalfooter").css('display','block');
+			$("#myModalLabelchng").html('Company Price');
+			$("#companypricemodal").modal();
+			$('#itemprice').val(data);
+			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+');" value="Update"/>';
+			$("#pricebtn").html(phtml);
+			
+		}else{
+			$('#itemprice').val('');
+			$("#myModalbody").css('display','none');
+			$("#myModalfooter").css('display','none');
+			$("#companypricemodal").modal();						
+			$("#myModalLabelchng").html('No Company Price Exists');
+		}
+	});
+
+}
+
+
+function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
+
+	var val=$('#itemprice').val();
+	if(confirm("Do you want to save this as company's price for this item?"))
+	{
+		$.ajax({
+			type:"post",
+			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
+			url: setcompanypriceurl
+		}).done(function(data){
+            $("#companypricemodal").modal('hide');						
+			alert(data);			
+			
+		});
+	}
+}
+
 //-->
 </script>
 
@@ -441,7 +489,11 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 							    			</a>
 							    			<?php }?>
 											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"   onblur="setcompanypriceprompt(this.value,'<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->quote;?>','<?php echo @$q->purchasingadmin;?>');" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
-							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/>
+							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br> <a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>')">
+							    			Edit Company Price
+							    		</a>
+							    			
+							    			
 							    		</td>
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
@@ -683,6 +735,39 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
   </div>
 	  
   
+  <div id="companypricemodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                      <form id="companypriceform" action="" method="post">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+                          <br>
+                          <i class="icon-credit-card icon-7x"></i>
+                          <h4 class="semi-bold" id="myModalLabelchng">
+                          Company Price:                          
+                          </h4>
+                          <br>
+                        </div>
+                        
+                        <div class="modal-body" id="myModalbody">
+                          <div class="row form-row">
+                            <div class="col-md-6">
+                              <strong>Price:</strong>
+                            </div>
+                            <div class="col-md-6">
+                              <input type="text" id="itemprice">
+                            </div>
+                          </div>                          
+                        </div>
+                        <div class="modal-footer" id="myModalfooter">
+                          <span id="pricebtn"><input type="button" class="btn btn-primary" value="Update"/></span>
+                        </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+  
+  
   <div id="qtydiscount" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -707,6 +792,3 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
     </div>
     <!-- /.modal-dialog -->
   </div> 
-  
-	  
-	  			

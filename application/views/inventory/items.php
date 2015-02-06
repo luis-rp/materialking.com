@@ -51,7 +51,7 @@
 
 <?php echo '<script>var availpriceurl="'.site_url('inventory/availprice').'";</script>'?>
 
-
+<?php echo '<script>var getallcompanypricesurl="'.site_url('inventory/getallcompanyprices').'";</script>'?>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
@@ -377,6 +377,40 @@ function delqtydiscount(id,itemid){
     }
     
     
+    function showallcompanyprice(itemid){
+	$('#myModalbody').html('');	
+	var phtml = "";
+    $("#allcompanypricesmodal").modal();	
+   	$.ajax({
+		type:"post",
+		data: "itemid="+itemid,
+		dataType: 'json',
+		url: getallcompanypricesurl
+	}).done(function(data){
+		
+		if(data){
+			phtml += '<div class="row form-row"><div class="col-md-6"><strong>Name:</strong></div><div class="col-md-6"><strong>Price:</strong></div></div>';		var i =0;		
+			$.each(data, function( index, value ) {
+			
+			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.username+'</strong></div><div class="col-md-6"><strong>'+value.price+'</strong></div></div>';	
+			i++;
+				
+			});
+			
+			if(i>0)
+			$('#myModalbody').html(phtml);	
+			else
+			$('#myModalbody').html('No company prices exists');	
+		}else{ 
+			$('#myModalbody').html('No company prices exists');	
+					
+		}
+	});
+    	   	
+    	
+    }
+    
+    
     function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,minqty,itemcode){
 
     	if ($('#check'+id).is(':checked') ) {
@@ -611,7 +645,9 @@ function clearall(id)
                                                 		<?php }?>
                                                 	</select>
                                                 	<br>
-                                                	<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$item->id)?>');">Select/View Preloaded Options</a>
+                                                	<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$item->id)?>');">Select/View Preloaded Options</a>  
+                                                <br>
+                                                <a href="javascript:void(0)" onclick="showallcompanyprice('<?php echo htmlentities(@$item->id)?>');">Select/View Company Prices</a>	
                                                 </td>
 
                                                 <td class="v-align-middle">
@@ -900,3 +936,38 @@ function clearall(id)
   <?php } ?>    
   
   <?php $olditemid=$masterdata->itemid; $i++; } ?>
+  
+  
+  
+  
+   <div id="allcompanypricesmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+                    <div class="modal-dialog">
+                      <form id="companypriceform" action="" method="post">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+                          <br>
+                          <i class="icon-credit-card icon-7x"></i>
+                          <h4 class="semi-bold" id="myModalLabelchng">
+                         All Companies Prices:                          
+                          </h4>
+                          <br>
+                        </div>
+                        
+                        <div class="modal-body" id="myModalbody">
+                          <div class="row form-row">
+                            <div class="col-md-6">
+                              <strong>Name:</strong>
+                            </div>
+                            <div class="col-md-6">
+                               <strong>Price:</strong>
+                            </div>
+                          </div>                          
+                        </div>
+                        <div class="modal-footer" id="myModalfooter">
+                          <span id="pricebtn"><input type="button" class="btn btn-primary" data-dismiss="modal" class="close" value="close"/></span>
+                        </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>

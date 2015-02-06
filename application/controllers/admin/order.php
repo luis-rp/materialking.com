@@ -479,8 +479,15 @@ function orders_export()
 		
 		$query = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
         		  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$companystr}";
-        $data['companies'] = $this->db->query($query)->result();
-		
+			
+		if(count($companyarr)>1)
+		{
+        	$data['companies'] = $this->db->query($query)->result();
+        }else 
+        {
+        	$data['companies'] = "";
+        }
+        			
         $wherep = "";
         if ($this->session->userdata('usertype_id') > 1)
                 $wherep = " AND purchasingadmin =".$this->session->userdata('purchasingadmin');               

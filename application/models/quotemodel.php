@@ -643,7 +643,7 @@ class Quotemodel extends Model
 
 
 		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice,s.taxrate,
-					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue, ai.award 
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,
@@ -670,14 +670,14 @@ class Quotemodel extends Model
 					   ".$this->db->dbprefix('quote')." q,
 					   ".$this->db->dbprefix('users')." u
 					  WHERE r.awarditem=ai.id AND ai.award=a.id
-					  AND a.quote=q.id AND q.purchasingadmin=u.id AND invoicenum='{$invoice->invoicenum}'
+					  AND a.quote=q.id AND q.purchasingadmin=u.id AND invoicenum='{$invoice->invoicenum}' AND a.id = '{$invoice->award}'
 					  ";
 			$quotequery = $this->db->query($quotesql);
 			$invoice->quote = $quotequery->row();
 			
 			$invoices[]=$invoice;
 		}
-          
+        //echo "<pre>",print_r($invoices);  die;
 		return $invoices;
 	}
 

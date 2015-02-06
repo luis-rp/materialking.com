@@ -956,19 +956,13 @@ class itemcode_model extends Model {
         return $this->db->insert_id();
     }
 
-    
-    public function add_massitem($data_user,$master_data)
+    public function add_massitem($data_user)
     {	
         $this->load->database();
 
         $this->db->insert('item',$data_user);
         $id = $this->db->insert_id();
-        
-        for($i=0;$i<count($master_data);$i++)
-        {
-        	$master_data[$i]['itemid'] = $id; 
-        	$this->db->insert('masterdefault',$master_data[$i]);
-        }
+      
        if(isset($_POST['categories']) && @$_POST['categories']!= '')
        {
 	        foreach ($_POST['categories'] as $category){
@@ -978,6 +972,13 @@ class itemcode_model extends Model {
 	        	$this->db->insert('item_category', $options2);
 	        }
        }  
+       return $id;
+    }
+    
+    public function add_massitemmanufacturer($master_data)
+    {	
+        $this->load->database();
+        $this->db->insert('masterdefault',$master_data);      
     }
     
     public function getManufacturerId($str)

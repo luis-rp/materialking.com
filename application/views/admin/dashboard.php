@@ -415,7 +415,34 @@
 				  <?php } } else{ ?>
 				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
 				</table>
-			<?php } ?>			
+			<?php } ?>	
+			
+			
+			
+			<?php if($this->session->userdata('managedprojectdetails')){?>
+			<?php if(isset($promembers)) {?>
+	    	
+	    	  <table class="table table-bordered">
+				<caption><strong>Project Team Members<strong>&nbsp;&nbsp;			
+				<a href="<?php echo base_url(); ?>admin/admin/index" target="_blank">Manage Users</a></caption>	
+				<tr><th>Username</th><th>Position</th></tr>
+				<tr>
+				<td><?php echo $mainuser->username; ?></td>
+				<td><?php echo $mainuser->position; ?></td>
+				</tr>
+				 <?php foreach ($promembers as $promember) { ?>
+				<tr>
+				<td><?php echo $promember->username; ?></td>
+				<td><?php echo $promember->position; ?></td>
+				</tr>
+				  <?php } ?>
+				</table>
+	    	
+			<?php } }?>
+			
+			
+			
+					
 		</div>
 			
 	    	
@@ -437,30 +464,12 @@
 	    		<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
 	    		</div>
 
-	    		<?php }?>
-				
-				
+	    		<?php }?>			
 	    	</div>
-	    	<br>
-	    	<?php if(isset($promembers)) {?>
-	    	<div class="span7" style="width:50%;">
-	    	  <table class="table table-bordered">
-				<caption><strong>Project Team Members<strong>&nbsp;&nbsp;			
-				<a href="<?php echo base_url(); ?>admin/admin/index" target="_blank">Manage Users</a></caption>	
-				<tr><th>Username</th><th>Position</th></tr>
-				<tr>
-				<td><?php echo $mainuser->username; ?></td>
-				<td><?php echo $mainuser->position; ?></td>
-				</tr>
-				 <?php foreach ($promembers as $promember) { ?>
-				<tr>
-				<td><?php echo $promember->username; ?></td>
-				<td><?php echo $promember->position; ?></td>
-				</tr>
-				  <?php } ?>
-				</table>
-	    	</div>
-			<?php } }else{?>
+	    
+	    	
+
+			<?php }else{?>
 			<div  class="span8" style="margin-left:1%;">
 		
 
@@ -695,7 +704,8 @@
 		
 			 <?php if($this->session->userdata('usertype_id') != 3) 
 			         {	
-			         	if(isset($invoices)) {  ?>	
+			         	if(isset($invoices)) { 
+			         		if(isset($invoiceCntr) && $invoiceCntr != 0) { ?>	
 			    
                 <div class="well span3"  style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
@@ -726,11 +736,14 @@
 				
 				
 				</table>
-			<?php } } ?>	
+			<?php } } } ?>	
 				</div>
 
 				
-		<?php if(isset($backtracks)) { ?>
+		<?php  if(isset($backtracks)) { 
+			
+				if(isset($backtracksCnt) && @$backtracksCnt != '')
+				{ ?>
     			<div class="well span3" style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -773,7 +786,7 @@
 				<?php } ?>		
 				</table>
 				</div>
-             <?php } ?>
+             <?php } }  ?>
 				
 				
 				

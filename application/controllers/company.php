@@ -441,7 +441,7 @@ class Company extends CI_Controller {
     
     function saveprofile() {
     	
-    	//echo "<pre>"; print_r($_POST); die;
+    	
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
@@ -466,13 +466,13 @@ class Company extends CI_Controller {
 		}
 		
 		$orgpwd="";
-		if(isset($_POST['password']))
+		if(isset($_POST['password']) && $_POST['password']!="")
 		{
 			$orgpwd=$_POST['password'];
 			$_POST['password']=md5($_POST['password']);
 			$_POST['pwd']=$_POST['password'];
 		}
-        
+		
         if (isset($_FILES['logo']['tmp_name']))
             if (is_uploaded_file($_FILES['logo']['tmp_name'])) {
                 $nfn = $_FILES['logo']['name'];
@@ -665,12 +665,17 @@ class Company extends CI_Controller {
         	}
         }
 
-
+ 
         unset($_POST['_wysihtml5_mode']);
         if(isset($_POST['checkid']))
         unset($_POST['checkid']);
         if(isset($_POST['file1']))
         unset($_POST['file1']);
+        if($_POST['password']=="")
+        {
+        unset($_POST['password']);      
+        unset($_POST['pwd']);
+        }  
         $this->db->where('id', $company->id);
         $this->db->update('company', $_POST);
 

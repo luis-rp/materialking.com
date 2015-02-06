@@ -97,6 +97,7 @@ function pickupfun()
 							              <?php
 									    	$i = 0;
 									    	$gtotal = 0;
+									    	$shipping = 0;
 									    	foreach($orderitems as $item)
 									    	{
 									    		$i++;
@@ -113,8 +114,9 @@ function pickupfun()
                                           <?php } ?>
                                           <?php 
                                                 $taxpercent = $order->taxpercent;
+                                                $shipping = $order->shipping;
                                         	    $tax = $gtotal*$taxpercent/100;
-                                        	    $totalwithtax = $tax+$gtotal;
+                                        	    $totalwithtax = $tax+$gtotal+$shipping;
                                           ?>
                                             <tr>
                                                 <td colspan="3">Total</td>
@@ -123,6 +125,10 @@ function pickupfun()
                                             <tr>
                                                 <td colspan="3">Tax</td>
                                                 <td>$<?php echo number_format($tax,2);?></td>
+                                            </tr>
+                                             <tr>
+                                                <td colspan="3">Shipment Rate</td>
+                                                <td>$<?php echo number_format($shipping,2);?></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3">Total</td>

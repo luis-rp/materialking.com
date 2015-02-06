@@ -123,13 +123,18 @@ class Dashboard extends CI_Controller
 		$sms="";
 	    $basic=$this->db->get_where('company',array('id'=>$company->id))->row();
 	    $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
-	  
-	    if(@$bankaccount->accountnumber==""){
-	    	$sms="Plese Setup your Bank Account settings, So you can accept Credit card payments.";
-	    }
+	
+	    if(@$bankaccount->bankname=="" && @$bankaccount->routingnumber=="" && @$bankaccount->accountnumber=="")
+		    {
+		    $sms="Plese Setup your Bank Account settings, So you can accept Credit card payments.";
+		    }
+	    if($sms!="")
+	    	{
+	    		 $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">'.$sms.'</div></div>');
+	    	}
+	    
 	    if(@$basic->contact!="" && @$basic->address!="" && @$basic->city!="" && @$basic->state!="" && @$basic->zip!="" && @$basic->address!="")
-	    {
-	    	 $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">'.$sms.'</div></div>');
+	    {	
 	    	$this->load->view('dashboard/index',$data);
 	    }
 	    else 

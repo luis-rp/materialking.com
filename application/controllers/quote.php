@@ -3364,7 +3364,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->send();
 	}
 	
-	function invoice()
+	function invoice($invoicequote="")
 	{
 		$company = $this->session->userdata('company');
 		if(!$company)
@@ -3377,8 +3377,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			
 		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
 			$invoicequote = $_POST['invoicequote'];
+		elseif($invoicequote!="") 
+			$invoicequote = $invoicequote;
 		else 
-			$invoicequote = "";				
+			$invoicequote = "";					
 			
 		if(!$invoicenum)
 		{
@@ -3480,7 +3482,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->email->reply_to($company->primaryemail);
 		$this->email->send();
 		
-		$this->invoice();
+		$this->invoice($invoicequote);
 	}
 	
 	function requestpayment($quoteid = '',$award='')
@@ -4316,8 +4318,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $insert = array();
            
             if(isset($_POST['val'])){
-            $update['price'] = $_POST['val']; 
-            $update['notes'] = "";
+            $insert['price'] = $_POST['val'];            
             }
 
             $insert['company'] = $_POST['companyid'];
@@ -4330,6 +4331,19 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         }
         
 		die;
+	}
+	
+	
+	function getcompanyprice(){
+		
+		if(!$_POST)
+		die;
+		
+		$this->db->where('company', $_POST['companyid']);
+        $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+        $this->db->where('itemid', $_POST['itemid']);        
+        $resultprice = $this->db->get('purchasingtier_item')->row()->price;
+		echo $resultprice; die;
 	}
 	
 }

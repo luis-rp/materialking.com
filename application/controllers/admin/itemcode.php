@@ -274,8 +274,7 @@ class itemcode extends CI_Controller
     }
     function index ()
     {
-        $itemcodes = $this->itemcode_model->get_itemcodes();
-      
+        $itemcodes = $this->itemcode_model->get_itemcodes();      
         $count = count($itemcodes);
         $items = array();
         if ($count >= 1)
@@ -1020,23 +1019,25 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$instore = 1;
             	$increment = $data->sheets[0]["cells"][$x][7];
             	
-            	
 				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
-				//echo '<pre>',print_r($data_user);die;
+				
+				$itemID = $this->itemcode_model->add_massitem($data_user);
+				
            		$Totalcnt = count($data->sheets[0]["cells"][1]);
 				$index = 0;
 				$cnt = ($Totalcnt - 7) / 6;
 				$newTotal = $Totalcnt;
-								
+	
 				for ($i=8;$i<=$Totalcnt;$i+= 6)
-				{					
+				{		
+					$manufacturerename = $data->sheets[0]["cells"][$x][$i];			
 					$itemcode1 = $data->sheets[0]["cells"][$x][$i+1];
 	            	$part = $data->sheets[0]["cells"][$x][$i+2];
 	            	$itemname1 = $data->sheets[0]["cells"][$x][$i+3];
 	            	$listprice = $data->sheets[0]["cells"][$x][$i+4];
 	            	$minquantity = $data->sheets[0]["cells"][$x][$i+5];
-	            	
-	            
+	            	if($manufacturerename!=""){
+	                  
 	            	$manufacturerResult = $this->itemcode_model->getManufacturerId($data->sheets[0]["cells"][$x][$i]);
 	            	if(!empty($manufacturerResult))
 	            	{
@@ -1047,24 +1048,24 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	            		$manufacturer = '';
 	            	}
 	            	
-	            	$master_data[] = array(
+	            	$master_data = array(
 									'itemname'=>$itemname1,
 									'minqty'=>$minquantity,
 									'manufacturer'=>$manufacturer,
 									'partnum'=>$part,
 									'price'=>$listprice,
-									'itemcode'=>$itemcode1
+									'itemcode'=>$itemcode1,
+									'itemid'=>$itemID
 									);
-					
+									
+					$this->itemcode_model->add_massitemmanufacturer($master_data);
+	            	}	
 				}	
-				
-            	$this->itemcode_model->add_massitem($data_user,$master_data);
             }
-            
+           
             $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Codes Added Successfully</div></div>');
             redirect('admin/itemcode');
-        	
     }
 
     function add_itemcode ()

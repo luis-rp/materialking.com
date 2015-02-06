@@ -97,6 +97,7 @@ class Inventorymodel extends Model
 		//$items = $this->db->from('item')->join('companyitem', 'item.id=companyitem.itemid', 'left')->get()->result();
 		//echo $sql;
 		$items = $this->db->query($sql)->result();
+		
 		$ret = array();
 		if($items)
 		foreach($items as $item)
@@ -118,9 +119,10 @@ class Inventorymodel extends Model
 		$tci = $this->db->dbprefix('companyitem');
 		$tq = $this->db->dbprefix('qtydiscount');
 		$where = " WHERE  1=1 ";
-		$noleftjoin = "";
+		//$noleftjoin = "";
 		$joinqty="";
 		//$this->db->limit($limit, $newoffset);
+			
 		if(@$_POST['searchitem'])
 		{
 		    $where .= " AND ($ti.itemname LIKE '%".$_POST['searchitem']."%' OR $ti.itemcode LIKE '%".$_POST['searchitem']."%') ";
@@ -138,11 +140,14 @@ class Inventorymodel extends Model
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
 		}
 		
+		$noleftjoin = "LEFT";
+		//$noleftjoin = "";
 		if(@$_POST['serachmyitem'])
 		{
-		    $where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
+		    //$where .= " AND ($tci.itemcode!='' OR $tci.itemname!='') ";
 		    //$this->db->where('manufacturer', $_POST['manufacturer']);
-		}
+		    $noleftjoin = ""; 
+		}		
 		
 		if(@$_POST['filteroption'])
 		{
@@ -174,13 +179,14 @@ class Inventorymodel extends Model
 				{
 		   		$where .= " AND $tci.isfeature='1' ";
 				}
-		}
-		
+		}	
 		$sql = "SELECT $ti.* FROM $ti 
 		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
-		        $where";
-		$items = $this->db->query($sql)->result();
+		        $where";		
+		
+		$items = $this->db->query($sql)->result();		
 		$total = count($items);
+		//echo "<pre>"; print_r($total); die;
 		return $total;
 	}
 }

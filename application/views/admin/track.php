@@ -519,6 +519,7 @@ function removeallitems(quote){
 
 function setServicelaboritemsFlag()
 {
+	alert("Service/Labor items added to bill");
 	$("#servicelaboritemsflag").val(1);
 }
 </script>

@@ -183,8 +183,9 @@
 <span class="closeX" id="canceltour"></span></div><?php } ?>
 
 <section class="row-fluid">
-    <h3 class="box-header" style="display:inline;" ><span id="step1"><?php echo $heading; ?></span>   <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>  &nbsp;&nbsp; <a href="<?php echo base_url("admin/itemcode/itempdf");?>" class="btn btn-green">View PDF</a></h3>
-    <a  href="javascript: void(0)" onclick="addserviceandlabortest()"> Add service & labor items </a>
+    <h3 class="box-header" style="display:inline;" ><span id="step1"><?php echo $heading; ?></span>   <a href="<?php echo base_url("admin/itemcode/export");?>" class="btn btn-green">Export all items</a>  &nbsp;&nbsp; <a href="<?php echo base_url("admin/itemcode/itempdf");?>" class="btn btn-green">View PDF</a>
+    &nbsp;&nbsp;
+    <a  href="javascript: void(0)" onclick="addserviceandlabortest()" class="btn btn-green"> Add service & labor items </a></h3>
     <div class="box">
         <div class="span12">
 

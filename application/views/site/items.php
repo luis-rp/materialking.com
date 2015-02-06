@@ -262,7 +262,7 @@
                                 <?php $count=strlen($item->itemcode);
                                      if($count<=20){
                                  ?>
-                                  <h2 class="title_top1"  style="height:40px;word-wrap:break-word;"><a href="<?php echo site_url('site/item/' . $item->url); ?>">
+                                  <h2 class="title_top1"  style="height:40px;word-break: break-all;"><a href="<?php echo site_url('site/item/' . $item->url); ?>">
                                   <?php //echo $item->itemcode;
                                   $arr1="";
                                   $str="";
@@ -276,7 +276,7 @@
                                         echo $str;
                                   ?></a></h2>
                                    <?php } else {?>
-                                <h2 class="title_top1"  style="height:40px;word-wrap:break-word;line-height:18px;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php //echo $item->itemcode;
+                                <h2 class="title_top1"  style="height:40px;word-break: break-all;line-height:18px;"><a href="<?php echo site_url('site/item/' . $item->url); ?>"><?php //echo $item->itemcode;
 
 								$arr1="";
                                   $str="";
