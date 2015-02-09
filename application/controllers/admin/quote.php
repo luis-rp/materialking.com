@@ -4440,49 +4440,51 @@ class quote extends CI_Controller
         
         
         $invoices = $this->quote_model->getinvoicesforpayment($invoicenum);
-        $invoice = $invoices[0];
-        //echo "<pre>",print_r($invoice); die;
+        if (array_key_exists(0, $invoices)) {
+        $invoice2 = $invoices[0];
+        }
+        //echo "<pre>",print_r($invoice2); die;
         $items = array();
-        if($invoice){
+        if (array_key_exists(0, $invoices)) {
         $settings = $this->settings_model->get_current_settings();
         $available_statuses = array('pending', 'verified', 'error');
         $data['available_statuses'] = $available_statuses;        
-            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
+            if($invoice2->invoicenum && $invoice2->quote->purchasingadmin == $this->session->userdata('purchasingadmin') )
             {
-                $invoice->ponum = $invoice->quote->ponum;
+                $invoice2->ponum = $invoice2->quote->ponum;
 
-                if($invoice->quote->potype=='Contract'){
+                if($invoice2->quote->potype=='Contract'){
                 $company = $this->db->select('users.*')->from('received')
                            ->join('awarditem','received.awarditem=awarditem.id')
                            ->join('users','awarditem.company=users.id')
-                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->where('received.invoicenum',$invoice2->invoicenum)
                            ->get()->row()
                            ;
                 }else{                
                 $company = $this->db->select('company.*')->from('received')
                            ->join('awarditem','received.awarditem=awarditem.id')
                            ->join('company','awarditem.company=company.id')
-                           ->where('received.invoicenum',$invoice->invoicenum)
+                           ->where('received.invoicenum',$invoice2->invoicenum)
                            ->get()->row()
                            ;
                 }           
                            
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
-                $invoice->bankaccount = $bankaccount;
+                $invoice2->bankaccount = $bankaccount;
 
-                $invoice->companydetails = $company;
-                $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
-                //$invoice->status = $invoice->quote->status;
-                if($invoice->quote->potype=='Contract')
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice2->companydetails = $company;
+                $invoice2->totalprice = $invoice2->totalprice + ($invoice2->totalprice*$settings->taxpercent/100);
+                //$invoice2->status = $invoice2->quote->status;
+                if($invoice2->quote->potype=='Contract')
+                $invoice2->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice2->invoicenum . '\',\''.$invoice2->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 else 
-                $invoice->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
+                $invoice2->actions = '<a href="javascript:void(0)" onclick="showInvoice(\'' . $invoice2->invoicenum . '\',\''.$invoice2->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
                 
                 $options = false;
                 foreach ($available_statuses as $status_key => $status_text)
                 {
 
-                    if (strtolower($invoice->status) == $status_text) {
+                    if (strtolower($invoice2->status) == $status_text) {
                         $selected = " selected=\"selected\"";
                     } else {
                         $selected = '';
@@ -4491,30 +4493,30 @@ class quote extends CI_Controller
                 }
                 $options_payment = array();
                 $options_paymenttype = array();
-                $options_payment[]="<option value=\"Paid\" ".($invoice->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
-                //$options_payment[]="<option value=\"Requested Payment\" ".($invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Requested Paid</option>";;
-                $options_payment[]="<option value=\"Unpaid\" ".($invoice->paymentstatus=='Unpaid'||$invoice->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
+                $options_payment[]="<option value=\"Paid\" ".($invoice2->paymentstatus=='Paid'?" selected=\"selected\"":'').">Paid</option>";;
+                //$options_payment[]="<option value=\"Requested Payment\" ".($invoice2->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Requested Paid</option>";;
+                $options_payment[]="<option value=\"Unpaid\" ".($invoice2->paymentstatus=='Unpaid'||$invoice2->paymentstatus=='Requested Payment'?" selected=\"selected\"":'').">Unpaid</option>";;
 
                 $options_paymenttype[]="<option value=\"\">Select Payment Type</option>";
                 if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
-                $options_paymenttype[]="<option value=\"Credit Card\" ".($invoice->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";;
-                $options_paymenttype[]="<option value=\"Cash\" ".($invoice->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
-                $options_paymenttype[]="<option value=\"Check\" ".($invoice->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
+                $options_paymenttype[]="<option value=\"Credit Card\" ".($invoice2->paymenttype=='Credit Card'?" selected=\"selected\"":'').">Credit Card</option>";;
+                $options_paymenttype[]="<option value=\"Cash\" ".($invoice2->paymenttype=='Cash'?" selected=\"selected\"":'').">Cash</option>";;
+                $options_paymenttype[]="<option value=\"Check\" ".($invoice2->paymenttype=='Check'?" selected=\"selected\"":'').">Check</option>";;
 
-                $txtrefnum = "<input type=\"text\" id=\"refnum_$invoice->invoicenum\" name=\"refnum\" value=\"$invoice->refnum\"/>";
+                $txtrefnum = "<input type=\"text\" id=\"refnum_$invoice2->invoicenum\" name=\"refnum\" value=\"$invoice2->refnum\"/>";
 
-                $update_button = "<button onclick=\"update_invoice_status('$invoice->invoicenum')\">update</button>";
-                $update_payment_button = "<button onclick=\"update_invoice_payment_status('$invoice->invoicenum')\">update</button>";
+                $update_button = "<button onclick=\"update_invoice_status('$invoice2->invoicenum')\">update</button>";
+                $update_payment_button = "<button onclick=\"update_invoice_payment_status('$invoice2->invoicenum')\">update</button>";
 
-                $status_html = "<select id=\"invoice_$invoice->invoicenum\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
+                $status_html = "<select id=\"invoice_$invoice2->invoicenum\" name=\"status_element\">" . implode("", $options) . "</select>" . $update_button;
 
-                $payment_status_html = "<select id=\"invoice_payment_$invoice->invoicenum\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
-                $payment_status_html .= "<select id=\"invoice_paymenttype_$invoice->invoicenum\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$invoice->invoicenum."','".$invoice->totalprice."');\">" . implode("", $options_paymenttype) . "</select>";
+                $payment_status_html = "<select id=\"invoice_payment_$invoice2->invoicenum\" name=\"payment_status_element\">" . implode("", $options_payment) . "</select>";
+                $payment_status_html .= "<select id=\"invoice_paymenttype_$invoice2->invoicenum\" name=\"paymenttype_status_element\" onchange=\"paycc(this.value,'".$invoice2->invoicenum."','".$invoice2->totalprice."');\">" . implode("", $options_paymenttype) . "</select>";
                 $payment_status_html .= $txtrefnum;
                 $payment_status_html .= $update_payment_button;
-                if($invoice->paymentstatus=='Requested Payment')
+                if($invoice2->paymentstatus=='Requested Payment')
                 {
-                	if($invoice->quote->potype=='Contract')
+                	if($invoice2->quote->potype=='Contract')
                			$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Company</i>';
                		else 
                     	$payment_status_html .= '<i class="icon-lightbulb">Payment Requested by Supplier</i>';
