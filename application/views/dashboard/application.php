@@ -136,13 +136,13 @@ function PopupPrint(data)
                                 					<?php $phone = "officer".$i."phone";?>
                                 					<?php $insolvency = "officer".$i."insolvency";?>
                                 					<tr>
-                                						<td><input type="text" name="<?php echo $title;?>" value="<?php echo @$appl->$title?>"/></td>
-                                						<td><input type="text" name="<?php echo $name;?>" value="<?php echo @$appl->$name?>"/></td>
-                                						<td><input type="text" name="<?php echo $city;?>" value="<?php echo @$appl->$city?>"/></td>
-                                						<td><input type="text" name="<?php echo $socialnum;?>" value="<?php echo @$appl->$socialnum?>"/></td>
-                                						<td><input type="text" name="<?php echo $dob;?>" value="<?php echo @$appl->$dob?>"/></td>
-                                						<td><input type="text" name="<?php echo $phone;?>" value="<?php echo @$appl->$phone?>"/></td>
-                                						<td><input type="text" name="<?php echo $insolvency;?>" value="<?php echo @$appl->$insolvency?>"/></td>
+                                					<td><input type="text" name="<?php echo $title;?>" value="<?php echo @$appl->$title?>" style="width:99%;"/></td>
+                                					<td><input type="text" name="<?php echo $name;?>" value="<?php echo @$appl->$name?>" style="width:99%;"/></td>
+                                					<td><input type="text" name="<?php echo $city;?>" value="<?php echo @$appl->$city?>" style="width:99%;"/></td>
+                                			<td><input type="text" name="<?php echo $socialnum;?>" value="<?php echo @$appl->$socialnum?>" style="width:99%;"/></td>
+                                					<td><input type="text" name="<?php echo $dob;?>" value="<?php echo @$appl->$dob?>" style="width:99%;"/></td>
+                                					<td><input type="text" name="<?php echo $phone;?>" value="<?php echo @$appl->$phone?>" style="width:99%;"/></td>
+                                		<td><input type="text" name="<?php echo $insolvency;?>" value="<?php echo @$appl->$insolvency?>" style="width:99%;"/></td>
                                 					</tr>
                                 					<?php }?>
                                 				</table>
@@ -393,7 +393,7 @@ function PopupPrint(data)
                                 				</table>
                                 			</td>
                                 		</tr>
-										<tr>
+                                		<tr>
                                 			<td colspan="2">Attachments</td>
                                 		</tr>
                                 		<tr>
@@ -414,7 +414,7 @@ function PopupPrint(data)
                                 						
                                 				</table>
                                 			</td>
-                                		</tr>                                		
+                                		</tr>
                                 	</table>
                                 </div>
                             </div>

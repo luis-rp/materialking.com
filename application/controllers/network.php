@@ -166,9 +166,14 @@ class network extends CI_Controller {
             	$wish = "Yes";
             else
             	$wish = "No";
+            	
+            if(isset($_POST['message']) && $_POST['message'] !="")
+            	$msg = $_POST['message'];
+            else
+            	$msg = "none";
 
            $data['email_body_title']  = "Dear " . $supplier->title ;
-           $data['email_body_content'] = $company->companyname." just sent you a request to join in your newtork.
+           $data['email_body_content'] = $company->companyname." just sent you a request to join in your Newtork.
             The following information was sent:
             Account Number: ".$_POST['accountnumber']."
             <br/>

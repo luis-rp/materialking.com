@@ -286,9 +286,13 @@ function shownotice(newval,oldval,id){
                         <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
                     </tr>
                 </thead>
-                <?php
+                <?php 
+                //echo '<pre>@@',print_r($billservicedetails);
+                
                 $totalprice = 0;
                 $i = 0;
+                $emailitems1 = '';
+                $serviceItemTax = 0;
                 foreach ($invoice->items as $invoiceitem) {
                     $invoiceitem = (array) $invoiceitem;
                     $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
@@ -306,13 +310,26 @@ function shownotice(newval,oldval,id){
 						  ';
                 }
                 
+                if(isset($billservicedetails))
+                {
+                	foreach ($billservicedetails as $key=>$v)
+                	{
+                		$emailitems1 .= '<tr>';
+						$emailitems1 .= '<td >'.$v['name'].'</td>';
+						$emailitems1 .= '<td >'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
+						$emailitems1 .= '</tr><tr><td>Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+						
+						$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100)) ;						
+                	}
+                }
+                
                 if(@$invoiceitem['markuptotalpercent']!="")
                 $subtotal = $totalprice + ($totalprice*$invoiceitem['markuptotalpercent']/100);    
                                 
                 $taxtotal = $totalprice * $config['taxpercent'] / 100;
                                 
                 $subtotal1 = $totalprice + ($totalprice * $invoiceitem['markuptotalpercent']/100);
-		        $finaltotal = $subtotal1 + (@$subtotal1*$config['taxpercent']/100);
+		        $finaltotal = $serviceItemTax + $subtotal1 + (@$totalprice*$config['taxpercent']/100);
                // $grandtotal = $subtotal + $taxtotal;
                 echo '  <tr>
 					    <td colspan="7" align="left">&nbsp;</td>
@@ -320,7 +337,7 @@ function shownotice(newval,oldval,id){
 					    <td align="left">$ ' . number_format($totalprice*@$invoiceitem['markuptotalpercent']/100,2) . '</td>
 					  </tr>
                 		<tr>
-					    <td colspan="7" rowspan="3">
+					    <td colspan="7" rowspan="8">
                       		<div style="width:70%">
                           		<br/>
                           		<!-- <h4 class="semi-bold">Terms and Conditions</h4>
@@ -335,6 +352,7 @@ function shownotice(newval,oldval,id){
 					    <td align="left">Tax</td>
 					    <td align="left">$ ' . number_format($taxtotal, 2) . '</td>
 					  </tr>
+					  '.$emailitems1.'
 					  <tr>
 					    <td align="left">Total</td>
 					    <td align="left">$ ' . number_format($finaltotal, 2) . '</td>

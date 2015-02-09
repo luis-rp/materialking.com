@@ -17,10 +17,11 @@
     $(document).ready(function() {
         $('.datefield').datepicker();
     });
-    function showInvoice(invoicenum)
+    function showInvoice(invoicenum,invoicequote)
     {
-        $("#invoicenum").val(invoicenum);
-        $("#invoiceform").submit();
+       $("#invoicenum").val(invoicenum);
+       $("#invoicequote").val(invoicequote);	
+       $("#invoiceform").submit();
     }
     
     function showContractInvoice(invoicenum)
@@ -280,6 +281,7 @@ function shownotice(newval,oldval,id){
                 <?php
                 $totalprice = 0;
                 $i = 0;
+                $alreadypay = 0;
                 foreach ($invoice->items as $invoiceitem) {
                     $invoiceitem = (array) $invoiceitem;
                     $totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
@@ -298,6 +300,7 @@ function shownotice(newval,oldval,id){
 						    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $quantity . '</td>
 						  </tr>
 						  ';
+                   
                 }
                 $taxtotal = $totalprice * $config['taxpercent'] / 100;
                 $grandtotal = $totalprice + $taxtotal;
@@ -337,9 +340,13 @@ function shownotice(newval,oldval,id){
             <div class="datagrid-example">
             	<div>
                     <form id="invoiceform" class="form-inline" style="padding:0px; margin:0px" method="post" action="<?php echo site_url('admin/quote/invoice'); ?>">
-                        <input type="hidden" id="invoicenum" name="invoicenum"/>
+                        <input type="hidden" id="invoicenum" name="invoicenum"/>                                 
+                        <input type="hidden" id="invoicequote" name="invoicequote"/>
                     </form>                    
-                    <?php if (!@$items) echo 'No Invoices Found.'; ?>
+                    <?php if(@$invoice->alreadypay ==1)
+					       echo "This is a pre-paid order. Please see Invoice # ".@$invoice->paidinvoicenum." for transaction data related to this order.";
+					                    
+                    if (!@$items) echo 'No Invoices Found.'; ?>
             	</div>
                 <div>
                     <table id="datatable" class="table table-bordered">
@@ -415,6 +422,11 @@ function shownotice(newval,oldval,id){
                     		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>-->
                     	</tbody>
                     </table>
+                    
+                    <?php if(@$invoice->alreadypay==1){?>
+                    <div style="text-align:center;" ><a href="javascript:void(0)" onclick="showInvoice('<?php echo @$invoice->paidinvoicenum;?>','<?php echo $quote->id;?>')"><?php echo @$invoice->paidinvoicenum;?></a></div>
+                    <?php }?>
+                    
                 </div>
             </div>
         </div>

@@ -68,7 +68,7 @@ class Settings extends CI_Controller
 		$rules ['taxrate'] = 'trim|required';
 		$rules ['adminemail']= 'trim|required';
 		$rules ['pricedays'] = 'trim|required';
-		$rules ['pricepercent']= 'trim|required';
+		$rules ['pricepercent']= 'trim';
 		$this->validation->set_rules ( $rules );
 		$this->validation->set_message ( 'required', '* required' );
 		$this->validation->set_error_delimiters ( '<div class="error">', '</div>');

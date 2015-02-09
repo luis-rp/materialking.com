@@ -536,6 +536,7 @@ class Quote extends CI_Controller
 				if($tier1->price){
 					
 					$item->ea = $tier1->price;
+					$item->ispriceset = 1;
 				}
 				
 				if($tier1->qty){
@@ -976,6 +977,7 @@ class Quote extends CI_Controller
 				
 				if(@$tier1->price){					
 					$item->ea = $tier1->price;
+					$item->ispriceset = 1;
 				}
 				
 				if($tier1->qty){
@@ -1035,6 +1037,15 @@ class Quote extends CI_Controller
         	else 
         	$item->noteslabel = "";
 			
+        	        		
+        	$this->db->where('company',$company->id);
+        	$this->db->where('itemid',$item->itemid);
+        	$qtyresult = $this->db->get('qtydiscount')->result();
+        	if($qtyresult){
+        		$item->isdiscount=1;
+        	}else 
+        	$item->isdiscount=0;
+        	
 			$data['quoteitems'][]=$item;
 		}
 		//echo '<pre>';print_r($data['quoteitems']);die;

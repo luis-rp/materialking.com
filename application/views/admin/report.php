@@ -201,8 +201,8 @@
 		      <br/>
 	    	<?php
 		   			}
-		   			$totalallremaining = $totalallprice - $totalallpaid;
-
+		   			$totalall = $totalallprice - $totalallpaid;
+		   			$totalallremaining = number_format($totalall,2);
 		   			echo '<script>$("#totalallquantity").html("'.$totalallquantity.'");</script>';
 		   			echo '<script>$("#totalallprice").html("'.$totalallprice.'");</script>';
 		   			echo '<script>$("#totalallpaid").html("'.$totalallpaid.'");</script>';

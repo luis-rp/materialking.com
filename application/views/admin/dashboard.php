@@ -373,6 +373,7 @@
 					<?php }?>
 					</table>
 				<?php } ?>
+					<br>
     				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">Browse Suppliers</a>
 				<?php } ?>
 			
@@ -545,7 +546,7 @@
 				
 				
 				
-
+			<?php if(isset($newquotes) && count($newquotes) > 0) { ?>
 				<h5>Recent Quotes Sent&nbsp;&nbsp;<?php if(isset($newquotes)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallquote');?>">Clear Recent Quotes Sent</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -575,8 +576,9 @@
 				<tr><td>No Recent Quotes Found</td></tr>
 				<?php } ?>
 				</table>
+				<?php } ?>
 
-
+				<?php if(isset($awardquotes) && count($awardquotes) > 0) { ?> 
 				<h5>Recent Quotes Awarded&nbsp;&nbsp;<?php if(isset($awardquotes)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallaward');?>">Clear Recent Quotes Awarded</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -599,8 +601,9 @@
 				<tr><td>No Recent Awarded Quotes Found</td></tr>
 				<?php } ?>
 				</table>
+			<?php } ?>
 
-
+			<?php if(isset($newcostcodes) && count($newcostcodes) > 0) { ?>
 				<h5>Recent Cost Codes Created&nbsp;&nbsp;<?php if(isset($newcostcodes)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallcostcode');?>">Clear Recent Cost Codes Created</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -625,8 +628,9 @@
 				<tr><td>No Recent Cost Codes Created</td></tr>
 				<?php } ?>
 				</table>
+			<?php } ?>
 
-
+			<?php if(isset($newprojects) && count($newprojects) > 0) { ?>
 				<h5>Recent Projects Created&nbsp;&nbsp;<?php if(isset($newprojects)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallproject');?>">Clear Recent Projects Created</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -649,7 +653,7 @@
 				<tr><td>No Recent Projects Created</td></tr>
 				<?php } ?>
 				</table>
-
+				<?php } ?>
 
 
 				<?php if(isset($users)) { ?>
@@ -673,6 +677,7 @@
 				</table>
               <?php } ?>
 
+				<?php if(isset($networks) && count($networks) > 0) { ?>
 				<h5>Recent Network Connections&nbsp;&nbsp;<?php if(isset($networks)) { ?>
 					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallnetwork');?>">Clear Recent Network Connections</a><?php } ?></h5>
 					<table cellpadding="3" class="table table-bordered stat">
@@ -695,7 +700,7 @@
 				<tr><td>No Recent Networks Created</td></tr>
 				<?php } ?>
 				</table>
-
+				<?php } ?>
 
 				</div>
 		</div>

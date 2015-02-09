@@ -1201,9 +1201,9 @@ class Company extends CI_Controller {
        
 		}
 
-        $message = 'Tier price settings updated for purchasing companies.';
+        $message = 'Network connection settings updated for purchasing companies.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
-        redirect('company/tier');
+        redirect('company/networkconnections');
     }
 
     ///bankaccount
@@ -1671,7 +1671,7 @@ class Company extends CI_Controller {
         $this->db->delete('network',array('purchasingadmin'=>$id,'company'=>$company->id));
         $message = 'Purchasing company Deleted Successfully.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
-        redirect('company/tier');
+        redirect('company/networkconnections');
     }
 
     function deletefile($id)
@@ -2273,6 +2273,68 @@ class Company extends CI_Controller {
             $this->load->template('../../templates/front/register', $data);
             $this->load->view('company/customerlogin', $data);
         }
+    }
+    
+    function networkconnections()
+    {
+    	$company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
+        $this->db->where('company', $company->id);
+        $tier = $this->db->get('tierpricing')->row();
+        if (!$tier) {
+            $tierprice = array();
+            $tierprice['company'] = $company->id;
+            $tierprice['tier1'] = -2;
+            $tierprice['tier2'] = -4;
+            $tierprice['tier3'] = -6;
+            $tierprice['tier4'] = -10;
+            $this->db->insert('tierpricing', $tierprice);
+
+            $this->db->where('company', $company->id);
+            $tier = $this->db->get('tierpricing')->row();
+        }
+
+        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
+        			   tier, creditlimit, totalcredit, creditfrom, creditto, creditonly
+				FROM " . $this->db->dbprefix('users') . " u
+				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
+				LEFT JOIN " . $this->db->dbprefix('purchasingtier') . " pt ON pt.purchasingadmin=u.id AND pt.company='" . $company->id . "'
+				WHERE u.usertype_id=2
+			";
+        //echo $sql;
+        $admins = $this->db->query($sql)->result();
+        $data['admins'] = array();
+        foreach($admins as $admin)
+        {
+            $pa = $admin->purchasingadmin;
+		    $settings = $this->settings_model->get_setting_by_admin($pa);
+		    $query = "SELECT
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
+						AND ai.purchasingadmin='$pa'";
+		    //echo $query.'<br/>';
+		    $due = $this->db->query($query)->row()->totalunpaid;
+		    $due = round($due,2);
+		    //echo $nc->due.' - ';
+		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
+                AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
+		    //echo $query.'<br/>';
+		    $manualdue = $this->db->query($query)->row()->orderdue;
+		    $manualdue = round($manualdue,2);
+		    //echo $manualdue.' <br/> ';
+		    $due += $manualdue;
+		    $admin->amountdue = $due;
+            $data['admins'][]=$admin;
+        }
+        //print_r($admins);die;
+        $data['tier'] = $tier;
+        $this->load->view('company/networkconnections', $data);
     }
 
 }

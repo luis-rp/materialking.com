@@ -107,6 +107,17 @@ function addEmail()
 	 	document.getElementById("moreUploads2").appendChild(d);
 	 	upload_number++;
 	}
+	
+	 function checkForm(form) 
+	 { 
+	 	 re = /^\w+$/; 
+	 	 if(!re.test(form.username.value))
+	 	  { 
+	 	  	alert("Error: Username must contain only letters, numbers and underscores!"); 
+	 	  	form.username.focus(); 
+	 	  	return false; 
+	 	  } 
+	 }
 
 	
 </script>
@@ -128,20 +139,30 @@ function addEmail()
                             
                             <div class="grid-body no-border">
                             	<div class="row">
-                    				<form id="profileform" name="profileform" class="animated fadeIn" method="post" action="<?php echo site_url('company/saveprofile');?>" enctype="multipart/form-data">
+                    				<form id="profileform" name="profileform" class="animated fadeIn" method="post" action="<?php echo site_url('company/saveprofile');?>" enctype="multipart/form-data" onsubmit="return checkForm(this);">
 				                     
-				                     <div class="col-md-10 col-sm-8 col-xs-10">
-                    				  <div>
-				                        <label class="form-label"><strong>Username :</strong> <?php echo $company->username;?></label>
+                    				  <!--<div>
+				                        <label class="form-label"><strong>Username :</strong> <?php //echo $company->username;?></label>
 				                        <div class="controls">
 				                         
 				                        </div>
-				                      </div>
-				                     </div>
+				                      </div>-->
+                    				
+				                     
 
 				                     
 				                     
                     				<div class="col-md-10 col-sm-10 col-xs-10">
+                    				
+                    				 <div class="form-group">
+				                        <label class="form-label">Username:</label>
+				                        <div class="controls">
+				                <input type="text" class="form-control" name="username" value="<?php echo $company->username;?>" required>
+				                        </div>
+				                      </div>
+                    				
+                    				
+                    				
                     				  <div class="form-group">
 				                        <label class="form-label">Company Name:</label>
 				                        <div class="controls">

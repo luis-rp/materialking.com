@@ -573,7 +573,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		    <table class="table table-bordered">
 		    	<tr>
 		    		<th style="width:20%;">File</th>
-		    		<th style="width:50%;">Item</th>		    		
+		    		<th style="width:50%;">Notes/Description</th>		    		
 		    		<th style="width:20%;">Cost Code</th>		    		
 		    		<th style="width:10%;">Delete</th>
 		    	</tr>

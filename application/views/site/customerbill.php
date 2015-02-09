@@ -173,7 +173,7 @@ function jq( myid ) {
 	<?php	 			 
 		  } 		 
 		     $subtotal = $totalprice + ($totalprice * $markuptotalpercent/100);
-		     $finaltotal = $subtotal + (@$subtotal*@$settings->taxrate/100);
+		     $finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
 		     
     	?>
 	    	<tr>
@@ -205,6 +205,8 @@ function jq( myid ) {
 		    	<td style="padding-left:5;"><?php echo number_format(($totalprice*$settings->taxrate/100),2); ?></td>
 	       </tr>
 			<?php 
+			$serviceItemTax = 0;
+			$finaltot = 0 ;
 			if(isset($billservicedetails) && @$billservicedetails != '')
 			{
 				foreach ($billservicedetails as $key1=>$v)
@@ -216,11 +218,11 @@ function jq( myid ) {
 				    <tr>
 				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax (<?php echo $v['tax'];?> % )</td> <td><?php echo $v['price'] * ($v['tax']/100); ?></td>
 			       	</tr>
-<?php 				}
-			} ?>
+<?php 			$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100));	}
+			} $finaltot = $serviceItemTax + $finaltotal;  ?>
 	        <tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Total</td>
-		    	<td style="padding-left:5;"><?php echo number_format($finaltotal,2); ?></td>
+		    	<td style="padding-left:5;"><?php echo number_format($finaltot,2); ?></td>
 	       </tr>
 	</table>
 	<br><br>

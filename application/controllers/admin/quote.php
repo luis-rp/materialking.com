@@ -748,8 +748,29 @@ class quote extends CI_Controller
          /*
          $non = "SELECT c.title FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('invitation')." i on c.id=i.company  WHERE c.company_type='3' AND i.quote='{$id}' AND i.purchasingadmin ='{$this->session->userdata('purchasingadmin')}'";*/
          
-         $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n where c.isdeleted=0 AND c.id not in(select company from ".$this->db->dbprefix('network')." where purchasingadmin='{$this->session->userdata('purchasingadmin')}') AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' group by c.id";
+       /*  $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n where c.isdeleted=0 AND c.id not in(select company from ".$this->db->dbprefix('network')." where purchasingadmin='{$this->session->userdata('purchasingadmin')}') AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' group by c.id";*/
          
+       
+         $this->db->select('company');
+         $nu=$this->db->get_where('network',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();
+        
+         if($nu!="")
+         {
+         	 $dd="";
+         	foreach ($nu as $n)
+         	{
+         		
+         		$dd .=$n->company.",";
+         	}
+         }
+         $stmt="AND 1=1";
+         if($dd!="")
+         {
+         	$dd=trim($dd,",");
+         	$stmt="AND c.id not in(".$dd.") AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}'";
+         }    
+         
+      $non = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n  where c.isdeleted=0 {$stmt} group by c.id";           
         $data['nonnetuser'] = $this->db->query($non)->result();
         $data['awarded'] = $this->quote_model->getawardedbid($id);
         $data['bids'] = $this->quote_model->getbids($id);
@@ -1356,7 +1377,7 @@ class quote extends CI_Controller
                 
                 $companies = $this->get_contract_company_in_miles(@$_POST['locradiushidden'],@$_POST['categoryinvitees']);
                 //$companies = $this->db->get_where('users',array('purchasingadmin'=>'115'))->result();
-                
+               
                 $companynames = array();
                 //echo "<pre>",print_r($companies); die;
                 foreach ($companies as $c)
@@ -4208,6 +4229,15 @@ class quote extends CI_Controller
         if (!$invoicenum)
             redirect('quote/invoices');
         $invoice = $this->quote_model->getinvoicebynum($invoicenum,$invoicequote);
+        
+        foreach ($invoice->items as $invoiceitem) {
+        	
+        	 if(@$invoiceitem->invoice_type == "alreadypay"){ 
+                  $invoice->alreadypay = 1;
+                   $invoice->paidinvoicenum = $this->db->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->get()->row()->invoicenum;        
+        	 }      		  
+        }
+        
         $awarded = $this->quote_model->getawardedbid($invoice->quote);
         //print_r($invoice); echo $this->session->userdata('purchasingadmin');die;
         if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('purchasingadmin')) {
@@ -5421,7 +5451,7 @@ class quote extends CI_Controller
 		}
 
 		$data['billitemdata'] = $billitemdata;
-		 
+		$data['servicebillitems'] = $this->db->where('isdeleted','0')->get('servicelaboritems')->result(); 
 		$data['customerdata'] = $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'))				
 				->get('customer')->result();             
 		             
@@ -5595,6 +5625,11 @@ class quote extends CI_Controller
 			$data['settingtour']=$setting[0]->tour;
 		}     
         
+		$sql3 = "SELECT bsl.* FROM ".$this->db->dbprefix('bill'). " b 
+        			JOIN ".$this->db->dbprefix('bill_servicelaboritems'). " bs ON bs.billid = b.id 
+        			JOIN ".$this->db->dbprefix('servicelaboritems'). " bsl ON bsl.id = bs.servicelaboritems  WHERE b.id = ".$invoicenum;
+       	$data['billservicedetails'] = $this->db->query($sql3)->result_array();        	
+		
         $this->load->view('admin/bill', $data);
     }
     
@@ -9825,7 +9860,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $id = isset($_POST['id']) ? $_POST['id'] : '';
 
         $arr = array();
-        $sql = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE 1=1";
+        $sql = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE 1=1 AND isdeleted='0'";
 			
         	if($miles!="")
   			$having = "HAVING distance <= {$radiusval}";
@@ -9969,26 +10004,45 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $this->quote_model->db->insert('bill', $billarray);
 					$billid = $this->quote_model->db->insert_id();	
 					
-					if(isset($_POST['servicelaboritemsflag']) && @$_POST['servicelaboritemsflag'] == 1 && $billid != '')
+					$serviceItemTax = 0;
+					$serviceItemTaxTotal = 0;
+					$str = '';
+					$newstr = '';
+					
+					if(isset($_POST['servicelaboritem'])  && $billid != '')
 					{
-						$res = $this->db->where('isdeleted',0)->get('servicelaboritems')->result_array();
+						//$res = $this->db->where('isdeleted',0)->get('servicelaboritems')->result_array();
 						
-						if(isset($res) && $res != '')
-						{
-							foreach ($res as $k=>$v)
+							foreach ($_POST['servicelaboritem'] as $k=>$val)
 							{
 								$insertArr = array('billid'=>$billid,
-												   'servicelaboritems'=>$v['id']);
+												   'servicelaboritems'=>$k);
 													
 								$this->quote_model->db->insert('bill_servicelaboritems', $insertArr);			
 								
-								$emailitems1 .= '<tr>';
-								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.$v['name'].'</td>';
-								$emailitems1 .= '<td style="padding-left:5;">'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
-								$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-										
+								$str .= $k.",";
 							}
-						}
+							$newstr = rtrim($str,",");	
+							if(isset($newstr) && $newstr != '')
+							{
+								$sql = " SELECT * FROM ". $this->db->dbprefix('servicelaboritems') . " WHERE isdeleted = 0 AND id IN({$newstr}) ";
+								$qry = $this->db->query($sql);
+								$res = $qry->result_array();
+							}
+
+							if(isset($res))
+							{
+								foreach ($res as $key=>$v)
+								{
+									$emailitems1 .= '<tr>';
+									$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.$v['name'].'</td>';
+									$emailitems1 .= '<td style="padding-left:5;">'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
+									$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+									
+									$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100)) ;
+									$serviceItemTaxTotal += $serviceItemTax;
+								}
+							}
 					}
 					
 					$awarditemsarr = array();
@@ -10065,7 +10119,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$emailitems.= $emailitems1;
     	
-    	$finaltotal = $subtotal + (@$subtotal*@$settings->taxrate/100);
+    	$finaltotal = $serviceItemTax + $subtotal + (@$totalprice*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
     	$emailitems.= '<td style="padding-left:5;">'.number_format(@$finaltotal,2).'</td>';
@@ -10075,6 +10129,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
   
     	$emailitems .= '</table>';
     
+   
     	$data['email_body_content'] .= "<br><br>{$emailitems}";
     	$data['email_body_content2'] = $email_body_content." <br>".$data['email_body_content'];
     	$loaderEmail = new My_Loader();
@@ -10082,7 +10137,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
-	
+		
 		$this->email->initialize($config);
 		$this->email->from($settings->adminemail);
 		$this->email->to(@$_POST['customeremail']);
@@ -11282,6 +11337,12 @@ $loaderEmail = new My_Loader();
         redirect('admin/quote/index/' . $quote->pid);
     
     	
+    }
+    
+    function uploadPaymentAttachment()
+    {
+    	echo '<pre>!!',print_r($_POST);
+    	echo '<pre>RRR',print_r($_REQUEST);die;
     }
 	
     // End

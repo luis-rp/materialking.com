@@ -781,7 +781,7 @@ class costcode extends CI_Controller {
      }
 
     function add_costcode() {
-    	//echo "<pre>"; print_r($_POST); die;
+    	
         $data ['heading'] = 'Add New Costcode';
         $data ['action'] = site_url('admin/costcode/add_costcode');
 
@@ -810,7 +810,9 @@ class costcode extends CI_Controller {
             //redirect('admin/costcode/add');
         } else {
             $itemid = $this->costcode_model->SaveCostcode();
-            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox" style="display:inline;" id="step12" >Cost Code Added Successfully</div></div>');
+            
+            $this->session->userdata['managedprojectdetails']->id = $_POST['project'];
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox" style="display:inline;" id="step12" >Cost Code Added Successfully</div> &nbsp;&nbsp;&nbsp;&nbsp;<a href='.site_url('admin/dashboard').'>Go To Project Dashboard</a></div>');
             redirect('admin/costcode');
         }
     }

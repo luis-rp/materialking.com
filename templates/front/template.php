@@ -11,7 +11,10 @@
 	{
 		$menu = 'tier';
 	}
-	
+	if($function=='company' || $function=='networkconnections')
+	{
+		$menu = 'networkconnections';
+	}
 	if($function=='invoice')
 	{
 		$menu = 'invoice';
@@ -248,8 +251,10 @@
                       <li class="divider"></li>                
                       <li><a href="<?php echo site_url('company/bankaccount');?>">Bank Account Settings</a></li>
                       <li class="divider"></li>                
-                      <li><a href="<?php echo site_url('company/tier');?>">Tier Pricing & Connections</a></li>
-                      <li class="divider"></li>                
+                      <li><a href="<?php echo site_url('company/tier');?>">Tier Price Settings</a></li>
+                      <li class="divider"></li>  
+                      <li><a href="<?php echo site_url('company/networkconnections');?>">Network Connections</a></li>
+                      <li class="divider"></li>                     
                       <li><a href="<?php echo site_url('company/logout');?>"><i class="fa fa-power-off"></i>&nbsp;&nbsp;Log Out</a></li>
                    </ul>
     			</li> 
@@ -282,7 +287,8 @@
       
         <?php if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
       
-	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i><span class="title">Tier Pricing  & Connections</span> </a> </li>      
+	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i><span class="title">Tier Price Settings</span> </a> </li>  
+	  <li class="<?php if($menu=='networkconnections'){echo 'active';}?>"> <a href="<?php echo site_url('company/networkconnections');?>"> <i class="fa fa-dollar1"></i><span class="title">Network Connections</span> </a> </li>    
 	  <li class="<?php if($menu=='message'){echo 'active';}?>"> <a href="<?php echo site_url('message');?>"> <i class="fa fa-envelope1"></i><span class="title">My Messages</span> </a> </li>      
 	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal1"></i><span class="title">Quotes, P.O's & Tracking</span></a></li>  
 	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i><span class="title">Manage Back Orders</span></a></li>

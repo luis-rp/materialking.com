@@ -1379,7 +1379,23 @@ function setServicelaboritemsFlag()
 		<form id="createbillform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
 		<input type="hidden" name="servicelaboritemsflag" id="servicelaboritemsflag" value="0">
 		<table>
-		<tr style="cursor:pointer;"><td colspan="2"><a onclick="setServicelaboritemsFlag()"> Add Service/Labor Items to bill </a>  </td> </tr>
+	<!--	<tr style="cursor:pointer;"><td colspan="2"><a onclick="setServicelaboritemsFlag()"> Add Service/Labor Items to bill </a>  </td> </tr>-->
+		<tr style="cursor:pointer;"><td colspan="2">Select Service/Labor Items to bill </a>  </td> </tr>
+		
+		<?php
+			if(isset($servicebillitems))
+			{?>
+				<tr> 
+				<td colspan="2"><table><th>Name</th><th>Price</th><th>Tax</th><th>&nbsp;</th> </td>
+				</tr>	
+		<?php	foreach ($servicebillitems as $key=>$v)
+				{ ?>
+					<tr><td><?php echo $v->name; ?> </td><td><?php echo $v->price; ?> </td><td><?php echo $v->tax; ?> </td><td><input type="checkbox" name="servicelaboritem[<?php echo $v->id; ?>]"> </td> </tr>	
+		<?php 		}
+			}  ?>
+			 </table>
+			 </td>
+			 </tr>
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
 		<?php if($customerdata){ ?>
 		<tr><td>Select Customer:</td><td><select id="customerid" name="customerid" onchange="setcustomerdata(this.value);">

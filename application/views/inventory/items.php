@@ -53,6 +53,8 @@
 
 <?php echo '<script>var getallcompanypricesurl="'.site_url('inventory/getallcompanyprices').'";</script>'?>
 
+<?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -377,10 +379,12 @@ function delqtydiscount(id,itemid){
     }
     
     
-    function showallcompanyprice(itemid){
+    function showallcompanyprice(itemid,itemname,itemcode){
 	$('#myModalbody').html('');	
 	var phtml = "";
     $("#allcompanypricesmodal").modal();	
+    $("#pricelistitemcode2").html(itemcode);
+    $("#pricelistitemname2").html(itemname);
    	$.ajax({
 		type:"post",
 		data: "itemid="+itemid,
@@ -392,7 +396,7 @@ function delqtydiscount(id,itemid){
 			phtml += '<div class="row form-row"><div class="col-md-6"><strong>Name:</strong></div><div class="col-md-6"><strong>Price:</strong></div></div>';		var i =0;		
 			$.each(data, function( index, value ) {
 			
-			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.username+'</strong></div><div class="col-md-6"><strong>'+value.price+'</strong></div></div>';	
+			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.username+'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'+value.company+','+itemid+','+value.purchasingadmin+');" value="'+value.price+'"/></strong></div></div>';	
 			i++;
 				
 			});
@@ -409,6 +413,24 @@ function delqtydiscount(id,itemid){
     	   	
     	
     }
+    
+    
+    
+function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
+
+	if(confirm("Do you want to save this as company's price for this item?"))
+	{
+		$.ajax({
+			type:"post",
+			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
+			url: setcompanypriceurl
+		}).done(function(data){
+						
+			alert(data);			
+			
+		});
+	}
+}
     
     
     function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,minqty,itemcode){
@@ -538,16 +560,18 @@ function clearall(id)
                             <?php } ?>  
                             
                                 <form action="<?php echo site_url('inventory');?>" method="post">
-                                <table>
+                                <table id="datatable" class="table table-bordered">
 
                                 <tr>
-                                	<td>ITEM CODE/Name: </td>
-                                	<td>
-                                	<input type="text" name="searchitem" value="<?php echo @$_POST['searchitem'];?>"/>
-                                	</td>
-                                	<td>
-                                	Category:
-                                	</td>
+                                	<td>Item Code/Name</td>
+                                	<td>Category</td>
+                                	<td>Brand</td>
+                                	<td>My items only</td> 
+                                	<td>Filter Options</td>
+                                	<td>Action</td>                             	
+                                </tr>
+                                <tr>                               	
+                                	<td><input type="text" name="searchitem" value="<?php echo @$_POST['searchitem'];?>"/></td>                           	
                                 	<td>
                                 	<select id="category" name="category" class="form-control" style="width:140px">
                                 		<option value="">All</option>
@@ -556,9 +580,7 @@ function clearall(id)
                                     	<?php }?>
                                     </select>
                                     </td>
-                                    <td>
-                                	Brand:
-                                	</td>
+                                   
                                 	<td>
                                 	<select id="manufacturer" name="manufacturer" class="form-control" style="width:90px">
                                 		<option value="">All</option>
@@ -566,10 +588,12 @@ function clearall(id)
                                     	<option value="<?php echo $mf->id;?>" <?php if(@$_POST['manufacturer']==$mf->id){echo 'selected';}?>><?php echo $mf->title;?></option>
                                     	<?php }?>
                                     </select>
-                                    </td><td>
-                                    &nbsp;<input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >&nbsp;My items only
                                     </td>
-                                    <td>Filter Options:</td>
+                                    
+                                    <td>
+                                   <input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >
+                                    </td>
+                                  
                                     <td>
                                     <select id="filteroption" name="filteroption" class="form-control" style="width:140px">
                                     <option value=''>All</option>
@@ -580,11 +604,12 @@ function clearall(id)
                                 <option value="isfeature"  <?php if(@$_POST['filteroption']=="isfeature"){echo 'selected';}?>>Shows Featured Items Only</option>                                 	
                                     </select>
                                     </td>
+                                    
                                     <td>
-                                	<input type="submit" value="Search" class="btn btn-primary"/>
+                                	<input type="submit" value="Search" class="btn btn-primary btn-xs"/>
                                 	<?php if(@$_POST['searchitem'] || @$_POST['category'] || @$_POST['manufacturer']){?>
                                 	<a href="<?php echo site_url('inventory');?>">
-                                		<input type="button" value="Clear" class="btn btn-primary"/>
+                                		<input type="button" value="Clear" class="btn btn-primary btn-xs"/>
                                 	</a>
                                 	<?php }?>
                                 	</td>
@@ -647,7 +672,7 @@ function clearall(id)
                                                 	<br>
                                                 	<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$item->id)?>');">Select/View Preloaded Options</a>  
                                                 <br>
-                                                <a href="javascript:void(0)" onclick="showallcompanyprice('<?php echo htmlentities(@$item->id)?>');">Select/View Company Prices</a>	
+                                                <a href="javascript:void(0)" onclick="showallcompanyprice('<?php echo htmlentities(@$item->id)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>');">Select/View Company Prices</a>	
                                                 </td>
 
                                                 <td class="v-align-middle">
@@ -949,7 +974,9 @@ function clearall(id)
                           <br>
                           <i class="icon-credit-card icon-7x"></i>
                           <h4 class="semi-bold" id="myModalLabelchng">
-                         All Companies Prices:                          
+                         All Companies Prices:       
+                          <span id="pricelistitemcode2"></span>
+          (<span id="pricelistitemname2"></span>)                   
                           </h4>
                           <br>
                         </div>
