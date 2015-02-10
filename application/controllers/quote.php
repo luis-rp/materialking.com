@@ -1863,6 +1863,9 @@ class Quote extends CI_Controller
 				}
 				else
 				{
+					if(array_key_exists('quote',$updatearray))
+					unset($updatearray['quote']);
+					
 					$this->quotemodel->db->update('biditem',$updatearray);
 					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
 					

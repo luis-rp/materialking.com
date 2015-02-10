@@ -173,7 +173,7 @@
 				tourCompany.start();
 			 }
 	 function endTour(){
-
+          
 		 $("#tourcontrols").remove();
 		 tourCompany.end();
 			}
@@ -185,7 +185,12 @@
 			
  </script>
 </head>
-
+<?php 
+if($this->session->userdata('company')->username!=$pagetour->username)
+{
+	$this->session->userdata('company')->username=$pagetour->username;
+}
+?>
 <body class="">
 <div class="header navbar navbar-inverse"> 
   <!-- BEGIN TOP NAVIGATION BAR -->

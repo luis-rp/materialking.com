@@ -33,6 +33,7 @@ class costcode extends CI_Controller {
         $this->load->model('admin/costcode_model');
         $this->load->model('admin/quote_model');
         $this->load->model('admin/order_model');
+        $this->load->model('admin/project_model');
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data ['title'] = "Administrator";
@@ -810,8 +811,17 @@ class costcode extends CI_Controller {
             //redirect('admin/costcode/add');
         } else {
             $itemid = $this->costcode_model->SaveCostcode();
-            
-            $this->session->userdata['managedprojectdetails']->id = $_POST['project'];
+            if(empty($this->session->userdata['managedprojectdetails']))
+            {
+            	$pid = $_POST['project'];
+				$temp['managedproject'] = $pid;
+				$temp['managedprojectdetails'] = $this->project_model->get_projects_by_id($pid);
+				$this->session->set_userdata($temp);
+            }
+            else 
+            {
+            	$this->session->userdata['managedprojectdetails']->id = $_POST['project'];	
+            }            
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox" style="display:inline;" id="step12" >Cost Code Added Successfully</div> &nbsp;&nbsp;&nbsp;&nbsp;<a href='.site_url('admin/dashboard').'>Go To Project Dashboard</a></div>');
             redirect('admin/costcode');
         }

@@ -64,7 +64,7 @@ class report_model extends Model
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -106,7 +106,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -201,7 +201,7 @@ class report_model extends Model
  		
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -243,7 +243,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,

@@ -290,11 +290,12 @@ class itemcode extends CI_Controller
                 $itemcode->actions .= anchor('admin/itemcode/update/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
                 'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>',
                 array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));
-                if ($this->session->userdata('usertype_id') == 2)
+                if ($this->session->userdata('usertype_id') == 2 && ($this->session->userdata('purchasingadmin') != $itemcode->purchasingadmin) )
                 {
                     $itemcode->actions = '<a href="javascript:void(0)" onclick="updateitem('.$itemcode->id.')"><span class="icon-2x icon-edit"></span></a>';
                     //echo $itemcode->actions;die;
                 }
+                
                 if ($itemcode->poitems || $itemcode->totalpoprice!=0)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/poitems/' . $itemcode->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view'));
                 if ($itemcode->minprices)
@@ -347,7 +348,7 @@ class itemcode extends CI_Controller
 
         if ($this->session->userdata('usertype_id') == 2)
         {
-            $data['addlink'] = '';
+            $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/addviauser">Add Item Code</a>';
             $data['addcatlink'] = '';
             $data['addsubcatlink'] = '';
         }
@@ -943,6 +944,34 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
     
+    function addviauser ()
+    {
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $this->_set_fields();
+        $data['heading'] = 'Add New Itemcode';
+        $data['message'] = '';
+        $data['action'] = site_url('admin/itemcode/add_itemcode_user');
+        $data['category'] = $categories;
+        $data['product_categories'] = false;
+        $data['categories'] = $this->itemcode_model->getcategories();
+        $data['companies'] = $this->db->get('company')->result();
+        $this->validation->featuredsupplier = 38;
+        $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";
+    	$newitemid = $this->db->query($sql)->row();    	
+        $data['defaultitemid'] = $newitemid->id+1;
+        $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
+        $this->load->view('admin/itemcode', $data);
+    }
+    
+    
     function add_itemcode_xls(){
     	
     	$data['heading'] = 'Add Itemcode in Mass';
@@ -987,12 +1016,22 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             if($_POST['categories']){
             	$defaultcategory = @$_POST['categories'][0];
             }
-           
+         
             for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) {
             	$itemcode = $data->sheets[0]["cells"][$x][1];
-            	$url = str_replace("/","-",$data->sheets[0]["cells"][$x][2]);
-            	$itemname = $data->sheets[0]["cells"][$x][3];
-            	$description = $data->sheets[0]["cells"][$x][4];            	
+            	
+            	if($data->sheets[0]["cells"][$x][2] == '' || $data->sheets[0]["cells"][$x][3] == '' || $data->sheets[0]["cells"][$x][4] == '')
+            	{
+            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][1]);
+            		$itemname = $data->sheets[0]["cells"][$x][1];
+            		$description = $data->sheets[0]["cells"][$x][1];         
+            	}
+            	else 
+            	{
+            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][2]);
+            		$itemname = $data->sheets[0]["cells"][$x][3];
+            		$description = $data->sheets[0]["cells"][$x][4];            	
+            	}	
             	$unit = $data->sheets[0]["cells"][$x][5];
             	/*$ea = $data->sheets[0]["cells"][$x][6];
             	$notes = $data->sheets[0]["cells"][$x][7];
@@ -1030,10 +1069,19 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	
 				for ($i=8;$i<=$Totalcnt;$i+= 6)
 				{		
-					$manufacturerename = $data->sheets[0]["cells"][$x][$i];			
-					$itemcode1 = $data->sheets[0]["cells"][$x][$i+1];
-	            	$part = $data->sheets[0]["cells"][$x][$i+2];
-	            	$itemname1 = $data->sheets[0]["cells"][$x][$i+3];
+					$manufacturerename = $data->sheets[0]["cells"][$x][$i];		
+					if($data->sheets[0]["cells"][$x][$i+1] == '' || $data->sheets[0]["cells"][$x][$i+3] == '')
+					{
+						$itemcode1 = $data->sheets[0]["cells"][$x][1];
+						$itemname1 = $data->sheets[0]["cells"][$x][1];
+					}
+					else 
+					{
+						$itemcode1 = $data->sheets[0]["cells"][$x][$i+1];
+						$itemname1 = $data->sheets[0]["cells"][$x][$i+3];
+					}
+					
+	            	$part = $data->sheets[0]["cells"][$x][$i+2];	            	
 	            	$listprice = $data->sheets[0]["cells"][$x][$i+4];
 	            	$minquantity = $data->sheets[0]["cells"][$x][$i+5];
 	            	if($manufacturerename!=""){
@@ -1062,7 +1110,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	            	}	
 				}	
             }
-           
+          
             $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Codes Added Successfully</div></div>');
             redirect('admin/itemcode');
@@ -1136,6 +1184,82 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
+    
+    function add_itemcode_user ()
+    {
+        $data['heading'] = 'Add New Itemcode';
+        $data['action'] = site_url('admin/itemcode/add_itemcode_user');
+        //$data['category'] = $this->itemcode_model->getCategoryList();
+        //$data['subcategory'] = $this->itemcode_model->getSubCategoryList();
+        $this->_set_fields();
+        $this->_set_rules();
+        $catcodes = $this->catcode_model->get_categories_tiered();
+        $categories = array();
+        if ($catcodes)
+        {
+            if (isset($catcodes[0]))
+            {
+                build_category_tree($categories, 0, $catcodes);
+            }
+        }
+        $data['category'] = $categories;
+        if ($this->validation->run() == FALSE)
+        {
+            $data['message'] = $this->validation->error_string;
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), 0))
+        {
+            $data['message'] = 'Duplicate Itemcode';
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateUserItemName($this->input->post('itemname'),  $this->session->userdata('purchasingadmin'), 0))
+        {
+            $data['message'] = 'Duplicate Itemname';
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateUserItemUrl($this->input->post('url'),  $this->session->userdata('purchasingadmin'), 0))
+        {
+            $data['message'] = 'Duplicate URL';
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }
+        else
+        {
+        	 if(isset($_FILES['UploadFile']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/item/';
+            	$count=0;           	
+            	foreach ($_FILES['UploadFile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            	}
+
+            }
+            $this->do_upload();
+            $itemid = $this->itemcode_model->SaveItemcode();
+            $this->session->set_flashdata('message',
+            '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Code Added Successfully</div></div>');
+            redirect('admin/itemcode');
+        }
+    }
+    
+    
     function update($id)
     {
         $this->_set_fields();
@@ -2251,7 +2375,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	
 	function addnewserviceandlabor()
 	{		
-		$qtyresult = $this->db->where('isdeleted',0)->get('servicelaboritems')->result();
+		$qtyresult = $this->db->where(array('isdeleted'=>0,'purchasingadmin' => $this->session->userdata('purchasingadmin')))->get('servicelaboritems')->result();
     	if($qtyresult){
     		$strput = "";
     		$strput .= '<div class="row form-row"  style="margin-left:50px">
@@ -2268,10 +2392,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	}
 	
 	function insertserviceandlabor()
-	{
+	{		
     	$insertArr = array('name'=> $_POST['name'],
     						'price'=> $_POST['serviceprice'],
-    						'tax'=> $_POST['servicetax']
+    						'tax'=> $_POST['servicetax'],
+    						'purchasingadmin' => $this->session->userdata('purchasingadmin')
     					  );
 		$result = $this->db->insert('servicelaboritems',$insertArr);	
 		$this->addnewserviceandlabor();

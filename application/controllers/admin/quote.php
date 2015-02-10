@@ -5453,7 +5453,7 @@ class quote extends CI_Controller
 		}
 
 		$data['billitemdata'] = $billitemdata;
-		$data['servicebillitems'] = $this->db->where('isdeleted','0')->get('servicelaboritems')->result(); 
+		$data['servicebillitems'] = $this->db->where(array('isdeleted'=>0,'purchasingadmin' => $this->session->userdata('purchasingadmin')))->get('servicelaboritems')->result();
 		$data['customerdata'] = $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'))				
 				->get('customer')->result();             
 		             
@@ -8082,14 +8082,15 @@ $loaderEmail = new My_Loader();
         $projectid = "";
         //fwrite(fopen("sql.txt","a+"),print_r($code,true));
         $item = $this->quote_model->finditembycode($code);
-
+		if(@$item->itemid){
 		$this->db->where('itemid',$item->itemid);
 		$this->db->where('type','Purchasing');
 		$this->db->where('company',$this->session->userdata('purchasingadmin'));
 		$companyitem = $this->db->get('companyitem')->row();
         //print_r($companyitem);
-
-		if($companyitem)
+		}
+		
+		if(@$companyitem)
 		{
 			if($companyitem->projectid){
 				$arrproj = explode(",",$companyitem->projectid);
@@ -11342,9 +11343,29 @@ $loaderEmail = new My_Loader();
     }
     
     function uploadPaymentAttachment()
-    {
-    	echo '<pre>!!',print_r($_POST);
-    	echo '<pre>RRR',print_r($_REQUEST);die;
+    {    	
+    	$receivedid = $_POST['hidreceivedid'];
+    	$invoiceNum = $_POST['hidinvoicenum'];
+    	
+    	if(@$receivedid && @$invoiceNum)
+    	{
+    		if(isset($_FILES['UploadFile']['name'][$receivedid]))
+    		{
+    			if(is_uploaded_file($_FILES['UploadFile']['tmp_name'][$receivedid]))
+	    		{
+	    			$ext = end(explode('.', $_FILES['UploadFile']['name'][$receivedid]));
+	    			$nfn = md5(date('u').uniqid()).'.'.$ext;
+	    			if(move_uploaded_file($_FILES['UploadFile']['tmp_name'][$receivedid], "uploads/invoiceattachments/".$nfn))
+	    			{
+	    				$updateArr = array('attachmentname'=>$nfn);
+    					$where = array('id'=>$receivedid,'invoicenum'=>$invoiceNum);
+	    				$this->db->update('received',$updateArr,$where);
+	    			}
+	    		}
+    		}
+    	}
+    	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">File Uploaded Successfully.</div></div>');
+    	redirect('admin/quote/invoices');
     }
 	
     // End

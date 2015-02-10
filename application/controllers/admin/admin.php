@@ -431,6 +431,8 @@ $loaderEmail = new My_Loader();
 			$id = 	$this->session->userdata ( 'id' );
 			$this->db->where('id',$id);
 			$this->db->update('users',array('tour'=>'finished'));
+			$this->db->where('purchasingadmin',$id);
+			$this->db->update('settings',array('pagetour'=>'0'));
 			$this->session->set_userdata('tour','finished');
 
 

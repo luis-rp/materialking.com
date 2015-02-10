@@ -793,12 +793,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		{
 			redirect('');
 		}
-		if($this->session->userdata('site_loggedin'))
-		{
-			$pdftopurchasingadmin = $this->orderpdf('',true,'Manual');
-			$subject = "Order Details from ezpzp";
-			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email,$subject);
-		}
+		
 		$companies = array();
 		
 		$data['cart']=array();
@@ -910,6 +905,16 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 				redirect('cart');
 			}
 		}
+		
+		if($this->session->userdata('site_loggedin'))
+		{
+			@session_start();
+			$_SESSION['cart_shipping_vals']=$dataitemshipping;
+			$pdftopurchasingadmin = $this->orderpdf('',true,'Manual');
+			$subject = "Order Details from ezpzp";
+			$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email,$subject);
+		}
+		
  		$userinfoship=http_build_query($userinfoship,'',', ');
 		$getvendorship=explode(', ',$userinfoship);
 		/*foreach($cart as $ci)

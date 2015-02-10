@@ -358,14 +358,15 @@ function shownotice(newval,oldval,id){
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
-                    		foreach($items as $item){ $i++;?>
+                    		foreach($items as $item){ $i++;                    		
+                    		?>
                     		<tr>
-                    			<td><?php echo $item->ponum;?></td>
+                    			<td><?php echo @$item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
-                    			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
+                    			<td><?php echo date('m/d/Y', strtotime(@$item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
-                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo $item->totalprice;?></td>
+                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo number_format(($item->totalprice + ($item->totalprice * $config['taxpercent'] / 100)) , 2);?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>

@@ -130,7 +130,7 @@ class Dashboard extends CI_Controller
 		    }
 	    if($sms!="")
 	    	{
-	    		 $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">'.$sms.'</div></div>');
+	    		 $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">'.$sms.' &nbsp;&nbsp;&nbsp;<a href='.site_url('company/bankaccount').' > Click Here. </a></div></div>');
 	    	}
 	    
 	    if(@$basic->contact!="" && @$basic->address!="" && @$basic->city!="" && @$basic->state!="" && @$basic->zip!="" && @$basic->address!="")

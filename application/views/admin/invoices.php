@@ -155,6 +155,14 @@ function showreport(invoicenum,i)
 	}
 }
 
+function upload_attachment(receivedid,invoicenum)
+{
+	$("#hidreceivedid").val(receivedid);
+	$("#hidinvoicenum").val(invoicenum);
+	$("#frmInvoice").attr('action','<?php echo site_url('admin/quote/uploadPaymentAttachment') ?>');
+	$("#frmInvoice").submit();
+}
+
 function jq( myid ) {
  
     return "." + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
@@ -188,12 +196,16 @@ function jq( myid ) {
                         To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         Company:<?php 
-                        
-                        if(isset($companylist1) && $companylist1 != '')
+                      //  $newCompanylist = '';
+                                               
+                        if(@$companylist1 && $companylist1 != '')
                         {
                         	foreach ($companylist1 as $key=>$val)
-                        	{
-                        		$newCompanylist[$val->id] = $val; 
+                        	{                        		
+                        		if(@$val && $val != '')
+                        		{                        	
+                        			$newCompanylist[$val->id] = $val; 
+                        		}	
                         	}
                         }
                        
@@ -202,7 +214,10 @@ function jq( myid ) {
                         
                         <select id="searchcompany" name="searchbycompany" style="width: 120px;">
                             <option value=''>All Companies</option>
-                            <?php foreach ($newCompanylist as $company) { ?>
+                            <?php
+							if(@$newCompanylist)
+							{
+                            foreach ($newCompanylist as $company) { ?>
                                 <option value="<?php echo $company->id ?>"
                                 <?php
                                 if (@$_POST['searchbycompany'] == $company->id) {
@@ -212,7 +227,7 @@ function jq( myid ) {
                                         >
                                 <?php echo $company->title ?>
                                 </option>
-<?php } ?>
+						<?php } } ?>
                         </select>
                         &nbsp;&nbsp;
                         Status:
@@ -267,6 +282,9 @@ function jq( myid ) {
                                     </table>
                                    <br>
                                    <?php } ?> 
+                 <form name="frmInvoice" id="frmInvoice" enctype="multipart/form-data" method="POST">
+                 <input type="hidden" id="hidinvoicenum" name="hidinvoicenum" value="">
+                 <input type="hidden" id="hidreceivedid" name="hidreceivedid" value="">
                     <table id="datatable" class="table table-bordered">
                     	<thead>
                     		<tr>
@@ -325,6 +343,8 @@ function jq( myid ) {
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
                     				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
                     				<button onclick="update_invoice_payment_status('<?php echo $i;?>')">Save</button>
+                    				<input type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
+                    				<input type="button" name="btnupload" id="btnupload" value="Upload Attachment" onclick="upload_attachment('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
                     				<?php }?>
@@ -374,9 +394,9 @@ function jq( myid ) {
                     			if($ainvoice->paymentstatus=='Unpaid' || $ainvoice->paymentstatus=='Requested Payment')
                     			{  
                     				if(@$taxpercent)
-                    				$ainvoice->totalprice = number_format($ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100),2);
+                    				$ainvoice->totalprice = $ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100);
                     				else 
-                    				$ainvoice->totalprice = number_format($ainvoice->totalprice,2);
+                    				$ainvoice->totalprice = $ainvoice->totalprice;
                     				
                     				$datediff = strtotime($ainvoice->datedue) - time();
                     				$datediff = abs(floor($datediff/(60*60*24)));
@@ -402,7 +422,7 @@ function jq( myid ) {
                     	</tbody>
                     </table>
                 </div>
-                
+            </form>    
                 <div>   
 			    <?php if(isset($reports)) { foreach ($reports as $report) { $newhtmltable =""; ?>
 			    	    
@@ -427,7 +447,11 @@ function jq( myid ) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
-				    		$amount = (($item->invoice_type != "fullpaid")?($item->invoice_type == "alreadypay"?0:$item->quantity):$item->aiquantity) * $item->ea; ?>
+				    		$amount = (($item->invoice_type != "fullpaid")?($item->invoice_type == "alreadypay"?0:$item->quantity):$item->aiquantity) * $item->ea; 
+				    		if(@$taxpercent)
+                    				$amount = $amount + ($amount*$taxpercent/100);
+				    		
+				    		?>
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
@@ -501,12 +525,12 @@ function jq( myid ) {
 			    		<th width="75">Total</th>			    		
 			    	</tr>
 			    	<tr>
-			    		<td><?php echo array_sum($future); ?></td>  
-			    		<td><?php echo array_sum($current); ?></td>
-			    		<td><?php echo array_sum($daysold60); ?></td>
-			    		<td><?php echo array_sum($daysold90); ?></td>
-			    		<td><?php echo array_sum($daysold120); ?></td>
-			    		<td><?php echo array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120); ?></td>
+			    		<td><?php echo number_format(array_sum($future)); ?></td>  
+			    		<td><?php echo number_format(array_sum($current)); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold60)); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold90)); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold120)); ?></td>
+			    		<td><?php echo number_format(array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120)); ?></td>
 			    	</tr>
               <?php } ?>
               </div>  

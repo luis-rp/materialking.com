@@ -47,7 +47,7 @@ function allowonlydigits(e,elementid,errorid){
 					<div class="grid-body no-border">
 						<form id="profileform" name="profileform" class="animated fadeIn" method="post" 
 								action="<?php echo site_url('company/savepurchasingtier');?>">
-						<table id="datatable" class="table no-more-tables general">
+						<table id="datatable" class="table no-more-tables general" width="100%" style="table-layout:fixed;">
 							<tr>
 								<th>&nbsp;</th>
 								<th>Company</th>
@@ -73,36 +73,8 @@ function allowonlydigits(e,elementid,errorid){
 								<td><?php echo $admin->purchasingcompany;?></td>
 								<td><?php echo $admin->purchasingfullname;?></td>
 								<td>
-								
-								<!-- <table style="border:none" cellpadding="1" border="0">
-								<tr>
-								<td style="border:none">Tier 0:</td>
-								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0'){echo 'checked="CHECKED"';}?>/></td>
-								</tr>
-								
-								<tr>
-								<td style="border:none">Tier 1:</td>
-								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier1" <?php if($admin->tier=='tier1'){echo 'checked="CHECKED"';}?>/></td>
-								</tr>
-								
-								<tr>
-								<td style="border:none">Tier 2:</td>
-								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier2" <?php if($admin->tier=='tier2'){echo 'checked="CHECKED"';}?>/></td>
-								</tr>
-								
-								<tr>
-								<td style="border:none">Tier 3:</td>
-								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier3" <?php if($admin->tier=='tier3'){echo 'checked="CHECKED"';}?>/></td>
-								</tr>
-								
-								<tr>
-								<td style="border:none">Tier 4:</td>
-								<td style="border:none"><input type="radio" required name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier4" <?php if($admin->tier=='tier4'){echo 'checked="CHECKED"';}?>/></td>
-								
-								</tr>
-								</table> -->
-								
-								<select onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required>
+																
+								<select onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required style="width:100px;">
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0') {echo 'selected="SELECTED"';}?> >Tier 0</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier1" <?php if($admin->tier=='tier1') {echo 'selected="SELECTED"';}?> >Tier 1</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier2" <?php if($admin->tier=='tier2') {echo 'selected="SELECTED"';}?> >Tier 2</option>

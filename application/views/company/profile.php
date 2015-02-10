@@ -110,10 +110,11 @@ function addEmail()
 	
 	 function checkForm(form) 
 	 { 
-	 	 re = /^\w+$/; 
+	 	 //re = /^[w]+$/; 
+	 	 re =/^[A-Za-z0-9._-]+$/
 	 	 if(!re.test(form.username.value))
 	 	  { 
-	 	  	alert("Error: Username must contain only letters, numbers and underscores!"); 
+	 	  	alert("Error: Username must contain only letters, numbers,dot and underscores!"); 
 	 	  	form.username.focus(); 
 	 	  	return false; 
 	 	  } 
@@ -146,11 +147,7 @@ function addEmail()
 				                        <div class="controls">
 				                         
 				                        </div>
-				                      </div>-->
-                    				
-				                     
-
-				                     
+				                      </div>-->				                     
 				                     
                     				<div class="col-md-10 col-sm-10 col-xs-10">
                     				
@@ -309,7 +306,7 @@ function addEmail()
 				                        
 				                        <div class="controls">
 				                          <input type="file"  name="logo" id="logo"/>
-				                           <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
+				                           <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
 				                          <?php if($company->logo){?>
 				                          <br/>
 				                          <img src="<?php echo site_url('uploads/logo/thumbs/'.$company->logo);?>" width="100" height="100"/>
@@ -320,7 +317,7 @@ function addEmail()
 				                       <?php if($this->session->userdata('company')->company_type!='3') {?>
 				                      <div class="form-group">
 										<label class="form-label">Add Images</label>
-										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
+										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
 												<div id="moreUploads"></div>
 										    <div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a>
 											</div>
@@ -342,7 +339,7 @@ function addEmail()
 				                      
 				                      <div class="form-group">
 										<label class="form-label">Add Images for Gallery</label>
-										  <input type="file" name="UploadFile2[]" id="UploadFile2" onchange="document.getElementById('moreUploadsLink2').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
+										  <input type="file" name="UploadFile2[]" id="UploadFile2" onchange="document.getElementById('moreUploadsLink2').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
 												<div id="moreUploads2"></div>
 										    <div id="moreUploadsLink2" style="display:none;"><a href="javascript:addFileInput2();">Add another Image for Gallery</a>
 											</div>
@@ -362,7 +359,7 @@ function addEmail()
 				                      
 				                      <div class="form-group">
 										<label class="form-label">Add Files</label>
-										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 920px;">
+										  <input type="file" name="UploadFile1[]" id="UploadFile1" onchange="document.getElementById('moreUploadsLink1').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
 												<div id="moreUploads1"></div>
 										    <div id="moreUploadsLink1" style="display:none;"><a href="javascript:addFileInput1();">Add another File</a>
 											</div>

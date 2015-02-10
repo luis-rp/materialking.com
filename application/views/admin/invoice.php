@@ -432,7 +432,13 @@ function shownotice(newval,oldval,id){
         </div>
     </div>
         
-        
+        <div style="margin-left:20px;">
+        <?php
+        if(@$invoice->attachmentname)
+        { ?>
+        	<a href="<?php echo site_url('uploads/invoiceattachments/'.$invoice->attachmentname);?>" target="_blank">View Attached File</a>
+     <?php   } ?>
+        </div>
         
     </div>
 </section>

@@ -263,7 +263,7 @@ function preloadoptions(fromid)
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>
 										 <?php if($njp->creditonly=='1') {?>
 										 &nbsp;&nbsp;&nbsp;<span style="color:red;">*Credit Card Only Account.</span><?php } ?>
-										<br/><a href="<?php echo site_url('company/tier');?>">Manage Connection</a>
+										<br/><a href="<?php echo site_url('company/networkconnections');?>">Manage Connection</a>
 										<?php if($njp->accountnumber){?>
 										/ Account Number: <?php echo $njp->accountnumber;?>
 

@@ -23,6 +23,10 @@ class itemcode_model extends Model {
             $where .= " AND i.itemname LIKE '%{$_POST['searchitemname']}%' OR i.itemcode LIKE '%{$_POST['searchitemname']}%'";
         if(@$_POST['searchcategory'])
             $where .= " AND i.category = '{$_POST['searchcategory']}'";
+       
+        if($pa)    
+            $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL)  ";   
+            
         //$where .= " AND ai.purchasingadmin='$pa'";
         $sql = "SELECT i.*, MAX(a.awardedon) awardedon, sum(ai.totalprice) totalpurchase
                 FROM
@@ -414,7 +418,10 @@ class itemcode_model extends Model {
     }
 
     function SaveItemcode() {   	
+    	if(@$_FILES['UploadFile']['name'])
     	$name=implode(",",$_FILES['UploadFile']['name']);
+    	else 
+    	$name = "";
     	$filename=implode(",",$_POST['filename']);   
     	$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
@@ -448,6 +455,9 @@ class itemcode_model extends Model {
 	        'increment' => $this->input->post('increment')
         );
 
+        if(@$this->session->userdata('purchasingadmin'))
+        $options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        
         $this->db->insert('item', $options);
         $id = $this->db->insert_id();
 		
@@ -872,6 +882,70 @@ class itemcode_model extends Model {
         }
     }
 
+    
+    function checkDuplicateuserCode($code, $purchasingadmin, $edit_id = 0) {
+        if ($edit_id > 0) {
+            $this->db->where(array('id !=' => $edit_id, 'itemcode' => $code));
+        } else {
+            $this->db->where('itemcode', $code);
+        }
+        
+        if(@$purchasingadmin)
+        $this->db->where('purchasingadmin', $purchasingadmin);
+        
+        $query = $this->db->get('item');
+        $result = $query->result();
+
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function checkDuplicateUserItemName($itemname, $purchasingadmin, $edit_id = 0) {
+        if ($edit_id > 0) {
+            $this->db->where(array('id !=' => $edit_id, 'itemname' => $itemname));
+        } else {
+            $this->db->where('itemname', $itemname);
+        }
+        
+        if(@$purchasingadmin)
+        $this->db->where('purchasingadmin', $purchasingadmin);        
+        
+        $query = $this->db->get('item');
+        $result = $query->result();
+
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+   function checkDuplicateUserItemUrl($url, $purchasingadmin, $edit_id = 0) {
+        if ($edit_id > 0) {
+            $this->db->where(array('id !=' => $edit_id, 'url' => $url));
+        } else {
+            $this->db->where('url', $url);
+        }
+        
+        if(@$purchasingadmin)
+        $this->db->where('purchasingadmin', $purchasingadmin);        
+        
+        $query = $this->db->get('item');
+        $result = $query->result();
+
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+    
     // Start By Dhruvisha On 11th Jan 2014
     function SaveCategory() {
         //var_dump($this->input->post('catname')); exit;

@@ -2,15 +2,15 @@
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
 
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
-<?php if($tier){?>
-<?php echo '<script>var tier1='.$tier->tier1.';</script>'?>
 
-<?php echo '<script>var tier2='.$tier->tier2.';</script>'?>
+<?php if(@$tier->tier1) echo '<script>var tier1='.$tier->tier1.';</script>'?>
 
-<?php echo '<script>var tier3='.$tier->tier3.';</script>'?>
+<?php if(@$tier->tier2) echo '<script>var tier2='.$tier->tier2.';</script>'?>
 
-<?php echo '<script>var tier4='.$tier->tier4.';</script>'?>
-<?php } ?>
+<?php if(@$tier->tier3) echo '<script>var tier3='.$tier->tier3.';</script>'?>
+
+<?php if(@$tier->tier4) echo '<script>var tier4='.$tier->tier4.';</script>'?>
+
 <?php echo '<script>var itemupdateurl="'.site_url('inventory/updateitem').'";</script>'?>
 
 <?php echo '<script>var itemcodeupdateurl="'.site_url('inventory/updateitemcode').'";</script>'?>
@@ -183,16 +183,52 @@
 		    });
     }
     function viewPricelist(itemcode,itemname,price)
-    {
+    {    	
+    	if (typeof tier1 !== "undefined") 
+		{				
+			$("#pricelisttierlabel1").css('display','');
+			$("#pricelisttier1").html(parseFloat(price + (tier1 * price/100)));
+		}
+		else
+		{
+			$("#pricelisttierlabel1").css('display','none');
+		}
+	
+		if (typeof tier2 !== "undefined") 
+		{
+			$("#pricelisttier2").html(parseFloat(price + (tier2 * price/100)));
+			$("#pricelisttierlabel2").css('display','');
+		}
+		else
+		{
+			$("#pricelisttierlabel2").css('display','none');
+		}
+		
+		if (typeof tier3 !== "undefined") 
+		{
+			$("#pricelisttier3").html(parseFloat(price + (tier3 * price/100)));
+			$("#pricelisttierlabel3").css('display','');
+		}
+		else
+		{
+			$("#pricelisttierlabel3").css('display','none');
+		}
+		
+		if (typeof tier4 !== "undefined") 
+		{
+			$("#pricelisttier4").html(parseFloat(price + (tier4 * price/100)));
+			$("#pricelisttierlabel4").css('display','');
+		}
+		else
+		{
+			$("#pricelisttierlabel4").css('display','none');
+		}
     	$("#pricelist").modal();
     	$("#pricelistitemcode").html(itemcode);
     	$("#pricelistitemname").html(itemname);
     	price = Number(price);
     	$("#pricelistdefault").html(price.toFixed(2));
-    	$("#pricelisttier1").html(Number(price + (tier1 * price/100)).toFixed(2));
-    	$("#pricelisttier2").html(Number(price + (tier2 * price/100)).toFixed(2));
-    	$("#pricelisttier3").html(Number(price + (tier3 * price/100)).toFixed(2));
-    	$("#pricelisttier4").html(Number(price + (tier4 * price/100)).toFixed(2));
+    //	$("#pricelisttier1").html(Number(price + (tier1 * price/100)).toFixed(2));
     }
 
     function viewqtydiscount(itemid,itemcode,itemname,price)
@@ -420,6 +456,9 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
 
 	if(confirm("Do you want to save this as company's price for this item?"))
 	{
+		if(val==0){
+			alert('Price cannot be set to 0');	
+		}else{
 		$.ajax({
 			type:"post",
 			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
@@ -429,6 +468,7 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
 			alert(data);			
 			
 		});
+		}
 	}
 }
     
@@ -795,7 +835,7 @@ function clearall(id)
               <span id="pricelistdefault"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row"  id="pricelisttierlabel1" style="display:none;">
             <div class="col-md-8">
               Tier1 Price:
             </div>
@@ -803,7 +843,7 @@ function clearall(id)
               <span id="pricelisttier1"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row"  id="pricelisttierlabel2" style="display:none;">
             <div class="col-md-8">
               Tier2 Price:
             </div>
@@ -811,7 +851,7 @@ function clearall(id)
               <span id="pricelisttier2"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row"  id="pricelisttierlabel3" style="display:none;">
             <div class="col-md-8">
               Tier3 Price:
             </div>
@@ -819,7 +859,7 @@ function clearall(id)
               <span id="pricelisttier3"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row"  id="pricelisttierlabel4" style="display:none;">
             <div class="col-md-8">
               Tier4 Price:
             </div>

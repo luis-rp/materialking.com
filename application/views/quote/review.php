@@ -4,10 +4,10 @@
 <?php echo "<script>var changepriceurl='".site_url('company/changeitemprice')."';</script>";?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
-<?php echo "<script>var tier1=".$tiers->tier1.";</script>";?>
-<?php echo "<script>var tier2=".$tiers->tier2.";</script>";?>
-<?php echo "<script>var tier3=".$tiers->tier3.";</script>";?>
-<?php echo "<script>var tier4=".$tiers->tier4.";</script>";?>
+<?php if(@$tiers->tier1) echo "<script>var tier1=".$tiers->tier1."</script>";?>
+<?php if(@$tiers->tier2)  echo "<script>var tier2=".$tiers->tier2."</script>";?>
+<?php if(@$tiers->tier3)  echo "<script>var tier3=".$tiers->tier3."</script>";?>
+<?php if(@$tiers->tier4)  echo "<script>var tier4=".$tiers->tier4."</script>";?>
 
 <?php echo '<script>var getcompanypriceurl ="' . site_url('quote/getcompanyprice') . '";</script>' ?>
 
@@ -70,25 +70,67 @@ function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, i
 	var selectbuttondefault = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier0\","+tier0price+","+itemid+","+purchasingadmin+")' value='Select'>";
 	$("#pricelistdefault").html(tier0price+'&nbsp;&nbsp;&nbsp;'+selectbuttondefault);
 	
+	if (typeof tier1 !== "undefined") 
+	{
+		tier1price = Number(price + (tier1 * price/100)).toFixed(2);
+	}
+	else
+	{
+		tier1price = '';
+	}	
 	
-	tier1price = Number(price + (tier1 * price/100)).toFixed(2);
-	var selectbuttontier1 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier1\","+tier1price+","+itemid+","+purchasingadmin+")' value='Select'>";
-	$("#pricelisttier1").html(tier1price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier1);
+	if(tier1price != '')
+	{
+		var selectbuttontier1 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier1\","+tier1price+","+itemid+","+purchasingadmin+")' value='Select'>";
+		$("#pricelisttier1").html(tier1price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier1);
+		$("#pricelisttierlabel1").css('display','');
+	}
 	
-	tier2price = Number(price + (tier2 * price/100)).toFixed(2);
-	var selectbuttontier2 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier2\","+tier2price+","+itemid+","+purchasingadmin+")' value='Select'>";
-	$("#pricelisttier2").html(tier2price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier2);
+	if (typeof tier2 !== "undefined") 
+	{
+		tier2price = Number(price + (tier2 * price/100)).toFixed(2);
+	}
+	else
+	{
+		tier2price = '';
+	}	
 	
+	if(tier2price != '')
+	{		
+		var selectbuttontier2 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier2\","+tier2price+","+itemid+","+purchasingadmin+")' value='Select'>";
+		$("#pricelisttier2").html(tier2price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier2);
+		$("#pricelisttierlabel2").css('display','');
+	}	
 	
-	tier3price = Number(price + (tier3 * price/100)).toFixed(2);
-	var selectbuttontier3 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier3\","+tier3price+","+itemid+","+purchasingadmin+")' value='Select'>";
-	$("#pricelisttier3").html(tier3price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier3);
+	if (typeof tier3 !== "undefined") 
+	{
+		tier3price = Number(price + (tier3 * price/100)).toFixed(2);
+	}
+	else
+	{
+		tier3price = '';
+	}	
+	if(tier3price != '')
+	{	
+		var selectbuttontier3 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier3\","+tier3price+","+itemid+","+purchasingadmin+")' value='Select'>";
+		$("#pricelisttier3").html(tier3price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier3);
+		$("#pricelisttierlabel3").css('display','');
+	}	
 	
-	
-	tier4price = Number(price + (tier4 * price/100)).toFixed(2);
-	var selectbuttontier4 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier4\","+tier4price+","+itemid+","+purchasingadmin+")' value='Select'>";
-	$("#pricelisttier4").html(tier4price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier4);
-	
+	if (typeof tier4 !== "undefined") 
+	{
+		tier4price = Number(price + (tier4 * price/100)).toFixed(2);
+	}
+	else
+	{
+		tier4price = '';
+	}	
+	if(tier4price != '')	
+	{			
+		var selectbuttontier4 = "<input type='button' class='btn btn-small' onclick='setitemtier(\"tier4\","+tier4price+","+itemid+","+purchasingadmin+")' value='Select'>";
+		$("#pricelisttier4").html(tier4price+'&nbsp;&nbsp;&nbsp;&nbsp;'+selectbuttontier4);
+		$("#pricelisttierlabel4").css('display','');
+	}
 	
 	$("#hiddenitemid").val(itemid);
     $("#hiddenprice").val(price);
@@ -220,6 +262,9 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 
 	if(confirm("Do you want to save this as company's price for this item?"))
 	{
+		if(val==0){
+			alert('Price cannot be set to 0');	
+		}else{
 		$.ajax({
 			type:"post",
 			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&quote="+quote+"&purchasingadmin="+purchasingadmin,
@@ -229,6 +274,7 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 			alert(data);			
 			
 		});
+		}
 	}
 }
 
@@ -272,6 +318,9 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
 	var val=$('#itemprice').val();
 	if(confirm("Do you want to save this as company's price for this item?"))
 	{
+		if(val==0){
+			alert('Price cannot be set to 0');	
+		}else{
 		$.ajax({
 			type:"post",
 			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
@@ -281,6 +330,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
 			alert(data);			
 			
 		});
+		}
 	}
 }
 
@@ -522,7 +572,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
               <span id="pricelistdefault"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row" id="pricelisttierlabel1" style="display:none;">
             <div class="col-md-8">
               Tier1 Price: 
             </div>
@@ -530,7 +580,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
               <span id="pricelisttier1"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row" id="pricelisttierlabel2" style="display:none;">
             <div class="col-md-8">
               Tier2 Price: 
             </div>
@@ -538,7 +588,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
               <span id="pricelisttier2"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row" id="pricelisttierlabel3" style="display:none;">
             <div class="col-md-8">
               Tier3 Price: 
             </div>
@@ -546,7 +596,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
               <span id="pricelisttier3"></span>
             </div>
           </div>
-          <div class="row form-row">
+          <div class="row form-row" id="pricelisttierlabel4" style="display:none;">
             <div class="col-md-8">
               Tier4 Price: 
             </div>

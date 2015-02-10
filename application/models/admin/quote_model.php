@@ -820,7 +820,7 @@ class quote_model extends Model {
 
 
        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -833,8 +833,8 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -921,7 +921,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -987,7 +987,7 @@ class quote_model extends Model {
 
 
         $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -1001,7 +1001,7 @@ class quote_model extends Model {
                 . " $search GROUP BY invoicenum";
                 
         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2)  totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -1076,7 +1076,7 @@ class quote_model extends Model {
     function getinvoicebynum($invoicenum,$invoicequote) {
 
         $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue 
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,r.id as receivedid,r.attachmentname 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -1429,8 +1429,13 @@ class quote_model extends Model {
     // for autocomplete
     function finditemcode($key) {
         $key = urldecode($key);
+        
+        $where ="";
+        if(@$this->session->userdata('purchasingadmin'))
+        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL)';
+        
           $sql = "SELECT * FROM " . $this->db->dbprefix('item')
-                . " WHERE itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%'";        
+                . " WHERE 1=1 {$where} AND (itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%')";        
                 
                 
         /*
@@ -1455,8 +1460,12 @@ class quote_model extends Model {
         //echo $code;die;
         $code = urldecode($code);
 
+        $where ="";
+        if(@$this->session->userdata('purchasingadmin'))
+        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL)';
+        
         //$sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
-        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode="' . $code . '"';
+        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE 1=1 '.$where.' and itemcode="' . $code . '"';
         /*
           if($this->session->userdata('usertype_id')>1)
           {

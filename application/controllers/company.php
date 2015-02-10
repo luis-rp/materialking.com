@@ -699,7 +699,7 @@ class Company extends CI_Controller {
         {   	  	
         	$data['email_body_title']  = "Dear " .@$_POST['title'];
 		  	$data['email_body_content']  = "You have updated Company Information as Follow:  <br><br>
-		  	Username : ".@$company->username."<br/>
+		  	Username : ".@$_POST['username']."<br/>
 		  	Password : ".@$orgpwd."<br/>
 		  	Title : ".@$_POST['title']."<br/>
 		  	Primaryemail : ".@$_POST['primaryemail']."<br/>
