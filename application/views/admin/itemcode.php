@@ -608,7 +608,7 @@ $(document).ready(function(){
                     </div>
                     
                     
-                    <?php if ($this->session->userdata('usertype_id') == 1 || $this->session->userdata('usertype_id') == 2) { ?>
+                    <?php if ($this->session->userdata('usertype_id') == 1) { ?>
                         <div class="control-group noxls">
                             <label class="control-label">&nbsp;</label>
                             <div class="controls">

@@ -166,7 +166,7 @@ function jq( myid ) {
 					<!--<td><?php echo $value['itemname'];?> </td>-->
 					<td><?php echo date('m/d/Y', strtotime($value['billedon']));?> </td>
 					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
-					<td><?php echo number_format($finaltotal1,2);?> </td>
+					<td><?php echo number_format($value['totalprice'],2);?> </td>
 					<!---->
 					<!--<td><?php //echo $value['costcode'];?> </td>-->
 				</tr>
@@ -212,11 +212,11 @@ function jq( myid ) {
 				foreach ($billservicedetails as $key1=>$v)
 				{ ?>
 					 <tr>   	
-				    	<td colspan="3" style="padding-left:5; text-align:right;"><?php echo $v['name'];?></td>
+				    	<td colspan="3" style="padding-left:5; text-align:right;"><?php echo $v['servicelaboritems'];?></td>
 				    	<td colspan="3" style="padding-left:5; "><?php echo number_format($v['price'],2);?></td>
 				    </tr>
 				    <tr>
-				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax (<?php echo $v['tax'];?> % )</td> <td><?php echo $v['price'] * ($v['tax']/100); ?></td>
+				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax &nbsp; (<?php echo number_format($v['tax'],2);?> % )</td> <td><?php echo $v['price'] * ($v['tax']/100); ?></td>
 			       	</tr>
 <?php 			$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100));	}
 			} $finaltot = $serviceItemTax + $finaltotal;  ?>

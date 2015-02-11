@@ -30,6 +30,12 @@ function allowonlydigits(e,elementid,errorid){
 
 }
 
+function preloadoptions(fromid)
+	 {
+	 	//alert("#smodal"+fromid);
+    	$("#smodal"+fromid).modal();   	   
+     }
+
 
 
 </script>
@@ -62,7 +68,7 @@ function allowonlydigits(e,elementid,errorid){
 							</tr>
 							<?php 
 							foreach($admins as $admin)
-							{ 
+							{
 								if(!@$admin->tier)
 								{
 									$admin->tier='tier0';
@@ -70,7 +76,9 @@ function allowonlydigits(e,elementid,errorid){
 							?>
 							<tr>
 								<td><a class="remove" href="<?php echo site_url('company/deletepurchasingtier/'.$admin->purchasingadmin);?>" onclick="javascript:return confirm('Do You Really Want to Delete This Company?');">X</a></td>	
-								<td><?php echo $admin->purchasingcompany;?></td>
+								<td><?php echo $admin->purchasingcompany;?><br />
+								<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities($admin->purchasingadmin)?>');">View Stats</a>
+								</td>
 								<td><?php echo $admin->purchasingfullname;?></td>
 								<td>
 																
@@ -109,7 +117,7 @@ function allowonlydigits(e,elementid,errorid){
 <input type="checkbox" name="creditonly[<?php echo $admin->purchasingadmin;?>]" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?> />
 								</td>
 							</tr>
-							<?php }?>
+							<?php } ?>
 							<tr>
 								
 								<td colspan="10" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>
@@ -123,3 +131,49 @@ function allowonlydigits(e,elementid,errorid){
 			
 	</div>
   </div> 
+  
+   <?php $oldfromid=""; $i=0; foreach ($userdata as $u){ //echo "<pre>data-"; print_r($u->id);  ?>
+ <div id="smodal<?php echo $u->id;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->companyname;?></h4> 
+          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->fullname;?></h5>
+          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->address;?></h6>       
+        </div>
+        
+        <div class="modal-body">       
+        	<div>
+          		<h6 class="semi-bold" id="myModalLabel" style="text-align:center">Member Since&nbsp;
+          		<?php $olddate1=strtotime(@$u->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
+        	</div>
+        
+         	<div>
+        		<h4 class="semi-bold" id="myModalLabel">User Statistics</h4>
+        	</div>
+        	<hr style="height:2px;border-width:0;color:green;background-color:green">
+	        <div style="margin-left:90px;">      
+		       <div>
+		        	<p><?php echo "Total Number of Project&nbsp;".count(@$u->projects);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$u->directquotes);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$u->quotes);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$u->awarded;?></p>
+		        </div>  
+	        </div>	  
+        </div>       
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+        
+      </div>   
+    </div>
+  </div>
+  <?php $oldfrommid=$u->id; $i++; } //die;?> 

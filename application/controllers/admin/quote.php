@@ -5627,9 +5627,9 @@ class quote extends CI_Controller
 			$data['settingtour']=$setting[0]->tour;
 		}     
         
-		$sql3 = "SELECT bsl.* FROM ".$this->db->dbprefix('bill'). " b 
+		$sql3 = "SELECT bs.* FROM ".$this->db->dbprefix('bill'). " b 
         			JOIN ".$this->db->dbprefix('bill_servicelaboritems'). " bs ON bs.billid = b.id 
-        			JOIN ".$this->db->dbprefix('servicelaboritems'). " bsl ON bsl.id = bs.servicelaboritems  WHERE b.id = ".$invoicenum;
+        			WHERE b.id = ".$invoicenum;
        	$data['billservicedetails'] = $this->db->query($sql3)->result_array();        	
 		
         $this->load->view('admin/bill', $data);
@@ -9948,6 +9948,13 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$data['email_body_content'] .= "User Name: ".$username."<br/>";		
 			$data['email_body_content'] .= "Password: ".$password."<br/><br/>";					
 		}
+		else 
+		{
+			$customerRes = $this->db->where('id',@$_POST['customerid'])->get('customer')->result();
+			$data['email_body_content'] .= "Invoice Portal: <br/>";		
+			$data['email_body_content'] .= "User Name: ".$customerRes[0]->username."<br/>";		
+			$data['email_body_content'] .= "Password: ".$customerRes[0]->plainpwd."<br/><br/>";	
+		}
 		
 		$link1 = base_url() . 'company/customerlogin';
 		
@@ -9983,6 +9990,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 						$custarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 						$custarray['username'] = $username;
            				$custarray['password'] = md5($password);
+           				$custarray['plainpwd'] = $password;
 						$this->quote_model->db->insert('customer', $custarray);
 						$custid = $this->quote_model->db->insert_id();	
 					}else 
@@ -10014,38 +10022,26 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 					
 					if(isset($_POST['servicelaboritem'])  && $billid != '')
 					{
-						//$res = $this->db->where('isdeleted',0)->get('servicelaboritems')->result_array();
-						
 							foreach ($_POST['servicelaboritem'] as $k=>$val)
 							{
 								$insertArr = array('billid'=>$billid,
-												   'servicelaboritems'=>$k);
+												   'servicelaboritems'=>(@$_POST['servicelaboritemname'][$k]) ? $_POST['servicelaboritemname'][$k] : '',
+												   'price'=>(@$_POST['servicelaboritemprice'][$k]) ? $_POST['servicelaboritemprice'][$k] : '',
+												   'tax'=>(@$_POST['servicelaboritemtax'][$k]) ? $_POST['servicelaboritemtax'][$k] : '',
+												   'purchasingadmin'=>$this->session->userdata('purchasingadmin')
+												   
+												   );
 													
 								$this->quote_model->db->insert('bill_servicelaboritems', $insertArr);			
 								
-								$str .= $k.",";
-							}
-							$newstr = rtrim($str,",");	
-							if(isset($newstr) && $newstr != '')
-							{
-								$sql = " SELECT * FROM ". $this->db->dbprefix('servicelaboritems') . " WHERE isdeleted = 0 AND id IN({$newstr}) ";
-								$qry = $this->db->query($sql);
-								$res = $qry->result_array();
-							}
-
-							if(isset($res))
-							{
-								foreach ($res as $key=>$v)
-								{
 									$emailitems1 .= '<tr>';
-									$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.$v['name'].'</td>';
-									$emailitems1 .= '<td style="padding-left:5;">'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
-									$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+									$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.@$_POST['servicelaboritemname'][$k].'</td>';
+									$emailitems1 .= '<td style="padding-left:5;">'.@$_POST['servicelaboritemprice'][$k].'</td><td>&nbsp;</td><td>&nbsp;</td>';
+									$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.@$_POST['servicelaboritemtax'][$k].' % )</td> <td>'.@$_POST['servicelaboritemprice'][$k] * (@$_POST['servicelaboritemtax'][$k]/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 									
-									$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100)) ;
-									$serviceItemTaxTotal += $serviceItemTax;
-								}
+									$serviceItemTax += @$_POST['servicelaboritemprice'][$k] + (@$_POST['servicelaboritemprice'][$k] * (@$_POST['servicelaboritemtax'][$k]/100)) ;									
 							}
+						
 					}
 					
 					$awarditemsarr = array();
@@ -10137,10 +10133,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	$data['email_body_content2'] = $email_body_content." <br>".$data['email_body_content'];
     	$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+			
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
-		
+//echo '<pre>',print_r($send_body);die;
+	
 		$this->email->initialize($config);
 		$this->email->from($settings->adminemail);
 		$this->email->to(@$_POST['customeremail']);
@@ -10239,7 +10237,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $search = "  AND (" . implode(" AND ", $searches) . " )";
         }
         
-        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername from ". $this->db->dbprefix('bill') ." b left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id where 1=1 AND project = {$this->session->userdata('managedprojectdetails')->id} {$search} group by bi.bill";
+        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername 
+        from ". $this->db->dbprefix('bill') ." b 
+        left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill 
+        left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id 
+        where 1=1 AND project = {$this->session->userdata('managedprojectdetails')->id} {$search} group by bi.bill";
         
         $billqryeres = $this->db->query($billquery);
         $bills = $billqryeres->result();
@@ -10260,16 +10262,28 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                            ->where('bill.id',$bill->id)
                            ->get()->row()
                            ;
-                           
+                
+                               
                            
                 $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
                 $bill->bankaccount = $bankaccount;
 
                 if(@$bill->markuptotalpercent!="")
-                $bill->total = $bill->total + ($bill->total*$bill->markuptotalpercent/100);     
-                
+                $markuptotal = ($bill->total*$bill->markuptotalpercent/100);     
+               
                 $bill->companydetails = $company;
                 $bill->total = $bill->total + ($bill->total*$settings->taxpercent/100);
+                
+                $serviceItems = 0;
+                $serviceitemRes = $this->db->where('billid',$bill->id)->get('bill_servicelaboritems')->result_array();
+                if(@$serviceitemRes)
+                {
+                	foreach ($serviceitemRes as $k=>$v)
+                	{                     		
+                		$serviceItems += ($v['price'] + ($v['price'] * $v['tax']/100));                	
+                	}	          	
+                } 
+                $bill->total = $bill->total + $serviceItems + $markuptotal;
                           
                	$payh = $this->db->select('sum(amountpaid) as amountpaid')->where('bill',$bill->id)->get('bill_payment_history')->row(); 
                 
@@ -10282,6 +10296,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                	$bill->totalpaid = number_format($payh->amountpaid,2);
                	else 
                	$bill->totalpaid = 0;
+               	
                	
                 $bill->actions = '<a href="javascript:void(0)" onclick="showBill(\'' . $bill->id . '\',\''.$bill->quote.'\')"><span class="icon-2x icon-search"></span></a>';
                 
@@ -11367,7 +11382,43 @@ $loaderEmail = new My_Loader();
     	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">File Uploaded Successfully.</div></div>');
     	redirect('admin/quote/invoices');
     }
+    
+    
+    function addNewUserItem()
+    {
+        if (!$_POST)
+            die;
+            
+            $this->db->where('itemcode',$_POST['itemcode']);			
+			$item = $this->db->get('item')->row();
+            if($item){
+            echo "itemcode(".$item->itemcode.") already exists"; die; 
+            }
+            $this->db->where('itemname',$_POST['itemname']);			
+			$itemname = $this->db->get('item')->row();
+            if($itemname){
+            echo "itemname(".$itemname->itemname.") already exists"; die; 
+            }
+            
+			$itemid = $this->itemcode_model->SaveItemcode_user();
+			if($itemid)
+			echo "Item got added successfully!"; die;            
+    }
+    
+    
 	
+    function updatesharesuplliercheck()
+    {    	
+    	$receivedid = $_POST['receivedid'];
+    	$invoiceNum = $_POST['invoicenum'];
+    	
+    	if(@$receivedid && @$invoiceNum)
+    	{
+    		$updateArr = array('sharewithsupplier'=>$_POST['sharewithsupplier']);
+    		$where = array('id'=>$receivedid,'invoicenum'=>$invoiceNum);
+	    	$this->db->update('received',$updateArr,$where);
+    	}
+    }
     // End
 }
 

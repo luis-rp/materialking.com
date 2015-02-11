@@ -391,6 +391,34 @@ function checkincrementquantity(quantity){
 }
 
 
+function checknewitem(){
+	
+	if($('#itemcode').val()!="" && $('#itemname').val()!="" && $('#unit').val()!=""){
+		
+		if(confirm('Do you want to add/Save this item?'))
+		{
+
+			var itemcode = $("#itemcode").val();
+			var itemname = $("#itemname").val();
+			var unit = $("#unit").val();
+			var d = "itemcode="+itemcode+"&itemname="+itemname+"&unit="+unit;
+
+			useritemurl = "<?php echo site_url('admin/quote/addNewUserItem');?>";
+
+			$.ajax({
+				type:"post",
+				data: d,
+				url: useritemurl
+			}).done(function(data){
+				alert(data);
+			});
+			
+			
+		}
+	}
+	
+}
+
 function checkupdateincrementquantity(quantity,id){	
 	var incrementval = $('#itemincrement'+id).val();
 	$('#incrementmessage'+id).html('');
@@ -858,10 +886,10 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
                     </td>
 		    		<td>
-		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
+		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
 		    		</td>
 		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="return checkincrementquantity(this.value);calculatetotalprice('')" required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
-		    		<td><input type="text" id="unit" name="unit" class="span12"/></td>
+		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();" class="span12"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>

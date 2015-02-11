@@ -190,10 +190,12 @@ class site extends CI_Controller
     				$supplier->logo = 'big.png';
     			}
     			//log_message('debug',"lat:".$supplier->com_lat.":lng:".$supplier->com_lng);
+    			if($supplier->com_lat!="" && $supplier->com_lng!=""){
     			$popups["$supplier->com_lat, $supplier->com_lng"] = '<div class="infobox"><div class="image"><img src="' . base_url() . 'uploads/logo/thumbs/' . $supplier->logo .
     			'" alt="" width="100"></div><div class="title"><a href="' . site_url('site/supplier/' . $supplier->username) . '">' . $supplier->title .
     			'</a></div><div class="area"><div class="price">&nbsp;</div><span class="key">'.$supplier->contact .'<br/>' . $supplier->city.'<br>'.$supplier->state . '</span><span class="value">' . '' .
     			'</span></div><div style="align:left;overflow:hidden;"><p>' . $supplier->joinmark . '</p><p><div class="btn btn-primary arrow-right"><a href="' . site_url('site/supplier/' . $supplier->username) . '">View Profile</a></div></p><p><div class="btn btn-primary arrow-right "><a href="' . site_url('store/items/' . $supplier->username) . '">Go to Store</a></div></p></div></div>';
+    			}	
     			$data['suppliers'][] = $supplier;
     		}
     	}
@@ -3060,9 +3062,9 @@ class site extends CI_Controller
 							
         	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
         	
-        	$sql3 = "SELECT bsl.* FROM ".$this->db->dbprefix('bill'). " b 
+        	$sql3 = "SELECT bs.* FROM ".$this->db->dbprefix('bill'). " b 
         			JOIN ".$this->db->dbprefix('bill_servicelaboritems'). " bs ON bs.billid = b.id 
-        			JOIN ".$this->db->dbprefix('servicelaboritems'). " bsl ON bsl.id = bs.servicelaboritems  WHERE b.id = ". $_POST['billid'];
+        			WHERE b.id = ". $_POST['billid'];
         	$data['billservicedetails'] = $this->db->query($sql3)->result_array();        	
         }
         

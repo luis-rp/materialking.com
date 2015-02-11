@@ -43,11 +43,12 @@ $(document).ready(function(){
                                        <tr>
                   	             			<th style="width:20%">Entry Id</th>
                                    			<th>Data</th>
-                                   			
+                                   			<th>&nbsp;</th>
                                          </tr>
 									</thead>	
 									<tbody>                                    
 							              <?php
+							              
 									    	foreach($subscribers as $key=>$sub)
 									    	{
 									    		?>
@@ -61,7 +62,7 @@ $(document).ready(function(){
                                                 				<p><?php echo $fields["name"];?>  :  <?php echo $fields["value"];?></p>
                                                 			<?php }?>
                                                 			</td>
-                                                			
+                                                			<td> <span class="icon-2x icon-edit"><input type="button" name="btnedit" id="btnedit" onclick="editData();"> </span> &nbsp;&nbsp; <span class="icon-2x icon-trash"><input type="button" name="btnDelete" id="btnDelete" onclick="deleteData();"></span></td>
                                                 		</tr>
                                                 		
                                      <?php } ?>

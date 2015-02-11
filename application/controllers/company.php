@@ -2334,7 +2334,39 @@ class Company extends CI_Controller {
         }
         //print_r($admins);die;
         $data['tier'] = $tier;
+        
+        /*----------------------------------------------------------------*/
+			$users=$this->db->get_where('users',array('isdeleted'=>'0'))->result();
+			$data['userdata']=array();
+			if($users)
+			{
+			    
+				foreach ($users as $u)
+				{
+				  $awarded=0;
+				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
+				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
+			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
+			     	
+			      if( $u->quotes)
+			      {
+			         foreach($u->quotes as $quote)
+						{							
+							if($this->quote_model->getawardedbid($quote->id))
+								$awarded++;							
+						}
+			        $u->awarded = $awarded;
+			      }
+			     $data['userdata'][]=$u; 				
+				} 
+				 
+			}	
+		/*---------------------------------------------------*/
+        
         $this->load->view('company/networkconnections', $data);
+        
+        
+        	
     }
 
 }

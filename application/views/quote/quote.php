@@ -68,6 +68,7 @@ function updateitem(itemid,itemcode,itemname,price,heading)
 	$("#itemform").trigger("reset");
 	$("#itemformheading").html(heading);
 	$("#itemformid").val(itemid);
+	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="preloadoptions('+itemid+');">Select/View Preloaded Options</a>');
 	//$("#itemformcode").html(itemcode.replace('&quot;','"'));
 	//$("#itemformname").html(itemname.replace('&quot;','"'));
 	//$("#itemformprice").html(price);
@@ -410,6 +411,29 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
 	}
 }
 
+function addFileInput(count) 
+	{
+	 	var count=parseInt(count)+1;
+	 	$("#quotefile"+count).show();	 	
+	}
+	
+
+function preloadoptions(itemid){
+
+	if($("#modal"+itemid).length > 0){
+		$("#itemmodal").modal('hide');
+		$("#modal"+itemid).modal();
+	}else
+	alert("No Preloaded Options Exist for this item");
+}
+
+function displayitemmodal(itemid){
+   
+	$("#modal"+itemid).css('display', 'none');
+ 	$("#itemmodal").css('display', 'block');
+ 	$("#itemmodal").modal();
+}	
+
 //-->
 </script>
 
@@ -622,31 +646,30 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
 							    	</tr>
 							    	<?php if($quote->quoteattachment){?>
 							    	<tr>
-							    		<td>
-											Attachment By Purchasing Admin:
+							    		<td>Attachment By Purchasing Admin:</td>
+								<td colspan="10"><a href="<?php echo site_url('uploads/quote').'/'.$quote->quoteattachment ;?>" target="_blank">View File</a></td>	 	                                </tr> <?php }?>
+							    	
+								<tr>
+							    		<td>Your Attachment</td>
+										<td colspan="10">								    		
+							    		<input type="file" name="quotefile[]" id="quotefile" onclick="addFileInput('0')" />
+											<?php $i=1; while($i<=10) { ?>
+												<input type="file" name="quotefile[]" id="quotefile<?php echo $i;?>" style="display:none;" onclick="addFileInput('<?php echo $i;?>')" />
+											<?php $i++; }?>
+							    		
+											<?php if($quotefile)
+												{ 
+													$quotefilearray=explode(",",$quotefile);												
+													foreach ($quotefilearray as $file)  { 
+														if($file && file_exists("./uploads/quotefile/".$file)){ ?>													
+												       <a href="<?php echo site_url('uploads/quotefile/'.$file);?>" target="_blank">View File</a>&nbsp;
+												  <?php } } } ?>											
 							    		</td>
-							    		<td colspan="10">
-                                        	<a href="<?php echo site_url('uploads/quote').'/'.$quote->quoteattachment ;?>" target="_blank">  
-                                        	    View File
-                                          </a>
-							    		</td>
-							    	</tr>
-                                                                <?php }?>
-							    	<tr>
-							    		<td>
-											Your Attachment
-							    		</td>
-							    		<td colspan="10">
-											<input type="file" name="quotefile"/>
-											<?php if($quotefile){?>
-											<a href="<?php echo site_url('uploads/quotefile/'.$quotefile);?>" target="_blank">View File</a>
-											<?php }?>
-							    		</td>
-							    	</tr>
-                                                                <tr>
-                                                                    <td> Expire Date</td>
-                                                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):date("m/d/Y");?>"/>&nbsp; &nbsp; &nbsp; <a href="javascript:void(0)" onclick="setExpDate(30);">+30days</a>, <a href="javascript:void(0)" onclick="setExpDate(60);">+60Days</a>, <a href="javascript:void(0)" onclick="setExpDate(90);">+90Days</a></td>
-                                                                </tr>
+							    	</tr>								    	
+                                    <tr>
+                                    <td> Expire Date</td>
+                                    <td colspan="10"> <input type="text" name="expire_date" class="expire_date" value="<?php echo (isset($expire_date) && $expire_date!="" && $expire_date!="0000-00-00")?date('m/d/Y',  strtotime($expire_date)):date("m/d/Y");?>"/>&nbsp; &nbsp; &nbsp; <a href="javascript:void(0)" onclick="setExpDate(30);">+30days</a>, <a href="javascript:void(0)" onclick="setExpDate(60);">+60Days</a>, <a href="javascript:void(0)" onclick="setExpDate(90);">+90Days</a></td>
+                                     </tr>
 							    	<tr>
 							    		<td colspan="11">
 											<input type="button" value="Save Quote" class="btn btn-primary" onclick="$('#draft').val('Yes');$('#olditemform').submit();"/>
@@ -718,7 +741,9 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
                               <input type="text" id="itemformpricet" name="ea" required>
                             </div>
                           </div>
-                        </div>
+                        </div>      
+                        <span id="preloaditemdata">                 
+                          </span> 
                         <div class="modal-footer">
                           <input type="submit" class="btn btn-primary" value="Save Change"/>
                         </div>
@@ -728,6 +753,79 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
                   </div>
 	  
 	  
+                  
+           
+       <?php $olditemid=""; $i=0; foreach ($masterdefaults as $masterdata){?>
+    <?php if($olditemid!=$masterdata->itemid) {?>
+    <div id="modal<?php echo $masterdata->itemid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" onclick="displayitemmodal(<?php echo $masterdata->itemid;?>);" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel">
+          Master Default Options:          
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+        
+        <div class="row form-row">
+            <div class="col-md-3">
+             Manufacturer
+            </div>
+            <div class="col-md-2">
+             Part No.
+            </div>
+             <div class="col-md-3">
+             Item Name
+            </div>
+             <div class="col-md-2">
+             List Price
+            </div>
+             <div class="col-md-2">
+             Min. Qty.
+            </div>
+          </div> 
+        
+    <?php } ?>        
+         <div class="row form-row">
+            <div class="col-md-3">
+             <?php echo $masterdata->title;?>
+            </div>
+            <div class="col-md-2">
+              <span><?php echo $masterdata->partnum;?></span>
+            </div>
+             <div class="col-md-3">
+              <span><?php echo $masterdata->itemname;?></span>
+            </div>
+             <div class="col-md-2">
+              <span><?php echo $masterdata->price;?></span>
+            </div>
+             <div class="col-md-2">
+              <span><?php echo $masterdata->minqty;?></span>
+              <!-- <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo htmlentities(addslashes($masterdata->itemname));?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>','<?php echo htmlentities(addslashes(@$masterdata->itemcode));?>')"></span> -->
+            </div>            
+          </div>  
+     <?php if($masterdata->itemid!=@$masterdefaults[$i+1]->itemid) {?>    
+         
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" onclick="displayitemmodal(<?php echo $masterdata->itemid;?>);" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <?php } ?>    
+  
+  <?php $olditemid=$masterdata->itemid; $i++; } ?>              
+                  
+                  
+                         
+                  
+                  
   <div id="pricelist" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">

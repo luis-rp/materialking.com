@@ -1,4 +1,6 @@
- <script type="text/javascript">
+<?php echo '<script>var sharewithsupplierurl="'.site_url('admin/quote/updatesharesuplliercheck').'";</script>'?>
+ 
+<script type="text/javascript">
  $(document).ready(function(){
  tour3 = new Tour({
 	  steps: [
@@ -162,6 +164,26 @@ function upload_attachment(receivedid,invoicenum)
 	$("#frmInvoice").attr('action','<?php echo site_url('admin/quote/uploadPaymentAttachment') ?>');
 	$("#frmInvoice").submit();
 }
+
+ function updatesharewithSupplier(receivedid,invoicenum)
+	{		
+		if($('#sharewithsupplier').attr('checked')) {			
+			sharewithsupplier = 1;
+		}
+		else
+		{
+			sharewithsupplier = 0;
+		}
+		var data = "receivedid="+receivedid+"&invoicenum="+invoicenum+"&sharewithsupplier="+sharewithsupplier;
+		
+		$.ajax({
+			type:"post",
+			data: data,
+			url: sharewithsupplierurl
+		}).done(function(data){
+			//alert(data);
+		});
+	}
 
 function jq( myid ) {
  
@@ -343,10 +365,14 @@ function jq( myid ) {
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
                     				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
                     				<button onclick="update_invoice_payment_status('<?php echo $i;?>')">Save</button>
-                    				<input type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
+                    				<input style="width:200px" type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
                     				<input type="button" name="btnupload" id="btnupload" value="Upload Attachment" onclick="upload_attachment('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">
+                    				<input type="checkbox" name="sharewithsupplier" id="sharewithsupplier" value="" onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">Share with Supplier
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
+                    				<input style="width:200px" type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
+                    				<input type="button" name="btnupload" id="btnupload" value="Upload Attachment" onclick="upload_attachment('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">
+                    				<input type="checkbox" name="sharewithsupplier" id="sharewithsupplier" value="" onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">Share with Supplier
                     				<?php }?>
                     				<?php if($item->paymentstatus=='Requested Payment'){?>
                     				<br/>

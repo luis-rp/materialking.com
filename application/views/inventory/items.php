@@ -606,6 +606,7 @@ function clearall(id)
                                 	<td>Item Code/Name</td>
                                 	<td>Category</td>
                                 	<td>Brand</td>
+                                	<td>Active Deals only</td> 
                                 	<td>My items only</td> 
                                 	<td>Filter Options</td>
                                 	<td>Action</td>                             	
@@ -629,6 +630,10 @@ function clearall(id)
                                     	<?php }?>
                                     </select>
                                     </td>
+                                    
+                                   <td>
+                                   		<input type="checkbox" name="activdeal" id="activdeal" <?php if(@$_POST['activdeal']!=""){echo 'checked';}?> >
+                                   </td>
                                     
                                     <td>
                                    <input type="checkbox" name="serachmyitem" id="serachmyitem" <?php if(@$_POST['serachmyitem']!=""){echo 'checked';}?> >

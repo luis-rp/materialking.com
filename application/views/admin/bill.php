@@ -315,7 +315,7 @@ function shownotice(newval,oldval,id){
                 	foreach ($billservicedetails as $key=>$v)
                 	{
                 		$emailitems1 .= '<tr>';
-						$emailitems1 .= '<td >'.$v['name'].'</td>';
+						$emailitems1 .= '<td >'.$v['servicelaboritems'].'</td>';
 						$emailitems1 .= '<td >'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
 						$emailitems1 .= '</tr><tr><td>Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 						

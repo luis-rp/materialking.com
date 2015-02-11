@@ -1061,6 +1061,22 @@ class Quote extends CI_Controller
 		$pa = $this->db->get('users')->row();
 		if($pa)
 		$data['purchasingadmin'] = $pa;
+		
+		if(count($data['quoteitems'])>0){
+			$itmstr = "";
+			$j=1;
+			foreach($data['quoteitems'] as $itm){
+				
+				if(count($data['quoteitems']) == $j)
+				$itmstr .= $itm->itemid;
+				else 
+				$itmstr .= $itm->itemid.",";
+				$j++;
+			}
+		
+		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->where_in('itemid',$itmstr)->get()->result();
+		}
+		
 		if($print)
 		{
 			$this->load->template ( '../../templates/front/blank', $data);
@@ -1824,7 +1840,7 @@ class Quote extends CI_Controller
 		
 				$bidarray['expire_date'] = date("Y-m-d",  strtotime($_POST['expire_date']));
 				
-    		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
+    		/*if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
     		{
     			$ext = end(explode('.', $_FILES['quotefile']['name']));
     			$nfn = md5(date('u').uniqid()).'.'.$ext;
@@ -1832,7 +1848,34 @@ class Quote extends CI_Controller
     			{
     				$bidarray['quotefile'] = $nfn;
     			}
-    		}
+    		}*/
+    		
+    		
+    		if(isset($_FILES['quotefile']['name']) && $_FILES['quotefile']['name']!="")
+            {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/quotefile/';
+            	$count=0;
+            	$bidarray['quotefile'] = "";
+            	foreach ($_FILES['quotefile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['quotefile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['quotefile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            		if(isset($filename) && $filename!=""){
+                    $bidarray['quotefile'].=$filename.",";
+                    }
+
+            	}
+            	 $bidarray['quotefile'] = rtrim($bidarray['quotefile'], ',');           	
+            }
+            
+            
     		//echo $bidid.'-'.$quote->id.'<pre>'; print_r($bidarray);die;
 			$this->db->where('id', $bidid);
 			$this->db->update('bid',$bidarray);
@@ -1916,7 +1959,7 @@ class Quote extends CI_Controller
 			$bidarray['expire_date'] = date('Y-m-d',  strtotime($_POST['expire_date']));
 			$bidarray['draft'] = $_POST['draft'];
 			$bidarray['purchasingadmin'] = $invitation->purchasingadmin;
-    		if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
+    		/*if(is_uploaded_file($_FILES['quotefile']['tmp_name']))
     		{
     			$ext = end(explode('.', $_FILES['quotefile']['name']));
     			$nfn = md5(date('u').uniqid()).'.'.$ext;
@@ -1924,7 +1967,32 @@ class Quote extends CI_Controller
     			{
     				$bidarray['quotefile'] = $nfn;
     			}
-    		}
+    		}*/
+    		
+    		if(isset($_FILES['quotefile']['name']) && $_FILES['quotefile']['name']!="")
+            {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/quotefile/';
+            	$count=0;
+            	$bidarray['quotefile'] = "";
+            	foreach ($_FILES['quotefile']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['quotefile']['tmp_name'][$count];
+            		$origionalFile=$_FILES['quotefile']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+            		if(isset($filename) && $filename!=""){
+                    $bidarray['quotefile'].=$filename.",";
+                    }
+
+            	}
+            	 $bidarray['quotefile'] = rtrim($bidarray['quotefile'], ',');           	
+            }
+    		
     		//echo '<pre>'; print_r($bidarray);
 			$this->db->insert('bid',$bidarray);
 			$bidid = $this->db->insert_id();

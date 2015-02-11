@@ -296,6 +296,14 @@ class itemcode extends CI_Controller
                     //echo $itemcode->actions;die;
                 }
                 
+                if ($this->session->userdata('usertype_id') == 2 && ($this->session->userdata('purchasingadmin') == $itemcode->purchasingadmin) )
+                {
+                     $itemcode->actions = anchor('admin/itemcode/update_useritem/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
+                'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>',
+                array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));                    
+                }
+                
+                
                 if ($itemcode->poitems || $itemcode->totalpoprice!=0)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/poitems/' . $itemcode->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view'));
                 if ($itemcode->minprices)
@@ -968,7 +976,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$newitemid = $this->db->query($sql)->row();    	
         $data['defaultitemid'] = $newitemid->id+1;
         $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
-        $this->load->view('admin/itemcode', $data);
+        $this->load->view('admin/itemcode_user', $data);
     }
     
     
@@ -1187,72 +1195,32 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     
     function add_itemcode_user ()
     {
+    	//echo "<pre>",print_r($_POST); die;
         $data['heading'] = 'Add New Itemcode';
-        $data['action'] = site_url('admin/itemcode/add_itemcode_user');
-        //$data['category'] = $this->itemcode_model->getCategoryList();
-        //$data['subcategory'] = $this->itemcode_model->getSubCategoryList();
+        $data['action'] = site_url('admin/itemcode/add_itemcode_user');       
         $this->_set_fields();
-        $this->_set_rules();
-        $catcodes = $this->catcode_model->get_categories_tiered();
-        $categories = array();
-        if ($catcodes)
+           
+        /*if ($this->validation->run() == FALSE)
         {
-            if (isset($catcodes[0]))
-            {
-                build_category_tree($categories, 0, $catcodes);
-            }
-        }
-        $data['category'] = $categories;
-        if ($this->validation->run() == FALSE)
-        {
-            $data['message'] = $this->validation->error_string;
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['message'] = $this->validation->error_string;            
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
-        }
-        elseif ($this->itemcode_model->checkDuplicateCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), 0))
+        }*/
+        if ($this->itemcode_model->checkDuplicateuserCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), 0))
         {
-            $data['message'] = 'Duplicate Itemcode';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['message'] = 'Duplicate Itemcode';            
             $data['companies'] = $this->db->get('company')->result();
-            $this->load->view('admin/itemcode', $data);
+            $this->load->view('admin/itemcode_user', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateUserItemName($this->input->post('itemname'),  $this->session->userdata('purchasingadmin'), 0))
         {
-            $data['message'] = 'Duplicate Itemname';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['message'] = 'Duplicate Itemname';            
             $data['companies'] = $this->db->get('company')->result();
-            $this->load->view('admin/itemcode', $data);
-        }
-        elseif ($this->itemcode_model->checkDuplicateUserItemUrl($this->input->post('url'),  $this->session->userdata('purchasingadmin'), 0))
-        {
-            $data['message'] = 'Duplicate URL';
-            $data['categories'] = $this->itemcode_model->getcategories();
-            $data['companies'] = $this->db->get('company')->result();
-            $this->load->view('admin/itemcode', $data);
-        }
+            $this->load->view('admin/itemcode_user', $data);
+        }        
         else
-        {
-        	 if(isset($_FILES['UploadFile']['name']))
-                {
-            	ini_set("upload_max_filesize","128M");
-            	$target='uploads/item/';
-            	$count=0;           	
-            	foreach ($_FILES['UploadFile']['name'] as $filename)
-            	{
-            		$temp=$target;
-            		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
-            		$origionalFile=$_FILES['UploadFile']['name'][$count];
-            		$count=$count + 1;
-            		$temp=$temp.basename($filename);
-            		move_uploaded_file($tmp,$temp);
-            		$temp='';
-            		$tmp='';
-            	}
-
-            }
-            $this->do_upload();
-            $itemid = $this->itemcode_model->SaveItemcode();
+        {        	 
+            $itemid = $this->itemcode_model->SaveItemcode_user();
             $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Code Added Successfully</div></div>');
             redirect('admin/itemcode');
@@ -1359,6 +1327,29 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->load->view('admin/itemcode', $data);
     }
 
+    
+    
+    function update_useritem($id){
+    	    	
+    	$this->_set_fields();
+        $item = $this->itemcode_model->get_itemcodes_by_id($id);
+        $this->validation->id = $id;                
+        $this->validation->itemcode = $item->itemcode;
+        $this->validation->itemname = $item->itemname;        
+        $this->validation->unit = $item->unit;         
+                
+        $data['heading'] = 'Update Item Code';
+        $data['message'] = '';
+        $data['action'] = site_url('admin/itemcode/updateitemcode_user');
+           
+        $data['items'] = $this->db->get('item')->result();
+		            
+        $data['defaultitemid'] = $id;
+        if(@$this->session->flashdata('message'))
+        $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
+        $this->load->view('admin/itemcode_user', $data);
+    	
+    }
 
     //relateditems
     function saverelateditem($itemid)
@@ -1500,7 +1491,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     function updateitemcode ()
     {
         $data['heading'] = 'Update Item Code';
-        $data['action'] = site_url('message/updateitemcode');
+        $data['action'] = site_url('admin/itemcode/updateitemcode');
         $this->_set_fields();
         $this->_set_rules();
         $this->do_upload();
@@ -1603,6 +1594,48 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }
     }
 
+    
+    
+    function updateitemcode_user ()
+    {
+    	$this->_set_fields();
+        $data['heading'] = 'Update Item Code';
+        $data['action'] = site_url('admin/itemcode/updateitemcode_user');        
+        $itemid = $this->input->post('id');
+        $item = $this->itemcode_model->get_itemcodes_by_id($itemid);        
+        
+        /*if ($this->validation->run() == FALSE)
+        {
+            $data['message'] = $this->validation->error_string;
+            $data['action'] = site_url('admin/itemcode/updateitemcode');
+            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode', $data);
+        }*/
+        if ($this->itemcode_model->checkDuplicateuserCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), $itemid))
+        {
+            $data['message'] = 'Duplicate Itemcode';            
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode_user', $data);
+        }
+        elseif ($this->itemcode_model->checkDuplicateUserItemName($this->input->post('itemname'),  $this->session->userdata('purchasingadmin'), $itemid))
+        {
+            $data['message'] = 'Duplicate Itemname';            
+            $data['companies'] = $this->db->get('company')->result();
+            $this->load->view('admin/itemcode_user', $data);
+        }
+        else
+        {          
+            $this->itemcode_model->updateItemcodeUser($itemid);
+           
+            $data['message'] = '<div class="success">Item Code has been updated.</div>';
+            $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
+            redirect('admin/itemcode/update_useritem/' . $itemid);
+
+     //redirect('admin/itemcode/index');
+        }
+    }
+    
 
     function delete ($id)
     {

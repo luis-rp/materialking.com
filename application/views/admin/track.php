@@ -1386,17 +1386,24 @@ function setServicelaboritemsFlag()
 			if(isset($servicebillitems) && count($servicebillitems)>0)
 			{?>
 				<tr> 
-				<td colspan="2"><table><th>Name</th><th>Price</th><th>Tax</th><th>&nbsp;</th> </td>
+				<td colspan="2"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">&nbsp;</th> </td>
 				</tr>	
 		<?php	foreach ($servicebillitems as $key=>$v)
 				{ ?>
-					<tr><td><?php echo $v->name; ?> </td><td><?php echo $v->price; ?> </td><td><?php echo $v->tax; ?> </td><td><input type="checkbox" name="servicelaboritem[<?php echo $v->id; ?>]"> </td> </tr>	 </table>
+					<tr>
+						<td><?php echo $v->name; ?> <input type="hidden" name="servicelaboritemname[<?php echo $v->id; ?>]" value="<?php echo $v->name; ?>" > </td>
+						<td><?php echo $v->price; ?> <input type="hidden" name="servicelaboritemprice[<?php echo $v->id; ?>]" value="<?php echo $v->price; ?>" > </td>
+						<td><?php echo $v->tax; ?> <input type="hidden" name="servicelaboritemtax[<?php echo $v->id; ?>]" value="<?php echo $v->tax; ?>" > </td>
+						<td><input type="checkbox" name="servicelaboritem[<?php echo $v->id; ?>]" value="<?php echo $v->id; ?>"> </td> 
+					</tr>	 
+		<?php 		} ?>
+		</table>
 			 </td>
 			 </tr>
-		<?php 		}
-			} else { 
+	<?php 		} else { 
 					?> <tr><td colspan="2"> No Records Found.</td> </tr>
 			<?php	} ?>
+		
 		<tr><td>&nbsp;&nbsp;</td></tr>	
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
 		<?php if($customerdata){ ?>

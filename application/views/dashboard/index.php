@@ -161,7 +161,7 @@ function preloadoptions(fromid)
 
 
 				<?php } ?>
-				<?php } else {?> <tr><td class="label label-important">No Past Due Invoices </td> </tr> <?php } ?>
+				<?php } else {?> <span class="label label-important">No Past Due Invoices</span><?php } ?>
 				
 				</table>
 				
