@@ -27,12 +27,25 @@ function paycc(ptype,idnumber,amount)
 		{
 			return true;
 		}
+		
+		if( ($("#amountpaid_"+idnumber).val()=="") || ($("#amountpaid_"+idnumber).val()==0) || ($("#amountpaid_"+idnumber).val() == "undefined")){
+		alert("Please enter proper amount");
+		return false;
+		}
 		$('#paymenttype_' + idnumber + " option:first-child").attr("selected", true);
-		//var invoicenumber = $('#invoicenumber_' + idnumber).val();
-		//$("#ccpayinvoicenumber").val(invoicenumber);
-		//$("#ccpayinvoiceamount").val(amount);
-		//$("#ccpayamountshow").html(amount);
-		//$("#paymodal").modal();
+		var invoicenumber = $('#billnumber').val();
+		$("#ccpayinvoicenumber").val(invoicenumber);		
+		$("#ccpayamountshow").html($("#amountpaid_"+idnumber).val());
+		$("#ccpayinvoiceamount").val($("#amountpaid_"+idnumber).val());
+		
+		if($("#amountpaid_"+idnumber).val()==amount)
+		$("#ccapystatus").val("Paid");
+		
+		if($("#amountpaid_"+idnumber).val()<amount)
+		$("#ccapystatus").val("Partial");
+		
+		$("#ccpayref").val($("#refnum_"+idnumber).val());
+		$("#paymodal").modal();
 	}else {
 	var hidepaytype = $('#hiddenpaytype' + idnumber).val();
 	$('#paymenttype_' + idnumber +' option[value="' + hidepaytype + '"]').prop('selected', true);
@@ -76,21 +89,21 @@ function jq( myid ) {
 				<select id="billid" name="billid" onchange="loadbillitems(this)">
 					<option value="">Choose</option>
 					<?php 
-					$selectedbill = '';
+					
 					if(isset($billdetails) && count($billdetails) > 0)
 					{
 						foreach ($billdetails as $key=>$val)
 						{
 							if(isset($selectedbill) && $val['billid'] == $selectedbill)
 							{
-								$selectedBill = ' selected ';
+								$selected = ' selected ';
 							}
 							else 
 							{
-								$selectedbill = ' ';
+								$selected = ' ';
 							}
 							?>
-							<option value="<?php echo $val['billid'];?>"  <?php echo $selectedbill;?> ><?php echo $val['billname'];?></option>	
+							<option value="<?php echo $val['billid'];?>"  <?php echo $selected;?> ><?php echo $val['billname'];?></option>	
 			<?php			}
 					} ?>
 				</select>
@@ -171,6 +184,17 @@ function jq( myid ) {
 					<!--<td><?php //echo $value['costcode'];?> </td>-->
 				</tr>
 	<?php	 			 
+			$bankaccnt = "";
+			$bankrounting = "";
+			$bankname ="";
+			//echo "<pre>",print_r($value); echo "@@".$selectedbill; die;
+			if((isset($selectedbill)) && ($value['billid'] == $selectedbill) && ($value['bankname']!="") && ($value['accountnumber']!="") && ($value['routingnumber']!=""))
+			{
+				$bankname = $value['bankname'];
+				$bankaccnt = $value['accountnumber'];
+				$bankrounting = $value['routingnumber'];							
+			}
+
 		  } 		 
 		     $subtotal = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     $finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
@@ -180,9 +204,9 @@ function jq( myid ) {
     			<td align="right">
 						<select name="paymenttype" id="paymenttype_<?php echo $value['billid'];?>" required onchange="paycc(this.value,<?php echo $value['billid'];?>,'<?php echo $value['totalprice']?>');">
             				<option value="">Select Payment Type</option>
-            				<?php //if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
-            				<!--<option <?php echo $item->paymenttype=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>-->
-            				<?php //}?>
+            				<?php if($bankaccnt!="" &&  $bankrounting!="" && $bankname!=""){?>
+            				<option <?php echo $value['paymenttype']=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>
+            				<?php }?>
             				<option <?php echo $value['paymenttype']=='Cash'?'SELECTED':'';?> value="Cash">Cash</option>
             				<option <?php echo $value['paymenttype']=='Check'?'SELECTED':'';?> value="Check">Check</option>
             			</select>
@@ -261,5 +285,87 @@ function jq( myid ) {
 	<?php	} ?>
 </div>
 </form>
+
+
+<div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+    	<h3>
+    	Pay by credit card
+		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+		</h3>
+	</div>
+	<div class="modal-body" id="quoteitems">
+        <form method="post" action="<?php echo site_url('site/paybillbycc/');?>" onsubmit="return validatecc();">
+	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
+	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
+	         <input type="hidden" id="ccpayref" name="ccpayref"/>
+	         <input type="hidden" id="ccapystatus" name="ccapystatus" />
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Total Amount to pay
+                </label>
+                <div class="controls">
+                   $<span id="ccpayamountshow"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Number
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="card" name="card" required style="width: 250px;">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="card">
+                   Credit Card Type
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+		            <select id="creditcardtypes" name="creditcardtypes">
+			            <option value="visa">Visa</option>
+			            <option value="mastercard">Master Card</option>
+			            <option value="amex">American Express</option>
+			            <option value="dinersclub">Diners club</option>
+			            <option value="discover">Discover</option>
+		            </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEmail">
+                   CVC Code:
+                    <span class="form-required" title="This field is required.">*</span>
+                </label>
+                <div class="controls">
+                    <input type="text" id="cvc" name="cvc" required>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputMessage">
+                    Expiry Date
+                </label>
+                <div class="controls">
+                    <select id="month" name="month" style="width: 95px;">
+                    	<?php for($i=1; $i<13; $i++){?>
+	                    <option value="<?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?>"><?php echo str_pad($i, 2, '0',STR_PAD_LEFT);?></option>
+	                    <?php }?>
+                    </select>
+                    <select id="year" name="year" style="width: 125px;">
+                    	<?php for($i = date('Y'); $i < date('Y')+10; $i++){?>
+	                    <option value="<?php echo $i;?>"><?php echo $i;?></option>
+	                    <?php }?>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary arrow-right" value="Process">
+            </div>
+        </form>
+	</div>
+
+</div>
+
+
 </body>
 </html>

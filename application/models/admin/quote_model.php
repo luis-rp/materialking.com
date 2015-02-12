@@ -820,7 +820,7 @@ class quote_model extends Model {
 
 
        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -834,7 +834,7 @@ class quote_model extends Model {
                 . " $search GROUP BY invoicenum";
                 
          $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,

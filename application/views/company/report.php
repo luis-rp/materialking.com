@@ -202,19 +202,19 @@ function submitForm(val,invoicequote)
     			  		</span>
     			  </div>-->
 
-			    <table class="table no-more-tables general">
+			    <table id="datatable" class="table no-more-tables general">
 			    	<tr>
-			    		<th width="120">Company</th>
-			    		<th width="120">Project</th>
-			    		<th width="75">PO#</th>
-			    		<th width="120">Item Code</th>
-			    		<th width="200">Item Name</th>
-			    		<th width="50">Unit</th>
-			    		<th width="50">Qty.</th>
-			    		<th width="50">EA</th>
-			    		<th width="50">Total</th>
-			    		<th width="50">Payment</th>
-			    		<th width="50">Verification</th>
+			    		<th>Company</th>
+			    		<th>Project</th>
+			    		<th>PO#</th>
+			    		<th>Item Code</th>
+			    		<th>Item Name</th>
+			    		<th>Unit</th>
+			    		<th>Qty.</th>
+			    		<th>EA</th>
+			    		<th>Total</th>
+			    		<th>Payment</th>
+			    		<th style="word-break:break-all;">Verification</th>
 			    		<th>Notes</th>
 			    		<th>Invoice#</th>
 			    	</tr>
@@ -241,10 +241,9 @@ function submitForm(val,invoicequote)
 			    	<tr>
 			    		<td><?php echo $item->companyname;?></td>
 			    		<td><?php echo $item->title;?></td>
-			    		<td><a href="<?php echo site_url('quote/track/'.$item->quote.'/'.$item->award);?>"><?php echo $item->ponum;?></a>
-			    		</td>
-			    		<td><?php echo $item->itemcode;?></td>
-			    		<td><?php echo $item->itemname;?></td>
+			    		<td style="word-break:break-all;"><a href="<?php echo site_url('quote/track/'.$item->quote.'/'.$item->award);?>"><?php echo $item->ponum;?></a></td>
+			    		<td style="word-break:break-all;"><?php echo $item->itemcode;?></td>
+			    		<td style="word-break:break-all;"><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
@@ -255,7 +254,7 @@ function submitForm(val,invoicequote)
 			    		<td><?php echo $item->status;?></td>
 			    		<td><?php echo $item->notes;?></td>
 			    		<td>
-			    		<form id="invoiceform" name="invoiceform" action="<?php echo site_url('quote/invoice');?>" method="post">
+			    		<form id="invoiceform" class="animated fadeIn" name="invoiceform" action="<?php echo site_url('quote/invoice');?>" method="post">
 			    		<input type="hidden" name="invoicenum" id="invoicenum" value="<?php echo $item->invoicenum;?>">
 			    		<input type="hidden" name="invoicequote" id="invoicequote" value="<?php echo $item->quote;?>">
 			    		<a href="javascript: submitForm('<?php echo $item->invoicenum;?>','<?php echo $item->quote;?>');"><?php echo $item->invoicenum;?></a>
@@ -264,7 +263,7 @@ function submitForm(val,invoicequote)
 			    		<?php if(0){?>
 			    		<td>
 			    		<?php if($item->paymentstatus){?>
-			    			<form action="<?php echo site_url('admin/report/payinvoice');?>" method="post">
+			    			<form class="animated fadeIn" action="<?php echo site_url('admin/report/payinvoice');?>" method="post">
 			    				<input type="hidden" name="invoicenum" value="<?php echo $report->invoicenum?>">
 			    				<input type="submit" value="Pay" class="btn btn-primary"/>
 			    			</form>

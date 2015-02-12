@@ -165,17 +165,17 @@ tr.still-due td
     						<table id="datatable" class="table no-more-tables general">
                                 <thead>
                                     <tr>
-                                        <th style="width:20%">Item Code/Name</th>
-                                        <th style="width:5%">Qty.</th>
-                                        <th style="width:5%">Unit</th>
-                                        <th style="width:10%">Price</th>
-                                        <th style="width:10%">Total</th>
-                                        <th style="width:10%">Requested</th>
-                                        <th style="width:15%">Notes</th>
-                                        <th style="width:5%">Shipped</th>
-                                        <th style="width:5%">Due</th>
-                                        <th style="width:5%">Ship Qty</th>
-                                        <th style="width:5%">Ref#</th>
+                                        <th>Item Code/Name</th>
+                                        <th>Qty.</th>
+                                        <th>Unit</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                        <th>Requested</th>
+                                        <th>Notes</th>
+                                        <th>Shipped</th>
+                                        <th>Due</th>
+                                        <th>Ship Qty</th>
+                                        <th>Ref#</th>
                                     </tr>
                                 </thead>
 
@@ -218,18 +218,12 @@ tr.still-due td
                                         </td>
                                         <td>
                                         	<?php if($ai->quantity - $ai->received){?>
-                                        	<input style="width:100px" type="text" name="quantity<?php echo $ai->id;?>" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                                        	<input class="form-control" type="text" name="quantity<?php echo $ai->id;?>" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                         	<?php }?>
                                         </td>
                                         <td>
-                                        	<?php  $isupfrontinvoice = 0; if($ai->quantity - $ai->received){?>
-                                        	<?php /* if($invoices) { foreach($invoices as $i){
-                                        		
-                                        		if($i->invoicenum == "paid-in-full-already".$award)
-                                        		$isupfrontinvoice = 1;
-                                        		
-                                        	} }*/ ?>
-                                        	<input style="width:100px" type="text" name="invoicenum<?php echo $ai->id;?>" value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$award ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?> />
+                                        	<?php  $isupfrontinvoice = 0; if($ai->quantity - $ai->received){?>                                       
+                                        	<input class="form-control" type="text"  name="invoicenum<?php echo $ai->id;?>" value="" />
                                         	<?php }?>
                                         </td>
                                     </tr>

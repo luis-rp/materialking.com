@@ -180,16 +180,16 @@
 			<span class="caret"></span>
 			</button>
 			<ul id="chartYear" class="dropdown-menu" style="top:auto" >
-				<li class="chartYearItem" data-value="1" <?=(date("m")==1?'data-selected="true"':'')?>><a href="#"><?php echo date("Y"); ?></a></li>
-				<li class="chartYearItem" data-value="2" <?=(date("m")==2?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-1; ?></a></li>
-				<li class="chartYearItem" data-value="3" <?=(date("m")==3?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-2; ?></a></li>
-				<li class="chartYearItem" data-value="4" <?=(date("m")==4?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-3; ?></a></li>
-				<li class="chartYearItem" data-value="5" <?=(date("m")==5?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-4; ?></a></li>
-				<li class="chartYearItem" data-value="6" <?=(date("m")==6?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-5; ?></a></li>
-				<li class="chartYearItem" data-value="7" <?=(date("m")==7?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-6; ?></a></li>
-				<li class="chartYearItem" data-value="8" <?=(date("m")==8?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-7; ?></a></li>
-				<li class="chartYearItem" data-value="9" <?=(date("m")==9?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-8; ?></a></li>
-				<li class="chartYearItem" data-value="10" <?=(date("m")==10?'data-selected="true"':'')?>><a href="#"><?php echo date("Y")-9; ?></a></li>				
+				<li class="chartYearItem" data-value="1" ><a href="#"><?php echo date("Y"); ?></a></li>
+				<li class="chartYearItem" data-value="2" ><a href="#"><?php echo date("Y")-1; ?></a></li>
+				<li class="chartYearItem" data-value="3" ><a href="#"><?php echo date("Y")-2; ?></a></li>
+				<li class="chartYearItem" data-value="4" ><a href="#"><?php echo date("Y")-3; ?></a></li>
+				<li class="chartYearItem" data-value="5" ><a href="#"><?php echo date("Y")-4; ?></a></li>
+				<li class="chartYearItem" data-value="6" ><a href="#"><?php echo date("Y")-5; ?></a></li>
+				<li class="chartYearItem" data-value="7" ><a href="#"><?php echo date("Y")-6; ?></a></li>
+				<li class="chartYearItem" data-value="8" ><a href="#"><?php echo date("Y")-7; ?></a></li>
+				<li class="chartYearItem" data-value="9" ><a href="#"><?php echo date("Y")-8; ?></a></li>
+				<li class="chartYearItem" data-value="10" ><a href="#"><?php echo date("Y")-9; ?></a></li>				
 			</ul>
 		</div>
 		<br>

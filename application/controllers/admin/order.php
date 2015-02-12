@@ -423,7 +423,7 @@ function orders_export()
 			{
 				$filter2 .= " AND o.costcode='".$_POST['searchcostcode']."'";
 			}
-			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus ,od.shipping   
+			$query = "SELECT c.title company, sum(quantity*price) total , o.taxpercent, od.status, od.paymentstatus ,sum(od.shipping) shipping    
                       FROM ".$this->db->dbprefix('orderdetails')." od, ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('order')." o   
                       WHERE od.company=c.id AND od.orderid='".$order->id."' and  od.orderid= o.id {$filter2} GROUP BY c.id";  
             $order->details = $this->db->query($query)->result(); 

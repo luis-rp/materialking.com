@@ -5428,8 +5428,22 @@ class quote extends CI_Controller
         $dbills = $this->db->select('sum(totalprice) as total, bill.*')
 		             ->from('bill')->join('billitem','bill.id=billitem.bill','left')
 		             ->where('bill.quote',$qid)->group_by('billitem.bill')->get()->result();
-		foreach($dbills as $dbill){             
-		$resamountpaid = $this->db->select('sum(amountpaid) as amountpaid')
+		
+		$serviceItems = 0;
+		             
+		foreach($dbills as $dbill){   
+			$serviceItems = 0;
+                $serviceitemRes = $this->db->where('billid',$dbill->id)->get('bill_servicelaboritems')->result_array();
+                if(@$serviceitemRes)
+                {
+                	foreach ($serviceitemRes as $k=>$v)
+                	{                     		
+                		$serviceItems += ($v['price'] + ($v['price'] * $v['tax']/100));                	
+                	}	          	
+                } 
+                $dbill->serviceItems = $serviceItems;          
+			
+           $resamountpaid = $this->db->select('sum(amountpaid) as amountpaid')
 		             ->from('bill')->join('pms_bill_payment_history','bill.id=pms_bill_payment_history.bill','left')
 		             ->where('bill.id',$dbill->id)->group_by('pms_bill_payment_history.bill')->get()->row();      
 			if($resamountpaid)             
@@ -10028,6 +10042,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 												   'servicelaboritems'=>(@$_POST['servicelaboritemname'][$k]) ? $_POST['servicelaboritemname'][$k] : '',
 												   'price'=>(@$_POST['servicelaboritemprice'][$k]) ? $_POST['servicelaboritemprice'][$k] : '',
 												   'tax'=>(@$_POST['servicelaboritemtax'][$k]) ? $_POST['servicelaboritemtax'][$k] : '',
+												   'quantity'=>(@$_POST['servicelaboritemqty'][$k]) ? $_POST['servicelaboritemqty'][$k] : '',
 												   'purchasingadmin'=>$this->session->userdata('purchasingadmin')
 												   
 												   );
@@ -11372,7 +11387,9 @@ $loaderEmail = new My_Loader();
 	    			$nfn = md5(date('u').uniqid()).'.'.$ext;
 	    			if(move_uploaded_file($_FILES['UploadFile']['tmp_name'][$receivedid], "uploads/invoiceattachments/".$nfn))
 	    			{
-	    				$updateArr = array('attachmentname'=>$nfn);
+	    				$updateArr = array('attachmentname'=>$nfn ,
+	    								   'attachment'=> $_FILES['UploadFile']['name'][$receivedid],	    				
+	    								   'sharewithsupplier'=>($_POST['sharewithsupplier_'.$receivedid] == 'on') ? 1 : 0);
     					$where = array('id'=>$receivedid,'invoicenum'=>$invoiceNum);
 	    				$this->db->update('received',$updateArr,$where);
 	    			}
@@ -11402,7 +11419,7 @@ $loaderEmail = new My_Loader();
             
 			$itemid = $this->itemcode_model->SaveItemcode_user();
 			if($itemid)
-			echo "Item got added successfully!"; die;            
+			echo $itemid; die;            
     }
     
     

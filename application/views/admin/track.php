@@ -1101,12 +1101,16 @@ function setServicelaboritemsFlag()
 								$f_total=0;
                                 $p_total=0;
                                 $u_total=0;
-                                foreach ($bills as $invoice) {
-                                $invoice->total = $invoice->total + ($invoice->total * $invoice->markuptotalpercent/100);	
+                             //  echo '<prE>',print_r($bills);die; 
+                                foreach ($bills as $invoice) 
+                                {
+                                	$markupTotal = $invoice->total + ($invoice->total * $invoice->markuptotalpercent/100);	
+                                	$totalTax =  ($invoice->total * $config['taxpercent'] / 100);
+                                	$finalTotal = $markupTotal+$totalTax+$invoice->serviceItems;                                	
                                 ?>
                                 <tr>
                                     <td><?php echo $invoice->billname; ?></td>
-                                    <td><?php echo "$ ".number_format(($invoice->total+ ($invoice->total * $config['taxpercent'] / 100) ),2); ?></td>
+                                    <td><?php echo "$ ".number_format($finalTotal,2); ?></td>
                                     <td><?php echo $invoice->paymentstatus; ?></td>
                                     <td><?php if($invoice->customerduedate){echo date("m/d/Y", strtotime($invoice->customerduedate));}else{ echo "No Date Set";} ?></td>
                                     <td><?php echo $invoice->status; ?></td>
@@ -1117,13 +1121,13 @@ function setServicelaboritemsFlag()
                                     </td>
                                 </tr>
                                  <?php
-                                $f1_total=number_format($invoice->total+($invoice->total * $config['taxpercent'] / 100),2);
+                                $f1_total=number_format($finalTotal,2);
                                 $f_total +=$f1_total;
                                 
                                    $p1_total=$invoice->amountpaid;
                                    $p_total +=$p1_total;
                                 
-                                	 $u1_total=number_format(($invoice->total+($invoice->total * $config['taxpercent'] / 100) - $invoice->amountpaid),2);
+                                	 $u1_total=number_format((number_format($finalTotal,2) - $invoice->amountpaid),2);
                                      $u_total +=$u1_total;
                                 
                                 } ?>
@@ -1386,7 +1390,7 @@ function setServicelaboritemsFlag()
 			if(isset($servicebillitems) && count($servicebillitems)>0)
 			{?>
 				<tr> 
-				<td colspan="2"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">&nbsp;</th> </td>
+				<td colspan="2"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">Qty</th><th width="10%">&nbsp;</th> </td>
 				</tr>	
 		<?php	foreach ($servicebillitems as $key=>$v)
 				{ ?>
@@ -1394,6 +1398,7 @@ function setServicelaboritemsFlag()
 						<td><?php echo $v->name; ?> <input type="hidden" name="servicelaboritemname[<?php echo $v->id; ?>]" value="<?php echo $v->name; ?>" > </td>
 						<td><?php echo $v->price; ?> <input type="hidden" name="servicelaboritemprice[<?php echo $v->id; ?>]" value="<?php echo $v->price; ?>" > </td>
 						<td><?php echo $v->tax; ?> <input type="hidden" name="servicelaboritemtax[<?php echo $v->id; ?>]" value="<?php echo $v->tax; ?>" > </td>
+						<td><input type="text" name="servicelaboritemqty[<?php echo $v->id; ?>]" value="" > </td>
 						<td><input type="checkbox" name="servicelaboritem[<?php echo $v->id; ?>]" value="<?php echo $v->id; ?>"> </td> 
 					</tr>	 
 		<?php 		} ?>

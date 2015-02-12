@@ -177,36 +177,7 @@ function invoice(invoicenum,invoicequote)
                                 <h4>&nbsp;</h4>
                             </div>
 
-                            <div class="grid-body no-border">
- <?php //echo "<pre>"; print_r($invoices); die; ?>
-                                
-  									<table style="width:24%;margin-left:74%;">
-                                    <thead>
-                                       <tr>
-                  	             			<th style="width:3%;padding: 0px;">Color</th>
-                  	             			<th style="padding: 0px;text-align:center;">Description</th>
-                                         </tr>
-									</thead>
-									<tbody>
-                                         <tr >
-                  	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Verified</td>
-                                         </tr>
-                                          <tr>
-                  	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid/Requested Payment, Status=Pending and Due Date is Past</td>
-                                         </tr>
-                                          <tr>
-                  	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Pending</td>
-                                         </tr>
-                                         <tr>
-                  	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid and Status=Pending</td>
-                                         </tr>                                                                               
-                                           </tbody>
-                                    </table>
-                                   <br>
+                            <div class="grid-body no-border">                                 
                                     <table id="datatable" class="table no-more-tables general">
                                     <thead>
                                        <tr>
@@ -218,6 +189,7 @@ function invoice(invoicenum,invoicequote)
                                             <th>Payment Status</th>
                                             <th>Verification</th>
                                             <th>Date Due</th>
+                                            <th>Attachment</th>
                                          </tr>
 									</thead>
 									<tbody>
@@ -249,6 +221,11 @@ function invoice(invoicenum,invoicequote)
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
                                                 			<input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />
                                                 			</td>
+                                                			<td><?php if(@$i->sharewithsupplier && $i->sharewithsupplier == 1) { 
+											        if(@$i->attachmentname)
+											        { ?>
+											        	<a href="<?php echo site_url('uploads/invoiceattachments/'.$i->attachmentname);?>" target="_blank">View Attached File</a>
+											     <?php   }  } ?> </td>
                                                 		</tr>
                                                 		<?php $finaltotal += $gtotal;
 																if($i->paymentstatus=='Paid')
@@ -269,6 +246,33 @@ function invoice(invoicenum,invoicequote)
                                                 <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td align="right">Total Due:</td>
                                                 <td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                         </tbody>
+                                    </table>
+                                    <br />
+                                    	<table style="width:24%;margin-left:74%;">
+                                    <thead>
+                                       <tr>
+                  	             			<th style="width:3%;padding: 0px;">Color</th>
+                  	             			<th style="padding: 0px;text-align:center;">Description</th>
+                                         </tr>
+									</thead>
+									<tbody>
+                                         <tr >
+                  	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Verified</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid/Requested Payment, Status=Pending and Due Date is Past</td>
+                                         </tr>
+                                          <tr>
+                  	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Paid and Status=Pending</td>
+                                         </tr>
+                                         <tr>
+                  	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
+                  	             			<td style="padding: 0px;">Payment Stauts=Unpaid and Status=Pending</td>
+                                         </tr>                                                                               
+                                           </tbody>
                                     </table>
                             </div>
                         </div>

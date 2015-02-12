@@ -393,7 +393,7 @@ function checkincrementquantity(quantity){
 
 function checknewitem(){
 	
-	if($('#itemcode').val()!="" && $('#itemname').val()!="" && $('#unit').val()!=""){
+	if($('#itemcode').val()!="" && $('#itemname').val()!="" && $('#unit').val()!="" && $('#itemid').val()==""){
 		
 		if(confirm('Do you want to add/Save this item?'))
 		{
@@ -410,7 +410,9 @@ function checknewitem(){
 				data: d,
 				url: useritemurl
 			}).done(function(data){
-				alert(data);
+				if(data)
+				$('#itemid').val(data);
+				alert("Item got added successfully!");
 			});
 			
 			
@@ -825,7 +827,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 						<span class="add-on">$</span>
 						<input type="text" class="highlight nonzero nopad width50 input-sm span9" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')"
  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
-						<br/>
+						<br/>						 	
 		    			</div> <span id="eaerrmsg1<?php echo $q->id;?>" ></span>	
 		    			<br><?php $minpricenote = ""; if(count($minprices)>0){ if (array_key_exists($q->itemid, $minprices)){ foreach($minprices[@$q->itemid] as $minp){
 		    						if($q->ea>$minp->price){
@@ -833,6 +835,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    						}
 		    			} } }?>
 		    			<span id="betterprice<?php echo $q->id;?>"><?php echo @$minpricenote;?></span>
+		    			<span><?php echo "*Enter 0.00 for an RFQ";?>	</span>	
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
@@ -893,7 +896,8 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="span9 price" onblur="calculatetotalprice('')"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>						
+						<input type="text" id="ea" name="ea" class="span9 price" onblur="calculatetotalprice('')"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>		
+						<br> <span>*Enter 0.00 for an RFQ 	</span>			
 		    			</div>
 		    			<br><span id="betterprice"></span>
 		    		</td>

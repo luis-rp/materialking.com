@@ -13,6 +13,11 @@
 
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>
 
+<script type="text/javascript">
+$.noConflict();
+</script>
+
+
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
    $("#phone").mask("(999) 999-9999");
@@ -319,7 +324,7 @@ function addEmail()
 										<label class="form-label">Add Images</label>
 										  <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" /><input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
 												<div id="moreUploads"></div>
-										    <div id="moreUploadsLink" style="display:none;"><a href="javascript:addFileInput();">Add another Image</a>
+			<div id="moreUploadsLink" style="display:none;"><a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
 											</div>
 			                              <?php ///echo "<pre>"; print_r($image); die; ?>
 											<table class="table table-striped">

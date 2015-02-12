@@ -19,6 +19,9 @@ class itemcode_model extends Model {
         $pa = $this->session->userdata('purchasingadmin');
 
         $where = " WHERE 1=1 ";
+        if(@$_POST['searchQuery'])
+            $where .= " AND i.itemname LIKE '%{$_POST['searchQuery']}%' OR i.itemcode LIKE '%{$_POST['searchQuery']}%'";
+            
         if(@$_POST['searchitemname'])
             $where .= " AND i.itemname LIKE '%{$_POST['searchitemname']}%' OR i.itemcode LIKE '%{$_POST['searchitemname']}%'";
         if(@$_POST['searchcategory'])
@@ -47,9 +50,24 @@ class itemcode_model extends Model {
                 $item->minprices = $this->getminimumprices($item->id);
                 $item->tierprices = $this->gettierprices($item->id);
 
+                $orderSql = "SELECT *,od.quantity as qty FROM pms_order o,
+		        			 pms_orderdetails od
+		        			 WHERE o.id=od.orderid
+		        			 AND o.purchasingadmin=".$this->session->userdata('purchasingadmin')."
+		        			 AND od.itemid={$item->id} GROUP BY od.orderid";
+                
+                $orderRes = $this->db->query($orderSql)->result();
                 //if($item->poitems && @$item->poitems[0])
                     //$item->awardedon = $item->poitems[0]->awardedon;
-
+	//echo '<pre>',print_r($item)
+			$orderQty=0;
+				if(isset($orderRes))
+				{
+					foreach ($orderRes as $k=>$v)
+					{
+						$orderQty += $v->qty; 
+					}	
+				}
                 $item->totalpoprice = 0;
                 $item->qty = 0;
                 if ($item->poitems)
@@ -57,7 +75,7 @@ class itemcode_model extends Model {
                         $item->totalpoprice += $po->totalprice;
                         $item->qty += $po->quantity;
                     }
-
+				$item->qty += $orderQty;
                 $sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	 totalprice2 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";
@@ -493,6 +511,29 @@ class itemcode_model extends Model {
         return $id;
     }
 
+    
+    
+   function SaveItemcode_user() {   	    	
+         	
+	        $options = array(
+            'itemcode' => $this->input->post('itemcode'),
+            'itemname' => $this->input->post('itemname'),            
+            'unit' => $this->input->post('unit'),            
+        	'weight' => 1,           
+	        'increment' => 1,
+	        'category' => 248
+        );
+
+        if(@$this->session->userdata('purchasingadmin'))
+        $options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+        
+        $this->db->insert('item', $options);
+        $id = $this->db->insert_id();        
+        return $id;
+    }
+    
+    
+    
     function get_product_categories($id) {
         return $this->db->where('product_id', $id)->join($this->db->dbprefix('category'), 'category_id = category.id')->get($this->db->dbprefix('category_products'))->result();
     }
@@ -500,10 +541,19 @@ class itemcode_model extends Model {
 
 
 // updating cost code
-    function updateItemcode($id) {
-    	
+    function updateItemcode($id) {  	
     	$name=implode(",",$_FILES['UploadFile']['name']);
     	$filename=implode(",",$_POST['filename']);  
+    	$orgname=$this->db->get_where('item',array('id'=>$this->input->post('id')))->row();
+    	if(@$name && $orgname->files!="")
+    	{
+    		$name=$orgname->files.",".$name;
+    	}
+    	
+    	if(@$filename && $orgname->filename!="")
+    	{
+    		$filename=$orgname->filename.",".$filename;
+    	}
     	
     	$zoom;
 		if(@$this->input->post('zoom') == "on")
@@ -613,6 +663,44 @@ class itemcode_model extends Model {
         }
     }
 
+    
+    
+    // updating user cost code
+    function updateItemcodeUser($id) {  	
+    	    	
+        $options = array(
+            'itemcode' => $this->input->post('itemcode'),
+            'itemname' => $this->input->post('itemname'),            
+            'unit' => $this->input->post('unit'),          
+        	'weight' => 1,            
+	        'increment' => 1,
+	        'category' => 248
+        );
+        
+    	
+        $oldcoderow = $this->get_itemcodes_by_id($this->input->post('id'));
+        $oldcode = $oldcoderow->itemcode;
+        $newcode = $this->input->post('itemcode');
+
+        $this->db->where('id', $this->input->post('id'));
+        $this->db->update('item', $options);
+        
+        $update = array('itemcode' => $newcode);
+
+        $this->db->where('itemcode', $oldcode);
+        $this->db->update('awarditem', $update);
+
+        $this->db->where('itemcode', $oldcode);
+        $this->db->update('biditem', $update);
+
+        $this->db->where('itemcode', $oldcode);
+        $this->db->update('quoteitem', $update);
+      
+    }
+    
+    
+    
+    
     // removing cost code
     function remove_itemcode($id) {
         $item = $this->get_itemcodes_by_id($id);
@@ -890,8 +978,8 @@ class itemcode_model extends Model {
             $this->db->where('itemcode', $code);
         }
         
-        if(@$purchasingadmin)
-        $this->db->where('purchasingadmin', $purchasingadmin);
+        /*if(@$purchasingadmin)
+        $this->db->where('purchasingadmin', $purchasingadmin);*/
         
         $query = $this->db->get('item');
         $result = $query->result();
@@ -910,8 +998,8 @@ class itemcode_model extends Model {
             $this->db->where('itemname', $itemname);
         }
         
-        if(@$purchasingadmin)
-        $this->db->where('purchasingadmin', $purchasingadmin);        
+        /*if(@$purchasingadmin)
+        $this->db->where('purchasingadmin', $purchasingadmin); */       
         
         $query = $this->db->get('item');
         $result = $query->result();
@@ -921,29 +1009,7 @@ class itemcode_model extends Model {
         } else {
             return false;
         }
-    }
-    
-    
-   function checkDuplicateUserItemUrl($url, $purchasingadmin, $edit_id = 0) {
-        if ($edit_id > 0) {
-            $this->db->where(array('id !=' => $edit_id, 'url' => $url));
-        } else {
-            $this->db->where('url', $url);
-        }
-        
-        if(@$purchasingadmin)
-        $this->db->where('purchasingadmin', $purchasingadmin);        
-        
-        $query = $this->db->get('item');
-        $result = $query->result();
-
-        if ($query->num_rows > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
+    }  
     
     
     // Start By Dhruvisha On 11th Jan 2014

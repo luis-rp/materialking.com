@@ -481,7 +481,7 @@ class costcode extends CI_Controller {
     function custPDF($costcode,$project)
     {
     	$costcode = urldecode($costcode);
-    	$costcodeitems = $this->costcode_model->getcostcodeitems($costcode);
+    	$costcodeitems = $this->costcode_model->getcostcodeitems($costcode,$project);
 
     	$count = count($costcodeitems);
     	$items = array();
@@ -552,7 +552,7 @@ class costcode extends CI_Controller {
 
     }
 
-    function items($costcode,$project) {
+    function items($costcode,$project = '') {
     	$costcode = str_replace('%7C', '/', $costcode);
     	$costcode=urldecode($costcode);
         $costcode = urldecode($costcode);
@@ -692,7 +692,7 @@ class costcode extends CI_Controller {
         		$project = $this->db->query($sql)->row();
         		$order->prjName = "Assigned to ".$project->title;
         		$order->prjName .= "<br>";
-        		$order->prjName .= "Assignet to '$costcode' costcode";
+        		$order->prjName .= "Assigned to '$costcode' costcode";
         	}else{
         		$order->prjName = "Pending Project Assignment";
         	}
@@ -705,7 +705,8 @@ class costcode extends CI_Controller {
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['bottomheading'] = "Store Orders With Costcode '$costcode'";
 
-        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode."/".$project.'">View PDF</a>';
+        
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode."/".$project->id.'">View PDF</a>';
 
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);

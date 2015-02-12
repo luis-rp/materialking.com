@@ -112,6 +112,10 @@
     			$("#qtypriceplacer").html(data);
     			$("#htmlqtymessage").html("Service items added successfully!");
     			$(".alert-success").css({display: "block"});
+    			$("#servicename").val('');
+    			$("#serviceprice").val('');
+    			$("#servicetax").val('');
+    			
     		}
     	});
 
@@ -226,22 +230,24 @@
                                      </td>
                                     <td  style="border:0px !important;"></td>
                                     </tr>
-                            	</form>
+                            	
                             		</table>
 
 
 
                             	<table style="border:0px !important;float:left;"><tr><td  style="border:0px !important;">Item:</td>
-                            	<td  style="border:0px !important;"><?php if(1){?>
+                            	<td  style="border:0px !important;"><?php //if(1){?>
                                 <div class="input-append search datagrid-search" style="margin-top:0px !important;">
-                                    <input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>" style="height:22px !important;">
-                                    <button class="btn"><i class="icon-search"></i></button>
+                                    <!--<input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>" style="height:22px !important;">
+                                    <button class="btn"><i class="icon-search"></i></button>-->
+                                    <input type="text" name="searchQuery" id="searchQuery" value="">
+                                    <input type="submit" name="btnSearch" id="btnSearch" value="  "  class="icon-search">
                                 </div>
-                                <?php }?></td>
+                                <?php //}?></td>
 
                             	</tr></table>
 
-
+								</form>
                             </div>
                         </div>
                         </th>
@@ -337,7 +343,7 @@
               <span id="qtylistprice"></span>
             </div>
           </div>
-          <div id="qtypriceplacer"></div>
+          <div id="qtypriceplacer" style="overflow-y:auto;height:150px;"></div>
 
           <div id="addiscount" class="row form-row"></div>
 

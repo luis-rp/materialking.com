@@ -954,22 +954,12 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     
     function addviauser ()
     {
-        $catcodes = $this->catcode_model->get_categories_tiered();
-        $categories = array();
-        if ($catcodes)
-        {
-            if (isset($catcodes[0]))
-            {
-                build_category_tree($categories, 0, $catcodes);
-            }
-        }
+        
         $this->_set_fields();
         $data['heading'] = 'Add New Itemcode';
         $data['message'] = '';
-        $data['action'] = site_url('admin/itemcode/add_itemcode_user');
-        $data['category'] = $categories;
-        $data['product_categories'] = false;
-        $data['categories'] = $this->itemcode_model->getcategories();
+        $data['action'] = site_url('admin/itemcode/add_itemcode_user');        
+        $data['product_categories'] = false;        
         $data['companies'] = $this->db->get('company')->result();
         $this->validation->featuredsupplier = 38;
         $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";

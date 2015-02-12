@@ -3054,10 +3054,10 @@ class site extends CI_Controller
         	        	
          	$data['selectedbill'] = $_POST['billid'];
          	
-			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid
+			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid, pb.bankname, pb.accountnumber, pb.routingnumber 
 					 FROM ".$this->db->dbprefix('billitem')." bi 
 					 LEFT JOIN ".$this->db->dbprefix('bill')." b ON b.id=bi.bill 
-					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id 
+					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id  LEFT JOIN ".$this->db->dbprefix('purchaserbank')." pb ON b.purchasingadmin = pb.purchasingadmin 
 					 WHERE b.id = ".$_POST['billid'];	
 							
         	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
@@ -3111,5 +3111,109 @@ class site extends CI_Controller
 
 		echo json_encode($result);
 	}
+	
+	
+	function paybillbycc()
+    {
+    	//echo "<pre>",print_r($_POST); die;
+        $user = $this->db->select('users.*')->from('bill')                   
+                   ->join('users','users.id=bill.purchasingadmin')
+                   ->where('bill.id',$_POST['invoicenum'])
+                   ->get()->row();
+                   
+        $bankaccount = $this->db->where('purchasingadmin',$user->id)->get('purchaserbank')->row();
+        
+        if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
+		{
+		    $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bank account missing for credit card payment.</div></div>');
+		    redirect('site/customerbill');
+		}
+        //print_r($user);die;
+		ini_set('max_execution_time', 300);
+		$this->load->model('admin/settings_model');
+		$config = (array)$this->settings_model->get_setting_by_admin($user->id);
+		$config = array_merge($config, $this->config->config);
+
+		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+		Stripe::setApiKey($config['STRIPE_API_KEY']);
+		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
+		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $_POST['amount'] * 100, 'currency' => 'usd' ));
+		//echo $charge;
+		$chargeobj = json_decode($charge);
+		if(@$chargeobj->paid)
+		{
+			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
+			{
+	          $recbankInfo = array(
+	          			'country' =>'US',
+	          			'routing_number' => $bankaccount->routingnumber,
+	          			'account_number' => $bankaccount->accountnumber
+	          );
+
+              $recObj = Stripe_Recipient::create(array(
+              "name" => $user->fullname,
+              "type" => "individual",
+              "email" => $user->email,
+              "bank_account" => $recbankInfo)
+              );
+
+              $obj = json_decode($recObj);
+              $_POST['amount'] = round($_POST['amount'],2);
+              $transferObj = Stripe_Transfer::create(array(
+                  "amount" => $_POST['amount'] * 100,
+                  "currency" => "usd",
+                  "recipient" => $obj->id,
+                  "description" => "Transfer for ".$user->email )
+              );
+              $tobj = json_decode($transferObj);
+              
+              
+              $billarray = array();
+              $billarray['status'] = "Pending";
+              $billarray['paymentstatus'] = $_POST['ccapystatus'];
+              $billarray['ispaid'] = 1;
+              $this->db->where('id', $_POST['invoicenum']);
+              $this->db->update('bill', $billarray);
+
+
+              $billhistory = array();
+              $billhistory['bill'] = $_POST['invoicenum'];
+              $billhistory['paymenttype'] = "Credit Card";
+              $billhistory['paymentdate'] = date('Y-m-d');
+              $billhistory['refnum'] = $_POST['ccpayref'];
+              $billhistory['amountpaid'] = $_POST['amount'];
+              $this->db->insert('pms_bill_payment_history', $billhistory);
+              
+                            
+    		  $bill = $this->db->select('bill.*')
+    		            ->from('bill')    		           
+    		            ->where('id',$_POST['invoicenum'])
+    		            ->get()->row();
+
+              $data['email_body_title']  = "Dear {$user->username}";
+$data['email_body_content'] = "$ {$_POST['amount']} has been transfered to your bank account for bill#{$bill->billname},
+with the transfer# {$tobj->id}.
+<br>Payment by: ".$this->session->userdata('customer')->name."
+<br>Bill#: ".$bill->billname."
+";
+$loaderEmail = new My_Loader();
+              $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);              
+    	      $this->load->library('email');
+    	      $config['charset'] = 'utf-8';
+    	      $config['mailtype'] = 'html';
+    	      $this->email->initialize($config);
+              $this->email->from($this->session->userdata('customer')->email);
+              $this->email->to($user->email);
+              $this->email->subject('Bank transfer notification');
+              $this->email->message($send_body);
+              $this->email->set_mailtype("html");
+              $this->email->send();
+
+              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bill paid successfully.</div></div>');
+        	}
+		}
+		redirect('site/customerbill');
+    }
 	
 }

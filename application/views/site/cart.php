@@ -105,7 +105,7 @@ function updatecart(itemid,companyid,quantity,incrementval,qtyreqd)
             		<td><?php echo $item['itemdetails']->itemname;?></td>
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
-            		<td><input class="span1" type="text" value="<?php echo $item['quantity']?>" onchange="updatecart(<?php echo $item['itemid'];?>,<?php echo $item['company'];?>,this.value, <?php echo $item['increment'];?>,<?php echo $item['dealitems']->qtyreqd? $item['dealitems']->qtyreqd : 0; ?>)"/></td>
+            		<td><input class="span1" type="text" value="<?php echo @$item['quantity']?>" onchange="updatecart(<?php echo @$item['itemid'];?>,<?php echo @$item['company'];?>,this.value, <?php echo @$item['increment'];?>,<?php echo @$item['dealitems']->qtyreqd? @$item['dealitems']->qtyreqd : 0; ?>)"/></td>
             		<td>$<?php echo number_format($total,2);?></td>
             		<td align="center">
 	            		<a class="btn btn-primary" href="javascript:void(0)" onclick="removefromcart(<?php echo $item['itemid'];?>, <?php echo $item['company'];?>)">

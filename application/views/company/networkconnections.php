@@ -53,7 +53,7 @@ function preloadoptions(fromid)
 					<div class="grid-body no-border">
 						<form id="profileform" name="profileform" class="animated fadeIn" method="post" 
 								action="<?php echo site_url('company/savepurchasingtier');?>">
-						<table id="datatable" class="table no-more-tables general" width="100%" style="table-layout:fixed;">
+						<table id="datatable" class="table no-more-tables general">
 							<tr>
 								<th>&nbsp;</th>
 								<th>Company</th>
@@ -82,7 +82,7 @@ function preloadoptions(fromid)
 								<td><?php echo $admin->purchasingfullname;?></td>
 								<td>
 																
-								<select onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required style="width:100px;">
+								<select class="form-control" onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required style="width:100px;">
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier0" <?php if($admin->tier=='tier0') {echo 'selected="SELECTED"';}?> >Tier 0</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier1" <?php if($admin->tier=='tier1') {echo 'selected="SELECTED"';}?> >Tier 1</option>
   <option name="tier[<?php echo $admin->purchasingadmin;?>]" value="tier2" <?php if($admin->tier=='tier2') {echo 'selected="SELECTED"';}?> >Tier 2</option>
@@ -92,18 +92,18 @@ function preloadoptions(fromid)
 								
 								</td>
 								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<input style="width:100px" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  
+									<input class="form-control" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  
 							 /> 
 									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span></p>	
 									<?php if($admin->creditonly==1) { ?><span style="color:red;">*Credit</span><?php } ?>
 								</td>
 								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<input  style="width:70px" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 
+									<input  class="form-control" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 
 									value="<?php echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
 									<?php if($admin->creditonly==1) { ?><span style="color:red;">Card</span><?php } ?>
 								</td>
 								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<input  style="width:70px" type="text" name="creditto[<?php echo $admin->purchasingadmin;?>]" 
+									<input class="form-control" type="text" name="creditto[<?php echo $admin->purchasingadmin;?>]" 
 									value="<?php echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
 									<?php if($admin->creditonly==1) { ?><span style="color:red;">only</span><?php } ?>
 								</td>

@@ -167,7 +167,7 @@ function upload_attachment(receivedid,invoicenum)
 
  function updatesharewithSupplier(receivedid,invoicenum)
 	{		
-		if($('#sharewithsupplier').attr('checked')) {			
+		if($('#sharewithsupplier_'+receivedid).attr('checked')) {			
 			sharewithsupplier = 1;
 		}
 		else
@@ -181,7 +181,10 @@ function upload_attachment(receivedid,invoicenum)
 			data: data,
 			url: sharewithsupplierurl
 		}).done(function(data){
-			//alert(data);
+			if(sharewithsupplier == 1)
+			{
+				alert("Attachment shared with supplier.");
+			}	
 		});
 	}
 
@@ -365,14 +368,14 @@ function jq( myid ) {
                     				<!-- <input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>" onblur="shownotice(this.value, '<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>',<?php echo $i;?>);">-->
                     				<input type="text" value="<?php echo $item->paymentstatus=='Paid'?$item->refnum:'';?>" name="refnum" id="refnum_<?php echo $i;?>">
                     				<button onclick="update_invoice_payment_status('<?php echo $i;?>')">Save</button>
-                    				<input style="width:200px" type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
+                    				<input style="width:100px;color: transparent;" type="file" name="UploadFile[<?php echo $item->receivedid;?>]" ><?php if(@$item->attachment) echo $item->attachment; else echo ''; ?>
                     				<input type="button" name="btnupload" id="btnupload" value="Upload Attachment" onclick="upload_attachment('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">
-                    				<input type="checkbox" name="sharewithsupplier" id="sharewithsupplier" value="" onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">Share with Supplier
+                    				<input type="checkbox" name="sharewithsupplier_<?php echo $item->receivedid;?>" id="sharewithsupplier_<?php echo $item->receivedid;?>" <?php if(@$item->sharewithsupplier && $item->sharewithsupplier == 1) echo ' checked '; else echo '';?>  onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">Share with Supplier
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
-                    				<input style="width:200px" type="file" name="UploadFile[<?php echo $item->receivedid;?>]">
+                    				<input style="width:100px;color: transparent;" type="file" name="UploadFile[<?php echo $item->receivedid;?>]"> <?php if(@$item->attachment) echo $item->attachment; else echo ''; ?>
                     				<input type="button" name="btnupload" id="btnupload" value="Upload Attachment" onclick="upload_attachment('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">
-                    				<input type="checkbox" name="sharewithsupplier" id="sharewithsupplier" value="" onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')">Share with Supplier
+                    				<input type="checkbox" name="sharewithsupplier_<?php echo $item->receivedid;?>" id="sharewithsupplier_<?php echo $item->receivedid;?>" onclick="updatesharewithSupplier('<?php echo $item->receivedid;?>','<?php echo $item->invoicenum;?>')" <?php if(@$item->sharewithsupplier && $item->sharewithsupplier == 1) echo ' checked '; else echo '';?>  >Share with Supplier 
                     				<?php }?>
                     				<?php if($item->paymentstatus=='Requested Payment'){?>
                     				<br/>

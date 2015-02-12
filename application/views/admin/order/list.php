@@ -149,7 +149,7 @@ $(document).ready( function() {
                                                    {
                                                		  if($detail->paymentstatus=='Paid')
                                                			{
-                                               				$totalpaid +=round(($order->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
+                                               				$totalpaid +=round(($detail->shipping+$detail->total + ($detail->total*$detail->taxpercent)/100 ),2);
                                                			}
 
                                                		  if($detail->paymentstatus=='Unpaid')
