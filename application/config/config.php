@@ -20,8 +20,8 @@ if(0)
     error_reporting(0);
     ini_set('display_errors', 'Off');
 }
-$config['base_url']	= 'http://materialking.com/';
-$config['base_dir']	= '/home/materialking/public_html/';
+$config['base_url']	= 'http://materialking/';
+$config['base_dir']	= 'C:\xampp\htdocs\materialking';
 
 /*
 |--------------------------------------------------------------------------
