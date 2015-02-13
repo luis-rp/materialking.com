@@ -1004,6 +1004,101 @@ class Inventory extends CI_Controller
 		echo "";
 		die;
 	}
+	
+	
+	function getcompanynames(){
+		
+		if(!$_POST)
+		die;
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$query = "SELECT u.id,u.username,u.fullname from ".$this->db->dbprefix('users')." u where u.id not in (select purchasingadmin from ".$this->db->dbprefix('purchasingtier_item')." where company = '".$company->id."' and itemid ='".$_POST['itemid']."') and username is not null";
+        //echo $query.'<pre>';//die;
+        $result = $this->db->query($query)->result();	
+		if($result)
+		echo json_encode($result); 
+		else 
+		echo "";
+		die;
+	}
+	
+		
+	function setnewcompanyprice(){
 
+		if(!$_POST)
+		die;
+
+		$company = $this->session->userdata('company');		
+		if(!$company)
+			redirect('company/login');
+		
+		
+		/*$this->db->where('company', $_POST['companyid']);
+		$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+		$this->db->where('itemid', $_POST['itemid']);
+		if($this->db->get('purchasingtier_item')->row())
+		{
+			if(isset($_POST['val'])){
+				$update['price'] = $_POST['val'];
+				$update['notes'] = "*Given Company Price";
+			}
+
+			$this->db->where('company', $_POST['companyid']);
+			$this->db->where('purchasingadmin', $_POST['purchasingadmin']);
+			$this->db->where('itemid', $_POST['itemid']);
+			$this->db->update('purchasingtier_item', $update);
+			echo "Item price Changed";
+		}
+		else
+		{*/
+			$insert = array();
+
+			if(isset($_POST['val'])){
+				$insert['price'] = $_POST['val'];
+			}
+
+			$insert['company'] = $company->id;
+			$insert['itemid'] = $_POST['itemid'];			
+			$insert['notes'] = "*Given Company Price";
+			$insert['purchasingadmin'] = $_POST['purchasingadmin'];
+			$newcompanyid = $this->db->insert('purchasingtier_item', $insert);
+			
+			if($newcompanyid){				
+				
+		 $resultprice = $this->db->select('p.price,u.username')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('p.itemid', $_POST['itemid'])->where('p.purchasingadmin', $_POST['purchasingadmin'])->get()->row();
+        if($resultprice)
+        				
+				if($resultprice)
+				{
+					echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->username.'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].');" value="'.$_POST['val'].'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span>
+                            </div>
+                          </div>                          
+                        </div>';
+				}
+
+			}
+			
+		//}
+
+		die;
+	}
+	
+	
+	function compricedelete(){
+    	
+    	$company = $this->session->userdata('company');
+    	if(!$company)
+    	redirect('company/login');
+    	
+    	$query = "DELETE FROM ".$this->db->dbprefix('purchasingtier_item')." where company = '".$company->id."' and itemid ='".$_POST['itemid']."' and purchasingadmin ='".$_POST['purchasingadmin']."'";
+    	$returnval = $this->db->query($query);
+    	if($returnval)
+    	echo "success";
+    	else 
+    	echo "fail"; die;
+    }
     
 }

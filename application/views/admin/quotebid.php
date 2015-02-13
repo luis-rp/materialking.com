@@ -835,7 +835,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    						}
 		    			} } }?>
 		    			<span id="betterprice<?php echo $q->id;?>"><?php echo @$minpricenote;?></span>
-		    			<span><?php echo "*Enter 0.00 for an RFQ";?>	</span>	
+		    			<span><?php // echo "*Enter 0.00 for an RFQ";?>	</span>	
 		    		</td>
 		    		<td>
 		    			<div class="input-prepend input-append">
@@ -897,8 +897,9 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
 						<input type="text" id="ea" name="ea" class="span9 price" onblur="calculatetotalprice('')"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>		
-						<br> <span>*Enter 0.00 for an RFQ 	</span>			
+						
 		    			</div>
+		    			 <span><?php echo "*Enter 0.00 for an RFQ";?> 	</span>	
 		    			<br><span id="betterprice"></span>
 		    		</td>
 		    		<td>

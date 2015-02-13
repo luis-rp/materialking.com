@@ -127,6 +127,7 @@ function invoice(invoicenum,invoicequote)
                             	<option value='Pending' <?php if(@$_POST['searchstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
                             	<option value='Verified' <?php if(@$_POST['searchstatus'] =='Verified'){echo 'SELECTED';}?>>Verified</option>
                             	<option value='Error' <?php if(@$_POST['searchstatus'] =='Error'){echo 'SELECTED';}?>>Error</option>
+                            	<option value='pastdue' <?php if(@$_POST['searchstatus'] =='pastdue'){echo 'SELECTED';}?>>Past Due</option>
 	                        </select>
 	                 </td>
 

@@ -351,10 +351,10 @@
 								<strong><?php echo $njc->title;?></strong>
 							</td>
 							<td>
-								<strong><?php echo $njc->totalcredit;?></strong>
+								<strong><?php echo ($njc->totalcredit!="" && $njc->totalcredit!=0)?$njc->totalcredit:'0.00';?></strong>
 							</td>
 							<td>
-								<strong><?php echo $njc->credit;?></strong>
+								<strong><?php echo ($njc->credit!="" && $njc->credit!=0)?$njc->credit:'0.00'; ?></strong>
 							</td>
 							<td>
 								<strong><?php echo $njc->due;?></strong>

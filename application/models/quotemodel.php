@@ -575,32 +575,60 @@ class Quotemodel extends Model
 	{
 		$search='';
 		$searches = array();
-		if(@$_POST['searchkeyword'])
-		{
-			$searches[] = " r.invoicenum LIKE '%{$_POST['searchkeyword']}%'";
-		}
-		if(@$_POST['searchstatus'])
-		{
-			$searches[] = " r.status='{$_POST['searchstatus']}'";
-		}
+		
+		
         if (@$_POST['searchpaymentstatus'])
         {
         	if($_POST['searchpaymentstatus'] == "Unpaid")
-        	$searches[] = " (r.paymentstatus = 'Unpaid' || r.paymentstatus = 'Requested Payment') ";
-        	else
-            $searches[] = " r.paymentstatus = '{$_POST['searchpaymentstatus']}' ";
+        	{
+        	$searches[] = " (r.paymentstatus = 'Unpaid' || r.paymentstatus = 'Requested Payment') ";}
+        	else {
+            $searches[] = " r.paymentstatus = '{$_POST['searchpaymentstatus']}' ";}
+          
         }
-		if(@$_POST['searchfrom'])
+        
+        
+        if(@$_POST['searchstatus'] == "pastdue" || @$_POST['searchkeyword'])
+        {  
+        	$tempv = "";
+        }
+        else 
+        {
+        	      	
+        	
+        	if(@$_POST['searchfrom'])
+			{
+				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
+				$searches[] = " ( date(receiveddate) >= '$fromdate' ) ";
+			}
+			if(@$_POST['searchto'])
+			{
+				$todate = date('Y-m-d', strtotime($_POST['searchto']));
+				$searches[] = " ( date(receiveddate) <= '$todate' ) ";
+			} 		 
+        	
+        }
+		
+	
+		if(@$_POST['searchkeyword'])
 		{
-			$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-			$searches[] = " ( date(receiveddate) >= '$fromdate'  OR receiveddate IS NULL) ";
+			
+			$searches[] = " r.invoicenum LIKE '%{$_POST['searchkeyword']}%'";
 		}
-		if(@$_POST['searchto'])
+		
+		
+		if(@$_POST['searchstatus'])
 		{
-			$todate = date('Y-m-d', strtotime($_POST['searchto']));
-			$searches[] = " ( date(receiveddate) <= '$todate'  OR receiveddate IS NULL) ";
+			  if($_POST['searchstatus'] == "pastdue")
+               {
+               	$toda = date('Y-m-d', strtotime(date('m/d/Y')));
+            	$searches[] = " ( date(datedue) <= '$toda' ) ";
+            	//echo "<pre>"; print_r($searches); die;
+                } else 
+                {          
+				$searches[] = " r.status='{$_POST['searchstatus']}'";
+                }
 		}
-
 
 		// ------- note: $_SESSION['quote_search'] and $_SESSION['pafilter'] are used for export function
 
@@ -643,7 +671,7 @@ class Quotemodel extends Model
 
 
 		 $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice,s.taxrate,
-					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue, ai.award 
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue, ai.award,r.attachmentname,r.sharewithsupplier 
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,
@@ -735,7 +763,7 @@ class Quotemodel extends Model
 	{
 
 		$invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, r.status,
-					 r.paymentstatus, r.paymenttype, r.refnum, receiveddate, r.datedue, r.paymentdate, r.invoice_type 
+					 r.paymentstatus, r.paymenttype, r.refnum, receiveddate, r.datedue, r.paymentdate, r.invoice_type ,r.attachmentname , r.sharewithsupplier, r.attachment
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,

@@ -5430,15 +5430,19 @@ class quote extends CI_Controller
 		             ->where('bill.quote',$qid)->group_by('billitem.bill')->get()->result();
 		
 		$serviceItems = 0;
+		$totPrice = 0;
 		             
 		foreach($dbills as $dbill){   
 			$serviceItems = 0;
                 $serviceitemRes = $this->db->where('billid',$dbill->id)->get('bill_servicelaboritems')->result_array();
+              
                 if(@$serviceitemRes)
                 {
                 	foreach ($serviceitemRes as $k=>$v)
-                	{                     		
-                		$serviceItems += ($v['price'] + ($v['price'] * $v['tax']/100));                	
+                	{   
+                		($v['quantity'] == '' || $v['quantity'] == 0) ? $qty = 1 : $qty =  $v['quantity'];           
+                		$totPrice = $v['price'] * $qty;      	                		
+                		$serviceItems += $totPrice + ($totPrice * $v['tax']/100);                   		           	
                 	}	          	
                 } 
                 $dbill->serviceItems = $serviceItems;          
@@ -5451,8 +5455,7 @@ class quote extends CI_Controller
 		    else 
 		    	$dbill->amountpaid = 0; 
 		}
-		//echo "<pre>",print_r($dbills); die;
-		
+				
 		$data['bills'] = $dbills;
 		
 		$billeditems = $this->db->select('billitem.*')
@@ -10029,6 +10032,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     $this->quote_model->db->insert('bill', $billarray);
 					$billid = $this->quote_model->db->insert_id();	
 					
+					$totPrice = 0;
 					$serviceItemTax = 0;
 					$serviceItemTaxTotal = 0;
 					$str = '';
@@ -10036,26 +10040,31 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 					
 					if(isset($_POST['servicelaboritem'])  && $billid != '')
 					{
-							foreach ($_POST['servicelaboritem'] as $k=>$val)
-							{
-								$insertArr = array('billid'=>$billid,
-												   'servicelaboritems'=>(@$_POST['servicelaboritemname'][$k]) ? $_POST['servicelaboritemname'][$k] : '',
-												   'price'=>(@$_POST['servicelaboritemprice'][$k]) ? $_POST['servicelaboritemprice'][$k] : '',
-												   'tax'=>(@$_POST['servicelaboritemtax'][$k]) ? $_POST['servicelaboritemtax'][$k] : '',
-												   'quantity'=>(@$_POST['servicelaboritemqty'][$k]) ? $_POST['servicelaboritemqty'][$k] : '',
-												   'purchasingadmin'=>$this->session->userdata('purchasingadmin')
-												   
-												   );
-													
-								$this->quote_model->db->insert('bill_servicelaboritems', $insertArr);			
+						foreach ($_POST['servicelaboritem'] as $k=>$val)
+						{
+							$insertArr = array('billid'=>$billid,
+											   'servicelaboritems'=>(@$_POST['servicelaboritemname'][$k]) ? $_POST['servicelaboritemname'][$k] : '',
+											   'price'=>(@$_POST['servicelaboritemprice'][$k]) ? $_POST['servicelaboritemprice'][$k] : '',
+											   'tax'=>(@$_POST['servicelaboritemtax'][$k]) ? $_POST['servicelaboritemtax'][$k] : '',
+											   'quantity'=>(@$_POST['servicelaboritemqty'][$k]) ? $_POST['servicelaboritemqty'][$k] : 1,
+											   'purchasingadmin'=>$this->session->userdata('purchasingadmin')
+											   
+											   );
+												
+							$this->quote_model->db->insert('bill_servicelaboritems', $insertArr);			
+								(@$_POST['servicelaboritemqty'][$k] == '') ? $qty = 1 : $qty = $_POST['servicelaboritemqty'][$k];
+								$totPrice = @$_POST['servicelaboritemprice'][$k] * $qty;
 								
-									$emailitems1 .= '<tr>';
-									$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.@$_POST['servicelaboritemname'][$k].'</td>';
-									$emailitems1 .= '<td style="padding-left:5;">'.@$_POST['servicelaboritemprice'][$k].'</td><td>&nbsp;</td><td>&nbsp;</td>';
-									$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.@$_POST['servicelaboritemtax'][$k].' % )</td> <td>'.@$_POST['servicelaboritemprice'][$k] * (@$_POST['servicelaboritemtax'][$k]/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
-									
-									$serviceItemTax += @$_POST['servicelaboritemprice'][$k] + (@$_POST['servicelaboritemprice'][$k] * (@$_POST['servicelaboritemtax'][$k]/100)) ;									
-							}
+								$emailitems1 .= '<tr>';
+								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.@$_POST['servicelaboritemname'][$k].'</td>';
+								$emailitems1 .= '<td style="padding-left:5;text-align:right;">$'.@$_POST['servicelaboritemprice'][$k].'</td><td>&nbsp;</td><td>&nbsp;</td>';
+								$emailitems1 .= '</tr><tr>';
+								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">Qty</td>';
+								$emailitems1 .= '<td style="padding-left:5;text-align:right;">'.$qty.'</td><td>&nbsp;</td><td>&nbsp;</td>';
+								$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.@$_POST['servicelaboritemtax'][$k].' % )</td>';
+								$emailitems1 .= '<td style="padding-left:5; text-align:right;">$'.($totPrice * (@$_POST['servicelaboritemtax'][$k]/100)).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';		
+								$serviceItemTax += @$totPrice + (@$totPrice * (@$_POST['servicelaboritemtax'][$k]/100)) ;									
+						}
 						
 					}
 					
@@ -10109,7 +10118,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	$settings = $this->settings_model->get_current_settings();
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Markup Total ('.@$_POST['markuptotalpercent'].'%)</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.number_format((@$totalprice*@$_POST['markuptotalpercent']/100),2).'</td>';
+    	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format((@$totalprice*@$_POST['markuptotalpercent']/100),2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
@@ -10118,7 +10127,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Subtotal</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.number_format(@$subtotal,2).'</td>';    	
+    	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format(@$subtotal,2).'</td>';    	
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
@@ -10126,7 +10135,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Tax</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.number_format((@$totalprice*@$settings->taxrate/100),2).'</td>';
+    	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format((@$totalprice*@$settings->taxrate/100),2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
@@ -10136,7 +10145,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	$finaltotal = $serviceItemTax + $subtotal + (@$totalprice*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
     	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
-    	$emailitems.= '<td style="padding-left:5;">'.number_format(@$finaltotal,2).'</td>';
+    	$emailitems.= '<td style="padding-left:5;text-align:right;">'.number_format(@$finaltotal,2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
     	$emailitems.= '</tr>';
@@ -10295,7 +10304,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 {
                 	foreach ($serviceitemRes as $k=>$v)
                 	{                     		
-                		$serviceItems += ($v['price'] + ($v['price'] * $v['tax']/100));                	
+                		($v['quantity'] == '' || $v['quantity'] == 0) ? $qty = 1 : $qty =  $v['quantity'];           
+                		$totPrice = $v['price'] * $qty;      	                		
+                		$serviceItems += $totPrice + ($totPrice * $v['tax']/100);                    	
                 	}	          	
                 } 
                 $bill->total = $bill->total + $serviceItems + $markuptotal;
@@ -11389,7 +11400,7 @@ $loaderEmail = new My_Loader();
 	    			{
 	    				$updateArr = array('attachmentname'=>$nfn ,
 	    								   'attachment'=> $_FILES['UploadFile']['name'][$receivedid],	    				
-	    								   'sharewithsupplier'=>($_POST['sharewithsupplier_'.$receivedid] == 'on') ? 1 : 0);
+	    								   'sharewithsupplier'=>(@$_POST['sharewithsupplier_'.$receivedid] && $_POST['sharewithsupplier_'.$receivedid] == 'on') ? 1 : 0);
     					$where = array('id'=>$receivedid,'invoicenum'=>$invoiceNum);
 	    				$this->db->update('received',$updateArr,$where);
 	    			}

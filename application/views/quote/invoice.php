@@ -235,15 +235,18 @@
 								    <td align="right"><strong>Total</strong></td>
 								    <td align="right"><strong>$ '.number_format($grandtotal,2).'</strong></td>
 								  </tr>
-								';
-
+								';                
 							  ?>
 				    	</table>
-
+								 <?php 
+							        if($invoice->sharewithsupplier == 1 && @$invoice->attachmentname)
+							        	{ ?>
+							        	<a href="<?php echo site_url('uploads/invoiceattachments/'.$invoice->attachmentname);?>" target="_blank">View Attached File</a>
+							     <?php   } ?>
                             </div>
                         </div>
                     </div>
-
+			
 				     <div class="col-md-1">
 				        <div class="invoice-button-action-set">
 				          <p>

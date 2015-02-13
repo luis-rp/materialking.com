@@ -367,6 +367,10 @@ class itemcode extends CI_Controller
 			$data['settingtour']=$setting[0]->tour;
 		}
 
+		if(isset($_POST['searchQuery']) && $_POST['searchQuery'] != '')
+		{
+			$data['searchQuery'] = $_POST['searchQuery'];
+		}
         $this->load->view('admin/itemlist', $data);
     }
 

@@ -556,11 +556,10 @@ class costcode extends CI_Controller {
     	$costcode = str_replace('%7C', '/', $costcode);
     	$costcode=urldecode($costcode);
         $costcode = urldecode($costcode);
-        
+       
         $project = str_replace('%7C', '/', $project);
     	$project=urldecode($project);
         $project = urldecode($project);
-
 
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode,$project);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode,$project);
@@ -689,8 +688,9 @@ class costcode extends CI_Controller {
         		$sql = "SELECT *
 				FROM ".$this->db->dbprefix('project')." p
 				WHERE id=".$order->project;
-        		$project = $this->db->query($sql)->row();
-        		$order->prjName = "Assigned to ".$project->title;
+        		
+        		$project1 = $this->db->query($sql)->row();
+        		$order->prjName = "Assigned to ".$project1->title;
         		$order->prjName .= "<br>";
         		$order->prjName .= "Assigned to '$costcode' costcode";
         	}else{
@@ -705,8 +705,9 @@ class costcode extends CI_Controller {
         $data ['heading'] = "Items with Costcode '$costcode'";
         $data ['bottomheading'] = "Store Orders With Costcode '$costcode'";
 
+     
         
-        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode."/".$project->id.'">View PDF</a>';
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode">&lt;&lt; Back</a> &nbsp;<a class="btn btn-green" href="'.site_url('admin/costcode/custPDF')."/".$costcode."/".$project.'">View PDF</a>';
 
         $uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);

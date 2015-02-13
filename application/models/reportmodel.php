@@ -56,16 +56,13 @@ class reportmodel extends Model
  			{
  				$filter .= " AND r.status='".$_POST['verificationstatus']."' ";
  			}
+ 			
  			if(@$_POST['datebymonth'] && @$_POST['datebymonth'])
  			{	
- 				if(@$_POST['checkunpaid'])
- 				{
- 				    $filter .= "";					
- 				}
- 				else
- 				{
- 					$filter .= " AND r.paymentstatus='Paid'";	
- 				}
+ 				  if(!@$_POST['checkunpaid'])
+ 					{
+ 						$filter .= "AND r.paymentstatus='Paid'";				
+ 					}
  				
  				if(@$_POST['datebymonth']=="alltime")
  			     {					
@@ -79,7 +76,7 @@ class reportmodel extends Model
  			} 			
  		}
  		//print_r($_POST);die;
- 		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
+ 	 $datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
  						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 					   FROM 

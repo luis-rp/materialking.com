@@ -2368,5 +2368,44 @@ class Company extends CI_Controller {
         
         	
     }
+    
+    function savelistsubscribers()
+    {
+		if(isset($_POST['subscribersID']) && $_POST['subscribersID'] != '' && isset($_POST['fieldName']) && $_POST['fieldName'] != '')
+		{
+			$subscriberId = $_POST['subscribersID'];
+			
+			foreach ($_POST['fieldName'][$subscriberId] as $key=>$val)
+			{
+				$updateArr = array(
+									'name'=>$_POST['fieldName'][$subscriberId][$key],
+									'value'=>$_POST['fieldValue'][$subscriberId][$key]
+								  );
+				$where = array(
+								'id'=>$key,
+								'subscriber_id'=>$subscriberId
+							  );
+				
+			    $this->db->update('newsletter_subscribers_data',$updateArr,$where);				  
+			}
+			
+			$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Record Saved Successfully.</div></div></div>';
+			$this->session->set_flashdata('message', $message);
+		
+		}
+			redirect("company/listsubscribers");	
+    }
 
+    function deletesubscribersdata()
+    {
+    	if(isset($_POST['subscribersID']) && $_POST['subscribersID'] != '')
+		{
+	    	$subscriberId = $_POST['subscribersID'];
+	    	$this->db->delete('newsletter_subscribers',array('id'=>$subscriberId));
+	    	$this->db->delete('newsletter_subscribers_data',array('subscriber_id'=>$subscriberId));
+			$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+			$this->session->set_flashdata('message', $message);
+		}	
+		redirect("company/listsubscribers");	
+    }
 }

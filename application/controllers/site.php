@@ -1307,7 +1307,12 @@ class site extends CI_Controller
             {
                 $this->db->where('id',$item->featuredsupplier);
                 $item->featuredsupplierdetails = $this->db->get('company')->row();
-
+                $dealitems1 = $this->db->get_where('dealitem',array('itemid'=>$id,'company'=>$item->featuredsupplier))->row()->qtyreqd;             
+                if(@$dealitems1 && $dealitems1!="")
+	                {
+	                	$item->featureditem->deal=$dealitems1;
+	                }
+	                
                 if($item->featureditem->manufacturer)
                 {
                     $this->db->where('id',$item->featureditem->manufacturer);
@@ -1345,7 +1350,14 @@ class site extends CI_Controller
                             ->where('itemid',$initem->itemid)
                             ->get('qtydiscount')
                             ->result();
-
+                                
+              $dealitems2 = $this->db->get_where('dealitem',array('itemid'=>$initem->itemid,'company'=>$initem->company))->row('qtyreqd');       
+                 
+                if(@$dealitems2 && @$dealitems2!="")
+	                {
+	                	$initem->deal=$dealitems2;
+	                }
+	                
           /*  if($hasdiscount){
               $initem->hasdiscount = true;}
             else{
@@ -1615,9 +1627,15 @@ class site extends CI_Controller
             {
                 if(!$di->image)
                     $di->image="big.png";
+                    
                 $di->companyusername = $this->db->where('id',$di->company)->get('company')->row()->username;
-                $di->companyname = $this->db->where('id',$di->company)->get('company')->row()->title;
+                $di->companyname = $this->db->where('id',$di->company)->get('company')->row()->title;               
                 $orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
+                $dealitems3 = $this->db->get_where('dealitem',array('itemid'=>$di->itemid,'company'=>$di->company))->row()->qtyreqd;               
+                if(@$dealitems3 && $dealitems3!="")
+	                {
+	                	$di->deal=$dealitems3;
+	                }
                 $di->url = $orgitem->url;
                 $di->itemcode = $orgitem->itemcode;
                 $di->itemname = $orgitem->itemname;
@@ -3143,6 +3161,11 @@ class site extends CI_Controller
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)
 		{
+			
+			/*$amount = $_POST['amount'] + $_POST['amount']*$config['taxpercent']/100;
+			$amount=$amount-.55-($amount*2.9/100);
+			$amount = round($amount,2);*/
+			
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
 			{
 	          $recbankInfo = array(
@@ -3170,8 +3193,8 @@ class site extends CI_Controller
               
               
               $billarray = array();
-              $billarray['status'] = "Pending";
-              $billarray['paymentstatus'] = $_POST['ccapystatus'];
+              $billarray['status'] = "Verified";
+              $billarray['paymentstatus'] = "Paid";
               $billarray['ispaid'] = 1;
               $this->db->where('id', $_POST['invoicenum']);
               $this->db->update('bill', $billarray);
@@ -3181,7 +3204,7 @@ class site extends CI_Controller
               $billhistory['bill'] = $_POST['invoicenum'];
               $billhistory['paymenttype'] = "Credit Card";
               $billhistory['paymentdate'] = date('Y-m-d');
-              $billhistory['refnum'] = $_POST['ccpayref'];
+              $billhistory['refnum'] = $chargeobj->balance_transaction;
               $billhistory['amountpaid'] = $_POST['amount'];
               $this->db->insert('pms_bill_payment_history', $billhistory);
               

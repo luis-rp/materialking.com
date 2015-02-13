@@ -126,7 +126,7 @@ class Dashboard extends CI_Controller
 	
 	    if(@$bankaccount->bankname=="" && @$bankaccount->routingnumber=="" && @$bankaccount->accountnumber=="")
 		    {
-		    $sms="Plese Setup your Bank Account settings, So you can accept Credit card payments.";
+		    $sms="Please Setup your Bank Account settings, So you can accept Credit card payments.";
 		    }
 	    if($sms!="")
 	    	{

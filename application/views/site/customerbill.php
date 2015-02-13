@@ -20,30 +20,18 @@ function showreport(billnum,i)
 	}
 }
 
-function paycc(ptype,idnumber,amount)
+function paycc(ptype,idnumber)
 {
 	if(confirm("Do You really want to Change The Payment Type?")){
 		if(ptype != 'Credit Card')
 		{
 			return true;
-		}
+		}		
 		
-		if( ($("#amountpaid_"+idnumber).val()=="") || ($("#amountpaid_"+idnumber).val()==0) || ($("#amountpaid_"+idnumber).val() == "undefined")){
-		alert("Please enter proper amount");
-		return false;
-		}
 		$('#paymenttype_' + idnumber + " option:first-child").attr("selected", true);
 		var invoicenumber = $('#billnumber').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);		
-		$("#ccpayamountshow").html($("#amountpaid_"+idnumber).val());
-		$("#ccpayinvoiceamount").val($("#amountpaid_"+idnumber).val());
-		
-		if($("#amountpaid_"+idnumber).val()==amount)
-		$("#ccapystatus").val("Paid");
-		
-		if($("#amountpaid_"+idnumber).val()<amount)
-		$("#ccapystatus").val("Partial");
-		
+		$("#ccpayamountshow").html($("#ccpayinvoiceamount").val());		
 		$("#ccpayref").val($("#refnum_"+idnumber).val());
 		$("#paymodal").modal();
 	}else {
@@ -187,6 +175,9 @@ function jq( myid ) {
 			$bankaccnt = "";
 			$bankrounting = "";
 			$bankname ="";
+			$amountpaid = ($value['amountpaid']!="")?$value['amountpaid']:0;
+			$amountref = $value['refnum'];
+			$paystatus = $value['status'];
 			//echo "<pre>",print_r($value); echo "@@".$selectedbill; die;
 			if((isset($selectedbill)) && ($value['billid'] == $selectedbill) && ($value['bankname']!="") && ($value['accountnumber']!="") && ($value['routingnumber']!=""))
 			{
@@ -202,6 +193,7 @@ function jq( myid ) {
     	?>
 	    	<tr>
     			<td align="right">
+    					<?php if($paystatus!= "Verified"){?>
 						<select name="paymenttype" id="paymenttype_<?php echo $value['billid'];?>" required onchange="paycc(this.value,<?php echo $value['billid'];?>,'<?php echo $value['totalprice']?>');">
             				<option value="">Select Payment Type</option>
             				<?php if($bankaccnt!="" &&  $bankrounting!="" && $bankname!=""){?>
@@ -210,23 +202,27 @@ function jq( myid ) {
             				<option <?php echo $value['paymenttype']=='Cash'?'SELECTED':'';?> value="Cash">Cash</option>
             				<option <?php echo $value['paymenttype']=='Check'?'SELECTED':'';?> value="Check">Check</option>
             			</select>
-            			<input type="text" value="<?php if(isset($value['refnum']) && @$value['refnum'] != '') echo $value['refnum']; else echo '';?>" name="refnum" id="refnum_<?php echo $value['billid'];?>" style="width:80px;">
-            			 Amount:<input type="text" value="<?php if(isset($value['amountpaid']) && @$value['amountpaid']!= '') echo $value['amountpaid']; else echo '';?>" name="amountpaid" id="amountpaid_<?php echo $value['billid'];?>" style="width:80px;">
+            			<input type="text" value="<?php if(isset($amountref) && @$amountref != '') echo $amountref; else echo '';?>" name="refnum" id="refnum_<?php echo $value['billid'];?>" style="width:80px;">
+            			 Amount:<input type="text" value="<?php if(isset($amountpaid) && @$amountpaid!= '') echo $amountpaid; else echo '';?>" name="amountpaid" id="amountpaid_<?php echo $value['billid'];?>" style="width:80px;">
             			
                     	<input type="submit" name="btnSave" id="btnSave" value="Save">
+                    	
+                    	<?php }else{//verified payment, show notes?>
+                    	<?php echo $value['paymentstatus']; ?>	/ <?php echo $value['paymenttype'];?> / <?php echo $amountref;?>
+                    		<?php } ?>
                     </td>
 	    	</tr>
 			<tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Markup Total (<?php echo $markuptotalpercent.'%'?>)</td>
-		    	<td style="padding-left:5;"><?php echo number_format(($totalprice * $markuptotalpercent/100),2); ?></td>				
+		    	<td style="padding-left:5; text-align:right;">$<?php echo number_format(($totalprice * $markuptotalpercent/100),2); ?></td>				
 	       </tr>
 	       <tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Subtotal</td>
-		    	<td style="padding-left:5;"><?php echo number_format($subtotal,2); ?></td>
+		    	<td style="padding-left:5; text-align:right;">$<?php echo number_format($subtotal,2); ?></td>
 	       </tr>
 	        <tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Tax</td>
-		    	<td style="padding-left:5;"><?php echo number_format(($totalprice*$settings->taxrate/100),2); ?></td>
+		    	<td style="padding-left:5; text-align:right;">$<?php echo number_format(($totalprice*$settings->taxrate/100),2); ?></td>
 	       </tr>
 			<?php 
 			$serviceItemTax = 0;
@@ -234,19 +230,31 @@ function jq( myid ) {
 			if(isset($billservicedetails) && @$billservicedetails != '')
 			{
 				foreach ($billservicedetails as $key1=>$v)
-				{ ?>
+				{ 
+					($v['quantity'] == '' || $v['quantity'] == 0) ? $qty = 1 : $qty =  $v['quantity'];           
+                	$totPrice = $v['price'] * $qty;      	                		
+                	
+					 ?>
 					 <tr>   	
 				    	<td colspan="3" style="padding-left:5; text-align:right;"><?php echo $v['servicelaboritems'];?></td>
-				    	<td colspan="3" style="padding-left:5; "><?php echo number_format($v['price'],2);?></td>
+				    	<td colspan="3" style="padding-left:5;text-align:right; ">$<?php echo number_format($v['price'],2);?></td>
+				    </tr>
+				    <tr>   	
+				    	<td colspan="3" style="padding-left:5; text-align:right;">Qty</td>
+				    	<td colspan="3" style="padding-left:5;text-align:right; "><?php echo $qty;?></td>
 				    </tr>
 				    <tr>
-				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax &nbsp; (<?php echo number_format($v['tax'],2);?> % )</td> <td><?php echo $v['price'] * ($v['tax']/100); ?></td>
+				    	<td colspan="3" style="padding-left:5; text-align:right;">Tax &nbsp; (<?php echo number_format($v['tax'],2);?> % )</td> 
+				    	<td style="padding-left:5; text-align:right;">$<?php echo $totPrice * ($v['tax']/100); ?></td>
 			       	</tr>
-<?php 			$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100));	}
-			} $finaltot = $serviceItemTax + $finaltotal;  ?>
+<?php 			$serviceItemTax += $totPrice + ($totPrice * ($v['tax']/100));	}
+			} $finaltot = $serviceItemTax + $finaltotal; 
+
+			  $amouttopay = $finaltot - $amountpaid; 	
+			?>
 	        <tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Total</td>
-		    	<td style="padding-left:5;"><?php echo number_format($finaltot,2); ?></td>
+		    	<td style="padding-left:5;text-align:right;">$<?php echo number_format($finaltot,2); ?></td>
 	       </tr>
 	</table>
 	<br><br>
@@ -297,9 +305,8 @@ function jq( myid ) {
 	<div class="modal-body" id="quoteitems">
         <form method="post" action="<?php echo site_url('site/paybillbycc/');?>" onsubmit="return validatecc();">
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
-	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
-	         <input type="hidden" id="ccpayref" name="ccpayref"/>
-	         <input type="hidden" id="ccapystatus" name="ccapystatus" />
+	        <input type="hidden" id="ccpayinvoiceamount" name="amount" value="<?php echo $amouttopay;?>"/>
+	         <input type="hidden" id="ccpayref" name="ccpayref"/>	        
             <div class="control-group">
                 <label class="control-label" for="card">
                    Total Amount to pay

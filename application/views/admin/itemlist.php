@@ -240,8 +240,8 @@
                                 <div class="input-append search datagrid-search" style="margin-top:0px !important;">
                                     <!--<input type="text" class="input-medium" placeholder="Search" value="<?php echo @$_POST['searchitemname'];?>" style="height:22px !important;">
                                     <button class="btn"><i class="icon-search"></i></button>-->
-                                    <input type="text" name="searchQuery" id="searchQuery" value="">
-                                    <input type="submit" name="btnSearch" id="btnSearch" value="  "  class="icon-search">
+                                    <input type="text" name="searchQuery" id="searchQuery" value="<?php if(isset($searchQuery) && $searchQuery != '') echo $searchQuery; else echo '';?>"> &nbsp;&nbsp;
+                                    <input type="submit" name="btnSearch" id="btnSearch" value="    "  class="icon-search" style="margin-left:10px;">
                                 </div>
                                 <?php //}?></td>
 

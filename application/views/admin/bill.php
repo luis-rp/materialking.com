@@ -314,12 +314,19 @@ function shownotice(newval,oldval,id){
                 {
                 	foreach ($billservicedetails as $key=>$v)
                 	{
+                		($v['quantity'] == '' || $v['quantity'] == 0) ? $qty = 1 : $qty = $v['quantity'];
+                		$totPrice = $v['price'] * $qty;
+                		
                 		$emailitems1 .= '<tr>';
 						$emailitems1 .= '<td >'.$v['servicelaboritems'].'</td>';
-						$emailitems1 .= '<td >'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
-						$emailitems1 .= '</tr><tr><td>Tax ('.$v['tax'].' % )</td> <td>'.$v['price'] * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+						$emailitems1 .= '<td style="text-align:right;">$'.number_format($v['price'],2).'</td><td>&nbsp;</td><td>&nbsp;</td>';
+						$emailitems1 .= '</tr>';
+						$emailitems1 .= '<tr><td >Qty</td>';
+						$emailitems1 .= '<td  style="text-align:right;">'.$qty.'</td><td>&nbsp;</td><td>&nbsp;</td>';
+						$emailitems1 .= '</tr>';
+						$emailitems1 .= '<tr><td>Tax ('.$v['tax'].' % )</td> <td style="text-align:right;">$'.$totPrice * ($v['tax']/100).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 						
-						$serviceItemTax += $v['price'] + ($v['price'] * ($v['tax']/100)) ;						
+						$serviceItemTax += $totPrice + ($totPrice * ($v['tax']/100)) ;						
                 	}
                 }
                 
@@ -334,10 +341,10 @@ function shownotice(newval,oldval,id){
                 echo '  <tr>
 					    <td colspan="7" align="left">&nbsp;</td>
 					    <td align="left">Markup Total('.@$invoiceitem['markuptotalpercent'].' %)</td>
-					    <td align="left">$ ' . number_format($totalprice*@$invoiceitem['markuptotalpercent']/100,2) . '</td>
+					    <td align="right">$ ' . number_format($totalprice*@$invoiceitem['markuptotalpercent']/100,2) . '</td>
 					  </tr>
                 		<tr>
-					    <td colspan="7" rowspan="8">
+					    <td colspan="7" rowspan="12">
                       		<div style="width:70%">
                           		<br/>
                           		<!-- <h4 class="semi-bold">Terms and Conditions</h4>
@@ -346,16 +353,16 @@ function shownotice(newval,oldval,id){
                       		</div>
                   		</td>
 					    <td align="left">Subtotal</td>
-					    <td align="left">$ ' . number_format($subtotal, 2) . '</td>
+					    <td align="right">$ ' . number_format($subtotal, 2) . '</td>
 					  </tr>
 					  <tr>
 					    <td align="left">Tax</td>
-					    <td align="left">$ ' . number_format($taxtotal, 2) . '</td>
+					    <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
 					  </tr>
 					  '.$emailitems1.'
 					  <tr>
 					    <td align="left">Total</td>
-					    <td align="left">$ ' . number_format($finaltotal, 2) . '</td>
+					    <td align="right">$ ' . number_format($finaltotal, 2) . '</td>
 					  </tr>
 					';
                 ?>

@@ -20,7 +20,7 @@ class itemcode_model extends Model {
 
         $where = " WHERE 1=1 ";
         if(@$_POST['searchQuery'])
-            $where .= " AND i.itemname LIKE '%{$_POST['searchQuery']}%' OR i.itemcode LIKE '%{$_POST['searchQuery']}%'";
+            $where .= " AND (i.itemname LIKE '%{$_POST['searchQuery']}%' OR i.itemcode LIKE '%{$_POST['searchQuery']}%')";
             
         if(@$_POST['searchitemname'])
             $where .= " AND i.itemname LIKE '%{$_POST['searchitemname']}%' OR i.itemcode LIKE '%{$_POST['searchitemname']}%'";
@@ -39,7 +39,7 @@ class itemcode_model extends Model {
                 $where
                 GROUP BY i.id
                 ORDER BY awardedon DESC";
-        //echo $sql;
+        //echo $sql;die;
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
@@ -162,8 +162,18 @@ class itemcode_model extends Model {
                     break 1;
                 }
             }
+         
+            $peis="";
+            if($this->session->userdata('usertype_id')!=1)
+            {
+            	$peis=$this->session->userdata('purchasingadmin');
+            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  AND purchasingadmin='$peis'";
+            }
+            else 
+            {
+            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  ";
+            }
             
-            $sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  ";
             $item = $this->db->query($sql1)->result(); 
             $count=number_format(count($item));
             $leaf->catname .="(".$count.")";

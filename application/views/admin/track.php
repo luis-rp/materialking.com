@@ -1121,15 +1121,13 @@ function setServicelaboritemsFlag()
                                     </td>
                                 </tr>
                                  <?php
-                                $f1_total=number_format($finalTotal,2);
-                                $f_total +=$f1_total;
+                                $f_total +=$finalTotal;
                                 
                                    $p1_total=$invoice->amountpaid;
                                    $p_total +=$p1_total;
                                 
-                                	 $u1_total=number_format((number_format($finalTotal,2) - $invoice->amountpaid),2);
+                                	 $u1_total=number_format(($finalTotal - $invoice->amountpaid),2);
                                      $u_total +=$u1_total;
-                                
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                 <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
