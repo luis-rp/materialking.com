@@ -92,7 +92,7 @@
 		   <br/>
 		   <?php
 		   	if(!@$backtracks)
-		   		echo 'No Backorders Found';
+		   		echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Backorders Found.</div></div>';
 		   	else
 		   		foreach($backtracks as $backtrack){
 		   			if(@$backtrack['items'])

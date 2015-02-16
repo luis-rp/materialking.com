@@ -54,7 +54,7 @@ class Inventory extends CI_Controller
 		$data['items'] = $items;
 		//$data['manufacturers'] = $this->db->order_by('title')->get('manufacturer')->result();
 		$data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
-		$data['categories'] = $this->itemcode_model->getcategories();
+		$data['categories'] = $this->inventorymodel->getcategories();
 		$this->db->where('id',$company->id);
 		$data['company'] = $this->db->get('company')->row();
 				
@@ -997,7 +997,7 @@ class Inventory extends CI_Controller
         $this->db->where('itemid', $_POST['itemid']);        
         $resultprice = $this->db->get('purchasingtier_item')->row()->price;*/
         
-        $resultprice = $this->db->select('p.*,u.username')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('itemid', $_POST['itemid'])->get()->result();
+        $resultprice = $this->db->select('p.*,u.companyname')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('itemid', $_POST['itemid'])->get()->result();
         if($resultprice)
 		echo json_encode($resultprice); 
 		else 
@@ -1015,7 +1015,7 @@ class Inventory extends CI_Controller
 		if(!$company)
 			redirect('company/login');
 		
-		$query = "SELECT u.id,u.username,u.fullname from ".$this->db->dbprefix('users')." u where u.id not in (select purchasingadmin from ".$this->db->dbprefix('purchasingtier_item')." where company = '".$company->id."' and itemid ='".$_POST['itemid']."') and username is not null";
+		$query = "SELECT u.id,u.companyname,u.fullname from ".$this->db->dbprefix('users')." u join ".$this->db->dbprefix('network')."  n on u.id=n.purchasingadmin  where n.company = '".$company->id."' and u.id not in (select purchasingadmin from ".$this->db->dbprefix('purchasingtier_item')." where company = '".$company->id."' and itemid ='".$_POST['itemid']."') and companyname is not null";
         //echo $query.'<pre>';//die;
         $result = $this->db->query($query)->result();	
 		if($result)
@@ -1068,12 +1068,11 @@ class Inventory extends CI_Controller
 			
 			if($newcompanyid){				
 				
-		 $resultprice = $this->db->select('p.price,u.username')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('p.itemid', $_POST['itemid'])->where('p.purchasingadmin', $_POST['purchasingadmin'])->get()->row();
-        if($resultprice)
-        				
+		 $resultprice = $this->db->select('p.price,u.companyname')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $company->id)->where('p.itemid', $_POST['itemid'])->where('p.purchasingadmin', $_POST['purchasingadmin'])->get()->row();
+               				
 				if($resultprice)
 				{
-					echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->username.'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].');" value="'.$_POST['val'].'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span>
+					echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->companyname.'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].');" value="'.$_POST['val'].'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('.$company->id.','.$_POST['itemid'].','.$_POST['purchasingadmin'].')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></span>
                             </div>
                           </div>                          
                         </div>';

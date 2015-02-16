@@ -844,9 +844,17 @@ class quote extends CI_Controller
            
 			if($totalSuppliers>0)
 			$gusttotal += $total/$totalSuppliers;
+			
+			if($data['potype'] == "Direct"){
+			$this->db->where('quoteitemid',$items->id);
+            $nonnetcompanies = $this->db->get('quoteitem_companies')->result();
+            if($nonnetcompanies){
+            	$data['nonnetcompanies'][$items->id] = $nonnetcompanies;
+            }
+			}                        	
          
          }
-          
+        
 		$data['minprices'] = $minprices;
         
         $data['guesttotal'] = number_format($gusttotal,2)." ".$message."";
@@ -1891,7 +1899,7 @@ class quote extends CI_Controller
     function assignpo()
     {
         $post = $this->input->post();
-
+		//echo "<pre>",print_r($post); die;
         if (!$post)
             die;
         $quote = $this->quote_model->get_quotes_by_id($post['id']);
@@ -1911,6 +1919,63 @@ class quote extends CI_Controller
         {
             $invitees[$item->company] = $item->company;
 
+            $this->db->where('quoteitemid',$item->id);
+            $nonnetcompanies = $this->db->get('quoteitem_companies')->result();
+            if($nonnetcompanies){
+            	foreach($nonnetcompanies as $noncomp){
+            		
+            		$password = $this->getRandomPassword();
+                	
+                	$username = str_replace(' ', '-', strtolower($noncomp->companyname));                	
+                	
+            		$limitedcompany = array(
+            		   'primaryemail' => $noncomp->companyemail,  	
+            		   'title' => $noncomp->companyname,
+                       'regkey' => '',
+                       'username' => $username,
+                       'pwd' => md5($password),
+                       'password' => md5($password),
+                       'company_type' => '3',
+                       'regdate' => date('Y-m-d')                       
+                    );
+                    $this->db->insert('company', $limitedcompany);
+            		$lastid = $this->db->insert_id();
+            		if($lastid){
+            		$invitees[$lastid] = $lastid;
+            		$limitcompany[$lastid]['username'] = $username;
+            		$limitcompany[$lastid]['password'] = $password;
+            		
+            		$insert = array();
+            		$insert['company'] = $lastid;
+            		$insert['purchasingadmin'] = $this->session->userdata('id');            		
+            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		$insert['status'] = 'Active';
+            		$this->db->insert('network',$insert);
+            		
+            		
+            		if(!isset($companyrows[$lastid]))
+            		{
+            			$companyrows[$lastid] = array();
+            		}
+            		$companyrow = '<tr>';
+            		$companyrow.= '<td>'.$item->itemcode.'</td>';
+            		$companyrow.= '<td>'.$item->itemname.'</td>';
+            		$companyrow.= '<td>'.$item->quantity.'</td>';
+            		$companyrow.= '<td>'.$item->ea.'</td>';
+            		$companyrow.= '<td>'.$item->unit.'</td>';
+            		$companyrow.= '<td>'.$item->notes.'</td>';
+            		$companyrow.= '</tr>';
+
+            		$companyrows[$lastid][] = $companyrow;
+            		
+            		
+            		}
+            		
+            		
+            	}
+            }
+			    
+            
             if(!isset($companyrows[$item->company]))
             {
             	$companyrows[$item->company] = array();
@@ -1955,9 +2020,20 @@ class quote extends CI_Controller
             $this->quote_model->db->insert('invitation', $insertarray);
 
             $link = base_url() . 'quote/direct/' . $key;
-            	$data['email_body_title'] = "Dear " . $c->title ;
 
-		  		$data['email_body_content'] = "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):  <br><br>
+            $data['email_body_title'] = "Dear " . $c->title ;
+            
+            $data['email_body_content'] = "";
+            
+            if(isset($limitcompany)){
+            	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password']){
+
+            		$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+            	}
+            }           
+            
+
+		  		$data['email_body_content'] .= "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):  <br><br>
 		    <a href='$link' target='blank'>$link</a><br><br>
 		    The PO Details are:<br><br>
 		    $emailitems
@@ -2071,6 +2147,19 @@ class quote extends CI_Controller
     			<div class="msgBox">Item price cannot be 0</div></div>');
                 continue;
             }
+            
+            $suppliername = "";
+            $supplieremail ="";
+            if(isset($_POST['addsupplyname'.$item->id])){
+            	$suppliername = $_POST['addsupplyname'.$item->id];
+            	unset($_POST['addsupplyname'.$item->id]);
+            }
+
+            if(isset($_POST['addsupplyemail'.$item->id])){
+            	$supplieremail = $_POST['addsupplyemail'.$item->id];
+            	unset($_POST['addsupplyemail'.$item->id]);
+            }
+            
             $updatearray = array();
             $key = $item->id;
             while (list($k, $v) = each($item))
@@ -2096,7 +2185,34 @@ class quote extends CI_Controller
                 );
                 $this->quote_model->db->insert('item', $itemcode);
             }
-        }
+            
+            
+            if($quote->potype=='Direct' && $suppliername!="" && $supplieremail!=""){
+
+
+            	$this->db->where('quoteitemid',$key);
+            	$nonnetcompanies = $this->db->get('quoteitem_companies')->result();
+            	if($nonnetcompanies){
+
+            		$tempcompanies = array(
+            		'companyname' => $suppliername,
+            		'companyemail' => $supplieremail
+            		);
+            		$this->quote_model->db->where('quoteitemid', $key);
+            		$this->quote_model->db->update('quoteitem_companies', $tempcompanies);
+
+            	}else{
+            		
+            		$tempcompanies = array(
+            		'quoteitemid' => $key,
+            		'companyname' => $suppliername,
+            		'companyemail' => $supplieremail
+            		);
+            		$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
+            	}
+             }
+			
+            }
         redirect('admin/quote/update/' . $qid);
     }
     
@@ -2558,8 +2674,7 @@ class quote extends CI_Controller
     }
 
     function additem($qid)
-    {
-        //print_r($_POST);die;
+    {     
 
     	$itemcode = @$_POST['itemcode'];
     	if ( $itemcode && !$this->db->where('itemcode',$itemcode)->get('item')->row() )
@@ -2573,6 +2688,19 @@ class quote extends CI_Controller
         $quote = $this->quote_model->get_quotes_by_id($qid);
         if(isset($_POST['itemincrement']))
         unset($_POST['itemincrement']);
+        
+        $suppliername = "";
+        $supplieremail ="";
+        if(isset($_POST['addsupplyname'])){
+        	$suppliername = $_POST['addsupplyname'];
+        	unset($_POST['addsupplyname']);
+        }
+        
+        if(isset($_POST['addsupplyemail'])){
+        	$supplieremail = $_POST['addsupplyemail'];
+        	unset($_POST['addsupplyemail']);
+        }
+       
         if($quote->potype=='Direct')
         if(!$_POST['ea'] || $_POST['ea']=='0.00')
         {
@@ -2583,6 +2711,7 @@ class quote extends CI_Controller
 
         }
         $this->quote_model->db->insert('quoteitem', $_POST);
+        $lastquoteitem = $this->quote_model->db->insert_id();
         if (!$this->quote_model->finditembycode($_POST['itemcode']))
         {
             $itemcode = array(
@@ -2594,6 +2723,18 @@ class quote extends CI_Controller
             );
             $this->quote_model->db->insert('item', $itemcode);
         }
+        
+        if($quote->potype=='Direct' && $suppliername!="" && $supplieremail!=""){
+        
+        	$tempcompanies = array(
+                'quoteitemid' => $lastquoteitem,
+                'companyname' => $suppliername,
+                'companyemail' => $supplieremail
+            );	
+        	$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
+        	
+        }
+        
         redirect('admin/quote/update/' . $qid);
     }
     

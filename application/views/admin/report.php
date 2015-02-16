@@ -79,7 +79,7 @@
 		   		$totalallprice = 0;
 		   		$totalallpaid = 0;
 		   		if(!@$reports)
-		   			echo 'No Records Found';
+		   			echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Records Found.</div></div>';
 		   		else
 		   			foreach($reports as $report)
 		   			{

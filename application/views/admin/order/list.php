@@ -206,7 +206,7 @@ $(document).ready( function() {
                                         </tbody>
                                     </table>
             	<?php }else{ ?>
-            	No Store Purchases
+            	<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Store Purchases.</div></div>
             	<?php }?>
             </div>
       </div>

@@ -276,7 +276,7 @@ function jq( myid ) {
                             <input type="button" value="Show All" class="btn btn-primary"/>
                         </a>
                     </form>
-                    <?php if (!@$items) echo 'No Invoices Found.'; ?>
+                    <?php if (!@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Invoices Found.</div></div>'; ?>
             	</div>
                 <div>          <?php if(@$items) { ?> 
                 				   <table style="width:24%;margin-left:74%;">
@@ -491,7 +491,7 @@ function jq( myid ) {
 				    		<td><?php echo ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity;?>
 				    		<?php if(strpos(@$item->invoicenum,"paid-in-full-already") !== false) echo "<br>*Pre-Paid Order"; else echo "";?>
 				    		</td>
-				    		<td><?php echo round($item->ea,2);?></td>
+				    		<td>$<?php echo round($item->ea,2);?></td>
 				    		<td>$<?php echo round($amount,2);?></td>
 				    		<td><?php echo $item->paymentstatus;?></td>
 				    		<td><?php echo $item->status;?></td>
@@ -554,12 +554,12 @@ function jq( myid ) {
 			    		<th width="75">Total</th>			    		
 			    	</tr>
 			    	<tr>
-			    		<td><?php echo number_format(array_sum($future)); ?></td>  
-			    		<td><?php echo number_format(array_sum($current)); ?></td>
-			    		<td><?php echo number_format(array_sum($daysold60)); ?></td>
-			    		<td><?php echo number_format(array_sum($daysold90)); ?></td>
-			    		<td><?php echo number_format(array_sum($daysold120)); ?></td>
-			    		<td><?php echo number_format(array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120)); ?></td>
+			    		<td><?php echo number_format(array_sum($future),2); ?></td>  
+			    		<td><?php echo number_format(array_sum($current),2); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold60),2); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold90),2); ?></td>
+			    		<td><?php echo number_format(array_sum($daysold120),2); ?></td>
+			    		<td><?php echo number_format(array_sum($future)+array_sum($current)+array_sum($daysold60)+array_sum($daysold90)+array_sum($daysold120),2); ?></td>
 			    	</tr>
               <?php } ?>
               </div>  

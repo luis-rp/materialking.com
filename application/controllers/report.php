@@ -32,6 +32,11 @@ class report extends CI_Controller
 			redirect('company/login');
 		$uri_segment = 4;
 		$filter = '';		
+		
+		if(@$_POST['datebymonth'])
+		{
+			$data['seldatebymonth'] = $_POST['datebymonth'];
+		}
 		if(@$_POST['purchasingadmin'])
 		{
 			$filter = " AND i.purchasingadmin='".$_POST['purchasingadmin']."'";

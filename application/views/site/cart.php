@@ -23,11 +23,11 @@ function updatecart(itemid,companyid,quantity,incrementval,qtyreqd)
 	var data = "itemid="+itemid+"&company="+companyid+"&quantity="+quantity+"&qtyreqd="+qtyreqd;
     //alert(data);return;
       
-     if(quantity < qtyreqd)
+     /*if(quantity < qtyreqd)
         {
             alert('Minimum quantity to order is '+ qtyreqd);
             return false;
-        }
+        }*/
         
 	if(incrementval>0){
 		if((quantity%incrementval)!=0){

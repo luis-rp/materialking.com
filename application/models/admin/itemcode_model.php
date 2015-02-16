@@ -53,7 +53,7 @@ class itemcode_model extends Model {
                 $orderSql = "SELECT *,od.quantity as qty FROM pms_order o,
 		        			 pms_orderdetails od
 		        			 WHERE o.id=od.orderid
-		        			 AND o.purchasingadmin=".$this->session->userdata('purchasingadmin')."
+		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 		        			 AND od.itemid={$item->id} GROUP BY od.orderid";
                 
                 $orderRes = $this->db->query($orderSql)->result();

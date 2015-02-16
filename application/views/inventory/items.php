@@ -439,7 +439,7 @@ function delqtydiscount(id,itemid){
 			phtml += '<div class="row form-row"><div class="col-md-6"><strong>Name:</strong></div><div class="col-md-6"><strong>Price:</strong></div></div>';		var i =0;		
 			$.each(data, function( index, value ) {
 			
-			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.username+'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'+value.company+','+value.itemid+','+value.purchasingadmin+');" value="'+value.price+'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('+value.company+','+value.itemid+','+value.purchasingadmin+')"  src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></span> </div></div>';	
+			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.companyname+'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'+value.company+','+value.itemid+','+value.purchasingadmin+');" value="'+value.price+'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('+value.company+','+value.itemid+','+value.purchasingadmin+')"  src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></span> </div></div>';	
 			i++;
 				
 			});
@@ -466,14 +466,14 @@ function delqtydiscount(id,itemid){
 			
 			$.each(data, function( index, value ) {
 			
-				if(value.username=="")
-				value.username = value.fullname;	
+				if(value.companyname=="")
+				value.companyname = value.fullname;	
 				
-				chtml += '<option value="'+value.id+'">'+value.username+'</option>';	
+				chtml += '<option value="'+value.id+'">'+value.companyname+'</option>';	
 				
 			});			
 		
-			$("#addnewcompanyprice").html('<table><tr><td><select name="selectcompany" id="selectcompany"><option value="">select Company</option>'+chtml+'</select></td><td><input type="text" name = "newcprice" id="newcprice"></td><td><input type="button" value = "Add" onclick="addcompanyprice('+itemid+');"></td></tr><table>');	
+			$("#addnewcompanyprice").html('<div class="col-md-6">&nbsp;&nbsp;<select name="selectcompany" id="selectcompany"><option value="">select Company</option>'+chtml+'</select></div><div class="col-md-6"><input type="text" name = "newcprice" id="newcprice"></td><td><input type="button" value = "Add" onclick="addcompanyprice('+itemid+');"></div>');	
 		}
 	});   	   	
     	
@@ -536,7 +536,7 @@ function delqtydiscount(id,itemid){
 			phtml += '<div class="row form-row"><div class="col-md-6"><strong>Name:</strong></div><div class="col-md-6"><strong>Price:</strong></div></div>';		var i =0;		
 			$.each(data, function( index, value ) {
 			if(purchasingadmin!=value.purchasingadmin){
-			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.username+'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'+value.company+','+value.itemid+','+value.purchasingadmin+');" value="'+value.price+'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('+value.company+','+value.itemid+','+value.purchasingadmin+')"  src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></span> </div></div>';	
+			phtml += '<div class="row form-row"><div class="col-md-6"><strong>'+value.companyname+'</strong></div><div class="col-md-6"><strong><input type="text" onblur="setcompanypriceprompt(this.value,'+value.company+','+value.itemid+','+value.purchasingadmin+');" value="'+value.price+'"/></strong> <span><a href="#"><img style="margin-left:5px;width:14px;" onclick="delcompanyprice('+value.company+','+value.itemid+','+value.purchasingadmin+')"  src="<?php echo base_url();?>templates/front/assets/img/icon/delete.ico" /></a></span> </div></div>';	
 			i++;
 			}
 				

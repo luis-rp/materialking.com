@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
 
-$(document).ready(function(){
+$(document).ready(function() {
 	//$('#intro').wysihtml5();
 	//$('#content').wysihtml5();
 	$('#deliverydate').datepicker();
@@ -76,7 +76,11 @@ $(document).ready(function(){
         }
         
     });	
-	
+    
+	 if($("#quoteCnt").val() == 0)
+	   {
+	    	$(".newitemrow").css('display','');
+	   }
 });
 //datedefault = true;
 //ccdefault = true;
@@ -479,7 +483,11 @@ function allowonlydigits(e,elementid,errorid){
       return false;
     } }
 
-
+  
+function displayBlankRow()
+{
+	$(".newitemrow").css('display','');
+}
 </script>
 
 <style>
@@ -522,6 +530,7 @@ function allowonlydigits(e,elementid,errorid){
 		   <a class="btn btn-primary" href="<?php echo site_url('admin/quote/index/'.$pid);?>">&lt;&lt; Back</a>
 		   <br/>
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
+		   <input type="hidden" name="quoteCnt" id="quoteCnt" value="<?php echo count($quoteitems);?>">       
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
 		   <input type="hidden" name="pid" value="<?php echo $pid;?>"/>
 		   <input type="hidden" name="potype" value="<?php echo $this->validation->potype;?>"/>
@@ -592,7 +601,7 @@ function allowonlydigits(e,elementid,errorid){
 		    		<th>Notes</th>
 		    		<th>Delete</th>
 		    	</tr>
-		    	<?php if($quoteitems){?>
+		    	<?php if($quoteitems) {?>
 		    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>"> 
 			  	<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
 		    	<?php foreach($quoteitems as $q){?>
@@ -653,6 +662,19 @@ function allowonlydigits(e,elementid,errorid){
 				    	<?php }?>
 				    	</select>
 				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>','<?php echo $q->ea;?>');</script>
+				    	
+				    	
+				    	<div id="supplydata"> 
+				    	  <?php if(is_array(@$nonnetcompanies)){ foreach($nonnetcompanies[$q->id] as $nccomp){ ?>	
+                          Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" style="width:120px;">&nbsp;
+               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
+               		<?php } }else{ ?>
+               		
+               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" style="width:120px;">&nbsp;
+               				
+               		<?php } ?>
 		    		</td>
 		    	</tr>
 		    	<?php }?>
@@ -668,7 +690,7 @@ function allowonlydigits(e,elementid,errorid){
 			  		action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>" 
 			  		onsubmit="return checkzero('pricefieldnew')"> 
 			  	
-		    	<tr>
+		    	<tr class="newitemrow" style="display:none;">
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="hidden" id="itemincrement" name="itemincrement" />
@@ -714,7 +736,7 @@ function allowonlydigits(e,elementid,errorid){
 		    		<td><textarea id="notes" name="notes"></textarea></td>
 		    		<td></td>
 		    	</tr>
-		    	<tr>
+		    	<tr class="newitemrow" style="display:none;">
 		    		<td colspan="4" style="text-align:right;"><span id="betterprice"></span></td>
 		    		<td colspan="6" style="text-align:left">
 				    	<select id="company" name="company" onchange="getminprice('company')">
@@ -722,12 +744,19 @@ function allowonlydigits(e,elementid,errorid){
 				    		<option value="<?php echo $company->id;?>"><?php echo $company->title;?></option>
 				    	<?php }?>
 				    	</select>
+				    	
+				    	<div id="supplydata"> 
+                          Name:<input type="text" name="addsupplyname" id="addsupplyname" style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" style="width:120px;">&nbsp;
+               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
+				    	
 		    		</td>
 		    	</tr>
 		    	<tr>
 		    		<td colspan="10">
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
-		    		<input type="submit" value="Add Next Item" class="btn btn-primary"/>
+		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
+		    		<input type="submit" value="Save & Continue" class="btn btn-primary"/>
 					</td>
 		    	</tr>
 		    	</form>

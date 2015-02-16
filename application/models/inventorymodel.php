@@ -25,8 +25,22 @@ class Inventorymodel extends Model
 		$ti = $this->db->dbprefix('item');
 		$tci = $this->db->dbprefix('companyitem');
 		$tq = $this->db->dbprefix('qtydiscount');
+		$td = $this->db->dbprefix('dealitem');
 		$where = " WHERE  1=1 ";
 		$joinqty="";
+		$dealqty="";
+		
+		if(@$_POST['activdeal'])
+		{
+		//$dealqty="JOIN (select * from $tq  where $tq.company=1  group by company,itemid) qty2 ON $tci.itemid=qty2.itemid";	
+		$dealqty="JOIN ".$td." ON ($tci.company=$td.company AND $tci.itemid=$td.itemid)";				   		
+		}
+		else 
+		{
+		$dealqty="";
+		
+		}
+		
 		//$this->db->limit($limit, $newoffset);
 		if(@$_POST['searchitem'])
 		{
@@ -84,7 +98,7 @@ class Inventorymodel extends Model
 		}
 		
 		 $sql = "SELECT $ti.* FROM $ti 
-		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
+		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty $dealqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where 
 		        LIMIT $offset, $limit";
 		
@@ -188,6 +202,68 @@ class Inventorymodel extends Model
 		$total = count($items);
 		//echo "<pre>"; print_r($total); die;
 		return $total;
+	}
+	
+	function getcategories()
+    {
+        $sql = "SELECT * FROM " . $this->db->dbprefix('category') . "
+        		WHERE id NOT IN (SELECT distinct(parent_id) FROM " . $this->db->dbprefix('category') . ")";
+        $leaves = $this->db->query($sql)->result();
+        $ret = array();
+
+        foreach($leaves as $leaf)
+        {
+            $parent = $leaf->parent_id;
+            while($parent)
+            {
+                $sql = "SELECT * FROM " . $this->db->dbprefix('category') . " WHERE id='$parent'  ";
+                $pcat = $this->db->query($sql)->row();
+                if($pcat)
+                {
+                    $parent = $pcat->parent_id;
+                    $leaf->catname = $pcat->catname . ' > ' . $leaf->catname;
+                }
+                else
+                {
+                    break 1;
+                }
+            }
+         
+           
+            $sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  ";
+           
+            
+            $item = $this->db->query($sql1)->result(); 
+            $count=number_format(count($item));
+            $leaf->catname .="(".$count.")";
+            
+            $ret[] = $leaf;
+        }
+        //echo '<pre>'; print_r($ret);//die;
+        $this->aasort($ret, 'catname');
+        //echo '<pre>'; print_r($ret);die;
+
+        return $ret;
+
+    }
+     
+	function aasort (&$array, $key)
+	{
+	    $sorter=array();
+	    $ret=array();
+	    reset($array);
+	    foreach ($array as $ii => $va)
+	    {
+	        $sorter[$ii]=$va->$key;
+	    }
+	    $sortflag = 14;//SORT_NATURAL ^ SORT_FLAG_CASE;
+
+	    asort($sorter, $sortflag );
+	    foreach ($sorter as $ii => $va)
+	    {
+	        $ret[$ii]=$array[$ii];
+	    }
+	    $array=$ret;
 	}
 }
 ?>

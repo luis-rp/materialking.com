@@ -157,40 +157,37 @@ function jq( myid ) {
 				$totalprice += $value['quantity'] * $value['ea']; 
 				$subtotal1 = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     	$finaltotal1 = $subtotal1 + (@$subtotal1*@$settings->taxrate/100);
-				
-				?>
-				<tr> 
-					<td id="billdetailid_<?php echo $value['billitemid'];?>"><?php echo $value['billname'];?> 
-						<a href="javascript:void(0)" onclick="showreport('<?php echo $value['billitemid'];?>','<?php echo $value['billitemid'];?>');">Expand</a>			
-						<input type="hidden" name="billnumber" id="billnumber" value="<?php echo $value['billid'];?>"/>
-					</td>
-					<!--<td><?php echo $value['itemname'];?> </td>-->
-					<td><?php echo date('m/d/Y', strtotime($value['billedon']));?> </td>
-					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
-					<td><?php echo number_format($value['totalprice'],2);?> </td>
-					<!---->
-					<!--<td><?php //echo $value['costcode'];?> </td>-->
-				</tr>
-	<?php	 			 
-			$bankaccnt = "";
-			$bankrounting = "";
-			$bankname ="";
-			$amountpaid = ($value['amountpaid']!="")?$value['amountpaid']:0;
-			$amountref = $value['refnum'];
-			$paystatus = $value['status'];
-			//echo "<pre>",print_r($value); echo "@@".$selectedbill; die;
-			if((isset($selectedbill)) && ($value['billid'] == $selectedbill) && ($value['bankname']!="") && ($value['accountnumber']!="") && ($value['routingnumber']!=""))
-			{
-				$bankname = $value['bankname'];
-				$bankaccnt = $value['accountnumber'];
-				$bankrounting = $value['routingnumber'];							
-			}
+					 
+				$bankaccnt = "";
+				$bankrounting = "";
+				$bankname ="";
+				$amountpaid = ($value['amountpaid']!="")?$value['amountpaid']:0;
+				$amountref = $value['refnum'];
+				$paystatus = $value['status'];
+				//echo "<pre>",print_r($value); echo "@@".$selectedbill; die;
+				if((isset($selectedbill)) && ($value['billid'] == $selectedbill) && ($value['bankname']!="") && ($value['accountnumber']!="") && ($value['routingnumber']!=""))
+				{
+					$bankname = $value['bankname'];
+					$bankaccnt = $value['accountnumber'];
+					$bankrounting = $value['routingnumber'];							
+				}
 
 		  } 		 
 		     $subtotal = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     $finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
 		     
     	?>
+    	<tr> 
+					<td id="billdetailid_<?php echo $billinfo[0]['billid'];?>"><?php if(isset($billinfo[0]['billname']) && $billinfo[0]['billname'] != '') { echo $billinfo[0]['billname']; } else { echo ''; } ?> 
+						<a href="javascript:void(0)" onclick="showreport('<?php echo $billinfo[0]['billid'];?>','<?php echo $billinfo[0]['billid'];?>');">Expand</a>			
+						<input type="hidden" name="billnumber" id="billnumber" value="<?php if(isset($billinfo[0]['billid']) && $billinfo[0]['billid'] != '') { echo $billinfo[0]['billid']; } else { echo ''; } ?>"/>
+					</td>					
+					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['billedon']));?> </td>
+					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['customerduedate']));?> </td>
+					<td>$<?php echo number_format($totalprice,2);?> </td>
+					<!---->
+					<!--<td><?php //echo $value['costcode'];?> </td>-->
+			    </tr>
 	    	<tr>
     			<td align="right">
     					<?php if($paystatus!= "Verified"){?>
@@ -259,11 +256,8 @@ function jq( myid ) {
 	</table>
 	<br><br>
 	<div>
-	<?php	
-			$totalprice = 0;	
-			foreach ($billItemdetails as $k=>$value)
-			{  ?>
-	<table class="table table-bordered reportdiv<?php echo $value['billitemid']; ?> dclose" style="display:none;">
+	
+	<table class="table table-bordered reportdiv<?php echo $value['billid']; ?> dclose" style="display:none;">
 		<tr>
 			<th width="30%">Itemcode  </th>
 			<th width="30%">Itemname</th>
@@ -274,14 +268,17 @@ function jq( myid ) {
 			<th width="10%">Date Requested</th>
 			<th width="10%">Cost Code</th>
 		</tr>	
-		
+	<?php	
+			$totalprice = 0;	
+			foreach ($billItemdetails as $k=>$value)
+			{  ?>	
 				 <tr> 
 					<td><?php echo $value['itemcode'];?> </td>
 					<td><?php echo $value['itemname'];?> </td>
 					<td><?php echo $value['quantity'];?> </td>
 					<td><?php echo $value['unit'];?> </td>
-					<td><?php echo $value['ea'];?> </td>
-					<td><?php echo $value['quantity'] * $value['ea'];?> </td>
+					<td>$<?php echo $value['ea'];?> </td>
+					<td>$<?php echo number_format($value['quantity'] * $value['ea'],2);?> </td>
 					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
 					<td><?php echo $value['costcode'];?> </td>
 				</tr>

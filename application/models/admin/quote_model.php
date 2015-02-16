@@ -1465,7 +1465,7 @@ class quote_model extends Model {
         $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL)';
         
         //$sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
-        $sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE 1=1 '.$where.' and itemcode="' . $code . '"';
+        $sql = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE 1=1 ".$where." and itemcode='" . $code . "'";
         /*
           if($this->session->userdata('usertype_id')>1)
           {

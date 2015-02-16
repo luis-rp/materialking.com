@@ -1307,12 +1307,17 @@ class site extends CI_Controller
             {
                 $this->db->where('id',$item->featuredsupplier);
                 $item->featuredsupplierdetails = $this->db->get('company')->row();
-                $dealitems1 = $this->db->get_where('dealitem',array('itemid'=>$id,'company'=>$item->featuredsupplier))->row()->qtyreqd;             
-                if(@$dealitems1 && $dealitems1!="")
+                                
+                $ans = $this->db->get_where('dealitem',array('itemid'=>$id,'company'=>$item->featuredsupplier))->row();
+                if(@$ans && $ans != '')
+                {
+                	$dealitems1 = $this->db->get_where('dealitem',array('itemid'=>$id,'company'=>$item->featuredsupplier))->row()->qtyreqd;             
+                
+               		if(@$dealitems1 && $dealitems1!="")
 	                {
 	                	$item->featureditem->deal=$dealitems1;
 	                }
-	                
+	            }	    
                 if($item->featureditem->manufacturer)
                 {
                     $this->db->where('id',$item->featureditem->manufacturer);
@@ -3075,9 +3080,10 @@ class site extends CI_Controller
 			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid, pb.bankname, pb.accountnumber, pb.routingnumber 
 					 FROM ".$this->db->dbprefix('billitem')." bi 
 					 LEFT JOIN ".$this->db->dbprefix('bill')." b ON b.id=bi.bill 
-					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id  LEFT JOIN ".$this->db->dbprefix('purchaserbank')." pb ON b.purchasingadmin = pb.purchasingadmin 
-					 WHERE b.id = ".$_POST['billid'];	
-							
+					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id  
+					 LEFT JOIN ".$this->db->dbprefix('purchaserbank')." pb ON b.purchasingadmin = pb.purchasingadmin 
+					 WHERE b.id = ".$_POST['billid'] ." GROUP BY bi.itemid";	
+			
         	$data['billItemdetails'] = $this->db->query($sql2)->result_array();
         	
         	$sql3 = "SELECT bs.* FROM ".$this->db->dbprefix('bill'). " b 

@@ -86,12 +86,12 @@ function submitForm(val,invoicequote)
 	          
 	  <td>
 	   <input type="checkbox" id ='checkunpaid' name ='checkunpaid' value="1" />&nbsp;Include Any Un-Paid.&nbsp;	 
-	   
+	  
 	  <select name="datebymonth" id="datebymonth" class="form-control selectpicker show-tick" style="width:auto" onchange="this.form.submit()">
                             	<option value=''>Select Days</option>
-                            	<option value='<?php echo date('m/d/Y', strtotime("now -30 days")); ?>'>Last 30 days</option>
-                            	<option value='<?php echo date('m/d/Y', strtotime("now -60 days")); ?>'>Last 60 days</option>
-                            	<option value='<?php echo date('m/d/Y', strtotime("now -90 days")); ?>'>Last 90 days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -30 days")); ?>' <?php if(isset($seldatebymonth) && $seldatebymonth == date('m/d/Y', strtotime("now -30 days"))) echo ' selected '; else echo '';?>   >Last 30 days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -60 days")); ?>' <?php if(isset($seldatebymonth) && $seldatebymonth == date('m/d/Y', strtotime("now -60 days"))) echo ' selected '; else echo '';?>>Last 60 days</option>
+                            	<option value='<?php echo date('m/d/Y', strtotime("now -90 days")); ?>' <?php if(isset($seldatebymonth) && $seldatebymonth == date('m/d/Y', strtotime("now -90 days"))) echo ' selected '; else echo '';?>>Last 90 days</option>
                              	<option value='alltime'>All-Time</option>                         	
 	           				 </select><br>          				 
 	           				 </td>

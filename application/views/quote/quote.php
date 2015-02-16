@@ -364,7 +364,7 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 		data: "companyid="+companyid+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
 		url: getcompanypriceurl
 	}).done(function(data){
-		
+		$("#myModalbody").html('');
 		if(data){
 			$("#myModalbody").css('display','block');
 			$("#myModalfooter").css('display','block');
@@ -372,7 +372,8 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 			$("#companypricemodal").modal();
 			$("#pricelistitemcode2").html(itemcode);
 			$("#pricelistitemname2").html(itemname);	
-			$('#itemprice').val(data);
+			$("#myModalbody").html(data);
+			//$('#itemprice').val(data);
 			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+');" value="Update"/>';
 			$("#pricebtn").html(phtml);
 			

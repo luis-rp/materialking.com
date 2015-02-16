@@ -1062,19 +1062,14 @@ class Quote extends CI_Controller
 		if($pa)
 		$data['purchasingadmin'] = $pa;
 		
-		if(count($data['quoteitems'])>0){
-			$itmstr = "";
-			$j=1;
+		if(count($data['quoteitems'])>0){			
+			$itemarr = array();
 			foreach($data['quoteitems'] as $itm){
-				
-				if(count($data['quoteitems']) == $j)
-				$itmstr .= $itm->itemid;
-				else 
-				$itmstr .= $itm->itemid.",";
-				$j++;
+								
+				$itemarr[] = $itm->itemid;
 			}
 		
-		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->where_in('itemid',$itmstr)->get()->result();
+		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->where_in('itemid',$itemarr)->get()->result();
 		}
 		
 		if($print)
@@ -4421,11 +4416,18 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(!$_POST)
 		die;
 		
-		$this->db->where('company', $_POST['companyid']);
+		/*$this->db->where('company', $_POST['companyid']);
         $this->db->where('purchasingadmin', $_POST['purchasingadmin']);
         $this->db->where('itemid', $_POST['itemid']);        
-        $resultprice = $this->db->get('purchasingtier_item')->row()->price;
-		echo $resultprice; die;
+        $resultprice = $this->db->get('purchasingtier_item')->row()->price;*/
+        
+         $resultprice = $this->db->select('p.price,u.companyname')->from('purchasingtier_item p')->join('users u','p.purchasingadmin=u.id', 'left')->where('company', $_POST['companyid'])->where('p.itemid', $_POST['itemid'])->where('p.purchasingadmin', $_POST['purchasingadmin'])->get()->row();
+          				
+		if($resultprice)
+		{
+					echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->companyname.'</strong></div><div class="col-md-6"><strong><input type="text" id="itemprice" value="'.$resultprice->price.'"/></strong> </div> </div>  
+                        </div>';
+		} die;
 	}
 	
 }

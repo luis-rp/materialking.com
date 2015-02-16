@@ -603,7 +603,7 @@ function viewtag(pic_id,company)
 </script>
 
 <script>
-    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment, isdeal)
+    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment, imgname, isdeal)
     {
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(typeof(isdeal)==='undefined') isdeal = 0;
@@ -617,6 +617,7 @@ function viewtag(pic_id,company)
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
+        $("#itemimage").html('<img width="120" height="120" style="max-height: 120px; padding: 20px;width:120px; height:120px;float:right;" src='+imgname+'>');
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
@@ -1326,6 +1327,7 @@ function changetab(tabname){
 								$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60));
 
                                 $remaining = "$days days, $hours hrs, $minuts mins";
+                                $imgName = '';
                         	?>
                             <div class="supplier_new">
                             <h3>Hot Deal </h3>
@@ -1335,9 +1337,10 @@ function changetab(tabname){
                                         <a href="<?php echo site_url("site/item/".$di->url);?>">
                                         <?php if($di->image) {?>
                         			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
+                        			<?php $imgName = site_url('uploads/item/thumbs/'.$di->image); ?>
                         			<?php } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
-                        		<?php }?>
+                        		<?php $imgName = site_url('uploads/item/big.png'); }?>
                         			<br/>
                         			<?php echo $di->itemname?>
                         			</a>
@@ -1373,7 +1376,7 @@ function changetab(tabname){
                                         <div class="price">
                                         <span>   $<?php echo $di->dealprice;?> &nbsp; <?php echo $di->unit;?></span>
 
-                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
+                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,'<?php echo $imgName;?>',1);">
                                     <i class="icon icon-plus"></i> Buy
                                 </a>
                                         </div>
@@ -1413,9 +1416,10 @@ function changetab(tabname){
                                     <div class="content">
                                     <?php if($inv->image){?>
                                      <img alt="<?php echo urlencode($inv->itemname); ?>" src="<?php echo site_url('uploads/item/thumbs/'. $inv->image);?>" style="max-height: 120px; padding: 20px;width:120px; height:120px" width="120" height="120">
+                                     <?php $imgName = site_url('uploads/item/thumbs/'.$inv->image); ?>
                                      <?php } else {?>
                                      <img src="<?php echo site_url('uploads/item/big.png');?>" style="max-height: 120px; padding: 20px;width:120px; height:120px;" width="120" height="120">
-                                     <?php }?>
+                                     <?php $imgName = site_url('uploads/item/big.png'); }?>
                                     </div>
                                      <?php if(isset($inv->hasdiscount)){ if($inv->hasdiscount) { ?>
                                                 <div class="price2" style="position:absolute; left:186px; top:5px;">
@@ -1475,7 +1479,7 @@ function changetab(tabname){
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price</div>
                                        <?php }else{?>
                                             <span> <?php echo '$'.$inv->ea;?> <?php echo $inv->unit;?></span>
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>)">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'<?php echo $imgName;?>');">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
                                         <?php } ?>
@@ -2077,6 +2081,7 @@ function changetab(tabname){
 
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
+          <div id="itemimage"></div>
           <br> Select Quantity
           </h4>
           <br/>

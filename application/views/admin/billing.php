@@ -321,7 +321,7 @@ function changeduedate(count,invoicenum,datedue)
                             <input type="button" value="Show All" class="btn btn-primary"/>
                         </a>
                     </form>
-                    <?php if (!@$items) echo 'No Billing Data Found.'; ?>
+                    <?php if (!@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Billing Data Found.</div></div>'; ?>
             	</div>
                 <div>
                       

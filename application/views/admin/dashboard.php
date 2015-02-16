@@ -705,13 +705,13 @@
 				</div>
 		</div>
 
-		<div  class="span12">	
+			
 		
 			 <?php if($this->session->userdata('usertype_id') != 3) 
 			         {	
 			         	if(isset($invoices)) { 
 			         		if(isset($invoiceCntr) && $invoiceCntr != 0) { ?>	
-			    
+			    <div  class="span12">
                 <div class="well span3"  style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
@@ -738,11 +738,10 @@
 					  </tr>
 
 				<?php } ?>
-				
-				
 				</table>
-			<?php } } } ?>	
 				</div>
+			<?php } } } ?>	
+				
 
 				
 		<?php  if(isset($backtracks)) { 
@@ -791,7 +790,14 @@
 				<?php } ?>		
 				</table>
 				</div>
-             <?php } }  ?>
+             <?php } }
+             
+             if($msgs == '' &&  $newquotes == '' &&  $awardquotes == '' &&  $newcostcodes == '' &&  $newprojects == '' &&  $users == '' &&  $networks == '' &&  $invoiceCntr == 0 && $backtracksCnt == '')
+             { ?>
+             	<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Recent Activity.</div></div>	
+             		
+       <?php }
+               ?>
 				
 				
 				

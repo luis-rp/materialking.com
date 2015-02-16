@@ -442,12 +442,12 @@ $( document ).tooltip();
             return false;
         }
         
-        if(qtyreqd!=1){
+        /*if(qtyreqd!=1){
         if(qty < qtyreqd)
         {
             alert('Minimum quantity required to order is '+ qtyreqd);
             return false;
-        }}
+        }}*/
         
         var data2 = "company=" + companyid;
         
