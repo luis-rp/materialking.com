@@ -254,7 +254,7 @@
     </form>
  </div>
 		      <br/> <hr/>
-	    	<?php }?>
+	    	<?php } else {  echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Backorders Found.</div></div>'; }?>
 	    </div>
     </div>
     <?php // echo "<pre>",print_r($backtrack['quote']); die;

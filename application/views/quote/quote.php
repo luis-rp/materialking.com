@@ -6,6 +6,14 @@
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
 <?php echo '<script>var getcompanypriceurl ="' . site_url('quote/getcompanyprice') . '";</script>' ?>
+
+<?php echo '<script>var itemcodeupdateurl="'.site_url('inventory/updateitemcode').'";</script>'?>
+<?php echo '<script>var itemnameupdateurl="'.site_url('inventory/updateitemname').'";</script>'?>
+<?php echo '<script>var partnumupdateurl="'.site_url('inventory/updatepartnum').'";</script>'?>
+<?php echo '<script>var manufacturerupdateurl="'.site_url('inventory/updatemanufacturer').'";</script>'?>
+<?php echo '<script>var itempriceupdateurl="'.site_url('inventory/updateitemprice').'";</script>'?>
+<?php echo '<script>var minqtyupdateurl="'.site_url('inventory/updateminqty').'";</script>'?>
+
 <?php if(@$tiers->tier1) echo "<script>var tier1=".$tiers->tier1."</script>";?>
 <?php if(@$tiers->tier2)  echo "<script>var tier2=".$tiers->tier2."</script>";?>
 <?php if(@$tiers->tier3)  echo "<script>var tier3=".$tiers->tier3."</script>";?>
@@ -62,13 +70,13 @@ function checksubstitute(id)
 	else
 		$('#substituterow'+id).hide();
 }
-function updateitem(itemid,itemcode,itemname,price,heading)
+function updateitem(id,itemid,itemcode,itemname,price,heading)
 {
 	$("#itemmodal").modal();
 	$("#itemform").trigger("reset");
 	$("#itemformheading").html(heading);
 	$("#itemformid").val(itemid);
-	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="preloadoptions('+itemid+');">Select/View Preloaded Options</a>');
+	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="preloadoptions('+id+','+itemid+');">Select/View Preloaded Options</a>');
 	//$("#itemformcode").html(itemcode.replace('&quot;','"'));
 	//$("#itemformname").html(itemname.replace('&quot;','"'));
 	//$("#itemformprice").html(price);
@@ -419,21 +427,115 @@ function addFileInput(count)
 	}
 	
 
-function preloadoptions(itemid){
-
+function preloadoptions(id,itemid){
+    $('#masterdefaultpricehid').val('');
 	if($("#modal"+itemid).length > 0){
 		$("#itemmodal").modal('hide');
 		$("#modal"+itemid).modal();
+		$('#masterdefaultpricehid').val(id);
 	}else
 	alert("No Preloaded Options Exist for this item");
 }
 
 function displayitemmodal(itemid){
-   
+    
 	$("#modal"+itemid).css('display', 'none');
  	$("#itemmodal").css('display', 'block');
  	$("#itemmodal").modal();
 }	
+
+
+function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,minqty,itemcode){
+
+	if ($('#check'+id).is(':checked') ) {
+		$('.check'+itemid).prop('checked', false);
+		$('#check'+id).prop('checked', true);
+		updateItemcode(itemid,itemcode);
+		updateItemname(itemid,itemname);
+		updatePartnum(itemid,partnum);
+		updateManufacturer(itemid,manufacturerid);
+		updateItemprice(itemid,listprice);
+		updateMinqty(itemid,minqty);		
+		
+		alert("itemcode updated successfully");
+		$("#ea"+$('#masterdefaultpricehid').val()).val(listprice);
+	}
+}
+
+
+
+    function updateItemcode(itemid,itemcode)
+    {
+        var data = "itemid="+itemid+"&itemcode="+itemcode;
+
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: itemcodeupdateurl
+		    }).done(function(data){
+
+		    });
+    }
+    function updateItemname(itemid,itemname)
+    {
+        var data = "itemid="+itemid+"&itemname="+encodeURIComponent(itemname);
+
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: itemnameupdateurl
+		    }).done(function(data){
+		    	//alert(data);
+		    });
+    }
+    function updatePartnum(itemid,partnum)
+    {
+        var data = "itemid="+itemid+"&partnum="+partnum;
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: partnumupdateurl
+		    }).done(function(data){
+
+		    });
+    }
+    function updateManufacturer(itemid,manufacturer)
+    {
+        var data = "itemid="+itemid+"&manufacturer="+manufacturer;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: manufacturerupdateurl
+		    }).done(function(data){
+		    	//alert(data);
+		    });
+    }
+    function updateItemprice(itemid,itemprice)
+    {
+        var data = "itemid="+itemid+"&ea="+itemprice;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: itempriceupdateurl
+		    }).done(function(data){
+
+		    });
+    }
+    function updateMinqty(itemid,minqty)
+    {
+        var data = "itemid="+itemid+"&minqty="+minqty;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: minqtyupdateurl
+		    }).done(function(data){
+
+		    });
+    }
+
 
 //-->
 </script>
@@ -534,7 +636,7 @@ function displayitemmodal(itemid){
 							    		<?php echo $originalitems[$q->itemid]->itemname;?>
 							    		<?php if(@$q->companyitem->ea){ if(@$q->companyitem->ea<=0){ $q->companyitem->ea=""; } } //if($q->showinventorylink){?>
 							    		<a href="javascript:void(0)" 
-							    			onclick="updateitem(<?php echo html_escape("'$q->itemid',
+							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
 							    		'".htmlentities(@$q->companyitem->itemcode)."',
 							    		'".htmlentities(@$q->companyitem->itemname)."',
 							    		'".htmlentities(@$q->companyitem->ea)."',
@@ -576,6 +678,15 @@ function displayitemmodal(itemid){
 											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"   onblur="setcompanypriceprompt(this.value,'<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->quote;?>','<?php echo @$q->purchasingadmin;?>');" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
 							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br>  <?php if(@$q->ispriceset){ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>')">
 							    			Edit Company Price
+							    		</a><?php }?>
+							    		<br>
+							    		<?php if(@$q->ea=="" || @$q->ea==0){ ?><a href="javascript:void(0)" 
+							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
+							    		'".htmlentities(@$q->companyitem->itemcode)."',
+							    		'".htmlentities(@$q->companyitem->itemname)."',
+							    		'".htmlentities(@$q->companyitem->ea)."',
+							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
+							    			*Set List Price
 							    		</a><?php }?>
 							    			
 							    			
@@ -805,13 +916,14 @@ function displayitemmodal(itemid){
             </div>
              <div class="col-md-2">
               <span><?php echo $masterdata->minqty;?></span>
-              <!-- <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo htmlentities(addslashes($masterdata->itemname));?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>','<?php echo htmlentities(addslashes(@$masterdata->itemcode));?>')"></span> -->
+              <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo htmlentities(addslashes($masterdata->itemname));?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>','<?php echo htmlentities(addslashes(@$masterdata->itemcode));?>')"></span> 
             </div>            
           </div>  
      <?php if($masterdata->itemid!=@$masterdefaults[$i+1]->itemid) {?>    
          
         </div>
         <div class="modal-footer">
+         <input type="hidden" id="masterdefaultpricehid">
           <button data-dismiss="modal" class="btn btn-default" onclick="displayitemmodal(<?php echo $masterdata->itemid;?>);" type="button">Close</button>
         </div>
       </div>

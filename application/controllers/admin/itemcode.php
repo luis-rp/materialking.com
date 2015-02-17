@@ -1690,13 +1690,24 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 
         //echo '<pre>';print_r($item);die;
         $ret = array();
+        $companyarr = array('0');
         if(@$item->tierprices)
         {
             foreach ($item->tierprices as $tp)
             {
                 $ret[] = array('id'=>$tp->companyid, 'title'=>$tp->companyname, 'price'=>$tp->price);
+                $companyarr[] = $tp->companyid;
             }
         }
+   		$purchasingadmin = $this->session->userdata('purchasingadmin');     
+        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $_POST['itemid'])->where_not_in('p.company', $companyarr)->get()->result();
+        if($resultprice){
+        	
+        	foreach($resultprice as $res){        	
+        		$ret[] = array('id'=>$res->id, 'title'=>$res->title, 'price'=>$res->price);
+        	}
+        }
+        
         //echo print_r($ret);die;
         echo json_encode($ret);
     }
@@ -1713,7 +1724,27 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $priceid = $_POST['priceid'];
         $item = $this->itemcode_model->get_itemcodes_by_id2($itemid, $quantity);
         
+        $companyarr = array('0');
+        if (@$item->tierprices){
+        foreach ($item->tierprices as $mp)
+            {	
+            	$companyarr[] = $mp->companyid;
+            }
+        }
+        
+        $purchasingadmin = $this->session->userdata('purchasingadmin');     
+        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $itemid)->where_not_in('p.company', $companyarr)->get()->result();
+        if($resultprice){
+        	
+        	foreach($resultprice as $res){        	
+        		$item->tierprices[] = (object) array('companyid'=>$res->id, 'companyname'=>$res->title, 'price'=>$res->price, 'listprice'=>$res->price);
+        	}
+        }
+        
         //echo '<pre>'.$itemid;print_r($item->tierprices);die;
+        
+        
+        
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
             	<h3>Company prices : <span id="minpriceitemcode">' . @$item->itemcode . '</span></h3>
@@ -1739,6 +1770,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $mparr = array();
             foreach ($item->tierprices as $mp)
             {	
+            	
             	$mparr[] = $mp->price;
             }
             	

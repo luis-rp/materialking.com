@@ -167,7 +167,7 @@ class itemcode_model extends Model {
             if($this->session->userdata('usertype_id')!=1)
             {
             	$peis=$this->session->userdata('purchasingadmin');
-            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'  AND purchasingadmin='$peis'";
+            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'";
             }
             else 
             {

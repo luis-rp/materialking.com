@@ -142,22 +142,22 @@ $(document).ready(function(){
                                 <h4>&nbsp;</h4>
                             </div>-->
                             <div class="grid-body no-border">
-                                    <table id="datatable" class="table no-more-tables general" style="margin-top:40px;">
+                                    <table id="datatable" class="table no-more-tables general" style="margin-top:40px;table-layout: fixed;width:100%;">
                                         <thead>
                                             <tr>
-                                                <th style="width:20%">Order#</th>
-                                                <th style="width:30%">Ordered by</th>
-                                                <th style="width:30%">Payment Status</th>
-                                                <th style="width:30%">Order Status</th>
-                                                <th style="width:20%">Ordered On</th>
-                                                <th style="width:30%">Amount</th>
-                                                <th style="width:10%">Type</th>
+                                                <th style="width:11%">Order#</th>
+                                                <th style="width:14%">Ordered by</th>
+                                                <th style="width:8%">Payment Status</th>
+                                                <th style="width:8%">Order Status</th>
+                                                <th style="width:9%">Ordered On</th>
+                                                <th style="width:8%">Amount</th>
+                                                <th style="width:8%">Type</th>
                                                 <th style="width:10%">Txn Id</th>
-                                                <th style="width:10%">Actions</th>
+                                                <th style="width:7%">Actions</th>
                                             </tr>
                                         </thead>
 
-                                        <tbody>
+                                        <tbody style="word-wrap:break-word;">
 							              <?php
 									    	$i = 0;
 									    	$finaltotal = 0;
@@ -179,15 +179,15 @@ $(document).ready(function(){
 									    		}
 									      ?>
                                            <tr>
-                                                <td><?php if(isset($order->ordernumber)) echo $order->ordernumber;?></td>
-                                                <td><?php if(isset($order->purchaser->companyname)) echo $order->purchaser->companyname;?></td>
-                                                <td><?php if(isset($order->paymentstatus)) echo $order->paymentstatus;?></td>
-                                                <td><?php if(isset($order->status)) { if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; } ?></td>
-                                                <td><?php if(isset($order->purchasedate)) echo date("d F Y", strtotime($order->purchasedate));?></td>
-                                                <td><?php if(isset($order->amount)) echo $tot;?></td>
-                                                <td><?php if(isset($order->type)) echo $order->type;?></td>
-                                                <td><?php if(isset($order->txnid)) echo $order->txnid;?></td>
-                                                <td><?php if(isset($order->id)) { ?>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->ordernumber)) echo $order->ordernumber;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->purchaser->companyname)) echo $order->purchaser->companyname;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->paymentstatus)) echo $order->paymentstatus;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->status)) { if($order->status =="Void") echo "Declined"; elseif($order->status =="Accepted") echo "Approved"; else echo $order->status; } ?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->purchasedate)) echo date("d F Y", strtotime($order->purchasedate));?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->amount)) echo $tot;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->type)) echo $order->type;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->txnid)) echo $order->txnid;?></td>
+                                                <td style="padding: 10px 4px !important;"><?php if(isset($order->id)) { ?>
                                                 	<a href="<?php echo site_url('order/details/'.$order->id);?>">
                                                 		<span class="icon icon-search">Details</span>
                                                 	</a>

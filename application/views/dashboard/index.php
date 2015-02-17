@@ -258,8 +258,8 @@ function preloadoptions(fromid)
 								<a class="remove" href="<?php echo site_url('dashboard/networkdelete/'.$njp->purchasingadmin);?>"
 									onclick="javascript:return confirm('Do You Really Want to Delete This Company From Network?');">X</a>
 						    	</div>
-								<div class="message-wrapper">
-									<div class="heading">
+								<div class="message-wrapper" style="width:100% !important;">
+									<div class="heading" style="padding-right:2px !important;font-size:12px !important;">
 										<?php echo $njp->fullname;?> of <?php echo $njp->companyname;?>
 										 <?php if($njp->creditonly=='1') {?>
 										 &nbsp;&nbsp;&nbsp;<span style="color:red;">*Credit Card Only Account.</span><?php } ?>

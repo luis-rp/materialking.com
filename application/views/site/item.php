@@ -769,27 +769,32 @@ $( document ).tooltip();
                                     <p><?php echo nl2br($item->details); ?></p>
                                 </div>
                                  <div class="tab-pane" id="tab4">
-                                   <?php if(isset($item->files) && $item->files!="") 
+                                   <?php
+
+                                   if(isset($item->files) && $item->files!="") 
                                            {
                                            	$files=explode(",",$item->files);
                                             $filecount=count($files); 
+                                           // echo '@@'.$filecount;
                                             if(isset($item->filename) && $item->filename!="") 
                                                 {
                                                 	$filename=explode(",",$item->filename);
                                                     $filenamecount=count($filename); 	
-                                                } ?>
+                                                } 
+                                                ?>
                                             
                                             <ul>     
-                                            <?php if($filecount==$filenamecount) 
-                                                 {
+                                            <?php /*if($filecount==$filenamecount) 
+                                                 {*/
+                                               
                                                  	for ($x=0; $x<$filecount; $x++)
-                                                 	 {
+                                                 	 {                                                 	 	 
                                                  	 	 if(file_exists("./uploads/item/".$files[$x]))
                                                  	 	  { ?>  
                                                  	
-   <li class="active"><a href="<?php echo site_url('uploads/item/'.$files[$x]) ?>" target="_blank"><?php echo $filename[$x];?></a></li>
+   <li class="active"><a href="<?php echo site_url('uploads/item/'.$files[$x]) ?>" target="_blank"><?php echo $files[$x];?></a></li>
                                                  	
-                                                 	<?php } } }?>
+                                                 	<?php } } //}?>
                                                  	</ul>
                                                  	<?php }  else { echo "No Files For This Item."; }  ?>
                                   	

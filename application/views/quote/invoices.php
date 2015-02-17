@@ -96,32 +96,32 @@ function invoice(invoicenum,invoicequote)
 	   		<div class="combofixed" id="tablebox" style="position:relative; padding:2% 2% 0% 0%; margin:0px; width:100%; background:#FFF">
 
 				<form method="post" class="form-inline"  action="<?php echo site_url('quote/invoices') ?>">
-				<table cellpadding="0">
+				<table cellpadding="0" style="margin-top:40px;width:100%;word-wrap:break-word;">
 				<tr>
-				<td class="tablebox">From Date:</td>
+				<td class="tablebox" style="padding: 10px 4px !important;">From Date:</td>
 
-				<td class="tablebox">To:</td>
+				<td class="tablebox" style="padding: 10px 4px !important;">To:</td>
 
-				<td class="tablebox">Status:</td>
-
-
-	                 <td class="tablebox">&nbsp;Company:</td>
+				<td class="tablebox" style="padding: 10px 4px !important;">Status:</td>
 
 
-	                 <td class="tablebox">&nbsp;Payment:</td>
+	                 <td class="tablebox" style="padding: 10px 4px !important;">&nbsp;Company:</td>
 
 
-	             <td class="tablebox">&nbsp;Keyword:</td>
+	                 <td class="tablebox" style="padding: 10px 4px !important;">&nbsp;Payment:</td>
+
+
+	             <td class="tablebox" style="padding: 10px 4px !important;">&nbsp;Keyword:</td>
 
 
 				</tr>
 				<tr>
 
-				<td class="tablebox"><input type="text" style="width:110px" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="date"/></td>
+				<td class="tablebox" style="padding: 10px 4px !important;"><input type="text" style="width:110px" name="searchfrom" value="<?php echo @$_POST['searchfrom']?>" class="date"/></td>
 
-				<td class="tablebox"><input type="text" style="width:110px" name="searchto" value="<?php echo @$_POST['searchto']?>" class="date"/> </td>
+				<td class="tablebox" style="padding: 10px 4px !important;"><input type="text" style="width:110px" name="searchto" value="<?php echo @$_POST['searchto']?>" class="date"/> </td>
 
-				<td class="tablebox">
+				<td class="tablebox" style="padding: 10px 4px !important;">
 				<select name="searchstatus" class="form-control selectpicker show-tick" style="width:140px">
                             	<option value=''>All</option>
                             	<option value='Pending' <?php if(@$_POST['searchstatus'] =='Pending'){echo 'SELECTED';}?>>Pending</option>
@@ -131,7 +131,7 @@ function invoice(invoicenum,invoicequote)
 	                        </select>
 	                 </td>
 
-	             <td class="tablebox">
+	             <td class="tablebox" style="padding: 10px 4px !important;">
                          	<select name="searchpurchasingadmin" class="form-control selectpicker show-tick"  style="width:120px;">
                             	<option value=''>All</option>
                             	<?php foreach($purchasingadmins as $pa){?>
@@ -141,7 +141,7 @@ function invoice(invoicenum,invoicequote)
 	                 </td>
 
 
-	             <td class="tablebox">
+	             <td class="tablebox" style="padding: 10px 4px !important;">
                         <select id="searchpaymentstatus" name="searchpaymentstatus" class="form-control selectpicker show-tick" style="width: 130px;">
                             <option value=''>All</option>
                             <option value="Paid" <?php if (@$_POST['searchpaymentstatus'] == 'Paid') { echo 'SELECTED'; } ?>>Paid</option>
@@ -151,7 +151,7 @@ function invoice(invoicenum,invoicequote)
 	                </td>
 
 
-	             <td class="tablebox"><input style="width:120px" type="text" name="searchkeyword" value="<?php echo @$_POST['searchkeyword']?>"/></td>
+	             <td class="tablebox" style="padding: 10px 4px !important;"><input style="width:120px" type="text" name="searchkeyword" value="<?php echo @$_POST['searchkeyword']?>"/></td>
 
 
 				</tr>
@@ -179,18 +179,18 @@ function invoice(invoicenum,invoicequote)
                             </div>
 
                             <div class="grid-body no-border">                                 
-                                    <table id="datatable" class="table no-more-tables general">
+                                    <table id="datatable" class="table no-more-tables general" style="margin-top:40px;table-layout: fixed;width:100%;word-wrap:break-word;">
                                     <thead>
                                        <tr>
-                  	             			<th style="width:15%">PO Number</th>
-                  	             			<th>Company</th>
-                                   			<th>Invoice#</th>
-                                   			<th>Received On</th>
-                                            <th>Total Cost</th>
-                                            <th>Payment Status</th>
-                                            <th>Verification</th>
-                                            <th>Date Due</th>
-                                            <th>Attachment</th>
+                  	             			<th style="padding: 10px 4px !important;width:15%">PO Number</th>
+                  	             			<th style="padding: 10px 4px !important;width:13%">Company</th>
+                                   			<th style="padding: 10px 4px !important;width:10%">Invoice#</th>
+                                   			<th style="padding: 10px 4px !important;width:10%">Received On</th>
+                                            <th style="padding: 10px 4px !important;width:10%">Total Cost</th>
+                                            <th style="padding: 10px 4px !important;width:10%">Payment Status</th>
+                                            <th style="padding: 10px 4px !important;width:10%">Verification</th>
+                                            <th style="padding: 10px 4px !important;width:12%">Date Due</th>
+                                            <th style="padding: 10px 4px !important;width:10%">Attachment</th>
                                          </tr>
 									</thead>
 									<tbody>
@@ -203,26 +203,26 @@ function invoice(invoicenum,invoicequote)
      								      			foreach($invs as $i){  ?>
                                                 		<tr style="background-color:<?php if($i->paymentstatus=='Paid' && $i->status=='Verified') { echo "#ADEBAD"; } elseif($i->paymentstatus=='Unpaid' && $i->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($i->datedue)))) { echo "#FF8080"; } elseif($i->paymentstatus=='Paid' && $i->status=='Pending') { echo "#FFDB99";} elseif($i->paymentstatus=='Unpaid'  && $i->status=='Pending'){ echo "pink";} 
  elseif($i->paymentstatus=='Requested Payment' && $i->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($i->datedue)))) { echo "#FF8080"; }?>">
-                                                			<td class="v-align-middle"><?php echo $ponum;?> </td>
-                                                			<td class="v-align-middle"><?php echo $i->quote->companyname;?> </td>
-                                                			<td>
+                                                			<td class="v-align-middle" style="padding: 10px 4px !important;"><?php echo $ponum;?> </td>
+                                                			<td class="v-align-middle" style="padding: 10px 4px !important;"><?php echo $i->quote->companyname;?> </td>
+                                                			<td style="padding: 10px 4px !important;">
                                                 			<a href="javascript:void(0)" onclick="invoice('<?php echo $i->invoicenum;?>','<?php echo $i->quote->id;?>');">
                                                 			<?php echo $i->invoicenum;?>
                                                 			</a>
                                                 			</td>
-                                                			<td><?php if(@$i->receiveddate) echo date('m/d/Y', strtotime($i->receiveddate));?></td>
+                                                			<td style="padding: 10px 4px !important;"><?php if(@$i->receiveddate) echo date('m/d/Y', strtotime($i->receiveddate));?></td>
                                <td>$<?php $total=(($i->totalprice*$i->taxrate)/100); $gtotal=$total+$i->totalprice; echo number_format($gtotal,2); ?></td>
                                
-                                                			<td><?php echo $i->paymentstatus;?><br>
+                                                			<td style="padding: 10px 4px !important;"><?php echo $i->paymentstatus;?><br>
                                                 			<?php if($i->paymentstatus=='Paid') { $olddate=strtotime($i->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
-                                                			<td><?php echo $i->status;?></td>
-                                                			<td>
-                                                			<input type="text" id="daterequested<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{echo "No Date Set";} ;?>" class="date" style="width:100px;"
+                                                			<td style="padding: 10px 4px !important;"><?php echo $i->status;?></td>
+                                                			<td style="padding: 10px 4px !important;">
+                                                			<input type="text" id="daterequested<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{echo "No Date Set";} ;?>" class="date" style="width:90px;"
                                                 			data-date-format="mm/dd/yyyy" readonly
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
                                                 			<input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />
                                                 			</td>
-                                                			<td><?php if(@$i->sharewithsupplier && $i->sharewithsupplier == 1) { 
+                                                			<td style="padding: 10px 4px !important;"><?php if(@$i->sharewithsupplier && $i->sharewithsupplier == 1) { 
 											        if(@$i->attachmentname)
 											        { ?>
 											        	<a href="<?php echo site_url('uploads/invoiceattachments/'.$i->attachmentname);?>" target="_blank">View Attached File</a>

@@ -186,6 +186,7 @@ function saveitemname(id)
 
 function getminprice(companyid)
 {
+	var optionvalue = $('option:selected', $("#"+companyid)).val();	
 	var price = $('option:selected', $("#"+companyid)).attr('price');
 	//if(price=='')return;
 	var eaid   = companyid.replace('company','ea');
@@ -193,6 +194,17 @@ function getminprice(companyid)
 	var totalpriceid = companyid.replace('company','totalprice');
 
     document.getElementById(eaid).value = price;
+    
+    if(optionvalue == "addnewcompany"){		
+		$('#'+eaid).attr("readonly", false);
+		$('#addsupplyname').css('display','block');
+		$('#addsupplyemail').css('display','block');
+	}else{
+		$('#'+eaid).attr("readonly", true);
+		$('#addsupplyname').css('display','none');
+		$('#addsupplyemail').css('display','none');
+	}	
+    
     var totalprice = document.getElementById(quantityid).value * price;
     totalprice = Math.round(totalprice * 100) / 100;
     document.getElementById(totalpriceid).value = totalprice;    
@@ -229,6 +241,8 @@ function getminpricecompanies(itemid, companyid, quantity, selected, selectedea)
     			$('#'+betterprice).html("* Lower price avaialble");
     		}
     	});
+    	
+    	ophtml += '<option value="addnewcompany" price="" >Add New Vendor</option>';
     	
     	$('#'+companyid).html(ophtml);
     });
@@ -488,6 +502,77 @@ function displayBlankRow()
 {
 	$(".newitemrow").css('display','');
 }
+
+
+
+function checknewitem(){
+	
+	if($('#itemcode').val()!="" && $('#itemname').val()!="" && $('#unit').val()!="" && $('#itemid').val()==""){
+		
+		if(confirm('Do you want to add/Save this item?'))
+		{
+
+			var itemcode = $("#itemcode").val();
+			var itemname = $("#itemname").val();
+			var unit = $("#unit").val();
+			var d = "itemcode="+itemcode+"&itemname="+itemname+"&unit="+unit;
+
+			useritemurl = "<?php echo site_url('admin/quote/addNewUserItem');?>";
+
+			$.ajax({
+				type:"post",
+				data: d,
+				url: useritemurl
+			}).done(function(data){
+				if(data)
+				$('#itemid').val(data);
+				$('#ea').attr("readonly", false);
+				alert("Item got added successfully!");
+			});
+			
+			
+		}
+	}
+	
+}
+
+
+function checkcompanyusername(id,value){
+	
+	var usercheckurl = '<?php echo base_url()?>admin/quote/checkuserexist/';    		
+    		$.ajax({
+    			type:"post",
+    			url: usercheckurl,
+    			async: false,
+    			data: "username="+value
+    		}).done(function(data){
+    			if(data == 1){
+    				//$('#nonnetworkmessage').html("Username "+user+" already exists");    				
+    				alert("Username "+value+" already exists"); 
+    				$('#'+id).val('');  				 
+    			}    			    			
+    		}); 
+}
+
+
+function checkcompanyuseremail(id,email){
+	
+	var emailcheckurl = '<?php echo base_url()?>admin/quote/checkemailexist/';
+	$.ajax({
+		type:"post",
+		url: emailcheckurl,
+		async: false,
+		data: "email="+email
+	}).done(function(data){
+		if(data == 1){
+			alert("Email "+email+" already exists");
+			$('#'+id).val('');
+		}
+
+	});
+
+}
+
 </script>
 
 <style>
@@ -622,7 +707,7 @@ function displayBlankRow()
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" class="highlight nonzero nopad width50 input-sm span12" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
+						<input type="text" class="highlight nonzero nopad width50 input-sm span8" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
 		    			</div><span id="eaerrmsg1<?php echo $q->id;?>"></span>
 		    		</td>
 		    		<td>
@@ -660,19 +745,20 @@ function displayBlankRow()
 				    	<?php if(0) foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>" <?php if($q->company==$company->id){echo 'selected="selected"';}?>><?php echo $company->title;?></option>
 				    	<?php }?>
+				    	<option value="addnewcompany<?php echo $q->id;?>" price="" >Add New Vendor</option>
 				    	</select>
 				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>','<?php echo $q->ea;?>');</script>
 				    	
 				    	
 				    	<div id="supplydata"> 
-				    	  <?php if(is_array(@$nonnetcompanies)){ foreach($nonnetcompanies[$q->id] as $nccomp){ ?>	
-                          Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" style="width:120px;">&nbsp;
+				    	  <?php if(is_array(@$nonnetcompanies)){ if(array_key_exists($q->id,$nonnetcompanies)){ foreach($nonnetcompanies[$q->id] as $nccomp){ ?>	
+                          Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
                		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
-               		<?php } }else{ ?>
+               		<?php } } }else{ ?>
                		
-               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" style="width:120px;">&nbsp;
+               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:120px;">&nbsp;
                				
                		<?php } ?>
 		    		</td>
@@ -700,14 +786,14 @@ function displayBlankRow()
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    		</td>
 		    		<td>
-		    			<textarea id="itemname" name="itemname" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
+		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
 		    		</td>
 		    		<td><input type="text" id="quantity" name="quantity" class="highlight nonzero nopad width50 input-sm span" onblur="return checkincrementquantity(this.value); calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/><br><span style="color:red" id="incrementmessage"></td>
-		    		<td><input type="text" id="unit" name="unit" class="span"/></td>
+		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();"  class="span"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span9 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" readonly required/>
+						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span8 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" readonly required/>
 		    			</div>
 		    		</td>
 		    		<td>
@@ -743,11 +829,19 @@ function displayBlankRow()
 				    	<?php foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>"><?php echo $company->title;?></option>
 				    	<?php }?>
-				    	</select>
+				    		<option value="addnewcompany" price="" >Add New Vendor</option>
+				    	</select>				    	
 				    	
+				    	<!-- <select id="nonnetcompany" name="nonnetcompany" onchange="getminprice('nonnetcompany')">
+				    	<?php  if(isset($nonnetuser)){
+					    	          foreach($nonnetuser as $c) { ?>					    	          	
+					    		       <option value="<?php echo $c->id;?>"><?php echo $c->title;?></option>
+    					<?php }  }?>
+					    </select> -->	
+				    	  	
 				    	<div id="supplydata"> 
-                          Name:<input type="text" name="addsupplyname" id="addsupplyname" style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" style="width:120px;">&nbsp;
+                          Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;display:none;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;display:none;">&nbsp;
                		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
 				    	
 		    		</td>
