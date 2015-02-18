@@ -79,7 +79,7 @@ class Dashboard extends CI_Controller
 
 		$data['networkjoinedcompanies'] = array();
 		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
-			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+			WHERE c.id=n.company AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 		$query = $this->db->query($sql);
 		$netcomps = $query->result();
 		$settings = $this->settings_model->get_current_settings();
@@ -543,7 +543,7 @@ class Dashboard extends CI_Controller
 
 		$data['networkjoinedcompanies'] = array();
 		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
-			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+			WHERE c.id=n.company AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 		$query = $this->db->query($sql);
 		$netcomps = $query->result();
 	    $settings = $this->settings_model->get_current_settings();

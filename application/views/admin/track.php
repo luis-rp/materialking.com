@@ -1,6 +1,7 @@
 <?php echo '<script type="text/javascript">var createbillurl="'.site_url('admin/quote/createbill').'";</script>'?>
 <?php echo '<script type="text/javascript">var getcustomerdataurl = "' . site_url('admin/quote/getcustomerdata') . '";</script>'; ?>
 <?php echo '<script type="text/javascript">var previewbillurl ="'.site_url('admin/quote/previewbill').'";</script>'?>
+<?php echo '<script>var insertserviceandlabor="'.site_url('admin/itemcode/insertserviceandlabor').'";</script>'?>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
@@ -522,6 +523,31 @@ function setServicelaboritemsFlag()
 	alert("Service/Labor items added to bill");
 	$("#servicelaboritemsflag").val(1);
 }
+
+function addservice()
+{
+	var data = "name="+$("#servicename").val()+"&serviceprice="+$("#serviceprice").val()+"&servicetax="+$("#servicetax").val();
+
+	$.ajax({
+		type:"post",
+		data: data,
+		url: insertserviceandlabor
+	}).done(function(data){
+		if(data){
+
+			/*$("#qtypriceplacer").html("");
+			$("#qtypriceplacer").html(data);*/
+			alert("Service items added successfully!");
+			location.reload();
+			//$(".alert-success").css({display: "block"});
+			$("#servicename").val('');
+			$("#serviceprice").val('');
+			$("#servicetax").val('');
+			
+		}
+	});
+
+}
 </script>
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
@@ -608,28 +634,28 @@ function setServicelaboritemsFlag()
                 </div>
             </div>
             <br/>
-            <div class="control-group">
-                <table class="table table-bordered">
+            <div class="control-group" style="overflow-x:auto;">
+                <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;width:150%;">
                     <tr>
-                        <th>Company</th>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
-                        <th>Item Progress</th>
-                        <th>Qty.</th>
-                        <th>Unit</th>
-                        <th>Price EA</th>
-                        <th>Total Price</th>
-                        <th>Date Requested</th>
-                        <th>Cost Code</th>
-                        <th>Notes</th>
-                        <th>Still Due</th>
-                        <th>History</th>
+                        <th width="10%">Company</th>
+                        <th width="10%">Item Code</th>
+                        <th width="10%">Item Name</th>
+                        <th width="13%">Item Progress</th>
+                        <th width="7%">Qty.</th>
+                        <th width="5%">Unit</th>
+                        <th width="10%">Price EA</th>
+                        <th width="10%">Total Price</th>
+                        <th width="10%">Date Requested</th>
+                        <th width="10%">Cost Code</th>
+                        <th width="10%">Notes</th>
+                        <th width="5%">Still Due</th>
+                        <th width="20%">History</th>
                         <?php if ($awarded->status == 'incomplete') { ?>
-                        <th>Received Qty.</th>
-                        <th>Invoice #</th>
-                        <th>Date Received</th>
-                        <th>Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
-                        <th>Error</th>
+                        <th width="8%">Received Qty.</th>
+                        <th width="10%">Invoice #</th>
+                        <th width="16%">Date Received</th>
+                        <th width="7%">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
+                        <th width="11%">Error</th>
                         <?php } ?>
                     </tr>
                         <?php if ($awarded->status == 'incomplete') { ?>
@@ -826,7 +852,7 @@ function setServicelaboritemsFlag()
                                         <?php } ?>
                                     </td>
                                     <td>
-                                        <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:75px;">
+                                        <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:65px;">
                                             <option value=''>No Error</option>
                                             <option value='<?php echo $q->id ?>-Wrong Item Sent'>Wrong Item Sent</option>
                                             <option value='<?php echo $q->id ?>-Quantity Discrepancy'>Quantity Discrepancy</option>
@@ -1404,7 +1430,9 @@ function setServicelaboritemsFlag()
 			 </td>
 			 </tr>
 	<?php 		} else { 
-					?> <tr><td colspan="2"> No Records Found.</td> </tr>
+					?> <tr><td colspan="2"> 
+					<table width="100%" align="center"><tr><td>Name</td><td>Price</td><td>Tax</td><td>&nbsp</td><tr><td><input type="text" name = "servicename" id="servicename"></td><td><input type="text" name = "serviceprice" id="serviceprice"></td><td><input type="text" name = "servicetax" id="servicetax"></td><td><input type="button" value = "Add" onclick="addservice();"></tr><table>
+					</td> </tr>
 			<?php	} ?>
 		
 		<tr><td>&nbsp;&nbsp;</td></tr>	

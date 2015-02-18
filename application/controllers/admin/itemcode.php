@@ -1700,11 +1700,22 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             }
         }
    		$purchasingadmin = $this->session->userdata('purchasingadmin');     
-        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $_POST['itemid'])->where_not_in('p.company', $companyarr)->get()->result();
+        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $_POST['itemid'])->where('c.isdeleted', 0)->where_not_in('p.company', $companyarr)->get()->result();
         if($resultprice){
         	
         	foreach($resultprice as $res){        	
         		$ret[] = array('id'=>$res->id, 'title'=>$res->title, 'price'=>$res->price);
+        		$companyarr[] = $res->id;
+        	}
+        }
+        
+              
+        $result = $this->db->select('n.company, c.title')->from('network n')->join('company c','n.company=c.id')->where('n.purchasingadmin', $purchasingadmin)->where('c.isdeleted', 0)->where('n.status', 'Active')->where_not_in('n.company', $companyarr)->get()->result();
+                
+        if($result){
+        	
+        	foreach($result as $res2){        	
+        		$ret[] = array('id'=>$res2->company, 'title'=>$res2->title, 'price'=>0);
         	}
         }
         
@@ -1733,7 +1744,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }
         
         $purchasingadmin = $this->session->userdata('purchasingadmin');     
-        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $itemid)->where_not_in('p.company', $companyarr)->get()->result();
+        $resultprice = $this->db->select('p.price,c.id, c.title')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $itemid)->where('c.isdeleted', 0)->where_not_in('p.company', $companyarr)->get()->result();
         if($resultprice){
         	
         	foreach($resultprice as $res){        	

@@ -42,7 +42,7 @@ class backtrack extends CI_Controller
 		$quotes = $this->backtrack_model->get_quotes ();
 		
 		$count = count ($quotes);
-		
+		$isBackorder = 0;
 		$items = array();
 		$companyarr = array();
 		if ($count >= 1) 
@@ -55,6 +55,7 @@ class backtrack extends CI_Controller
 				{
 					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
 					{
+						$isBackorder = 1;
 						foreach($awarded->items as $item)
 						{
 						    $checkcompany = true;
@@ -177,7 +178,7 @@ class backtrack extends CI_Controller
 		$uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
 		$data['settingtour']=(isset($setting[0]->tour)) ? $setting[0]->tour : '';  
-		
+		$data['isBackorder'] = $isBackorder;
 		$this->load->view ('admin/backtrack', $data);
 	}
 	

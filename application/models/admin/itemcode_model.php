@@ -167,7 +167,7 @@ class itemcode_model extends Model {
             if($this->session->userdata('usertype_id')!=1)
             {
             	$peis=$this->session->userdata('purchasingadmin');
-            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id'";
+            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category='$leaf->id' AND purchasingadmin='$peis'";
             }
             else 
             {
@@ -320,7 +320,7 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c
 				WHERE
-				m.company=c.id AND m.itemid='$itemid'
+				m.company=c.id AND m.itemid='$itemid' and c.isdeleted=0 
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         //echo $sql; die;
@@ -331,6 +331,7 @@ class itemcode_model extends Model {
             foreach ($result as $item) {
                 $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
                 $this->db->where('company', $item->company);
+                $this->db->where('status', 'Active');
                 if ($this->db->get('network')->result()) {
                     $ret[] = $item;
                 }
@@ -379,7 +380,7 @@ class itemcode_model extends Model {
         return $ret;
     }
 
-        function gettierpriceswithqtydiscount($itemid,$quantity)
+    function gettierpriceswithqtydiscount($itemid,$quantity)
     {
         $pa = $this->session->userdata('purchasingadmin');
         $sql = "select c.id companyid, c.title companyname, ci.ea listprice
@@ -388,7 +389,7 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('network') . " n
 				WHERE c.id=ci.company AND c.id=n.company AND
 				n.purchasingadmin='" . $pa . "'
-				AND ci.itemid='" . $itemid . "' AND ci.ea != 0";
+				AND ci.itemid='" . $itemid . "' AND c.isdeleted=0  AND n.status='Active' AND ci.ea != 0";
         //echo $sql;//die;
         $recs = $this->db->query($sql)->result();
         $ret = array();
@@ -427,6 +428,14 @@ class itemcode_model extends Model {
                     $rec->price = $price;
                 }
             }
+            
+            
+            $purchasingadmin = $this->session->userdata('purchasingadmin');     
+        $resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.company', $rec->companyid)->where('p.itemid', $itemid)->where('c.isdeleted', 0)->get()->row();
+        if($resultprice){
+        	if($resultprice->price)
+        		$rec->price = $resultprice->price;
+        }
 
             $ret[] = $rec;
         }

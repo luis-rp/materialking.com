@@ -91,6 +91,10 @@
            </form>
 		   <br/>
 		   <?php
+		   if($isBackorder == 0)
+		   {
+		   		echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Backorders Found.</div></div>';
+		   }
 		   	if(!@$backtracks)
 		   		echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Backorders Found.</div></div>';
 		   	else
@@ -254,7 +258,7 @@
     </form>
  </div>
 		      <br/> <hr/>
-	    	<?php } else {  echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Backorders Found.</div></div>'; }?>
+	    	<?php }?>
 	    </div>
     </div>
     <?php // echo "<pre>",print_r($backtrack['quote']); die;

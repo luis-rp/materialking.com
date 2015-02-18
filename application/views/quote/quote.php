@@ -459,6 +459,11 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 		
 		alert("itemcode updated successfully");
 		$("#ea"+$('#masterdefaultpricehid').val()).val(listprice);
+		
+		$("#itemformcodet").val(itemcode);
+		$("#itemformnamet").val(itemname);
+		$("#itemformpricet").val(listprice);
+		
 	}
 }
 

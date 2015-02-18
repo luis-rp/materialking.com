@@ -449,7 +449,7 @@ $( document ).tooltip();
                             <div class="row">
                                 <div class="image span3">
                                     <div class="content">
-                                       <div class="sidepan"> <?php if ($item->image) { ?>
+                                       <div class="sidepan"> <?php if ($item->image && file_exists('./uploads/item/' . $item->image)) { ?>
                                             <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
                                         <?php } else { ?>
                                             <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
@@ -840,7 +840,7 @@ $( document ).tooltip();
                         	</tr>
                         	<tr>
                         		<td>
-                        		<?php if($di->image) {?>
+                        		<?php if($di->image && file_exists('./uploads/item/thumbs/'.$di->image)) {?>
                         			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
                         		<?php } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>

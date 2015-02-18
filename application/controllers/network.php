@@ -111,8 +111,28 @@ class network extends CI_Controller {
 
         if(!$this->db->get('joinrequest')->row())
           {
+          	if(@$_POST['creditcardonly'] && $_POST['creditcardonly'] == 'on')
+          	{
+          		$_POST['creditcardonly'] = 1;
+          		
+          		$arr = array('purchasingadmin' => $this->session->userdata('site_loggedin')->id, 'company' => $_POST['toid']);
+	            $this->db->where($arr);
+	            $this->db->delete('purchasingtier');
+          		$arr['tier'] = 'tier0';
+	            $arr['creditlimit'] = 0;
+	            $arr['totalcredit'] = 0;//this is not a mistake, same value is fed to both fields.
+	            $arr['creditfrom'] = '';
+	            $arr['creditto'] = ''; 
+	            $arr['creditonly'] = '1';  	 
+	           	           
+	            $this->db->insert('purchasingtier', $arr); 
+          	}
+          	else 
+          	{
+          		$_POST['creditcardonly'] = 0;
+          	}
             $_POST['requeston'] = date('Y-m-d H:i:s');
-
+		
             $this->db->insert('joinrequest', $_POST);
 			$joinrequestID = $this->db->insert_id();
 
@@ -166,7 +186,12 @@ class network extends CI_Controller {
             	$wish = "Yes";
             else
             	$wish = "No";
-            	
+            
+            if(isset($_POST['creditcardonly']) && $_POST['creditcardonly'] == 1)
+            	$creditcardonly = "Yes";
+            else
+            	$creditcardonly = "No";
+            			
             if(isset($_POST['message']) && $_POST['message'] !="")
             	$msg = $_POST['message'];
             else
@@ -179,11 +204,14 @@ class network extends CI_Controller {
             <br/>
             Application Sent: ".$wish."
             <br/>
+            Credit Card Only Account : ".$creditcardonly."
+            <br/>
             Message: ".$_POST['message']."
             <br/>
             ".$body1."
             You can login on your dasboard and accept or deny request.
             <br><br>";
+          
            $loaderEmail = new My_Loader();
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
             $this->load->library('email');

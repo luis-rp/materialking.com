@@ -1225,10 +1225,12 @@ class site extends CI_Controller
         return "";
         }
     }
-    public function item ($url)
+    public function item ($url = '')
     {
-    	
-        $url = urldecode($url);
+    	if($url != '')
+    	{
+        	$url = urldecode($url);
+    	}	
         //echo $url;die;
         $this->db->where('url', $url);
         $item = $this->db->get('item')->row();

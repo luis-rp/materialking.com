@@ -192,19 +192,18 @@ function getminprice(companyid)
 	var eaid   = companyid.replace('company','ea');
 	var quantityid = companyid.replace('company','quantity');
 	var totalpriceid = companyid.replace('company','totalprice');
+	var newvendorspanid = companyid.replace('company','newvendorspan');	
 
     document.getElementById(eaid).value = price;
-    
+   
     if(optionvalue == "addnewcompany"){		
 		$('#'+eaid).attr("readonly", false);
-		$('#addsupplyname').css('display','block');
-		$('#addsupplyemail').css('display','block');
+		$('#'+newvendorspanid).css('display','block');		
 	}else{
 		$('#'+eaid).attr("readonly", true);
-		$('#addsupplyname').css('display','none');
-		$('#addsupplyemail').css('display','none');
+		$('#'+newvendorspanid).css('display','none');		
 	}	
-    
+    $('#'+eaid).attr("readonly", false);
     var totalprice = document.getElementById(quantityid).value * price;
     totalprice = Math.round(totalprice * 100) / 100;
     document.getElementById(totalpriceid).value = totalprice;    
@@ -220,7 +219,7 @@ function getminprice(companyid)
 }
 
 function getminpricecompanies(itemid, companyid, quantity, selected, selectedea)
-{	
+{		
     $.ajax({
       type:"post",
       url: '<?php echo base_url()?>admin/itemcode/getminpricecompanies',
@@ -755,11 +754,16 @@ function checkcompanyuseremail(id,email){
                           Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
                           Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
                		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
-               		<?php } } }else{ ?>
-               		
+               		<?php } }else{ ?>
+               		  <span id='newvendorspan<?php echo $q->id;?>' style="display:none;">
                			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
                           Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:120px;">&nbsp;
-               				
+               		  </span>	
+               		<?php } } else{ ?>
+               		  <span id='newvendorspan<?php echo $q->id;?>' style="display:none;">
+               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:120px;">&nbsp;
+               		  </span>	
                		<?php } ?>
 		    		</td>
 		    	</tr>
@@ -840,9 +844,10 @@ function checkcompanyuseremail(id,email){
 					    </select> -->	
 				    	  	
 				    	<div id="supplydata"> 
-                          Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;display:none;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;display:none;">&nbsp;
-               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
+				    	  <span id='newvendorspan' style="display:none;">
+                          Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;">&nbsp;
+                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
+               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    			 </span>
 				    	
 		    		</td>
 		    	</tr>

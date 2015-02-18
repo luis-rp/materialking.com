@@ -846,8 +846,10 @@ class quote extends CI_Controller
 			$gusttotal += $total/$totalSuppliers;
 			
 			if($data['potype'] == "Direct"){
-			$this->db->where('quoteitemid',$items->id);
-            $nonnetcompanies = $this->db->get('quoteitem_companies')->result();
+				 $noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid = ".$items->id;           
+        $nonnetcompanies = $this->db->query($noncomp)->result();
+			/*$this->db->where('quoteitemid',$items->id);
+            $nonnetcompanies = $this->db->get('quoteitem_companies')->result();*/
             if($nonnetcompanies){
             	$data['nonnetcompanies'][$items->id] = $nonnetcompanies;
             }
@@ -1917,81 +1919,97 @@ class quote extends CI_Controller
         $companyrows = array();
         foreach($items as $item)
         {
+        	if($item->company)
             $invitees[$item->company] = $item->company;
 
             $this->db->where('quoteitemid',$item->id);
             $nonnetcompanies = $this->db->get('quoteitem_companies')->result();
             if($nonnetcompanies){
             	foreach($nonnetcompanies as $noncomp){
+            		$companyexisits=0;
+            		$resultnoncomp = "SELECT c.id as companyid FROM " . $this->db->dbprefix('company') . " c where c.isdeleted=0 and c.primaryemail like '".$noncomp->companyemail."'";     
             		
-            		$password = $this->getRandomPassword();
-                	
-                	$username = str_replace(' ', '-', strtolower($noncomp->companyname));                	
-                	
-            		$limitedcompany = array(
-            		   'primaryemail' => $noncomp->companyemail,  	
-            		   'title' => $noncomp->companyname,
-                       'regkey' => '',
-                       'username' => $username,
-                       'pwd' => md5($password),
-                       'password' => md5($password),
-                       'company_type' => '3',
-                       'regdate' => date('Y-m-d')                       
-                    );
-                    $this->db->insert('company', $limitedcompany);
-            		$lastid = $this->db->insert_id();
-            		if($lastid){
-            		$invitees[$lastid] = $lastid;
-            		$limitcompany[$lastid]['username'] = $username;
-            		$limitcompany[$lastid]['password'] = $password;
-            		
-            		$insert = array();
-            		$insert['company'] = $lastid;
-            		$insert['purchasingadmin'] = $this->session->userdata('id');            		
-            		$insert['acceptedon'] = date('Y-m-d H:i:s');
-            		$insert['status'] = 'Active';
-            		$this->db->insert('network',$insert);
-            		
-            		
-            		if(!isset($companyrows[$lastid]))
-            		{
-            			$companyrows[$lastid] = array();
-            		}
-            		$companyrow = '<tr>';
-            		$companyrow.= '<td>'.$item->itemcode.'</td>';
-            		$companyrow.= '<td>'.$item->itemname.'</td>';
-            		$companyrow.= '<td>'.$item->quantity.'</td>';
-            		$companyrow.= '<td>'.$item->ea.'</td>';
-            		$companyrow.= '<td>'.$item->unit.'</td>';
-            		$companyrow.= '<td>'.$item->notes.'</td>';
-            		$companyrow.= '</tr>';
+            		 $nonnetcompanies = $this->db->query($resultnoncomp)->row();
+			
+            		 if($nonnetcompanies){
+            			$companyexisits = 1;
+            		 	$lastid = $nonnetcompanies->companyid;	
+            		 }else {	
+            		 	$password = $this->getRandomPassword();
 
-            		$companyrows[$lastid][] = $companyrow;
+            		 	$username = str_replace(' ', '-', strtolower($noncomp->companyname));
+
+            		 	$limitedcompany = array(
+            		 	'primaryemail' => $noncomp->companyemail,
+            		 	'title' => $noncomp->companyname,
+            		 	'regkey' => '',
+            		 	'username' => $username,
+            		 	'pwd' => md5($password),
+            		 	'password' => md5($password),
+            		 	'company_type' => '3',
+            		 	'regdate' => date('Y-m-d')
+            		 	);
+            		 	$this->db->insert('company', $limitedcompany);
+            		 	$lastid = $this->db->insert_id();
             		
+            		 }
             		
-            		}
-            		
-            		
+            		 if($lastid){
+            		 	
+            		 	if($companyexisits==0){
+            		 		$invitees[$lastid] = $lastid;
+            		 		$limitcompany[$lastid]['username'] = $username;
+            		 		$limitcompany[$lastid]['password'] = $password;
+
+            		 		$insert = array();
+            		 		$insert['company'] = $lastid;
+            		 		$insert['purchasingadmin'] = $this->session->userdata('id');
+            		 		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		 		$insert['status'] = 'Active';
+            		 		$this->db->insert('network',$insert);
+            		 	}
+
+            		 	if(!isset($companyrows[$lastid]))
+            		 	{
+            		 		$companyrows[$lastid] = array();
+            		 	}
+            		 	$companyrow = '<tr>';
+            		 	$companyrow.= '<td>'.$item->itemcode.'</td>';
+            		 	$companyrow.= '<td>'.$item->itemname.'</td>';
+            		 	$companyrow.= '<td>'.$item->quantity.'</td>';
+            		 	$companyrow.= '<td>'.$item->ea.'</td>';
+            		 	$companyrow.= '<td>'.$item->unit.'</td>';
+            		 	$companyrow.= '<td>'.$item->notes.'</td>';
+            		 	$companyrow.= '</tr>';
+					
+            		 	$companyrows[$lastid][] = $companyrow;
+
+
+            		 }
+
+
             	}
             }
-			    
-            
-            if(!isset($companyrows[$item->company]))
-            {
-            	$companyrows[$item->company] = array();
-            }
-    		    $companyrow = '<tr>';
-        		$companyrow.= '<td>'.$item->itemcode.'</td>';
-        		$companyrow.= '<td>'.$item->itemname.'</td>';
-        		$companyrow.= '<td>'.$item->quantity.'</td>';
-        		$companyrow.= '<td>'.$item->ea.'</td>';
-        		$companyrow.= '<td>'.$item->unit.'</td>';
-        		$companyrow.= '<td>'.$item->notes.'</td>';
-        		$companyrow.= '</tr>';
 
-        	$companyrows[$item->company][] = $companyrow;
+            if($item->company){
+            	if(!isset($companyrows[$item->company]))
+            	{
+            		$companyrows[$item->company] = array();
+            	}
+            	$companyrow = '<tr>';
+            	$companyrow.= '<td>'.$item->itemcode.'</td>';
+            	$companyrow.= '<td>'.$item->itemname.'</td>';
+            	$companyrow.= '<td>'.$item->quantity.'</td>';
+            	$companyrow.= '<td>'.$item->ea.'</td>';
+            	$companyrow.= '<td>'.$item->unit.'</td>';
+            	$companyrow.= '<td>'.$item->notes.'</td>';
+            	$companyrow.= '</tr>';
+
+            	$companyrows[$item->company][] = $companyrow;
+            }
         }
         $companies = $this->quote_model->getcompanylistbyids(implode(',',$invitees));
+        
         $companynames = array();
         foreach ($companies as $c)
         {
@@ -10767,7 +10785,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$username = $_POST['username'];
 		$username = str_replace(' ', '-', strtolower($username));  
-        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.username='".$username."'";
+        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.username='".$username."'";
         $query = $this->db->query($sql);
         $cust = $query->row();
         if($cust)
@@ -10785,7 +10803,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$email = $_POST['email'];
 		
-        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.primaryemail='".$email."'";
+        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.isdeleted=0 and c.primaryemail='".$email."'";
         $query = $this->db->query($sql);
         $cust = $query->row();
         if($cust)

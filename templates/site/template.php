@@ -121,7 +121,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                     type: "post",
                     url: joinurl,
                     data: data
-                }).done(function(data) {
+                }).done(function(data) {                	
                     if (data == 'Error')
                     {
                         alert(data);
@@ -299,9 +299,9 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                         
                                         </li>
                                         </li>
-										<li>
+										<!--<li>
 											<a href="<?php echo base_url('site/price_check'); ?>">Price Check</a>
-										</li>
+										</li>-->
                                          <li <?php
                                             if ($function == 'designbook') {
                                                 echo 'class="current"';
@@ -309,23 +309,23 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                         ?>>
                                         <a href="<?php echo base_url('site/designbook'); ?>">Design Book</a>
 										</li>
-										<li>
+										<!--<li>
 											<a href="<?php echo base_url('site/submitlist'); ?>">Submit A List</a>
 										</li>
                                         <li>
 											<a href="<?php echo base_url('site/customerbill'); ?>">Customer Billing</a>
-										</li>	
+										</li>-->	
                                         
                                     </ul>
 
                                     <form method="POST" class="site-search" action="<?php echo base_url('site/search'); ?>" id="search_form">
-                                        <div class="input-append" style="margin-right:-195px;">
+                                        <div class="input-append" style="margin-right:-35px;">
                                             <input type="hidden" name="search_type" id="search_type">
                                             <select style="width:160px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
                                             <option value="suppliers" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="suppliers") echo "selected";  ?>>Suppliers</option>
                                             </select>&nbsp;&nbsp;
-                                            <input title="Enter the terms you wish to search for." class="search-query span2 form-text" placeholder="Search" type="text" name="keyword" value="<?php echo isset($keyword) ? $keyword : ""; ?>">
+                                            <input title="Enter the terms you wish to search for." class="search-query span2 form-text" placeholder="Search" type="text" name="keyword" value='<?php echo isset($keyword) ? $keyword : ""; ?>'>
                                             <button type="submit" class="btn"><i class="icon-search"></i></button>
                                         </div>
                                     </form>
@@ -483,7 +483,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
     
       
         <!-- Modal -->
-         <div class="modal hide fade" id="joinmodal" style="height:600px;overflow:auto;">
+         <div class="modal hide fade" id="joinmodal" style="height:500px;overflow-y:auto;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -506,8 +506,11 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                             <textarea type="text" class="required input-block-level" name="message"></textarea>
                         </div>
                         <div class="modal-body">
-                            <h4>Wish to Apply?</h4>
-                            <input type="checkbox" name="wishtoapply" value="1"/>
+                        	<h4>New Accounts</h4>
+                            <h4><input type="checkbox" name="wishtoapply" value="1"/>&nbsp; Wish to Apply for a New Credit Account?</h4>
+                            
+                            <h4><input type="checkbox" name="creditcardonly"/>&nbsp; Join as Credit Card Only Account</h4>
+                            
                             <p>*This will send your Credit Application for review to the company you are requesting.</p>
                         </div>
                         <div class="paddingleft">
