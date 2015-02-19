@@ -657,15 +657,15 @@ P.O. Price Rankings
 		  
 		  
 		    <br/>
-            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-            <!-- homepage ad widesky -->
+           <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- homepage ad widesky 
             <ins class="adsbygoogle"
                  style="display:inline-block;width:970px;height:90px"
                  data-ad-client="ca-pub-6061943556362932"
                  data-ad-slot="1694611401"></ins>
             <script>
             (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+            </script>-->
             <?php
             if($suppliers_10_miles){
                 ?>

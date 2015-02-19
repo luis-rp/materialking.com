@@ -1956,6 +1956,13 @@ class quote extends CI_Controller
             		
             		 if($lastid){
             		 	
+            		 	$updateitem = array(
+            		 	'company' => $lastid,
+            		 	);
+            		 	
+            		 	$this->quote_model->db->where('id', $item->id);
+            			$this->quote_model->db->update('quoteitem', $updateitem);
+            		 	
             		 	if($companyexisits==0){
             		 		$invitees[$lastid] = $lastid;
             		 		$limitcompany[$lastid]['username'] = $username;
@@ -3274,6 +3281,7 @@ class quote extends CI_Controller
         $viewbids = array();
        
         $bankaccarray = array();
+        $creditaccarray = array();
         foreach ($bids as $bid) {
 
             $totalprice = 0;
@@ -3307,10 +3315,14 @@ class quote extends CI_Controller
 	    		
 	    		
 	    	$bankaccount = $this->db->where('company',$bid->company)->get('bankaccount')->row();
-			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
+	    	$creditresult = $this->db->where('company',$bid->company)->where('purchasingadmin',$quote->purchasingadmin)->get('purchasingtier')->row();
+			if((!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber) && (@$creditresult->creditonly==1) )
 			{
 				$bankaccarray[$bid->company] = $bid->companyname;
 			}	
+			
+			if(@$creditresult->creditonly==1)
+			$creditaccarray[$bid->company] = $bid->companyname;
 
         }
         $data['quote'] = $this->quote_model->get_quotes_by_id($qid);
@@ -3322,6 +3334,7 @@ class quote extends CI_Controller
         $data['minimum'] = $minimum;
         $data['maximum'] = $maximum;
         $data['bankaccarray'] = $bankaccarray; 
+        $data['creditaccarray'] = $creditaccarray; 
         $data['costcodes'] = $this->db->where('project',$quote->pid)->get('costcode')->result();
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$quote->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();           
@@ -11394,7 +11407,7 @@ $loaderEmail = new My_Loader();
             $creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
 			
 			$bankaccount = $this->db->where('company',$caid)->get('bankaccount')->row();
-			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
+			if( (!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber) && (@$creditonly==1) )
 			{
 				$this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bank account missing for credit card payment.</div></div>');
 				redirect('admin/quote/bids/'.$_POST['invoicenum']);

@@ -451,6 +451,7 @@ class Company extends CI_Controller {
 
         $errormessage = '';
         $this->db->where('id !=', $company->id);
+        $this->db->where('isdeleted',0);
         $this->db->where('primaryemail', $_POST['primaryemail']);
         if ($this->db->get('company')->num_rows > 0) {
             $data['types'] = $this->db->get('type')->result();

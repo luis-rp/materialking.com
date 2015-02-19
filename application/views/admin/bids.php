@@ -110,11 +110,16 @@ function awardbidbyid(bidid,grandtotal,creditonly)
 	
 	$('#paybtn').css('display','none');
 	$('#awardbtn').css('display','none');
+	
+	$('#creditcardnote').css('display','none');
+	
 	if(creditonly==1){
 		$('#paybtn').css('display','block');
 		$('#awardbtn').css('display','none');
+		$('#creditcardnotebycompany').html('This Supplier has set your account to credit card only. Awarding any item to this supplier will require upfront credit card payment to that items value');
 	}else{
 		$('#paybtn').css('display','none');
+		$('#creditcardnotebycompany').html('');
 		$('#awardbtn').css('display','block');
 	}
 	$("#grandtotal").val(grandtotal);
@@ -136,15 +141,19 @@ function awardbiditems()
 	$("#awardbid").val('');
     $("#itemids").val(ids.join(','));
     $('#paybtn').css('display','none');
-	$('#awardbtn').css('display','none');
+	$('#awardbtn').css('display','none');	
+	$('#creditcardnotebycompany').html('');
+	
     $('#paytype').val('awardbiditems');
     var tot = $('#selectedcctotal').val();
     if(tot>0){
 		$('#paybtn').css('display','block');
 		$('#awardbtn').css('display','none');
+		$('#creditcardnote').css('display','block');
 	}else{
 		$('#paybtn').css('display','none');
 		$('#awardbtn').css('display','block');
+		$('#creditcardnote').css('display','none');
 	}
 	$("#awardmodal").modal();
 }
@@ -454,12 +463,16 @@ $(function() {
 			      <?php }?>
 			      </strong>
 
+			    
 				  <?php if($bid->draft=='Yes'){ ?>
 				    <span class="label label-pink">Draft</span>
 				  <?php }?>
 				   <strong>
 				  &nbsp; &nbsp; &nbsp;<?php if(isset($bid->revisionno) && $bid->revisionno>1) echo "Revision ".$bid->revisionno; else echo "Original bid"; ?>
 				   </strong>
+				     <?php if($bid->creditonly=='1') {?>
+						 &nbsp;&nbsp;&nbsp;<span style="color:red;font-weight:bold;">*Credit Card Only Account.</span>
+				  <?php } ?>
 			      <?php
 			      	if($maxcountitems > count($bid->items))
 			      	{
@@ -779,11 +792,12 @@ $(function() {
         	</table>
 
         	</div>
-        	<div class="modal-footer">
-        	&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
-        	
+        	<div class="modal-footer">        	
+        	<span id="creditcardnotebycompany"></span>
+        	<span id="creditcardnote"><?php if(count($creditaccarray)>0){ echo "Supplier/s (".implode(",",$creditaccarray).") has set your account to credit card only. Awarding any item to this supplier/s will require upfront credit card payment to that items value.<br/>"; }?></span>
         	<input type="button" id="paybtn"  style="display:none;" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>')"; />&nbsp;
         		<input id="awardbtn" style="display:none;" type="submit" class="btn btn-primary" value="Award"/>&nbsp;
+        	&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;	
         		
         	</div>
             </form>

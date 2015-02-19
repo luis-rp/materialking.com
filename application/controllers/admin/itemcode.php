@@ -56,7 +56,7 @@ class itemcode extends CI_Controller
     				$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
 
     			$itemcode->ea = "$ " . $itemcode->ea;
-    			$itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
+    			$itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,0);
 
     			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
 
@@ -152,7 +152,7 @@ class itemcode extends CI_Controller
     				$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
 
     			$itemcode->ea = "$ " . $itemcode->ea;
-    			$itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;
+    			$itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,2);
 
     			$itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
 
@@ -309,7 +309,7 @@ class itemcode extends CI_Controller
                 if ($itemcode->minprices)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
 
-                $itemcode->totalpoprice = "$ " . $itemcode->totalpoprice;    
+                $itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,2);    
                     
                 $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
 

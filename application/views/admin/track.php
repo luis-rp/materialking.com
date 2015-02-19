@@ -524,6 +524,11 @@ function setServicelaboritemsFlag()
 	$("#servicelaboritemsflag").val(1);
 }
 
+function showserviceitemblock()
+{
+	$("#serviceitemblock").css('display','');
+}
+
 function addservice()
 {
 	var data = "name="+$("#servicename").val()+"&serviceprice="+$("#serviceprice").val()+"&servicetax="+$("#servicetax").val();
@@ -1408,13 +1413,13 @@ function addservice()
 		<input type="hidden" name="servicelaboritemsflag" id="servicelaboritemsflag" value="0">
 		<table>
 	<!--	<tr style="cursor:pointer;"><td colspan="2"><a onclick="setServicelaboritemsFlag()"> Add Service/Labor Items to bill </a>  </td> </tr>-->
-		<tr style="cursor:pointer;"><td colspan="2">Select Service/Labor Items to bill </a>  </td> </tr>
+		<tr style="cursor:pointer;"><td width="45%">Select Service/Labor Items to bill </a>  </td> <td><a onclick="showserviceitemblock();"> Create New Item </a> </td> </tr>
 		
 		<?php
 			if(isset($servicebillitems) && count($servicebillitems)>0)
 			{?>
 				<tr> 
-				<td colspan="2"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">Qty</th><th width="10%">&nbsp;</th> </td>
+				<td colspan="3"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">Qty</th><th width="10%">&nbsp;</th> </td>
 				</tr>	
 		<?php	foreach ($servicebillitems as $key=>$v)
 				{ ?>
@@ -1426,15 +1431,25 @@ function addservice()
 						<td><input type="checkbox" name="servicelaboritem[<?php echo $v->id; ?>]" value="<?php echo $v->id; ?>"> </td> 
 					</tr>	 
 		<?php 		} ?>
+				
 		</table>
 			 </td>
 			 </tr>
 	<?php 		} else { 
-					?> <tr><td colspan="2"> 
-					<table width="100%" align="center"><tr><td>Name</td><td>Price</td><td>Tax</td><td>&nbsp</td><tr><td><input type="text" name = "servicename" id="servicename"></td><td><input type="text" name = "serviceprice" id="serviceprice"></td><td><input type="text" name = "servicetax" id="servicetax"></td><td><input type="button" value = "Add" onclick="addservice();"></tr><table>
+					?> 
+					<tr>
+					<td colspan="2"> 
+					<table width="100%" align="center"><tr><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">&nbsp;</th><tr><td><input type="text" name = "servicename" id="servicename"></td><td><input type="text" name = "serviceprice" id="serviceprice"></td><td><input type="text" name = "servicetax" id="servicetax"></td><td><input type="button" value = "Add" onclick="addservice();"></tr>
+					<table>
 					</td> </tr>
 			<?php	} ?>
 		
+		<tr id="serviceitemblock" style="display:none;">
+			<td><input type="text" name = "servicename" id="servicename"></td>
+			<td><input type="text" name = "serviceprice" id="serviceprice"></td>
+			<td><input type="text" name = "servicetax" id="servicetax"></td>
+			<td><input type="button" value = "Add" onclick="addservice();">
+		</tr>	
 		<tr><td>&nbsp;&nbsp;</td></tr>	
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>
 		<?php if($customerdata){ ?>

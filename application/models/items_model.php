@@ -368,7 +368,7 @@ class items_model extends Model {
             
             if(!$hasitems)
                 continue;
-               $ret .= '<ul><li onclick="filtercategory('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';
+               $ret .= '<ul><li onclick="filtercategory('.$item->id.')"><a href="#">'.$item->catname.' &nbsp;&nbsp;('.count($hasitems).')</a></li></ul>';
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
            
             

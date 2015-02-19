@@ -687,15 +687,17 @@
 					  <td>Accepted On</td>
 					  <td>&nbsp;</td>
 					  </tr>
-				<?php foreach($networks as $network) {  ?>
-                   
+				<?php foreach($networks as $network) 
+				{	
+					if($network->title != '')
+					{ ?>                   
 					  <tr>
 					  <td><?php echo $network->title; ?></td>
 					  <td><?php $datetime = strtotime($network->acceptedon); echo date("m/d/Y", $datetime);?></td>
 					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closenetwork/'.$network->id);?>">X</a></td>
 					  </tr>
 
-				<?php } ?>
+				<?php } } ?>
 				<?php } else { ?>
 				<tr><td>No Recent Networks Created</td></tr>
 				<?php } ?>

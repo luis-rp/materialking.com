@@ -820,7 +820,7 @@ class quote_model extends Model {
 
 
        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -834,7 +834,7 @@ class quote_model extends Model {
                 . " $search GROUP BY invoicenum";
                 
          $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment
+        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -861,8 +861,7 @@ class quote_model extends Model {
 					   " . $this->db->dbprefix('award') . " a,
 					   " . $this->db->dbprefix('quote') . " q
 					  WHERE r.awarditem=ai.id AND ai.award=a.id
-					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}'
-					  ";
+					  AND a.quote=q.id AND invoicenum='{$invoice->invoicenum}' AND a.id = '{$invoice->award}'";
             
             $quotequery = $this->db->query($quotesql);
             $invoice->quote = $quotequery->row();

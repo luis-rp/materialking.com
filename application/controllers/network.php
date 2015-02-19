@@ -130,6 +130,19 @@ class network extends CI_Controller {
           	else 
           	{
           		$_POST['creditcardonly'] = 0;
+          		
+          		
+          		$arr = array('purchasingadmin' => $this->session->userdata('site_loggedin')->id, 'company' => $_POST['toid']);
+	            $this->db->where($arr);
+	            $this->db->delete('purchasingtier');
+          		$arr['tier'] = 'tier0';
+	            $arr['creditlimit'] = 0;
+	            $arr['totalcredit'] = 0;//this is not a mistake, same value is fed to both fields.
+	            $arr['creditfrom'] = '';
+	            $arr['creditto'] = ''; 
+	            $arr['creditonly'] = '1'; 
+	            
+	             $this->db->insert('purchasingtier', $arr); 
           	}
             $_POST['requeston'] = date('Y-m-d H:i:s');
 		

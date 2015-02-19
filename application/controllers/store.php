@@ -139,6 +139,14 @@ class Store extends CI_Controller
                         $item->ea = number_format($item->ea, 2);
                     }
                 }
+                
+                $resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $currentpa)->where('p.itemid', $item->itemid)->where('c.isdeleted', 0)->where('p.company', $item->company)->get()->row();
+                if($resultprice){
+						
+                	$item->ea = number_format($resultprice->price, 2);	
+                	
+                }
+                
             }
             $hasdiscount = $this->db
                             ->where('itemid',$item->itemid)

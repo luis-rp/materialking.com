@@ -123,7 +123,12 @@ $(document).ready(function(){
 			    					<input type="text" name="searchbyguest" id="searchbyguest" placeholder="Search By Email">
 			    					</div>
 			    				</div>
-			    				
+			    				<div class="form-group">
+			    				    <label class="form-label">Search By Keyword</label>
+			    				  <div class="controls">		    				
+			    					<input type="text" name="searchbykeyword" id="searchbykeyword" placeholder="Search By Keyword">
+			    					</div>
+			    				</div>
 			    				
 			    				 <div class="form-group">
 				                     <label class="form-label"></label>

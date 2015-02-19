@@ -232,14 +232,21 @@ class Order extends CI_Controller
  			{
  				$filter .=  " AND o.email LIKE '%".trim($_POST['searchbyguest'])."%'";
  			}
+ 			
+ 			if(@$_POST['searchbykeyword'] && @$_POST['searchbykeyword'])
+ 			{
+ 				$filter .=  " AND (o.ordernumber LIKE '%".trim($_POST['searchbykeyword'])."%' OR c.title LIKE '%".trim($_POST['searchbykeyword'])."%')" ;
+ 			}
 		}
  		
 		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status  
 				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+				JOIN ".$this->db->dbprefix('company')." c ON c.id = od.company
 				WHERE o.id=od.orderid AND od.company=".$company->id." 
 				$search $filter 
 				GROUP BY od.orderid 		
 				ORDER BY o.purchasedate DESC";
+		
 		$orders = $this->db->query($sql)->result();
 		$data['orders'] = array();
 		foreach($orders as $order)

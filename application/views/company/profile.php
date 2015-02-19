@@ -125,6 +125,35 @@ function addEmail()
 	 	  } 
 	 }
 
+	 function loadManufacturer(val)
+	 {	 
+	 	if($('#industry_'+val).prop('checked') == true || $('#industryid_'+val).val() == val)
+		{
+		  $(".industryid_"+val).css('display','');
+		}
+		else
+		{	
+			var industryname = $("#ind_"+val).html();
+			$(".industryid_"+val).each(function()
+			{				
+				industry = $(this).attr('industry');
+			  	if(industry == val)
+		   		{
+		   			$(this).attr("style", "display:''");		
+		   			//$(this).removeAttr("selected");   			
+		   		}		   		
+		   		else
+		   		{
+		   			if(industry != '')
+		   			{
+		   				$(this).attr("style", "display:none");		
+		   			}
+		   		}
+			});
+			$("#norecord").css('display',''); 
+		 	$("#norecord").html('No Manufacturer is associated with '+industryname+' industry.');
+	   }	 	
+	}
 	
 </script>
 
@@ -236,19 +265,26 @@ function addEmail()
 									      	</tr>
 									      	<tr valign="top">
 									      		<td>
-									      			<?php foreach($types as $type) if($type->category=='Industry'){?>
-									      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo $type->checked;?>>
-									      			<?php echo $type->title;?>
+									      			<?php 
+									      			 foreach($types as $type) if($type->category=='Industry'){?>
+									      			 
+									      			<input id="industry_<?php echo $type->id;?>"  name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo $type->checked;?> onclick="loadManufacturer(<?php echo $type->id;?>);">
+									      			<span id="ind_<?php echo $type->id;?>"><?php echo $type->title;?>
+									      			</span>
 									      			<br/>
 									      			<?php }?>
 									      		</td>
-									      		<td>
+									      		<td id="manufacturertype">
 									      			<?php foreach($types as $type) if($type->category=='Manufacturer'){?>
-									      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo $type->checked;?>>
+									      			<span class="industryid_<?php echo $type->parent_id;?>" >
+									      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo $type->checked;?> industry=<?php echo $type->parent_id;?>>
 									      			<?php echo $type->title;?>
+									      			</span>
 									      			<br/>
 									      			<?php }?>
+									      			<span id="norecord" style="display:none;"></span>
 									      		</td>
+									      		
 									      	</tr>
 									      </table>
 				                        </div>

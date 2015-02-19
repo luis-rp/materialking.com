@@ -287,7 +287,7 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 		data: "companyid="+companyid+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
 		url: getcompanypriceurl
 	}).done(function(data){
-		
+		$('#itempricediv').html('');
 		if(data){
 			$("#myModalbody").css('display','block');
 			$("#myModalfooter").css('display','block');
@@ -295,12 +295,12 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 			$("#companypricemodal").modal();
 			$("#pricelistitemcode2").html(itemcode);
 			$("#pricelistitemname2").html(itemname);	
-			$('#itemprice').val(data);
+			$('#itempricediv').html(data);
 			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+');" value="Update"/>';
 			$("#pricebtn").html(phtml);
 			
 		}else{
-			$('#itemprice').val('');
+			$('#itempricediv').html('');
 			$("#myModalbody").css('display','none');
 			$("#myModalfooter").css('display','none');
 			$("#companypricemodal").modal();						
@@ -634,11 +634,10 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
                         
                         <div class="modal-body" id="myModalbody">
                           <div class="row form-row">
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                               <strong>Price:</strong>
-                            </div>
-                            <div class="col-md-6">
-                              <input type="text" id="itemprice">
+                            </div> -->
+                            <div class="col-md-6" id="itempricediv">                              
                             </div>
                           </div>                          
                         </div>

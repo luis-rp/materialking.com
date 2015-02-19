@@ -1452,6 +1452,15 @@ class site extends CI_Controller
                         $initem->ea = number_format($initem->ea, 2);
                     }
                 }
+                
+                $resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $currentpa)->where('p.itemid', $initem->itemid)->where('c.isdeleted', 0)->where('p.company', $initem->company)->get()->row();
+                if($resultprice){
+						
+                	$initem->ea = number_format($resultprice->price, 2);	
+                	
+                }
+                
+                
                 if (! @$_POST['address'])
                 {
                     $lat1 = $this->session->userdata('site_loggedin')->user_lat;
@@ -3164,8 +3173,8 @@ class site extends CI_Controller
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $_POST['amount'] * 100, 'currency' => 'usd' ));
-		//echo $charge;
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount'] * 100), 'currency' => 'usd' ));
+		//echo "<pre>",print_r($charge); die;
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)
 		{
