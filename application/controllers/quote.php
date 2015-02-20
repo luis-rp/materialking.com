@@ -457,16 +457,19 @@ class Quote extends CI_Controller
 	    	if($revisionquote)
 	    	$data['revisionno'] = $revisionquote->revisionid;
 	    	
-	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$sqlq = "SELECT revisionid, daterequested,totalprice FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
 	    	$revisiondate = $this->db->query($sqlq)->result();
 	    	foreach($revisiondate as $revisedate){	    		
 	    		$revisionsid = $revisedate->revisionid;
-	    		$bid->$revisionsid = $revisedate->daterequested;
+	    		$bid->$revisionsid = $revisedate->daterequested.'#$#$#' .$revisedate->totalprice;
 	    	}
-	    	
+	    	$data['biditems'] = $this->quotemodel->getdraftitemswithdefaultitemcode($bid->quote, $company->id);
+	      
+	    
 	    }
 	   	$data['bid'] = $bid; 
-	    
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+	    $data['taxpercent'] = $settings->taxpercent;
 		
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();
@@ -622,6 +625,17 @@ class Quote extends CI_Controller
 		$this->db->where('id',$invitation->purchasingadmin);
 		$pa = $this->db->get('users')->row();
 		$data['purchasingadmin'] = $pa;
+		
+		if(count($data['quoteitems'])>0){			
+			$itemarr = array();
+			foreach($data['quoteitems'] as $itm){
+								
+				$itemarr[] = $itm->itemid;
+			}
+		
+		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->where_in('itemid',$itemarr)->get()->result();
+		}
+		
 		$data['invid'] = $invitation->id;
 		$this->load->view('quote/review',$data);
 	}

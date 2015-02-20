@@ -273,7 +273,7 @@ $( document ).tooltip();
        
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+','+qtyreqd+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
-        if(!isdeal) {
+        //if(!isdeal) {
         	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
         	
         	
@@ -320,7 +320,7 @@ $( document ).tooltip();
         			$("#hiddenprice").val(data);
         		}
         	});
-        }
+       // }
 
     }
     
@@ -399,7 +399,7 @@ $( document ).tooltip();
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-    	if(!isdeal) {
+    	//if(!isdeal) {
     		$.ajax({
     			type:"post",
     			data: data2,
@@ -425,7 +425,7 @@ $( document ).tooltip();
     				$("#hiddenprice").val(data);
     			}
     		});
-    	}
+    	//}
     }
 
     function addtocart2(itemid, companyid, price, minqty, isdeal,qtyreqd){
@@ -770,7 +770,7 @@ $( document ).tooltip();
                                 </div>
                                  <div class="tab-pane" id="tab4">
                                    <?php
-
+		//echo '<pre>@@@',print_r($item);
                                    if(isset($item->files) && $item->files!="") 
                                            {
                                            	$files=explode(",",$item->files);
@@ -795,6 +795,28 @@ $( document ).tooltip();
    <li class="active"><a href="<?php echo site_url('uploads/item/'.$files[$x]) ?>" target="_blank"><?php echo $files[$x];?></a></li>
                                                  	
                                                  	<?php } } //}?>
+   
+											   <?php 
+													   if(isset($item->wiki) && $item->wiki !='')
+													   {
+															$email  = $item->wiki;
+															$domain = strstr($email, 'src="');
+															$newSrc = str_replace('src="',"'",$domain);
+															$newSrc1 = str_replace('">',"'",$newSrc);															
+															?>
+													<li><a  target="_blank" href=<?php echo $newSrc1; ?> >Wiki image </a> </li>
+												<?php  } ?>	
+												<?php 
+													   if(isset($item->listinfo) && $item->listinfo !='')
+													   {
+															$email  = $item->listinfo;
+															$domain = strstr($email, 'src="');
+															$newSrc = str_replace('src="',"'",$domain);
+															$newSrc1 = str_replace('">',"'",$newSrc);															
+															?>
+													<li><a  target="_blank" href=<?php echo $newSrc1; ?> >List info image </a> </li>
+												<?php  } ?>		
+												
                                                  	</ul>
                                                  	<?php }  else { echo "No Files For This Item."; }  ?>
                                   	
@@ -926,7 +948,7 @@ $( document ).tooltip();
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php                                    
+                                <?php                                 
                                     if($inventory) 
                                     foreach ($inventory as $inv) { 
                                     if ($inv->ea) {  
@@ -936,7 +958,13 @@ $( document ).tooltip();
                                 ?>
                                 <tr>
                                     <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> </td>
-                                    <td style="padding:0px;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
+                                    <td style="padding:0px;" class="tinyfont">
+                                    <?php  if (@$inv->companydetails->company_type==1) 
+				                    	  { ?>                                                
+				                         	<img style="width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium_member.jpeg') ?>" alt="Premium Member">
+				                    <?php } ?>
+                                    <?php echo $inv->itemcode ?> 
+                                    </td>
                                     <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
                                     <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>

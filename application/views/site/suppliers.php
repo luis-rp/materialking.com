@@ -112,12 +112,12 @@
                             foreach ($suppliers as $supplier) {
                                 $i++
                                 ?>
-                                <div class="property span9" style="width:auto">
+                                <div class="property span9" style="width:auto;padding:0 0 10px 0px;">
                                     <div class="row">
                                         <div class="image1 span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
-                                                    <img style="padding: 20px 0px 20px 0px; vertical-align: middle;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
+                                                    <img style="padding: 20px 0px 20px 10px; vertical-align: middle;" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
                                                 <?php } else { ?>
                                                     <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
@@ -130,12 +130,26 @@
                                                 <div class="title1 span4" style="margin-left:25px;">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
+<<<<<<< .mine
+=======
+                                                <div class="price1" style="float:right; margin:-11px 0 0 7px; padding:0px 25px 0 0px;" >
+>>>>>>> .r19588
                                                 <?php if (isset($supplier->city) && isset($supplier->state)) { ?>
                                                 <div class="price1">
                                                      <?php echo $supplier->city.",&nbsp;".$supplier->state;
 													?>
                                                 </div>
                                                 <?php } ?>
+<<<<<<< .mine
+=======
+                                                <br>
+                                                <?php  if (@$supplier->company_type==1) { ?>
+                                                
+                                                	<img src="<?php echo site_url('uploads/logo/thumbs/premium.jpg') ?>" alt="Premium">
+                                               
+                                                <?php } ?>
+                                                </div>
+>>>>>>> .r19588
                                               </div>
 
                                             <div class="location"><?php echo $supplier->contact; ?></div>

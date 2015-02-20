@@ -11620,6 +11620,46 @@ $loaderEmail = new My_Loader();
     	}
     }
     // End
+    
+    
+    function showrecentcompanies(){
+
+    	if (!$_POST)
+    	die;
+
+    	$this->db->where('quote',$_POST['quote']);
+    	$quoteitems = $this->db->get('quoteitem')->result();
+
+    	if($quoteitems){
+    		$itemarray = array();
+    		foreach ($quoteitems as $quotei)
+    		$itemarray[] = $quotei->id;
+    		
+    		$companyitemimplode = implode(",",$itemarray);
+    		/*$this->db->where_in('quoteitemid',$itemarray);
+    		$this->db->group_by("companyemail");
+    		$nonnetcompanies = $this->db->get('quoteitem_companies')->result();*/
+    		
+    		$noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid in ('".$companyitemimplode."')";           
+    		$nonnetcompanies = $this->db->query($noncomp)->result();
+    		
+    		if($nonnetcompanies){
+				$html = '<table>';
+    			foreach ($nonnetcompanies as $nonnetcomp){
+    						
+	        	$html .='<tr>
+		        	<td colspan="2">
+						<strong>'.$nonnetcomp->companyname.'</strong>&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="setnewcompany(\''.$nonnetcomp->companyname.'\',\''.$nonnetcomp->companyemail.'\')">
+		        	</td>
+	        	</tr>';    	
+    				
+    			}
+    			$html .= '</table>';
+				echo $html;
+    		}
+    	}
+    }
+    
 }
 
 ?>

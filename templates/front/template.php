@@ -186,9 +186,9 @@
  </script>
 </head>
 <?php 
-if($this->session->userdata('company')->username!=$pagetour->username)
+if(@$this->session->userdata('company')->username!=@$pagetour->username)
 {
-	$this->session->userdata('company')->username=$pagetour->username;
+	$this->session->userdata('company')->username=@$pagetour->username;
 }
 ?>
 <body class="">
@@ -227,7 +227,7 @@ if($this->session->userdata('company')->username!=$pagetour->username)
 							<form method="post" action="<?php echo site_url('quote');?>">
 							<input type="hidden" name="searchstatus" value="New"/>
 							<button type="submit" style="background:none;border:none;">
-							<span class="badge badge-important"><?php echo count($newquotes);?> invitations</span> 
+							<span class="badge badge-important"><?php echo count(@$newquotes);?> invitations</span> 
 							</button>
 							<span class="bold"><?php echo strtoupper($this->session->userdata('company')->username);?></span>									
 						
@@ -280,7 +280,7 @@ if($this->session->userdata('company')->username!=$pagetour->username)
 	<?php }?>
     <div class="user-info">
       <div class="greeting">Welcome</div>
-      <div class="username" style="width:200px"><span class="semi-bold" style="word-wrap:break-word;"><?php echo $this->session->userdata('company')->username;?></span></div>
+      <div class="username" style="width:200px"><span class="semi-bold" style="word-wrap:break-word;"><?php echo @$this->session->userdata('company')->username;?></span></div>
       <div class="status"></div>
     </div>
    </div>

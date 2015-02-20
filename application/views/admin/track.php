@@ -551,7 +551,11 @@ function addservice()
 			
 		}
 	});
+}
 
+function delserviceitem()
+{
+	$("#serviceitemblock").css('display','none');
 }
 </script>
 <section class="row-fluid">
@@ -1419,7 +1423,13 @@ function addservice()
 			if(isset($servicebillitems) && count($servicebillitems)>0)
 			{?>
 				<tr> 
-				<td colspan="3"><table width="80%"><th width="40%">Name</th><th width="10%">Price</th><th width="10%">Tax</th><th width="10%">Qty</th><th width="10%">&nbsp;</th> </td>
+				<td colspan="3">
+					<table width="80%">
+						<th width="40%">Name</th>
+						<th width="10%">Price</th>
+						<th width="10%">Tax</th>
+						<th width="10%">Qty</th>
+						<th width="10%">&nbsp;</th>
 				</tr>	
 		<?php	foreach ($servicebillitems as $key=>$v)
 				{ ?>
@@ -1432,9 +1442,7 @@ function addservice()
 					</tr>	 
 		<?php 		} ?>
 				
-		</table>
-			 </td>
-			 </tr>
+		
 	<?php 		} else { 
 					?> 
 					<tr>
@@ -1444,11 +1452,15 @@ function addservice()
 					</td> </tr>
 			<?php	} ?>
 		
-		<tr id="serviceitemblock" style="display:none;">
-			<td><input type="text" name = "servicename" id="servicename"></td>
-			<td><input type="text" name = "serviceprice" id="serviceprice"></td>
-			<td><input type="text" name = "servicetax" id="servicetax"></td>
-			<td><input type="button" value = "Add" onclick="addservice();">
+			<tr id="serviceitemblock" style="display:none;">
+				<td><input type="text" name = "servicename" id="servicename"></td>
+				<td><input type="text" name = "serviceprice" id="serviceprice"></td>
+				<td><input type="text" name = "servicetax" id="servicetax"></td>
+				<td><input type="button" value = "Add" onclick="addservice();">
+				<td><img style="margin-left:5px;width:14px;" onclick="delserviceitem(1)" src="<?php echo base_url().'templates/front/assets/img/icon/delete.ico'; ?>" /></a>
+			</tr>
+			</table>
+		  </td>
 		</tr>	
 		<tr><td>&nbsp;&nbsp;</td></tr>	
 		<tr><td>Bill #Name:</td><td><input type="text" name="billname" id="billname" style="width: 250px;"/></td></tr>

@@ -642,7 +642,7 @@ function viewtag(pic_id,company)
    		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
         $('#cartqtydiv').html(strselect);
 
-        if(!isdeal) {
+       // if(!isdeal) {
 
         	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
         	$("#qtypricebox").html("");
@@ -685,7 +685,7 @@ function viewtag(pic_id,company)
         			$("#hiddenprice").val(data);
         		}
         	});
-        }
+       // }
 
     }
 
@@ -693,7 +693,7 @@ function viewtag(pic_id,company)
 
     	qty = ($('#qtycart').val());
     	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-    	if(!isdeal) {
+    	//if(!isdeal) {
     		$.ajax({
     			type:"post",
     			data: data2,
@@ -719,7 +719,7 @@ function viewtag(pic_id,company)
     				$("#hiddenprice").val(data);
     			}
     		});
-    	}
+    	//}
     }
 
     function addtocart2(itemid, companyid, price, minqty, isdeal){
@@ -1100,7 +1100,9 @@ function changetab(tabname){
                                                 <?php } else {?>
                                                 <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
                                         <?php } ?>
-
+										<?php  if (@$supplier->company_type==1) { ?>                                                
+                                                	<img style="float:right;margin-top:-1.2em;width:100px;" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
+                                        <?php } ?>
                                     </p>
                                     <h2 class="name"><?php echo $supplier->title;?>
                                    </h2>

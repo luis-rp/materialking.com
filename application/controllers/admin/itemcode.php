@@ -2477,9 +2477,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		if(isset($_POST['id']) && @$_POST['id']!= '')
 		{
 			$updArr = array('isdeleted'=>1);
-			$where = $this->db->where('id',@$_POST['id']);
-			$this->db->update('servicelaboritems',$updArr,$where);	
+			$where = array('id'=>@$_POST['id']);
+			
+			$returnval = $this->db->update('servicelaboritems',$updArr,$where);	
 			$this->addnewserviceandlabor();
+			if($returnval)
+			{
+	    		echo "success";die;
+			}	
+	    	else 
+	    	{
+	    		echo "fail"; die;
+	    	}	
 		}		
 	}
 	

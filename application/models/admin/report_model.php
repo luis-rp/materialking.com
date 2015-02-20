@@ -87,16 +87,18 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid, ai.quantity as aiquantity    
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('company')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q
+					  ".$this->db->dbprefix('quote')." q,
+					  ".$this->db->dbprefix('item')." i					 
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
+					  ai.itemid = i.id AND
 					  a.quote=q.id AND q.potype <> 'Contract' $filter ";
 			if(@$sepdate->receiveddate)
 			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
@@ -106,16 +108,18 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity    
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('users')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q
+					  ".$this->db->dbprefix('quote')." q,
+					  ".$this->db->dbprefix('item')." i			
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
+					  ai.itemid = i.id AND
 					  a.quote=q.id AND q.potype = 'Contract' $filter ";
 			if(@$sepdate->receiveddate)
 			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
@@ -223,16 +227,18 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity 
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('company')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q
+					  ".$this->db->dbprefix('quote')." q,
+					  ".$this->db->dbprefix('item')." i
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
+					  ai.itemid=i.id AND
 					  a.quote=q.id AND q.potype <> 'Contract' $filter ";					  
 			if(@$sepdate->receiveddate)
 			$itemsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
@@ -243,16 +249,18 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity  
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl  
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('users')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q
+					  ".$this->db->dbprefix('quote')." q,
+					  ".$this->db->dbprefix('item')." i
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
+					  ai.itemid=i.id AND
 					  a.quote=q.id AND q.potype = 'Contract'  $filter ";
 					  
 			if(@$sepdate->receiveddate)

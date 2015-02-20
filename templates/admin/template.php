@@ -551,6 +551,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-check"></i>&nbsp;&nbsp;Items</a>
                                 </li>
+                                <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
+                                </li>
                                 <li <?php if ($menu == 'company') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
                                 </li>
@@ -573,6 +576,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <?php } else { ?>
                                 <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-briefcase"></i>&nbsp;&nbsp;Items</a>
+                                </li>
+                                <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
                                 </li>
                                 <?php } ?>
 

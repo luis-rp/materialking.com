@@ -685,15 +685,16 @@ P.O. Price Rankings
                                         <div class="image span3">
                                             <div class="content">
                                                 <?php if ($supplier->logo) { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
+                                                    <img style="padding-top: 5px; width:175px; height:115px" src="<?php echo site_url('uploads/logo/thumbs/' . $supplier->logo) ?>" alt="">
                                                 <?php } else { ?>
-                                                    <img style="padding-top: 5px; width:175px; height:160px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                                    <img style="padding-top: 5px; width:175px; height:115px" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                                 <?php } ?>
 
                                             </div>
                                         </div>
 
                                         <div class="body_home span6">
+                                     
                                             <div class="title-price row">
                                        
                                                 <div class="price">
@@ -702,6 +703,11 @@ P.O. Price Rankings
                                             </div>
 
                                             <div class="location2"><?php echo $supplier->contact; ?></div>
+                                               <?php 
+                                        if($supplier->company_type == 1)
+                                        { ?>
+                                        	<img style="padding-left:4em ;margin-top: -1.7em;width:140px; height:120px" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="">
+                                     <?php    } ?>
 <?php /*?><div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><br/><br/>
  <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div><br/><br/>
  <?php if(!empty($supplier->joinstatus)){?><div class="btn btn-primary arrow-right"><a href="javascript:void(0);"><?php echo $supplier->joinstatus;?></a></div><?php }?><br><br><?php */?>

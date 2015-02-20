@@ -162,7 +162,7 @@
 			    		<td><?php echo $item->ponum;?>
 			    		<?php echo ($item->invoice_type == "fullpaid" || $item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
 			    		</td>
-			    		<td><?php echo $item->itemcode;?></td>
+			    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>

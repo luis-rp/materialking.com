@@ -1512,6 +1512,11 @@ class Company extends CI_Controller {
 	}
 	
 	function mailinglist(){
+		
+		 $company = $this->session->userdata('company');
+         if (!$company)
+            redirect('company/login');
+		
 		$this->load->view('company/mailinglist');
 
 	}

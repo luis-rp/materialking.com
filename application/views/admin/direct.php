@@ -500,8 +500,32 @@ function allowonlydigits(e,elementid,errorid){
 function displayBlankRow()
 {
 	$(".newitemrow").css('display','');
+	
+	url = "<?php echo site_url('admin/quote/showrecentcompanies');?>";
+    	$.ajax({
+    		type:"post",
+    		data: "quote=<?php echo $this->validation->id;?>",
+    		url: url
+    	}).done(function(data){
+    		$('#newcompanybodyid').html(data);    		
+    	});
 }
 
+
+function showrecentaddedcompanies(){
+	
+	$('#newcompanymodal').modal();
+}
+
+
+function setnewcompany(companyname,companyemail){
+	
+	$('#newvendorspan').css('display','block');	
+	$('#ea').attr("readonly", false);
+	$('#addsupplyname').val(companyname);
+	$('#addsupplyemail').val(companyemail);
+	
+}
 
 
 function checknewitem(){
@@ -844,6 +868,9 @@ function checkcompanyuseremail(id,email){
 					    </select> -->	
 				    	  	
 				    	<div id="supplydata"> 
+				    	
+				    	  <a href="javascript:void(0)" onclick="showrecentaddedcompanies();" >Select Recent Companies</a>	
+				    		
 				    	  <span id='newvendorspan' style="display:none;">
                           Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;">&nbsp;
                           Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
@@ -1025,3 +1052,29 @@ function checkcompanyuseremail(id,email){
                        
                     </div>
         </div>
+
+        
+        
+        
+        
+         
+ <div id="newcompanymodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 style="text-align:center;" class="semi-bold" id="myModalLabel">
+          Companies          
+          </h4>         
+        </div>
+        <div class="modal-body" id="newcompanybodyid">                
+        </div>          
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
