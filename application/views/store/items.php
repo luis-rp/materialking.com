@@ -191,7 +191,7 @@ $(document).ready(function() {
     } */
     
     
-      function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment,isdeal)
+      function addtocart(imgname,itemid, companyid, price, minqty, unit, itemcode, itemname, increment,isdeal)
     {    	
     	if(typeof(minqty)==='undefined') minqty = 0;
     	if(increment==0) { increment=1;} 
@@ -205,6 +205,7 @@ $(document).ready(function() {
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
+        $("#itemimage").html('<img width="120" height="120" style="max-height: 120px; padding: 0px;width:120px; height:120px;float:right;" src='+imgname+'>');
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
@@ -406,6 +407,10 @@ $( document ).tooltip();
                     <?php if($this->session->userdata('site_loggedin')){echo $this->session->userdata('site_loggedin')->companyname;}else{echo 'Guest';}?>,
                     to
                     <?php echo $company->title; ?> Store
+                    <?php  if (@$supplier->company_type==1) 
+                    { ?>                                                
+                         <img style="float:right;width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
+                    <?php } ?>
                     </h3>
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a></h3>
                     <br/>
@@ -451,9 +456,11 @@ $( document ).tooltip();
                                     <div class="content">
                                        <div class="sidepan"> <?php if ($item->image && file_exists('./uploads/item/' . $item->image)) { ?>
                                             <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
+                                            <?php $imgName = site_url('uploads/item/'.$item->image); ?>
                                         <?php } else { ?>
                                             <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
-                                        <?php } ?>
+		                                        <?php $imgName = site_url('uploads/item/big.png'); 
+		                                   }?>
 										</div>
 										
 										 <?php if(isset($item->hasdiscount)){ if($item->hasdiscount) { ?>
@@ -530,7 +537,7 @@ $( document ).tooltip();
                                        <?php }else{?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
-                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>)">
+                                            <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName;?>',<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>','<?php echo $item->increment; ?>')">
                                                 <i class="icon icon-plus"></i>
                                             </a>
                                         <?php } ?>
@@ -842,8 +849,10 @@ $( document ).tooltip();
                         		<td>
                         		<?php if($di->image && file_exists('./uploads/item/thumbs/'.$di->image)) {?>
                         			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
+                        			<?php $imgName = site_url('uploads/item/thumbs/'.$di->image); ?>
                         		<?php } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
+                        		<?php $imgName = site_url('uploads/item/big.png'); ?>
                         		<?php }?>
                         		</td>
                         		<td>
@@ -851,7 +860,7 @@ $( document ).tooltip();
                         		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		</td>
                         		<td>
-                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
+                        		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName;?>',<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>
@@ -905,6 +914,7 @@ $( document ).tooltip();
 
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
+          <div id="itemimage"></div>
           <br> Select Quantity
           </h4>
           <br>

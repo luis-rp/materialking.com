@@ -79,7 +79,11 @@ function preloadoptions(fromid)
 								<td><?php echo $admin->purchasingcompany;?><br />
 								<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities($admin->purchasingadmin)?>');">View Stats</a>
 								</td>
-								<td><?php echo $admin->purchasingfullname;?></td>
+								<td><?php echo $admin->purchasingfullname;?><br />
+								<?php if($admin->creditonly==1) { ?>
+								<a href="<?php echo site_url('admin/dashboard/application');?>" target="_blank">
+								<span>View Credit App.</span></a><?php } ?>
+								</td>
 								<td>
 																
 								<select class="form-control" onchange="changetier(this.value,'<?php echo $admin->tier;?>','tier<?php echo $admin->purchasingadmin;?>');" name="tier[<?php echo $admin->purchasingadmin;?>]" id="tier<?php echo $admin->purchasingadmin;?>" required style="width:100px;">

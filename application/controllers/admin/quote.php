@@ -232,7 +232,7 @@ class quote extends CI_Controller
                 $quote->actions = $quote->awardedbid?'':
                 anchor('admin/quote/items/' . $quote->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view', 'title' => 'view quote items'))
                 ;
-                if (empty($quote->awardedbid)) {
+                if (empty($quote->awardedbid)  && empty($quote->invitations) ) {
                     $quote->actions .=
 
                             anchor('admin/quote/update/' . $quote->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
@@ -3339,6 +3339,9 @@ class quote extends CI_Controller
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$quote->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();           
         $data['heading'] = $data['quote']->potype == 'Bid' ? "Bids Placed" : "PO Review";
+        
+        $data['invitations'] = $this->quote_model->getInvitedquote($quote->id);
+        
         if($data['quote']->potype == 'Bid')
             $this->load->view('admin/bids', $data);
         else
@@ -6494,7 +6497,7 @@ class quote extends CI_Controller
               //print_r($update);die;
               $query = "UPDATE ".$this->db->dbprefix('received')." SET
               			paymentstatus='Paid',
-              			status='Pending',
+              			status='Verified',
               			paymentdate='".date('Y-m-d')."',
               			paymenttype='Credit Card',
               			refnum='".$chargeobj->balance_transaction."'

@@ -1499,33 +1499,89 @@ class Dashboard extends CI_Controller
 	
 	function supplier_email_invitation()
 	{		
-		$id = $this->session->userdata('id');
-		$company=$this->db->get_where('users',array('id'=>$id))->row();
-		if(isset($_POST['exampleInputEmail2']))
-		{
-			$option=array('purchasingadmin'=>$id,'send'=>'1','sup_email'=>$_POST['exampleInputEmail2']); 	
-			$this->db->insert('supplierinvitation',$option);
-			
-			    $this->load->library('email');
-		        $config['charset'] = 'utf-8';
-		        $config['mailtype'] = 'html';	        			
-		        $this->email->initialize($config);
-		        $this->email->from($company->email);
-				$this->email->to($_POST['exampleInputEmail2']);
-		        $subject = 'Invitation';		        		
-		        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
-	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.";	
-			    $loaderEmail = new My_Loader();
-			    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
-		        $this->email->subject($subject);
-		        $this->email->message($send_body);	
-		        $this->email->set_mailtype("html");
-		        $this->email->send();
+		if(isset($_POST['exampleInputEmail2']) && $_POST['exampleInputEmail2']!="")
+		{		
+			$id = $this->session->userdata('id');
+			$company=$this->db->get_where('users',array('id'=>$id))->row();       
+			$pemail=$_POST['exampleInputEmail2'];
+			$supplier=$this->db->get_where('company',array('primaryemail'=>$pemail))->row();
+			       
+			       if(!empty($supplier))
+			       { 
+			       $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists</div></div><div class="errordiv">');	
+					redirect('admin/dashboard');
+			       }
+			       else 
+			       { 		     
+			       $password = $this->getRandomPassword(); 
+                   
+			       $pos=stripos($pemail,"@");          	
+                   $username = substr($pemail,0,$pos);
+                                     	               	
+            		$limitedcompany = array(
+            		   'primaryemail' => $pemail,  	
+            		   'title' => 'Supplier',
+                       'regkey' => '',
+                       'username' => $username,
+                       'pwd' => md5($password),
+                       'password' => md5($password),
+                       'company_type' => '3',
+                       'regdate' => date('Y-m-d')                       
+                    );
+                    $this->db->insert('company', $limitedcompany);
+            		$lastid = $this->db->insert_id();
+             		             		       		
+            		$insert = array();
+            		$insert['company'] = $lastid;
+            		$insert['purchasingadmin'] = $id;            		
+            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		$insert['status'] = 'Active';
+            		$this->db->insert('network',$insert);
+            		           		
+            		$pinsert = array();
+            		$pinsert['company'] = $lastid;
+            		$pinsert['purchasingadmin'] = $id;            		
+            		$pinsert['creditonly'] = '1';
+            		$this->db->insert('purchasingtier',$pinsert);
+            		
+            		
+            		
+            		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['exampleInputEmail2']); 	
+					$this->db->insert('supplierinvitation',$option);
+					         		
+            		$this->load->library('email');
+			        $config['charset'] = 'utf-8';
+			        $config['mailtype'] = 'html';	        			
+			        $this->email->initialize($config);
+			        $this->email->from($company->email);
+					$this->email->to($_POST['exampleInputEmail2']);
+			        $subject = 'Account Detail & Invitation';		        		
+			        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
+		        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.<br />
+		        	 your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
+				    $loaderEmail = new My_Loader();
+				    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
+			        $this->email->subject($subject);
+			        $this->email->message($send_body);	
+			        $this->email->set_mailtype("html");			      
+			        $this->email->send();				        
+			        }
 		       
-		}	
-		 $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');	
+		}
+		  $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');				 
 		redirect('admin/dashboard');
-		
 	}
+	
+	function getRandomPassword()
+		{
+		    $acceptablePasswordChars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		    $randomPassword = "";
+		
+		    for($i = 0; $i < 8; $i++)
+		    {
+		        $randomPassword .= substr($acceptablePasswordChars, rand(0, strlen($acceptablePasswordChars) - 1), 1);  
+		    }
+		    return $randomPassword; 
+		}	
 }
 ?>

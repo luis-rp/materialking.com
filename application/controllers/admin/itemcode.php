@@ -1099,12 +1099,12 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	            	}
 	            	
 	            	$master_data = array(
-									'itemname'=>$itemname1,
+									'itemname'=>mysql_real_escape_string($itemname1),
 									'minqty'=>$minquantity,
 									'manufacturer'=>$manufacturer,
 									'partnum'=>$part,
 									'price'=>$listprice,
-									'itemcode'=>$itemcode1,
+									'itemcode'=>mysql_real_escape_string($itemcode1),
 									'itemid'=>$itemID
 									);
 									
@@ -1375,9 +1375,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$insert['manufacturer'] = $_POST['manufacturerdefault'];
 		$insert['partnum'] = $_POST['partnodefault'];
 		$insert['price'] = $_POST['pricedefault'];
-		$insert['itemname'] = $_POST['itemnamedefault'];
+		$insert['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
 		$insert['minqty'] = $_POST['minqtydefault'];
-		$insert['itemcode'] = $_POST['itemcodedefault'];
+		$insert['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
 		$defaultitem = $this->db->insert('masterdefault',$insert);
     	if($defaultitem){
     		echo  $defaultitem;
@@ -1396,9 +1396,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$update['manufacturer'] = $_POST['manufacturerdefault'];
 		$update['partnum'] = $_POST['partnodefault'];
 		$update['price'] = $_POST['pricedefault'];
-		$update['itemname'] = $_POST['itemnamedefault'];
+		$update['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
 		$update['minqty'] = $_POST['minqtydefault'];
-		$update['itemcode'] = $_POST['itemcodedefault'];
+		$update['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
 		$this->db->where(array('id' => $_POST['id']));
 		$defaultitem = $this->db->update('masterdefault',$update);
     	if($defaultitem){

@@ -488,6 +488,9 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
     function updateMinqty(itemid,minqty)
     {
         var data = "itemid="+itemid+"&minqty="+minqty;
+        if(minqty<=0)
+        alert("Minimum Quantity required => 1");
+        else{
         //alert(data);
         $.ajax({
 		      type:"post",
@@ -496,6 +499,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 		    }).done(function(data){
 
 		    });
+		    
+        }    
     }
 
 

@@ -6,6 +6,7 @@
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
 <?php echo '<script>var getcompanypriceurl ="' . site_url('quote/getcompanyprice') . '";</script>' ?>
+<?php echo '<script>var showpricehistoryurl ="' . site_url('quote/showpricehistory') . '";</script>' ?>
 
 <?php echo '<script>var itemcodeupdateurl="'.site_url('inventory/updateitemcode').'";</script>'?>
 <?php echo '<script>var itemnameupdateurl="'.site_url('inventory/updateitemname').'";</script>'?>
@@ -531,6 +532,11 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
     function updateMinqty(itemid,minqty)
     {
         var data = "itemid="+itemid+"&minqty="+minqty;
+        
+        if(minqty<=0)
+        alert("Minimum Quantity required => 1");
+        else{
+        
         //alert(data);
         $.ajax({
 		      type:"post",
@@ -539,8 +545,24 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 		    }).done(function(data){
 
 		    });
+        }    
     }
 
+     function showhistory(quoteid,companyid, itemid, companyname)
+    {
+        $.ajax({
+            type:"post",
+            url: showpricehistoryurl,
+            data: "quoteid="+quoteid+"&companyid="+companyid+"&itemid="+encodeURIComponent(itemid)
+        }).done(function(data){    
+        	
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory").html(arr[0]);
+            $("#itemcode").html(arr[1]);
+            $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
+            $("#historymodal").modal();
+        });
+    }
 
 //-->
 </script>
@@ -634,7 +656,9 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    	<form id="olditemform"  method="post" action="<?php echo site_url('quote/placebid'); ?>" enctype="multipart/form-data"> 
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
 									<input type="hidden" id="draft" name="draft" value=""/>
-									<?php foreach($quoteitems as $q)if(@$q->itemid){ //echo "<pre>"; print_r($q); die;?>
+									<?php 
+								//	echo '<pre>',print_r($quoteitems);die;
+									foreach($quoteitems as $q)if(@$q->itemid){ //echo "<pre>"; print_r($q); die;?>
 									<?php if(@$originalitems[$q->itemid]){?>
 							    	<tr>
 							    		<td>
@@ -655,7 +679,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->unit;?></td>
-							    		<td>$<?php echo $originalitems[$q->itemid]->ea;?></td>
+							    		<td>$<?php echo $originalitems[$q->itemid]->ea;?> 							    		
+							    		</td>
 							    		<td><?php echo round($originalitems[$q->itemid]->ea * $originalitems[$q->itemid]->quantity,2);?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->daterequested;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->notes;?></td>
@@ -675,6 +700,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		</td>
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
 							    		<td>
+							    		
 							    			<?php if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
 							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->ea!="" || @$q->companyitem->ea!="") echo "true"; else echo "false"; ?>','<?php echo @$q->isdiscount;?>')">
 							    				<i class="fa fa-search"></i>
@@ -693,8 +719,10 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			*Set List Price
 							    		</a><?php }?>
-							    			
-							    			
+							    	
+							    		<?php if(@$q->companyitem->company != '' && @$q->companyitem->itemid != '') { ?>		
+							    		<a href="javascript: void(0);" onclick="showhistory('<?php echo @$q->quote ?>','<?php echo @$q->companyitem->company ?>','<?php echo @$q->companyitem->itemid ?>','')"><i class="icon icon-search"></i>Price History</a>	
+							    		<?php }?>
 							    		</td>
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
@@ -1045,7 +1073,20 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                     </div>
                   </div>
   
-  
+<div id="historymodal" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	        <h4><span id='itemcode'></span></h4>
+	        <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
+	        <h3>Price History - <span id="historycompanyname"></span></h3>
+	    </div>
+	    <div class="modal-body" id="pricehistory" style="height:150px;overflow-y:auto;">
+	    </div>
+	 </div> 
+  </div>
+</div> 
+
   <div id="qtydiscount" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -1070,3 +1111,4 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
     </div>
     <!-- /.modal-dialog -->
   </div> 
+  	  

@@ -28,7 +28,7 @@ class Store extends CI_Controller
 		$_POST['category'] = $_POST['searchbreadcrumbcategory'];
 	    $username = urldecode($username);
 	    $company = $this->db->where('username',$username)->get('company')->row()->id;
-        $limit = 10;
+        $limit = 12;
         $this->items_model->set_keyword(false);
         $items = $this->storemodel->get_items($username, $manufacturer);
         
@@ -149,7 +149,7 @@ class Store extends CI_Controller
                 
             }
             $hasdiscount = $this->db
-                            ->where('itemid',$item->itemid)
+                            ->where(array('itemid'=>$item->itemid,'company'=>$item->company))
                             ->get('qtydiscount')
                             ->result();
 

@@ -867,13 +867,12 @@
        
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">Suppliers List</h4>        
+         <!-- <h4 class="semi-bold" id="myModalLabel">Suppliers List</h4>  -->      
         </div>
         
         <div class="modal-body"> 
        <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
-        <table class="table table-bordered  col-lg-10">
+       <!-- <table class="table table-bordered  col-lg-10">
 	  		<tr>
 	  			<td><strong>Supplier Company Name</strong></td>
 	  			<td><strong> Contact Name</strong></td>
@@ -889,7 +888,7 @@
 	  		</tr>
 	  		  <?php } ?>
 	  		
-	  	</table> 
+	  	</table> -->
 	  	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
 	  	</form><br>
 	  	

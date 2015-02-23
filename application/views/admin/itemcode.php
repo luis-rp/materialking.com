@@ -129,7 +129,11 @@ $(document).ready(function(){
     	var itemcodedefault = $("#itemcodedefault").val();
     	
     	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
-           	
+        
+    	if(minqtydefault<=0)
+        alert("Minimum Quantity required => 1");
+        else{        
+    	   	
     	$.ajax({
     		type:"post",
     		data: data,
@@ -140,6 +144,8 @@ $(document).ready(function(){
     			fetchmasterdefaults();
     		}
     	});
+    
+        }	 	
 
     	/*$("#addiscount").html('<table><tr><td>Qty</td><td>Price</td><td>&nbsp</td></td><tr><td><input type="text" name = "discqty" id="discqty"></td><td><input type="text" name = "discprice" id="discprice"></td><td><input type="button" value = "Add" onclick="addqtydiscount();"><input type="hidden" name="qtyitemid" id="qtyitemid" value="'+itemid+'" </td></tr><table>');*/
     }
@@ -156,7 +162,11 @@ $(document).ready(function(){
 		var itemcodedefault = $("#itemcodedefault"+id).val();  
     	
     	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
-           	
+        
+    	if(minqtydefault<=0)
+        alert("Minimum Quantity required => 1");
+        else{        
+    	   	
     	$.ajax({
     		type:"post",
     		data: data,
@@ -171,6 +181,7 @@ $(document).ready(function(){
     		}
     	});
     	
+        }	
     }
     
     

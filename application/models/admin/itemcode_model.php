@@ -27,7 +27,7 @@ class itemcode_model extends Model {
         if(@$_POST['searchcategory'])
             $where .= " AND i.category = '{$_POST['searchcategory']}'";
        
-        if($pa)    
+        if($pa && $pa!='1')    
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL)  ";   
             
         //$where .= " AND ai.purchasingadmin='$pa'";

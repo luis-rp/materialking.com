@@ -193,7 +193,7 @@ class site extends CI_Controller
     			if($supplier->com_lat!="" && $supplier->com_lng!=""){
     				if($supplier->company_type == 1)
     				{
-    					$img = '<img style="margin-top:-20px ; float: right;  width:105px; height:80px;" src="'.site_url('uploads/logo/thumbs/premium.jpg').'" alt="">';
+    					$img = '<img style="margin-top:-20px ; float: right;  width:105px; height:80px;" src="'.site_url('uploads/logo/thumbs/premium.png').'" alt="">';
     				}
     				else 
     				{
@@ -216,6 +216,7 @@ class site extends CI_Controller
     	$sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
     	$data['citystates'] = $this->db->query($sql)->result();
     	$data['states'] = $this->db->get('state')->result();
+    	$this->db->order_by("title", "asc"); 
     	$data['types'] = $this->db->get('type')->result();
     	$featured = $this->homemodel->get_featured_suppliers();
     	$data['featured'] = array();
@@ -2451,6 +2452,14 @@ class site extends CI_Controller
     					$result1->price = number_format($result1->price, 2);
     				}
     			}
+    			
+    			$resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $_POST['itemid'])->where('c.isdeleted', 0)->where('p.company', $_POST['companyid'])->get()->row();
+                if($resultprice){
+						
+                	$result1->price = number_format($resultprice->price, 2);	
+                	
+                }
+    			
     		}
 
     		$strput = "";
@@ -2519,6 +2528,15 @@ class site extends CI_Controller
     					$result1->price = number_format($result1->price, 2);
     				}
     			}
+    			
+    			$resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $purchasingadmin)->where('p.itemid', $_POST['itemid'])->where('c.isdeleted', 0)->where('p.company', $_POST['companyid'])->get()->row();
+                if($resultprice){
+						
+                	$result1->price = number_format($resultprice->price, 2);	
+                	
+                }
+    			
+    			
     		}
 
 			echo $result1->price;

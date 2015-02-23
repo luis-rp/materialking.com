@@ -292,7 +292,7 @@ $(function() {
 
 
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } ?>
+	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){ if(empty($invitations)){ ?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } } ?>
 			&nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url('admin/message/messages/'.$quote->id);?>">View Messages</a></h3>
 	<div class="box">
 		<div class="span12">

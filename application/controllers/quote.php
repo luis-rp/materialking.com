@@ -4444,4 +4444,93 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		} die;
 	}
 	
+	function showpricehistory ()
+    {
+        $company = $_POST['companyid'];
+        $itemid = $_POST['itemid'];
+        $quoteid = $_POST['quoteid'];
+
+        $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname
+			   	FROM
+				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
+				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
+				WHERE
+				ai.bid=a.id AND a.quote=q.id AND c.id=a.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id AND ai.itemid='$itemid' AND q.id='$quoteid'
+				AND a.company='$company' AND ai.itemid='$itemid'
+				";
+        $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname
+			   	FROM
+				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
+				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
+				WHERE
+				ai.award=a.id AND a.quote=q.id AND c.id=ai.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id AND ai.itemid='$itemid' AND q.id='$quoteid'
+				AND ai.company='$company' AND ai.itemid='$itemid'				
+				";
+        $sql = $sql1 . " UNION " . $sql2;
+        $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
+        $itemqry = $this->db->query($itemnamesql);
+        $itemnameResult = $itemqry->result_array();
+
+        $query = $this->db->query($sql);
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+
+			$companyName = (@$result[0]->title) ? @$result[0]->title : '';
+			$paName = (@$result[0]->fullname) ? @$result[0]->fullname : '';
+            $itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
+            /*$avgforpricedays = $this->itemcode_model->getdaysmeanprice($itemid);
+            $avgforpricedays = number_format($avgforpricedays, 2);
+            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai,
+            		" . $this->db->dbprefix('award') . " a
+				  WHERE ai.itemid='$itemid' AND ai.award=a.id AND ai.company='$company'
+				  AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+			";
+            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
+            		" . $this->db->dbprefix('bid') . " b
+				  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND b.company='$company'
+				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+			";
+            //die($sqlavg);
+            
+            $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
+            $companyavgpricefordays = number_format($companyavgpricefordays, 2);
+            if ($companyavgpricefordays > $avgforpricedays)
+                $overalltrend = 'HIGH';
+            elseif ($companyavgpricefordays < $avgforpricedays)
+                $overalltrend = 'LOW';
+            else
+                $overalltrend = 'GOOD';
+            $overalltrend = "<b><font color='red'>$overalltrend</font></b>";
+            $pricedays = $this->settings_model->get_current_settings()->pricedays;
+            $trendstring = 'Price Trend: ' . $overalltrend .
+            				"(item avg for $pricedays days: $avgforpricedays,
+            				company avg price: $companyavgpricefordays.)<br/>";
+            if ($avgforpricedays == 0)
+                $trendstring .= 'Item not awarded for set days.';
+            if ($companyavgpricefordays == null)
+                $trendstring .= 'Item not awarded to this company.';
+
+*/
+            $ret = '';
+            $ret .= '<table class="table table-bordered">';
+            $ret .= '<tr><th>Date</th><th>Status</th><th>PO#</th><th>Qty.</th><th>Price</th></tr>';
+            foreach ($result as $item)
+            {
+                /*if ($item->ea > $avgforpricedays)
+                    $trend = 'high';
+                elseif ($item->ea < $avgforpricedays)
+                    $trend = 'low';
+                else
+                    $trend = 'good';
+                if ($avgforpricedays == null)
+                    $trend = 'NO DATA';*/
+                $ret .= '<tr><td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quoted . '</td><td>' . $item->ponum . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .
+                 '</td></tr>';
+            }
+            $ret .= '</table>';
+            echo $ret.'*#*#$'.$itemname.'*#*#$'.$companyName.'*#*#$'.$paName;
+        }
+        die();
+    }
 }

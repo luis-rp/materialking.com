@@ -386,7 +386,7 @@ function changeduedate(count,invoicenum,datedue)
                     				$ <input placeholder='Enter Amount' type="text" name="amountpaid" id="amountpaid_<?php echo $i;?>" value="<?php // echo $item->amountpaid;?>" >
                     				<button onclick="update_bill_payment_status('<?php echo $i;?>')">Save</button>
                     				<?php }else{//verified payment, show notes?>
-                    				/ <?php echo $item->paymenttype;?> / <?php echo $item->refnum;?>
+                    				/ <?php echo (@$item->paymenttype) ? $item->paymenttype : ''?> / <?php echo (@$item->refnum) ? $item->refnum : '';?>
                     				<?php }?>
                     				<br/><a href="javascript:void(0)" onclick="showhistorymodal('<?php echo $item->id;?>');">view payment history</a>
                     				<?php if($item->paymentstatus=='Requested Payment'){?>

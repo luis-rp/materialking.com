@@ -127,6 +127,10 @@
     function updateMinqty(itemid,minqty)
     {
         var data = "itemid="+itemid+"&minqty="+minqty;
+        
+        if(minqty<=0)
+        alert("Minimum Quantity required => 1");
+        else{
         //alert(data);
         $.ajax({
 		      type:"post",
@@ -135,6 +139,7 @@
 		    }).done(function(data){
 
 		    });
+        }	    
     }
     function updateIteminstock(itemid,instock)
     {

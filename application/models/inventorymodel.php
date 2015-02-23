@@ -33,7 +33,8 @@ class Inventorymodel extends Model
 		if(@$_POST['activdeal'])
 		{
 		//$dealqty="JOIN (select * from $tq  where $tq.company=1  group by company,itemid) qty2 ON $tci.itemid=qty2.itemid";	
-		$dealqty="JOIN ".$td." ON ($tci.company=$td.company AND $tci.itemid=$td.itemid)";				   		
+		$dealqty="JOIN ".$td." ON ($tci.company=$td.company AND $tci.itemid=$td.itemid)";		
+		$where .= " AND dealactive='1' ";		   		
 		}
 		else 
 		{
@@ -132,6 +133,7 @@ class Inventorymodel extends Model
 		$ti = $this->db->dbprefix('item');
 		$tci = $this->db->dbprefix('companyitem');
 		$tq = $this->db->dbprefix('qtydiscount');
+		$td = $this->db->dbprefix('dealitem');
 		$where = " WHERE  1=1 ";
 		//$noleftjoin = "";
 		$joinqty="";
@@ -143,6 +145,21 @@ class Inventorymodel extends Model
 		    //$this->db->like('itemname', $_POST['searchitem']);
 		    //$this->db->or_like('itemcode', $_POST['searchitem']);
 		}
+		
+		$dealqty="";
+		
+		if(@$_POST['activdeal'])
+		{
+		//$dealqty="JOIN (select * from $tq  where $tq.company=1  group by company,itemid) qty2 ON $tci.itemid=qty2.itemid";	
+		$dealqty= "JOIN ".$td." ON ($tci.company=$td.company AND $tci.itemid=$td.itemid)";		
+		$where .= " AND dealactive='1' ";		   		
+		}
+		else 
+		{
+		$dealqty="";
+		
+		}
+		
 		if(@$_POST['category'])
 		{
 		    $where .= " AND category='".$_POST['category']."' ";
@@ -195,7 +212,7 @@ class Inventorymodel extends Model
 				}
 		}	
 		$sql = "SELECT $ti.* FROM $ti 
-		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty AND $tci.company=$company AND $tci.type='Supplier'
+		{$noleftjoin} JOIN $tci ON $tci.itemid=$ti.id $joinqty $dealqty AND $tci.company=$company AND $tci.type='Supplier'
 		        $where";		
 		
 		$items = $this->db->query($sql)->result();		

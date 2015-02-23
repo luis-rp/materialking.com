@@ -10,7 +10,7 @@ class Storemodel extends Model
     
     public function get_items($company, $manufacturer) 
     {
-        $limit = 10;
+        $limit = 12;
         $return = new stdClass();
 
         if (!isset($_POST['pagenum']))
