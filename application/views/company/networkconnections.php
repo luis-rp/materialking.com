@@ -54,6 +54,9 @@ function preloadoptions(fromid)
 						<form id="profileform" name="profileform" class="animated fadeIn" method="post" 
 								action="<?php echo site_url('company/savepurchasingtier');?>">
 						<table id="datatable" class="table no-more-tables general">
+						<?php
+						if(isset($admins) && count($admins) > 0)
+						{ ?>
 							<tr>
 								<th>&nbsp;</th>
 								<th>Company</th>
@@ -126,6 +129,7 @@ function preloadoptions(fromid)
 								
 								<td colspan="10" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>
 							</tr>
+						<?php } else { echo  '<div class="alert alert-info"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Network Connections.</div></div>'; } ?>	
 						</table>
 						</form>
 					</div>

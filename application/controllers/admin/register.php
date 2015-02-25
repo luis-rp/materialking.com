@@ -393,6 +393,26 @@ class Register extends CI_Controller
 		$this->db->where('regkey',$regkey);
 		$this->db->update('users',$_POST);
 		
+		$insert = array();
+        $insert['purchasingadmin'] = $u->id;            		
+        $insert['title'] = 'Shop-Inventory';
+        $insert['description'] = 'Shop-Inventory';
+        $insert['address'] = $_POST['address'];
+        $insert['startdate'] = date('Y-m-d');
+        $insert['creation_date'] = date('Y-m-d');
+        $this->db->insert('project',$insert);
+        $lastid = $this->db->insert_id();
+            		           		
+        $pinsert = array();
+        $pinsert['project'] = $lastid;
+        $pinsert['purchasingadmin'] = $u->id;            		
+        $pinsert['code'] = 'Inventory Code 1';
+        $pinsert['cost'] = '1500';
+        $pinsert['cdetail'] = 'Inventory Code 1';
+        $pinsert['creation_date'] = date('Y-m-d');
+        $this->db->insert('costcode',$pinsert);
+        
+								
 		$settings = (array)$this->settings_model->get_setting_by_id (1);
 		$settings['purchasingadmin'] = $u->id;
 		$settings['adminemail'] = $u->email;

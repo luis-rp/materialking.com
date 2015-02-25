@@ -193,7 +193,7 @@ class site extends CI_Controller
     			if($supplier->com_lat!="" && $supplier->com_lng!=""){
     				if($supplier->company_type == 1)
     				{
-    					$img = '<img style="margin-top:-20px ; float: right;  width:105px; height:80px;" src="'.site_url('uploads/logo/thumbs/premium.png').'" alt="">';
+    					$img = '<img style="margin-top:-10px ; float: right;  width:105px; height:80px;" src="'.site_url('uploads/logo/thumbs/premium.png').'" alt="">';
     				}
     				else 
     				{
@@ -850,13 +850,17 @@ class site extends CI_Controller
         foreach ($items as $item)
         {
         	
-        	$query6 = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+        	$query6 = "SELECT ci.ea as minea , ci.price 
+        			 	FROM ".$this->db->dbprefix('companyitem')." ci,".$this->db->dbprefix('company')." c
+        			 	where c.id=ci.company AND c.isdeleted=0 AND ci.itemid='".$item->id."' and ci.ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
             $min = $this->db->query($query6)->row();
             if($min){
             	$item->callminprice = $min->price;
             }
 
-            $query7 = "SELECT ea as maxea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            $query7 = "SELECT ci.ea as maxea , ci.price 
+            		   FROM ".$this->db->dbprefix('companyitem')." ci,".$this->db->dbprefix('company')." c 
+            		   where  c.id=ci.company AND c.isdeleted=0 AND ci.itemid='".$item->id."' and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
 
             $max = $this->db->query($query7)->row();
 
@@ -864,13 +868,18 @@ class site extends CI_Controller
             	$item->callmaxprice = $max->price;
             }
         	
-            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."'";
+            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." ci ,".$this->db->dbprefix('company')." c  where c.id=ci.company AND c.isdeleted=0 AND itemid='".$item->id."'";
             $minmax = $this->db->query($query)->row();
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             $item->price = $minmax->price;
 
-            $cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
+            $cquery = "SELECT count(ci.company) countitem 
+            			FROM ".$this->db->dbprefix('companyitem')." ci 
+            			join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
+            			join ".$this->db->dbprefix('company')." c on c.id=ci.company
+            			WHERE c.isdeleted=0 AND ci.itemid = ".$item->id." and ci.type='Supplier' 
+            			group by ci.itemid";
             $countofitems = $this->db->query($cquery)->row();
             //echo "<pre>",print_r($countofitems->countitem); die;
             if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -1108,14 +1117,20 @@ class site extends CI_Controller
         
         foreach ($items as $item)
         {
-            $query = "SELECT ea as minea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' AND ea > '0')";
+            $query = "SELECT ci.ea as minea , ci.price 
+            		  FROM ".$this->db->dbprefix('companyitem')." ci, ".$this->db->dbprefix('company')." c 
+            		  where c.id = ci.company AND c.isdeleted = 0 AND ci.itemid='".$item->id."' 
+            		  and ci.ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' AND ea > '0')";
             $min = $this->db->query($query)->row();
             if($min){
             	$item->minprice = $min->minea;
             	$item->callminprice = $min->price;
             }
 
-            $query2 = "SELECT ea as maxea , price FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' and ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            $query2 = "SELECT ci.ea as maxea , ci.price 
+            		   FROM ".$this->db->dbprefix('companyitem')."  ci, ".$this->db->dbprefix('company')." c 
+            		   where c.id = ci.company AND c.isdeleted = 0 AND ci.itemid='".$item->id."' 
+            		   and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
 
             $max = $this->db->query($query2)->row();
 
@@ -1124,7 +1139,11 @@ class site extends CI_Controller
             	$item->callmaxprice = $max->price;
             }
 
-			$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' and ci.ea > 0 group by ci.itemid";
+			$cquery = "SELECT count(ci.company) countitem 
+						FROM ".$this->db->dbprefix('companyitem')." ci 
+					    join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
+					    join ".$this->db->dbprefix('company')." c on ci.company=c.id
+					    WHERE c.isdeleted = 0 AND ci.itemid = ".$item->id." and ci.type='Supplier' and ci.ea > 0 group by ci.itemid";
         	$countofitems = $this->db->query($cquery)->row();
         	//echo "<pre>",print_r($countofitems->countitem); die;
         	if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -2650,7 +2669,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Itemname:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				
     				if($_POST['view']=='profile'){
     				
@@ -2753,7 +2772,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Itemcode:'.$item->itemcode.'</td></tr><tr><td>Itemname:'.$item->itemname.'</td></tr><tr><td>Price:'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">ViewItem</a></td></tr>';
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Itemcode:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Itemname:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2857,9 +2876,9 @@ class site extends CI_Controller
     				}
 
     				$itemdata = '<table class="table table-bordered;" style="background-color:white;width:98%;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td>
-    				<strong>Itemcode:</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:</strong>'.$item->itemname.'</td></tr>
-    				<tr><td><strong>Price:</strong>'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">
-    				<strong>ViewItem</strong></a></td></tr>';
+    				<strong>Itemcode:&nbsp;</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:&nbsp;</strong>'.$item->itemname.'</td></tr>
+    				<tr><td><strong>Price:&nbsp;</strong>$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">
+    				<strong>View Item</strong></a></td></tr>';
     				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';

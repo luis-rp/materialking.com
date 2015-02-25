@@ -1108,23 +1108,17 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		        <input type="checkbox" class="nonexist" value="<?php echo $c->id;?>" />
     					    		&nbsp;&nbsp; <?php echo $c->title;?>
 					    		<br/>
-					    	<?php }  }?>
-					    	
-					    	
-					    	
-					    </div><br/>
-					     
-				    </div>
-				   
+					    	<?php }  }?>					    	
+					    </div>
+					    <br/>					     
+				    </div>				   
 				</div>
 			    <?php if($i){?>
-		    	<br/><br/>
-		    	<input name="add" type="submit" class="btn btn-primary" value="Submit Proposal" onclick="return invite();"/>
-		    	<?php }?>
-
-		    <?php }?>
-	    
-	    </div>
+		    	 <div class="controls">
+		    		<input name="add" type="submit" class="btn btn-primary" value="Submit Proposal" onclick="return invite();"/>
+		    	</div>
+		    	<?php } }?>	    
+	    </div>    
     </div>
    </div>
  </div>  

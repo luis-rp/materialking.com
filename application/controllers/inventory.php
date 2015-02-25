@@ -1137,4 +1137,47 @@ class Inventory extends CI_Controller
     	echo "fail"; die;
     }
     
+    function showbidpricehistory()
+    {
+    	$company = $this->session->userdata('company')->id;
+        $itemid = $_POST['itemid'];
+        //$quoteid = $_POST['quoteid'];
+
+        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject
+			   	FROM
+				pms_bid a join pms_biditem ai  on ai.bid=a.id join pms_quote q on a.quote = q.id left join pms_award aw on aw.quote = q.id left join pms_users u on  q.purchasingadmin=u.id WHERE a.company='$company' AND ai.itemid='$itemid'	";
+      
+        $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
+        $itemqry = $this->db->query($itemnamesql);
+        $itemnameResult = $itemqry->result_array();
+		$itemname = '';
+        $query = $this->db->query($sql);
+        $itemname = 'Item :'.(@$itemnameResult[0]['itemname']) ? @$itemnameResult[0]['itemname'] : '' ;
+        if ($query->num_rows > 0)
+        {
+            $result = $query->result();
+
+			$companyName = (@$result[0]->title) ? @$result[0]->title : '';
+			$paName = (@$result[0]->fullname) ? @$result[0]->fullname : '';           
+          
+            $ret = '';
+            $ret .= '<table class="table table-bordered">';
+            $ret .= '<tr><th>Company</th><th>PO#</th><th>Quote#</th><th>Date</th><th>Qty.</th><th>Price</th><th>Quoted</th><th>Awarded</th></tr>';
+            
+            foreach ($result as $item)
+            {
+            	$qdate =  ($item->quotedate != '') ? date('m/d/Y',strtotime($item->quotedate)) : '-';
+            	$awarddate =  ($item->awarddate != '') ? date('m/d/Y',strtotime($item->awarddate)) : '-';
+            	
+                $ret .= '<tr><td>'.$item->fullname.'</td><td>'.$item->ponum.'</td><td>'.$item->subject.'</td> <td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .'<td>' . $qdate . '</td><td>'. $awarddate .'</td></tr>';
+            }
+            $ret .= '</table>';
+            echo $ret.'*#*#$'.$itemname;
+        }
+        else 
+        {
+        	echo 'No Bid History Found.'.'*#*#$'.$itemname;
+        }
+        die();
+    }
 }

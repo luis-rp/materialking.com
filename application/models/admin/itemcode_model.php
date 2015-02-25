@@ -459,11 +459,21 @@ class itemcode_model extends Model {
     	$name=implode(",",$_FILES['UploadFile']['name']);
     	else 
     	$name = "";
+    	
+    	if(@$_POST['filename'])
     	$filename=implode(",",$_POST['filename']);   
+    	else 
+    	$filename = "";
+    	
     	$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
      
+    	if(@$_POST['category'][0])
     	$primarycategory = $_POST['category'][0];
+    	else 
+    	$primarycategory = "";
+    	
+    	
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -498,11 +508,13 @@ class itemcode_model extends Model {
         $this->db->insert('item', $options);
         $id = $this->db->insert_id();
 		
+        if(@$_POST['category'][0]){    	
         foreach ($_POST['category'] as $category){
         	$options2 = array();
         	$options2['itemid'] = $id;
         	$options2['categoryid'] = $category;
         	$this->db->insert('item_category', $options2);
+        }
         }
         
         $categories = $this->input->post('catid');
@@ -561,8 +573,17 @@ class itemcode_model extends Model {
 
 // updating cost code
     function updateItemcode($id) {  	
+    	
+    	if(@$_FILES['UploadFile']['name'])
     	$name=implode(",",$_FILES['UploadFile']['name']);
-    	$filename=implode(",",$_POST['filename']);  
+    	else 
+    	$name = "";
+    	
+    	if(@$_POST['filename'])
+    	$filename=implode(",",$_POST['filename']);   
+    	else 
+    	$filename = "";
+    	
     	$orgname=$this->db->get_where('item',array('id'=>$this->input->post('id')))->row();
     	if(@$name && $orgname->files!="")
     	{
@@ -582,7 +603,11 @@ class itemcode_model extends Model {
 		$tag = $this->input->post('tags');
     	$tag = str_replace("\n",",",$tag);
     	
+    	if(@$_POST['category'][0])
     	$primarycategory = $_POST['category'][0];
+    	else 
+    	$primarycategory = "";
+    	
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -631,14 +656,15 @@ class itemcode_model extends Model {
 
         $this->db->where('itemid', $this->input->post('id'));        
         $this->db->delete('item_category');
-
+		
+        if(@$_POST['category'][0]){
         foreach ($_POST['category'] as $category){
         	$options2 = array();
         	$options2['itemid'] = $this->input->post('id');
         	$options2['categoryid'] = $category;
         	$this->db->insert('item_category', $options2);
         }
-        
+        }
         
         if(!$options['instore'])
         {

@@ -279,13 +279,13 @@ class Homemodel extends Model {
         $where = "";
         if ($this->keyword) {
             $lookup = "  (`contact` like '%$this->keyword%' OR `address` like '%$this->keyword%' or `title` like '%$this->keyword%')";
-            $where .= " WHERE " . $lookup;
+            $where .= " AND  " . $lookup;
         }
 
         $this->set_type_condition($where);
 
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('company') . $where;
+        $query = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE  isdeleted=0 ". $where;
 
         $return->totalresult = $this->db->query($query)->num_rows();
 

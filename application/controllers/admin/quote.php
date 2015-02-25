@@ -1047,6 +1047,12 @@ class quote extends CI_Controller
             		$insert['status'] = 'Active';
             		$this->db->insert('network',$insert);
             		
+            		$pinsert = array();
+            		$pinsert['company'] = $lastid;
+            		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
+            		$pinsert['creditonly'] = '1';
+            		$this->db->insert('purchasingtier',$pinsert);
+            		
             		}
                 } //$invitees=rtrim($invitees,",");
 

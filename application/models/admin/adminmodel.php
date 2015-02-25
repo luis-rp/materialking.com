@@ -113,7 +113,26 @@ class adminmodel extends Model
 			//$options['usertype_id'] = $this->input->post('usertype_id');
 			//echo "<pre>",print_r($options); die;
 		$this->db->insert ( 'users', $options );
-		$id = $this->db->insert_id ();
+		$id = $this->db->insert_id();
+		
+		$insert = array();
+        $insert['purchasingadmin'] = $this->session->userdata('purchasingadmin');            		
+        $insert['title'] = 'Shop-Inventory';
+        $insert['description'] = 'Shop-Inventory';
+        //$insert['address'] = $_POST['address'];
+        $insert['startdate'] = date('Y-m-d');
+        $insert['creation_date'] = date('Y-m-d');
+        $this->db->insert('project',$insert);
+        $lastid = $this->db->insert_id();
+            		           		
+        $pinsert = array();
+        $pinsert['project'] = $lastid;
+        $pinsert['purchasingadmin'] = $this->session->userdata('purchasingadmin');           		
+        $pinsert['code'] = 'Inventory Code 1';
+        $pinsert['cost'] = '1500';
+        $pinsert['cdetail'] = 'Inventory Code 1';
+        $pinsert['creation_date'] = date('Y-m-d');
+        $this->db->insert('costcode',$pinsert);
 		
 		/*if($options['usertype_id'] == 2)
 		{

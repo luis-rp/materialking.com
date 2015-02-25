@@ -423,7 +423,7 @@ $( document ).tooltip();
                       <div class="row">
                         <?php if($status==1) { foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
-                        <?php if(isset($item->itemcode)) {
+                        <?php if(isset($item->itemcode)) { 
                         $count=strlen($item->itemcode); if($count<=20){ ?>
                         <h2 class="title_top1">
                         <?php //echo $item->itemcode;
@@ -818,11 +818,11 @@ $( document ).tooltip();
 
                 <?php }?>
 
-
+               
                      <?php if(@$dealfeed){//NOT USED NOW?>
                     <div class="widget contact">
                     <label for="radirange" class="control-label">
-                                <h5 class="block-title">Deals by Supplier</h5>
+                                <h5 class="block-title">Supplier Deals</h5>
                             </label>
                         <div class="content_sup">
 
@@ -841,37 +841,44 @@ $( document ).tooltip();
                                 $remaining = "$days days, $hours hrs, $minuts mins";
                         	?>
                         	<tr>
-                        		<td colspan="3">
+                        		<td style="text-align:center">
                         		<a href="<?php echo site_url("site/supplier/".$di->companyusername);?>"><?php echo $di->companyname?></a>
                         		</td>
-                        	</tr>
+                        	</tr>                     	
+                        	
                         	<tr>
-                        		<td>
+                        		<td style="text-align:center">
                         		<?php if($di->image && file_exists('./uploads/item/thumbs/'.$di->image)) {?>
-                        			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
+                        			<img src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
                         			<?php $imgName = site_url('uploads/item/thumbs/'.$di->image); ?>
                         		<?php } else {?>
-                        		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
+                        		<img width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
                         		<?php $imgName = site_url('uploads/item/big.png'); ?>
                         		<?php }?>
                         		</td>
-                        		<td>
+                        		</tr>
+                        		<tr>
+                        		<td style="text-align:center">
                         		<a href="<?php echo site_url("site/item/".$di->url);?>"><?php echo $di->itemname?></a>
-                        		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
+                        		
                         		</td>
-                        		<td>
+                        		</tr>
+                        		<tr>
+                        		<td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">
+                        		($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>)
                         		<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName;?>',<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1)">
                                     <i class="icon icon-plus"></i>
                                 </a>
                                 </td>
                         	</tr>
+                        	                       	
                         	<tr>
-                        		<td colspan="3"><?php echo $remaining;?> remaining</td>
+                        		<td style="text-align:center"><?php echo $remaining;?> remaining</td>
                         	</tr>
                         	<tr>
-                        		<td colspan="3">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
+                        		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
                         	</tr>
-                        	<tr><td colspan="6">&nbsp;</td></tr>
+                        	
                         	<?php }?>
                         	</table>
 
@@ -937,7 +944,7 @@ $( document ).tooltip();
         </div>
         <div class="modal-footer">
           <input type="hidden" name="hiddenprice" id="hiddenprice" />
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close </button>
         </div>
       </div>
       <!-- /.modal-content -->

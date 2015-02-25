@@ -201,7 +201,9 @@ $(document).ready(function(){
 			      	<a href="<?php echo site_url('uploads/quotefile/'.$bid->quotefile);?>" target="_blank">View Attachment</a>
 			      <?php }?>
 			      </strong>
-			      
+			       <?php if($bid->creditonly=='1') {?>
+						 &nbsp;&nbsp;&nbsp;<span style="color:red;font-weight:bold;">*Credit Card Only Account.</span>
+				  <?php } ?>
 				  <?php if($bid->draft=='Yes'){ ?>
 				    <span class="label label-pink">Draft</span>
 				  <?php }?>

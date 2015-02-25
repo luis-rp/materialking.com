@@ -711,7 +711,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
-							    		<?php if(@$q->ea=="" || @$q->ea==0){ ?><a href="javascript:void(0)" 
+							    		<?php if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
 							    		'".htmlentities(@$q->companyitem->itemcode)."',
 							    		'".htmlentities(@$q->companyitem->itemname)."',

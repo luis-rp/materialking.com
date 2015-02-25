@@ -61,6 +61,7 @@
 
 <?php echo '<script>var compricedeleteurl="'.site_url('inventory/compricedelete').'";</script>'?>
 
+<?php echo '<script>var showbidpricehistoryurl ="' . site_url('inventory/showbidpricehistory') . '";</script>' ?>
 
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
@@ -605,6 +606,22 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
     	}
     }
 
+     function showbidhistory(itemid)
+    {
+    	$("#itemcode").html('');
+        $.ajax({
+            type:"post",
+            url: showbidpricehistoryurl,
+            data: "itemid="+itemid
+        }).done(function(data){    
+        	//alert(data);
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory").html(arr[0]);
+            $("#itemcode").html(arr[1]);
+          //  $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
+            $("#historymodal").modal();
+        });
+    }
 </script>
 <?php echo '<script>var formurl = "'.site_url('inventory/showeditform').'";</script>';?>
 <?php echo '<script>var dealurl = "'.site_url('inventory/showdealform').'";</script>';?>
@@ -798,6 +815,7 @@ function clearall(id)
                                         <tbody>
 							              <?php
 									    	$i = 0;
+									    	//echo '<pre>',print_r($items);
 									    	foreach($items as $item)
 									    	{
 									    		//echo "<pre>"; print_r($item); die;
@@ -805,7 +823,11 @@ function clearall(id)
 									      ?>
                                             <tr>
                                                 <!-- <td class="v-align-middle"><?php echo $item->itemcode;?></td> -->
-                                                <td class="v-align-middle"><span id="name<?php echo $item->id;?>"><?php echo $item->itemname;?></span></td>
+                                                <td class="v-align-middle">
+                                                <span id="name<?php echo $item->id;?>"><?php echo $item->itemname;?></span>
+                                                <br>
+                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$item->id ?>');"><i class="icon icon-search"></i>Price History</a>	
+                                                </td>
 
                                                 <td class="v-align-middle">
                                                 	<input type="text" class="form-control" placeholder="Itemcode" id="itemcodedata<?php echo $item->id;?>"
@@ -1158,3 +1180,19 @@ function clearall(id)
                       </form>
                     </div>
                   </div>
+                  
+  
+<div id="historymodal" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+	<div class="modal-dialog" style="width:70%">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	        <h4><span id='itemcode'></span> - Bid History </h4>
+	        <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
+	        <!--<h3><span id="historycompanyname"></span> - Bid History </h3>-->
+	    </div>
+	    <div class="modal-body" id="pricehistory" style="height:250px;overflow-y:auto;">
+	    </div>
+	 </div> 
+  </div>
+</div> 
+                  

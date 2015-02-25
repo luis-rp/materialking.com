@@ -546,13 +546,9 @@ $(document).ready(function(){
                      <div class="control-group noxls">
 						<label class="control-label">Add Files</label>
 						 <div class="controls">
-							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
-						    <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
-						    <?php }?>
-						    
-						      <?php //echo "<pre>"; print_r(@$this->validation->files); die; ?>
-                             <?php if(@$this->validation->files)
-                                       { 
+						 
+						  <?php if(@$this->validation->files)
+                                       { echo "<br /><strong>Existing Files :</strong>&nbsp;<br />";
                                        	$files=explode(',',@$this->validation->files);
                                        	$filecount=count($files); 
                                        	   if(@$this->validation->filename)
@@ -565,20 +561,23 @@ $(document).ready(function(){
                                                    for ($x=0; $x<$filecount; $x++)
                                                      {                                        
                                                        if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
-                                    <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $filename[$x]; ?></a>  
+                                    <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].","; ?></a>  
                                               <?php    } } } }?>                          
+						    <?php if(isset($this->validation->filename)) echo "<br /><strong>Existing Alternate Text for File :</strong>&nbsp;<br/ >".$this->validation->filename; ?>
+						 <br />
+							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
+						    <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />
+						    <?php }?>
+						      <label>Alternate Text for File</label>
+						    <input type="text" name="filename[]" id="filename" class="span10">	
 						    
-					         <label>File Name</label>
-						    <input type="text" name="filename[]" id="filename" class="span10" value="<?php if(isset($this->validation->filename)) echo $this->validation->filename; else echo "";?>">
-						    
-							<div id="moreUploads">												
-							</div>
+						    <div id="moreUploads"></div>																			
 							<div id="moreUploadsLink" style="display:none;">
-							
-							<a href="javascript:addFileInput();">Add another File</a>
-							
-							
-							</div>
+								<a href="javascript:addFileInput();">Add another File</a>
+							</div>	
+											 
+                            
+					      							
 						</div>
 					</div>
                                         

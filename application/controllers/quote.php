@@ -530,6 +530,11 @@ class Quote extends CI_Controller
 			}
 			$price = $item->ea;
 			
+			$item->priceset = 0;
+			
+			if(@$companyitem->ea!="" || @$companyitem->ea!=0){
+			$item->priceset = 1;
+			}
 			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
 				    where purchasingadmin='$quote->purchasingadmin' AND company='" . $company->id . "' AND itemid='" . $item->itemid . "' ";				
 			$tier1 = $this->db->query($sql1)->row();
@@ -540,6 +545,7 @@ class Quote extends CI_Controller
 					
 					$item->ea = $tier1->price;
 					$item->ispriceset = 1;
+					$item->priceset += 1;
 				}
 				
 				if($tier1->qty){
@@ -547,7 +553,9 @@ class Quote extends CI_Controller
 					$this->db->where('itemid',$item->itemid);
 					$this->db->where('qty',$tier1->qty);
 					$qtyresult = $this->db->get('qtydiscount')->row();
-					$item->ea = $qtyresult->price;
+					if($qtyresult){
+						$item->ea = $qtyresult->price;						
+					}
 				}
 				
 				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
@@ -981,6 +989,13 @@ class Quote extends CI_Controller
 			        $item->itemname = $orgitem->itemname;
 				$item->showinventorylink = true;
 			}
+			
+			$item->priceset = 0;
+			
+			if(@$companyitem->ea!="" || @$companyitem->ea!=0){
+			$item->priceset = 1;
+			}
+			
 			$price = $item->ea;
 			
 			$sql1 = "select tier,qty,price from " . $this->db->dbprefix('purchasingtier_item') . "
@@ -992,6 +1007,7 @@ class Quote extends CI_Controller
 				if(@$tier1->price){					
 					$item->ea = $tier1->price;
 					$item->ispriceset = 1;
+					$item->priceset += 1;
 				}
 				
 				if($tier1->qty){
@@ -999,7 +1015,9 @@ class Quote extends CI_Controller
 					$this->db->where('itemid',$item->itemid);
 					$this->db->where('qty',$tier1->qty);
 					$qtyresult = $this->db->get('qtydiscount')->row();
-					$item->ea = $qtyresult->price;
+					if($qtyresult){
+					$item->ea = $qtyresult->price;					
+					}
 				}
 				
 				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "

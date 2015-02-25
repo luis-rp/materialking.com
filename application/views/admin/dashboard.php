@@ -1,6 +1,6 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <?php if($this->session->userdata('managedprojectdetails')){?>
-
+    
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins.js"></script>
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/sparkline/jquery.sparkline.min.js"></script>
@@ -85,9 +85,8 @@
 	</script>
 
 <?php }?>
-
-
-<link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
+         
+<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/realia-blue.css" type="text/css" id="color-variant-default">     <link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
 <script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.js'></script>
 <script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
 <script>
@@ -162,6 +161,9 @@
 
  <script type="text/javascript">
 	 $(document).ready(function(){
+	 	
+	 InitMap();
+	 	
  tour4 = new Tour({
 	  steps: [
 	  {
@@ -195,7 +197,95 @@
 		 tour4.end();
 			}
 			
+
+	function InitMap() {
+        google.maps.event.addDomListener(window, 'load', LoadMap);
+    }		
 			
+			
+        function LoadMap() {
+        var locations = new Array(
+            <?php echo $latlongs; ?>
+        );
+        var markers = new Array();
+        var mapOptions = {
+            center: new google.maps.LatLng(<?php echo $mapcenter; ?>),
+            zoom: 9,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            scrollwheel: false
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+
+        <?php foreach ($popups as $k => $popup) { ?>
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(<?php echo $k; ?>),
+            map: map,
+            icon: 'http://html.realia.byaviators.com/assets/img/marker-transparent.png'
+        });
+
+        var myOptions = {
+            content: '<?php echo $popup; ?>',
+            disableAutoPan: false,
+            maxWidth: 0,
+            pixelOffset: new google.maps.Size(-146, -190),
+            zIndex: 100,
+            closeBoxMargin: "",
+            closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+            infoBoxClearance: new google.maps.Size(1, 1),
+            boxStyle: { 
+                background: "#fff"
+                ,opacity: 1
+               },
+            position: new google.maps.LatLng(location[0], location[1]),
+            isHidden: false,
+            pane: "floatPane",
+            enableEventPropagation: false
+        };
+        marker.infobox = new InfoBox(myOptions);
+        marker.infobox.isOpen = false;
+
+        var myOptions = {
+            draggable: true,
+            content: '<div class="marker"><div class="marker-inner"></div></div>',
+            disableAutoPan: true,
+            closeBoxURL: "",
+            pixelOffset: new google.maps.Size(-21, -58),
+            position: new google.maps.LatLng(location[0], location[1]),
+            isHidden: false,
+            // pane: "mapPane",
+            enableEventPropagation: true
+        };
+        marker.marker = new InfoBox(myOptions);
+        marker.marker.open(map, marker);
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, "click", function(e) {
+            var curMarker = this;
+
+            $.each(markers, function(index, marker) {
+                // if marker is not the clicked marker, close the marker
+                if (marker !== curMarker) {
+                    marker.infobox.close();
+                    marker.infobox.isOpen = false;
+                }
+            });
+
+            if (curMarker.infobox.isOpen === false) {
+                curMarker.infobox.open(map, this);
+                curMarker.infobox.isOpen = true;
+                map.panTo(curMarker.getPosition());
+            } else {
+                curMarker.infobox.close();
+                curMarker.infobox.isOpen = false;
+            }
+        });
+        <?php } ?>
+
+    }
+    
+    
 	function readnotification(id)
 	{
 				$.ajax({
@@ -242,7 +332,7 @@
           <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a></div>
           <?php } } ?>
-			<div class="well">
+			<div class="well" style="height:500px;">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">
 						<label for="inputEmail" class="control-label">
@@ -268,8 +358,20 @@
 					</div>
 
 				</form>
+									
+			<div class="map-wrapper" style="float:left;width:700px;height:400px;">
+			<div class="map">
+            <div id="map" style="height:400px;width:700px;" class="map-inner" ></div>
+            </div>
 			</div>
-
+				
+			</div>			
+			
+			
+			
+			</div>
+			
+			
 			<br/>
 			<div class="well span4" id="step2">
              
@@ -867,12 +969,12 @@
        
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-         <!-- <h4 class="semi-bold" id="myModalLabel">Suppliers List</h4>  -->      
+          <h4 class="semi-bold" id="myModalLabel">Email Invitation</h4>     
         </div>
         
         <div class="modal-body"> 
-       <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
-       <!-- <table class="table table-bordered  col-lg-10">
+        <!-- <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
+      <table class="table table-bordered  col-lg-10">
 	  		<tr>
 	  			<td><strong>Supplier Company Name</strong></td>
 	  			<td><strong> Contact Name</strong></td>
@@ -889,15 +991,15 @@
 	  		  <?php } ?>
 	  		
 	  	</table> -->
-	  	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
-	  	</form><br>
+	  <!--	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
+	  	</form><br>-->
 	  	
-	  	  <div><p>Don't See Your Supplier?Enter their e-mail to send an e-mail invitation to join your network</p></div>
+	  	  <div><p>Enter E-mail to send an e-mail invitation to join your network</p></div>
 	        <form class="form-inline" action="<?php echo base_url()?>admin/dashboard/supplier_email_invitation" method="post">
 			  <div class="form-group">
-			    <label class="sr-only" for="exampleInputEmail2">Email</label>
-			    <input type="email" class="form-control" id="exampleInputEmail2" name="exampleInputEmail2" placeholder="Suplier email" style="width:60%;">
-			    <button type="submit" class="btn btn-default">Invite</button>
+			  <!--  <label class="sr-only" for="exampleInputEmail2">Email</label>-->
+			    <input type="email" class="form-control" id="email" name="email" placeholder="Suplier email" style="width:60%;">
+			    <button type="submit" class="btn btn-primary">Send Invitation</button>
 			  </div> 
 			  
 			</form>
@@ -917,5 +1019,8 @@
   
 	
 </section>
+
+
+
 
 

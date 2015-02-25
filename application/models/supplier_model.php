@@ -16,6 +16,7 @@ class supplier_model extends Model {
     
     function get_supplier($username){
         $this->db->where('username', $username);
+        $this->db->where('isdeleted', 0);
         $result = $this->db->get('company');
         if($result->num_rows()){
             $row = $result->row();

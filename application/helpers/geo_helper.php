@@ -61,7 +61,7 @@
             }
             $details = json_decode(file_get_contents("http://ipinfo.io/" . $ip . "/json"));
             
-            if($details->loc=="")
+            if(@$details->loc=="")
             $details->loc = "33.956419 , -118.442232";
         }
         return $details;
@@ -97,8 +97,11 @@
     }
     function get_nearest_city ($latitude, $longitude, $return = "city")
     {
-        $url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" . $latitude .
-         "," . $longitude . "&sensor=false";
+    	$latitude = trim($latitude);
+    	$longitude = trim($longitude);
+        
+    	$url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=".$latitude.",".$longitude."&sensor=false";
+         
         $d = file_get_contents($url);
         $data = json_decode($d, true);
         $city = false;

@@ -1992,7 +1992,7 @@ class Company extends CI_Controller {
         $this->email->initialize($config);
         $this->email->from($settings['adminemail'], $name);
         $this->email->to($cdata->primaryemail);
-        $this->email->subject('FB Wall Comment.');
+        $this->email->subject('Materialking Profile Wall Comment.');
         $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
@@ -2414,4 +2414,128 @@ class Company extends CI_Controller {
 		}	
 		redirect("company/listsubscribers");	
     }
+    
+    
+    
+    function invoicecycle()
+    {
+    	$company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
+        $this->db->where('company', $company->id);
+        
+        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
+        			   discount_percent, penalty_percent, duedate, term 
+				FROM " . $this->db->dbprefix('users') . " u
+				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
+				LEFT JOIN " . $this->db->dbprefix('invoice_cycle') . " ic ON ic.purchasingadmin=u.id AND ic.company='" . $company->id . "'
+				WHERE u.usertype_id=2
+			";
+        //echo $sql;
+        $data['admins'] = $this->db->query($sql)->result();
+         /*$data['admins'] = array();
+       foreach($admins as $admin)
+        {
+            $pa = $admin->purchasingadmin;
+		    $settings = $this->settings_model->get_setting_by_admin($pa);
+		    $query = "SELECT
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
+						AND ai.purchasingadmin='$pa'";
+		    //echo $query.'<br/>';
+		    $due = $this->db->query($query)->row()->totalunpaid;
+		    $due = round($due,2);
+		    //echo $nc->due.' - ';
+		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
+                AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
+		    //echo $query.'<br/>';
+		    $manualdue = $this->db->query($query)->row()->orderdue;
+		    $manualdue = round($manualdue,2);
+		    //echo $manualdue.' <br/> ';
+		    $due += $manualdue;
+		    $admin->amountdue = $due;
+            $data['admins'][]=$admin;
+        }*/
+        //print_r($admins);die;
+        //$data['tier'] = $tier;
+        
+        /*----------------------------------------------------------------*/
+			/*$users=$this->db->get_where('users',array('isdeleted'=>'0'))->result();
+			$data['userdata']=array();
+			if($users)
+			{
+			    
+				foreach ($users as $u)
+				{
+				  $awarded=0;
+				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
+				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
+			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
+			     	
+			      if( $u->quotes)
+			      {
+			         foreach($u->quotes as $quote)
+						{							
+							if($this->quote_model->getawardedbid($quote->id))
+								$awarded++;							
+						}
+			        $u->awarded = $awarded;
+			      }
+			     $data['userdata'][]=$u; 				
+				} 
+				 
+			}*/	
+		/*---------------------------------------------------*/
+        
+        $this->load->view('company/invoicecycle', $data);     
+        	
+    }
+    
+    
+    function saveinvoicecycle()
+    {
+        $company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login'); 
+       // echo "<pre>",print_r($_POST['discount_percent']); die;       
+		if(@$_POST['discount_percent'])
+		{
+	        foreach ($_POST['discount_percent'] as $admin => $discount_percent)
+	         { 
+	            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
+	            $this->db->where($arr);
+	            $this->db->delete('invoice_cycle');
+	            $arr['discount_percent'] = $discount_percent;
+	            $arr['penalty_percent'] = $_POST['penalty_percent'][$admin];	           
+	            if($_POST['duedate'][$admin])
+	            	$arr['duedate'] = date('Y-m-d', strtotime($_POST['duedate'][$admin]));
+	            if($_POST['term'][$admin])
+	            	$arr['term'] = $_POST['term'][$admin]; 	              
+	            $this->db->insert('invoice_cycle', $arr);
+	        }
+       
+		}
+
+        $message = 'Invoice Cycle updated for purchasing companies.';
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
+        redirect('company/invoicecycle');
+    }
+    
+    
+    function deleteinvoicecycle($id)
+    {
+        $company = $this->session->userdata('company');
+        if (!$company)
+            redirect('company/login');
+        $this->db->delete('network',array('purchasingadmin'=>$id,'company'=>$company->id));
+        $message = 'Purchasing company Deleted Successfully.';
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
+        redirect('company/invoicecycle');
+    }    
+    
 }

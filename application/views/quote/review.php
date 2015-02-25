@@ -4,6 +4,7 @@
 <?php echo "<script>var changepriceurl='".site_url('company/changeitemprice')."';</script>";?>
 <?php echo '<script>var getpriceqtydetails="' . site_url('quote/getpriceqtydetails') . '";</script>' ?>
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
+<?php echo '<script>var showpricehistoryurl ="' . site_url('quote/showpricehistory') . '";</script>' ?>
 
 <?php echo '<script>var itemcodeupdateurl="'.site_url('inventory/updateitemcode').'";</script>'?>
 <?php echo '<script>var itemnameupdateurl="'.site_url('inventory/updateitemname').'";</script>'?>
@@ -502,7 +503,22 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 		    
         }    
     }
-
+    
+     function showhistory(quoteid,companyid, itemid, companyname)
+    {
+        $.ajax({
+            type:"post",
+            url: showpricehistoryurl,
+            data: "quoteid="+quoteid+"&companyid="+companyid+"&itemid="+encodeURIComponent(itemid)
+        }).done(function(data){    
+        	
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory").html(arr[0]);
+            $("#itemcode").html(arr[1]);
+            $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
+            $("#historymodal").modal();
+        });
+    }
 
 </script>
 
@@ -668,7 +684,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
-							    		<?php if(@$q->ea=="" || @$q->ea==0){ ?><a href="javascript:void(0)" 
+							    		<?php if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
 							    		'".htmlentities(@$q->companyitem->itemcode)."',
 							    		'".htmlentities(@$q->companyitem->itemname)."',
@@ -677,6 +693,9 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			*Set List Price
 							    		</a><?php }?>
 							    		
+							    		<?php if(@$q->companyitem->company != '' && @$q->companyitem->itemid != '') { ?>		
+							    		<a href="javascript: void(0);" onclick="showhistory('<?php echo @$q->quote ?>','<?php echo @$q->companyitem->company ?>','<?php echo @$q->companyitem->itemid ?>','')"><i class="icon icon-search"></i>Price History</a>	
+							    		<?php }?>
 							    		</td>
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
@@ -807,7 +826,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 	  
 
               
-       <?php $olditemid=""; $i=0; foreach ($masterdefaults as $masterdata){?>
+       <?php $olditemid=""; $i=0; if(@$masterdefaults) {  foreach ($masterdefaults as $masterdata) {?>
     <?php if($olditemid!=$masterdata->itemid) {?>
     <div id="modal<?php echo $masterdata->itemid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
@@ -873,7 +892,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
   </div>
   <?php } ?>    
   
-  <?php $olditemid=$masterdata->itemid; $i++; } ?>                                
+  <?php $olditemid=$masterdata->itemid; $i++; } }?>                                
                   
                   
                   
@@ -979,7 +998,19 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                     </div>
                   </div>
                   
-  
+  <div id="historymodal" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	        <h4><span id='itemcode'></span></h4>
+	        <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
+	        <h3>Price History - <span id="historycompanyname"></span></h3>
+	    </div>
+	    <div class="modal-body" id="pricehistory" style="height:150px;overflow-y:auto;">
+	    </div>
+	 </div> 
+  </div>
+</div> 
   
   <div id="qtydiscount" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">

@@ -57,7 +57,7 @@ class Storemodel extends Model
         							'.$this->db->dbprefix('item').' i, 
         							'.$this->db->dbprefix('company').' c '. $where;
         $return->totalresult = $this->db->query($query)->num_rows();
-        $query = $query." LIMIT $start, $limit";
+        $query = $query." AND ci.ea <>'' LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
         return $return;

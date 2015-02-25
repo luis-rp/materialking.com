@@ -45,7 +45,7 @@ class Inventorymodel extends Model
 		//$this->db->limit($limit, $newoffset);
 		if(@$_POST['searchitem'])
 		{
-		    $where .= " AND ($ti.itemname LIKE '%".$_POST['searchitem']."%' OR $ti.itemcode LIKE '%".$_POST['searchitem']."%') ";
+		    $where .= " AND ($ti.itemname LIKE '%".$_POST['searchitem']."%' OR $ti.itemcode LIKE '%".$_POST['searchitem']."%' OR  $tci.itemname LIKE '%".$_POST['searchitem']."%' OR $tci.itemcode LIKE '%".$_POST['searchitem']."%') ";
 		    //$this->db->like('itemname', $_POST['searchitem']);
 		    //$this->db->or_like('itemcode', $_POST['searchitem']);
 		}

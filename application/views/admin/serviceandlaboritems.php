@@ -8,7 +8,7 @@
 		
 	 function addserviceandlabortest()
 	 {
-	 	$("#qtypricelist").modal();
+	 	/*$("#qtypricelist").modal();
     	
     	var data = "";
     	$("#qtypriceplacer").html("");
@@ -21,9 +21,10 @@
     			$("#qtypriceplacer").html("");
     			$("#qtypriceplacer").html(data);
     		}
-    	});
-
-    	$("#addiscount").html('<br><table width="100%" align="center"><tr><td>Name</td><td>Price</td><td>Tax</td><td>&nbsp</td><tr><td><input type="text" name = "servicename" id="servicename"></td><td><input type="text" name = "serviceprice" id="serviceprice"></td><td><input type="text" name = "servicetax" id="servicetax"></td><td><input type="button" value = "Add" onclick="addservice();"></tr><table>');
+    	});*/
+		$("#norecordmsg").css('display','none');
+		$("#recordheader").css('display','');
+    	$("#datatable > tbody:last").append('<tr><td><input type="text" name = "servicename" id="servicename"></td><td><input type="text" name = "serviceprice" id="serviceprice"></td><td><input type="text" name = "servicetax" id="servicetax"></td><td><input type="button" value = "Add" onclick="addservice();"></tr>');
 	 }
 	 
 	 function addservice(){
@@ -37,14 +38,15 @@
     	}).done(function(data){
     		if(data){
 
-    			$("#qtypriceplacer").html("");
+    			/*$("#qtypriceplacer").html("");
     			$("#qtypriceplacer").html(data);
     			$("#htmlqtymessage").html("Service items added successfully!");
     			$(".alert-success").css({display: "block"});
     			$("#servicename").val('');
     			$("#serviceprice").val('');
-    			$("#servicetax").val('');
-    			
+    			$("#servicetax").val('');*/
+    			alert("Record added Successfully.");
+    			location.reload();
     		}
     	});
 
@@ -60,9 +62,11 @@
     	}).done(function(data){
     		if(data)
     		{    			
-    			$(".alert-success").css({display: "block"});
+    			/*$(".alert-success").css({display: "block"});
     			$("#htmlqtymessage").html("service item details deleted successfully!");    				
-    			addserviceandlabortest();
+    			addserviceandlabortest();*/
+    			alert("Service Item Details Deleted Successfully.");
+    			location.reload();
     		}
     	});
     }
@@ -85,11 +89,13 @@
     	}).done(function(data){
     		if(data){
 
-    			$("#qtypriceplacer").html("");
+    			/*$("#qtypriceplacer").html("");
     			$("#qtypriceplacer").html(data);
     			$("#htmlqtymessage").html("Service items added successfully!");
     			$(".alert-success").css({display: "block"});
-    			addserviceandlabortest();
+    			addserviceandlabortest();*/
+    			alert("Record added Successfully");
+    			location.reload();
     		}
     	});
     	
@@ -97,7 +103,40 @@
 </script>
 
 <section class="row-fluid">
- <a  href="javascript: void(0)" onclick="addserviceandlabortest()" class="btn btn-green"> Add service & labor items </a></h3>
+<h3 class="box-header" style="display:inline;">
+<span id="step1">Service & Labor Items</span>
+
+ <a  href="javascript: void(0)" onclick="addserviceandlabortest()" class="btn btn-green"> Add New service & labor items </a></h3>
+ <table id="datatable" class="table no-more-tables general" style="width:100%;">
+ <?php 
+ 	if(isset($serviceandlabordetails) && count($serviceandlabordetails) > 0)
+ 	{ ?>
+ 		<tr>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Tax</th>
+			<th>Details</th>			
+		</tr>
+	<?php	
+		$strput = '';
+ 		foreach ($serviceandlabordetails as $qtyres)
+ 		{ 
+ 			$strput .= '<tr id="isdefault'.$qtyres->id.'"><td>'.$qtyres->name.'</td><td>'.$qtyres->price.'</td><td>'.$qtyres->tax.'</td><td><a class=""><span class="icon-2x icon-edit" onclick="editserviceitem('.$qtyres->id.')" ></span></a><a href="#"><img style="margin-left:5px;width:14px;" onclick="delserviceitem('.$qtyres->id.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a></td></tr>';		
+				
+			$strput .= '<tr id="isEdit'.$qtyres->id.'" style="display:none"><td><input  style="width:50%" type="text" name="servicename'.$qtyres->id.'" id="servicename'.$qtyres->id.'"  value="'.$qtyres->name.'"></td><td><input type="text" name="serviceprice'.$qtyres->id.'" id="serviceprice'.$qtyres->id.'"  value="'.$qtyres->price.'"></td><td><input type="text" name="servicetax'.$qtyres->id.'" id="servicetax'.$qtyres->id.'"  value="'.$qtyres->tax.'"></td><td><a class=""><span class="icon-2x icon-edit" onclick="editserviceitem('.$qtyres->id.')" ></span></a><a href="#"><img style="margin-left:5px;width:14px;" onclick="delserviceitem('.$qtyres->id.')" src="'.base_url().'templates/front/assets/img/icon/delete.ico" /></a> &nbsp;&nbsp;<input type="button" name="btnsave" id="btnsave" value="Save"  onclick="saveserviceitem('.$qtyres->id.')" ></td></tr>';	}
+			
+			echo $strput;	
+ 	} 
+ 	else 
+ 	{ 
+ 		echo '<tr id="norecordmsg"><td class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Records Found.</div></td></tr>';
+ 		echo '<tr id="recordheader" style="display:none">
+				<th>Name</th>
+				<th>Price</th>
+				<th>Tax</th>
+				<th>Details</th>			
+			  </tr>';
+ 	} ?>
 </section>
 
 <div id="qtypricelist" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">

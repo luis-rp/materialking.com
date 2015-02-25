@@ -54,6 +54,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
         <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap-tagsinput.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-tagsinput">
         <link href="<?php echo base_url(); ?>templates/admin/css/jquerytour.css" media="all" rel="stylesheet" type="text/css">
+          
         <script src="<?php echo base_url(); ?>templates/admin/js/jquery.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/modernizr-jquery.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare-demo.min.js" type="text/javascript"></script>
@@ -61,8 +62,30 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
         <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
           <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+          <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
+          <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.min.js"></script>
+          <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.infobox.min.js"></script>
 
         <style type="text/css">
+
+			/*.map-wrapper{
+			
+				margin:0px;padding:0px;float:left;height:210px;width:100%; position:absolute;  z-index:9999;
+            }*/
+			
+			
+			
+			img[src="http://www.google.com/intl/en_us/mapfiles/close.gif"] {
+                 display: block;
+                 margin: 0px;
+                 z-index:9999;
+            }
+            .infobox span.key
+            {
+            	margin-right: 10px;
+			}
+
             #theme_switcher
             {
                 display:none;
@@ -72,7 +95,8 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                 #supported-browsers header { text-align: center; margin-bottom: 20px; }
             }
 
-            .status-example { line-height: 0; position:relative; top: 22px }
+            .status-example { line-height: 0; position:relative; top: 22px }     
+            
         </style>
 <?php if(!$this->session->userdata('managedprojectdetails')){ ?>
         <script type="text/javascript">
@@ -94,6 +118,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                     return false;
                 });
                 $('#tab-users a').tooltip();
+                $(".daterequested").datepicker();
 				// commented code as call to tour was giving error while fetching graph
 				//Boostratp tour only available on these pages :dashboard,projects,project,costcodelist,costcode
 				<?php

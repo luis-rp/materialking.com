@@ -41,6 +41,7 @@ class serviceandlaboritems extends CI_Controller
 
 	public function index()
 	{		
-		$this->load->view('admin/serviceandlaboritems');
+		$data['serviceandlabordetails'] = $this->db->where(array('isdeleted'=>0,'purchasingadmin' => $this->session->userdata('purchasingadmin')))->get('servicelaboritems')->result();
+		$this->load->view('admin/serviceandlaboritems',$data);
 	}
 }

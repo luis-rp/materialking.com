@@ -737,7 +737,7 @@ P.O. Price Rankings
 
     <input type="hidden" id="ipaddress" name="ipaddress" value="<?php echo (@$ipaddress)?$ipaddress:'';?>"/>
     
-    <div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+<!--    <div id="videopopup" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
       	 <div class="modal-header">
@@ -758,10 +758,10 @@ width="530" height="350" title="Video">
           <button data-dismiss="modal" class="btn btn-default" type="button" onclick="closevideo();">Close</button>
         </div>
       </div>
-      <!-- /.modal-content -->
+      
     </div>
-    <!-- /.modal-dialog -->
-  </div> 
+   
+  </div> -->
     
    
 </div>

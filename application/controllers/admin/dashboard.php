@@ -1130,9 +1130,41 @@ class Dashboard extends CI_Controller
 					AND p.id = '".$mpid."' AND q.pid = p.id GROUP BY p.title";
 					$data['promembers'] = $this->db->query($sql)->result();
 					
-					
+		$this->db->order_by('title','asc'); 			
 		$data['types'] = $this->db->get('type')->result(); 
-		
+				
+		$latlongs = array();
+    	$popups = array();
+    	if(!empty($data['projects'])){
+    		foreach($data['projects'] as $project){
+
+    			$geocode = file_get_contents(
+    			"http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $project->address)) . "&sensor=false");
+    			$output = json_decode($geocode);
+
+    			if($output->status == 'OK'){ // Check if address is available or not
+    				$lat = $output->results[0]->geometry->location->lat;
+    				$lon =  $output->results[0]->geometry->location->lng;
+    				$latlongs[] = "[$lat, $lon]";
+
+    				$popups["$lat, $lon"] = '<div class="infobox"><div class="title">' . $project->title .
+    				'</div><div class="area">'.$project->description.'</div></div>';
+
+    			}
+
+    		}
+
+    	}
+    	
+    	$details = get_my_address();
+    	$center = $details->loc;
+    	//$center = "56, 38";
+    	//var_dump($details);die;
+    	$data['my_location'] = get_my_location($details);  	    	
+    	$data['mapcenter'] = $center;
+    	$data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
+    	$data['popups'] = $popups;
+    	
 		$this->load->view ('admin/dashboard', $data);
 	}
 
