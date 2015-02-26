@@ -1,4 +1,5 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <?php if($this->session->userdata('managedprojectdetails')){?>
     
 	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
@@ -85,10 +86,19 @@
 	</script>
 
 <?php }?>
-         
-<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/realia-blue.css" type="text/css" id="color-variant-default">     <link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
+
+
+		<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.infobox.min.js"></script>
+		<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/realia-blue.css" type="text/css" id="color-variant-default">
+
+<link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
 <script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.js'></script>
 <script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
+<link href="http://materialking.com/templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+
 <script>
 	
 	$(document).ready(function() {
@@ -132,6 +142,13 @@
 	 		
 		$("#form-selector").submit();
 		
+	}
+	
+	
+	function gotoproject(project){
+		
+		$("#pid").val(project);
+		$("#form-selector").submit();
 	}
 	
 </script>
@@ -303,16 +320,25 @@
     	$("#smodal").modal();   	   
      }
  </script>
+<div class="container" style="margin-top:10em;">&nbsp;</div>
 <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
 <span class="button" id="activatetour">Start the tour</span>
-<span class="closeX" id="canceltour"></span></div>
+<span class="closeX" id="canceltour"></span>
 <?php  } ?>
 <?php $mp = $this->session->userdata('managedprojectdetails');?>
+
+</div>
+
+
+
+
+
+
+<div>
 <section class="row-fluid">
-  
-<h3 class="box-header" style="display:inline" >
+<h3 class="box-header" style="display:inline; width:98.4%">
 				<span id="step1" >Your Dashboard</span>
 				&nbsp;
                 <?php echo $this->session->flashdata('message'); ?>
@@ -322,6 +348,9 @@
 				<a class="btn btn-primary pull-right" href="<?php echo site_url('admin/dashboard/application');?>"><strong>Your Credit Application</strong></a>
 				<?php } ?>
 			</h3>
+            </section>
+            </div>
+           
 	<div class="box">
 		<div class="span12">
 		<?php if(!$this->session->userdata('managedprojectdetails')){?>
@@ -330,9 +359,16 @@
           <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a></div>
+          <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a>
+          </div>
+          
+          
+          
+          
+          
+          
           <?php } } ?>
-			<div class="well" style="height:500px;">
+			<div class="well">
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
 					<div class="control-group">
 						<label for="inputEmail" class="control-label">
@@ -359,15 +395,15 @@
 
 				</form>
 									
-			<div class="map-wrapper" style="float:left;width:700px;height:400px;">
+		
+			</div>			
+			
+		    <div class="map-wrapper" style="float:left;width:700px;height:400px;">
 			<div class="map">
             <div id="map" style="height:400px;width:700px;" class="map-inner" ></div>
             </div>
 			</div>
 				
-			</div>			
-			
-			
 			
 			</div>
 			
@@ -957,7 +993,6 @@
 			<?php // }?>
 			
 		</div>
-		<div style="clear:both;"></div>
 
 		
 
@@ -1015,8 +1050,9 @@
     <!-- /.modal-dialog -->
   </div>
  
-  
-  
+  </div>
+  </div>
+   
 	
 </section>
 

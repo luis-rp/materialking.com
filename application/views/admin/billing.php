@@ -659,7 +659,7 @@ function changeduedate(count,invoicenum,datedue)
           </tr>';
           	
           	$htmlbd .='<tr>
-          <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.@$pay_h->paymentdate.'</td>
+          <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.date('m/d/Y',strtotime(@$pay_h->paymentdate)).'</td>
           </tr>';
            } } 
           }else{ 

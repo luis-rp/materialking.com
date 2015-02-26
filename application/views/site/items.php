@@ -358,13 +358,64 @@
                                                 </div>
                                                  <?php if(isset($item->minprice) || isset($item->maxprice)){?>
                                                 <div class="price">
-                                                	<?php  if($item->offercount>0) echo $item->offercount." Offers<br>";
-                                                	if(isset($item->callminprice) && $item->callminprice!=0){ if($item->callminprice==1) echo ($item->offercount>1)?' "CALL"&nbsp;':''; else (isset($item->minprice))?'$'.$item->minprice:''; } else { ?>
-                                                	<?php if(isset($item->minprice)) echo '$'.$item->minprice; }
+                                                	<?php  $dash=0; 
+                                                	if($item->offercount>0) echo $item->offercount." Offers<br>";
+                                                	if(isset($item->callminprice) && $item->callminprice!=0)
+                                                	 { 
+                                                		if($item->callminprice==1)
+                                                		{ 
+                                                			$dash=1; 
+                                                		echo ($item->offercount>1)?' "CALL"&nbsp;':''; 
+                                                		}
+                                                		else
+                                                		{ 
+                                                			$dash=1; 
+                                                		echo (isset($item->minprice) && $item->minprice!=0)?'$'.$item->minprice:'';
+                                                		}
+                                                		
+                                                	 } 
+                                                	else 
+                                                	 { 
+                                                	 if(isset($item->minprice) && $item->minprice!=0)
+                                                	 {
+                                                	 	 $dash=1; 
+                                                	  echo '$'.$item->minprice;
+                                                	 }
+                                                	
+                                                	 }
 
-                                                	if(isset($item->callmaxprice) && $item->callmaxprice!=0){ if($item->callmaxprice==1) echo ' "CALL"&nbsp;'; else echo (isset($item->maxprice))?'$'.$item->maxprice:''; } else { ?>
-                                                	<?php if(isset($item->maxprice)) echo '-$'.$item->maxprice; ?>
-                                                	<?php }?>
+                                                	if(isset($item->callmaxprice) && $item->callmaxprice!=0)
+                                                	{ 
+                                                		if($item->callmaxprice==1) 
+                                                		{
+                                                			if($dash==1)
+                                                			{
+                                                				echo "&nbsp;-&nbsp;";
+                                                			}
+                                                			echo ' "CALL"&nbsp;'; 
+                                                		}
+                                                		else
+                                                		{
+                                                			if($dash==1)
+                                                			{
+                                                				echo "&nbsp;-&nbsp;";
+                                                			}
+                                                			 echo (isset($item->maxprice) && $item->maxprice!=0)?'$'.$item->maxprice:''; 
+                                                		}
+                                                		
+                                                	} 
+                                                	else 
+                                                	{ 
+                                                		if($dash==1)
+                                                			{
+                                                				echo "&nbsp;-&nbsp;";
+                                                			}
+                                                	 if(isset($item->maxprice) && $item->maxprice!=0) echo '$'.$item->maxprice; 
+                                                	 }
+                                                	 
+                                                	
+                                                	 ?>
+                                                	 
                                                 </div>
                                                 <?php }?>
                                                 <?php if($item->hasdeal){?>

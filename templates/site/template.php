@@ -18,6 +18,14 @@ $('.fadein img:gt(0)').hide();
 setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().end().appendTo('.fadein');}, 3000);
 });
 </script>
+
+<style>
+.modal
+{
+width:30% !important;
+left:50% !important;
+}
+</style>
     	<link type="text/css" href="<?php echo base_url(); ?>cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
 		<script type="text/javascript" src="<?php echo base_url(); ?>cometchat/cometchatjs.php" charset="utf-8"></script>
         <meta charset="UTF-8"/>

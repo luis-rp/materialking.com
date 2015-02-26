@@ -155,7 +155,7 @@ function endTour(){
 			}
 			else 
 			{
-				echo 'No Messages.';
+				echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Messages Found.</div></div>';
 			}
 		    ?>
 			

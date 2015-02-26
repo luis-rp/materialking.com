@@ -278,35 +278,7 @@ function jq( myid ) {
                     </form>
                     <?php if (!@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Invoices Found.</div></div>'; ?>
             	</div>
-                <div>          <?php if(@$items) { ?> 
-                				   <table style="width:24%;margin-left:74%;">
-                                    <thead>
-                                       <tr>
-                  	             			<th style="width:3%;padding: 0px;">Color</th>
-                  	             			<th style="padding: 0px;text-align:center;">Description</th>
-                                         </tr>
-									</thead>
-									<tbody>
-                                         <tr >
-                  	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment=Paid and Verification=Verified</td>
-                                         </tr>
-                                          <tr>
-                  	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment=Unpaid/Requested Payment, Verification=Pending and Due Date is Past</td>
-                                         </tr>
-                                          <tr>
-                  	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment=Paid and Verification=Pending</td>
-                                         </tr>
-                                         <tr>
-                  	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
-                  	             			<td style="padding: 0px;">Payment=Unpaid and Verification=Pending</td>
-                                         </tr>                                                                               
-                                           </tbody>
-                                    </table>
-                                   <br>
-                                   <?php } ?> 
+                <div>         
                  <form name="frmInvoice" id="frmInvoice" enctype="multipart/form-data" method="POST">
                  <input type="hidden" id="hidinvoicenum" name="hidinvoicenum" value="">
                  <input type="hidden" id="hidreceivedid" name="hidreceivedid" value="">
@@ -566,6 +538,35 @@ function jq( myid ) {
                 
             </div>
         </div>
+         <?php if(@$items) { ?> 
+			   <table style="width:24%;margin-left:74%;">
+                <thead>
+                   <tr>
+	             			<th style="width:3%;padding: 0px;">Color</th>
+	             			<th style="padding: 0px;text-align:center;">Description</th>
+                     </tr>
+				</thead>
+				<tbody>
+                     <tr >
+	             			<td style="background-color:#ADEBAD;width:3%;padding: 0px;">&nbsp;</td>
+	             			<td style="padding: 0px;">Payment=Paid and Verification=Verified</td>
+                     </tr>
+                      <tr>
+	             			<td style="background-color:#FF8080;width:5%;padding: 0px;">&nbsp;</td>
+	             			<td style="padding: 0px;">Payment=Unpaid/Requested Payment, Verification=Pending and Due Date is Past</td>
+                     </tr>
+                      <tr>
+	             			<td style="background-color:#FFDB99;width:5%;padding: 0px;">&nbsp;</td>
+	             			<td style="padding: 0px;">Payment=Paid and Verification=Pending</td>
+                     </tr>
+                     <tr>
+	             			<td style="background-color:pink;width:5%;padding: 0px;">&nbsp;</td>
+	             			<td style="padding: 0px;">Payment=Unpaid and Verification=Pending</td>
+                     </tr>                                                                               
+                       </tbody>
+                </table>
+               <br>
+       <?php } ?> 
     </div>
 </section>
 <div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">

@@ -1148,7 +1148,7 @@ class Dashboard extends CI_Controller
     				$latlongs[] = "[$lat, $lon]";
 
     				$popups["$lat, $lon"] = '<div class="infobox"><div class="title">' . $project->title .
-    				'</div><div class="area">'.$project->description.'</div></div>';
+    				'</div><div class="area">'.$project->description.'</div> <p><div class="btn btn-primary arrow-right"><a href="#" onclick="gotoproject('.$project->id.');" >Go To Project</a></div></p> </div>';
 
     			}
 
@@ -1156,11 +1156,16 @@ class Dashboard extends CI_Controller
 
     	}
     	
-    	$details = get_my_address();
-    	$center = $details->loc;
+    	//$details = get_my_address();    	
+    	if(@$this->session->userdata('user_lat') && @$this->session->userdata('user_lng'))
+			$center = $this->session->userdata('user_lat').",".$this->session->userdata('user_lng');
+		else 
+			$center = "33.956419,-118.442232";			
+    	
+    	//$center = $details->loc;
     	//$center = "56, 38";
     	//var_dump($details);die;
-    	$data['my_location'] = get_my_location($details);  	    	
+    	//$data['my_location'] = get_my_location($details);  	    	
     	$data['mapcenter'] = $center;
     	$data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
     	$data['popups'] = $popups;

@@ -597,28 +597,52 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                                    
 								<table class="no-more-tables general" border="0">
 									<tr>
-										<td>
-										  <strong><?php //echo "<pre>"; print_r($quote); die; ?>
-									      PO#: <?php echo $quote->ponum;?></td><td style="width:400px;">Revision History</td></tr>
-									      <tr><td>
-									      Due: <?php echo $quote->duedate;?><span style="margin-left:500px;"></td><td>Number of Revisions:&nbsp;<?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?></span></tr>
-									      <tr><td>Project: <?php if(isset($project)) echo $project->title;?>
+										<td style="width:60%;">
+										  <strong>PO# : <?php echo $quote->ponum;?></strong>
+										</td>
+										<td style="width:40%;"><strong>Revision History</strong>
+										</td>
+									</tr>
+									
+									<tr>
+										<td style="width:60%;">
+									      <strong>Due : </strong> <?php echo $quote->duedate;?>								     
+									    </td>
+									    <td style="width:40%;">
+									    	<strong>Number of Revisions : </strong><?php if(isset($revisionno)) echo $revisionno-1; else echo 0; ?>
+									    </td>
+									</tr>
+									
+									<tr>
+									<td style="width:60%;">
+										  <strong>Project : </strong> <?php if(isset($project)) echo $project->title;?>
 									      <br/>
-									      Company: <?php echo $company->title;?>
+									      <strong>Company : </strong><?php echo $company->title;?>
 									      <br/>
-									      Contact: <?php echo $company->contact;?>
-									      </strong>
-									      </td><td>
+									      <strong>Contact : </strong><?php echo $company->contact;?>									      
+									 </td>
+									 <td style="width:40%;">
 									      <!-- <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									       <?php if(isset($bid->id)) { $quotearr = explode(".",$bid->quotenum);  ?> <a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">Quote #: &nbsp;<?php echo $quotearr[0].".000"; ?></a>&nbsp; Date: <?php if(isset($bid->submitdate)) echo date("m/d/Y", strtotime($bid->submitdate)); else echo ''; ?><br><?php } ?>
-									     <?php  if(isset($revisionno)) { $quotearr = explode(".",$bid->quotenum);  for($i=2;$i<=$revisionno;$i++) { ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; Date: <?php if(isset($bid->$i)) echo date("m/d/Y", strtotime($bid->$i)); else echo ''; ?> <br><?php } } ?> </td></tr>
-									      <td colspan="2">   
-									      	<br/><br/>
+									     <?php  if(isset($revisionno)) { $quotearr = explode(".",$bid->quotenum);  for($i=2;$i<=$revisionno;$i++) { ?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; <strong>Date : </strong> <?php if(isset($bid->$i)) echo date("m/d/Y", strtotime($bid->$i)); else echo ''; ?> <br><?php } } ?> 
+									  </td>
+								   </tr>
+								   
+								   <tr>
+									      <td style="width:60%;">   
+									      	<br/>
 									      	Please enter your Price EA, Date Available and add any Notes you may <br/>
 											have related to each item. When you are finished, Click the Save Quote <br/>
 											button.<br/><br/>
 											Thank You,<br/>
 											<strong><?php if(isset($purchasingadmin->companyname)) echo $purchasingadmin->companyname?></strong>
-									     	<br/><br/>
+									     	<br/>
+									     </td>
+									     <td style="width:40%;">
+									      	<span><strong>Company : </strong></span><span><?php echo $purchasingadmin->companyname; ?></span><br />
+									      	<span><strong>Contact Name : </strong></span><span><?php echo $purchasingadmin->fullname; ?></span><br />
+									      	<span><strong>Contact Phone : </strong></span><span><?php echo $purchasingadmin->phone; ?></span><br />
+									      	<span><strong>Contact Email : </strong></span><span><?php echo $purchasingadmin->email; ?></span><br />
+									      	<span><strong>Project : </strong></span><span><?php echo $proname; ?></span><br />
 									     </td>
 									 </tr>
 								</table>
@@ -663,15 +687,32 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    	<tr>
 							    		<td>
 							    		<?php echo $originalitems[$q->itemid]->itemname;?>
-							    		<?php if(@$q->companyitem->ea){ if(@$q->companyitem->ea<=0){ $q->companyitem->ea=""; } } //if($q->showinventorylink){?>
-							    		<a href="javascript:void(0)" 
+							    		<?php if(@$q->companyitem->ea){ if(@$q->companyitem->ea<=0){ $q->companyitem->ea=""; } } //if($q->showinventorylink){
+										
+										$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
+							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
+							    		
+							    		$itemCode1 = "'".$itemCode."'";
+							    		$itemName1 = "'".$itemName."'";
+										?>
+							    		<!--<a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
-							    		'".htmlentities(@$q->companyitem->itemcode)."',
-							    		'".htmlentities(@$q->companyitem->itemname)."',
+							    		'".$itemCode."',
+							    		'".$itemName."',
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			<i class="fa fa-edit"></i>
+							    		</a>-->
+							    		
+							    		<a href='javascript:void(0)' 
+							    			onclick='updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
+							    		".$itemCode1.",
+							    		".$itemName1.",
+							    		'".htmlentities(@$q->companyitem->ea)."',
+							    		'".html_escape(@$q->orgitem->itemname)."'");?>)'>
+							    			<i class="fa fa-edit"></i>
 							    		</a>
+							    		
 							    		<?php //}?>
 							    		<?php if($q->attachment){?>
 							    			<a href="<?php echo site_url('uploads/item/'.$q->attachment);?>" target="_blank">View</a>
@@ -711,10 +752,18 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
-							    		<?php if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
-							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
-							    		'".htmlentities(@$q->companyitem->itemcode)."',
-							    		'".htmlentities(@$q->companyitem->itemname)."',
+							    	<?php 	
+							    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
+							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
+							    		
+							    		$itemCode1 = "'".$itemCode."'";
+							    		$itemName1 = "'".$itemName."'";
+																	    		
+							    		if(@$q->priceset == 0)
+							    		{ ?><a href="javascript:void(0)" 
+							    			onclick='updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
+							    		".$itemCode1.",
+							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			*Set List Price

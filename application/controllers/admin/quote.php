@@ -6602,7 +6602,13 @@ $loaderEmail = new My_Loader();
 
                                 $invoicearr = array();
                 $invoicearr = explode(",",$_POST['invoicenum' . $key]);
-				//echo "<pre>",print_r($invoicearr); echo "<pre>",print_r($_POST); die;				
+				//echo "<pre>",print_r($invoicearr); echo "<pre>",print_r($_POST); die;		
+				
+				$sql = "SELECT duedate, term FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $item->company . "'
+				and purchasingadmin = '". $item->purchasingadmin ."'";
+        //echo $sql;
+        $resultinvoicecycle = $this->db->query($sql)->row();
+						
                 if(count($invoicearr)>1) {
                 	foreach($invoicearr as $inv) {
 
@@ -6616,6 +6622,28 @@ $loaderEmail = new My_Loader();
 						
                 		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                		
+                		if($resultinvoicecycle){
+                			
+                			if(@$resultinvoicecycle->duedate && @$resultinvoicecycle->term){
+
+                				if($resultinvoicecycle->term ==30)
+                				$monthcount=1;
+                				if($resultinvoicecycle->term ==60)
+                				$monthcount=2;
+                				if($resultinvoicecycle->term ==90)
+                				$monthcount=3;
+								$invoicereceiveddate = $_POST['receiveddate' . $key];	
+                				$next_term = date("Y-m-d", strtotime("$invoicereceiveddate +".$monthcount." month"));
+
+                				$exploded = explode("-",$resultinvoicecycle->duedate);
+
+                				$explode = explode("-",$next_term);
+                				$explode[2] = $exploded[2];
+                				$next_term = implode("-",$explode);               				
+                				$insertarray['datedue'] = $next_term;
+                			}
+                		}
                 		
                 		 /*if (strpos(@$inv,'paid-in-full-already') !== false) {                		 	
                 		 	 $this->db->where('invoicenum', $inv);
@@ -6664,14 +6692,37 @@ $loaderEmail = new My_Loader();
             				 $this->quote_model->db->update('received', $insertarray);                		 	
                 }else*/   
                 
+                
+                if($resultinvoicecycle){
+
+                	if(@$resultinvoicecycle->duedate && @$resultinvoicecycle->term){
+
+                		if($resultinvoicecycle->term ==30)
+                		$monthcount=1;
+                		if($resultinvoicecycle->term ==60)
+                		$monthcount=2;
+                		if($resultinvoicecycle->term ==90)
+                		$monthcount=3;
+                		$invoicereceiveddate = $_POST['receiveddate' . $key];
+                		$next_term = date("Y-m-d", strtotime("$invoicereceiveddate +".$monthcount." month"));
+
+                		$exploded = explode("-",$resultinvoicecycle->duedate);
+
+                		$explode = explode("-",$next_term);
+                		$explode[2] = $exploded[2];
+                		$next_term = implode("-",$explode);
+                		$insertarray['datedue'] = $next_term;
+                	}
+                }else 
+				$insertarray['datedue'] = $_POST['datedue' . $key];	
+                
                 if(@$_POST['invoicetype' . $key] == "fullpaid"){
                 $insertarray['invoice_type'] = "alreadypay";
                 $insertarray['paymentstatus']='Paid';
                 $insertarray['paymentdate'] = $_POST['paymentdate' . $key];
                 $insertarray['paymenttype'] = 'Credit Card';
                 $insertarray['refnum'] = $_POST['refnum' . $key];
-                $insertarray['status'] = 'Verified';
-                $insertarray['datedue'] = $_POST['datedue' . $key];
+                $insertarray['status'] = 'Verified';               
                 }
                              
                 $this->quote_model->db->insert('received', $insertarray);
@@ -10442,13 +10493,16 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $search = "  AND (" . implode(" AND ", $searches) . " )";
         }
         
-        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername 
+        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername,ph.paymenttype,ph.refnum
         from ". $this->db->dbprefix('bill') ." b 
         left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill 
+        left join ". $this->db->dbprefix('bill_payment_history') ." ph on b.id=ph.bill 
         left join ". $this->db->dbprefix('customer') ." c on b.customerid = c.id 
         where 1=1 AND project = {$this->session->userdata('managedprojectdetails')->id} {$search} group by bi.bill";
         
+     
         $billqryeres = $this->db->query($billquery);
+    
         $bills = $billqryeres->result();
         $count = count($bills);
         $items = array();

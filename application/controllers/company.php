@@ -2433,63 +2433,7 @@ class Company extends CI_Controller {
 			";
         //echo $sql;
         $data['admins'] = $this->db->query($sql)->result();
-         /*$data['admins'] = array();
-       foreach($admins as $admin)
-        {
-            $pa = $admin->purchasingadmin;
-		    $settings = $this->settings_model->get_setting_by_admin($pa);
-		    $query = "SELECT
-		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
-		    			totalunpaid FROM
-		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
-						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
-						AND ai.purchasingadmin='$pa'";
-		    //echo $query.'<br/>';
-		    $due = $this->db->query($query)->row()->totalunpaid;
-		    $due = round($due,2);
-		    //echo $nc->due.' - ';
-		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
-		    	orderdue
-                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
-                AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
-		    //echo $query.'<br/>';
-		    $manualdue = $this->db->query($query)->row()->orderdue;
-		    $manualdue = round($manualdue,2);
-		    //echo $manualdue.' <br/> ';
-		    $due += $manualdue;
-		    $admin->amountdue = $due;
-            $data['admins'][]=$admin;
-        }*/
-        //print_r($admins);die;
-        //$data['tier'] = $tier;
-        
-        /*----------------------------------------------------------------*/
-			/*$users=$this->db->get_where('users',array('isdeleted'=>'0'))->result();
-			$data['userdata']=array();
-			if($users)
-			{
-			    
-				foreach ($users as $u)
-				{
-				  $awarded=0;
-				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
-				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
-			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
-			     	
-			      if( $u->quotes)
-			      {
-			         foreach($u->quotes as $quote)
-						{							
-							if($this->quote_model->getawardedbid($quote->id))
-								$awarded++;							
-						}
-			        $u->awarded = $awarded;
-			      }
-			     $data['userdata'][]=$u; 				
-				} 
-				 
-			}*/	
+      
 		/*---------------------------------------------------*/
         
         $this->load->view('company/invoicecycle', $data);     
@@ -2503,9 +2447,9 @@ class Company extends CI_Controller {
         if (!$company)
             redirect('company/login'); 
        // echo "<pre>",print_r($_POST['discount_percent']); die;       
-		if(@$_POST['discount_percent'])
+		if(@$_POST['term'])
 		{
-	        foreach ($_POST['discount_percent'] as $admin => $discount_percent)
+	        foreach ($_POST['term'] as $admin => $discount_percent)
 	         { 
 	            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
 	            $this->db->where($arr);
@@ -2517,6 +2461,10 @@ class Company extends CI_Controller {
 	            if($_POST['term'][$admin])
 	            	$arr['term'] = $_POST['term'][$admin]; 	              
 	            $this->db->insert('invoice_cycle', $arr);
+	            
+	            if($_POST['duedate'][$admin]!="")
+	            $this->setallinvoiceduedate($admin,$_POST['duedate'][$admin],$_POST['term'][$admin]);
+	            
 	        }
        
 		}
@@ -2536,6 +2484,119 @@ class Company extends CI_Controller {
         $message = 'Purchasing company Deleted Successfully.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/invoicecycle');
-    }    
+    }
+
+    
+    
+    function setallinvoiceduedate($purchasingadmin, $datedue, $term)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+		    die;
+		$datedue = date('Y-m-d', strtotime($datedue));		
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$invs = $this->quotemodel->getpurchaserinvoices($company->id, $purchasingadmin);
+		
+		
+		$data['email_body_title']  = "";
+		$data['email_body_content']  = "";
+		$gtotal = 0;
+				
+		foreach ($invs as $invoice)
+		{ 
+			if($term ==30)
+			$monthcount=1;
+			if($term ==60)
+			$monthcount=2;
+			if($term ==90)
+			$monthcount=3;
+			
+			$next_term = date("Y-m-d", strtotime("$invoice->receiveddate +".$monthcount." month")); 
+			
+			$exploded = explode("-",$datedue);
+								
+			$explode = explode("-",$next_term);
+			$explode[2] = $exploded[2];
+			$next_term = implode("-",$explode);
+			
+			$arr = array('datedue' => $next_term);
+			$this->db->where('invoicenum',$invoice->invoicenum)->where('awarditem',$invoice->awarditem)->update('received',$arr);
+			
+			$subject = "Due Date Set For Invoice ".$invoice->invoicenum;
+			
+		    $config = (array)$this->settings_model->get_setting_by_admin ($invoice->purchasingadmin);
+		    $config = array_merge($config, $this->config->config); 		
+			$olddate=strtotime($invoice->awardedon); $awarddate = date('m/d/Y', $olddate);
+			$data['email_body_title'] .= 'Dear '.$invoice->username.' ,<br><br>';
+			$data['email_body_content'] .= $invoice->supplierusername.' has set Due Date for Invoice '.$invoice->invoicenum.' from PO# '.$invoice->ponum.', Ordered on '.$awarddate.' to Due on  '.$next_term.'<br><br>';
+			$data['email_body_content'] .= 'Please see order details below :<br>';
+			$data['email_body_content'] .= '
+					<table class="table table-bordered span12" border="1">
+		            	<tr>
+		            		<th>Invoice</th>
+		            		<th>Received On</th>
+		            		<th>Supplier Name</th>
+		            		<th>Supplier Address</th>
+		            		<th>Supplier Phone</th>
+		            		<th>Order Number</th>
+		            		<th>Item</th>
+		            		<th>Quantity</th>
+		            		<th>Payment Status</th>
+		            		<th>Verification</th>
+		            		<th>Due Date</th>
+		            		<th>Price</th>
+		            	</tr>';
+			
+	        $data['email_body_content'] .= '<td>'.$invoice->invoicenum.'</td>
+            		<td>'.$invoice->receiveddate.'</td>
+            		<td>'.$invoice->supplierusername.'</td>
+            		<td>'.$invoice->address.'</td>
+            		<td>'.$invoice->phone.'</td>
+            		<td>'.$invoice->ponum.'</td>
+            		<td>'.$invoice->itemname.'</td>
+            		<td>'.$invoice->quantity.'</td>
+            		<td>'.$invoice->paymentstatus.'</td>
+            		<td>'.$invoice->status.'</td>
+            		<td>'.$next_term.'</td>
+            		<td align="right">'.number_format($invoice->ea,2).'</td>
+	            	  </tr>';
+	        $total = $invoice->ea*$invoice->quantity;
+            $gtotal+=$total;
+	        $tax = $gtotal * $config['taxpercent'] / 100;
+            $totalwithtax = number_format($tax+$gtotal,2);
+            $data['email_body_content'] .= '<tr><td colspan="12">&nbsp;</td> <tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Tax</td>
+            		<td style="text-align:right;">$'. number_format($tax,2).'</td>
+            	</tr>
+            	
+            	<tr>
+            		<td colspan="11" align="right">Total</td>
+            		<td style="text-align:right;">$'. $totalwithtax.'</td>
+            	</tr>';
+            $data['email_body_content'] .= '</table>';   
+	    }  
+	    $loaderEmail = new My_Loader();
+	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$this->email->to($invs[0]->email);
+		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
+		
+		$this->email->subject($subject);
+		$this->email->message($send_body);	
+		$this->email->set_mailtype("html");
+		$this->email->send();
+	}   
     
 }

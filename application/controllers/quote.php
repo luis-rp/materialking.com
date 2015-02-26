@@ -853,8 +853,8 @@ class Quote extends CI_Controller
 			";
         $data['patier'] = @$this->db->query($sql)->row()->tier;
 		
-		
 		$quoteitems = $this->quotemodel->getquoteitems($quote->id);
+		$data['proname']=$this->db->get_where('project',array('id'=>$quote->pid))->row()->title;
 		//print_r($quoteitems);die;
 		$originalitems1 = $this->quotemodel->getquoteitems($quote->id);
 		$company = $this->quotemodel->getcompanybyid($invitation->company);
@@ -4473,7 +4473,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
 				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
 				WHERE
-				ai.bid=a.id AND a.quote=q.id AND c.id=a.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id AND ai.itemid='$itemid' AND q.id='$quoteid'
+				ai.bid=a.id AND a.quote=q.id AND c.id=a.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id  AND q.id='$quoteid'
 				AND a.company='$company' AND ai.itemid='$itemid'
 				";
         $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname
@@ -4481,14 +4481,15 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
 				WHERE
-				ai.award=a.id AND a.quote=q.id AND c.id=ai.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id AND ai.itemid='$itemid' AND q.id='$quoteid'
+				ai.award=a.id AND a.quote=q.id AND c.id=ai.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id  AND q.id='$quoteid'
 				AND ai.company='$company' AND ai.itemid='$itemid'				
 				";
         $sql = $sql1 . " UNION " . $sql2;
         $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
         $itemqry = $this->db->query($itemnamesql);
         $itemnameResult = $itemqry->result_array();
-
+		$itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
+		
         $query = $this->db->query($sql);
         if ($query->num_rows > 0)
         {
@@ -4496,58 +4497,37 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 
 			$companyName = (@$result[0]->title) ? @$result[0]->title : '';
 			$paName = (@$result[0]->fullname) ? @$result[0]->fullname : '';
-            $itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
-            /*$avgforpricedays = $this->itemcode_model->getdaysmeanprice($itemid);
-            $avgforpricedays = number_format($avgforpricedays, 2);
-            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai,
-            		" . $this->db->dbprefix('award') . " a
-				  WHERE ai.itemid='$itemid' AND ai.award=a.id AND ai.company='$company'
-				  AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-			";
-            $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
-            		" . $this->db->dbprefix('bid') . " b
-				  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND b.company='$company'
-				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-			";
-            //die($sqlavg);
-            
-            $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
-            $companyavgpricefordays = number_format($companyavgpricefordays, 2);
-            if ($companyavgpricefordays > $avgforpricedays)
-                $overalltrend = 'HIGH';
-            elseif ($companyavgpricefordays < $avgforpricedays)
-                $overalltrend = 'LOW';
-            else
-                $overalltrend = 'GOOD';
-            $overalltrend = "<b><font color='red'>$overalltrend</font></b>";
-            $pricedays = $this->settings_model->get_current_settings()->pricedays;
-            $trendstring = 'Price Trend: ' . $overalltrend .
-            				"(item avg for $pricedays days: $avgforpricedays,
-            				company avg price: $companyavgpricefordays.)<br/>";
-            if ($avgforpricedays == 0)
-                $trendstring .= 'Item not awarded for set days.';
-            if ($companyavgpricefordays == null)
-                $trendstring .= 'Item not awarded to this company.';
-
-*/
+         
             $ret = '';
             $ret .= '<table class="table table-bordered">';
             $ret .= '<tr><th>Date</th><th>Status</th><th>PO#</th><th>Qty.</th><th>Price</th></tr>';
             foreach ($result as $item)
             {
-                /*if ($item->ea > $avgforpricedays)
-                    $trend = 'high';
-                elseif ($item->ea < $avgforpricedays)
-                    $trend = 'low';
-                else
-                    $trend = 'good';
-                if ($avgforpricedays == null)
-                    $trend = 'NO DATA';*/
                 $ret .= '<tr><td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quoted . '</td><td>' . $item->ponum . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .
                  '</td></tr>';
             }
             $ret .= '</table>';
             echo $ret.'*#*#$'.$itemname.'*#*#$'.$companyName.'*#*#$'.$paName;
+        }
+        else 
+        {
+        	$companyName = $this->session->userdata('company')->title;
+        	$usersql = "SELECT u.id,u.fullname
+        			FROM " . $this->db->dbprefix('quote') . " q
+        			JOIN " . $this->db->dbprefix('users') . " u ON u.id = q.purchasingadmin
+        			WHERE q.id='$quoteid'";
+        	
+        	$qry = $this->db->query($usersql);
+        	$userResult = $qry->result();
+        	if(isset($userResult) && $userResult != '')
+        	{
+        		$paName = $userResult[0]->fullname;
+        	}
+        	else 
+        	{
+        		$paName = '';
+        	}        
+        	echo 'No Price History Found.'.'*#*#$'.$itemname.'*#*#$'.$companyName.'*#*#$'.$paName;
         }
         die();
     }

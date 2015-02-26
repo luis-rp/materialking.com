@@ -234,7 +234,7 @@ $( document ).tooltip();
 
     }
 
-    function addtocart(itemid, companyid, price, minqty, unit, itemcode,itemname,increment,isdeal,qtyreqd)
+    function addtocart(imgname,itemid, companyid, price, minqty, unit, itemcode,itemname,increment,isdeal,qtyreqd)
     { 
     	if(typeof(minqty)==='undefined') { miqty = 0; } 
     	if(increment==0) { increment=1;} 
@@ -248,6 +248,7 @@ $( document ).tooltip();
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
+        $("#itemimage").html('<img width="120" height="120" style="max-height: 120px; padding: 0px;width:120px; height:120px;float:right;" src='+imgname+'>');
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
         strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
@@ -849,21 +850,30 @@ $( document ).tooltip();
                                   	}
                                   	
                                   }
+                                 
                                   ?></td>
                                  <td>
-
+										 <?php 
+										 if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+										 { 
+										 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+										 } 
+										 else 
+										 { 
+										 	 $imgName = site_url('uploads/item/big.png'); 
+	                                     }?>
                                       <?php if($item->featureditem->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>" /><br/><p>Call for Price</p>
                                        <?php }else{
                                        	if($this->session->userdata('site_loggedin')) {
                                        	?>
                                   	
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>,'1',<?php echo (isset($item->featureditem->deal))?$item->featureditem->deal:1; ?>)">
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>,'1',<?php echo (isset($item->featureditem->deal))?$item->featureditem->deal:1; ?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                         <?php } elseif($item->featuredsupplierdetails->availprice!=1){ ?>
                                       
-                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>,'1', <?php echo (isset($item->featureditem->deal))?$item->featureditem->deal:1; ?>)">
+                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $item->id; ?>, <?php echo $item->featuredsupplier; ?>, <?php echo $item->featureditem->ea ? $item->featureditem->ea : 0; ?>,<?php echo (isset($item->featureditem->minqty))?$item->featureditem->minqty:'1';?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>',<?php echo $item->increment; ?>,'1', <?php echo (isset($item->featureditem->deal))?$item->featureditem->deal:1; ?>)">
                                       	<i class="icon icon-shopping-cart"></i> Buy Now
                                       </a>
                                         
@@ -1004,6 +1014,11 @@ $( document ).tooltip();
                                     
 
                                     </td>
+                                   <?php if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) { ?>                                       
+	                                    <?php $imgName = site_url('uploads/item/'.$item->item_img); ?>
+	                                <?php } else { ?>	                                    
+	                                        <?php $imgName = site_url('uploads/item/big.png'); 
+	                                   }?>
                                     <td style="padding:0px;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     <td style="padding:0px;" align="center">
@@ -1012,14 +1027,14 @@ $( document ).tooltip();
                                        <?php }
                                        else {	
                                        	if($this->session->userdata('site_loggedin')) {?>
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
                                             <i class="icon icon-plus"></i>
                                         </a>
                                         
                                         <br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
                                         <?php } elseif(@$inv->companydetails->availprice!=1) { ?>
                                         	
-                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
+                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
                                             <i class="icon icon-plus"></i>
                                         </a>
                                         
@@ -1287,11 +1302,12 @@ $( document ).tooltip();
                                     	<?php foreach($relateditems as $ri){?>
                                     		<tr>
                                     			<td>
-                                    				<?php if($ri->item_img){?>
+                                    				<?php if($ri->item_img && file_exists('./uploads/item/' .$ri->item_img)){?>
                                     				<img style="width:75px;height:50px" src="<?php echo site_url('uploads/item/'.$ri->item_img);?>"/>
-                                    				<?php } else {?>
+                                    				<?php $imgName = site_url('uploads/item/'.$ri->item_img); }
+                                    				 else {?>
                                     				<img style="width:75px;height:50px" src="<?php echo site_url('uploads/item/big.png');?>"/>
-                                    				<?php }?>
+                                    				<?php $imgName = site_url('uploads/item/big.png');  }?>
                                     			</td>
                                     			<td>
                                     				<a href="<?php echo site_url('site/item/'.$ri->url);?>" target="_blank"><?php echo $ri->itemname?></a>
@@ -1335,11 +1351,11 @@ $( document ).tooltip();
 
                         	<tr>
                         		<td style="text-align:center">
-                        		<?php if($di->image) {?>
+                        		<?php if($di->image  && file_exists('./uploads/item/'.$di->image)) {?>
                         			<img style="width: 81px;height:80px" src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
-                        		<?php } else {?>
+                        		<?php $imgName = site_url('uploads/item/thumbs/'.$di->image); } else {?>
                         		<img style="width: 81px;height:80px" width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
-                        		<?php }?>
+                        		<?php $imgName = site_url('uploads/item/big.png'); }?>
                         		</td></tr>
 
                                 <tr>
@@ -1357,7 +1373,7 @@ $( document ).tooltip();
                         		<td style="text-align:center">Hurry up, only <span class="red"><?php echo $di->qtyavailable;?> items</span> remaining</td>
                         	</tr>
                             <tr>
-                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1,<?php echo (isset($di->deal))?$di->deal:1; ?>)">
+                            <td style="background:#06A7EA; font-weight:bold; color:#fff; padding:2px 0px 2px 10px">	($<?php echo $di->dealprice;?> Min. Qty: <?php echo $di->qtyreqd;?>) 	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName;?>', <?php echo $di->itemid; ?>, <?php echo $di->company; ?>, <?php echo $di->dealprice ? $di->dealprice : 0; ?>, <?php echo $di->qtyreqd ? $di->qtyreqd : 0; ?>,'<?php echo $di->unit ? $di->unit : '';?>','<?php echo htmlspecialchars(addslashes($di->itemcode));?>', '<?php echo htmlspecialchars(addslashes($di->itemname));?>',<?php echo $di->increment; ?>,1,<?php echo (isset($di->deal))?$di->deal:1; ?>)">
                                     <i class="icon icon-plus"></i>
                                 </a></td>
                             </tr>
@@ -1552,6 +1568,7 @@ $( document ).tooltip();
 
           <h4 class="semi-bold" id="myModalLabel">
           <div id="itemnamebox"></div>
+          <div id="itemimage"></div>
           <br> Select Quantity
           </h4>
           <br>

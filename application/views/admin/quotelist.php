@@ -241,7 +241,7 @@ setTimeout(function() {
                 </th>
                </tr>
               </thead>
-              <?php if ($counts) {?>
+              <?php if ($counts)  {?>
               <tfoot>
                <tr>
                 <th>
@@ -285,7 +285,7 @@ setTimeout(function() {
                 </th>
                </tr>
               </tfoot>
-              <?php } ?>
+              <?php } else { echo '<tr><td><div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Existing Quotes / Orders On System.</div></div></td></tr>'; } ?>
             </table>
             
             

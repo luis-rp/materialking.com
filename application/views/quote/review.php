@@ -619,12 +619,18 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 									<?php foreach($quoteitems as $q){//print_r($q);?>
 							    	<tr>
 							    		<td>
-								    		<?php echo $q->itemname;?>
+								    		<?php echo $q->itemname;
+								    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
+								    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
+								    		
+								    		$itemCode1 = "'".$itemCode."'";
+								    		$itemName1 = "'".$itemName."'";
+								    		?>
 								    		
 								    		<a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
-							    		'".htmlentities(@$q->companyitem->itemcode)."',
-							    		'".htmlentities(@$q->companyitem->itemname)."',
+							    		".$itemCode1.",
+							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			<i class="fa fa-edit"></i>
@@ -684,10 +690,17 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
-							    		<?php if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
+							    		<?php 
+							    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
+							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
+							    		
+							    		$itemCode1 = "'".$itemCode."'";
+							    		$itemName1 = "'".$itemName."'";
+							    		
+							    		if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
-							    		'".htmlentities(@$q->companyitem->itemcode)."',
-							    		'".htmlentities(@$q->companyitem->itemname)."',
+							    		".$itemCode1.",
+							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			*Set List Price
