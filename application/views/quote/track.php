@@ -182,6 +182,7 @@ tr.still-due td
                                 <tbody>
     				              <?php
     						    	$i = 0;
+    						    	//echo '<pre>',print_r($awarditems);die;
     						    	foreach($awarditems as $ai)
     						    	{
     						    		$i++;
@@ -189,7 +190,15 @@ tr.still-due td
                                     <tr class="<?php echo $ai->quantity - $ai->received > 0?'still-due':'';?>">
                                         <td class="v-align-middle"><?php echo $ai->itemcode;?>
                                         <br/>
-                                        <span style="font-size:11px; color:#999999;"><?php echo $ai->itemname;?></span>
+                                        <span style="font-size:11px; color:#999999;float:left;"><?php echo $ai->itemname;?></span>
+                                        <span style="float:right;margin-top:-4em;margin-left:200px;">
+                                        <?php if(isset($ai->item_img) && $ai->item_img!= "" && file_exists("./uploads/item/".$ai->item_img)) 
+								    		{ ?>
+	                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$ai->item_img) ?>" alt="<?php echo $ai->item_img;?>">
+	                                        <?php } else { ?>
+	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+	                                        <?php } ?>
+	                                      </span>  
                                         </td>
                                         <td class="v-align-middle"><?php echo $ai->quantity;?></td>
                                         <td class="v-align-middle"><?php echo $ai->unit;?></td>

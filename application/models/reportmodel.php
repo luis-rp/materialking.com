@@ -88,7 +88,7 @@ class reportmodel extends Model
 					  WHERE r.awarditem=ai.id AND ai.company='".$company->id."'
 					  AND ai.award=a.id AND a.quote=q.id AND
 					  p.purchasingadmin=q.purchasingadmin AND
-					  p.id=q.pid  
+					  p.id=q.pid 
 					  $filter
 					  GROUP BY receiveddate
 					  $search
@@ -104,7 +104,7 @@ class reportmodel extends Model
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, u.companyname, q.ponum, a.awardedon, q.purchasingadmin,
 						s.taxrate taxpercent,
-						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,p.title,q.id as quote,ai.award, ai.quantity as aiquantity   
+						ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,p.title,q.id as quote,ai.award, ai.quantity as aiquantity,i.item_img   
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -112,7 +112,8 @@ class reportmodel extends Model
 					  ".$this->db->dbprefix('quote')." q,
 					  ".$this->db->dbprefix('settings')." s,
 					  ".$this->db->dbprefix('users')." u,
-					  ".$this->db->dbprefix('project')." p
+					  ".$this->db->dbprefix('project')." p,					  
+					   ".$this->db->dbprefix('item')." i
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company='".$company->id."' AND
 					  ai.award=a.id AND
@@ -120,6 +121,7 @@ class reportmodel extends Model
 					  u.id=q.purchasingadmin AND
 					  s.purchasingadmin=q.purchasingadmin AND
 					  p.purchasingadmin=q.purchasingadmin AND
+					  i.id=ai.itemid AND
 					  p.id=q.pid $filter ";
 			if($sepdate->receiveddate != null)			 
 			$itemsql .= "AND r.receiveddate='{$sepdate->receiveddate}' ";

@@ -138,7 +138,7 @@ function endTour(){
 						</form>
 					</div>
                 </div>
-
+            <?php if($items){?>
             <table id="datatable" class="table table-bordered datagrid">
               <tr>
               	<th width="20%">Code</th>
@@ -156,13 +156,23 @@ function endTour(){
               	<td><?php echo $item->cost?></td>
               	<td><span class='total-spent'><?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100) + $shipping),2 ); ?></span></td>
               	<td id="lastpbar"><?php echo $item->budget;?></td>
-              	<td id="progress<?php echo $item->id;?>"><span class='task-progress' style='display: none;'><?php echo $item->manualprogress;?></span><?php echo $item->manualprogressbar?></td>
+              	
+              
+              	<td id="progress<?php echo $item->id;?>">
+              	 	<?php //if($item->estimate!=1) { ?>
+              	<span class='task-progress' style='display: none;'>            	
+              	<?php  echo $item->manualprogress; ?>
+              	</span>
+              	<?php //} ?>
+              	<?php if($item->estimate!=1) { echo $item->manualprogressbar; } else { echo ""; }?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
               	<td><?php echo $item->actions?></td>
               </tr>
               <?php }?>
             </table>
-            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div>
+            <?php }?>
+               <?php if($items){?>
+            <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div><?php } ?>
 		   <script type="text/javascript">
 		   $(function () {
 			   var spent = new Array;
@@ -247,7 +257,8 @@ function endTour(){
 
 		   </script>
             <?php if(!$items){?>
-            No Costcodes Found.
+            <div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox"> No Costcodes Found.</div></div>
+           
             <?php }?>
            </div>
 

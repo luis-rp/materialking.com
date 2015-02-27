@@ -681,7 +681,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
 									<input type="hidden" id="draft" name="draft" value=""/>
 									<?php 
-								//	echo '<pre>',print_r($quoteitems);die;
+									
 									foreach($quoteitems as $q)if(@$q->itemid){ //echo "<pre>"; print_r($q); die;?>
 									<?php if(@$originalitems[$q->itemid]){?>
 							    	<tr>
@@ -717,6 +717,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<?php if($q->attachment){?>
 							    			<a href="<?php echo site_url('uploads/item/'.$q->attachment);?>" target="_blank">View</a>
 							    		<?php }?>
+							    		
 							    		</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->unit;?></td>
@@ -735,6 +736,13 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								    		<input type="hidden" name="itemid<?php echo $q->id;?>" value="<?php echo $q->itemid;?>"/>
 								    		<input type="hidden" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>"/>
 								    		<textarea id="itemname<?php echo $q->id;?>" style="width: 150px" name="itemname<?php echo $q->id;?>" required><?php echo htmlspecialchars_decode($q->itemname, ENT_COMPAT);//htmlentities($q->itemname);?></textarea>
+								    		<br>
+								    		<?php if(isset($q->orgitem->item_img) && $q->orgitem->item_img!= "" && file_exists("./uploads/item/".$q->orgitem->item_img)) 
+								    		{ ?>
+	                                                 <img style="max-height: 120px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->orgitem->item_img) ?>" alt="<?php echo $q->orgitem->item_img;?>">
+	                                        <?php } else { ?>
+	                                            <img style="max-height: 120px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+	                                        <?php } ?>
 							    		</td>
 							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"/>
 							    								    		

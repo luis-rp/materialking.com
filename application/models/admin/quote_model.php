@@ -428,6 +428,7 @@ class quote_model extends Model {
                 if ($companyitem) {
                     $awarditem->itemcode = $companyitem->itemcode;
                     $awarditem->itemname = $companyitem->itemname;
+                    $awarditem->item_img = $companyitem->item_img;
                 }
                 //print_r($companyitem);die;
                 $awarditems[] = $awarditem;
@@ -443,8 +444,8 @@ class quote_model extends Model {
               $invoicequery = $this->db->query($invoicesql);
               $invoices = $invoicequery->result();
              */
-            $invoicesql = "SELECT distinct(invoicenum) invoicenum, 
-            				   r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
+            $invoicesql = "SELECT distinct(invoicenum) invoicenum, ai.company, ai.purchasingadmin, 
+            				   r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum, r.datedue, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,
 							   " . $this->db->dbprefix('awarditem') . " ai
@@ -475,6 +476,61 @@ class quote_model extends Model {
                     }
                     $invoicenum->items[] = $invoiceitem;
                 }
+                
+
+
+                // Code for getting discount/Penalty
+                if(@$invoicenum->company && @$invoicenum->purchasingadmin){
+
+                	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoicenum->company . "'
+				and purchasingadmin = '". $invoicenum->purchasingadmin ."'";
+                	//echo $sql;
+                	$resultinvoicecycle = $this->db->query($sql)->row();
+
+                	$invoicenum->penalty_percent = 0;
+                	$invoicenum->penaltycount = 0;
+                	$invoicenum->discount_percent =0;
+
+                	if($resultinvoicecycle){
+
+                		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+                			if(@$invoicenum->datedue){
+
+                				if(@$invoicenum->paymentstatus == "Paid" && @$invoicenum->paymentdate){
+                					$oDate = $invoicenum->paymentdate;
+                					$now = strtotime($invoicenum->paymentdate);
+                				}else {
+                					$oDate = date('Y-m-d');
+                					$now = time();
+                				}
+
+                				$d1 = strtotime($invoicenum->datedue);
+                				$d2 = strtotime($oDate);
+                				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+                				if(is_int($datediff) && $datediff > 0) {
+
+                					$invoicenum->penalty_percent = $resultinvoicecycle->penalty_percent;
+                					$invoicenum->penaltycount = $datediff;
+
+                				}else{
+
+                					$discountdate = $resultinvoicecycle->discountdate;
+                					if(@$discountdate){
+
+                						if ($now < strtotime($discountdate)) {
+                							$invoicenum->discount_percent = $resultinvoicecycle->discount_percent;
+                						}
+                					}
+                				}
+                			}
+
+                		}
+                	}
+
+                }
+
+                
                 $invoices[] = $invoicenum;
             }
             $item->invoices = $invoices;
@@ -819,8 +875,8 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
+       $query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -833,8 +889,8 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
+         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -851,10 +907,10 @@ class quote_model extends Model {
         $combquery = $query ." UNION ".$contractquery." ORDER BY STR_TO_DATE(receiveddate, '%m/%d/%Y') DESC";
         $invoicequery = $this->db->query($combquery);
         $items = $invoicequery->result();
-
+		
         $invoices = array();
         foreach ($items as $invoice) {
-             $quotesql = "SELECT q.*,ai.id as awarditemid
+             $quotesql = "SELECT q.*,ai.id as awarditemid  
 					   FROM 
 					   " . $this->db->dbprefix('received') . " r,
 					   " . $this->db->dbprefix('awarditem') . " ai,
@@ -866,6 +922,60 @@ class quote_model extends Model {
             $quotequery = $this->db->query($quotesql);
             $invoice->quote = $quotequery->row();
 
+            
+                    // Code for getting discount/Penalty
+        if(@$invoice->company && @$invoice->purchasingadmin){
+
+        	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        	//echo $sql;
+        	$resultinvoicecycle = $this->db->query($sql)->row();
+        	
+        	$invoice->penalty_percent = 0;
+        	$invoice->penaltycount = 0;
+        	$invoice->discount_percent =0;
+        	
+        	if($resultinvoicecycle){
+
+        		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        			if(@$invoice->datedue){
+        				
+        				if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        					$oDate = $invoice->paymentdate;
+        					$now = strtotime($invoice->paymentdate);
+        				}else {
+        					$oDate = date('Y-m-d');
+        					$now = time();
+        				}
+        				
+        				$d1 = strtotime($invoice->datedue);
+        				$d2 = strtotime($oDate);
+        				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        				if(is_int($datediff) && $datediff > 0) {
+							
+        					$invoice->penalty_percent = $resultinvoicecycle->penalty_percent;
+        					$invoice->penaltycount = $datediff;
+        					
+        				}else{
+
+        					$discountdate = $resultinvoicecycle->discountdate;
+        					if(@$discountdate){
+        						
+        						if ($now < strtotime($discountdate)) {
+        							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        						}
+        					}
+        				}
+        			}
+        			
+        		}
+        	}       	
+        	
+        }
+        
+            
+            
             $invoices[] = $invoice;
         }
 
@@ -906,8 +1016,8 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-       $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+       $query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -920,8 +1030,8 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue
+         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -954,6 +1064,57 @@ class quote_model extends Model {
             $quotequery = $this->db->query($quotesql);
             $invoice->quote = $quotequery->row();
 
+                                // Code for getting discount/Penalty
+        if(@$invoice->company && @$invoice->purchasingadmin){
+
+        	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        	//echo $sql;
+        	$resultinvoicecycle = $this->db->query($sql)->row();
+        	
+        	$invoice->penalty_percent = 0;
+        	$invoice->penaltycount = 0;
+        	$invoice->discount_percent =0;
+        	
+        	if($resultinvoicecycle){
+
+        		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        			if(@$invoice->datedue){
+        				
+        				if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        					$oDate = $invoice->paymentdate;
+        					$now = strtotime($invoice->paymentdate);
+        				}else {
+        					$oDate = date('Y-m-d');
+        					$now = time();
+        				}
+        				        				
+        				$d1 = strtotime($invoice->datedue);
+        				$d2 = strtotime($oDate);
+        				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        				if(is_int($datediff) && $datediff > 0) {
+							
+        					$invoice->penalty_percent = $resultinvoicecycle->penalty_percent;
+        					$invoice->penaltycount = $datediff;
+        					
+        				}else{
+
+        					$discountdate = $resultinvoicecycle->discountdate;
+        					if(@$discountdate){        						
+        						if ($now < strtotime($discountdate)) {
+        							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        						}
+        					}
+        				}
+        			}
+        			
+        		}
+        	}       	
+        	
+        }
+            
+            
             $invoices[] = $invoice;
         }
 
@@ -985,8 +1146,8 @@ class quote_model extends Model {
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
 
-        $query = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
+        $query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -999,8 +1160,8 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-        $contractquery = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2)  totalprice, receiveddate, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
+        $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2)  totalprice, receiveddate, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -1033,6 +1194,58 @@ class quote_model extends Model {
             $quotequery = $this->db->query($quotesql);
             $invoice->quote = $quotequery->row();
 
+            
+                                            // Code for getting discount/Penalty
+        if(@$invoice->company && @$invoice->purchasingadmin){
+
+        	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        	//echo $sql;
+        	$resultinvoicecycle = $this->db->query($sql)->row();
+        	
+        	$invoice->penalty_percent = 0;
+        	$invoice->penaltycount = 0;
+        	$invoice->discount_percent =0;
+        	
+        	if($resultinvoicecycle){
+
+        		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        			if(@$invoice->datedue){
+        				
+        				if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        					$oDate = $invoice->paymentdate;
+        					$now = strtotime($invoice->paymentdate);
+        				}else {
+        					$oDate = date('Y-m-d');
+        					$now = time();
+        				}
+        				        				
+        				$d1 = strtotime($invoice->datedue);
+        				$d2 = strtotime($oDate);
+        				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        				if(is_int($datediff) && $datediff > 0) {
+							
+        					$invoice->penalty_percent = $resultinvoicecycle->penalty_percent;
+        					$invoice->penaltycount = $datediff;
+        					
+        				}else{
+
+        					$discountdate = $resultinvoicecycle->discountdate;
+        					if(@$discountdate){        						
+        						if ($now < strtotime($discountdate)) {
+        							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        						}
+        					}
+        				}
+        			}
+        			
+        		}
+        	}       	
+        	
+        }
+            
+            
             $invoices[] = $invoice;
         }
 
@@ -1074,8 +1287,8 @@ class quote_model extends Model {
 
     function getinvoicebynum($invoicenum,$invoicequote) {
 
-        $invoicesql = "SELECT invoicenum, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, 
-        			r.status, r.paymentstatus, r.paymenttype, r.refnum, r.datedue,r.id as receivedid,r.attachmentname 
+        $invoicesql = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, 
+        			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum, r.datedue,r.id as receivedid,r.attachmentname 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,
@@ -1087,7 +1300,56 @@ class quote_model extends Model {
         //echo $totalquery;
         $invoicequery = $this->db->query($invoicesql);
         $invoice = $invoicequery->row();
+		
+        // Code for getting discount/Penalty
+        if(@$invoice->company && @$invoice->purchasingadmin){
 
+        	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        	//echo $sql;
+        	$resultinvoicecycle = $this->db->query($sql)->row();
+        	
+        	$invoice->penalty_percent = 0;
+        	$invoice->penaltycount = 0;
+        	$invoice->discount_percent =0;
+        	
+        	if($resultinvoicecycle){
+
+        		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        			if(@$invoice->datedue){
+        				
+        				if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        					$oDate = $invoice->paymentdate;
+        					$now = strtotime($invoice->paymentdate);
+        				}else {
+        					$oDate = date('Y-m-d');
+        					$now = time();
+        				}
+        				$d1 = strtotime($invoice->datedue);
+        				$d2 = strtotime($oDate);
+        				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        				if(is_int($datediff) && $datediff > 0) {
+							
+        					$invoice->penalty_percent = $resultinvoicecycle->penalty_percent;
+        					$invoice->penaltycount = $datediff;
+        					
+        				}else{
+
+        					$discountdate = $resultinvoicecycle->discountdate;
+        					if(@$discountdate){        						
+        						if ($now < strtotime($discountdate)) {
+        							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        						}
+        					}
+        				}
+        			}
+        			
+        		}
+        	}       	
+        	
+        }
+        
         $quotesql = "SELECT quote
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -1135,6 +1397,7 @@ class quote_model extends Model {
             if ($companyitem) {
                 $invoiceitem->itemcode = $companyitem->itemcode;
                 $invoiceitem->itemname = $companyitem->itemname;
+                $invoiceitem->item_img = $companyitem->item_img;
             }
             $invoice->items[] = $invoiceitem;
         }
@@ -1431,7 +1694,7 @@ class quote_model extends Model {
         
         $where ="";
         if(@$this->session->userdata('purchasingadmin'))
-        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL)';
+        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL OR purchasingadmin = 1)';
         
           $sql = "SELECT * FROM " . $this->db->dbprefix('item')
                 . " WHERE 1=1 {$where} AND (itemcode LIKE '%" . $key . "%' OR itemname LIKE '%" . $key . "%')";        
@@ -1461,7 +1724,7 @@ class quote_model extends Model {
 
         $where ="";
         if(@$this->session->userdata('purchasingadmin'))
-        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL)';
+        $where = ' AND ( purchasingadmin ='.$this->session->userdata('purchasingadmin').' OR purchasingadmin is NULL OR purchasingadmin = 1)';
         
         //$sql = 'SELECT * FROM ' . $this->db->dbprefix('item') . ' WHERE itemcode LIKE "%' . $code . '%"';
         $sql = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE 1=1 ".$where." and itemcode='" . $code . "'";

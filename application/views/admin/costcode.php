@@ -133,6 +133,12 @@ function changeproject(catid){
     </div>
     </div>
     
+     <div class="control-group">
+    <label class="control-label">Turn Off Estimated Cost:</label>
+    <div class="controls">
+       <input type="checkbox" name="estimate" id="estimate" <?php echo @$this->validation->estimate?'checked="CHECKED"':''?>" />
+    </div>
+    </div>
     
     <div class="control-group">
     <label class="control-label">&nbsp;</label>

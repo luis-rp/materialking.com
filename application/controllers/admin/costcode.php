@@ -380,7 +380,10 @@ class costcode extends CI_Controller {
             $data['items'] = array();
             $this->data['message'] = 'No Records';
         }
-
+        if(isset($_POST['parentfilter']) && $_POST['parentfilter']=="")
+        {
+        	$_POST['parentfilter']=0;
+        }
         $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, @$_POST['parentfilter']);
 
         if ($this->session->userdata('usertype_id') > 1)
@@ -840,6 +843,7 @@ class costcode extends CI_Controller {
         $this->validation->cdetail = $item->cdetail;
         $this->validation->parent = $item->parent;
         $this->validation->forcontract = $item->forcontract;
+        $this->validation->estimate = $item->estimate;
 
         $this->db->where('id', $id);
         if ($this->session->userdata('usertype_id') > 1)
@@ -909,6 +913,7 @@ class costcode extends CI_Controller {
         $fields ['code'] = 'code';
         $fields ['cost'] = 'cost';
         $fields ['forcontract'] = 'forcontract';
+        $fields ['estimate'] = 'estimate';
         $fields ['cdetail'] = 'cdetail';
         $fields ['parent'] = 'Parent';
         $fields ['project'] = 'Project';

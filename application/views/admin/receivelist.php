@@ -347,8 +347,6 @@ function jq( myid ) {
             }
             ?>
            
-           <?php if(!$costcodedata) {?> <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
-            No Costcodes Exist - Please Click Here to Create a Cost Code for "<?php echo $this->session->userdata('managedprojectdetails')->title; ?>"</a><?php } ?>
          </div>
       </div>
     </div>

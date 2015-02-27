@@ -62,6 +62,7 @@ function preloadoptions(fromid)
 								<th>&nbsp;</th>
 								<th>Company</th>						
 								<th>discount(%)</th>
+								<th>discount date</th>
 								<th>penalty(%)</th>
 								<th>Due Date</th>
 								<th>Term</th>								
@@ -76,6 +77,10 @@ function preloadoptions(fromid)
 								
 								<td><input  class="form-control" type="text" name="discount_percent[<?php echo $admin->purchasingadmin;?>]" 
 									value="<?php echo @$admin->discount_percent;?>" />								
+								</td>
+								
+								<td><input  class="form-control daterequested" type="text" name="discountdate[<?php echo $admin->purchasingadmin;?>]" 
+									value="<?php echo (@$admin->discountdate=='0000-00-00'||@$admin->discountdate=='')?'':date('m/d/Y',strtotime(@$admin->discountdate));?>" data-date-format="mm/dd/yyyy" />									
 								</td>
 								
 								<td><input  class="form-control" type="text" name="penalty_percent[<?php echo $admin->purchasingadmin;?>]" 

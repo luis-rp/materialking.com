@@ -379,7 +379,7 @@ class site extends CI_Controller
             }
             $this->data['suppliers'][] = $supplier;
         }
-        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') ." WHERE isdeleted = 0";
         $this->data['citystates'] = $this->db->query($sql)->result();
         $this->data['states'] = $this->db->get('state')->result();
         $this->data['types'] = $this->db->get('type')->result();
@@ -995,6 +995,7 @@ class site extends CI_Controller
             }
 
             $query_suppliers = $this->search_supplier($keyword);
+           
             $this->data2['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
             $this->data2['submiturl'] = 'site/items/' . $keyword;
             $this->data2['keyword'] = $keyword;
@@ -1040,6 +1041,7 @@ class site extends CI_Controller
             }
             $this->homemodel->set_distance(20);
             $query_suppliers = $this->homemodel->get_nearest_suppliers();
+            
             if (! $query_suppliers->totalresult)
             {
                 $this->homemodel->set_distance(15000);
@@ -1093,7 +1095,7 @@ class site extends CI_Controller
             }
             $this->data2['suppliers'][] = $supplier;
         }
-        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company');
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') . " WHERE isdeleted = 0";
         $this->data2['citystates'] = $this->db->query($sql)->result();
         $this->data2['states'] = $this->db->get('state')->result();
         $this->data2['types'] = $this->db->get('type')->result();
@@ -2932,7 +2934,7 @@ class site extends CI_Controller
         
         $this->data['items'] = array();
         $items = $items->items;
-              
+       
         foreach ($items as $item)
         {
            $company=$this->db->get_where('company',array('id'=>$item->company))->row();
@@ -3007,6 +3009,7 @@ class site extends CI_Controller
 	function designbookdetail($id)
     {
     	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.id=".$id."";
+    	
 		$data['details'] = $this->db->query($sql)->row();
 		$cid=$data['details']->company;
 	

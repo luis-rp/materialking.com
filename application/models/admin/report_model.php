@@ -46,7 +46,7 @@ class report_model extends Model
 			$filter .= " AND r.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
 		}
  		
- 		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
+ 		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate,
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
  						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
 					   FROM 
@@ -62,7 +62,7 @@ class report_model extends Model
 					  $search ";
  		
  		
- 		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,
+ 		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,  ai.company, ai.purchasingadmin,  r.datedue, r.paymentstatus, r.paymentdate, 
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
  						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice
 					   FROM 
@@ -87,7 +87,7 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl 
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl,i.item_img 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -108,7 +108,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl    
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl,i.item_img    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -134,6 +134,60 @@ class report_model extends Model
 			$sepdate->items = $items;
 			
  		
+			
+			                // Code for getting discount/Penalty
+                if(@$sepdate->company && @$sepdate->purchasingadmin){
+
+                	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $sepdate->company . "'
+				and purchasingadmin = '". $sepdate->purchasingadmin ."'";
+                	//echo $sql;
+                	$resultinvoicecycle = $this->db->query($sql)->row();
+
+                	$sepdate->penalty_percent = 0;
+                	$sepdate->penaltycount = 0;
+                	$sepdate->discount_percent =0;
+
+                	if($resultinvoicecycle){
+
+                		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+                			if(@$sepdate->datedue){
+		
+                				if(@$sepdate->paymentstatus == "Paid" && @$sepdate->paymentdate){
+                					$oDate = $sepdate->paymentdate;
+                					$now = strtotime($sepdate->paymentdate);
+                				}else {
+                					$oDate = date('Y-m-d');
+                					$now = time();
+                				}
+
+                				$d1 = strtotime($sepdate->datedue);
+                				$d2 = strtotime($oDate);
+                				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+                				if(is_int($datediff) && $datediff > 0) {
+
+                					$sepdate->penalty_percent = $resultinvoicecycle->penalty_percent;
+                					$sepdate->penaltycount = $datediff;
+
+                				}else{
+
+                					$discountdate = $resultinvoicecycle->discountdate;
+                					if(@$discountdate){
+
+                						if ($now < strtotime($discountdate)) {
+                							$sepdate->discount_percent = $resultinvoicecycle->discount_percent;
+                						}
+                					}
+                				}
+                			}
+
+                		}
+                	}
+
+                }
+			
+			
+			
  		    $datepaidsql = "SELECT 
  						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalpaid
 					   FROM 

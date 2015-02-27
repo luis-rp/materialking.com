@@ -317,6 +317,7 @@
 
 	 function preloadoptions()
 	 {
+	 	$.noConflict();
     	$("#smodal").modal();   	   
      }
  </script>
@@ -337,7 +338,7 @@
 
 
 <div>
-<section class="row-fluid">
+<section class="row-fluid" style="margin:0px auto; padding:0px; width:93.4%;">
 <h3 class="box-header" style="display:inline; width:98.4%">
 				<span id="step1" >Your Dashboard</span>
 				&nbsp;
@@ -396,18 +397,18 @@
 				</form>
 									
 		
+			</div>
+			
+			<div class="well span11" style="width:65% !important;">			
+				<h3 class="box-header" style="width:97.5%;">My Project Map</h3>
+			    <div class="map-wrapper" style="float:left;width:100%;height:400px;">
+					<div class="map">
+	            	<div id="map" style="height:400px;width:100%;" class="map-inner" ></div>
+	           		</div>
+				</div>
+			</div>	
+			
 			</div>			
-			
-		    <div class="map-wrapper" style="float:left;width:700px;height:400px;">
-			<div class="map">
-            <div id="map" style="height:400px;width:700px;" class="map-inner" ></div>
-            </div>
-			</div>
-				
-			
-			</div>
-			
-			
 			<br/>
 			<div class="well span4" id="step2">
              
@@ -577,20 +578,12 @@
 				  <?php } ?>
 				</table>
 	    	
-			<?php } }?>
-			
-			
-			
-					
-		</div>
-			
-	    	
-	    	
-			
-			
+			<?php } }?>					
+		</div>		
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
-	    	<div class="span7">
-	  <h3 class="box-header" style="width:94.5%">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
+	    	
+	    	<div class="span10" style="padding:19px;">
+	  <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
 	  <?php // if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
 				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo @$Totalawardedtotal; ?></strong></div>
 
@@ -609,10 +602,10 @@
 	    	
 
 			<?php }else{?>
-			<div  class="span8" style="margin-left:1%;">
+			<div  class="span10" style="margin-left:1%;">
 		
 
-			<div class="well span4" style=" margin-top:15px; width:100%;" >
+			<div class="span4" style=" margin-top:15px; width:100%;" >
 					<h3 class=" box-header" >Activity Feed</h3>
 					
 					 <div>

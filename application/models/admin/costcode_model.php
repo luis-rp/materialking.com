@@ -353,6 +353,13 @@ class costcode_model extends Model
     		$forcontract = 1;
     		else 
     		$forcontract = 0;
+    		
+    		$estimate="";
+		if(@$this->input->post('estimate') == "on")
+    		$estimate = 1;
+    		else 
+    		$estimate = 0;
+    		
 		$options = array(
 			'code'=>$this->input->post('code'),
 			'cost'=>$this->input->post('cost'),
@@ -360,7 +367,8 @@ class costcode_model extends Model
 			'parent'=>$this->input->post('parent'),
 			'project'=>$this->input->post('project'),
 			'creation_date' => date('Y-m-d'),
-			'forcontract' => $forcontract
+			'forcontract' => $forcontract,
+			'estimate' => $estimate
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('costcode', $options);
@@ -375,13 +383,21 @@ class costcode_model extends Model
     		$forcontract = 1;
     		else 
     		$forcontract = 0;
+    		
+    		$estimate="";
+		if(@$this->input->post('estimate') == "on")
+    		$estimate = 1;
+    		else 
+    		$estimate = 0;
+    		
 		$options = array(
 			'code'=>$this->input->post('code'),
 			'cost'=>$this->input->post('cost'),
 			'cdetail'=>$this->input->post('cdetail'),
 			'parent'=>$this->input->post('parent'),
 			'project'=>$this->input->post('project'),
-			'forcontract' => $forcontract
+			'forcontract' => $forcontract,
+			'estimate' => $estimate
 		);
 		$oldcoderow = $this->get_costcodes_by_id($this->input->post('id'));
 		$oldcode = $oldcoderow->code;

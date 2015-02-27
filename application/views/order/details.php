@@ -95,6 +95,7 @@ function pickupfun()
                                         
 										<tbody>
 							              <?php
+							             
 									    	$i = 0;
 									    	$gtotal = 0;
 									    	$shipping = 0;
@@ -106,7 +107,16 @@ function pickupfun()
 									    		
 									      ?>
                                             <tr>
-                                                <td><?php echo $item->itemdetails->itemname;?></td>
+                                                <td><?php echo $item->itemdetails->itemname;?>
+                                                <span style="float:right;">
+                                                <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+									    		{ ?>
+		                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
+		                                        <?php } else { ?>
+		                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+		                                        <?php } ?>
+		                                        </span>
+                                                </td>
                                                 <td><?php echo $item->quantity;?></td>
                                                 <td>$<?php echo $item->price;?></td>
                                                 <td>$<?php echo number_format($total,2);?></td>

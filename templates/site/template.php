@@ -19,13 +19,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
 });
 </script>
 
-<style>
-.modal
-{
-width:30% !important;
-left:50% !important;
-}
-</style>
+
     	<link type="text/css" href="<?php echo base_url(); ?>cometchat/cometchatcss.php" rel="stylesheet" charset="utf-8">
 		<script type="text/javascript" src="<?php echo base_url(); ?>cometchat/cometchatjs.php" charset="utf-8"></script>
         <meta charset="UTF-8"/>
@@ -463,7 +457,7 @@ left:50% !important;
         </div>
 
 
-   <div class="modal hide fade" id="loginmodal">
+   <div class="modal hide fade" id="loginmodal" style="width:30% !important;left:50% !important;">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3>Login As Purchasing Admin</h3>
@@ -531,7 +525,7 @@ left:50% !important;
         </div>
 
         <!-- Modal -->
-        <div class="modal hide fade" id="createmodal">
+        <div class="modal hide fade" id="createmodal" style="width:30% !important;left:50% !important;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

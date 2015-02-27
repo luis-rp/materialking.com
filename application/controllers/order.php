@@ -322,6 +322,9 @@ class Order extends CI_Controller
     			
 				$item->itemdetails = $itemdetails;
 				
+				$this->db->where('id',$item->itemid);				
+				$itemRes = $this->db->get('item')->row();
+				$item->item_img = $itemRes->item_img;				
 				$data['orderitems'][]=$item;
 			}
 		}

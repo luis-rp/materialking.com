@@ -84,10 +84,24 @@
 		   			foreach($reports as $report)
 		   			{
 			    		if(!$report->totalpaid) $report->totalpaid = 0;
-		   				$report->totalpaid = $report->totalpaid + ($report->totalpaid*$tax/100);
-		   				$report->totalpaid = round($report->totalpaid,2);
+		   				$report->totalpaid = $report->totalpaid + ($report->totalpaid*$tax/100);		   				
 
 		   				$report->totalprice = $report->totalprice + ($report->totalprice*$tax/100);
+		   				
+		   				if(@$report->discount_percent){
+
+		   					$report->totalprice = $report->totalprice - ($report->totalprice*$report->discount_percent/100);
+		   					$report->totalpaid = $report->totalpaid - ($report->totalpaid*$report->discount_percent/100);
+		   				}
+
+		   				if(@$report->penalty_percent){
+
+		   					$report->totalprice = $report->totalprice + (($report->totalprice*$report->penalty_percent/100)*$report->penaltycount);
+		   					$report->totalpaid = $report->totalpaid + (($report->totalpaid*$report->penalty_percent/100)*$report->penaltycount);
+		   				}
+		   				
+		   				$report->totalpaid = round($report->totalpaid,2);
+		   				
 		   				$report->totalprice = round($report->totalprice,2);
 
 		   				$totalallquantity+=$report->totalquantity;
@@ -147,7 +161,7 @@
 			    		<th>Due Date</th>
 			    	</tr>
 			    	<?php
-
+					
 			    		foreach($report->items as $item)
 			    		{	
 			    			if($item->potype == "Contract" )
@@ -162,7 +176,15 @@
 			    		<td><?php echo $item->ponum;?>
 			    		<?php echo ($item->invoice_type == "fullpaid" || $item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
 			    		</td>
-			    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a></td>
+			    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a>
+			    		<br>
+			    		 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+			    		{ ?>
+                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
+                        <?php } else { ?>
+                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                        <?php } ?>
+			    		</td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>

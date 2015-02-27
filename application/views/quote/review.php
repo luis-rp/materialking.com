@@ -586,13 +586,21 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 									     	$str = explode("#$#$#",$bid->$i);
 									     	$bidTotPrice = $str[1] + ($str[1] * $taxpercent /100);
 									     	?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; Date: <?php if(isset($str[0])) echo date("m/d/Y", strtotime($str[0])); else echo ''; ?>  Total : $ <?php echo number_format($bidTotPrice,2);?><br><?php } } ?> </td></tr>
-									      <td colspan="2">   
+									      <td>   
 									      	<br/><br/>
 									      	Please review each item for accepting or rejecting. When you are finished, Click the Save PO <br/>
 											button.<br/><br/>
 											Thank You,<br/>
 											<strong><?php echo $purchasingadmin->companyname?></strong>
 									     	<br/><br/>
+									     </td>
+									     
+									      <td>   
+									      	<span><strong>Company : </strong></span><span><?php echo $purchasingadmin->companyname; ?></span><br />
+									      	<span><strong>Contact Name : </strong></span><span><?php echo $purchasingadmin->fullname; ?></span><br />
+									      	<span><strong>Contact Phone : </strong></span><span><?php echo $purchasingadmin->phone; ?></span><br />
+									      	<span><strong>Contact Email : </strong></span><span><?php echo $purchasingadmin->email; ?></span><br />
+									      	<span><strong>Project : </strong></span><span><?php echo $proname; ?></span><br />
 									     </td>
 									     
 									 </tr>
@@ -672,6 +680,13 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								    		<input type="hidden" name="itemid<?php echo $q->id;?>" value="<?php echo $q->itemid;?>"/>
 								    		<input type="hidden" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>"/>
 								    		<textarea id="itemname<?php echo $q->id;?>" style="width: 150px" name="itemname<?php echo $q->id;?>" required><?php echo htmlspecialchars_decode($q->itemname, ENT_COMPAT);//htmlentities($q->itemname);?></textarea>
+								    		<br>
+								    		<?php if(isset($q->orgitem->item_img) && $q->orgitem->item_img!= "" && file_exists("./uploads/item/".$q->orgitem->item_img)) 
+								    		{ ?>
+	                                                 <img style="max-height: 120px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->orgitem->item_img) ?>" alt="<?php echo $q->orgitem->item_img;?>">
+	                                        <?php } else { ?>
+	                                            <img style="max-height: 120px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+	                                        <?php } ?>
 							    		</td>
 							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"/>
 							    								    		

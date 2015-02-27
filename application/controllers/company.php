@@ -2425,7 +2425,7 @@ class Company extends CI_Controller {
         $this->db->where('company', $company->id);
         
         $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
-        			   discount_percent, penalty_percent, duedate, term 
+        			   discount_percent, penalty_percent, duedate, term, discountdate  
 				FROM " . $this->db->dbprefix('users') . " u
 				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
 				LEFT JOIN " . $this->db->dbprefix('invoice_cycle') . " ic ON ic.purchasingadmin=u.id AND ic.company='" . $company->id . "'
@@ -2446,7 +2446,7 @@ class Company extends CI_Controller {
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login'); 
-       // echo "<pre>",print_r($_POST['discount_percent']); die;       
+        // echo "<pre>",print_r($_POST);       
 		if(@$_POST['term'])
 		{
 	        foreach ($_POST['term'] as $admin => $discount_percent)
@@ -2454,12 +2454,24 @@ class Company extends CI_Controller {
 	            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
 	            $this->db->where($arr);
 	            $this->db->delete('invoice_cycle');
-	            $arr['discount_percent'] = $discount_percent;
+	            
+	            if($_POST['discount_percent'][$admin])
+	            $arr['discount_percent'] = $_POST['discount_percent'][$admin];
+	            
 	            $arr['penalty_percent'] = $_POST['penalty_percent'][$admin];	           
+	            
 	            if($_POST['duedate'][$admin])
 	            	$arr['duedate'] = date('Y-m-d', strtotime($_POST['duedate'][$admin]));
+	            
 	            if($_POST['term'][$admin])
-	            	$arr['term'] = $_POST['term'][$admin]; 	              
+	            	$arr['term'] = $_POST['term'][$admin]; 	    
+	            //echo $_POST['discountdate'][$admin]; die;	 
+	            if($_POST['discountdate'][$admin])
+	            	$arr['discountdate'] = date('Y-m-d', strtotime($_POST['discountdate'][$admin])); 	     
+				
+	           // if($_POST['discount_percent'][$admin] == '21.00')
+				//echo "<pre>",print_r($arr); die;
+		            	           	
 	            $this->db->insert('invoice_cycle', $arr);
 	            
 	            if($_POST['duedate'][$admin]!="")

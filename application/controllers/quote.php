@@ -400,6 +400,7 @@ class Quote extends CI_Controller
 		}
 		
 		$quote = $this->quotemodel->getquotebyid($invitation->quote);
+		$data['proname']=$this->db->get_where('project',array('id'=>$quote->pid))->row()->title;
 		if($this->quotemodel->checkbidcomplete($quote->id))
 		{
 			$message = 'PO Already Completed, Thank You.';
@@ -3143,7 +3144,18 @@ or edit your quote.</div></div></div>');
 			                        ->where('quote',$quoteid)->where('company',$company->id)
 			                        ->where('itemid',$ai->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
+			                        
+			$sql = "SELECT item_img FROM " . $this->db->dbprefix('item') . " WHERE id=".$ai->itemid;
+			$itemRes = $this->db->query($sql)->result();
 			
+			if(isset($itemRes) && $itemRes != '')
+			{
+				$ai->item_img = $itemRes[0]->item_img;
+			}
+			else 
+			{
+				$ai->item_img = '';
+			}
 			$data['awarditems'][] = $ai;
 		}
 		if(!$noitemsgiven)

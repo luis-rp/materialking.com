@@ -308,6 +308,17 @@ function jq( myid ) {
                     		/*echo "<pre>",print_r($items);
                     		echo "<pre>",print_r($aginginvoices); die;*/
                     		foreach($items as $item){ $i++;
+                    		                    		
+                    		if(@$item->discount_percent){
+                    			
+                    			$item->totalprice = $item->totalprice - ($item->totalprice*$item->discount_percent/100);
+                    		}
+
+                    		if(@$item->penalty_percent){
+
+                    			$item->totalprice = $item->totalprice + (($item->totalprice*$item->penalty_percent/100)*$item->penaltycount);
+                    		}
+                    		
                     		?>
                     		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
  elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
@@ -398,6 +409,16 @@ function jq( myid ) {
                     				$ainvoice->totalprice = $ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100);
                     				else 
                     				$ainvoice->totalprice = $ainvoice->totalprice;
+                    				
+                    				if(@$ainvoice->discount_percent){
+
+                    					$ainvoice->totalprice = $ainvoice->totalprice - ($ainvoice->totalprice*$ainvoice->discount_percent/100);
+                    				}
+
+                    				if(@$invoice->penalty_percent){
+
+                    					$ainvoice->totalprice = $ainvoice->totalprice + (($ainvoice->totalprice*$ainvoice->penalty_percent/100)*$ainvoice->penaltycount);
+                    				}
                     				
                     				$datediff = strtotime($ainvoice->datedue) - time();
                     				$datediff = abs(floor($datediff/(60*60*24)));

@@ -693,7 +693,16 @@ function delserviceitem()
 					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
-                                <td><?php echo $q->itemcode; ?></td>
+                                <td><?php echo $q->itemcode; ?>
+                                <br>
+                                 <?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
+					    		{ ?>
+                                   <img style="max-height: 100px;max-width: 80px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
+                                <?php } else { ?>
+                                    <img style="max-height: 100px;max-width: 80px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                <?php } ?>
+                                
+                                </td>
                                 <td><?php echo $q->itemname; ?></td>
                                 <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">
       <?php
@@ -1071,7 +1080,19 @@ function delserviceitem()
 								$f_total=0;
                                 $p_total=0;
                                 $u_total=0;
-                                foreach ($awarded->invoices as $invoice) {?>
+                                foreach ($awarded->invoices as $invoice) {
+
+                                	if(@$invoice->discount_percent){
+
+                                		$invoice->totalprice = $invoice->totalprice - ($invoice->totalprice*$invoice->discount_percent/100);
+                                	}
+
+                                	if(@$invoice->penalty_percent){
+
+                                		$invoice->totalprice = $invoice->totalprice + (($invoice->totalprice*$invoice->penalty_percent/100)*$invoice->penaltycount);
+                                	}
+                                	
+                                	?>
                                 <tr>
                                     <td><?php echo $invoice->invoicenum; ?></td>
                                     <td><?php echo "$ ".number_format($invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100, 2); ?></td>

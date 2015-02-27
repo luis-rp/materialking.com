@@ -286,12 +286,12 @@ setTimeout(function() {
                </tr>
               </tfoot>
               <?php } else { echo '<tr><td><div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Existing Quotes / Orders On System.</div></div></td></tr>'; } ?>
+                
             </table>
-            
-            
-           </div>
-           <?php if(!$costcodedata) {?> <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
+             <?php if(!$costcodedata) {?> <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">
             No Costcodes Exist - Please Click Here to Create a Cost Code for "<?php echo $this->session->userdata('managedprojectdetails')->title; ?>"</a><?php } ?>
+         
+           </div>
          </div>
       </div>
     </div>

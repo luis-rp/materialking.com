@@ -32,9 +32,24 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
+    			property: 'newreceived',
+    			label: 'Qty Received',
+    			sortable: true
+    		},
+    		{
     			property: 'totalprice',
     			label: 'Total Price',
     			sortable: false
+    		},
+    		{
+    			property: 'itemstatus',
+    			label: 'Item Status',
+    			sortable: true
+    		},
+    		{
+    			property: 'postatus',
+    			label: 'P.O. Status',
+    			sortable: true
     		},
     		{
     			property: 'actions',

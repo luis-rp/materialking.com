@@ -561,12 +561,17 @@ class items_model extends Model {
             }
         }
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('designbook') . " i left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid ".$where;      
+     	$query = "SELECT i.*,ic.* FROM " . $this->db->dbprefix('designbook') . " i 
+        		  left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid         		  
+        		  left join " . $this->db->dbprefix('company') ." c on c.id = i.company    		  
+        		  ".$where. " AND c.isdeleted = 0 ";      
         $return->totalresult = $this->db->query($query)->num_rows();
    
-        $query = "SELECT * FROM " . $this->db->dbprefix('designbook') . " i left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid $where LIMIT $start, $limit";
+        $query = "SELECT i.*,ic.* FROM " . $this->db->dbprefix('designbook') . " i 
+        		  left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid 
+        		  left join " . $this->db->dbprefix('company') ." c on c.id = i.company  AND c.isdeleted = 0
+        		  $where AND c.isdeleted = 0 LIMIT $start, $limit";
         $return->items = $this->db->query($query)->result();
-      
         return $return;
     }
     

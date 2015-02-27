@@ -267,7 +267,7 @@ function shownotice(newval,oldval,id){
             <table width="100%" cellspacing="0" cellpadding="4" style="border:1px solid #000;">
                 <thead>
                     <tr>
-                        <th bgcolor="#000033"><font color="#FFFFFF">Item No.</font></th>
+                        <th bgcolor="#000033"><font color="#FFFFFF">Item</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
@@ -287,9 +287,16 @@ function shownotice(newval,oldval,id){
                     $totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
                     
                     $quantity = ($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
-                    
+                    if(isset($invoiceitem['item_img']) && $invoiceitem['item_img']!= "" && file_exists("./uploads/item/".$invoiceitem['item_img'])) 
+		    		{ 
+                     	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='120' width='120' src='". site_url('uploads/item/'.$invoiceitem['item_img'])."' alt='".$invoiceitem['item_img'].">";
+                     } 
+                     else 
+                     { 
+                     	$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' src='". base_url()."templates/site/assets/img/default/big.png' >";
+                     } 
                     echo '<tr nobr="true">
-						    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+						    <td style="border: 1px solid #000000;">' . $img_name . '</td>
 						    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
 						    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
 						    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
@@ -304,8 +311,27 @@ function shownotice(newval,oldval,id){
                 }
                 $taxtotal = $totalprice * $config['taxpercent'] / 100;
                 $grandtotal = $totalprice + $taxtotal;
+                
+                $arradditionalcal = array();
+                if(@$invoice->discount_percent){
+                	
+                	$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
+                	 
+                	$arradditionalcal[] = - ($grandtotal*$invoice->discount_percent/100);
+                	$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);
+                }
+                
+                if(@$invoice->penalty_percent){
+                	
+                	$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';
+                	 
+                	$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
+                	$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
+                }
+                
+                
                 echo '<tr>
-					    <td colspan="7" rowspan="3">
+					    <td colspan="7" rowspan="4">
                       		<div style="width:70%">
                           		<br/>
                           		<h4 class="semi-bold">Terms and Conditions</h4>
@@ -319,12 +345,22 @@ function shownotice(newval,oldval,id){
 					  <tr>
 					    <td align="right">Tax</td>
 					    <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
+					  </tr>';
+					  
+                	if(count($arradditionalcal)>0){
+                	echo '<tr>
+					    <td align="right">'.$arradditionalcal[0].'</td>
+					    <td align="right">$ ' . $arradditionalcal[1] . '</td>
 					  </tr>
-					  <tr>
+					';
+                }	
+                
+					  echo '<tr>
 					    <td align="right">Total</td>
 					    <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
 					  </tr>
-					';
+					';              
+                
                 ?>
             </table>
             </div>
@@ -367,7 +403,19 @@ function shownotice(newval,oldval,id){
                     		$finaltotal = 0;
                     		$totalpaid= 0;
                     		$totalunpaid= 0;
-                    		foreach($items as $item){ $i++;?>
+                    		foreach($items as $item){ $i++;
+                    		
+                    		if(@$item->discount_percent){
+                    			
+                    			$item->totalprice = $item->totalprice - ($item->totalprice*$item->discount_percent/100);
+                    		}
+
+                    		if(@$item->penalty_percent){
+
+                    			$item->totalprice = $item->totalprice + (($item->totalprice*$item->penalty_percent/100)*$item->penaltycount);
+                    		}
+                    		
+                    		?>
                     		<tr>
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>

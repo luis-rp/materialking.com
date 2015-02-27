@@ -58,10 +58,10 @@ class Homemodel extends Model {
                 pi()/180))))*180/pi())*60*1.1515
             ) as distance "
                         . " FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
-    		ON c.id=ct.companyid $where GROUP BY c.`id` ORDER BY distance ASC LIMIT 0,3";
+    		ON c.id=ct.companyid $where AND c.isdeleted = 0 GROUP BY c.`id` ORDER BY distance ASC LIMIT 0,3";
         } else {
             $query = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
-			ON c.id=ct.companyid $where GROUP BY c.id LIMIT 0,3";
+			ON c.id=ct.companyid $where AND c.isdeleted = 0 GROUP BY c.id LIMIT 0,3";
         }
         //echo $query;
         $items = $this->db->query($query)->result();
@@ -79,12 +79,12 @@ class Homemodel extends Model {
             pi()/180))))*180/pi())*60*1.1515
         ) as distance 
 				FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('awarditem') . " ai
-				WHERE ai.company=c.id  GROUP BY c.`id` ORDER BY distance  ASC  LIMIT 0,3";
+				WHERE ai.company=c.id  AND c.isdeleted = 0 GROUP BY c.`id` ORDER BY distance  ASC  LIMIT 0,3";
             //. " GROUP BY c.id HAVING c.id ORDER BY awards DESC";
         } else {
             $sql = "SELECT c.*, COUNT(ai.id) awards 
 				FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('awarditem') . " ai
-				WHERE ai.company=c.id GROUP BY c.id HAVING c.id ORDER BY awards DESC LIMIT 0,3";
+				WHERE ai.company=c.id  AND c.isdeleted = 0 GROUP BY c.id HAVING c.id ORDER BY awards DESC LIMIT 0,3";
         }
         $items = $this->db->query($sql)->result();
         return $items;
@@ -100,10 +100,10 @@ class Homemodel extends Model {
             cos((c.`com_lat`*pi()/180)) * cos(((" . $search->current_lon . "- c.`com_lng`)* 
             pi()/180))))*180/pi())*60*1.1515
         ) as distance 
-        FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('awarditem') . " ai 
+        FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('awarditem') . " ai  WHERE c.isdeleted = 0 
 				 ";
         } else {
-            $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c ORDER BY regdate DESC LIMIT 0,3";
+            $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c  WHERE c.isdeleted = 0 ORDER BY regdate DESC LIMIT 0,3";
         }
         $items = $this->db->query($sql)->result();
         return $items;
@@ -299,7 +299,7 @@ class Homemodel extends Model {
             pi()/180))))*180/pi())*60*1.1515
         ) as distance   FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
             
-		ON c.id=ct.companyid  $where GROUP BY c.id ORDER BY distance ASC  LIMIT $start, $limit";
+		ON c.id=ct.companyid  $where  WHERE  isdeleted=0  GROUP BY c.id ORDER BY distance ASC  LIMIT $start, $limit";
         //echo $query;
         $return->suppliers = $this->db->query($query)->result();
         return $return;

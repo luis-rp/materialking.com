@@ -465,18 +465,41 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	if (! $item)
     		die();
     	$poitems = $this->itemcode_model->getpoitems($item->id);
-    	//echo '<pre>';print_r($poitems);die;
+    	$postatus = "incomplete";
+    	$totalquantity = 0;
+        $totalreceived = 0;
+        
+    	if (count($poitems) >= 1) 
+    	{
+	    	foreach ($poitems as $row) 
+	    	{	        	
+	        	$totalquantity +=  $row->quantity;
+	        	$totalreceived += $row->received;
+	        }
+    	}
+        if($totalquantity-$totalreceived == 0)
+        $postatus = "complete";
+        
+    	
     	$count = count($poitems);
     	$items = array();
     	if ($count >= 1)
     	{
     		foreach ($poitems as $row)
     		{
+    			$status = "incomplete";
+            	if($row->quantity - $row->received == 0)
+                $status = "complete";
+                else 
+                $status = "incomplete";
     			$awarded = $this->quote_model->getawardedbid($row->quote);
     			$row->awardedon = date("m/d/Y", strtotime($row->awardedon));
     			$row->ea = "$ " . $row->ea;
     			$row->totalprice = "$ " . $row->totalprice;
     			$row->status = strtoupper($awarded->status);
+    			$row->itemstatus = strtoupper($status);
+                //$row->status = strtoupper($awarded->status);
+                $row->postatus = strtoupper($postatus);
     			$row->actions = //$row->status=='COMPLETE'?'':
     			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
     			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )

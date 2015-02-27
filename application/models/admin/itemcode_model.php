@@ -250,7 +250,7 @@ class itemcode_model extends Model {
         $mp = $this->session->userdata('managedprojectdetails');
         if($mp)
             $projectwhere = " AND q.pid='".$mp->id."'";
-        $sql = "SELECT ai.*, c.title companyname, q.ponum, a.awardedon, a.quote
+        $sql = "SELECT ai.*, c.title companyname, q.ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  newreceived
 			   	FROM
 				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('company') . " c
@@ -389,7 +389,7 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('network') . " n
 				WHERE c.id=ci.company AND c.id=n.company AND
 				n.purchasingadmin='" . $pa . "'
-				AND ci.itemid='" . $itemid . "' AND c.isdeleted=0  AND n.status='Active' AND ci.ea != 0";
+				AND ci.itemid='" . $itemid . "' AND c.isdeleted=0  AND n.status='Active' AND ci.ea != 0 GROUP BY c.id";
         //echo $sql;//die;
         $recs = $this->db->query($sql)->result();
         $ret = array();
