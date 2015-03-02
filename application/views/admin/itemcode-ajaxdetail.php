@@ -4,10 +4,10 @@
         $('#itemcodedate').datepicker();
         $('#notes').autosize();
     });
-    function showhistory(companyid, itemid, companyname)
+    function showhistory(companyid, itemid, companyname,imgname)
     {
         var serviceurl = '<?php echo base_url() ?>admin/itemcode/gethistory/';
-        //alert(serviceurl);
+      
         $.ajax({
             type:"post",
             url: serviceurl,
@@ -16,6 +16,7 @@
         	var arr = data.split('*#*#$');        	
             $("#pricehistory").html(arr[0]);
             $("#itemcode").html(arr[1]);
+            $("#itemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:right;margin-top:-3em;" src='+imgname+'>');
             $("#historycompanyname").html(companyname);
             $("#historymodal").modal();
         });
@@ -46,7 +47,10 @@
 
 
 <section class="row-fluid">
-    <h3 class="box-header"><?php echo $heading; ?></h3>
+  	<span>
+    <h3 class="box-header" style="width:75%" ><?php echo $heading; ?> </h3>
+    <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;margin-top:10px;" src='<?php echo $imgName; ?>'>
+    </span>
     <div class="box">
         <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
             <div class="span12">
@@ -70,7 +74,7 @@
     if ($poitems) {
         ?>
                                     <td>
-                                        <a class="btn btn-green" href="<?php echo site_url('admin/itemcode/poitems/' . $this->validation->id); ?>">View PO Items</a>
+                                        <a class="btn btn-green" href="<?php echo site_url('admin/itemcode/poitems2/' . $this->validation->id); ?>">View PO Items</a>
                                     </td>
         <?php
     }
@@ -117,7 +121,7 @@
                                     </td>
                                     <td><?php echo $m->substitute ? 'Substitute [' . $m->itemname . ']' : '-' ?></td>
                                     <td>
-                                        <a href="javascript: void(0);" onclick="showhistory('<?php echo $m->company ?>','<?php echo $m->itemid ?>','<?php echo $m->companyname ?>')"><i class="icon icon-search"></i></a>
+                                        <a href="javascript: void(0);" onclick="showhistory('<?php echo $m->company ?>','<?php echo $m->itemid ?>','<?php echo $m->companyname ?>','<?php echo $imgName; ?>')"><i class="icon icon-search"></i></a>
                                     </td>
                                 </tr>
                         <?php } ?>
@@ -136,9 +140,11 @@
 <div id="historymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 
     <div class="modal-header">
-    	<h4><span id='itemcode'></span></h4>
+        <h4><span id='itemcode'></span></h4>
         <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
-        <h4>Price History - <span id="historycompanyname"></span></h4>
+        <h4>Price History - <span id="historycompanyname"></span>
+        <span id="itemimage"></span>
+        </h4>
     </div>
     <div class="modal-body" id="pricehistory">
     </div>

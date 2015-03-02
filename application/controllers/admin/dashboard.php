@@ -1535,23 +1535,23 @@ class Dashboard extends CI_Controller
 	
 	
 	function supplier_email_invitation()
-	{		
-		if(isset($_POST['exampleInputEmail2']) && $_POST['exampleInputEmail2']!="")
+	{	
+		if(isset($_POST['email']) && $_POST['email']!="")
 		{		
 			$id = $this->session->userdata('id');
 			$company=$this->db->get_where('users',array('id'=>$id))->row();       
-			$pemail=$_POST['exampleInputEmail2'];
+			$pemail=$_POST['email'];
 			$supplier=$this->db->get_where('company',array('primaryemail'=>$pemail))->row();
-			       
+			     
 			       if(!empty($supplier))
-			       { 
-			       $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists</div></div><div class="errordiv">');	
-					redirect('admin/dashboard');
+			       { 	
+			       	 $this->session->set_userdata('message','<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists.</div></div><div class="errordiv">');			
+			       	 $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists.</div></div><div class="errordiv">');	
+					//$this->session->set_userdata('sms','Email Already Exists');			       							
 			       }
 			       else 
 			       { 		     
-			       $password = $this->getRandomPassword(); 
-                   
+			       $password = $this->getRandomPassword();                   
 			       $pos=stripos($pemail,"@");          	
                    $username = substr($pemail,0,$pos);
                                      	               	
@@ -1580,10 +1580,8 @@ class Dashboard extends CI_Controller
             		$pinsert['purchasingadmin'] = $id;            		
             		$pinsert['creditonly'] = '1';
             		$this->db->insert('purchasingtier',$pinsert);
-            		
-            		
-            		
-            		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['exampleInputEmail2']); 	
+            		           		
+            		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['email']); 	
 					$this->db->insert('supplierinvitation',$option);
 					         		
             		$this->load->library('email');
@@ -1591,7 +1589,7 @@ class Dashboard extends CI_Controller
 			        $config['mailtype'] = 'html';	        			
 			        $this->email->initialize($config);
 			        $this->email->from($company->email);
-					$this->email->to($_POST['exampleInputEmail2']);
+					$this->email->to($_POST['email']);
 			        $subject = 'Account Detail & Invitation';		        		
 			        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
 		        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.<br />
@@ -1601,12 +1599,14 @@ class Dashboard extends CI_Controller
 			        $this->email->subject($subject);
 			        $this->email->message($send_body);	
 			        $this->email->set_mailtype("html");			      
-			        $this->email->send();				        
-			        }
-		       
-		}
-		  $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');				 
-		redirect('admin/dashboard');
+			        $this->email->send();
+			         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Send Successfully.</div></div><div class="errordiv">');	  
+			         
+			         $this->session->set_userdata('message','<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Send Successfully.</div></div><div class="errordiv">');	      
+			        }		       
+		      }
+		     
+		      redirect('admin/dashboard');	
 	}
 	
 	function getRandomPassword()

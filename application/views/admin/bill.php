@@ -277,7 +277,8 @@ function shownotice(newval,oldval,id){
                     <tr>
                         <th bgcolor="#000033"><font color="#FFFFFF">Item No.</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
-                        <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>
+                        <th bgcolor="#000033"><font color="#FFFFFF">&nbsp;</font></th>
+                        <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>                       
                         <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Date Received</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
@@ -287,7 +288,6 @@ function shownotice(newval,oldval,id){
                     </tr>
                 </thead>
                 <?php 
-                //echo '<pre>@@',print_r($billservicedetails);
                 
                 $totalprice = 0;
                 $i = 0;
@@ -296,9 +296,20 @@ function shownotice(newval,oldval,id){
                 foreach ($invoice->items as $invoiceitem) {
                     $invoiceitem = (array) $invoiceitem;
                     $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
+
+                    if ($invoiceitem['item_img'] && file_exists('./uploads/item/' . $invoiceitem['item_img'])) 
+					 { 
+					 	 $imgName = site_url('uploads/item/'.$invoiceitem['item_img']); 
+					 } 
+					 else 
+					 { 
+					 	 $imgName = site_url('uploads/item/big.png'); 
+                     }
+                     
                     echo '<tr nobr="true">
 						    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 						    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
+						    <td style="border: 1px solid #000000;"><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='.$imgName.'></td>
 						    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
 						    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
 						    <td style="border: 1px solid #000000;">' .// date("m/d/Y h:i A", strtotime($invoiceitem['shipdate'])) . 

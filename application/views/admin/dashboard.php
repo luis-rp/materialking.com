@@ -845,7 +845,7 @@
 			         	if(isset($invoices)) { 
 			         		if(isset($invoiceCntr) && $invoiceCntr != 0) { ?>	
 			    <div  class="span12">
-                <div class="well span3"  style="width:45%;" >
+                <div class="span3"  style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
 					<table cellpadding="3" class="table table-bordered stat">
 					
@@ -881,7 +881,7 @@
 			
 				if(isset($backtracksCnt) && @$backtracksCnt != '')
 				{ ?>
-    			<div class="well span3" style="width:45%;" >
+    			<div class="span3" style="width:45%;" >
 					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
 					<table cellpadding="3" class="table table-bordered stat">
 					

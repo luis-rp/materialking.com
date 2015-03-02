@@ -31,6 +31,17 @@ function awardbiditems()
     });
 	$("#awardbid").val('');
     $("#itemids").val(ids.join(','));
+    $('#creditcardnotebycompany').html('');
+    var tot = $('#totalamount').val();
+    tot = tot.replace(",","");
+    tot = tot.replace("$","");
+    tot = parseFloat(tot);
+    
+    if(tot>0){
+    	$('#creditcardnote').css('display','block');
+    }else{
+    	$('#creditcardnote').css('display','none');
+    }
 	$("#awardmodal").modal();
 }
 
@@ -236,7 +247,9 @@ $(document).ready(function(){
 		    				$diff = $q->ea - $minimum[$key];
 		    			?>
 				    	<tr class="<?php if($q->postatus=='Accepted'){echo 'greenrow';} else{echo 'redrow';}?>">
-				    		<td><?php echo $sn++;?></td>
+				    		<td><?php echo $sn++;?>
+				    		<input type="hidden" id="creditonly<?php echo $q->id;?>" value="<?php echo $bid->creditonly;?>" >
+				    		</td>
 				    		<td>
 				    			<?php echo "<a href='javascript:void(0)' onclick=\"viewitems('$q->itemid')\">$q->itemcode</a>"; ?>
 				    		</td>
@@ -390,6 +403,9 @@ $(document).ready(function(){
 						$allcctotal = number_format(($allcctotal + $taxtotal),2);	
         		  
         		 ?>
+        		 <span id="creditcardnotebycompany"></span>
+        		 <input type=hidden id="totalamount" value="<?php echo @$allcctotal;?>" />
+        	<span id="creditcardnote"><?php if(count($creditaccarray)>0){ echo "Supplier/s (".implode(",",$creditaccarray).") has set your account to credit card only. Awarding any item to this supplier/s will require upfront credit card payment to that items value.<br/>"; }?></span>
         		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$allcctotal;?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
         		<?php } else {?>
         		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;

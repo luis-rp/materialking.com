@@ -697,9 +697,9 @@ function delserviceitem()
                                 <br>
                                  <?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
 					    		{ ?>
-                                   <img style="max-height: 100px;max-width: 80px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
+                                   <img style="max-height: 100px;max-width: 70px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
                                 <?php } else { ?>
-                                    <img style="max-height: 100px;max-width: 80px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                    <img style="max-height: 100px;max-width: 70px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                 <?php } ?>
                                 
                                 </td>

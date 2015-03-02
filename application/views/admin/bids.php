@@ -534,6 +534,7 @@ $(function() {
 				    		<?php }?>
 				    		<th>Item Code</th>
 				    		<th>Item Name</th>
+				    		<th>&nbsp;</th>
 				    		<th>Qty.</th>
 				    		<th>Unit</th>
 				    		<th>60 day Low. Price</th>
@@ -546,7 +547,16 @@ $(function() {
 				    		<th>Compare</th>
 				    		<th>Del</th>
 				    	</tr>
-				    	<?php $alltotal=0; foreach($bid->items as $q) if($q->itemcode){?>
+				    	<?php $alltotal=0; foreach($bid->items as $q) if($q->itemcode){
+				    		 if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
+							 { 
+							 	 $imgName = site_url('uploads/item/'.$q->item_img); 
+							 } 
+							 else 
+							 { 
+							 	 $imgName = site_url('uploads/item/big.png'); 
+	                         }
+				    		?>
 				    	<?php $alltotal += $q->quantity * $q->ea;?>
 		    			<?php
 							$key = $q->itemcode;
@@ -567,6 +577,7 @@ $(function() {
 				    			<?php if($q->substitute){?><small><span class="label label-red">Substitute</span></small><?php }?>
 				    		</td>
 				    		<td><?php echo $q->itemname;?></td>
+				    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
 				    		<td><input class="span12" type="text" id="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="updateqty('<?php echo $q->id;?>')" <?php if($isawarded){echo 'readonly';}?>></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php echo $q->minprice;?></td>

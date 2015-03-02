@@ -1180,4 +1180,25 @@ class Inventory extends CI_Controller
         }
         die();
     }
+    
+    
+    
+    function setallitemsmanufacturer(){
+    	
+    	
+		if(!$_POST)
+		die;
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$result = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id')->where('md.manufacturer',$_POST['manufacturer'])->get()->result();		
+		if($result)
+		echo json_encode($result); 
+		else 
+		echo "";
+		die;
+    }
+    
 }

@@ -2671,7 +2671,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Itemcode:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Itemname:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
+    				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				
     				if($_POST['view']=='profile'){
     				
@@ -2774,7 +2774,7 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Itemcode:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Itemname:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2878,7 +2878,7 @@ class site extends CI_Controller
     				}
 
     				$itemdata = '<table class="table table-bordered;" style="background-color:white;width:98%;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td>
-    				<strong>Itemcode:&nbsp;</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Itemname:&nbsp;</strong>'.$item->itemname.'</td></tr>
+    				<strong>Item Code:&nbsp;</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Item Name:&nbsp;</strong>'.$item->itemname.'</td></tr>
     				<tr><td><strong>Price:&nbsp;</strong>$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">
     				<strong>View Item</strong></a></td></tr>';
     				

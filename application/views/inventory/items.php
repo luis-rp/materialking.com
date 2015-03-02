@@ -63,6 +63,8 @@
 
 <?php echo '<script>var showbidpricehistoryurl ="' . site_url('inventory/showbidpricehistory') . '";</script>' ?>
 
+<?php echo '<script>var setallitemsmanufacturerurl ="' . site_url('inventory/setallitemsmanufacturer') . '";</script>' ?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -200,7 +202,7 @@
     	if (typeof tier1 !== "undefined") 
 		{				
 			$("#pricelisttierlabel1").css('display','');
-			$("#pricelisttier1").html(parseFloat(price + (tier1 * price/100)));
+			$("#pricelisttier1").html(parseFloat(parseFloat(price) + (tier1 * price/100)).toFixed(2));
 		}
 		else
 		{
@@ -209,7 +211,7 @@
 	
 		if (typeof tier2 !== "undefined") 
 		{
-			$("#pricelisttier2").html(parseFloat(price + (tier2 * price/100)));
+			$("#pricelisttier2").html(parseFloat(parseFloat(price) + (tier2 * price/100)).toFixed(2));
 			$("#pricelisttierlabel2").css('display','');
 		}
 		else
@@ -219,7 +221,7 @@
 		
 		if (typeof tier3 !== "undefined") 
 		{
-			$("#pricelisttier3").html(parseFloat(price + (tier3 * price/100)));
+			$("#pricelisttier3").html(parseFloat(parseFloat(price) + (tier3 * price/100)).toFixed(2));
 			$("#pricelisttierlabel3").css('display','');
 		}
 		else
@@ -229,7 +231,7 @@
 		
 		if (typeof tier4 !== "undefined") 
 		{
-			$("#pricelisttier4").html(parseFloat(price + (tier4 * price/100)));
+			$("#pricelisttier4").html(parseFloat(parseFloat(price) + (tier4 * price/100)).toFixed(2));
 			$("#pricelisttierlabel4").css('display','');
 		}
 		else
@@ -244,11 +246,12 @@
     //	$("#pricelisttier1").html(Number(price + (tier1 * price/100)).toFixed(2));
     }
 
-    function viewqtydiscount(itemid,itemcode,itemname,price)
-    {
+    function viewqtydiscount(itemid,itemcode,itemname,price,imgname)
+    {    	
     	$("#qtypricelist").modal();
     	$("#qtyitemcode").html(itemcode);
     	$("#qtyitemname").html(itemname);
+    	$("#itemimage").html('<img style="margin-top:-5em ;  max-height: 120px; padding: 0px;width:100px; height:100px;float:left;" src='+imgname+'>');
     	price = Number(price);
     	$("#qtylistprice").html(price.toFixed(2));
 
@@ -419,21 +422,25 @@ function delqtydiscount(id,itemid){
     }
     
     
-    function preloadoptions(itemid){
-    	
+    function preloadoptions(itemid,imgname,itemcode)
+    {
     	if($("#modal"+itemid).length > 0){    	
     		$("#modal"+itemid).modal();   	
+    		$("#masterimagelogo").html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
+    		$("#itemcodedisplay").html(itemcode);
     	}else
     	alert("No Preloaded Options Exist for this item");
     }
     
     
-    function showallcompanyprice(itemid,itemname,itemcode){
+    function showallcompanyprice(itemid,itemname,itemcode,imgname)
+    {
 	$('#myModalbody').html('');	
 	var phtml = "";
     $("#allcompanypricesmodal").modal();	
     $("#pricelistitemcode2").html(itemcode);
     $("#pricelistitemname2").html(itemname);
+    $("#itemimageall").html('<img style="margin-top:-1em ;  max-height: 120px; padding: 0px;width:100px; height:100px;float:left;" src='+imgname+'>');
    	$.ajax({
 		type:"post",
 		data: "itemid="+itemid,
@@ -606,8 +613,9 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
     	}
     }
 
-     function showbidhistory(itemid)
+     function showbidhistory(itemid,imgname)
     {
+    	
     	$("#itemcode").html('');
         $.ajax({
             type:"post",
@@ -618,6 +626,7 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
         	var arr = data.split('*#*#$');        	
             $("#pricehistory").html(arr[0]);
             $("#itemcode").html(arr[1]);
+            $("#itemimagelogo").html('<img style="margin-top:-2em ;  max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
           //  $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
             $("#historymodal").modal();
         });
@@ -661,22 +670,43 @@ function updatedeal(id)
 function clearall(id)
 {
 	$("#name"+id).val("");
-	$("#itemcodedata"+id).val("");
-	$("#itemnamedata"+id).val("");
-	$("#selectoption"+id).val("");
-	$("#price1"+id).val("");
-	$("#price"+id).attr('checked', false); 
-	$("#part"+id).val("");
-	$("#minqty"+id).val("");
-	$("#tierprice"+id).attr('checked', false); 
-	$("#instock"+id).attr('checked', false); 
-	$("#stock"+id).val("");
-	$("#instore"+id).attr('checked', false); 
-	$("#isfeature"+id).attr('checked', false); 
-	$("#backorder"+id).attr('checked', false); 
-	$("#shipfrom"+id).attr('checked', false); 
+	$("#itemcodedata"+id).val("").trigger('change');
+	$("#itemnamedata"+id).val("").trigger('change');
+	$("#selectoption"+id).val("").trigger('change');
+	$("#price1"+id).val('').trigger('change');
+	$("#price"+id).attr('checked', false).trigger('change'); 
+	$("#part"+id).val("").trigger('change');	
+	$("#tierprice"+id).attr('checked', false).trigger('change'); 
+	$("#instock"+id).attr('checked', false).trigger('change'); 
+	$("#stock"+id).val("").trigger('change');
+	$("#instore"+id).attr('checked', false).trigger('change'); 
+	$("#isfeature"+id).attr('checked', false).trigger('change'); 
+	$("#backorder"+id).attr('checked', false).trigger('change'); 
+	$("#shipfrom"+id).attr('checked', false).trigger('change'); 
+	$("#minqty"+id).val("").trigger('change');
 }
 
+
+
+function setallmanufactureritems(){
+
+	$("#manufacturermodal").modal();	
+
+}
+
+
+/*function setitemsmanufacturer(manufacturerid){
+	
+	
+	$.ajax({
+			type:"post",
+			data: "manufacturer="+manufacturerid,
+			url: setallitemsmanufacturerurl
+		}).done(function(data){		
+			
+		});
+	
+}*/
             
 </script>
 
@@ -713,6 +743,9 @@ function clearall(id)
 							<?php if($this->session->userdata('company')->company_type!='3') {?>
                                 <div class="pull-right">
                                 
+                                
+                                   <!--  <a href="javascript:void(0)" onclick="setallmanufactureritems();">Set All Manufacturer Items</a>	
+                                    &nbsp;&nbsp;&nbsp;&nbsp; -->
                                 	<input type="checkbox" id ='availprice' name ='availprice' <?php echo $company->availprice?'checked="CHECKED"':''?>"
                                     onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to site members only.</span>&nbsp;&nbsp;
                                 	
@@ -815,10 +848,19 @@ function clearall(id)
                                         <tbody>
 							              <?php
 									    	$i = 0;
-									    	//echo '<pre>',print_r($items);
+									    
 									    	foreach($items as $item)
 									    	{
 									    		//echo "<pre>"; print_r($item); die;
+									    		
+											 if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+											 { 
+											 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+											 } 
+											 else 
+											 { 
+											 	 $imgName = site_url('uploads/item/big.png'); 
+		                                     }
 									    		$i++;
 									      ?>
                                             <tr>
@@ -826,7 +868,7 @@ function clearall(id)
                                                 <td class="v-align-middle">
                                                 <span id="name<?php echo $item->id;?>"><?php echo $item->itemname;?></span>
                                                 <br>
-                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$item->id ?>');"><i class="icon icon-search"></i>Price History</a>	
+                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$item->id ?>','<?php echo $imgName;?>');"><i class="icon icon-search"></i>Price History</a>	
                                                 </td>
 
                                                 <td class="v-align-middle">
@@ -847,9 +889,9 @@ function clearall(id)
                                                 		<?php }?>
                                                 	</select>
                                                 	<br>
-                                                	<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$item->id)?>');">Select/View Preloaded Options</a>  
+                                                	<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$item->id)?>','<?php echo $imgName;?>','<?php echo (@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>');">Select/View Preloaded Options</a>  
                                                 <br>
-                                                <a href="javascript:void(0)" onclick="showallcompanyprice('<?php echo htmlentities(@$item->id)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>');">Select/View Company Prices</a>	
+                                                <a href="javascript:void(0)" onclick="showallcompanyprice('<?php echo htmlentities(@$item->id)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo $imgName;?>');">Select/View Company Prices</a>	
                                                 </td>
 
                                                 <td class="v-align-middle">
@@ -876,7 +918,7 @@ function clearall(id)
                                                 	<input type="text"  class="form-control" placeholder="Min Qty" id="minqty<?php echo $item->id;?>"
                                                 	value="<?php echo (@$item->increment)?$item->increment:@$item->companyitem->minqty?>"
                                                 	onchange="updateMinqty('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br/>
-                                                	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">Qty. Discounts</a>
+                                                	<a href="javascript: void(0)" onclick="viewqtydiscount('<?php echo $item->id?>','<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>','<?php echo $imgName;?>');">Qty. Discounts</a>
                                                 	<br/>
                                                 	<input type="checkbox" id ='tierprice<?php echo $item->id;?>' name = 'tierprice' <?php echo @$item->companyitem->tierprice?'checked="CHECKED"':''?>"
                   											 onchange="updateistierprice('<?php echo $item->id?>',this.checked);"/>&nbsp;Apply Tier Price Disc. On Top of Qty. Disc. <?php if(@$item->increment && $item->increment != 1) echo "<br> *This qty. has been set to be sold in increments of ".$item->increment." only"; ?>
@@ -1039,14 +1081,17 @@ function clearall(id)
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
           <div style="display: none;" class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button><div id="htmlqtymessage"></div></div>
-          <h4 class="semi-bold" id="myModalLabel">
+          <h4 class="semi-bold" id="myModalLabel" style="width:80%;float:right;height:50px;">
           Price Details:
-          <span id="qtyitemcode"></span>
+          <span id="qtyitemcode"  ></span>
           (<span id="qtyitemname"></span>)
           <br/> Qty. Discount Setup:
           </h4>
-          <br>
+          <br><br>          
+          <div id="itemimage"></div>
+          <br><br><br>
         </div>
+
         <div class="modal-body">
           <div class="row form-row">
             <div class="col-md-8">
@@ -1080,8 +1125,10 @@ function clearall(id)
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">
-          Master Default Options:          
+          <h4 class="semi-bold" id="myModalLabel">         
+          <div id="masterimagelogo"></div>
+           Master Default Options:          
+           <div id="itemcodedisplay"></div>
           </h4>
           <br>
         </div>
@@ -1150,12 +1197,13 @@ function clearall(id)
                           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
                           <br>
                           <i class="icon-credit-card icon-7x"></i>
-                          <h4 class="semi-bold" id="myModalLabelchng">
+                          <h4 class="semi-bold" id="myModalLabelchng" style="width:80%;float:right;">
                          All Companies Prices:       
                           <span id="pricelistitemcode2"></span>
           (<span id="pricelistitemname2"></span>)                   
                           </h4>
-                          <br>
+                          <div id="itemimageall"></div>
+                          <br><br><br><br>
                         </div>
                         
                         <div class="modal-body" id="myModalbody">
@@ -1186,9 +1234,12 @@ function clearall(id)
 	<div class="modal-dialog" style="width:70%">
 	  <div class="modal-content">
 	    <div class="modal-header">
-	        <h4><span id='itemcode'></span> - Bid History </h4>
+	        <h4><span id='itemcode'></span> - Bid History 
 	        <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
 	        <!--<h3><span id="historycompanyname"></span> - Bid History </h3>-->
+	          <div id="itemimagelogo"></div>
+	          </h4>
+             <br>
 	    </div>
 	    <div class="modal-body" id="pricehistory" style="height:250px;overflow-y:auto;">
 	    </div>
@@ -1196,3 +1247,53 @@ function clearall(id)
   </div>
 </div> 
                   
+
+
+
+
+  
+<!-- <div id="manufacturermodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel">         
+           Select Manufacturer To set all items to inventory:   
+          </h4>
+          <br>
+        </div>
+        <div class="modal-body">
+        
+        <div class="row form-row">
+            <div class="col-md-3">
+             Manufacturer
+            </div>
+            <div class="col-md-2">
+             Set Items
+            </div>
+             <div class="col-md-3">
+             In Store
+            </div>             
+          </div> 
+        
+     <?php /* foreach($manufacturers as $mf){ ?>     
+         <div class="row form-row">
+            <div class="col-md-3">
+             <?php echo $mf->title;?>
+            </div>            
+             <div class="col-md-2">              
+              <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $mf->id;?>" name="check<?php echo $mf->id;?>" id="check<?php echo $mf->id;?>" value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
+            </div>            
+          </div>      
+           <?php } */ ?>
+        </div>
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div> -->
+

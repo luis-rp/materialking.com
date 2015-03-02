@@ -338,7 +338,11 @@ class quote_model extends Model {
 
     function getitems($id) {
         
-        $sql = "SELECT qi.*, i.increment FROM ".$this->db->dbprefix('quoteitem'). " qi left join ". $this->db->dbprefix('item') ." i on qi.itemid = i.id WHERE quote='$id' ";
+        $sql = "SELECT qi.*, i.increment,c.title,i.item_img FROM ".$this->db->dbprefix('quoteitem'). " qi 
+        		left join ". $this->db->dbprefix('item') ." i on qi.itemid = i.id 
+        		left join ". $this->db->dbprefix('company') ." c on c.id = qi.company        		
+        		WHERE quote='$id' ";
+        
 		$query = $this->db->query($sql);
         $ret = $query->result();
         return $ret;
@@ -1481,12 +1485,13 @@ class quote_model extends Model {
         $invoice->quote = $invoicequote;
 
         $itemsql = "SELECT 
-					bi.*, c.title companyname, b.customerduedate,  b.markuptotalpercent      
+					bi.*, c.title companyname, b.customerduedate,  b.markuptotalpercent,i.item_img      
 				  FROM 				 
 				  " . $this->db->dbprefix('billitem') . " bi,
 				   " . $this->db->dbprefix('bill') . " b,
-				  " . $this->db->dbprefix('company') . " c 
-				  WHERE b.id=bi.bill AND bi.company=c.id AND b.quote='{$invoicequote}'
+				  " . $this->db->dbprefix('company') . " c, 
+				  " . $this->db->dbprefix('item') . " i 
+				  WHERE b.id=bi.bill AND bi.company=c.id AND i.id = bi.itemid AND b.quote='{$invoicequote}'
 				  AND b.id='{$invoicenum}'
 				  ";
 
@@ -1541,6 +1546,7 @@ class quote_model extends Model {
                     if ($companyitem) {
                         $biditem->itemcode = $companyitem->itemcode;
                         $biditem->itemname = $companyitem->itemname;
+                        $biditem->item_img = $companyitem->item_img;
                     }
                 }
 

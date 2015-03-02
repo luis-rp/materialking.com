@@ -469,6 +469,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	$totalquantity = 0;
         $totalreceived = 0;
         
+       
     	if (count($poitems) >= 1) 
     	{
 	    	foreach ($poitems as $row) 
@@ -477,9 +478,15 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	        	$totalreceived += $row->received;
 	        }
     	}
+    	    	
         if($totalquantity-$totalreceived == 0)
-        $postatus = "complete";
-        
+        {
+        	$postatus = "complete";
+        }
+        else 
+        {
+        	$postatus = "incomplete";
+        }
     	
     	$count = count($poitems);
     	$items = array();
@@ -499,7 +506,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			$row->status = strtoupper($awarded->status);
     			$row->itemstatus = strtoupper($status);
                 //$row->status = strtoupper($awarded->status);
-                $row->postatus = strtoupper($postatus);
+                $row->postatus = strtoupper($status);
     			$row->actions = //$row->status=='COMPLETE'?'':
     			anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update')); //.
     			//anchor ('admin/quote/update/' . $row->bid,'<span class="icon-2x icon-search"></span>',array ('class' => 'update' ) )
@@ -1775,13 +1782,20 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         	}
         }
         
-        //echo '<pre>'.$itemid;print_r($item->tierprices);die;
-        
-        
+        if (@$item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+		 { 
+		 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+		 } 
+		 else 
+		 { 
+		 	 $imgName = site_url('uploads/item/big.png'); 
+         }
         
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-            	<h3>Company prices : <span id="minpriceitemcode">' . @$item->itemcode . '</span></h3>
+            	<h3>Company prices : <span id="minpriceitemcode">' . @$item->itemcode . '</span>
+            	<img style="max-height: 120px; padding: 0px;width:80px; height:60px;float:right;" src='.$imgName.'></h3>
+            	<br>
         	</div>
         	<div class="modal-body" id="minprices">
         	';
@@ -2143,6 +2157,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             if ($daysavgprice == null)
                 $trend = 'NO DATA';
         }
+        if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+		 { 
+		 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+		 } 
+		 else 
+		 { 
+		 	 $imgName = site_url('uploads/item/big.png'); 
+         }
+         
+        $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
         $data['heading'] = 'Item Code Detail for '.@$item->itemcode;
         $data['message'] = '';

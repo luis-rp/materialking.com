@@ -23,6 +23,7 @@
 				    <table class="table table-bordered">
 				    	<tr>
 				    		<th width="15%">Item Code</th>
+				    		<th>Company</th>
 				    		<th width="20%">Item Name</th>
 				    		<th>Qty.</th>
 				    		<th>Unit</th>
@@ -32,9 +33,12 @@
 				    		<th>Cost Code</th>
 				    		<th>Notes</th>
 				    	</tr>
-				    	<?php $alltotal=0; foreach($quoteitems as $q){?><?php $alltotal+=$q->totalprice;?>
+				    	<?php $alltotal=0; 
+				    	
+				    	foreach($quoteitems as $q){?><?php $alltotal+=$q->totalprice;?>
 				    	<tr>
 				    		<td><?php echo $q->itemcode;?></td>
+				    		<td><?php echo $q->title;?></td>
 				    		<td><?php echo $q->itemname;?></td>
 				    		<td><?php echo $q->quantity;?></td>
 				    		<td><?php echo $q->unit;?></td>

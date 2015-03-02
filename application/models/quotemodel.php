@@ -821,13 +821,14 @@ class Quotemodel extends Model
 
 		$itemsql = "SELECT
 					r.*, ai.itemcode, c.title companyname,
-					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity as aiquantity 
+					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity as aiquantity,i.item_img 
 				  FROM
 				  ".$this->db->dbprefix('received')." r,
 				  ".$this->db->dbprefix('awarditem')." ai,
-				   " . $this->db->dbprefix('award') . " a,
-				  ".$this->db->dbprefix('company')." c
-				  WHERE r.awarditem=ai.id  AND ai.company=$company AND ai.award=a.id AND a.quote='{$invoicequote}'
+				  ".$this->db->dbprefix('award') . " a,
+				  ".$this->db->dbprefix('company')." c,
+				  ".$this->db->dbprefix('item')." i
+				  WHERE r.awarditem=ai.id  AND ai.company=$company AND ai.award=a.id AND i.id = ai.itemid AND a.quote='{$invoicequote}'
 				  AND invoicenum='{$invoicenum}'
 				  GROUP BY awarditem
 				  ";

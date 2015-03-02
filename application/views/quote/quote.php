@@ -366,7 +366,7 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 }
 
 
-function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
+function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname,quote){
 	
 	$.ajax({
 		type:"post",
@@ -383,7 +383,7 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 			$("#pricelistitemname2").html(itemname);	
 			$("#myModalbody").html(data);
 			//$('#itemprice').val(data);
-			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+');" value="Update"/>';
+			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+','+quote+');" value="Update"/>';
 			$("#pricebtn").html(phtml);
 			
 		}else{
@@ -400,7 +400,7 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname){
 }
 
 
-function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
+function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote){
 
 	var val=$('#itemprice').val();
 	if(confirm("Do you want to save this as company's price for this item?"))
@@ -410,7 +410,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin){
 		}else{
 		$.ajax({
 			type:"post",
-			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin,
+			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin+"&quote="+quote,
 			url: setcompanypriceurl
 		}).done(function(data){
             $("#companypricemodal").modal('hide');						
@@ -744,7 +744,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 	                                            <img style="max-height: 120px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
 	                                        <?php } ?>
 							    		</td>
-							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"/>
+							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"></span>
 							    								    		
 							    		</td>
 							    		<td><input type="text" class="nopad width50" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>"/></td>
@@ -755,8 +755,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
-											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>'); //askpricechange(this.value,'<?php echo $q->itemid?>','<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"   onblur="setcompanypriceprompt(this.value,'<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->quote;?>','<?php echo @$q->purchasingadmin;?>');" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
-							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br>  <?php if(@$q->ispriceset){ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>')">
+											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;"   onblur="setcompanypriceprompt(this.value,'<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->quote;?>','<?php echo @$q->purchasingadmin;?>');" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
+							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br>  <?php if(@$q->ispriceset){ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>')">
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
@@ -769,14 +769,20 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 																	    		
 							    		if(@$q->priceset == 0)
 							    		{ ?><a href="javascript:void(0)" 
-							    			onclick='updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
+							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
 							    		".$itemCode1.",
 							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
 							    			*Set List Price
-							    		</a><?php }?>
+							    		</a><?php }
 							    	
+							    		
+							    		if(@$q->comppriceset == 0)
+							    		{ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>')">
+							    			*Set Company Price
+							    		</a><?php }?>
+							    		
 							    		<?php if(@$q->companyitem->company != '' && @$q->companyitem->itemid != '') { ?>		
 							    		<a href="javascript: void(0);" onclick="showhistory('<?php echo @$q->quote ?>','<?php echo @$q->companyitem->company ?>','<?php echo @$q->companyitem->itemid ?>','')"><i class="icon icon-search"></i>Price History</a>	
 							    		<?php }?>

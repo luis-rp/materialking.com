@@ -297,7 +297,7 @@ $(document).ready(function(){
 	
 	
 	function showuploadfields(){
-		$('.noxls').css('display','none');		
+		$('.noxls').css('display','none');	
 		$('.forxls').css('display','block');		
 	}
 	
@@ -317,14 +317,14 @@ $(document).ready(function(){
                 <?php echo @$message; ?>
                 <?php echo @$this->session->flashdata('message'); ?>
                 <a class="btn btn-green" href="<?php echo site_url('admin/itemcode'); ?>">&lt;&lt; Back</a>
+                <a class="btn btn-primary" onclick="showuploadfields();">Upload Items Using Excel-Sheet</a> 
+                <a class="btn btn-primary single" onclick="showindividualfields();">Add Single Item</a>  
                 <br/>
                 <br>
-                <a style="cursor:pointer" onclick="showuploadfields();">Upload items using excel sheet</a> / <a style="cursor:pointer" onclick="showindividualfields();">Add Individual items</a>         
-                
+                      
+                <div class="forxls" style="width:48%; float:left;display:none;">
                 <form id="massitemaddform" class="form-horizontal" method="post" action="<?php echo site_url('admin/itemcode/add_itemcode_xls'); ?>" enctype="multipart/form-data">
-                
-                
-                    <div class="control-group forxls">
+                    <div class="control-group">
                         <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
                         <div class="controls">
                             <select style="width:400px;" multiple id="categories[]" name="categories[]">
@@ -335,7 +335,7 @@ $(document).ready(function(){
                         </div>
                     </div>
 
-                    <div class="control-group forxls">
+                    <div class="control-group">
                         <label class="control-label">Featured Supplier</label>
                         <div class="controls">
                             <select id="featuredsuppliers" name="featuredsuppliers">
@@ -347,14 +347,14 @@ $(document).ready(function(){
                     </div>
                 
                 
-                 <div class="control-group forxls">
+                 <div class="control-group">
                         <label class="control-label">Upload Excel</label>
                         <div class="controls">                        	
                             <input type="file" name="massexcelfile" size="20"  />                            
                         </div>
                 </div>
                 
-                <div class="control-group forxls">
+                <div class="control-group">
                             <label class="control-label">&nbsp;</label>
                             <div class="controls">
                                 <input name="massadd" type="submit" class="btn btn-primary" value="Update Itemcode List"/>
@@ -363,6 +363,7 @@ $(document).ready(function(){
                 
                 	
                 </form>
+                </div>
                 
                 <form id="itemaddform" class="form-horizontal" method="post" action="<?php echo $action; ?>" enctype="multipart/form-data">
                 <div  style="width:48%; float:left;">

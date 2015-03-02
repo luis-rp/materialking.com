@@ -193,14 +193,23 @@
 							  <?php
 							  	$totalprice = 0;
 							  	$i = 0;
+							  	
 							  	foreach($invoice->items as $invoiceitem)
 								{
+									if ($invoiceitem->item_img && file_exists('./uploads/item/' . $invoiceitem->item_img)) 
+									 { 
+									 	 $imgName = site_url('uploads/item/'.$invoiceitem->item_img); 
+									 } 
+									 else 
+									 { 
+									 	 $imgName = site_url('uploads/item/big.png'); 
+                                     }
 									$invoiceitem = (array)$invoiceitem;
 									$totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")?(($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
 									$quantity = ($invoiceitem['invoice_type'] != "fullpaid")?(($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
 									$olddate=strtotime($invoiceitem['receiveddate']); $newdate = date('m/d/Y', $olddate);
 									echo '<tr nobr="true">
-									    <td>'.++$i.'</td>
+									    <td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='.$imgName.'></td>
 									    <td>'.htmlentities($invoiceitem['itemname']).'</td>
 									    <td>'.$invoiceitem['daterequested'].'</td>
 									    <td>'.$newdate.'</td>

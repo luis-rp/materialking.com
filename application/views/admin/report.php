@@ -176,7 +176,7 @@
 			    		<td><?php echo $item->ponum;?>
 			    		<?php echo ($item->invoice_type == "fullpaid" || $item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
 			    		</td>
-			    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a>
+			    		<td><?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }?>
 			    		<br>
 			    		 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 			    		{ ?>
@@ -190,7 +190,7 @@
 			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
 			    		</td>
-			    		<td><?php echo round($item->ea,2);?></td>
+			    		<td>$<?php echo round($item->ea,2);?></td>
 			    		<td>$<?php echo round($amount,2);?></td>
 			    		<td><?php echo $item->paymentstatus;?>
 			    		<?php echo (@$item->invoice_type == "fullpaid" || @$item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>

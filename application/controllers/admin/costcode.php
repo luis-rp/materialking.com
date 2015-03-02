@@ -566,42 +566,53 @@ class costcode extends CI_Controller {
 
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode,$project);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode,$project);
-		//echo "<pre>",print_r($costcodeitems); die;
-        $count = count($costcodeitems);
+		
+      	$count = count($costcodeitems);
         
         $postatus = "incomplete";
         $totalquantity = 0;
         $totalreceived = 0;
-        if ($count >= 1) {
-        foreach ($costcodeitems as $row) {
-        	
-        	$totalquantity +=  $row->quantity;
-        	$totalreceived += $row->received;
+        $newTotal = 0;
+        if ($count >= 1) 
+        {
+	        foreach ($costcodeitems2 as $row) 
+	        {	  
+	        	$totalquantity = 0;
+        		$totalreceived = 0;      	
+        		
+	        	$totalquantity +=  $row->newquantity;
+	        	$totalreceived += $row->newreceived;
+	        	
+	        	$newTotal = $totalquantity-$totalreceived;
+	        	
+	        	$newQuote[$row->quote] = $newTotal;
+	        }
         }
-        }
-        if($totalquantity-$totalreceived == 0)
-        $postatus = "complete";
-        
-        /*$postatus2 = "incomplete";
-        $totalquantity2 = 0;
-        $totalreceived2 = 0;
-        foreach ($costcodeitems2 as $row2) {
-        	
-        	$totalquantity2 +=  $row2->quantity;
-        	$totalreceived2 += $row2->received;
-        }
-        if($totalquantity2-$totalreceived2 == 0)
-        $postatus2 = "complete";*/
-        
+       
         $items = array();
         if ($count >= 1) {
             foreach ($costcodeitems as $row) {
             	$status = "incomplete";
             	if($row->quantity - $row->received == 0)
-                $status = "complete";
+            	{
+                	$status = "complete";
+            	}	
                 else 
-                $status = "incomplete";
-            	
+                {
+                	$status = "incomplete";
+                }
+               
+                if(array_key_exists($row->quote,$newQuote))
+                {
+	                if($newQuote[$row->quote] == 0 || $newQuote[$row->quote] == '')
+	                {
+	                	$postatus = "complete";
+	                }
+	                else 
+	                {
+	                	$postatus = "incomplete";
+	                }
+                }    
             	if($row->potype=="Contract"){
                 $awarded = $this->quote_model->getawardedcontractbid($row->quote);
                 $row->ea = "$ " . $row->ea;

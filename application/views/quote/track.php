@@ -166,6 +166,7 @@ tr.still-due td
                                 <thead>
                                     <tr>
                                         <th>Item Code/Name</th>
+                                        <th>&nbsp;</th>
                                         <th>Qty.</th>
                                         <th>Unit</th>
                                         <th>Price</th>
@@ -191,14 +192,17 @@ tr.still-due td
                                         <td class="v-align-middle"><?php echo $ai->itemcode;?>
                                         <br/>
                                         <span style="font-size:11px; color:#999999;float:left;"><?php echo $ai->itemname;?></span>
-                                        <span style="float:right;margin-top:-4em;margin-left:200px;">
+                                       
+                                        </td>
+                                        <td>
+                                        
                                         <?php if(isset($ai->item_img) && $ai->item_img!= "" && file_exists("./uploads/item/".$ai->item_img)) 
 								    		{ ?>
 	                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$ai->item_img) ?>" alt="<?php echo $ai->item_img;?>">
 	                                        <?php } else { ?>
 	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
 	                                        <?php } ?>
-	                                      </span>  
+	                                     
                                         </td>
                                         <td class="v-align-middle"><?php echo $ai->quantity;?></td>
                                         <td class="v-align-middle"><?php echo $ai->unit;?></td>

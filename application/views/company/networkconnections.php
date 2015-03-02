@@ -84,7 +84,7 @@ function preloadoptions(fromid)
 								</td>
 								<td><?php echo $admin->purchasingfullname;?><br />
 								<?php if($admin->creditonly==1) { ?>
-								<a href="<?php echo site_url('admin/dashboard/application');?>" target="_blank">
+								<a href="<?php echo site_url('dashboard/creditapplication/'.$admin->purchasingadmin);?>" target="_blank">
 								<span>View Credit App.</span></a><?php } ?>
 								</td>
 								<td>

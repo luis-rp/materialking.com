@@ -423,7 +423,7 @@ class Quote extends CI_Controller
 				WHERE pt.company='".$company->id."' AND pt.purchasingadmin='".$quote->purchasingadmin."'
 			";
 		$tier = $this->db->query($sql)->row();
-		if($tier)
+		if(@$tier->tier)
 		{
 			$tier = $tier->tier;
 			$sql = "SELECT *
@@ -532,6 +532,7 @@ class Quote extends CI_Controller
 			$price = $item->ea;
 			
 			$item->priceset = 0;
+			$item->comppriceset = 0;
 			
 			if(@$companyitem->ea!="" || @$companyitem->ea!=0){
 			$item->priceset = 1;
@@ -546,7 +547,7 @@ class Quote extends CI_Controller
 					
 					$item->ea = $tier1->price;
 					$item->ispriceset = 1;
-					$item->priceset += 1;
+					$item->comppriceset += 1;
 				}
 				
 				if($tier1->qty){
@@ -866,7 +867,7 @@ class Quote extends CI_Controller
 				WHERE pt.company='".$company->id."' AND pt.purchasingadmin='".$quote->purchasingadmin."'
 			";
 		$tier = $this->db->query($sql)->row();
-		if($tier)
+		if(@$tier->tier)
 		{
 			$tier = $tier->tier;
 			$sql = "SELECT *
@@ -992,6 +993,7 @@ class Quote extends CI_Controller
 			}
 			
 			$item->priceset = 0;
+			$item->comppriceset = 0;
 			
 			if(@$companyitem->ea!="" || @$companyitem->ea!=0){
 			$item->priceset = 1;
@@ -1008,7 +1010,7 @@ class Quote extends CI_Controller
 				if(@$tier1->price){					
 					$item->ea = $tier1->price;
 					$item->ispriceset = 1;
-					$item->priceset += 1;
+					$item->comppriceset += 1;
 				}
 				
 				if($tier1->qty){
@@ -4471,6 +4473,14 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		{
 					echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->companyname.'</strong></div><div class="col-md-6"><strong><input type="text" id="itemprice" value="'.$resultprice->price.'"/></strong> </div> </div>  
                         </div>';
+		}else{
+			
+			$resultprice = $this->db->select('u.companyname')->from('users u')->where('u.id', $_POST['purchasingadmin'])->get()->row();
+			
+			if($resultprice)
+			echo '<div class="row form-row"><div class="col-md-6"><strong>'.$resultprice->companyname.'</strong></div><div class="col-md-6"><strong><input type="text" id="itemprice"/></strong> </div> </div>  
+                        </div>';
+			
 		} die;
 	}
 	

@@ -258,7 +258,7 @@ function shownotice(newval,oldval,id){
 
             <table width="100%" cellspacing="0" cellpadding="4">
                 <tr>
-                    <td>Items:</td>
+                    <td>Items:  <?php if(@$invoice->alreadypay ==1 || @$invoice->fullpaid==1) echo "<span style='text-align:center;margin-left:500px;'>Pre-Paid Invoice<span>"; ?> </td>
                 </tr>
             </table>
 
@@ -289,7 +289,7 @@ function shownotice(newval,oldval,id){
                     $quantity = ($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity'];
                     if(isset($invoiceitem['item_img']) && $invoiceitem['item_img']!= "" && file_exists("./uploads/item/".$invoiceitem['item_img'])) 
 		    		{ 
-                     	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='120' width='120' src='". site_url('uploads/item/'.$invoiceitem['item_img'])."' alt='".$invoiceitem['item_img'].">";
+                     	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='120' width='120' src='". site_url('uploads/item/'.$invoiceitem['item_img'])."' alt='".$invoiceitem['item_img']."'>";
                      } 
                      else 
                      { 

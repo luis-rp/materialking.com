@@ -237,8 +237,7 @@ $loaderEmail = new My_Loader();
 		$parent=0;
         //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
         $data['categories'] = $this->db->get('contractcategory')->result();
-		$data ['link_back'] = anchor ('admin/admin/index/', 'Back to list of User List', array ('class' => 'back' ) );
-		//echo "<pre>"; print_r($cat); die;
+		$data ['link_back'] = anchor ('admin/admin/index/', 'Back to list of User List', array ('class' => 'back' ) );	        
 		$this->load->view ('admin/adminEdit', $data );
 	}
 
@@ -274,7 +273,35 @@ $loaderEmail = new My_Loader();
 			//$adminuser = array ('username' => $this->input->post ( 'username' ), 'usertype_id' => $this->input->post ( 'usertype_id' ), 'fullname' => $this->input->post ( 'fullname' ), 'email'=> $this->input->post('email'),'status' => $this->input->post ( 'status' ), 'created_date' => $created_date,'address'=> $this->input->post ( 'address' ),'user_lat'=>$geoloc['lat'],'user_lng'=>$geoloc['lng']);
 
 			//$this->validation->id = $this->input->post('id');
+						
 			$this->adminmodel->update ();
+			
+			$settings = (array)$this->settings_model->get_current_settings ();
+			$this->load->library('email');
+			$config['charset'] = 'utf-8';
+			$config['mailtype'] = 'html';
+			$this->email->initialize($config);
+			$this->email->from($settings['adminemail'], "Administrator");
+			$this->email->to($_POST['email']);
+		    $link = '<a href="'.site_url('admin').'">Login</a>';
+			$data['email_body_title'] = "Dear ".$_POST['fullname'];
+			$data['email_body_content'] = "(".$this->session->userdata('fullname').") Has Updated an account for you at materialking.com, you now have to access your 
+			account using your below information. <br/>
+			Username: {$_POST['username']}<br/>
+			position : {$_POST['position']}<br/>
+			fullname : {$_POST['fullname']}<br/>
+			email : {$_POST['email']}<br/>
+			You can login from:<br/><br/>
+			$link";
+	
+			$loaderEmail = new My_Loader();
+			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+			$this->email->subject("EZPZ-P Account Updated");
+		    $this->email->message($send_body);
+		    $this->email->set_mailtype("html");
+		    
+		    $this->email->send();
+			
 			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">User Updated Successfully</div></div>');
 			redirect('admin/admin/update/'.$this->input->post ( 'id' ));
 			//redirect ( 'admin/admin/index/', 'refresh' );
@@ -469,112 +496,6 @@ $loaderEmail = new My_Loader();
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close">X</button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('admin/admin/set_bank_purchaser');
     }
-    function update_full_profile()
-    {
-    	 $id = $this->session->userdata('id');
-
-    	if($this->session->userdata('usertype_id')==3 && $this->session->userdata('id') != $id)
-		{
-			redirect('admin/dashboard', 'refresh');
-		}
-		$this->_set_fields ();
-		$data ['userarrays'] = $this->adminmodel->getUserType ();
-		//$data ['plantypes'] = $this->adminmodel->getplantypes ();
-
-		$adminuser = $this->adminmodel->get_by_id ( $id )->row ();
-		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('id'))
-		{
-			redirect('admin/dashboard', 'refresh');
-		}
-		//print_r($adminuser);die;
-		$columns = (array)$this->adminmodel->getfields();
-
-		foreach($columns as $column)
-		{
-			$column = (array)$column;
-			$this->validation->$column['Field'] = $adminuser->$column['Field'];
-		}
-		$_POST ['status'] = $this->validation->status = $adminuser->status;
-
-		$data ['title'] = 'Full Update Admin User';
-		$data ['message'] = '';
-		$data ['action'] = site_url ('admin/admin/updateFullAdminuser' );
-		//$this->db->select('category');
-		//$cat = $this->db->get_where('users',array('id'=>$id));
-		$this->db->order_by('catname', 'ASC');
-		$parent=0;
-        //$data['categories'] = $this->db->get_where('category',array('parent_id'=>$parent))->result();
-        $data['categories'] = $this->db->get('contractcategory')->result();
-		$data ['link_back'] = anchor ('admin/admin/index/', 'Back to list of User List', array ('class' => 'back' ) );
-		//echo "<pre>"; print_r($cat); die;		
-		$this->load->view ('admin/adminEditFull', $data );
-    }
-    function updateFullAdminuser()
-	{		
-		if($this->session->userdata('usertype_id')==3 && $this->session->userdata('id') != $this->input->post ( 'id' ))
-		{
-			redirect('admin/dashboard', 'refresh');
-		}
-
-		$adminuser = $this->adminmodel->get_by_id ( $this->input->post ( 'id' ) )->row ();
-		
-		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('id'))
-		{
-			redirect('admin/dashboard', 'refresh');
-		}
-		$data ['userarrays'] = $this->adminmodel->getUserType ();
-		$data ['title'] = 'Full Update Admin User Record';
-		$data ['action'] = site_url ( 'admin/admin/updateFullAdminuser' );
-		$data ['link_back'] = anchor ( 'admin/admin/index/', 'Back To List', array ('class' => 'back' ) );
-
-		$this->_set_fields ();
-		//$this->_set_rules ();
-
-		if ($this->validation->run () == TRUE) {
-			$data ['message'] = '';
-			$this->load->view ( 'admin/adminEditFull', $data );
-
-		} else {
-			$created_date = date ( "Y-m-d h:i:s" );
-            //$geoloc = $this->company_model->getLatLong( $this->input->post ( 'address' ));
-			//$adminuser = array ('username' => $this->input->post ( 'username' ), 'usertype_id' => $this->input->post ( 'usertype_id' ), 'fullname' => $this->input->post ( 'fullname' ), 'email'=> $this->input->post('email'),'status' => $this->input->post ( 'status' ), 'created_date' => $created_date,'address'=> $this->input->post ( 'address' ),'user_lat'=>$geoloc['lat'],'user_lng'=>$geoloc['lng']);
-
-			//$this->validation->id = $this->input->post('id');
-			
-			if (isset($_FILES['avatarlink']['tmp_name']))
-            if (is_uploaded_file($_FILES['avatarlink']['tmp_name'])) {
-                $nfn = $_FILES['avatarlink']['name'];                
-                $ext = end(explode('.', $nfn));
-                if (!in_array(strtolower($ext), array('jpg', 'gif', 'jpeg', 'png'))) {
-                    $errormessage = '* Invalid file type, upload logo file.';
-                } elseif (move_uploaded_file($_FILES['avatarlink']['tmp_name'], "uploads/avatar/" . $nfn)) {
-                    $this->_createThumbnail($nfn, 'avatar', 270, 200);
-                    $_POST['avatarlink'] = $nfn;
-                }
-            }
-
-			$this->adminmodel->update ();
-			$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">User Updated Successfully</div></div>');
-			redirect('admin/admin/update_full_profile/'.$this->input->post ( 'id' ));
-			//redirect ( 'admin/admin/index/', 'refresh' );
-		}
-	}
-	function _createThumbnail($fileName, $foldername = "", $width = 170, $height = 150) {
-        $config['image_library'] = 'gd2';
-        $config['source_image'] = 'uploads/' . ($foldername ? $foldername . '/' : '') . $fileName;
-        $config['new_image'] = 'uploads/' . ($foldername ? $foldername . '/' : '') . 'thumbs/' . $fileName;
-        $config['create_thumb'] = FALSE;
-        $config['maintain_ratio'] = TRUE;
-        $image_config['x_axis'] = '0';
-        $image_config['y_axis'] = '0';
-        $config['width'] = $width;
-        $config['height'] = $height;
-
-        $this->load->library('image_lib', $config);
-        if (!$this->image_lib->resize())
-            echo $this->image_lib->display_errors();
-    }
-
 
 	
 	

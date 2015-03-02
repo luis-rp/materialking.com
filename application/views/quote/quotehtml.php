@@ -72,9 +72,20 @@
         		<td colspan="7"><?php echo $bid->quotenum; ?></td>
                     </tr>
     		    <tr>
-
+				<?php
+				   $newdate = '';
+				   if($bid->expire_date != '0000-00-00')
+				   {
+	 					$olddate=strtotime($bid->expire_date); 
+						$newdate = date('m/d/Y', $olddate);
+				   }
+				   else 
+				   {
+				   		$newdate = '00/00/0000';
+				   }
+				?>	
         		<td>Supplier Expire Date</td>
-        		<td colspan="7"><?php $olddate=strtotime($bid->expire_date); $newdate = date('m/d/Y', $olddate); echo $newdate; ?></td>
+        		<td colspan="7"><?php  echo $newdate; ?></td>
                     </tr>
 
                 <tr>

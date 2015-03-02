@@ -1625,8 +1625,7 @@ function changetab(tabname){
                         <div class="content_sup">
                         	<table width="100%" cellpadding="4">
                         		<tr>
-                        			<td><b>Newsletter:</b> </td>
-                        			<td><h4><a href="#" class="join-newsletter" id="join-newsletter">Join</a></h4></td>
+                        			<td colspan="2"><h4><a href="#" class="join-newsletter" id="join-newsletter">Follow</a></h4></td>
                         		</tr>
                         		<tr>
                         			<td><b>Connection:</b> </td>

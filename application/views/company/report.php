@@ -202,7 +202,7 @@ function submitForm(val,invoicequote)
     			  		</span>
     			  </div>-->
 
-			    <table id="datatable" class="table no-more-tables general">
+			    <table id="datatable" class="table no-more-tables general" style="table-layout:fixed;">
 			    	<tr>
 			    		<th>Company</th>
 			    		<th>Project</th>
@@ -255,9 +255,9 @@ function submitForm(val,invoicequote)
 			    		<td>
 			    		 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 			    		{ ?>
-                           <img style="max-height: 100px; padding: 5px;" height="80" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
+                           <img style="max-height: 100px; width:75px;" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
                         <?php } else { ?>
-                            <img style="max-height: 100px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                            <img style="max-height: 100px;width:75px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                         <?php } ?>
                         <br>
 			    		<?php echo $item->notes;?>
