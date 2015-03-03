@@ -76,6 +76,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Item Code</th>
+                                                <th style="width:15%">&nbsp;</th>
                                                 <th style="width:25%">Item Name</th>
                                                 <th style="width:5%">QTY.</th>
                                                 <th style="width:5%">Unit</th>
@@ -90,11 +91,23 @@
 							              <?php
 									    	$i = 0;
 									    	foreach($allawardeditems as $ai)
-									    	{   $bidea = 0;
+									    	{   
+									    		 $bidea = 0;
+									    	
+									    		 if ($ai->item_img && file_exists('./uploads/item/' . $ai->item_img)) 
+												 { 
+												 	 $imgName = site_url('uploads/item/'.$ai->item_img); 
+												 } 
+												 else 
+												 { 
+												 	 $imgName = site_url('uploads/item/big.png'); 
+			                                     }
+			                                     
 									    		$i++;
 									      ?>
                                             <tr class="<?php echo $ai->company == $company->id?'awarded-to-me':'not-awarded-to-me';?>">
                                                 <td class="v-align-middle"><?php echo $ai->itemcode;?></td>
+                                                <td class="v-align-middle"><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
                                                 <td class="v-align-middle"><?php echo $ai->itemname;?></td>
                                                 <td class="v-align-middle"><?php echo $ai->quantity;?></td>
                                                 <td class="v-align-middle"><?php echo $ai->unit;?></td>

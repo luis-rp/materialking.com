@@ -567,22 +567,22 @@ class Dashboard extends CI_Controller
 		        $nc->totalcredit = '';
 		    }
 		    $query = "SELECT
-		    		 IF(IFNULL(r.quantity,0)=0,(SUM(ai.ea) + (SUM(ai.ea) * ".$settings->taxpercent." / 100)),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100)))	
+		    		 IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))	
 		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
 						AND ai.purchasingadmin='$pa'";
 		    //echo $query.'<br>';
 		    $nc->due = $this->db->query($query)->row()->totalunpaid;
-		    $nc->due = round($nc->due,2);
+		    $nc->due = $nc->due;
 		    //echo $nc->due.' - ';
-		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (SUM(od.price) + (SUM(od.price) * o.taxpercent / 100)), (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)) )
+		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (ROUND(SUM(od.price),2) + (ROUND(SUM(od.price),2) * o.taxpercent / 100)), (ROUND(SUM(od.quantity * od.price),2) + (ROUND(SUM(od.quantity * od.price),2) * o.taxpercent / 100)) )
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
 		    $manualdue = $this->db->query($query)->row()->orderdue;
-		    $manualdue = round($manualdue,2);
+		    $manualdue = $manualdue;
 		    //echo $manualdue.' <br/> ';
 		    $nc->due += $manualdue;
 
@@ -784,13 +784,14 @@ class Dashboard extends CI_Controller
 					$awardedtax = round($awardedtax,2);
 					$awardedtotalwithtax = $awardedtotal + $awardedtax;
 					$awardedtotalwithtax = round($awardedtotalwithtax,2);
-					$highTotal =array_sum($maximum);
+					$highTotal = round(array_sum($maximum),2);
 					$totalsaved =0;
-					if($highTotal > $awardedtotal){
-						$totalsaved = $highTotal + (($highTotal)*$config->taxpercent/100) - $awardedtotalwithtax;
+				
+					if($highTotal > $awardedtotal){ 
+						$totalsaved = ($highTotal + (($highTotal)*$config->taxpercent/100)) - $awardedtotalwithtax;
 					}
 					$Totalawardedtotal += $totalsaved;
-
+                 
 					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
 					{
 						foreach($awarded->items as $item)
@@ -1591,8 +1592,8 @@ class Dashboard extends CI_Controller
 			        $this->email->from($company->email);
 					$this->email->to($_POST['email']);
 			        $subject = 'Account Detail & Invitation';		        		
-			        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
-		        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.<br />
+			        $data['email_body_title'] = "Dear,&nbsp;{$username}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
+		        	$data['email_body_content'] = "The Company '{$company->companyname}' invits you to join their purchasing network today.<br />
 		        	 your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
 				    $loaderEmail = new My_Loader();
 				    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     

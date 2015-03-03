@@ -777,7 +777,7 @@ function delserviceitem()
 									} 
                                    
                                echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->received)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
- <?php   echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"*Item Past Due":""; ?></td>
+ <?php if(date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s')) { if(($q->quantity - $q->received)!=0) { echo "*Item Past Due";} } ?></td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
                                 <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span>

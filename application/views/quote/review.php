@@ -578,14 +578,14 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 									      
 									     </td>									     
 									     <td>
-									      <!-- <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									       <?php if(isset($bid->id)) { $quotearr = explode(".",$bid->quotenum);  ?> <a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">Quote #: &nbsp;<?php echo $quotearr[0].".000"; ?></a>&nbsp; Date: <?php if(isset($bid->submitdate)) echo date("m/d/Y", strtotime($bid->submitdate)); else echo ''; ?> Total : $ <?php echo number_format($biditemPrice,2);?><br><?php } ?>
+									      <!-- <a target="_blank" href="<?php echo site_url('quote/viewquote/'.$quote->id); ?>">Original</a><br> -->									       <?php if(isset($bid->id)) { $quotearr = explode(".",$bid->quotenum);  ?> <a href="<?php echo site_url('quote/viewbid/'.$bid->id);?>">Quote #: &nbsp;<?php echo $quotearr[0].".000"; ?></a>&nbsp; <strong> Date: </strong> <?php if(isset($bid->submitdate)) echo date("m/d/Y", strtotime($bid->submitdate)); else echo ''; ?> <strong> Total : </strong> $ <?php echo number_format($biditemPrice,2);?><br><?php } ?>
 									     <?php  
 									     if(isset($revisionno)) { $quotearr = explode(".",$bid->quotenum);  
 									     for($i=2;$i<=$revisionno;$i++) 
 									     { 
 									     	$str = explode("#$#$#",$bid->$i);
 									     	$bidTotPrice = $str[1] + ($str[1] * $taxpercent /100);
-									     	?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; Date: <?php if(isset($str[0])) echo date("m/d/Y", strtotime($str[0])); else echo ''; ?>  Total : $ <?php echo number_format($bidTotPrice,2);?><br><?php } } ?> </td></tr>
+									     	?><a href="<?php echo site_url('quote/viewbids/'.$bid->id.'/'.$i);?>">Quote #: &nbsp;<?php echo $quotearr[0]."."; printf('%03d',($i-1)); ?></a>&nbsp; <strong>Date:</strong> <?php if(isset($str[0])) echo date("m/d/Y", strtotime($str[0])); else echo ''; ?> <strong> Total : </strong> $ <?php echo number_format($bidTotPrice,2);?><br><?php } } ?> </td></tr>
 									      <td>   
 									      	<br/><br/>
 									      	Please review each item for accepting or rejecting. When you are finished, Click the Save PO <br/>

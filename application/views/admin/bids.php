@@ -292,7 +292,7 @@ $(function() {
 
 
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){ if(empty($invitations)){ ?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } } ?>
+	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){ ?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } ?>
 			&nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url('admin/message/messages/'.$quote->id);?>">View Messages</a></h3>
 	<div class="box">
 		<div class="span12">
@@ -535,6 +535,7 @@ $(function() {
 				    		<th>Item Code</th>
 				    		<th>Item Name</th>
 				    		<th>&nbsp;</th>
+				    		<th>Company</th>
 				    		<th>Qty.</th>
 				    		<th>Unit</th>
 				    		<th>60 day Low. Price</th>
@@ -547,7 +548,8 @@ $(function() {
 				    		<th>Compare</th>
 				    		<th>Del</th>
 				    	</tr>
-				    	<?php $alltotal=0; foreach($bid->items as $q) if($q->itemcode){
+				    	<?php 
+				    	$alltotal=0; foreach($bid->items as $q) if($q->itemcode){
 				    		 if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
 							 { 
 							 	 $imgName = site_url('uploads/item/'.$q->item_img); 
@@ -578,6 +580,7 @@ $(function() {
 				    		</td>
 				    		<td><?php echo $q->itemname;?></td>
 				    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
+				    		<td><?php if(@$bid->companyname && $bid->companyname != '') echo $bid->companyname; else echo '';?></td>
 				    		<td><input class="span12" type="text" id="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="updateqty('<?php echo $q->id;?>')" <?php if($isawarded){echo 'readonly';}?>></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php echo $q->minprice;?></td>

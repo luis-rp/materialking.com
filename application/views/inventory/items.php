@@ -695,18 +695,30 @@ function setallmanufactureritems(){
 }
 
 
-/*function setitemsmanufacturer(manufacturerid){
+function setitemsmanufacturer(manufacturerid){
 	
+	if ($('#checkmanufacturer'+manufacturerid).is(':checked') ) {
+	var instore = 0;	
+	if(confirm("Do you set item to inventory store?"))
+	{
+		instore = 1;
+	}	
 	
 	$.ajax({
 			type:"post",
-			data: "manufacturer="+manufacturerid,
+			data: "manufacturer="+manufacturerid+"&instore="+instore,			
 			url: setallitemsmanufacturerurl
 		}).done(function(data){		
 			
+		 	alert(data);
+		 	location.reload();
 		});
-	
-}*/
+		
+		$('.checkmanufacturercls').prop('checked', false);
+		$('#checkmanufacturer'+manufacturerid).prop('checked', true);
+		
+	}
+}
             
 </script>
 
@@ -744,8 +756,8 @@ function setallmanufactureritems(){
                                 <div class="pull-right">
                                 
                                 
-                                   <!--  <a href="javascript:void(0)" onclick="setallmanufactureritems();">Set All Manufacturer Items</a>	
-                                    &nbsp;&nbsp;&nbsp;&nbsp; -->
+                                   <a href="javascript:void(0)" onclick="setallmanufactureritems();">Set All Manufacturer Items</a>	
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                 	<input type="checkbox" id ='availprice' name ='availprice' <?php echo $company->availprice?'checked="CHECKED"':''?>"
                                     onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to site members only.</span>&nbsp;&nbsp;
                                 	
@@ -1252,7 +1264,7 @@ function setallmanufactureritems(){
 
 
   
-<!-- <div id="manufacturermodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+<div id="manufacturermodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -1277,16 +1289,16 @@ function setallmanufactureritems(){
             </div>             
           </div> 
         
-     <?php /* foreach($manufacturers as $mf){ ?>     
+     <?php  foreach($manufacturers as $mf){ ?>     
          <div class="row form-row">
             <div class="col-md-3">
              <?php echo $mf->title;?>
             </div>            
              <div class="col-md-2">              
-              <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $mf->id;?>" name="check<?php echo $mf->id;?>" id="check<?php echo $mf->id;?>" value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
+              <span>&nbsp;&nbsp;<input type="checkbox" class="checkmanufacturercls" name="checkmanufacturer<?php echo $mf->id;?>" id="checkmanufacturer<?php echo $mf->id;?>" value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
             </div>            
           </div>      
-           <?php } */ ?>
+           <?php } ?>
         </div>
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
@@ -1295,5 +1307,4 @@ function setallmanufactureritems(){
       
     </div>
     
-  </div> -->
-
+  </div>

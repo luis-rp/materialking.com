@@ -912,16 +912,19 @@ class Quote extends CI_Controller
 	    	if($revisionquote)
 	    	$data['revisionno'] = $revisionquote->revisionid;
 	    	
-	    	$sqlq = "SELECT revisionid, daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	$sqlq = "SELECT revisionid, daterequested,SUM(totalprice) as totalprice FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$quote->purchasingadmin."' group by revisionid";
+	    	
 	    	$revisiondate = $this->db->query($sqlq)->result();
 	    	foreach($revisiondate as $revisedate){	    		
 	    		$revisionsid = $revisedate->revisionid;
-	    		$bid->$revisionsid = $revisedate->daterequested;
+	    		$bid->$revisionsid = $revisedate->daterequested.'#$#$#' .$revisedate->totalprice;
 	    	}
 	    	
+	    	$data['biditems'] = $this->quotemodel->getdraftitemswithdefaultitemcode($bid->quote, $company->id);	    	
 	    }
 	   	$data['bid'] = $bid; 
-	    
+	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
+	    $data['taxpercent'] = $settings->taxpercent;
 		$items = $draftitems?$draftitems:$quoteitems;
 		$data['quoteitems'] = array();
 		//echo '<pre>';print_r($items);//die;
@@ -2815,6 +2818,18 @@ or edit your quote.</div></div></div>');
 				if($companyitem->itemname)
 				    $ai->itemname = $companyitem->itemname;
 			}
+			$this->db->where('id',$ai->itemid);			
+			$itemDetails = $this->db->get('item')->row();		
+			
+			if($itemDetails)
+			{
+				$ai->item_img = $itemDetails->item_img;
+			}
+			else 
+			{
+				$ai->item_img = '';	
+			}
+			
 			$data['allawardeditems'][] = $ai;
 			if($ai->company == $company->id)
 				$itemswon++;

@@ -361,12 +361,14 @@ class itemcode_model extends Model {
 				    where purchasingadmin='$pa' AND company='" . $rec->companyid . "'";
 
             $tier = $this->db->query($sql)->row();
-            if ($tier)
+           
+            if (@$tier->tier)
             {
                 $tier = $tier->tier;
                 $this->db->where('company', $rec->companyid);
                 $pt = $this->db->get('tierpricing')->row();
-                if ($pt)
+               
+                if (@$pt)
                 {
                     $deviation = $pt->$tier;
                     $price = $rec->listprice + ($rec->listprice * $deviation / 100);
@@ -374,7 +376,7 @@ class itemcode_model extends Model {
                     $rec->price = $price;
                 }
             }
-
+			
             $ret[] = $rec;
         }
         return $ret;

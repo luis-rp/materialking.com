@@ -225,8 +225,10 @@
 				tooltip: {
 
 				  fontSize: '15px',
+				   width: '750px',
 				  style: {
-					 fontSize: '15px'
+					 fontSize: '15px',
+					  width: '750px'
 				  }
 			   }
 			};
@@ -406,12 +408,14 @@
          }
          ?>
 				<?php 
-				if(isset($jsfile) && ($jsfile=="costcodeitemjs.php")){
-				if( isset($orders)) { ?>
+				if(isset($jsfile) && ($jsfile=="costcodeitemjs.php")) {
+					
+				 ?>
 
                 <table id="datatable" class="table table-bordered">
                     <thead>
                     	<tr><td colspan="8"><?php if(isset($bottomheading)){?><h3 class="box-header"><?php echo $bottomheading; ?></h3><?php } ?></td></tr>
+                    <?php if( isset($orders) && count($orders) > 0) { ?>	
                         <tr>
                             <th style="width:5%">S.No.</th>
                             <th style="width:15%">Order#</th>
@@ -459,7 +463,7 @@
                 </table>
             	<?php }else{ ?>
             	<table id="datatable" class="table">
-            	<tr><td>No Store Orders.</td></tr>
+            	<tr><td><div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Store Orders Exist Associated to Cost Code.</div></div></td></tr>
             	</table>
             	<?php }
             	}
@@ -468,11 +472,12 @@
             	
             	<?php
 				if(isset($jsfile) && ($jsfile=="itemcodeitemjs.php")){
-				if( isset($orders)) { ?>
+				?>
 
                 <table id="datatable" class="table table-bordered">
                     <thead>
                     	<tr><td colspan="8"><?php if(isset($bottomheading)){?><h3 class="box-header"><?php echo $bottomheading; ?></h3><?php } ?></td></tr>
+                    	<?php if( isset($orders) && count($orders) > 0) { ?>
                         <tr>
                             <th style="width:5%">S.No.</th>
                             <th style="width:15%">Order#</th>

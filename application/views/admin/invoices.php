@@ -322,7 +322,7 @@ function jq( myid ) {
                     		?>
                     		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
  elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
-                    			<td><?php echo $item->ponum;?></td>
+                    			<td><a href="<?php echo site_url('admin/quote/track').'/'.@$item->quote->id; ?>" > <?php echo $item->ponum;?> </a></td>
                     			<td id="invoicenumberid_<?php echo $i;?>"><?php echo $item->invoicenum;?></br>
                     		    <a href="javascript:void(0)" onclick="showreport('<?php echo $item->invoicenum;?>','<?php echo $i;?>');">Expand</a> &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>						<input type="hidden" name="invoicenumber_<?php echo $i;?>"" id="invoicenumber_<?php echo $i;?>"" value="<?php echo $item->invoicenum;?>"/>
                     			</td>
@@ -478,7 +478,9 @@ function jq( myid ) {
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
 				    		<td><?php echo $item->ponum;?></td>
-				    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a></td>
+				    		<td>
+				    		<?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }?>
+				    		</td>
 				    		<td><?php echo $item->itemname;?></td>
 				    		<td><?php echo $item->unit;?></td>
 				    		<td><?php echo ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity;?>

@@ -570,7 +570,7 @@ var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 		  <div class="control-group">
 		    <table class="table table-bordered">
 		    	<tr>
-		    		<th>Item Codez</th>
+		    		<th>Item Code</th>
 		    		<th>Item Name</th>
 		    		<th>Qty.</th>
 		    		<th>Unit</th>

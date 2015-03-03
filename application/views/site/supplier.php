@@ -1883,7 +1883,10 @@ function changetab(tabname){
                                     	<?php foreach($adforsupplier as $key=>$ad){?>
                                     	<li><img  src="<?php
                                     	$pathinfo = pathinfo($ad->image);
-                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/>
+                                    	<h6><a href="<?php echo base_url("/site/ad/".$ad->id);?>">
+                                    	<?php echo $ad->title;?> $<?php echo $ad->price;?></a></h6>
+                                    	<p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
 

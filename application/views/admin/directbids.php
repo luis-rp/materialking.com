@@ -226,6 +226,8 @@ $(document).ready(function(){
 				    		<th>#</th>
 				    		<th>Item Code</th>
 				    		<th>Item Name</th>
+				    		<th>&nbsp;</th>
+				    		<th>Company</th>
 				    		<th>Qty.</th>
 				    		<th>Unit</th>
 				    		<th>60 day Low. Price</th>
@@ -236,7 +238,8 @@ $(document).ready(function(){
 				    		<th>Notes</th>
 				    		<th>Status</th>
 				    	</tr>
-				    	<?php $alltotal=0; $allcctotal=0; foreach($bid->items as $q) if($q->itemcode){?>
+				    	<?php 
+				    	$alltotal=0; $allcctotal=0; foreach($bid->items as $q) if($q->itemcode){?>
 				    	<?php $alltotal += $q->quantity * $q->ea;?>
 		    			<?php 
 		    				if($bid->creditonly==1){
@@ -245,6 +248,15 @@ $(document).ready(function(){
 		    				}
 							$key = $q->itemcode;
 		    				$diff = $q->ea - $minimum[$key];
+		    				
+		    				 if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
+							 { 
+							 	 $imgName = site_url('uploads/item/'.$q->item_img); 
+							 } 
+							 else 
+							 { 
+							 	 $imgName = site_url('uploads/item/big.png'); 
+	                         }
 		    			?>
 				    	<tr class="<?php if($q->postatus=='Accepted'){echo 'greenrow';} else{echo 'redrow';}?>">
 				    		<td><?php echo $sn++;?>
@@ -254,6 +266,8 @@ $(document).ready(function(){
 				    			<?php echo "<a href='javascript:void(0)' onclick=\"viewitems('$q->itemid')\">$q->itemcode</a>"; ?>
 				    		</td>
 				    		<td><?php echo $q->itemname;?></td>
+				    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
+				    		<td><?php if(@$bid->companyname && $bid->companyname != '') echo $bid->companyname; else echo '';?></td>
 				    		<td><?php echo $q->quantity;?></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php echo $q->minprice;?></td>

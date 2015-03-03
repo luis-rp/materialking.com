@@ -74,7 +74,7 @@
     if ($poitems) {
         ?>
                                     <td>
-                                        <a class="btn btn-green" href="<?php echo site_url('admin/itemcode/poitems2/' . $this->validation->id); ?>">View PO Items</a>
+                                        <a class="btn btn-green" href="<?php echo site_url('admin/itemcode/poitems/' . $this->validation->id); ?>">View PO Items</a>
                                     </td>
         <?php
     }

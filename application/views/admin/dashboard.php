@@ -490,13 +490,13 @@
 								<strong><?php echo $njc->title;?></strong>
 							</td>
 							<td>
-								<strong><?php echo ($njc->totalcredit!="" && $njc->totalcredit!=0)?$njc->totalcredit:'0.00';?></strong>
+								<strong><?php echo ($njc->totalcredit!="" && $njc->totalcredit!=0)?number_format($njc->totalcredit,2):'0.00';?></strong>
 							</td>
 							<td>
-								<strong><?php echo ($njc->credit!="" && $njc->credit!=0)?$njc->credit:'0.00'; ?></strong>
+								<strong><?php echo ($njc->credit!="" && $njc->credit!=0)?number_format($njc->credit,2):'0.00'; ?></strong>
 							</td>
 							<td>
-								<strong><?php echo $njc->due;?></strong>
+								<strong><?php echo number_format($njc->due,2);?></strong>
 							</td>
 							<?php if(0){?>
 							<td>
@@ -584,10 +584,10 @@
 	    	
 	    	<div class="span10" style="padding:19px;">
 	  <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
-	  <?php // if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
-				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo @$Totalawardedtotal; ?></strong></div>
+	  <?php  if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
+				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo number_format($Totalawardedtotal,2); ?></strong></div>
 
-				<?php// } ?>
+				<?php } ?>
 	    		<?php if(@$costcodesjson){?>
 	    		<div id="chart_pie" style="height: 420px;"></div>
 	    		<?php } else {?>

@@ -1194,11 +1194,226 @@ class Inventory extends CI_Controller
 			redirect('company/login');
 		
 		$result = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id')->where('md.manufacturer',$_POST['manufacturer'])->get()->result();		
-		if($result)
-		echo json_encode($result); 
-		else 
-		echo "";
-		die;
+		if($result){
+			
+			foreach($result as $res){
+				
+				$this->modifyitemcode($res->itemid,$res->itemcode);
+				$this->modifypartnum($res->itemid,$res->itemname);
+				$this->modifyitemname($res->itemid, $res->partnum);
+				$this->modifymanufacturer($res->itemid, $res->manufacturer);
+				$this->modifyitemprice($res->itemid, $res->price);
+				$this->modifyminqty($res->itemid, $res->minqty);
+				
+				if(@$_POST['instore']==1)
+				$this->modifyitem($res->itemid);
+			}
+			echo "Items set to Selected Manufacturer Successfully"; die;
+		}
+		
     }
+    
+    
+    
+    public function modifyitemcode($itemid,$itemcode)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['itemcode'] = htmlentities($itemcode);
+		
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	public function modifyitemname($itemid, $itemname)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['itemname'] = htmlentities($itemname);
+		//print_r($_POST);die;
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	public function modifypartnum($itemid, $partnum)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['partnum']	= $partnum;
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	public function modifymanufacturer($itemid, $manufacturer)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['manufacturer'] = $manufacturer;	
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		//print_r($existing);die;
+		if($existing)
+		{
+			$where = array();
+			$where['itemid'] = $itemid;
+			$where['company'] = $company->id;
+			$where['type'] = 'Supplier';
+			$this->db->where($where);
+			//print_r($where);print_r($_POST);
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	public function modifyitemprice($itemid, $price)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['price'] = $price;			
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	public function modifyminqty($itemid, $minqty)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if($minqty>0)
+		$POST['minqty'] = $minqty;
+		else 
+		$POST['minqty'] = 1;
+		
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+			$this->db->where('company',$company->id);
+			$this->db->where('type','Supplier');
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+	}
+	
+	
+	public function modifyitem($itemid)
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$POST['instore'] = 1;	
+		$this->db->where('itemid',$itemid);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$itemid);
+		    $this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);
+			$this->db->update('companyitem',$POST);
+		}
+		else
+		{
+			$POST['company'] = $company->id;
+			$POST['type'] = 'Supplier';
+			$POST['itemid'] = $itemid;
+			$this->db->insert('companyitem',$POST);
+		}
+		
+	} 
+    
     
 }
