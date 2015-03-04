@@ -202,21 +202,21 @@ function submitForm(val,invoicequote)
     			  		</span>
     			  </div>-->
 
-			    <table id="datatable" class="table no-more-tables general" style="table-layout:fixed;">
+			    <table id="datatable" class="table no-more-tables general" style="table-layout:fixed;width:100%;word-break:break-all;">
 			    	<tr>
-			    		<th>Company</th>
-			    		<th>Project</th>
-			    		<th>PO#</th>
-			    		<th>Item Code</th>
-			    		<th>Item Name</th>
-			    		<th>Unit</th>
-			    		<th>Qty.</th>
-			    		<th>EA</th>
-			    		<th>Total</th>
-			    		<th>Payment</th>
-			    		<th style="word-break:break-all;">Verification</th>
-			    		<th>Notes</th>
-			    		<th>Invoice#</th>
+			    		<th width="8%">Company</th>
+			    		<th width="8%">Project</th>
+			    		<th width="8%">PO#</th>
+			    		<th width="8%">Item Code</th>
+			    		<th width="8%">Item Name</th>
+			    		<th width="6%">Unit</th>
+			    		<th width="6%">Qty.</th>
+			    		<th width="6%">EA</th>
+			    		<th width="6%">Total</th>
+			    		<th width="8%">Payment</th>
+			    		<th width="8%">Verification</th>
+			    		<th width="10%">Notes</th>
+			    		<th width="8%">Invoice#</th>
 			    	</tr>
 			    	<?php
 
@@ -252,7 +252,7 @@ function submitForm(val,invoicequote)
 			    		<td>$<?php echo round($amount,2);?></td>
 			    		<td><?php echo $item->paymentstatus;?></td>
 			    		<td><?php echo $item->status;?></td>
-			    		<td>
+			    		<td  style="padding:0px;">
 			    		 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 			    		{ ?>
                            <img style="max-height: 100px; width:75px;" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">

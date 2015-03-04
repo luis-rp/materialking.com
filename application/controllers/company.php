@@ -725,6 +725,7 @@ class Company extends CI_Controller {
 	        $this->email->subject('Updated Company Information');
 	        $this->email->message($send_body);
 	        $this->email->set_mailtype("html");
+	       
 	        $this->email->send();
 	        $sms="Email Sent Successfully.";
         }
@@ -2303,78 +2304,62 @@ class Company extends CI_Controller {
             $tier = $this->db->get('tierpricing')->row();
         }
 
-        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,
+        $sql = "SELECT u.id purchasingadmin, u.companyname purchasingcompany, u.fullname purchasingfullname,u.address purchasingaddress,u.regdate purchasingregdate,
         			   tier, creditlimit, totalcredit, creditfrom, creditto, creditonly
 				FROM " . $this->db->dbprefix('users') . " u
 				INNER JOIN pms_network n ON u.id=n.purchasingadmin AND n.company='" . $company->id . "'
 				LEFT JOIN " . $this->db->dbprefix('purchasingtier') . " pt ON pt.purchasingadmin=u.id AND pt.company='" . $company->id . "'
 				WHERE u.usertype_id=2
 			";
-        //echo $sql;
+  
         $admins = $this->db->query($sql)->result();
         $data['admins'] = array();
         foreach($admins as $admin)
         {
+        	 
             $pa = $admin->purchasingadmin;
 		    $settings = $this->settings_model->get_setting_by_admin($pa);
+		   		    
+		    $awarded=0;
+			$admin->pro=$this->db->get_where('project',array('purchasingadmin'=>$pa))->result();
+			$admin->quo=$this->db->get_where('quote',array('purchasingadmin'=>$pa,'potype'=>'Bid'))->result();				  
+			$admin->directquo=$this->db->get_where('quote',array('purchasingadmin'=>$pa,'potype'=>'Direct'))->result();
+			     	
+			if($admin->quo)
+			{
+			   foreach($admin->quo as $quot)
+				{							
+				   if($this->quote_model->getawardedbid($quot->id))
+				   $awarded++;							
+				}
+			    $admin->awar = $awarded;
+			}
+			    		    
 		    $query = "SELECT
 		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
 		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
 						AND ai.purchasingadmin='$pa'";
-		    //echo $query.'<br/>';
+		   
 		    $due = $this->db->query($query)->row()->totalunpaid;
 		    $due = round($due,2);
-		    //echo $nc->due.' - ';
+		   
 		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
-		    //echo $query.'<br/>';
+		    
 		    $manualdue = $this->db->query($query)->row()->orderdue;
 		    $manualdue = round($manualdue,2);
-		    //echo $manualdue.' <br/> ';
 		    $due += $manualdue;
 		    $admin->amountdue = $due;
             $data['admins'][]=$admin;
-        }
-        //print_r($admins);die;
+            
+        } 
         $data['tier'] = $tier;
-        
-        /*----------------------------------------------------------------*/
-			$users=$this->db->get_where('users',array('isdeleted'=>'0'))->result();
-			$data['userdata']=array();
-			if($users)
-			{
-			    
-				foreach ($users as $u)
-				{
-				  $awarded=0;
-				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
-				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
-			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
-			     	
-			      if( $u->quotes)
-			      {
-			         foreach($u->quotes as $quote)
-						{							
-							if($this->quote_model->getawardedbid($quote->id))
-								$awarded++;							
-						}
-			        $u->awarded = $awarded;
-			      }
-			     $data['userdata'][]=$u; 				
-				} 
-				 
-			}	
-		/*---------------------------------------------------*/
-        
-        $this->load->view('company/networkconnections', $data);
-        
-        
-        	
+        $this->load->view('company/networkconnections', $data);       	
     }
     
     function savelistsubscribers()

@@ -727,23 +727,25 @@ function nextinvite(count) {
 
            var localresult = document.getElementById('localresult').checked;
            var supplyresult = document.getElementById('supplynet').checked;
-           var internetresult = document.getElementById('internetret').checked;
+           //var internetresult = document.getElementById('internetret').checked;
 //           if(supplyresult==true){ supplyresult=1;}else{var supplyresult=0;}
-           if(localresult!=true && internetresult!=true){
+           //if(localresult!=true && internetresult!=true){
+           	if(localresult!=true){
                document.getElementById('supplynet').setAttribute("checked","checked");
                supplyresult =1;
            }
            var radiusval = $('#locradius').val();
            if(localresult==true){ var localresult=1;}else{var localresult=0;}
-           if(internetresult==true){ internetresult=1;}else{var internetresult=0;}
+           //if(internetresult==true){ internetresult=1;}else{var internetresult=0;}
 
 
-var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
+		var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 	//alert(serviceurl);
 	$.ajax({
 	      type:"post",
 	      url: serviceurl,
-	      data: "localresult="+localresult+"&supplyresult="+supplyresult+"&internetresult="+internetresult+"&radiusval="+radiusval+"&id=<?php echo $this->validation->id;?>"
+	      //data: "localresult="+localresult+"&supplyresult="+supplyresult+"&internetresult="+internetresult+"&radiusval="+radiusval+"&id=<?php //echo $this->validation->id;?>"
+	      data: "localresult="+localresult+"&supplyresult="+supplyresult+"&radiusval="+radiusval+"&id=<?php echo $this->validation->id;?>"
 	    }).done(function(data){
 
                 if(data==''){
@@ -1017,7 +1019,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    <label class="control-label"><strong>Request Quote to:</strong></label>
 					      <hr/>
                               <!-- Start On 21st Jan 2013 -->
-                              <div>
+                             <div>
                                   Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
                                   <span id="mileid"><br>Mile radius from location<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()"> </span>
                               </div>
@@ -1102,7 +1104,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					     <?php }?>
 					      <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
 					      <hr/>
-					    <div class="controls">
+					    <div class="controls" style="height:150px;overflow:auto;">
 					    	<?php  if(isset($nonnetuser)){
 					    	          foreach($nonnetuser as $c) { ?>					    	          	
 					    		        <input type="checkbox" class="nonexist" value="<?php echo $c->id;?>" />
@@ -1110,7 +1112,8 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		<br/>
 					    	<?php }  }?>					    	
 					    </div>
-					    <br/>					     
+					    <br/>
+					    			     
 				    </div>				   
 				</div>
 			    <?php if($i){?>

@@ -223,20 +223,20 @@ $(document).ready(function(){
 			  <div class="control-group">
 				    <table class="table table-bordered">
 				    	<tr>
-				    		<th>#</th>
-				    		<th>Item Code</th>
-				    		<th>Item Name</th>
-				    		<th>&nbsp;</th>
-				    		<th>Company</th>
-				    		<th>Qty.</th>
-				    		<th>Unit</th>
-				    		<th>60 day Low. Price</th>
-				    		<th>Price EA</th>
-				    		<th>Total Price</th>
-				    		<th>Date Available</th>
-				    		<th>Cost Code</th>
-				    		<th>Notes</th>
-				    		<th>Status</th>
+				    		<th width="1%">#</th>
+				    		<th width="13%">Item Code</th>
+				    		<th width="13%">Item Name</th>
+				    		<th width="8%">Item Image</th>
+				    		<th width="10%">Company</th>
+				    		<th width="6%">Qty.</th>
+				    		<th width="6%">Unit</th>
+				    		<th width="7%">60 day Low. Price</th>
+				    		<th width="7%">Price EA</th>
+				    		<th width="7%">Total Price</th>
+				    		<th width="7%">Date Available</th>
+				    		<th width="10%">Cost Code</th>
+				    		<th width="10%">Notes</th>
+				    		<th width="10%">Status</th>
 				    	</tr>
 				    	<?php 
 				    	$alltotal=0; $allcctotal=0; foreach($bid->items as $q) if($q->itemcode){?>

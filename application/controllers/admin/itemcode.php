@@ -1708,7 +1708,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $rules['weight'] = 'trim|required';
         $rules['url'] = 'trim|required';
         $this->validation->set_rules($rules);
-        $this->validation->set_message('required', '* required');
+        $this->validation->set_message('required', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Please fill all mandatory fields.</div></div>');
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
     }
 

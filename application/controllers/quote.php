@@ -4505,7 +4505,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $itemid = $_POST['itemid'];
         $quoteid = $_POST['quoteid'];
 
-        $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname
+        $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname,u.companyname
 			   	FROM
 				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
 				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
@@ -4513,7 +4513,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 				ai.bid=a.id AND a.quote=q.id AND c.id=a.company  AND q.purchasingadmin=ai.purchasingadmin AND q.purchasingadmin=u.id  AND q.id='$quoteid'
 				AND a.company='$company' AND ai.itemid='$itemid'
 				";
-        $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname
+        $sql2 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.awardedon `date`, 'awarded',ai.itemcode,a.purchasingadmin,a.purchasingadmin,c.title,u.fullname,u.companyname
 			   	FROM
 				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q," . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('users') . " u
@@ -4533,7 +4533,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $result = $query->result();
 
 			$companyName = (@$result[0]->title) ? @$result[0]->title : '';
-			$paName = (@$result[0]->fullname) ? @$result[0]->fullname : '';
+			$paName = (@$result[0]->companyname) ? @$result[0]->companyname : '';
          
             $ret = '';
             $ret .= '<table class="table table-bordered">';

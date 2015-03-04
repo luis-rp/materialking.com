@@ -65,6 +65,8 @@
 
 <?php echo '<script>var setallitemsmanufacturerurl ="' . site_url('inventory/setallitemsmanufacturer') . '";</script>' ?>
 
+<?php echo '<script>var setmasteroptionurl ="' . site_url('inventory/setmasteroption') . '";</script>' ?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -197,7 +199,7 @@
 				//alert(data);
 		    });
     }
-    function viewPricelist(itemcode,itemname,price)
+    function viewPricelist(itemcode,itemname,price,imgname)
     {    	
     	if (typeof tier1 !== "undefined") 
 		{				
@@ -241,6 +243,7 @@
     	$("#pricelist").modal();
     	$("#pricelistitemcode").html(itemcode);
     	$("#pricelistitemname").html(itemname);
+    	$("#pricelistitemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
     	price = Number(price);
     	$("#pricelistdefault").html(price.toFixed(2));
     //	$("#pricelisttier1").html(Number(price + (tier1 * price/100)).toFixed(2));
@@ -424,10 +427,11 @@ function delqtydiscount(id,itemid){
     
     function preloadoptions(itemid,imgname,itemcode)
     {
-    	if($("#modal"+itemid).length > 0){    	
+    	if($("#modal"+itemid).length > 0)
+    	{    	
     		$("#modal"+itemid).modal();   	
-    		$("#masterimagelogo").html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
-    		$("#itemcodedisplay").html(itemcode);
+    		$("#masterimagelogo_"+itemid).html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
+    		$("#itemcodedisplay_"+itemid).html(itemcode);
     	}else
     	alert("No Preloaded Options Exist for this item");
     }
@@ -596,21 +600,39 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
     	if ($('#check'+id).is(':checked') ) {
 			$('.check'+itemid).prop('checked', false);
 			$('#check'+id).prop('checked', true);
-    		$('#itemnamedata'+itemid).val(itemname).trigger('change');
-    		$('#selectoption'+itemid).val(manufacturerid).trigger('change');
-    		$('#part'+itemid).val(partnum).trigger('change');
-    		$('#price1'+itemid).val(listprice).trigger('change');
-    		$('#minqty'+itemid).val(minqty).trigger('change');
-			$('#itemcodedata'+itemid).val(itemcode).trigger('change');
+    		$('#itemnamedata'+itemid).val(itemname);
+    		$('#selectoption'+itemid).val(manufacturerid);
+    		$('#part'+itemid).val(partnum);
+    		$('#price1'+itemid).val(listprice);
+    		$('#minqty'+itemid).val(minqty);
+			$('#itemcodedata'+itemid).val(itemcode);
     	}else{
 
-    		$('#itemnamedata'+itemid).val('').trigger('change');
-    		$('#selectoption'+itemid).val('').trigger('change');
-    		$('#part'+itemid).val('').trigger('change');
-    		$('#price1'+itemid).val('').trigger('change');
-    		$('#minqty'+itemid).val('').trigger('change');
-    		$('#itemcodedata'+itemid).val('').trigger('change');
+    		$('#itemnamedata'+itemid).val('');
+    		$('#selectoption'+itemid).val('');
+    		$('#part'+itemid).val('');
+    		$('#price1'+itemid).val('');
+    		$('#minqty'+itemid).val('');
+    		$('#itemcodedata'+itemid).val('');    		
+    		itemname= "";
+    		manufacturerid = "";
+    		partnum = "";
+    		listprice = "";
+    		minqty = "";
+    		itemcode = "";
     	}
+    	
+    	
+    	$.ajax({
+            type:"post",
+            url: setmasteroptionurl,
+            data: "itemid="+itemid+"&itemname="+itemname+"&manufacturer="+manufacturerid+"&partnum="+partnum+"&ea="+listprice+"&minqty="+minqty+"&itemcode="+itemcode
+        }).done(function(data){    
+        	
+        	alert(data);
+        	
+        });
+    	
     }
 
      function showbidhistory(itemid,imgname)
@@ -751,13 +773,14 @@ function setitemsmanufacturer(manufacturerid){
                         <div class="grid simple ">
                             <div class="grid-title no-border">
                                 <h4>&nbsp;</h4>
-                                
+                            <div class="pull-left">    
+                            <a href="javascript:void(0)" onclick="setallmanufactureritems();">Set All Manufacturer Items</a>	
+                                    &nbsp;&nbsp;&nbsp;&nbsp;    
+                            </div> 
+                                           
 							<?php if($this->session->userdata('company')->company_type!='3') {?>
-                                <div class="pull-right">
-                                
-                                
-                                   <a href="javascript:void(0)" onclick="setallmanufactureritems();">Set All Manufacturer Items</a>	
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="pull-right">                        
+                                   
                                 	<input type="checkbox" id ='availprice' name ='availprice' <?php echo $company->availprice?'checked="CHECKED"':''?>"
                                     onchange="availableprice(this.checked);"/>&nbsp;&nbsp;<span>Pricing Available to site members only.</span>&nbsp;&nbsp;
                                 	
@@ -917,7 +940,7 @@ function setitemsmanufacturer(manufacturerid){
                                                 	value="<?php echo @$item->companyitem->ea?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"/>
                                                 	<?php if(@$item->companyitem->ea>0){?>
-                                                	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>');">
+                                                	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>','<?php echo $imgName;?>');">
                                                 		<i class="fa fa-search"></i>
                                                 	</a>
                                                 	<?php }?>
@@ -1010,7 +1033,7 @@ function setitemsmanufacturer(manufacturerid){
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">
+          <h4 class="semi-bold" id="myModalLabel"><div id="pricelistitemimage"></div><br>
           Price Details:
           <span id="pricelistitemcode"></span>
           (<span id="pricelistitemname"></span>)
@@ -1138,9 +1161,9 @@ function setitemsmanufacturer(manufacturerid){
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
           <h4 class="semi-bold" id="myModalLabel">         
-          <div id="masterimagelogo"></div>
+          <div id="masterimagelogo_<?php echo $masterdata->itemid;?>"></div>
            Master Default Options:          
-           <div id="itemcodedisplay"></div>
+           <div id="itemcodedisplay_<?php echo $masterdata->itemid;?>"></div>
           </h4>
           <br>
         </div>
@@ -1283,10 +1306,7 @@ function setitemsmanufacturer(manufacturerid){
             </div>
             <div class="col-md-2">
              Set Items
-            </div>
-             <div class="col-md-3">
-             In Store
-            </div>             
+            </div>                    
           </div> 
         
      <?php  foreach($manufacturers as $mf){ ?>     

@@ -528,25 +528,25 @@ $(function() {
 			  <div class="control-group">
 				    <table class="table table-bordered">
 				    	<tr>
-				    		<th>#</th>
+				    		<th width="1%">#</th>
 				    		<?php if(!$isawarded){?>
-				    		<th>Select</th>
+				    		<th width="2%">Select</th>
 				    		<?php }?>
-				    		<th>Item Code</th>
-				    		<th>Item Name</th>
-				    		<th>&nbsp;</th>
-				    		<th>Company</th>
-				    		<th>Qty.</th>
-				    		<th>Unit</th>
-				    		<th>60 day Low. Price</th>
-				    		<th>Price EA</th>
-				    		<th>Price Requested</th>
-				    		<th>Total Price</th>
-				    		<th>Date Available</th>
-				    		<th>Cost Code</th>
-				    		<th>Notes</th>
-				    		<th>Compare</th>
-				    		<th>Del</th>
+				    		<th width="10%">Item Code</th>
+				    		<th width="10%">Item Name</th>
+				    		<th width="10%">Item Image</th>
+				    		<th width="6%">Company</th>
+				    		<th width="5%">Qty.</th>
+				    		<th width="4%">Unit</th>
+				    		<th width="7%">60 day Low. Price</th>
+				    		<th width="5%">Price EA</th>
+				    		<th width="6%">Price Requested</th>
+				    		<th width="6%">Total Price</th>
+				    		<th width="6%">Date Available</th>
+				    		<th width="6%">Cost Code</th>
+				    		<th width="8%">Notes</th>
+				    		<th width="8%">Compare</th>
+				    		<th width="6%">Del</th>
 				    	</tr>
 				    	<?php 
 				    	$alltotal=0; foreach($bid->items as $q) if($q->itemcode){

@@ -321,7 +321,7 @@ $(document).ready(function(){
                 <a class="btn btn-primary single" onclick="showindividualfields();">Add Single Item</a>  
                 <br/>
                 <br>
-                      
+                <span style="font-weight:bold;">Note: * Fields Are Mandatory</span>      
                 <div class="forxls" style="width:48%; float:left;display:none;">
                 <form id="massitemaddform" class="form-horizontal" method="post" action="<?php echo site_url('admin/itemcode/add_itemcode_xls'); ?>" enctype="multipart/form-data">
                     <div class="control-group">
@@ -405,7 +405,7 @@ $(document).ready(function(){
                     <?php }?>
                     
                     <div class="control-group noxls">
-                        <label class="control-label">Item Code</label>
+                        <label class="control-label">Item Code <span style="color:red;font-weight:bold;"> * </span> </label>
                         <div class="controls">
                             <input type="text" id="itemcode" name="itemcode" class="span10" value="<?php echo $this->validation->itemcode; ?>">
                             <?php //echo $this->validation->itemcode_error; ?>
@@ -413,7 +413,7 @@ $(document).ready(function(){
                     </div>
                     
                     <div class="control-group noxls">
-                        <label class="control-label">URL</label>
+                        <label class="control-label">URL <span style="color:red;font-weight:bold;"> * </span></label>
                         <div class="controls">
                             <input type="text" id="url" name="url" class="span10" value="<?php echo $this->validation->url; ?>" required
                              onkeyup="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'');">
@@ -423,7 +423,7 @@ $(document).ready(function(){
                     </div>
 
                     <div class="control-group noxls">
-                        <label class="control-label">Item Name</label>
+                        <label class="control-label">Item Name <span style="color:red;font-weight:bold;"> * </span></label>
                         <div class="controls">
                             <input type="text" id="itemname" name="itemname" class="span10" value="<?php echo htmlentities($this->validation->itemname); ?>">
                             <?php echo $this->validation->itemname_error; ?>
@@ -523,7 +523,7 @@ $(document).ready(function(){
                         </div>
                     </div>
                     <div class="control-group noxls">
-                        <label class="control-label">Weight (oz)</label>
+                        <label class="control-label">Weight (oz) <span style="color:red;font-weight:bold;"> * </span></label>
                         <div class="controls">
                             <input value="<?php echo $this->validation->weight; ?>" type="text" name="weight" id="weight" class="span10"  >
                            <?php echo @$this->validation->error_weight; ?>
@@ -564,7 +564,7 @@ $(document).ready(function(){
                                                        if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
                                     <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].","; ?></a>  
                                               <?php    } } } }?>                          
-						    <?php if(isset($this->validation->filename)) echo "<br /><strong>Existing Alternate Text for File :</strong>&nbsp;<br/ >".$this->validation->filename; ?>
+						    <?php //if(isset($this->validation->filename)) echo "<br /><strong>Existing Alternate Text for File :</strong>&nbsp;<br/ >".$this->validation->filename; ?>
 						 <br />
 							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
 						    <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />

@@ -8441,12 +8441,12 @@ $loaderEmail = new My_Loader();
     function getcompany_ajax() {
         $localresult = isset($_POST['localresult']) ? $_POST['localresult'] : '';
         $supplyresult = isset($_POST['supplyresult']) ? $_POST['supplyresult'] : '1';
-        $internetresult = isset($_POST['internetresult']) ? $_POST['internetresult'] : '';
+        //$internetresult = isset($_POST['internetresult']) ? $_POST['internetresult'] : '';
         $radiusval = isset($_POST['radiusval']) ? $_POST['radiusval'] : '';
         $id = isset($_POST['id']) ? $_POST['id'] : '';
 
         $arr = array();
-        $sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1";
+        $sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1 AND isdeleted=0";
 
 
         if ($localresult == 1) {
@@ -8472,9 +8472,9 @@ $loaderEmail = new My_Loader();
                 return '';
             }
         }
-        if ($internetresult == 1) {
+        /*if ($internetresult == 1) {
 
-        }
+        }*/
 
         $str = '';
 

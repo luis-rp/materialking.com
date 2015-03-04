@@ -848,9 +848,9 @@ $( document ).tooltip();
                         	
                         	<tr>
                         		<td style="text-align:center">
-                        		<?php if($di->image && file_exists('./uploads/item/thumbs/'.$di->image)) {?>
-                        			<img src="<?php echo site_url('uploads/item/thumbs/'.$di->image);?>" width="81" height="80">
-                        			<?php $imgName = site_url('uploads/item/thumbs/'.$di->image); ?>
+                        		<?php if($di->item_img && file_exists('./uploads/item/thumbs/'.$di->item_img)) {?>
+                        			<img src="<?php echo site_url('uploads/item/thumbs/'.$di->item_img);?>" width="81" height="80">
+                        			<?php $imgName = site_url('uploads/item/thumbs/'.$di->item_img); ?>
                         		<?php } else {?>
                         		<img width="81" height="80" src="<?php echo site_url('uploads/item/big.png');?>"/>
                         		<?php $imgName = site_url('uploads/item/big.png'); ?>

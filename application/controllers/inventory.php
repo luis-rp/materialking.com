@@ -1143,9 +1143,13 @@ class Inventory extends CI_Controller
         $itemid = $_POST['itemid'];
         //$quoteid = $_POST['quoteid'];
 
-        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject
-			   	FROM
-				pms_bid a join pms_biditem ai  on ai.bid=a.id join pms_quote q on a.quote = q.id left join pms_award aw on aw.quote = q.id left join pms_users u on  q.purchasingadmin=u.id WHERE a.company='$company' AND ai.itemid='$itemid'	";
+        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject,u.companyname
+			   	FROM pms_bid a 
+			   	join pms_biditem ai  on ai.bid=a.id 
+			   	join pms_quote q on a.quote = q.id 
+			   	left join pms_award aw on aw.quote = q.id 
+			   	left join pms_users u on  q.purchasingadmin=u.id 
+			   	WHERE a.company='$company' AND ai.itemid='$itemid'	";
       
         $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
         $itemqry = $this->db->query($itemnamesql);
@@ -1169,7 +1173,7 @@ class Inventory extends CI_Controller
             	$qdate =  ($item->quotedate != '') ? date('m/d/Y',strtotime($item->quotedate)) : '-';
             	$awarddate =  ($item->awarddate != '') ? date('m/d/Y',strtotime($item->awarddate)) : '-';
             	
-                $ret .= '<tr><td>'.$item->fullname.'</td><td>'.$item->ponum.'</td><td>'.$item->subject.'</td> <td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .'<td>' . $qdate . '</td><td>'. $awarddate .'</td></tr>';
+                $ret .= '<tr><td>'.$item->companyname.'</td><td>'.$item->ponum.'</td><td>'.$item->subject.'</td> <td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .'<td>' . $qdate . '</td><td>'. $awarddate .'</td></tr>';
             }
             $ret .= '</table>';
             echo $ret.'*#*#$'.$itemname;
@@ -1335,7 +1339,7 @@ class Inventory extends CI_Controller
 		if(!$company)
 			redirect('company/login');
 		
-		$POST['price'] = $price;			
+		$POST['ea'] = $price;			
 		$this->db->where('itemid',$itemid);
 		$this->db->where('company',$company->id);
 		$this->db->where('type','Supplier');
@@ -1413,7 +1417,40 @@ class Inventory extends CI_Controller
 			$this->db->insert('companyitem',$POST);
 		}
 		
-	} 
+	}
+
+	
+	
+	public function setmasteroption(){
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		if(!$_POST)
+		die;	
+			
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+		    $this->db->where('type','Supplier');
+			$this->db->where('company',$company->id);				
+			$this->db->update('companyitem',$_POST);
+			echo "Manufacturer Set Sucessfully!"; die;
+		}
+		else
+		{
+			$_POST['company'] = $company->id;
+			$_POST['type'] = 'Supplier';					
+			$this->db->insert('companyitem',$_POST);
+			echo "Manufacturer Set Sucessfully!"; die;
+		}
+		
+	}
     
     
 }

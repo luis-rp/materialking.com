@@ -41,7 +41,7 @@ class Dashboard extends CI_Controller
 		$data['formdata'] = $formsubmissionresult;
 		
 		$data['newrequests'] = array();
-		//echo "<pre>"; print_r($reqs); die;
+		
 		foreach($reqs as $rq)
 		{
 			$rq->tago = $this->messagemodel->tago(strtotime($rq->requeston));
@@ -56,23 +56,72 @@ class Dashboard extends CI_Controller
 			$data['quoting']=$this->db->query($sql)->result();*/				
 			$data['newrequests'][]=$rq;
 		} 
+		$ppp="";
+		$ppp=$data['newrequests'];
+		
+		$data['udata']=array();
+			if($ppp)
+			{			    
+				foreach ($ppp as $u)
+				{ 
+				  $awarded=0;
+				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->fromid))->result();
+				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->fromid,'potype'=>'Bid'))->result();				  
+			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->fromid,'potype'=>'Direct'))->result();
+			     	
+			      if( $u->quotes)
+			      {
+			         foreach($u->quotes as $quote)
+						{							
+							if($this->quote_model->getawardedbid($quote->id))
+								$awarded++;							
+						}
+			        $u->awarded = $awarded;
+			      }
+			     $data['udata'][]=$u; 				
+				} 			 
+			}		
+		
 
 		if(isset($_POST['allcompany']))
 		{
-		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc";
+		$sql = "SELECT u.fullname, u.companyname, u.address, u.regdate, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc";
 		}
 		else
 		{
-		$sql = "SELECT u.fullname, u.companyname, u.address, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin
+		$sql = "SELECT u.fullname, u.companyname, u.address, u.regdate, acceptedon, accountnumber, wishtoapply, n.purchasingadmin, p.creditonly FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('network')." n LEFT JOIN ".$this->db->dbprefix('purchasingtier')." p ON p.company=".$company->id." AND p.purchasingadmin=n.purchasingadmin
 			WHERE u.id=n.purchasingadmin AND n.status='Active' AND n.company=".$company->id." order by n.purchasingadmin desc limit 5";
 		}
 
 
 		$query = $this->db->query($sql);
-
+        $users="";
 		$data['networkjoinedpurchasers'] = $query->result();
+		$users=$data['networkjoinedpurchasers'];
+		$data['userdata']=array();
+			if($users)
+			{			    
+				foreach ($users as $u)
+				{
+				  $awarded=0;
+				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
+				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
+			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
+			     	
+			      if( $u->quotes)
+			      {
+			         foreach($u->quotes as $quote)
+						{							
+							if($this->quote_model->getawardedbid($quote->id))
+								$awarded++;							
+						}
+			        $u->awarded = $awarded;
+			      }
+			     $data['userdata'][]=$u; 				
+				} 				 
+			}			
 		$invoices = $this->quotemodel->getpendinginvoices($company->id);
-		//echo "<pre>",print_r($data['networkjoinedpurchasers']);	die;
+		
 		$data['invoices'] = $invoices;
 
 		$errorLogSql = "SELECT qe.*,q.ponum,ai.award
@@ -93,33 +142,7 @@ class Dashboard extends CI_Controller
 		//log_message("debug",var_export($data['newrequests'],true));
 		$data['logDetails'] = $logDetails;
 		$data['tago'] = $tago;		
-			/*----------------------------------------------------------------*/
-			$users=$this->db->get('users')->result();
-			$data['userdata']=array();
-			if($users)
-			{
-			    
-				foreach ($users as $u)
-				{
-				  $awarded=0;
-				  $u->projects=$this->db->get_where('project',array('purchasingadmin'=>$u->purchasingadmin))->result();
-				  $u->quotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Bid'))->result();				  
-			      $u->directquotes=$this->db->get_where('quote',array('purchasingadmin'=>$u->purchasingadmin,'potype'=>'Direct'))->result();
-			     	
-			      if( $u->quotes)
-			      {
-			         foreach($u->quotes as $quote)
-						{							
-							if($this->quote_model->getawardedbid($quote->id))
-								$awarded++;							
-						}
-			        $u->awarded = $awarded;
-			      }
-			     $data['userdata'][]=$u; 				
-				} 
-				 
-			}	
-		/*---------------------------------------------------*/
+			
 		$sms="";
 	    $basic=$this->db->get_where('company',array('id'=>$company->id))->row();
 	    $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();

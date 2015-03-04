@@ -967,14 +967,15 @@ $( document ).tooltip();
                                         $price = $inv->ea;
                                 ?>
                                 <tr>
-                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> </td>
-                                    <td style="padding:0px;" class="tinyfont">
-                                    <?php  if (@$inv->companydetails->company_type==1) 
+                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> 
+                                    <br>
+                                     <?php  if (@$inv->companydetails->company_type==1) 
 				                    	  { ?>                                                
 				                         	<img style="width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium_member.jpeg') ?>" alt="Premium Member">
 				                    <?php } ?>
-                                    <?php echo $inv->itemcode ?> 
+                                    
                                     </td>
+                                    <td style="padding:0px;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
                                     <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
                                     <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>

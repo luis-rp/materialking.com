@@ -339,10 +339,11 @@
 
 <div>
 <section class="row-fluid" style="margin:0px auto; padding:0px; width:93.4%;">
+<?php echo @$messageemailinv;?>
 <h3 class="box-header" style="display:inline; width:98.4%">
 				<span id="step1" >Your Dashboard</span>
 				&nbsp;
-                <?php echo $this->session->flashdata('message'); ?>
+                <?php echo $this->session->flashdata('message'); ?>                
 				<?php if($this->session->userdata('usertype_id') == 2){?>
 				<a class="btn btn-primary pull-right" href="<?php echo site_url('site/items');?>"><strong>Go to store</strong></a>&nbsp;&nbsp;
 				<span class="pull-right" style="width: 5px;">&nbsp;</span>
@@ -583,20 +584,19 @@
 	    	<?php if($this->session->userdata('managedprojectdetails')){?>
 	    	
 	    	<div class="span10" style="padding:19px;">
-	  <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>
-	  <?php  if(isset($Totalawardedtotal) && $Totalawardedtotal!='') { ?>
-				<div style="text-align:right;padding-right:24px"><strong>Total Project Savings:&nbsp;$<?php echo number_format($Totalawardedtotal,2); ?></strong></div>
-
-				<?php } ?>
-	    		<?php if(@$costcodesjson){?>
-	    		<div id="chart_pie" style="height: 420px;"></div>
-	    		<?php } else {?>
-
-	    		<div style="width:94.5%; height:auto; text-align:center;  vertical-align:middle; border:2px solid silver;margin:0;padding:8px; ">
-	    		<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
-	    		</div>
-
-	    		<?php }?>			
+	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
+			    		<?php if(@$costcodesjson){?>
+			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
+					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
+						    </div>
+			    		
+			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
+			    		<?php } else {?>		
+			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
+			    			<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
+			    			</div>            
+	    				<?php }?>
+	    		 		
 	    	</div>
 	    
 	    	

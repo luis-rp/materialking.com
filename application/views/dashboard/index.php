@@ -54,6 +54,12 @@ function preloadoptions(fromid)
 	 	//alert("#smodal"+fromid);
     	$("#smodal"+fromid).modal();   	   
      }
+     
+     function preload(fromid)
+	 {
+	 	//alert("#smodal"+fromid);
+    	$("#pmodal"+fromid).modal();   	   
+     }
 
 </script>
     <div class="content">
@@ -220,7 +226,7 @@ function preloadoptions(fromid)
 											<?php }?>
 										<?php }?>
                                            
-                                           <a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities(@$penreq->fromid)?>');">View Stats</a>
+                                           <a href="javascript:void(0)" onclick="preload('<?php echo htmlentities(@$penreq->fromid)?>');">View Stats</a>
 									</div>
 									<div class="description">
 										<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('dashboard/acceptreq/'.$penreq->id);?>">Accept</a>
@@ -289,8 +295,8 @@ function preloadoptions(fromid)
 	</div>
 </div>
 
- <?php $oldfromid=""; $i=0; foreach ($userdata as $u){ //echo "<pre>data-"; print_r($u->id);  ?>
- <div id="smodal<?php echo $u->id;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+ <?php $oldfromid=""; $i=0; foreach ($userdata as $u){  ?>
+ <div id="smodal<?php echo $u->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -333,6 +339,51 @@ function preloadoptions(fromid)
       </div>   
     </div>
   </div>
-  <?php $oldfrommid=$u->id; $i++; } //die;?> 
+  <?php $oldfrommid=$u->purchasingadmin; $i++; } ?> 
   
-  
+  <?php //echo "<pre>"; print_r($udata); die;?>
+  <?php $oldfromid=""; $i=0; foreach ($udata as $u){  ?>
+ <div id="pmodal<?php echo $u->fromid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->from->companyname;?></h4> 
+          <h5 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->from->fullname;?></h5>
+          <h6 class="semi-bold" id="myModalLabel" style="text-align:left"><?php echo @$u->from->address;?></h6>       
+        </div>
+        
+        <div class="modal-body">       
+        	<div>
+          		<h6 class="semi-bold" id="myModalLabel" style="text-align:center">Member Since&nbsp;
+          		<?php $olddate1=strtotime(@$u->from->regdate); $newdate1 = date('M d, Y', $olddate1); echo $newdate1; ?></h6> 
+        	</div>
+        
+         	<div>
+        		<h4 class="semi-bold" id="myModalLabel">User Statistics</h4>
+        	</div>
+        	<hr style="height:2px;border-width:0;color:green;background-color:green">
+	        <div style="margin-left:90px;">      
+		       <div>
+		        	<p><?php echo "Total Number of Project&nbsp;".count(@$u->projects);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$u->directquotes);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$u->quotes);?></p>
+		        </div> 
+		        <div>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$u->awarded;?></p>
+		        </div>  
+	        </div>	  
+        </div>       
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+        
+      </div>   
+    </div>
+  </div>
+  <?php $oldfrommid=$u->fromid; $i++; }  ?>  

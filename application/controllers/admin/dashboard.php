@@ -1171,6 +1171,11 @@ class Dashboard extends CI_Controller
     	$data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
     	$data['popups'] = $popups;
     	
+    	if(@$this->session->userdata('message')!=""){    				
+    		$data['messageemailinv'] = '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$this->session->userdata('message').'</div></div><div class="errordiv">';
+    		$this->session->unset_userdata('message');
+    	}
+    	
 		$this->load->view ('admin/dashboard', $data);
 	}
 
@@ -1543,11 +1548,11 @@ class Dashboard extends CI_Controller
 			$company=$this->db->get_where('users',array('id'=>$id))->row();       
 			$pemail=$_POST['email'];
 			$supplier=$this->db->get_where('company',array('primaryemail'=>$pemail))->row();
-			     
+			$settings = (array)$this->settings_model->get_current_settings ();
+			
 			       if(!empty($supplier))
 			       { 	
-			       	 $this->session->set_userdata('message','<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists.</div></div><div class="errordiv">');			
-			       	 $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Already Exists.</div></div><div class="errordiv">');	
+			       	 $this->session->set_userdata('message','Email Already Exists');						       	 
 					//$this->session->set_userdata('sms','Email Already Exists');			       							
 			       }
 			       else 
@@ -1584,7 +1589,17 @@ class Dashboard extends CI_Controller
             		           		
             		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['email']); 	
 					$this->db->insert('supplierinvitation',$option);
-					         		
+					
+					$emailfrom="";
+					if(@$company->email && $company->email!="")
+					{
+						$emailfrom=$company->email;
+					}
+					else 
+					{
+						$emailfrom=$settings['adminemail'];
+					}
+										  		
             		$this->load->library('email');
 			        $config['charset'] = 'utf-8';
 			        $config['mailtype'] = 'html';	        			
@@ -1601,12 +1616,10 @@ class Dashboard extends CI_Controller
 			        $this->email->message($send_body);	
 			        $this->email->set_mailtype("html");			      
 			        $this->email->send();
-			         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Send Successfully.</div></div><div class="errordiv">');	  
-			         
-			         $this->session->set_userdata('message','<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Email Send Successfully.</div></div><div class="errordiv">');	      
+			        $this->session->set_userdata('message', 'Email Send Successfully');	  
+     
 			        }		       
-		      }
-		     
+		      }		      
 		      redirect('admin/dashboard');	
 	}
 	

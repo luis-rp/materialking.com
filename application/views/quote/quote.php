@@ -71,13 +71,13 @@ function checksubstitute(id)
 	else
 		$('#substituterow'+id).hide();
 }
-function updateitem(id,itemid,itemcode,itemname,price,heading)
-{
+function updateitem(id,itemid,itemcode,itemname,price,heading,imgname)
+{	
 	$("#itemmodal").modal();
 	$("#itemform").trigger("reset");
 	$("#itemformheading").html(heading);
 	$("#itemformid").val(itemid);
-	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="preloadoptions('+id+','+itemid+');">Select/View Preloaded Options</a>');
+	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick=\'preloadoptions('+id+','+itemid+',"'+itemcode+'","'+imgname+'");\'>Select/View Preloaded Options</a>');
 	//$("#itemformcode").html(itemcode.replace('&quot;','"'));
 	//$("#itemformname").html(itemname.replace('&quot;','"'));
 	//$("#itemformprice").html(price);
@@ -160,12 +160,13 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 	}
 }
 
-function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel, quote, isdefault,isdiscount)
+function viewPricelist(itemid, quantityid, priceid, purchasingadmin, itemcode, itemname, price, notelabel, quote, isdefault,isdiscount,imgname)
 {
 	$("#pricelist").modal();
 	$("#itemnamebox").html('');
 	$("#pricelistitemcode").html(itemcode);
 	$("#pricelistitemname").html(itemname);	
+	$("#itemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
 	
 	if(isdiscount==1)
 	$('#qtydiscountbtn').css('display','block');
@@ -428,12 +429,15 @@ function addFileInput(count)
 	}
 	
 
-function preloadoptions(id,itemid){
+function preloadoptions(id,itemid,itemcode,imgname)
+{
     $('#masterdefaultpricehid').val('');
 	if($("#modal"+itemid).length > 0){
 		$("#itemmodal").modal('hide');
 		$("#modal"+itemid).modal();
 		$('#masterdefaultpricehid').val(id);
+		$("#masterimagelogo_"+itemid).html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
+    	$("#itemcodedisplay_"+itemid).html(itemcode);
 	}else
 	alert("No Preloaded Options Exist for this item");
 }
@@ -548,7 +552,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
         }    
     }
 
-     function showhistory(quoteid,companyid, itemid, companyname)
+     function showhistory(quoteid,companyid, itemid, imgname)
     {
         $.ajax({
             type:"post",
@@ -559,7 +563,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
         	var arr = data.split('*#*#$');        	
             $("#pricehistory").html(arr[0]);
             $("#itemcode").html(arr[1]);
-            $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
+            $("#historycompanyname").html(arr[2]+' to <br> ( '+arr[3] +' )');
+            $("#itemimagelogo").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
             $("#historymodal").modal();
         });
     }
@@ -702,6 +707,12 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 									<?php if(@$originalitems[$q->itemid]){?>
 							    	<tr>
 							    		<td>
+							    		<?php if(isset($q->orgitem->item_img) && $q->orgitem->item_img!= "" && file_exists("./uploads/item/".$q->orgitem->item_img)) 
+								    		{ ?>
+	                                        <?php $imgName = site_url('uploads/item/'.$q->orgitem->item_img);  } 
+	                                        else { ?>
+	                                        <?php $imgName = site_url('uploads/item/big.png');  } ?>
+	                                        
 							    		<?php echo $originalitems[$q->itemid]->itemname;?>
 							    		<?php if(@$q->companyitem->ea){ if(@$q->companyitem->ea<=0){ $q->companyitem->ea=""; } } //if($q->showinventorylink){
 										
@@ -725,7 +736,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		".$itemCode1.",
 							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
-							    		'".html_escape(@$q->orgitem->itemname)."'");?>)'>
+							    		'".html_escape(@$q->orgitem->itemname)."'");?>,"<?php echo $imgName;?>")'>
 							    			<i class="fa fa-edit"></i>
 							    		</a>
 							    		
@@ -756,9 +767,10 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								    		<?php if(isset($q->orgitem->item_img) && $q->orgitem->item_img!= "" && file_exists("./uploads/item/".$q->orgitem->item_img)) 
 								    		{ ?>
 	                                                 <img style="max-height: 120px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->orgitem->item_img) ?>" alt="<?php echo $q->orgitem->item_img;?>">
-	                                        <?php } else { ?>
+	                                        <?php $imgName = site_url('uploads/item/'.$q->orgitem->item_img);  } 
+	                                        else { ?>
 	                                            <img style="max-height: 120px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
-	                                        <?php } ?>
+	                                        <?php $imgName = site_url('uploads/item/big.png');  } ?>
 							    		</td>
 							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"></span>
 							    								    		
@@ -767,7 +779,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<td>
 							    		
 							    			<?php if(@$q->companyitem->ea && @$q->companyitem->ea!=0){?>
-							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->ea!="" || @$q->companyitem->ea!="") echo "true"; else echo "false"; ?>','<?php echo @$q->isdiscount;?>')">
+							    			<a href="javascript:void(0)" onclick="viewPricelist('<?php echo $q->itemid; ?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>','<?php echo $q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->companyitem->ea?>', 'notelabel<?php echo $q->id;?>','<?php echo @$q->quote;?>','<?php if (@$q->companyitem->ea!="" || @$q->companyitem->ea!="") echo "true"; else echo "false"; ?>','<?php echo @$q->isdiscount;?>','<?php echo $imgName;?>')">
 							    				<i class="fa fa-search"></i>
 							    			</a>
 							    			<?php }?>
@@ -789,7 +801,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		".$itemCode1.",
 							    		".$itemName1.",
 							    		'".htmlentities(@$q->companyitem->ea)."',
-							    		'".html_escape(@$q->orgitem->itemname)."'");?>)">
+							    		'".html_escape(@$q->orgitem->itemname)."'");?>,'<?php echo $imgName;?>')">
 							    			*Set List Price
 							    		</a><?php }
 							    	
@@ -800,7 +812,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		</a><?php }?>
 							    		
 							    		<?php if(@$q->companyitem->company != '' && @$q->companyitem->itemid != '') { ?>		
-							    		<a href="javascript: void(0);" onclick="showhistory('<?php echo @$q->quote ?>','<?php echo @$q->companyitem->company ?>','<?php echo @$q->companyitem->itemid ?>','')"><i class="icon icon-search"></i>Price History</a>	
+							    		<a href="javascript: void(0);" onclick="showhistory('<?php echo @$q->quote ?>','<?php echo @$q->companyitem->company ?>','<?php echo @$q->companyitem->itemid ?>','<?php echo $imgName;?>')"><i class="icon icon-search"></i>Price History</a>	
 							    		<?php }?>
 							    		</td>
 							    		<td>	
@@ -988,7 +1000,9 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
           <button aria-hidden="true" data-dismiss="modal" class="close" onclick="displayitemmodal(<?php echo $masterdata->itemid;?>);" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
           <h4 class="semi-bold" id="myModalLabel">
-          Master Default Options:          
+           <div id="masterimagelogo_<?php echo $masterdata->itemid;?>"></div>
+           Master Default Options:        
+          <div id="itemcodedisplay_<?php echo $masterdata->itemid;?>"></div>  
           </h4>
           <br>
         </div>
@@ -1058,7 +1072,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <br>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">
+          <h4 class="semi-bold" id="myModalLabel"><div id="itemimage"></div>
           Price Details:
           <span id="pricelistitemcode"></span>
           (<span id="pricelistitemname"></span>)
@@ -1156,7 +1170,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 	<div class="modal-dialog">
 	  <div class="modal-content">
 	    <div class="modal-header">
-	        <h4><span id='itemcode'></span></h4>
+	        <h4><div id="itemimagelogo"></div> <span id='itemcode'></span></h4>
 	        <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
 	        <h3>Price History - <span id="historycompanyname"></span></h3>
 	    </div>

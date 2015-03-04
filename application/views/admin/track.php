@@ -647,12 +647,12 @@ function delserviceitem()
                 <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;width:150%;">
                     <tr>
                         <th width="10%">Company</th>
-                        <th width="10%">Item Code</th>
+                        <th width="13%">Item Code</th>
                         <th width="10%">Item Name</th>
                         <th width="13%">Item Progress</th>
                         <th width="7%">Qty.</th>
                         <th width="5%">Unit</th>
-                        <th width="10%">Price EA</th>
+                        <th width="7%">Price EA</th>
                         <th width="10%">Total Price</th>
                         <th width="10%">Date Requested</th>
                         <th width="10%">Cost Code</th>
@@ -697,9 +697,9 @@ function delserviceitem()
                                 <br>
                                  <?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
 					    		{ ?>
-                                   <img style="max-height: 100px;max-width: 70px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
+                                   <img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
                                 <?php } else { ?>
-                                    <img style="max-height: 100px;max-width: 70px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                    <img style="max-height: 100px;max-width: 75px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
                                 <?php } ?>
                                 
                                 </td>

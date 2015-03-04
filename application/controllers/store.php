@@ -166,8 +166,9 @@ class Store extends CI_Controller
        
          
         $dealitems = $this->db
-        ->select('dealitem.*')
+        ->select('dealitem.*,item.item_img')
         ->from('dealitem')
+        ->join('item','item.id=dealitem.itemid')
         ->where('dealitem.company',$company)
         ->where('dealitem.dealactive','1')
         ->where('dealitem.qtyavailable >',0)
