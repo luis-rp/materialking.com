@@ -1138,9 +1138,11 @@ class Dashboard extends CI_Controller
     	$popups = array();
     	if(!empty($data['projects'])){
     		foreach($data['projects'] as $project){
-
+				
+    			$project->address = str_replace("\n", ", ", $project->address);
+    			$project->address = str_replace(" ",",", $project->address);
     			$geocode = file_get_contents(
-    			"http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $project->address)) . "&sensor=false");
+    			"http://maps.google.com/maps/api/geocode/json?address=" . urlencode($project->address) . "&sensor=false");
     			$output = json_decode($geocode);
 
     			if($output->status == 'OK'){ // Check if address is available or not
@@ -1541,29 +1543,33 @@ class Dashboard extends CI_Controller
 	
 	
 	function supplier_email_invitation()
-	{	
-		if(isset($_POST['email']) && $_POST['email']!="")
+	{		
+		if($_POST)
 		{		
-			$id = $this->session->userdata('id');
+			$id = $this->session->userdata('purchasingadmin');
 			$company=$this->db->get_where('users',array('id'=>$id))->row();       
-			$pemail=$_POST['email'];
-			$supplier=$this->db->get_where('company',array('primaryemail'=>$pemail))->row();
+			$supplyemail=$this->db->get_where('company',array('primaryemail'=>$_POST['email']))->row();
+			$supplytitle=$this->db->get_where('company',array('title'=>$_POST['ctitle']))->row();
 			$settings = (array)$this->settings_model->get_current_settings ();
-			
-			       if(!empty($supplier))
-			       { 	
-			       	 $this->session->set_userdata('message','Email Already Exists');						       	 
-					//$this->session->set_userdata('sms','Email Already Exists');			       							
-			       }
-			       else 
-			       { 		     
-			       $password = $this->getRandomPassword();                   
-			       $pos=stripos($pemail,"@");          	
-                   $username = substr($pemail,0,$pos);
-                                     	               	
+						
+			if(!empty($supplytitle))
+			{ 	
+			$this->session->set_userdata('message','Company Name Already Exists');						  							       					
+			}			       
+			else 
+			{
+			      if(!empty($supplyemail))
+			      { 	
+			      $this->session->set_userdata('message','Email Already Exists');						       	 
+				  }
+			      else
+			      {			       	
+			       $password = $this->getRandomPassword();
+			       $username = str_replace(' ', '-', strtolower($_POST['ctitle']));                                                         	               	
             		$limitedcompany = array(
-            		   'primaryemail' => $pemail,  	
-            		   'title' => 'Supplier',
+            		   'primaryemail' => $_POST['email'],  	
+            		   'title' => $_POST['ctitle'],
+            		   'contact' => $_POST['cname'],
                        'regkey' => '',
                        'username' => $username,
                        'pwd' => md5($password),
@@ -1604,22 +1610,23 @@ class Dashboard extends CI_Controller
 			        $config['charset'] = 'utf-8';
 			        $config['mailtype'] = 'html';	        			
 			        $this->email->initialize($config);
-			        $this->email->from($company->email);
+			        $this->email->from($emailfrom);
 					$this->email->to($_POST['email']);
 			        $subject = 'Account Detail & Invitation';		        		
-			        $data['email_body_title'] = "Dear,&nbsp;{$username}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
-		        	$data['email_body_content'] = "The Company '{$company->companyname}' invits you to join their purchasing network today.<br />
-		        	 your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
+			        $data['email_body_title'] = "Dear,&nbsp;{$_POST['cname']}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
+		        	$data['email_body_content'] = "The Company '{$company->companyname}' invites you to join their purchasing network today.<br />
+		        	 Your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
 				    $loaderEmail = new My_Loader();
 				    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
 			        $this->email->subject($subject);
 			        $this->email->message($send_body);	
-			        $this->email->set_mailtype("html");			      
+			        $this->email->set_mailtype("html");
+			        //echo "<pre>"; print_r($this->email); die;			      
 			        $this->email->send();
-			        $this->session->set_userdata('message', 'Email Send Successfully');	  
-     
+			        $this->session->set_userdata('message', 'Invitation Sent via Email Successfully');	    
 			        }		       
-		      }		      
+		      }	
+		}	      
 		      redirect('admin/dashboard');	
 	}
 	

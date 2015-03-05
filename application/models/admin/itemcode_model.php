@@ -138,6 +138,14 @@ class itemcode_model extends Model {
         return $query;
     }
 
+    function getparentcategory()
+    {
+    	$sql = "SELECT * FROM " . $this->db->dbprefix('category') . "
+        		WHERE parent_id=0";
+        $leaves = $this->db->query($sql)->result();
+        return $leaves;
+    }
+    
     function getcategories()
     {
         $sql = "SELECT * FROM " . $this->db->dbprefix('category') . "
@@ -148,14 +156,16 @@ class itemcode_model extends Model {
         foreach($leaves as $leaf)
         {
             $parent = $leaf->parent_id;
+          
             while($parent)
             {
                 $sql = "SELECT * FROM " . $this->db->dbprefix('category') . " WHERE id='$parent'  ";
                 $pcat = $this->db->query($sql)->row();
+                
                 if($pcat)
                 {
                     $parent = $pcat->parent_id;
-                    $leaf->catname = $pcat->catname . ' > ' . $leaf->catname;
+                    $leaf->catname =  $pcat->catname . ' > ' . $leaf->catname;
                 }
                 else
                 {
@@ -180,9 +190,11 @@ class itemcode_model extends Model {
             
             $ret[] = $leaf;
         }
-        //echo '<pre>'; print_r($ret);//die;
+        
+        $parentCategory =  $this->getparentcategory();
+        $ret= array_merge($parentCategory,$ret);
         $this->aasort($ret, 'catname');
-        //echo '<pre>'; print_r($ret);die;
+      //  echo '<pre>'; print_r($ret);die;
 
         return $ret;
 

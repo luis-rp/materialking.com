@@ -1110,16 +1110,16 @@ function delserviceitem()
                                     </td>
                                 </tr>
                                  <?php
-                                $f1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                $f1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                 $f_total +=$f1_total;
                                 if($invoice->paymentstatus=='Paid')
                                 {
-                                   $p1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                   $p1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                    $p_total +=$p1_total;
                                 }
                                  if($invoice->paymentstatus=='Unpaid')
                                 {
-                                	 $u1_total=$invoice->totalprice+number_format($invoice->totalprice * $config['taxpercent'] / 100, 2);
+                                	 $u1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                      $u_total +=$u1_total;
                                 }
                                 } ?>

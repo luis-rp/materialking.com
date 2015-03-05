@@ -417,11 +417,12 @@ $(function() {
                            borderWidth: 0,
                            dataLabels: {
                                enabled: true,
-                               useHTML: true,
+                               color: 'red',
+                               useHTML: true,                               
                                format: '$ {point.y:.f}',
                                style: {
         							fontFamily: 'monospace',
-       								color: "#f00"
+        							color: 'red !important',
     							}
                            }
                        }

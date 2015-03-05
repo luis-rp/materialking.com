@@ -2582,20 +2582,24 @@ class Company extends CI_Controller {
             		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>';
             $data['email_body_content'] .= '</table>';   
-	    }  
+	    }
+	    
+	    if(@$invs[0]->email && @$subject){
+	      
 	    $loaderEmail = new My_Loader();
 	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
 		$this->email->initialize($config);
-		$this->email->to($invs[0]->email);
+		$this->email->to(@$invs[0]->email);
 		$this->email->from($this->session->userdata("company")->primaryemail,$this->session->userdata("company")->primaryemail);
 		
-		$this->email->subject($subject);
+		$this->email->subject(@$subject);
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->send();
+	    }
 	}   
     
 }

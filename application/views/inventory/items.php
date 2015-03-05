@@ -721,7 +721,7 @@ function setitemsmanufacturer(manufacturerid){
 	
 	if ($('#checkmanufacturer'+manufacturerid).is(':checked') ) {
 	var instore = 0;	
-	if(confirm("Do you set item to inventory store?"))
+	if(confirm("Would you also like to set all manufacturer items to be available in your online store?"))
 	{
 		instore = 1;
 	}	
@@ -937,7 +937,7 @@ function setitemsmanufacturer(manufacturerid){
 
                                                 <td class="v-align-middle">
                                                 	<input type="text"  class="form-control" placeholder="Price" id="price1<?php echo $item->id;?>"
-                                                	value="<?php echo @$item->companyitem->ea?>"
+                                                	value="<?php if(@$item->companyitem->ea != 0) echo @$item->companyitem->ea; ?>"
                                                 	onchange="updateItemprice('<?php echo $item->id?>',this.value);" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"/>
                                                 	<?php if(@$item->companyitem->ea>0){?>
                                                 	<a href="javascript:void(0)" onclick="viewPricelist('<?php echo htmlentities(@$item->companyitem->itemcode?$item->companyitem->itemcode:$item->itemcode)?>','<?php echo htmlentities(addslashes(@$item->companyitem->itemname?$item->companyitem->itemname:$item->itemname))?>','<?php echo @$item->companyitem->ea?>','<?php echo $imgName;?>');">
@@ -1309,10 +1309,21 @@ function setitemsmanufacturer(manufacturerid){
             </div>                    
           </div> 
         
-     <?php  foreach($manufacturers as $mf){ ?>     
+     <?php  foreach($manufacturers as $mf){ $count=0; ?>     
          <div class="row form-row">
             <div class="col-md-3">
-             <?php echo $mf->title;?>
+             <?php
+             $cquery = "SELECT m.*
+					    FROM ".$this->db->dbprefix('item')." i join 
+					    ".$this->db->dbprefix('masterdefault')." m on i.id = m.itemid and m.manufacturer = '".$mf->id."' 
+					     group by m.itemid";
+             $hasitems = $this->db->query($cquery)->result();
+             
+             if($hasitems){
+             	$count = count($hasitems);
+             }
+             
+             echo $mf->title." (".$count.")";?>
             </div>            
              <div class="col-md-2">              
               <span>&nbsp;&nbsp;<input type="checkbox" class="checkmanufacturercls" name="checkmanufacturer<?php echo $mf->id;?>" id="checkmanufacturer<?php echo $mf->id;?>" value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>

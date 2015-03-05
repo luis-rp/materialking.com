@@ -1022,11 +1022,25 @@
 	  <!--	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
 	  	</form><br>-->
 	  	
-	  	  <div><p>Enter E-mail to send an e-mail invitation to join your network</p></div>
-	        <form class="form-inline" action="<?php echo base_url()?>admin/dashboard/supplier_email_invitation" method="post">
+	  	
+	        <form class="form" action="<?php echo base_url()?>admin/dashboard/supplier_email_invitation" method="post">
+			  
+	         <div class="form-group">
+			   <label class="sr-only" for="ctitle">Company Name</label>
+			    <input type="text" class="form-control" id="ctitle" name="ctitle" required style="width:80%;">			   
+			  </div> 
+	        
+			   <div class="form-group">
+			   <label class="sr-only" for="cname">Contact Name</label>
+			    <input type="text" class="form-control" id="cname" name="cname" required style="width:80%;">			  
+			  </div> 
+			  
 			  <div class="form-group">
-			  <!--  <label class="sr-only" for="exampleInputEmail2">Email</label>-->
-			    <input type="email" class="form-control" id="email" name="email" placeholder="Suplier email" style="width:60%;">
+			   <label class="sr-only" for="email">Email</label>
+			    <input type="email" class="form-control" id="email" name="email" required style="width:80%;">		  
+			  </div> 
+			  
+			   <div class="form-group">		  
 			    <button type="submit" class="btn btn-primary">Send Invitation</button>
 			  </div> 
 			  

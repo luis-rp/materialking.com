@@ -308,7 +308,9 @@ function jq( myid ) {
                     		/*echo "<pre>",print_r($items);
                     		echo "<pre>",print_r($aginginvoices); die;*/
                     		foreach($items as $item){ $i++;
-                    		                    		
+                    		 
+                    		$item->totalprice = (float) str_replace(',', '', $item->totalprice);
+                    		                   		
                     		if(@$item->discount_percent){
                     			
                     			$item->totalprice = $item->totalprice - ($item->totalprice*$item->discount_percent/100);

@@ -77,6 +77,7 @@ function updateitem(id,itemid,itemcode,itemname,price,heading,imgname)
 	$("#itemform").trigger("reset");
 	$("#itemformheading").html(heading);
 	$("#itemformid").val(itemid);
+	$("#inventoryitemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
 	$("#preloaditemdata").html('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick=\'preloadoptions('+id+','+itemid+',"'+itemcode+'","'+imgname+'");\'>Select/View Preloaded Options</a>');
 	//$("#itemformcode").html(itemcode.replace('&quot;','"'));
 	//$("#itemformname").html(itemname.replace('&quot;','"'));
@@ -367,7 +368,7 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 }
 
 
-function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname,quote){
+function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname,quote,imgname,id){
 	
 	$.ajax({
 		type:"post",
@@ -384,10 +385,12 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname,quo
 			$("#pricelistitemname2").html(itemname);	
 			$("#myModalbody").html(data);
 			//$('#itemprice').val(data);
-			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+','+quote+');" value="Update"/>';
+			var phtml = '<input type="button" class="btn btn-primary" onclick="setcompanypriceprompt2('+companyid+','+itemid+','+purchasingadmin+','+quote+','+id+');" value="Update"/>';
+			$("#itemlogo").html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
 			$("#pricebtn").html(phtml);
 			
 		}else{
+			$("#itemlogo").html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
 			$('#itemprice').val('');
 			$("#myModalbody").css('display','none');
 			$("#myModalfooter").css('display','none');
@@ -395,13 +398,14 @@ function showcompanyprice(companyid,itemid,purchasingadmin,itemcode,itemname,quo
 			$("#myModalLabelchng").html('No Company Price Exists <br> <span id="pricelistitemcode2"></span> (<span id="pricelistitemname2"></span>) ');
 			$("#pricelistitemcode2").html(itemcode);
 			$("#pricelistitemname2").html(itemname);
+			
 		}
 	});
 
 }
 
 
-function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote){
+function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote,id){
 
 	var val=$('#itemprice').val();
 	if(confirm("Do you want to save this as company's price for this item?"))
@@ -414,7 +418,8 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote){
 			data: "companyid="+companyid+"&val="+val+"&itemid="+itemid+"&purchasingadmin="+purchasingadmin+"&quote="+quote,
 			url: setcompanypriceurl
 		}).done(function(data){
-            $("#companypricemodal").modal('hide');						
+            $("#companypricemodal").modal('hide');	           
+            $("#ea"+id).val(val);					
 			alert(data);			
 			
 		});
@@ -659,11 +664,11 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 									     	<br/>
 									     </td>
 									     <td style="width:40%;">
-									      	<span><strong>Company : </strong></span><span><?php echo $purchasingadmin->companyname; ?></span><br />
-									      	<span><strong>Contact Name : </strong></span><span><?php echo $purchasingadmin->fullname; ?></span><br />
-									      	<span><strong>Contact Phone : </strong></span><span><?php echo $purchasingadmin->phone; ?></span><br />
-									      	<span><strong>Contact Email : </strong></span><span><?php echo $purchasingadmin->email; ?></span><br />
-									      	<span><strong>Project : </strong></span><span><?php echo $proname; ?></span><br />
+		<span><strong>Company : </strong></span><span><?php echo @$purchasingadmin->companyname; ?></span><br />
+		<span><strong>Contact Name : </strong></span><span><?php echo @$purchasingadmin->fullname; ?></span><br />
+		<span><strong>Contact Phone : </strong></span><span><?php echo @$purchasingadmin->phone; ?></span><br />
+		<span><strong>Contact Email : </strong></span><span><?php echo @$purchasingadmin->email; ?></span><br />
+		<span><strong>Project : </strong></span><span><?php echo @$proname; ?></span><br />
 									     </td>
 									 </tr>
 								</table>
@@ -748,8 +753,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->unit;?></td>
-							    		<td>$<?php echo $originalitems[$q->itemid]->ea;?> 							    		
-							    		</td>
+							    		<td><?php echo $originalitems[$q->itemid]->ea==0?"RFQ":"$".$originalitems[$q->itemid]->ea;?></td>	
 							    		<td><?php echo round($originalitems[$q->itemid]->ea * $originalitems[$q->itemid]->quantity,2);?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->daterequested;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->notes;?></td>
@@ -784,7 +788,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			</a>
 							    			<?php }?>
 											<input type="text" class="highlight nonzero nopad width50 input-sm" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onchange="calculatetotalprice('<?php echo $q->id?>');"  onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;"   onblur="setcompanypriceprompt(this.value,'<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->quote;?>','<?php echo @$q->purchasingadmin;?>');" /> <br/> &nbsp;<span id="eaerrmsg1<?php echo $q->id;?>"/> <label id="notelabel<?php echo $q->id;?>" name="notelabel<?php echo $q->id;?>" ><?php if(isset($q->noteslabel)) echo $q->noteslabel;?></label>
-							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br>  <?php if(@$q->ispriceset){ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>')">
+							    			<input type="hidden" id="ismanual<?php echo $q->id?>" name="ismanual<?php echo $q->id?>" value="<?php echo @$q->ismanual;?>"/> <br>  <?php if(@$q->ispriceset){ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>','<?php echo $imgName;?>','<?php echo $q->id;?>')">
 							    			Edit Company Price
 							    		</a><?php }?>
 							    		<br>
@@ -807,7 +811,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    	
 							    		
 							    		if(@$q->comppriceset == 0)
-							    		{ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>')">
+							    		{ ?><a href="javascript:void(0)" onclick="showcompanyprice('<?php echo $company->id; ?>','<?php echo $q->itemid?>','<?php echo @$q->purchasingadmin;?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemcode)?$q->companyitem->itemcode:$q->itemcode))?>','<?php echo htmlentities(addslashes((@$q->companyitem->itemname)?$q->companyitem->itemname:$q->itemname))?>','<?php echo @$q->quote;?>','<?php echo $imgName;?>','<?php echo $q->id;?>')">
 							    			*Set Company Price
 							    		</a><?php }?>
 							    		
@@ -943,7 +947,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                         <div class="modal-header">
                           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
                           <br>
-                          <i class="icon-credit-card icon-7x"></i>
+                          <i class="icon-credit-card icon-7x"></i><div id="inventoryitemimage"></div><br>
                           <h4 class="semi-bold" id="myModalLabel">
                           Setup Inventory:
                           <span id="itemformheading"></span>
@@ -1072,7 +1076,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <br>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel"><div id="itemimage"></div>
+          <h4 class="semi-bold" id="myModalLabel"><div id="itemimage"></div><br>
           Price Details:
           <span id="pricelistitemcode"></span>
           (<span id="pricelistitemname"></span>)
@@ -1138,7 +1142,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                       <div class="modal-content">
                         <div class="modal-header">
                           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-                          <br>
+                          <br><div id="itemlogo"></div>
                           <i class="icon-credit-card icon-7x"></i>
                           <h4 class="semi-bold" id="myModalLabelchng">
                           Company Price:           

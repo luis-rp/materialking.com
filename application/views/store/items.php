@@ -425,7 +425,7 @@ $( document ).tooltip();
                         <div class="property span9 PlumbingSupply">
                         <?php if(isset($item->itemcode)) { 
                         $count=strlen($item->itemcode); if($count<=20){ ?>
-                        <h2 class="title_top1">
+                       <h2 class="title_top1" style="height:64px;word-break: break-all;">
                         <?php //echo $item->itemcode;
                           $arr1="";
                           $str="";
@@ -437,7 +437,7 @@ $( document ).tooltip();
                                     echo $str; ?>
                          </h2>
                         <?php } else {?>
-                         <h2 class="title_top1"  style="word-wrap:break-word;line-height:20px;">
+                        <h2 class="title_top1"  style="height:64px;word-break: break-all;line-height:18px;">
                          <?php //echo $item->itemcode;
 								$arr1="";
                                   $str="";
@@ -452,10 +452,11 @@ $( document ).tooltip();
                         ?></h2>
                         <?php } } ?> 
                             <div class="row">
+                            
                                 <div class="image span3">
                                     <div class="content">
                                        <div class="sidepan"> <?php if ($item->image && file_exists('./uploads/item/' . $item->image)) { ?>
-                                            <img style="max-height: 120px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
+                                            <img style="max-height: 120px;max-width:150px; padding: 20px;" src="<?php echo site_url('uploads/item/' . $item->image) ?>" alt="">
                                             <?php $imgName = site_url('uploads/item/'.$item->image); ?>
                                         <?php } else { ?>
                                             <img src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
@@ -469,7 +470,7 @@ $( document ).tooltip();
                                                 </div>
                                                 <?php } } ?>
                                     </div>
-                                </div>
+                                </div>                               
 
                                 <div class="body2 span6 ">
                                     <div class="title-price row">
@@ -659,10 +660,10 @@ $( document ).tooltip();
                     <?php if(isset($breadcrumb2) && $breadcrumb2!="") {
                     	?>
                 		 <h2>Sub Categories</h2>
-                		   <div class="content_sup" style="height:72px;">
+                		   <div class="content_sup">
                    			 <div style="clear:both;"></div>
-								<div class="breadcrumb-pms" style="width:200px;" >
-								<ul class="" style="margin-left: -8px;"><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
+								<div class="breadcrumb-pms" >
+								<ul><?php if(isset($breadcrumb2) && $breadcrumb2!="") echo $breadcrumb2;?></ul>
 								</div>
 					      </div>
 					<?php } } ?><br>

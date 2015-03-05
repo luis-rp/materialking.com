@@ -5,7 +5,7 @@
                  <div class="col-md-12">
                        <div class="grid simple ">
                             <div class="grid-body no-border" id="dashboardwrapper">
-                              <div><p style="font-weight:bold;">Please fill out your Basic Profile and if you wish to accept Credit Card Payments, set up your  Bank Account Setting.</p>
+                              <div><p style="font-weight:bold;">Please set up your  Bank Account Settings.</p>
                            <a href="<?php echo site_url('company/profile');?>" target="_blank"><button name="prifile" class="btn btn-primary">Basic Profile</button></a>
               <a href="<?php echo site_url('company/bankaccount');?>" target="_blank"><button name="prifile" class="btn btn-primary">Bank Account Settings</button></a>
                               </div>	

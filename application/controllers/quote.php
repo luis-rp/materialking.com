@@ -4392,7 +4392,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-		$query = "SELECT itemid, bi.itemcode, count(bi.id) as bidcount, sum(bi.quantity) as totalquantity, i.itemcode as orgitemcode
+		$query = "SELECT itemid, bi.itemcode, count(bi.id) as bidcount, sum(bi.quantity) as totalquantity, i.itemcode as orgitemcode,i.item_img
 				  FROM ".$this->db->dbprefix('biditem')." bi,
 				   ".$this->db->dbprefix('bid')." b, 
 				    ".$this->db->dbprefix('item')." i
@@ -4424,8 +4424,10 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			$item->avgstoreqty = 0;
 			$item->performance = round(($item->awardcount/$item->bidcount) * 100,2);
 			
+			
 			$data['items'][]= $item;
 		}
+		
 		$this->load->view ('quote/performance', $data);
 	}
 	//
@@ -4549,7 +4551,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         else 
         {
         	$companyName = $this->session->userdata('company')->title;
-        	$usersql = "SELECT u.id,u.fullname
+        	$usersql = "SELECT u.id,u.fullname,u.companyname
         			FROM " . $this->db->dbprefix('quote') . " q
         			JOIN " . $this->db->dbprefix('users') . " u ON u.id = q.purchasingadmin
         			WHERE q.id='$quoteid'";
@@ -4558,7 +4560,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         	$userResult = $qry->result();
         	if(isset($userResult) && $userResult != '')
         	{
-        		$paName = $userResult[0]->fullname;
+        		$paName = $userResult[0]->companyname;
         	}
         	else 
         	{

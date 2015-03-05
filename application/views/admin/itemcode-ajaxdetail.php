@@ -47,9 +47,8 @@
 
 
 <section class="row-fluid">
-  	<span>
-    <h3 class="box-header" style="width:75%" ><?php echo $heading; ?> </h3>
-    <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;margin-top:10px;" src='<?php echo $imgName; ?>'>
+  	<span><img style="max-height: 120px; padding: 0px;width:80px; height:80px;margin-left:215px;" src='<?php echo $imgName; ?>'>
+    <h3 class="box-header" style="width:100%" ><?php echo $heading; ?> </h3>    
     </span>
     <div class="box">
         <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 

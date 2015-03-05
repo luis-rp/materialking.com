@@ -1208,7 +1208,7 @@ class site extends CI_Controller
             //$this->db->where('category', $_POST['category']);
         $this->data['subcategories'] = array();//$this->db->get('subcategory')->result();
         $this->data['categorymenu'] = $this->items_model->getCategoryMenu();
-       
+        $this->data['manufacturermenu'] = $this->items_model->getManufacturerMenu();
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
         $this->data['userquotes'] = array();
         $this->data['projects'] = array();
@@ -1227,7 +1227,10 @@ class site extends CI_Controller
         }
 
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
-         
+        
+        if(@$_POST['manufacturer']!="")
+        $this->data['breadcrumb'] = $this->items_model->getManufacturername(@$_POST['manufacturer']); 
+        
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->data['page_title'] = "The Building & Construction Supply House Marketplace";

@@ -405,6 +405,8 @@ function shownotice(newval,oldval,id){
                     		$totalunpaid= 0;
                     		foreach($items as $item){ $i++;
                     		
+                    		$item->totalprice = (float) str_replace(',', '', $item->totalprice);
+                    		
                     		if(@$item->discount_percent){
                     			
                     			$item->totalprice = $item->totalprice - ($item->totalprice*$item->discount_percent/100);

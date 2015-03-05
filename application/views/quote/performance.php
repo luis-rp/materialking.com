@@ -45,8 +45,35 @@
 	   <div id="container">
 		
 		<?php 
-		    	if($items)
-		    	{
+	//	echo '<pre>',print_r($items);die;
+		function bubble_sort($items) 
+		{
+		    $size = count($items);
+		    
+		    for ($i=0; $i<$size; $i++) 
+		    {
+		        for ($j=0; $j<$size-1-$i; $j++) 
+		        {
+		            if ($items[$j+1]->performance > $items[$j]->performance) 
+		            {
+		                swap($items, $j, $j+1);
+		            }
+		        }
+		    }
+		    return $items;
+		}
+		
+		function swap(&$arr, $a, $b) 
+		{
+		    $tmp = $arr[$a];
+		    $arr[$a] = $arr[$b];
+		    $arr[$b] = $tmp;
+		}
+	
+		$newItems = bubble_sort($items);
+				
+		if($newItems)
+		{
 		    ?>
 		<div class="row">
                     <div class="col-md-12">
@@ -62,8 +89,9 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Itemcode</th>
-                                                <th style="width:10%">Bids</th>
-                                                <th style="width:10%">Awards</th>
+                                                <th style="width:10%">Item Image</th>
+                                                <th style="width:5%">Bids</th>
+                                                <th style="width:5%">Awards</th>
                                                 <th style="width:10%">Win Rate(%)</th>
                                                 <th style="width:10%">Total Qty. via Bids</th>
                                                 <th style="width:10%">Avg Order Qty. via Bids</th>
@@ -75,12 +103,22 @@
                                         <tbody>
 							              <?php 
 									    	$i = 0;
-									    	foreach($items as $item)
-									    	{
-									    		$i++;
+									    	foreach($newItems as $item)
+									    	{									    		
+									    		 if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+												 { 
+												 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+												 } 
+												 else 
+												 { 
+												 	 $imgName = site_url('uploads/item/big.png'); 
+			                                     }
+			                                     
+			                                     $i++;
 									      ?>
                                             <tr>
                                                 <td class="v-align-middle"><?php echo $item->itemcode?$item->itemcode:$item->orgitemcode;?></td>
+                                                <td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
                                                 <td class="v-align-middle"><?php echo $item->bidcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->awardcount;?></td>
                                                 <td class="v-align-middle"><?php echo $item->performance;?></td>

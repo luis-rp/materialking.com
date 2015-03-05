@@ -4523,3 +4523,175 @@ ul#css3menu1 li.topmenu:hover > a, ul#css3menu1 li.topmenu a.pressed {
     color: #fff;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
+
+
+
+
+
+
+
+
+ul#css3menu2, ul#css3menu2 ul {
+    border-style: solid;
+    border-width: 0;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+ul#css3menu2 ul {
+
+    background: #555555;
+    background-repeat: repeat;
+    border-radius: 0;
+    left: 0;
+    opacity: 0;
+    padding: 0 1px 1px;
+    position: absolute;
+    top: 100%;
+    transition: opacity 0.5s ease 0s;
+    visibility: hidden;
+	width:210px;
+	float:left;
+	position: relative;
+}
+ul#css3menu2 li:hover > ul {
+    opacity: 1;
+    visibility: visible;
+}
+ul#css3menu2 li {
+    display: block;
+    float: left;
+    font-size: 0;
+    position: relative;
+    white-space: nowrap;
+}
+ul#css3menu2 li:hover {
+    z-index: 1;
+}
+ul#css3menu2 ul ul {
+    left: 100%;
+    position: absolute;
+    top: 0;
+}
+ul#css3menu2 {
+    border-radius: 0 0 0 0;
+    display: inline-block;
+    float: right;
+    font-size:0px;
+    position: relative;
+    top: -64px;
+    width: 25%;
+    z-index: 999;
+}
+* html ul#css3menu2 li a {
+    display: inline-block;
+}
+ul#css3menu2 > li {
+    margin: 0;
+
+}
+ul#css3menu2 a:active, ul#css3menu2 a:focus {
+    outline-style: none;
+}
+ul#css3menu2 a {
+    background-repeat: repeat;
+    border-style: none;
+    border-width: 0;
+    color: #000000;
+    cursor: default;
+    display: block;
+    font-size: small;
+    padding: 3px;
+    text-align: left;
+    text-decoration: none;
+    vertical-align: middle;
+	font-size:16px;
+}
+ul#css3menu2 ul li {
+    float: none;
+/*	  background-image:url("../img/arrowmain0.png");
+	      background-position: right center;
+    background-repeat: no-repeat;*/
+    margin: 1px 0 0;
+}
+ul#css3menu2 ul a {
+/*    background-color: #555555;*/
+    border-radius: 0;
+    color: #fff;
+    font: 16px Open Sans,Arial,sans-serif;
+    padding: 10px 15px;
+    text-align: left;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease 0s;
+}
+ul#css3menu2 li:hover > a, ul#css3menu2 li a.pressed {
+    border-style: none;
+    color: #000;
+    text-decoration: none;
+}
+ul#css3menu2 img {
+    border: medium none;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+ul#css3menu2 b {
+    background-image: url(../img/arrowmain0.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+    display: block;
+    overflow: visible;
+    padding-right: 26px;	font-weight:normal;
+}
+ul#css3menu2 li:hover > a > b {	font-weight:normal;
+  
+}
+ul#css3menu2 ul b {
+    background-image: url(../img/arrowsub.png);
+    padding-right: 16px;
+	font-weight:normal;
+}
+ul#css3menu2 ul li:hover > a b {
+    background-image: url(../img/arrowsub.png);
+		font-weight:normal;
+}
+ul#css3menu2 ul li:hover > a, ul#css3menu2 ul li a.pressed {
+    background-color: #4c4c4c;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+ul#css3menu2 > li > a {
+    padding: 10px 16px;
+}
+ul#css3menu2 li.topmenu > a {
+
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 4px 0 0;
+/*    color: #444444;*/
+    font: bold 16px Open Sans,Arial,sans-serif;
+    padding: 10px 16px;
+    text-shadow: none;
+    transition: all 0.5s ease 0s;
+}
+ul#css3menu2 li.topmenu:hover > a, ul#css3menu2 li.topmenu a.pressed {
+    background-color: #555555;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-style: solid;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+
+/*background-color: #FFFFFF;
+    border-radius: 0 0 0 0;
+    display: inline-block;
+    float: right;
+    font-size:0px;
+    position: relative;
+    top: -64px;
+    width: 19%;
+    z-index: 999;*/

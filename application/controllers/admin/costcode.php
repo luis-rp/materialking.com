@@ -793,6 +793,7 @@ class costcode extends CI_Controller {
     
     function getprojectfromcostcode()
      { 
+     	
      	 $resultpro = $this->costcode_model->listHeirarchicalComboPro($_POST['catid']);
     	 echo $resultpro; die; 	
      }
@@ -859,7 +860,10 @@ class costcode extends CI_Controller {
         $this->db->where('id', $id);
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
-        $data['parents'] = $this->db->get('costcode')->result();
+        //$data['parents'] = $this->db->get('costcode')->result();
+        $projectresult = $this->db->get('costcode')->result();
+        if($projectresult)
+        $data['parents'] = $projectresult[0]->project;
 
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));

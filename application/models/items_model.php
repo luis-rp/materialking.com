@@ -51,7 +51,7 @@ class items_model extends Model {
         $this->db->where('parent_id',$parentid);
         $menus = $this->db->get('category')->result();
        
-	   
+	   $ret =  "";
 	   if($parentid==0)
 	   {
 	   
@@ -90,9 +90,58 @@ class items_model extends Model {
             }
             $ret .= "</li>";
         }
+        
         $ret .= "</ul>";
+             
+       
         return $ret;
     }
+    
+    
+    
+    function getManufacturerMenu () 
+    {
+    	
+        $cnt = 0;
+        $manufacturers = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
+        
+        $ret = "";  
+        $retsub = "";  
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;' id='css3menu2' >";        
+	    
+	    foreach ($manufacturers as $man) 
+        {
+                    
+        		$cquery = "SELECT m.*  						
+					    FROM ".$this->db->dbprefix('item')." i join 
+					    ".$this->db->dbprefix('masterdefault')." m on i.id = m.itemid and m.manufacturer = '".$man->id."' 
+					     group by m.itemid";
+        		$hasitems = $this->db->query($cquery)->result();
+        		
+            	//$hasitems = $this->db->where('manufacturer',$man->id)->get('masterdefault')->result();
+        	    if(!$hasitems)
+                continue;
+                
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
+            	$cnt += count($hasitems);
+                $retsub .= "<ul><li><a href='#' onclick='return filtermanufacturer(".$man->id.");'>
+                 <span style='white-space:pre-wrap;'>" . $man->title."(".$count.")<span></a></li></ul>";
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+                        
+        }
+        $cntfont="<font color='red'>".number_format($cnt)."</font>";
+        $ret .= "<li><a href='#'>
+                 <span style='white-space:pre-wrap;'>Browse By Manufacturer(".$cntfont.") <span></a>";
+        
+        $ret .= $retsub;
+        
+        $ret .= "</li></ul>";
+             
+       
+        return $ret;
+    }
+    
+    
     
     function getDesignCategoryMenu ($parentid=0) 
     {
@@ -205,7 +254,7 @@ class items_model extends Model {
         }
 		else
 		{
-			$ret = "<ul >";
+			$ret = "<ul  style='width:300px;'>";
 		}
 		
 		
@@ -235,13 +284,13 @@ class items_model extends Model {
             if ($submenus) 
             {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."(".$count.")</b></a>";
+                $ret .= "<li style='width:300px;'><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."(".$count.")</b></a>";
                 $ret .= $this->getStoreCategoryMenu($supplier,$item->id); // here is the recursion
             }
             else
             {
                $count="<font color='red'>".number_format(count($hasitems))."</font>";	
-               $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")</span></a>";
+               $ret .= "<li style='width:300px;'><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")</span></a>";
             }
             $ret .= "</li>";
         }
@@ -303,6 +352,22 @@ class items_model extends Model {
         }
         return $ret;
     }
+    
+    
+    function getManufacturername($manufacturer)
+    {
+    	$this->db->where('id',$manufacturer);
+    	$this->db->where('category','manufacturer');
+        $manufacturername = @$this->db->get('type')->row()->title;    	
+        
+        if(!$manufacturername)
+        	return '';
+        	
+        $ret = '<li onclick="filtermanufacturer('.$manufacturer.')"><a href="#">'.$manufacturername.'</a></li>';
+       
+        return $ret;
+    }
+    
     
     function getParents($catid)
     {
@@ -473,6 +538,7 @@ class items_model extends Model {
         $start = $_POST['pagenum'] * $limit;
 
         $where = array();
+        $leftmasterdefault = "";
         $where[]=" instore='1' ";
         if (@$_POST['category']) 
         {
@@ -481,6 +547,13 @@ class items_model extends Model {
             $where[]=" (category IN ($inclause) OR ic.categoryid IN ($inclause) )";
             //$where[] = " category='{$_POST['category']}'";
         }
+        
+        if (@$_POST['manufacturer']) 
+        {            
+            $where[] = " m.manufacturer='{$_POST['manufacturer']}'";
+            $leftmasterdefault = "left join " . $this->db->dbprefix('masterdefault') ." m on i.id = m.itemid";
+        }
+        
         $orderlookup = "";
         if ($where)
             $where = " WHERE " . implode(' AND ', $where) . " ";
@@ -514,14 +587,14 @@ class items_model extends Model {
             }
         }
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid ".$where;
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} ".$where;
         
         $return->totalresult = $this->db->query($query)->num_rows();
         
         if(@$orderlookup!="")
         $orderlookup = "order by ".$orderlookup." desc";
         
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid $where $orderlookup LIMIT $start, $limit";
+        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} $where $orderlookup LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
         return $return;
