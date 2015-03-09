@@ -425,20 +425,36 @@ class quote_model extends Model {
                 $awarditem->companyname = $query->row('title');
                 $awarditem->companydetails = $query->row();
 
-
                 $this->db->where('id', $awarditem->itemid);
                 $companyitem = $this->db->get('item')->row();
 
+				/*$itemSQL = "SELECT i.*,if(pc.catname='My Item Codes',1,0) as IsMyItem  
+						FROM ".$this->db->dbprefix('item')." i		
+					  	LEFT JOIN ".$this->db->dbprefix('category')." pc ON pc.id = i.category
+					  	WHERE i.id=".$awarditem->itemid;
+				
+				$companyitem = $this->db->query($itemSQL)->row();
+				//echo '<pre>',print_r($companyitem);die;
+                if($companyitem->IsMyItem == 0) 
+                 {
+                    $link =	'<a href="'.site_url("site/item/".$companyitem->url).'" target="_blank">'.$companyitem->itemcode.'</a>';
+                 } 
+                 else 
+                 { 
+                 	$link = $companyitem->itemcode; 
+                 }*/
+                 
                 if ($companyitem) {
                     $awarditem->itemcode = $companyitem->itemcode;
                     $awarditem->itemname = $companyitem->itemname;
                     $awarditem->item_img = $companyitem->item_img;
                 }
-                //print_r($companyitem);die;
+         
                 $awarditems[] = $awarditem;
             }
             //log_message('debug',var_export($awarditems,true));
             $item->items = $awarditems;
+          //   echo '<pre>',     print_r($awarditems);die;
             /*
               $invoicesql = "SELECT r.*, ai.itemname
               FROM

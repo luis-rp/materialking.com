@@ -576,7 +576,7 @@ class Dashboard extends CI_Controller
 		    $nc->due = $this->db->query($query)->row()->totalunpaid;
 		    $nc->due = $nc->due;
 		    //echo $nc->due.' - ';
-		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (ROUND(SUM(od.price),2) + (ROUND(SUM(od.price),2) * o.taxpercent / 100)), (ROUND(SUM(od.quantity * od.price),2) + (ROUND(SUM(od.quantity * od.price),2) * o.taxpercent / 100)) )
+		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (ROUND(SUM(od.price),2) + (ROUND(SUM(od.price),2) * o.taxpercent / 100)), (ROUND(SUM(od.quantity * od.price),2) + (ROUND(SUM(od.quantity * od.price),2) * o.taxpercent / 100)) ) + Sum(od.shipping)   
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
@@ -1123,13 +1123,16 @@ class Dashboard extends CI_Controller
 		 $data['mainuser'] = $this->db->get_where('users',array('id'=>$this->session->userdata('purchasingadmin')))->row();
 		   $mpid=$this->session->userdata('managedprojectdetails')->id;
 		   	
-		   $sql ="SELECT u.username,u.position,q.ponum,p.title FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu,".$this->db->dbprefix('quote')." q,
+		  /* $sql ="SELECT u.username,u.position,q.ponum,p.title FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu,".$this->db->dbprefix('quote')." q,
 							".$this->db->dbprefix('project')." p
 					WHERE u.purchasingadmin =  '".$this->session->userdata('purchasingadmin')."'
 					AND qu.userid = u.id
 					AND q.id = qu.quote
 					AND p.id = '".$mpid."' AND q.pid = p.id GROUP BY p.title";
-					$data['promembers'] = $this->db->query($sql)->result();
+		  $data['promembers'] = $this->db->query($sql)->result();*/
+		//$this->db->group_by("username");   
+		$data['promembers']=$this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();
+			
 					
 		$this->db->order_by('title','asc'); 			
 		$data['types'] = $this->db->get('type')->result(); 

@@ -302,7 +302,7 @@
 	<section class="signin-container">
 		<h1>
 		<a href="#" title="EZPZP" class="header">
-			<img src="<?php echo base_url(); ?>/templates/admin/images/applogo.png" alt="EZPZP">
+			<img src="<?php echo base_url(); ?>/templates/admin/images/applogo.png" alt="EZPZP" style="width:250px;height:65px;">
 			<span>&nbsp;</span>
 		</a></h1>
 		

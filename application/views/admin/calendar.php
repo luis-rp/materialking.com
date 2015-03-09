@@ -15,7 +15,9 @@
 				alert(event.title + ' was moved ' + delta + ' days\n' +
 					'(should probably update your database)');
 			},
-			
+			eventRender: function(event, element) {
+			      $(element).tooltip({title: event.itemcode});             
+			},
 			loading: function(bool) {
 				if (bool) $('#loading').show();
 				else $('#loading').hide();

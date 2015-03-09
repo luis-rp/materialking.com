@@ -166,7 +166,7 @@ tr.still-due td
                                 <thead>
                                     <tr>
                                         <th>Item Code/Name</th>
-                                        <th>&nbsp;</th>
+                                        <th>Item Image</th>
                                         <th>Qty.</th>
                                         <th>Unit</th>
                                         <th>Price</th>
@@ -200,7 +200,7 @@ tr.still-due td
 								    		{ ?>
 	                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$ai->item_img) ?>" alt="<?php echo $ai->item_img;?>">
 	                                        <?php } else { ?>
-	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="100" width="120" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
 	                                        <?php } ?>
 	                                     
                                         </td>

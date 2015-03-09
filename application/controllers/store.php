@@ -217,7 +217,12 @@ class Store extends CI_Controller
         $this->db->where('id',$company);
         $this->data['company'] = $this->db->get('company')->row();
         $this->data['categorymenu'] = $this->items_model->getStoreCategoryMenu($company);
+        $this->data['manufacturermenu'] = $this->items_model->getStoreManufacturerMenu($company);
         $this->data['breadcrumb'] = @$_POST['breadcrumb'];
+        
+        if(@$_POST['manufacturer']!="")
+        $this->data['breadcrumb'] = $this->items_model->getManufacturername(@$_POST['manufacturer']); 
+        
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->data['breadcrumb2'] = $this->storemodel->getsubcategorynames(@$_POST['category'],$company);
         if(isset($_POST['category']))

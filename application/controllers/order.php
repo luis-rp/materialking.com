@@ -838,18 +838,12 @@ class Order extends CI_Controller
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-			
-			if(isset($_POST['pickupaddress']))
-			{
-				$add=$_POST['pickupaddress'];
-			}
-			else {
-				$add="";
-			}
-			
+
+			$paddr="";
 			if(isset($_POST['pickup']) && $_POST['pickup']=='on')
 			{
-				$data['email_body_content'] = "Pickup Address:".$add."<br>";
+				$data['email_body_content'] = "Pickup Address:".$_POST['pickupaddress']."<br>";
+				$paddr="Pickup Address:".$_POST['pickupaddress'];
 			}
 			else 
 			{
@@ -897,7 +891,6 @@ class Order extends CI_Controller
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
-		
 		$this->email->send();
 		
 		$om = array();
@@ -915,9 +908,14 @@ class Order extends CI_Controller
 		}
 		$om['paymentrequest'] = @$_POST['paymentrequest'];
 		$om['subject'] = $_POST['subject'];
-		$om['message'] = $_POST['message'];
+		if($paddr!=""){
+		$om['message'] = $paddr.",".$_POST['message'];
+		}
+		else 
+		{
+			$om['message'] = $_POST['message'];
+		}
 		$om['senton'] = date('Y-m-d');
-		
 		$this->db->insert('ordermessage',$om);
 		
 		$message = "Message sent successfully.";

@@ -1170,10 +1170,13 @@ class site extends CI_Controller
             else
              $item->hasdeal = false;
 
-            $hasdiscount = $this->db
+           /* $hasdiscount = $this->db
                             ->where('itemid',$item->id)
                             ->get('qtydiscount')
-                            ->result();
+                            ->result();*/
+                            
+             $sql="SELECT * FROM ".$this->db->dbprefix('qtydiscount')." qd JOIN ".$this->db->dbprefix('company')." c ON qd.company=c.id AND c.isdeleted='0' AND qd.itemid='".$item->id."'";
+             $hasdiscount=$this->db->query($sql)->result();                      
 
             if($hasdiscount)
               $item->hasdiscount = true;

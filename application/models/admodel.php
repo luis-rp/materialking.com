@@ -37,6 +37,8 @@ class Admodel extends Model {
     }
 
     function updateAd($files=""){
+    	if(!$this->session->userdata('company'))
+    	die;
     	$filedata = "";
     	if(!@$files['error'])
     	foreach($files['upload_data'] as $file){

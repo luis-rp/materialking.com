@@ -415,6 +415,19 @@ class Quotemodel extends Model
 					        ->where('itemid',$item->itemid)
 					        ->get('quoteitem')->row();
 
+					         $itemRes = $this->db->select('item_img')
+					         ->where('id',$item->itemid)
+					         ->get('item')->row();					        
+					        
+					         if(isset($itemRes) && $itemRes != '')
+					         {
+					        	$item->item_img = $itemRes->item_img;
+					         }
+					         else 
+					         {
+					         	$item->item_img = '';
+					         }
+					        		
 							$items[]=$item;
 						}
 					}

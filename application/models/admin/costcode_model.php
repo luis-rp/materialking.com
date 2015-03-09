@@ -264,20 +264,22 @@ class costcode_model extends Model
 	
 	function getcostcodeitems($costcode,$project)
 	{
-		$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived
+		$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived,i.item_img,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.url  
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
-			 ".$this->db->dbprefix('quote')." q
+			 ".$this->db->dbprefix('quote')." q,".$this->db->dbprefix('item')." i
+			 LEFT JOIN ".$this->db->dbprefix('category')." pc ON pc.id = i.category
 			WHERE a.quote=q.id AND
-			ai.award=a.id AND ai.costcode='$costcode' ";
+			ai.award=a.id AND i.id=ai.itemid AND ai.costcode='$costcode' ";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived
+			$sql ="SELECT ai.*, q.ponum, q.potype, a.quote,IFNULL(ai.received,0) as  newreceived,i.item_img,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.url
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
-				 ".$this->db->dbprefix('quote')." q
+				 ".$this->db->dbprefix('quote')." q,".$this->db->dbprefix('item')." i
+				 LEFT JOIN ".$this->db->dbprefix('category')." pc ON pc.id = i.category
 				WHERE a.quote=q.id AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				AND ai.award=a.id AND ai.costcode='$costcode' ";
+				AND ai.award=a.id AND i.id=ai.itemid AND ai.costcode='$costcode' ";
 		}
 		
 		if(@$project)

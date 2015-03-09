@@ -613,6 +613,16 @@ class costcode extends CI_Controller {
 	                	$postatus = "incomplete";
 	                }
                 }    
+                if ($row->item_img && file_exists('./uploads/item/' . $row->item_img)) 
+				 { 
+				 	 $imgName = '<img style="max-height: 120px;max-width: 100px; padding: 5px;" height="80" width="100" src="'.site_url('uploads/item/'.$row->item_img).'" alt="'. $row->item_img.'">';
+				 } 
+				 else 
+				 { 
+				 	 $imgName = '<img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="80" width="100" src="'. site_url('uploads/item/big.png').'" alt="">'; 
+                 }
+                 
+                 
             	if($row->potype=="Contract"){
                 $awarded = $this->quote_model->getawardedcontractbid($row->quote);
                 $row->ea = "$ " . $row->ea;
@@ -631,12 +641,23 @@ class costcode extends CI_Controller {
             	}else{
             		
             		 $awarded = $this->quote_model->getawardedbid($row->quote);
+            	//echo '<pre>',print_r($row);die;
+            	
+            	if($row->IsMyItem == 0) 
+                 {
+                    $link =	'<a href="'.site_url("site/item/".$row->url).'" target="_blank">'.$row->itemcode.'</a>';
+                 } 
+                 else 
+                 { 
+                 	$link = $row->itemcode; 
+                 }
+                $row->itemcode = $link; 	 
                 $row->ea = "$ " . $row->ea;
                 $row->totalprice = "$ " . $row->totalprice;
                 $row->itemname = htmlentities($row->itemname);
                 $row->itemstatus = strtoupper($status);
-                //$row->status = strtoupper($awarded->status);
                 $row->status = strtoupper($postatus);
+                $row->item_img = $imgName;
                 $row->actions = //$row->status=='COMPLETE'?'':
                         anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
                 ;

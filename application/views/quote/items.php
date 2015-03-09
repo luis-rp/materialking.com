@@ -76,7 +76,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:20%">Item Code</th>
-                                                <th style="width:15%">&nbsp;</th>
+                                                <th style="width:15%">Item Image</th>
                                                 <th style="width:25%">Item Name</th>
                                                 <th style="width:5%">QTY.</th>
                                                 <th style="width:5%">Unit</th>

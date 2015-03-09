@@ -706,7 +706,7 @@ P.O. Price Rankings
                                                <?php 
                                         if($supplier->company_type == 1)
                                         { ?>
-                                        	<img style="padding-left:4em ;margin-top: -1.7em;width:140px; height:120px" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="">
+                                        	<img style="padding-left:4em ;margin-top: -1.7em;width:120px; height:90px" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="">
                                      <?php    } ?>
 <?php /*?><div class="btn btn-primary arrow-right"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>">View Profile</a></div><br/><br/>
  <div class="btn btn-primary arrow-right"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div><br/><br/>

@@ -596,6 +596,14 @@ function checkcompanyuseremail(id,email){
 
 }
 
+
+function showspanimage(image,itemid){
+	
+	$(".imgspcls").html('');	
+	var imagehtml = '<img src="'+image+'" width="64"/>';	
+	$("#imgsp"+itemid).html(imagehtml);
+}	
+
 </script>
 
 <style>
@@ -651,8 +659,8 @@ function checkcompanyuseremail(id,email){
 			      
 			      &nbsp; &nbsp;
 			      &nbsp; &nbsp; 
-			      Subject: &nbsp; &nbsp; 
-			      <input type="text" id="subject" name="subject" class="input" style="width: 26%"  value="<?php echo $this->validation->subject; ?>">
+			      <!--Subject: &nbsp; &nbsp; 
+			      <input type="text" id="subject" name="subject" class="input" style="width: 26%"  value="<?php echo $this->validation->subject; ?>">-->
 			      
 			    </div>
 			    <div class="controls">
@@ -672,7 +680,7 @@ function checkcompanyuseremail(id,email){
 			      <input type="text" id="podate" name="podate" class="input small span2"
 			      	value="<?php echo $this->validation->podate; ?>" data-date-format="mm/dd/yyyy">
 			      	&nbsp; &nbsp; &nbsp; &nbsp; 
-			      Due Date: &nbsp; &nbsp; 
+			     Bid Due Date: &nbsp; &nbsp; 
 			      <input type="text" id="duedate" name="duedate" class="input small span2"
 			      	value="<?php echo $this->validation->duedate; ?>" data-date-format="mm/dd/yyyy">
 			      <input name="add" type="button" class="btn btn-primary" value="Save &amp; Continue" onclick="$('#mainform').submit();"/>

@@ -84,6 +84,7 @@ function caloclick(){
 							    <table class="table no-more-tables general" style="width: 95%;">
 							    	<tr>
 							    		<th>Item Name</th>
+							    		<th>Item Image</th>
 							    		<th>Qty. Req'd</th>
 							    		<th>Qty. Due</th>
 							    		<th>Unit</th>
@@ -95,9 +96,17 @@ function caloclick(){
 							    	</tr>
 							    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>">
 
-									<?php foreach($backtrack['items'] as $q) { //echo "<pre>data-"; print_r($quote->id); die;?>
+									<?php foreach($backtrack['items'] as $q) { 
+										
+										 if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
+								    		{ ?>
+	                                        <?php $imgName = site_url('uploads/item/'.$q->item_img);  } 
+	                                        else { ?>
+	                                        <?php $imgName = site_url('uploads/item/big.png');  } 
+										?>
 							    	<tr>
 							    		<td><?php echo htmlentities($q->itemname);?></td>
+							    		<td><img style="max-height: 120px; padding: 5px;" height="120" width="120" src="<?php echo $imgName;?>" alt="<?php echo $imgName;?>"></td>
 							    		<td><?php echo $q->quantity;?></td>
 							    		<td><?php echo $q->quantity - $q->received;?>
 							    		 <?php if($pendingshipments){?>

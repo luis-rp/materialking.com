@@ -51,10 +51,10 @@
             });
 </script>
 <section class="row-fluid">
-			<h3 class="box-header">Assign Order to Project <a href="<?php echo site_url('admin/order/add_to_project_export').'/'.$orderid; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp;<a href="<?php echo site_url('admin/order/add_to_project_pdf').'/'.$orderid; ?>" class="btn btn-green">View PDF</a></h3>
+			<h3 class="box-header">Assign Order to Project <a href="<?php echo base_url();?>admin/order/details/<?php echo $orderid;?>" class="btn btn-green"> Back </a> <a href="<?php echo site_url('admin/order/add_to_project_export').'/'.$orderid; ?>" class="btn btn-green">Export</a></h3>
 	<div class="box">
 		<div class="span12">
-			<?php echo @$message; ?>			
+			<?php echo @$message; ?>
 			<div class="well">
 				<?php if(@$orderitems[0]->accepted == 1){?>
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/order/add_to_project/<?php echo $orderid;?>" method="post" >
@@ -118,7 +118,7 @@
 											<tr><td>Total:</td><td></td><td>$<?php echo $order->shipping+$tax+number_format($gtotal,2);?></td></tr>
 										</tbody>
 										</table>
-				<input type="hidden" name="ordersid" id="ordersid" value="<?php echo @$order->id;?>"/>							
+				<input type="hidden" name="ordersid" id="ordersid" value="<?php echo @$order->id;?>"/>						
 				<input type="submit" value="Assign">
 				</form>
 				<?php }	elseif(@$orderitems[0]->accepted == 0){

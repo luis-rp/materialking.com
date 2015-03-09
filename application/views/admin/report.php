@@ -182,7 +182,7 @@
 			    		{ ?>
                            <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
                         <?php } else { ?>
-                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo site_url('uploads/item/big.png');?>" alt="">
                         <?php } ?>
 			    		</td>
 			    		<td><?php echo $item->itemname;?></td>

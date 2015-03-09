@@ -38,7 +38,7 @@ function paycc(ptype,company, amount)
 }
 </script>
 <a class="btn btn-green" href="<?php echo base_url();?>admin/order">&lt;&lt; Back</a>&nbsp;&nbsp;&nbsp;<a href="<?php echo site_url('admin/order/details_export').'/'.$orderid; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp;<a href="<?php echo site_url('admin/order/details_pdf').'/'.$orderid; ?>" class="btn btn-green">View PDF</a>
-<a href="<?php echo base_url();?>admin/order/add_to_project/<?php echo $orderid;?>"> &nbsp; &nbsp; &nbsp; Assign Order</a>
+<a href="<?php echo base_url();?>admin/order/add_to_project/<?php echo $orderid;?>" class="btn btn-green"> Assign Order</a>
 <section class="row-fluid">
 	<table>
 	<tr>

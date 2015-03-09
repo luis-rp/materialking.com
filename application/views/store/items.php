@@ -386,15 +386,26 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-
+            
+            <div class="location control-group">	
+            
 				<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
                  	<input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                     <input type="hidden" id="breadcrumb" name="breadcrumb"/>
                     <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-                    <div class="location control-group">
+                    
                         <?php $this->load->view('site/catmenu.php');?>
-                    </div>
-            </form>
+                 </form>                
+                    
+                 <form id="manufacturersearchform" name="manufacturersearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
+                            <!-- <input type="hidden" name="keyword" value="<?php // echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/> -->
+                            <input type="hidden" id="formmanufacturer" name="manufacturer" value="<?php echo isset($_POST['manufacturer'])?$_POST['manufacturer']:"";?>"/>                            
+                      	<?php $this->load->view('site/manufacturermenu.php');?>                            
+                 </form>
+                             
+             </div>
+            
             <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
                     <input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
             </form>

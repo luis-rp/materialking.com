@@ -567,10 +567,10 @@
 				<caption><strong>Project Team Members<strong>&nbsp;&nbsp;			
 				<a href="<?php echo base_url(); ?>admin/admin/index" target="_blank">Manage Users</a></caption>	
 				<tr><th>Username</th><th>Position</th></tr>
-				<tr>
+				<!--<tr>
 				<td><?php echo $mainuser->username; ?></td>
 				<td><?php echo $mainuser->position; ?></td>
-				</tr>
+				</tr>-->
 				 <?php foreach ($promembers as $promember) { ?>
 				<tr>
 				<td><?php echo $promember->username; ?></td>

@@ -994,8 +994,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 	  
 	  
                   
-           
-       <?php $olditemid=""; $i=0; foreach ($masterdefaults as $masterdata){?>
+  
+   <?php $olditemid=""; $i=0; if(isset($masterdefaults)) { foreach ($masterdefaults as $masterdata){?>
     <?php if($olditemid!=$masterdata->itemid) {?>
     <div id="modal<?php echo $masterdata->itemid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
@@ -1063,7 +1063,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
   </div>
   <?php } ?>    
   
-  <?php $olditemid=$masterdata->itemid; $i++; } ?>              
+  <?php $olditemid=$masterdata->itemid; $i++; } }?>              
                   
                   
                          

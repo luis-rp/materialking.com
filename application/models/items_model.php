@@ -299,6 +299,53 @@ class items_model extends Model {
         return $ret;
     }
     
+    
+    
+    function getStoreManufacturerMenu ($supplier) 
+    {
+        $cnt = 0;
+        $manufacturers = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
+        
+        $ret = "";  
+        $retsub = "";  
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;' id='css3menu2' >";        
+	    
+	    foreach ($manufacturers as $man) 
+        {
+                    
+        		$cquery = "SELECT m.*  						
+					    FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id join 
+					    ".$this->db->dbprefix('masterdefault')." m on i.id = m.itemid where ci.company=$supplier AND type='Supplier' AND ci.instore='1' and  m.manufacturer = '".$man->id."' group by m.itemid";     		
+        		
+        		$hasitems = $this->db->query($cquery)->result();
+        		
+            	//$hasitems = $this->db->where('manufacturer',$man->id)->get('masterdefault')->result();
+        	    if(!$hasitems)
+                continue;
+                
+            	$count="<font color='red'>".number_format(count($hasitems))."</font>";
+            	$cnt += count($hasitems);
+                $retsub .= "<ul><li><a href='#' onclick='return filtermanufacturer(".$man->id.");'>
+                 <span style='white-space:pre-wrap;'>" . $man->title."(".$count.")<span></a></li></ul>";
+                //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
+                        
+        }
+        $cntfont="<font color='red'>".number_format($cnt)."</font>";
+        $ret .= "<li><a href='#'>
+                 <span style='white-space:pre-wrap;'>Browse By Manufacturer(".$cntfont.") <span></a>";
+        
+        $ret .= $retsub;
+        
+        $ret .= "</li></ul>";
+             
+       
+        return $ret;
+        
+        
+    }
+    
+    
+    
     function getSubCategores($catid,$includetop=true) 
     {
         $ret = array();

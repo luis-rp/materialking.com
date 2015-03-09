@@ -890,7 +890,8 @@ class Quote extends CI_Controller
 		{
 			$originalitems[$q->itemid] = $q;
 		}
-		$data['originalitems'] = $originalitems;
+		if(isset($originalitems)){
+		$data['originalitems'] = $originalitems;}
 		//echo '<pre>'; print_r($originalitems);
 		
 		$this->db->where('company',$company->id);

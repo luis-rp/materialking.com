@@ -179,7 +179,7 @@ function pickupfun()
                 		<td><?php echo $message->subject;?></td>
                 		<td><?php echo $message->fromname;?></td>
                 		<td><?php echo $message->toname;?></td>
-                		<td><?php if($message->message=="") { echo "Pickup Address:".@$address; } else { echo $message->message;}?></td>
+                		<td><?php echo $message->message;?></td>
                 	</tr>
                 	<?php }?>
                 </table>

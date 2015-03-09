@@ -12,11 +12,12 @@ class Storemodel extends Model
     {
         $limit = 12;
         $return = new stdClass();
-
+			
         if (!isset($_POST['pagenum']))
             $_POST['pagenum'] = 0;
         $start = $_POST['pagenum'] * $limit;
 
+        $leftmasterdefault = "";
         $where = array();
         $where []= "ci.company=c.id";
         $where []= "c.username='$company'";
@@ -48,6 +49,12 @@ class Storemodel extends Model
             $where []= "ci.manufacturer='".$manufacturer."'";
         }
         
+        if (@$_POST['manufacturer']) 
+        {            
+            $where[] = " m.manufacturer='{$_POST['manufacturer']}' and ci.itemid = m.itemid ";
+            $leftmasterdefault = ", " . $this->db->dbprefix('masterdefault') ." m";
+        }
+        
         if ($where)
             $where = " WHERE ci.itemid=i.id  AND " . implode(' AND ', $where) . " ";
         else
@@ -55,7 +62,7 @@ class Storemodel extends Model
 
         $query = "SELECT ci.*, i.url FROM " . $this->db->dbprefix('companyitem') .' ci, 
         							'.$this->db->dbprefix('item').' i, 
-        							'.$this->db->dbprefix('company').' c '. $where;
+        							'.$this->db->dbprefix('company').' c '.$leftmasterdefault.' '.$where;
         $return->totalresult = $this->db->query($query)->num_rows();
         $query = $query." AND ci.ea <>'' LIMIT $start, $limit";
         //echo $query;//die;

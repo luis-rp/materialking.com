@@ -1203,8 +1203,8 @@ class Inventory extends CI_Controller
 			foreach($result as $res){
 				
 				$this->modifyitemcode($res->itemid,$res->itemcode);
-				$this->modifypartnum($res->itemid,$res->itemname);
-				$this->modifyitemname($res->itemid, $res->partnum);
+				$this->modifypartnum($res->itemid,$res->partnum);
+				$this->modifyitemname($res->itemid, $res->itemname);
 				$this->modifymanufacturer($res->itemid, $res->manufacturer);
 				$this->modifyitemprice($res->itemid, $res->price);
 				$this->modifyminqty($res->itemid, $res->minqty);

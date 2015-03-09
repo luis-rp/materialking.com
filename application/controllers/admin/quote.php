@@ -54,9 +54,9 @@ class quote extends CI_Controller
 
     function jsonlist()
     {
-        //echo '<pre>';
         $mp = $this->session->userdata('managedprojectdetails');
         $quotes = $this->quote_model->get_quotes('',$mp ? $mp->id : '' );
+      
         $quotelist = array();
         $added_date = array();
         foreach ($quotes as $quote) {
@@ -66,6 +66,34 @@ class quote extends CI_Controller
                     //echo $quote->id;
                     $added_date[$quote->id] = array();
                     $quote->url = site_url('admin/quote/track/' . $quote->id);
+                    
+                    $newDate = date("m/d/Y", strtotime($_GET['start']));
+                    $itemcode = "Following Items are due from Quote : ".$quote->ponum;
+                     if(isset($quote->deliverydate) && $quote->deliverydate != '')
+                    {
+                        $SQL = "SELECT q.id,ai.*
+								FROM ".$this->db->dbprefix('quote')."  q
+								LEFT JOIN ".$this->db->dbprefix('award')." a ON a.quote=q.id
+								LEFT JOIN ".$this->db->dbprefix('awarditem')." ai ON ai.award = a.id
+								where q.id={$quote->id} AND ai.daterequested='{$quote->deliverydate}'";
+                    
+                     
+                     	$res = $this->db->query($SQL)->result();	 
+                     	$i = 1;
+                     	if(isset($res) && count($res) > 0)
+                     	{
+	                     	foreach ($res as $key=>$val)
+	                     	{                        	
+	                     		$itemcode .= '   '. $i.' )  '. $val->itemcode;
+	                     		$i++;
+	                     	}
+                     	}
+                     	else 
+                     	{
+                     		$itemcode = 'No record Found';
+                     	}
+                    }  
+                     
                     if ($this->session->userdata('usertype_id') == 3)
                         $quote->url = "javascript:void(0)";
                     $quote->title = $quote->ponum;
@@ -73,6 +101,8 @@ class quote extends CI_Controller
                         if (!in_array($item->daterequested, $added_date[$quote->id])) {
                             $added_date[$quote->id][] = $item->daterequested;
                             $date = date("Y-m-d", strtotime($item->daterequested));
+                            
+                             
                             $quote->start = $date;
                             $quote->end = $date;
 
@@ -81,6 +111,7 @@ class quote extends CI_Controller
                             $obj['title'] = $quote->title;
                             $obj['start'] = $date;
                             $obj['end'] = $date;
+                            $obj['itemcode'] = $itemcode;
                             if ($this->session->userdata('usertype_id') == 3) {
                                 $checkauth = array('quote' => $quote->id, 'userid' => $this->session->userdata('id'));
                                 $this->db->where($checkauth);
@@ -97,7 +128,7 @@ class quote extends CI_Controller
                 }
             }
         }
-        //print_r($quotelist);
+       
         //fwrite(fopen('test.txt',"w+"), print_r($quotelist,true));
         echo json_encode($quotelist);
     }
@@ -242,7 +273,7 @@ class quote extends CI_Controller
                 } else {
                     $quote->actions .= anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
                     ;
-                     if($quote->potype !='Direct')
+                     if($quote->potype !='Direct' && empty($quote->awardedbid))
                     $quote->actions .= anchor ('admin/quote/update/' . $quote->id,'<span class="icon-2x icon-edit"></span>',array ('class' => 'update' ) );
                 }
                 //$quote->sent ='';
@@ -8323,12 +8354,16 @@ $loaderEmail = new My_Loader();
     function finditemcode()
     {
     	  //log_message('debug',"texxxxxxxxxto");
-        $codes = $this->quote_model->finditemcode($_GET['term']);
+        $codes = $this->quote_model->finditemcode($_GET['term']);        
         $items = array();
         foreach ($codes as $code) {
             $item = array();
+            if(@$code->item_img && file_exists("./uploads/item/".$code->item_img)) 
+            $imgName = site_url('uploads/item/'.$code->item_img); 
+            else 
+            $imgName = site_url('uploads/item/big.png'); 
             $item['value'] = $code->itemcode;
-            $item['label'] = '<!--<font color="#990000">-->'.$code->itemcode.'<!--</font>--> - '.$code->itemname;
+            $item['label'] = '<span onmouseover=\'showspanimage("'.$imgName.'",'.$code->id.');\' onkeypress=\'showspanimage("'.$imgName.'",'.$code->id.');\'><!--<font color="#990000">-->'.$code->itemcode.'<!--</font>--> - '.$code->itemname.'</span> <span class="imgspcls" id="imgsp'.$code->id.'"></span>';
             $item['desc'] = $code->itemname;
             $items[] = $item;
             //$items[]= $code->itemcode.'<br/>'.$code->itemname;
