@@ -20,7 +20,7 @@ class site extends CI_Controller
 		$this->load->model ('items_model', '', TRUE);
 		$this->load->model('form_model', '', TRUE);
 		$data['banner']=$this->banner_model->display();
-		$data['categorymenu'] = $this->items_model->getCategoryMenu (0) ;
+		//$data['categorymenu'] = $this->items_model->getCategoryMenu (0) ;
         $this->load = new My_Loader();
         $this->load->template('../../templates/site/template', $data);
     }

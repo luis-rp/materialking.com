@@ -50,8 +50,7 @@ $(document).ready(function(){
     $("#browseItem").click(function(){
     	$('#selectItemWindow').dialog({ height: "auto"  });
     });
-       //toggleradius();
-
+      
 	// BUTTONS
 	$('.fg-button').hover(
 		function(){ $(this).removeClass('ui-state-default').addClass('ui-state-focus'); },
@@ -737,18 +736,18 @@ function showspanimage(image,itemid){
 
            var localresult = document.getElementById('localresult').checked;
            var supplyresult = document.getElementById('supplynet').checked;
+           
            //var internetresult = document.getElementById('internetret').checked;
-//           if(supplyresult==true){ supplyresult=1;}else{var supplyresult=0;}
+           if(supplyresult==true){ supplyresult=1;}else{var supplyresult=0;}
            //if(localresult!=true && internetresult!=true){
            	if(localresult!=true){
                document.getElementById('supplynet').setAttribute("checked","checked");
                supplyresult =1;
            }
+           //alert(supplyresult);
            var radiusval = $('#locradius').val();
            if(localresult==true){ var localresult=1;}else{var localresult=0;}
            //if(internetresult==true){ internetresult=1;}else{var internetresult=0;}
-
-
 		var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
 	//alert(serviceurl);
 	$.ajax({
@@ -1026,18 +1025,20 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 	    	<?php if($this->validation->id && $quoteitems && !$awarded){?>
 		    	<div class="row span12">
 				    <div class="control-group span4">
-					    <label class="control-label"><strong>Request Quote to:</strong></label>
+					    <!--<label class="control-label"><strong>Request Quote to:</strong></label>
 					      <hr/>
                               <!-- Start On 21st Jan 2013 -->
-                             <div>
+                            <!-- <div>
                                   Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
-                                  <span id="mileid"><br>Mile radius from location<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()"> </span>
-                              </div>
+                                  <span id="mileid"><br>Mile radius from location
+                                  	<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()">
+                                  </span>
+                              </div>-->
                               <!-- <div>
                                   Include Internet and retailers
                                   <input type="checkbox" name="internetret" id="internetret">
                                   </div> -->
-                              <div>
+                             <!-- <div>
                                  Supply Network
                                  <input type="checkbox" name="supplynet" id="supplynet" checked >
                                   </div><br>
@@ -1055,7 +1056,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
     					    		Find Suppliers
     					    	</a>
     					    	<?php }?>
-    					    </div>
+    					    </div>-->
                             <!-- End On 21st Jan 2013 -->
 							<!-- <div class="controls">
 					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>
@@ -1112,19 +1113,55 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    	<?php }?>
 					    </div>
 					     <?php }?>
+					     
 					      <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
 					      <hr/>
-					    <div class="controls" style="height:150px;overflow:auto;">
+					       <div class="controls" style="height:150px;overflow:auto;">
 					    	<?php  if(isset($nonnetuser)){
 					    	          foreach($nonnetuser as $c) { ?>					    	          	
 					    		        <input type="checkbox" class="nonexist" value="<?php echo $c->id;?>" />
     					    		&nbsp;&nbsp; <?php echo $c->title;?>
 					    		<br/>
 					    	<?php }  }?>					    	
-					    </div>
+					      </div>
 					    <br/>
+					    
+					    <label class="control-label"><strong>Request Quote to:</strong></label>
+					      <hr/>
+                              <!-- Start On 21st Jan 2013 -->
+                             <div>
+                                  Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
+                                  <span id="mileid"><br>Mile radius from location
+                                  	<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()">
+                                  </span>
+                              </div>
+                              <!-- <div>
+                                  Include Internet and retailers
+                                  <input type="checkbox" name="internetret" id="internetret">
+                                  </div> -->
+                              <div>
+                                 Supply Network
+                                 <input type="checkbox" name="supplynet" id="supplynet" checked >
+                                  </div><br>
+                           
+                              <div class="controls" id="invitecomp">
+    					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>
+    					    		<input type="checkbox" class="invite" value="<?php echo $c->id;?>" />
+    					    		&nbsp;&nbsp; <?php echo $c->title;?>
+    					    		<br/>
+    					    	<?php }?>
+    					    	<?php if(!$companylist){?>
+    					    	No suppliers in your network.
+    					    	<br/>
+    					    	<a href="<?php echo site_url('site/suppliers')?>">
+    					    		Find Suppliers
+    					    	</a>
+    					    	<?php }?>
+    					    </div>
+					    
 					    			     
-				    </div>				   
+				    </div>	
+				    			   
 				</div>
 			    <?php if($i){?>
 		    	 <div class="controls">

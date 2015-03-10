@@ -6757,8 +6757,8 @@ $loaderEmail = new My_Loader();
                 		$next_term = implode("-",$explode);
                 		$insertarray['datedue'] = $next_term;
                 	}
-                }else 
-				$insertarray['datedue'] = $_POST['datedue' . $key];	
+                }/*else 
+				$insertarray['datedue'] = $_POST['datedue' . $key];*/
                 
                 if(@$_POST['invoicetype' . $key] == "fullpaid"){
                 $insertarray['invoice_type'] = "alreadypay";
@@ -6843,12 +6843,7 @@ $loaderEmail = new My_Loader();
 				        <td width="33%" valign="top">PO#</td>
 				        <td width="7%" valign="top">&nbsp;</td>
 				        <td width="60%" valign="top">' . $quote->ponum . '</td>
-				      </tr>
-				      <tr>
-				        <td valign="top">Subject</td>
-				        <td valign="top">&nbsp;</td>
-				        <td valign="top">' . $quote->subject . '</td>
-				      </tr>
+				      </tr>				      
 				      <tr>
 				        <td valign="top">PO# Date</td>
 				        <td valign="top">&nbsp;</td>
@@ -7707,12 +7702,7 @@ $loaderEmail = new My_Loader();
 				        <td width="33%" valign="top">PO#</td>
 				        <td width="7%" valign="top">&nbsp;</td>
 				        <td width="60%" valign="top">' . $quote->ponum . '</td>
-				      </tr>
-				      <tr>
-				        <td valign="top">Subject</td>
-				        <td valign="top">&nbsp;</td>
-				        <td valign="top">' . $quote->subject . '</td>
-				      </tr>
+				      </tr>				      
 				      <tr>
 				        <td valign="top">PO# Date</td>
 				        <td valign="top">&nbsp;</td>
@@ -8496,11 +8486,29 @@ $loaderEmail = new My_Loader();
 
             $sql_radius = $this->db->query($sql_radius);
             $dist = $sql_radius->result();
-
-            foreach ($dist as $ret) {
-
+            
+            foreach ($dist as $ret) 
+            {
                 array_push($arr, $ret->id, true);
             }
+            
+            $netarr = array();
+            if($supplyresult==1)
+            {
+              $sqlquery = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+        	  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+              $netcompanies = $this->db->query($sqlquery)->result();
+              	foreach ($netcompanies as $ret) 
+              	{
+                	array_push($netarr, $ret->id, true);
+              	}
+              	
+              	$result = array_intersect($netarr, $arr); 
+              	$arr= $result;         	
+            }
+
+            
+            
             if (!empty($arr)) {
                 $arr1 = implode(',', $arr);
                 $sql .= " and id IN ($arr1)";
@@ -8508,10 +8516,7 @@ $loaderEmail = new My_Loader();
                 return '';
             }
         }
-        /*if ($internetresult == 1) {
-
-        }*/
-
+     
         $str = '';
 
         $query = $this->db->query($sql);

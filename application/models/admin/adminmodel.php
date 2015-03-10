@@ -115,7 +115,7 @@ class adminmodel extends Model
 		$this->db->insert ( 'users', $options );
 		$id = $this->db->insert_id();
 		
-		$insert = array();
+		/*$insert = array();
         $insert['purchasingadmin'] = $this->session->userdata('purchasingadmin');            		
         $insert['title'] = 'Shop-Inventory';
         $insert['description'] = 'Shop-Inventory';
@@ -132,7 +132,7 @@ class adminmodel extends Model
         $pinsert['cost'] = '1500';
         $pinsert['cdetail'] = 'Inventory Code 1';
         $pinsert['creation_date'] = date('Y-m-d');
-        $this->db->insert('costcode',$pinsert);
+        $this->db->insert('costcode',$pinsert);*/
 		
 		/*if($options['usertype_id'] == 2)
 		{

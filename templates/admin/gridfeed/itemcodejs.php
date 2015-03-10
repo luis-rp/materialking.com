@@ -9,47 +9,56 @@ $(document).ready(function () {
     		{
     			property: 'id',
     			label: 'ID',
-    			sortable: false
+    			sortable: false,
+    			width:'2%'
     		},
     		{
     			property: 'itemcode',
     			label: 'Code',
-    			sortable: true
+    			sortable: true,
+    			width:'15%'
     		},
     		{
     			property: 'itemname',
     			label: 'Item Name',
-    			sortable: true
+    			sortable: true,
+    			width:'15%'
     		},
     		{
     			property: 'qty',
     			label: 'QTY',
-    			sortable: true
+    			sortable: true,
+    			width:'5%'
     		},
     		{
     			property: 'specs',
     			label: 'Specs',
-    			sortable: true
+    			sortable: true,
+    			width:'5%'
     		},
     		{
     			property: 'unit',
     			label: 'Unit',
-    			sortable: true
+    			sortable: true,
+    			width:'5%'
     		},
     		{
     			property: 'totalpoprice',
     			label: 'Total Purchased Amount',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'awardedon',
     			label: 'Last Awarded Date',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'actions',
     			label: 'Actions',
-    			sortable: false
+    			sortable: false,
+    			width:'10%'
     		}
     	],
     	data: sampleData.geonames,

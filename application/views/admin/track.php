@@ -557,6 +557,31 @@ function delserviceitem()
 {
 	$("#serviceitemblock").css('display','none');
 }
+
+function viewitems2(itemid)
+{
+	var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+	
+	$("#quoteitemdetails").html('loading ...');
+
+	$.ajax({
+		type:"post",
+		url: serviceurl,
+	}).done(function(data){	
+		$("#quoteitemdetails").html(data);
+		$("#quoteitemdetails").css({display: "block"});
+		$("#quoteitemdetailsm").css({display: "block"});
+		$("#quoteitemdetailsm").removeClass("hide");		
+	});
+}
+
+function closepop()
+{
+	$("#quoteitemdetails").html('');
+	$("#quoteitemdetails").css({display: "none"});
+	$("#quoteitemdetailsm").css({display: "none"});
+}
+	
 </script>
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
@@ -679,6 +704,7 @@ function delserviceitem()
 						$prevbillitems = "";
 						$currentbillitems = "";
 						$itemdatearr = array();
+						
 						foreach ($awarded->items as $q) {
 						
 						$itemdatearr[$q->itemid] = $q->daterequested;		
@@ -693,13 +719,13 @@ function delserviceitem()
 					    <?php $alltotal+=$q->totalprice; ?>
                             <tr>
                                 <td><?php echo @$q->companydetails->title; ?></td>
-                                <td><?php echo $q->itemcode; ?>
+                                <td><a href="javascript:void(0)" onclick="viewitems2('<?php echo $q->itemid; ?>');"><?php echo $q->itemcode; ?></a>
                                 <br>
                                  <?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
 					    		{ ?>
                                    <img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
                                 <?php } else { ?>
-                                    <img style="max-height: 100px;max-width: 75px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
+                                    <img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
                                 <?php } ?>
                                 
                                 </td>
@@ -1539,7 +1565,16 @@ function delserviceitem()
             </div>
         </div>
         
-       
+       <div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+        		
+        	</div>
+        	<div class="modal-body" id="quoteitemdetails">
+        	</div>
+            
+        </div>
         
         <div class="modal hide fade" id="billpreviewmodal">
 		<div class="modal-header">

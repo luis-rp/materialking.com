@@ -6,7 +6,29 @@ class itemcode_model extends Model {
         parent::Model();
     }
 
-    function get_itemcodes($limit = 0, $offset = 0) {
+    function get_count_all_itemcodes() {
+    	   
+        if(@$_POST['searchQuery']){
+        		$wheres = "itemname LIKE '%{$_POST['searchQuery']}%' OR itemcode LIKE '%{$_POST['searchQuery']}%' ";
+        		$this->db->where($wheres);         		
+        }   
+        if(@$_POST['searchitemname']){
+			$wheres = " itemname LIKE '%{$_POST['searchitemname']}%' OR itemcode LIKE '%{$_POST['searchitemname']}%'";
+        	$this->db->where($wheres);         
+        }
+            
+        if(@$_POST['searchcategory'])
+        	 $this->db->where('category' , $_POST['searchcategory']); 
+          	 
+        if(@$pa && @$pa!='1'){            	
+            $wheres = " AND (purchasingadmin='{$pa}' OR purchasingadmin is NULL)  ";   
+        	$this->db->where($wheres); 	
+        }       
+    	
+        return $this->db->count_all_results('item');
+    }    
+    
+    function get_itemcodes($limit = 100, $offset = 0) {
         if ($offset == 0) {
             $newoffset = 0;
         } else {
@@ -38,7 +60,7 @@ class itemcode_model extends Model {
                 LEFT JOIN $ta a ON ai.award=a.id AND ai.purchasingadmin='$pa'
                 $where
                 GROUP BY i.id
-                ORDER BY awardedon DESC";
+                ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
         //echo $sql;die;
         $query = $this->db->query($sql);
         if ($query->result()) {
@@ -146,6 +168,50 @@ class itemcode_model extends Model {
         return $leaves;
     }
     
+     function get_all_sub_cats($parent_cat_id, $level_string,$parent_cat_name,$newLevel='')
+	  {
+	      $return_str='';
+	      if(!$level_string)
+	      {
+	          $level_string='';
+	          $parent_cat_name = '';
+	      }
+	      
+	        $peis="";                   
+	     	$qry =  $this->db->query("select * from ". $this->db->dbprefix('category') ." where parent_id IN('{$parent_cat_id}')");
+	     	$res = $qry->result();
+	        
+	          foreach($res as $key=>$val)
+	          {
+	          	if($val->parent_id == 0)
+	          	{
+	          		$level_string = ' ';
+	          	}
+	          	else 
+	          	{
+	          		$level_string = '->';
+	          	}	
+	          	if($this->session->userdata('usertype_id')!=1)
+	            {
+	            	$peis=$this->session->userdata('purchasingadmin');
+	            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category IN('$val->id','$parent_cat_id') AND purchasingadmin='$peis'";
+	            }
+	            else 
+	            {
+	            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category IN('$val->id','$parent_cat_id')";
+	            }
+	            
+	            	$item = $this->db->query($sql1)->result(); 
+            		$count=number_format(count($item));
+	          	
+	              $return_str .="<option value=\"{$val->id}\" style=\"padding-left:10px\"> {$newLevel} {$parent_cat_name}{$level_string}{$val->catname}({$count})</option>";
+	              $return_str .= $this->get_all_sub_cats($val->id, $level_string.' &nbsp;&nbsp; ',$val->catname,$newLevel.' &nbsp;&nbsp; ');	             
+	          }	    
+	    
+        return $return_str;
+	  
+	  }      
+           
     function getcategories()
     {
         $sql = "SELECT * FROM " . $this->db->dbprefix('category') . "

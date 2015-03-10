@@ -308,7 +308,7 @@ $(document).ready(function(){
 
 </script>
 
-
+<?php //echo '<pre>',print_r($categories); die;?>
 <section class="row-fluid">
     <h3 class="box-header"><?php echo $heading; ?></h3>
     <div class="box">
@@ -328,9 +328,10 @@ $(document).ready(function(){
                         <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
                         <div class="controls">
                             <select style="width:400px;" multiple id="categories[]" name="categories[]">
-                            	<?php foreach($categories as $cat){?>
-                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
-                            	<?php  } ?>
+                            	<?php //foreach($categories as $cat){ 
+								echo $categories;	?>
+                            	<!--<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>-->
+                            	<?php // } ?>
                             </select>
                         </div>
                     </div>
@@ -374,9 +375,10 @@ $(document).ready(function(){
                         <label class="control-label">Category<br>(Press Cntl to select multiple categories)</label>
                         <div class="controls">
                             <select style="width:400px;" multiple id="category[]" name="category[]">
-                            	<?php foreach($categories as $cat){?>
-                            	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>
-                            	<?php  } ?>
+                            	<?php //foreach($categories as $cat){
+								echo $categories; ?>
+                            	<!--<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>><?php echo htmlentities($cat->catname);?></option>-->
+                            	<?php  //} ?>
                             </select>
                         </div>
                     </div>

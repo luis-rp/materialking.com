@@ -379,6 +379,7 @@ class Register extends CI_Controller
 		$_POST['regdate'] = date('Y-m-d');
 		$_POST['usertype_id'] = '2';
 		$_POST['purchasingadmin'] = $u->id;
+		$_POST['created_date'] = date('Y-m-d H:i:s');
 		$_POST['last_logged_date'] = date('Y-m-d H:i:s');
 	
 		if($_POST['address'])

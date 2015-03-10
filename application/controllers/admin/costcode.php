@@ -651,6 +651,7 @@ class costcode extends CI_Controller {
                  { 
                  	$link = $row->itemcode; 
                  }
+                $row->ponum = '<a href="'.site_url('admin/quote/track').'/'.@$row->quote.'">'.$row->ponum.'</a>'; 
                 $row->itemcode = $link; 	 
                 $row->ea = "$ " . $row->ea;
                 $row->totalprice = "$ " . $row->totalprice;

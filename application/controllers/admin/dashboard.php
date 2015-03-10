@@ -1143,7 +1143,7 @@ class Dashboard extends CI_Controller
     		foreach($data['projects'] as $project){
 				
     			$project->address = str_replace("\n", ", ", $project->address);
-    			$project->address = str_replace(" ",",", $project->address);
+    			//$project->address = str_replace(" ",",", $project->address);
     			$geocode = file_get_contents(
     			"http://maps.google.com/maps/api/geocode/json?address=" . urlencode($project->address) . "&sensor=false");
     			$output = json_decode($geocode);

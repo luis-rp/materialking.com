@@ -698,7 +698,8 @@ class Company extends CI_Controller {
         $sms="";
         if($this->session->userdata('company')->company_type=='3')
         {  
-        	$link = '<a href="'.site_url('company/login').'">Login</a>'; 	  	
+        	//$link = '<a href="'.site_url('company/login').'">Login</a>'; 
+        	$link = site_url('company/login'); 	  	
         	$data['email_body_title']  = "Dear " .@$_POST['title'];
 		  	$data['email_body_content']  = "You have updated Company Information as Follow:  <br><br>
 		  	Username : ".@$_POST['username']."<br/>
@@ -712,7 +713,7 @@ class Company extends CI_Controller {
 		  	Phone : ".@$_POST['phone']."<br/>
 		  	Fax : ".@$_POST['fax']."<br/>
 		  	Invoice Note : ".@$_POST['invoicenote']."<br/>
-		    Your Profile URL : " .$link;
+		    Your Profile URL :  <a href='$link' target='blank'>$link</a>";
 		  	$loaderEmail = new My_Loader();
 	        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 	        $settings = (array) $this->companymodel->getconfigurations(1);
@@ -725,7 +726,6 @@ class Company extends CI_Controller {
 	        $this->email->subject('Updated Company Information');
 	        $this->email->message($send_body);
 	        $this->email->set_mailtype("html");
-	       
 	        $this->email->send();
 	        $sms="Email Sent Successfully.";
         }

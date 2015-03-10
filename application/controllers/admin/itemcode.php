@@ -1,7 +1,7 @@
 <?php
 class itemcode extends CI_Controller
 {
-    private $limit = 10;
+    private $limit = 100;
 
 
     function itemcode ()
@@ -272,10 +272,30 @@ class itemcode extends CI_Controller
     		 $this->db->query($sql);
     	}
     }
-    function index ()
+    function index ($offset = 0)
     {
-        $itemcodes = $this->itemcode_model->get_itemcodes();      
-        $count = count($itemcodes);
+    	$uri_segment = 4;
+        $offset = $this->uri->segment($uri_segment);
+        if(@$_POST['btnloadnewitems']){
+        	$offset = $_POST['loadoffset']+$this->limit;
+        }
+        $data['offset'] = $offset;
+        $itemcodes = $this->itemcode_model->get_itemcodes($this->limit, $offset);              
+        $this->load->library('pagination');
+        $config ['base_url'] = site_url('admin/itemcode/index');
+        $config ['total_rows'] = $totalrows = $this->itemcode_model->get_count_all_itemcodes();
+        //$config ['total_rows'] = count($itemcodes);
+        $config ['per_page'] = $this->limit;
+        $config ['uri_segment'] = $uri_segment;
+
+        $this->pagination->initialize($config);
+        $data ['pagination'] = $this->pagination->create_links();
+        $this->load->library('table');
+        $this->table->set_empty("&nbsp;");
+        $this->table->set_heading('ID', 'Name', 'Email', 'Actions');
+        $i = 0 + $offset;
+        
+        $count = count($totalrows);
         $items = array();
         if ($count >= 1)
         {
@@ -975,7 +995,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['action'] = site_url('admin/itemcode/add_itemcode');
         $data['category'] = $categories;
         $data['product_categories'] = false;
-        $data['categories'] = $this->itemcode_model->getcategories();
+ //       $data['categories'] = $this->itemcode_model->getcategories();
+        $data['categories'] = $this->itemcode_model-> get_all_sub_cats('0', '','');
         $data['companies'] = $this->db->get('company')->result();
         $this->validation->featuredsupplier = 38;
         $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";

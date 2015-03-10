@@ -296,6 +296,12 @@
                                 <span>of <span class="grid-pages"></span></span>
                                 <button type="button" class="btn grid-nextpage"><i class="icon-chevron-right"></i></button>
                             </div>
+                            <span style="text-align:right;">
+	                        <form method="post" action="<?php echo site_url('admin/itemcode');?>">   
+	                        <input type="hidden" name="loadoffset" value = "<?php echo $offset;?>">                    
+	                        <input type="submit" name="btnloadnewitems" id="btnloadnewitems" value="Load next 100 Items" style="margin-left:10px;">
+	                        </form>
+	                        </span>
                         </div>
                         </th>
                         </tr>

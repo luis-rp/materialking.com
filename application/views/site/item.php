@@ -982,10 +982,10 @@ $( document ).tooltip();
                                     <td style="padding:0px;">
                                              	
                                   <?php   	
-                                    	
+                                   
                                   if($this->session->userdata('site_loggedin'))
                                   {
-                                  	if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;}
+                                  	if($inv->price) { echo '"CALL"';} else { echo '$'.$inv->ea;}
                                   	 if($inv->ea != $inv->listprice && $inv->listprice != ''){ ?>
                                   	 <br/><strike>$<?php echo $inv->listprice ?></strike><?php }
                                   }
@@ -997,7 +997,7 @@ $( document ).tooltip();
                                   	}
                                   	else {
                                   		
-                                  		if(isset($inv->price) && $inv->price==1) { echo '"CALL"';} else { echo '$'.$inv->ea;} 
+                                  		if($inv->price) { echo '"CALL"';} else { echo '$'.$inv->ea;} 
                                     			if($inv->ea != $inv->listprice && $inv->listprice != ''){ ?>
                                     		<br/><strike>$<?php echo $inv->listprice ?></strike><?php }
                                   	}
@@ -1077,7 +1077,7 @@ $( document ).tooltip();
 						<?php
 						$invcnt = 0;
 						foreach ($inventory as $inv)
-						if ($inv->ea && $inv->ea>0 &&  @$inv->companydetails->company_type==1)
+						if ($inv->ea && $inv->ea>0 &&  @$inv->companydetails->company_type==1 && !$inv->price)
 						{
 							if($this->session->userdata('site_loggedin'))
 							{

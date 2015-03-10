@@ -163,8 +163,13 @@ function endTour(){
               	<span class='task-progress' style='display: none;'>            	
               	<?php  echo $item->manualprogress; ?>
               	</span>
+              	
+              	<span class='turnoff-estcost' style='display: none;'>            	
+              	<?php  if(@$item->estimate ==1) { echo "yes"; } else { echo "no"; } ?>
+              	</span>
+              	
               	<?php //} ?>
-              	<?php if($item->estimate!=1) { echo $item->manualprogressbar; } else { echo ""; }?></td>
+              	<?php if(@$item->estimate!=1) { echo $item->manualprogressbar; } else { echo ""; }?></td>
               	<td id="status<?php echo $item->id;?>"><?php echo $item->status?></td>
               	<td><?php echo $item->actions?></td>
               </tr>
@@ -177,17 +182,23 @@ function endTour(){
 		   $(function () {
 			   var spent = new Array;
                var prog = new Array;
+               var turnoff = new Array;
                var cc = new Array;
                var ser = new Array;
 
                $(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
                $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
+               $(".turnoff-estcost").each(function(index){ turnoff.push($( this ).text().trim());});
                $(".cost-code").each(function(index){ cc.push($( this ).text() );});
           	  for(var index=0;index<prog.length;index++){
               	  if(prog[index]==0)
               		prog[index] = parseFloat(spent[index] * 100 );
               	  else
 					prog[index] = parseFloat(parseFloat((spent[index] * 100 ) / prog[index]).toFixed(1));
+				
+				 if(turnoff[index] == "yes" ){ 	
+					prog[index] = 0;					
+				 }	
                 }
               console.log(prog);
           	ser[0] ={"name":"Spent","data":spent};
