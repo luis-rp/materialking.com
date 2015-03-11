@@ -1,14 +1,10 @@
 <?php
-
 class items_model extends Model {
-
     private $search;
     private $keyword;
-
     function items_model() {
         parent::Model();
     }
-
     public function set_keyword($keyword) {
         $this->keyword = $keyword;
     }
@@ -66,10 +62,11 @@ class items_model extends Model {
 	    foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
-            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            $hasitems = $this->db->select('id')->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
             
             if(!$hasitems)
                 continue;
+            $this->db->select('id');    
             $this->db->where('parent_id',$item->id);
             $submenus = $this->db->get('category')->result();
             if ($submenus) 
@@ -368,6 +365,7 @@ class items_model extends Model {
     
     function getallsubcategories($parent)
     {
+    	$this->db->select('id');
         $this->db->where('parent_id',$parent);
         $sub = $this->db->get('category')->result();
         $ret = array();
@@ -579,11 +577,9 @@ class items_model extends Model {
     {
         $limit = 18;
         $return = new stdClass();
-
         if (!isset($_POST['pagenum']))
             $_POST['pagenum'] = 0;
         $start = $_POST['pagenum'] * $limit;
-
         $where = array();
         $leftmasterdefault = "";
         $where[]=" instore='1' ";
@@ -633,7 +629,6 @@ class items_model extends Model {
                 $where .= " WHERE ".$lookup;
             }
         }
-
         $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} ".$where;
         
         $return->totalresult = $this->db->query($query)->num_rows();
@@ -652,11 +647,9 @@ class items_model extends Model {
     {
         $limit = 18;
         $return = new stdClass();
-
         if (!isset($_POST['pagenum']))
             $_POST['pagenum'] = 0;
         $start = $_POST['pagenum'] * $limit;
-
         $where = array();
         $where[]="publish='1'";
        
@@ -680,7 +673,6 @@ class items_model extends Model {
                 $where .= " WHERE ".$lookup;
             }
         }
-
      	$query = "SELECT i.*,ic.* FROM " . $this->db->dbprefix('designbook') . " i 
         		  left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid         		  
         		  left join " . $this->db->dbprefix('company') ." c on c.id = i.company    		  
@@ -702,7 +694,6 @@ class items_model extends Model {
          if($keyword){
             $where = " where `tags` like '%$keyword%'";
          }
-
         $query = "SELECT * FROM " . $this->db->dbprefix('item') . $where;
         
         $tags = $this->db->query($query)->result();
@@ -759,12 +750,10 @@ class items_model extends Model {
     	$return->items = $this->db->query($query)->result();
     	return $return;
     }
-
      function save_amazon($args) {
         
         $this->db->where('item_id', $args['item_id']);
         $this->db->delete('amazon_products');
-
         //foreach ($data as $key => $value) {
             //$this->db->set($key, $value);
         //}
@@ -774,7 +763,6 @@ class items_model extends Model {
         //print_r($arr);
         //die;
     }
-
     function get_amazon($item_id) {
         $this->db->where('item_id', $item_id);
         $result = $this->db->get($this->db->dbprefix('amazon_products'));

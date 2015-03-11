@@ -227,7 +227,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                                 <div class="logo-wrapper span3">
                                                     <div class="logo">
                                                         <a href="<?php echo base_url(''); ?>" title="Home">
-                                                            <img src="<?php echo base_url(); ?>templates/site/assets/img/logo.png" alt="Home">
+                                                            <img src="<?php echo base_url(); ?>templates/site/assets/img/logo.png" alt="Home" width="140" height="90">
                                                         </a>
                                                     </div>
                                                 </div>

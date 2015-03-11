@@ -8466,7 +8466,7 @@ $loaderEmail = new My_Loader();
     // Start ON 21st jan 2014
     function getcompany_ajax() {
         $localresult = isset($_POST['localresult']) ? $_POST['localresult'] : '';
-        $supplyresult = isset($_POST['supplyresult']) ? $_POST['supplyresult'] : '1';
+        //$supplyresult = isset($_POST['supplyresult']) ? $_POST['supplyresult'] : '1';
         //$internetresult = isset($_POST['internetresult']) ? $_POST['internetresult'] : '';
         $radiusval = isset($_POST['radiusval']) ? $_POST['radiusval'] : '';
         $id = isset($_POST['id']) ? $_POST['id'] : '';
@@ -8492,8 +8492,8 @@ $loaderEmail = new My_Loader();
                 array_push($arr, $ret->id, true);
             }
             
-            $netarr = array();
-            if($supplyresult==1)
+            //$netarr = array();
+           /* if($supplyresult==1)
             {
               $sqlquery = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
         	  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
@@ -8505,7 +8505,7 @@ $loaderEmail = new My_Loader();
               	
               	$result = array_intersect($netarr, $arr); 
               	$arr= $result;         	
-            }
+            }*/
 
             
             
@@ -8519,6 +8519,65 @@ $loaderEmail = new My_Loader();
      
         $str = '';
 
+        $query = $this->db->query($sql);
+        if ($query->result()) {
+            $invited = $this->quote_model->getInvited($id);
+
+            $companylist = $query->result();
+            $i = 0;
+            foreach ($companylist as $c) {
+                if (!in_array($c->id, $invited)) {
+                    $i++;
+                    $str.= '<input type="checkbox" class="invite" value="' . $c->id . '" />&nbsp;&nbsp;' . $c->title . '<br/>';
+                }
+            }
+            echo $str;
+        } else {
+            echo $str;
+            exit;
+            ;
+        }
+    }
+    
+    
+    function getcompany_ajax1() 
+    {
+        $supplyresult = $_POST['supplyresult'];
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+        $arr = array();
+        
+        //echo "<pre>"; print_r($supplyresult); die;
+        if($supplyresult==1)
+        {
+          $sql = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+        	  WHERE c.id=n.company AND c.isdeleted='0' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+        }
+        else 
+        {
+          //$sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1 AND isdeleted=0";                 
+          	$this->db->select('company');
+         	$nu=$this->db->get_where('network',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();       
+         	if($nu!="")
+         	{
+         	 $dd="";
+         		foreach ($nu as $n)
+         		{        		
+         		$dd .=$n->company.",";
+         		}
+         	}
+         	$stmt="AND 1=1";
+            if($dd!="")
+         	{
+         		$dd=trim($dd,",");
+         		$stmt="AND c.id not in(".$dd.") AND n.purchasingadmin='{$this->session->userdata('purchasingadmin')}'";
+         	}    
+         
+      		$sql = "SELECT c.id,c.title FROM " . $this->db->dbprefix('company') . " c, ".$this->db->dbprefix('network')." n  where c.isdeleted=0 {$stmt} group by c.id";
+          
+          
+        }
+     
+        $str = '';
         $query = $this->db->query($sql);
         if ($query->result()) {
             $invited = $this->quote_model->getInvited($id);

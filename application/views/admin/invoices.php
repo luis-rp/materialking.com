@@ -450,20 +450,21 @@ function jq( myid ) {
                 <div>   
 			    <?php if(isset($reports)) { foreach ($reports as $report) { $newhtmltable =""; ?>
 			    	    
-			   <table class="table table-bordered reportdiv<?php echo $report->invoicenum; ?> dclose" style="display:none;">
+			   <table class="table table-bordered reportdiv<?php echo $report->invoicenum; ?> dclose" style="display:none;width:85%;align:left;">
 			     
 			    	<tr>
-			    		<th width="120">Company</th>
-			    		<th width="75">PO#</th>
-			    		<th width="120">Item Code</th>
-			    		<th width="200">Item Name</th>
-			    		<th width="50">Unit</th>
-			    		<th width="50">Qty.</th>
-			    		<th width="50">EA</th>
-			    		<th width="50">Total</th>
-			    		<th width="50">Payment</th>
-			    		<th width="50">Verification</th>
-			    		<th width="120">Cost Code</th>
+			    		<th width="10%">Company</th>
+			    		<th width="10%">PO#</th>
+			    		<th width="10%">Item Code</th>
+			    		<th width="10%">Item Name</th>
+			    		<th width="10%">Item Image</th>
+			    		<th width="4%">Unit</th>
+			    		<th width="4%">Qty.</th>
+			    		<th width="4%">EA</th>
+			    		<th width="5%">Total</th>
+			    		<th width="10%">Payment</th>
+			    		<th width="10%">Verification</th>
+			    		<th width="10%">Cost Code</th>
 			    	</tr>
 				    	<?php //$totalallprice=""; 
 				    	foreach($report->items as $item) {
@@ -475,6 +476,15 @@ function jq( myid ) {
 				    		if(@$taxpercent)
                     				$amount = $amount + ($amount*$taxpercent/100);
 				    		
+                    				
+                    		if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+				    		 { 
+		                     	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='120' width='120' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+		                     } 
+		                     else 
+		                     { 
+		                     	$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' height='120' width='120' src='".site_url('uploads/item/big.png')."'>";
+		                     } 		
 				    		?>
 				    	
 				    	<tr>
@@ -484,6 +494,7 @@ function jq( myid ) {
 				    		<?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }?>
 				    		</td>
 				    		<td><?php echo $item->itemname;?></td>
+				    		<td><?php echo $img_name;?></td>
 				    		<td><?php echo $item->unit;?></td>
 				    		<td><?php echo ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity;?>
 				    		<?php if(strpos(@$item->invoicenum,"paid-in-full-already") !== false) echo "<br>*Pre-Paid Order"; else echo "";?>

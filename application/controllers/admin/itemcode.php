@@ -297,7 +297,8 @@ class itemcode extends CI_Controller
         
         $count = count($totalrows);
         $items = array();
-        if ($count >= 1)
+        //echo '<pre>##',print_r($count);die;
+        if ($count >= 1 && $itemcodes != '')
         {
             foreach ($itemcodes as $itemcode)
             {
@@ -585,12 +586,22 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
     		$data['orders'][] = $order;
     	}
+    	
+    	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+		{ 
+         	$img_name = "<img style='max-height: 120px;max-width: 100px;float:right;margin-top:-3em;margin-right:22em' height='120' width='120' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+         } 
+         else 
+         { 
+         	$img_name = "<img style='max-height: 120px;max-width: 100px;float:right;margin-top:-3em;margin-right:22em' height='120' width='120' src='".site_url('uploads/item/big.png')."'>";
+         } 
     	$data['title_orders'] = "Orders with the current Item";
     	$data['jsfile'] = 'itemcodeitemjs.php';
     	$data['addlink'] = '';
-    	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a> &nbsp;<a href='".site_url('admin/itemcode/poitems_pdf')."/".$id."' class='btn btn-green'>View PDF</a>";
+    	$data['heading'] = "PO items for '$item->itemcode'  <a href='".site_url('admin/itemcode/poitems_export')."/".$id."' class='btn btn-green'>Export</a> &nbsp;<a href='".site_url('admin/itemcode/poitems_pdf')."/".$id."' class='btn btn-green'>View PDF</a> ";
     	$data ['bottomheading'] = "Store Orders With Itemcode '$item->itemcode'";
     	$data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode">&lt;&lt; Back</a>';
+    	$data['poitemimage'] = $img_name;
 
     	$uid = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($uid);
@@ -996,7 +1007,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['category'] = $categories;
         $data['product_categories'] = false;
  //       $data['categories'] = $this->itemcode_model->getcategories();
-        $data['categories'] = $this->itemcode_model-> get_all_sub_cats('0', '','');
+        $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
         $data['companies'] = $this->db->get('company')->result();
         $this->validation->featuredsupplier = 38;
         $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";
@@ -1190,21 +1201,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         if ($this->validation->run() == FALSE)
         {
             $data['message'] = $this->validation->error_string;
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateCode($this->input->post('itemcode'), 0))
         {
             $data['message'] = 'Duplicate Itemcode';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateUrl($this->input->post('url'), 0))
         {
             $data['message'] = 'Duplicate Itemcode';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
@@ -1340,7 +1351,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['heading'] = 'Update Item Code';
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/updateitemcode');
-        $data['categories'] = $this->itemcode_model->getcategories();
+        $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','',$item->category,'');
 
         $query = "SELECT * FROM ".$this->db->dbprefix('company')."
         		 WHERE id IN (SELECT company FROM ".$this->db->dbprefix('companyitem')." WHERE type='Supplier' AND itemid='$id')";
@@ -1563,21 +1574,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             $data['message'] = $this->validation->error_string;
             $data['action'] = site_url('admin/itemcode/updateitemcode');
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateUrl($this->input->post('url'), $itemid))
         {
             $data['message'] = 'Duplicate URL';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateCode($this->input->post('itemcode'), $itemid))
         {
             $data['message'] = 'Duplicate Itemcode';
-            $data['categories'] = $this->itemcode_model->getcategories();
+            $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','');
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode', $data);
         }
