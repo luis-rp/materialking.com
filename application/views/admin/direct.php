@@ -782,19 +782,60 @@ function showspanimage(image,itemid){
 				    	
 				    	
 				    	<div id="supplydata"> 
-				    	  <?php if(is_array(@$nonnetcompanies)){ if(array_key_exists($q->id,$nonnetcompanies)){ foreach($nonnetcompanies[$q->id] as $nccomp){ ?>	
-                          Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
-               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    	
+				    	  <?php if(is_array(@$nonnetcompanies)){ if(array_key_exists($q->id,$nonnetcompanies)){ foreach($nonnetcompanies[$q->id] as $nccomp){ ?>
+				    	  
+				    	 <div class="controls">
+					       <label class="control-label" for="addsupplyname">Company Name</label> 	
+                           <input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyname;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:50%;">
+                         </div>  
+                          
+                        <div class="controls">
+					    	<label class="control-label" for="addsupplyusername">Contact Name</label>
+                            <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>"  value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->contact;?>" style="width:50%;">
+                        </div> 
+                          
+                       <div class="controls">
+					    	<label class="control-label" for="addsupplyemail">Company Email</label>  
+                            <input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->companyemail;?>" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:50%;">
+                       </div>     
+               			
                		<?php } }else{ ?>
                		  <span id='newvendorspan<?php echo $q->id;?>' style="display:none;">
-               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:120px;">&nbsp;
+               		  
+               		   <div class="controls">
+					       <label class="control-label" for="addsupplyname">Company Name</label> 	
+               			   <input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:50%;">
+               		  </div>
+               			 
+               		  <div class="controls">
+					       <label class="control-label" for="addsupplyusername">Contact Name</label>
+                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;">
+                      </div> 
+               			 
+               		   <div class="controls">
+					    	<label class="control-label" for="addsupplyemail">Company Email</label>  	 
+                            <input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:50%;">
+                       </div>
+                       
                		  </span>	
                		<?php } } else{ ?>
                		  <span id='newvendorspan<?php echo $q->id;?>' style="display:none;">
-               			 Name:<input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:120px;">&nbsp;
+               		  
+               		   <div class="controls">
+					       <label class="control-label" for="addsupplyname">Company Name</label> 
+               			   <input type="text" name="addsupplyname<?php echo $q->id;?>" id="addsupplyname<?php echo $q->id;?>" onblur="checkcompanyusername(this.id,this.value);"  style="width:50%;">
+               		  </div>
+               			 
+               		  <div class="controls">
+					       <label class="control-label" for="addsupplyusername">Contact Name</label>
+                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;">
+                      </div> 
+               			 
+               		  <div class="controls">
+					    	<label class="control-label" for="addsupplyemail">Company Email</label>  	 
+                            <input type="email" name="addsupplyemail<?php echo $q->id;?>" id="addsupplyemail<?php echo $q->id;?>" onblur="checkcompanyuseremail(this.id,this.value);"   style="width:50%;">
+                      </div>
+                      
                		  </span>	
                		<?php } ?>
 		    		</td>
@@ -875,14 +916,28 @@ function showspanimage(image,itemid){
     					<?php }  }?>
 					    </select> -->	
 				    	  	
-				    	<div id="supplydata"> 
-				    	
+				    	<div id="supplydata"> 				    	
 				    	  <a href="javascript:void(0)" onclick="showrecentaddedcompanies();" >Select Recent Companies</a>	
 				    		
 				    	  <span id='newvendorspan' style="display:none;">
-                          Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;">&nbsp;
-                          Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;
-               		<!-- <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> </div>-->    			 </span>
+                   <!--Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;">&nbsp;
+       Email:<input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);"  style="width:120px;">&nbsp;-->
+                   
+                    			<div class="controls">
+					    	     <label class="control-label" for="addsupplyname">Company Name</label>
+                                 <input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:50%;">
+                                 </div> 
+                              
+                                 <div class="controls">
+					    	     <label class="control-label" for="addsupplyusername">Contact Name</label>
+                                 <input type="text" name="addsupplyusername" id="addsupplyusername" style="width:50%;">
+                                  </div> 
+                                  
+                                 <div class="controls">
+					    	     <label class="control-label" for="addsupplyemail">Company Email</label>
+                               <input type="email" name="addsupplyemail" id="addsupplyemail" onblur="checkcompanyuseremail(this.id,this.value);" style="width:50%;">
+                                 </div>                 
+               		 </span>
 				    	
 		    		</td>
 		    	</tr>

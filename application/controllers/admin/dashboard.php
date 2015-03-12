@@ -568,13 +568,74 @@ class Dashboard extends CI_Controller
 		    }
 		    $query = "SELECT
 		    		 IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))	
-		    			totalunpaid FROM
+		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
 						AND ai.purchasingadmin='$pa'";
 		    //echo $query.'<br>';
-		    $nc->due = $this->db->query($query)->row()->totalunpaid;
-		    $nc->due = $nc->due;
+		    $ncresult = $this->db->query($query)->row();
+		    $nc->due = $ncresult->totalunpaid;
+		    
+		    						                // Code for getting discount/Penalty
+                if(@$ncresult->company && @$ncresult->purchasingadmin){
+
+                	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $ncresult->company . "'
+				and purchasingadmin = '". $ncresult->purchasingadmin ."'";
+                	//echo $sql;
+                	$resultinvoicecycle = $this->db->query($sql)->row();
+
+                	$ncresult->penalty_percent = 0;
+                	$ncresult->penaltycount = 0;
+                	$ncresult->discount_percent =0;
+
+                	if($resultinvoicecycle){
+					
+                		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+                			if(@$ncresult->datedue){
+		
+                				if(@$ncresult->paymentstatus == "Paid" && @$ncresult->paymentdate){
+                					$oDate = $ncresult->paymentdate;
+                					$now = strtotime($ncresult->paymentdate);
+                				}else {
+                					$oDate = date('Y-m-d');
+                					$now = time();
+                				}
+
+                				$d1 = strtotime($ncresult->datedue);
+                				$d2 = strtotime($oDate);
+                				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+                				if(is_int($datediff) && $datediff > 0) {
+
+                					$ncresult->penalty_percent = $resultinvoicecycle->penalty_percent;
+                					$ncresult->penaltycount = $datediff;
+
+                				}else{
+
+                					$discountdate = $resultinvoicecycle->discountdate;
+                					if(@$discountdate){
+
+                						if ($now < strtotime($discountdate)) {
+                							$ncresult->discount_percent = $resultinvoicecycle->discount_percent;
+                						}
+                					}
+                				}
+                			}
+
+                		}
+                	}
+
+                }
+		    
+                
+                if(@$ncresult->discount_percent){
+                	$nc->due = $nc->due - ($nc->due*$ncresult->discount_percent/100);
+                }
+
+                if(@$nc->penalty_percent){
+                	$nc->due = $nc->due + (($nc->due*$ncresult->penalty_percent/100)*$ncresult->penaltycount);
+                }
+                
 		    //echo $nc->due.' - ';
 		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (ROUND(SUM(od.price),2) + (ROUND(SUM(od.price),2) * o.taxpercent / 100)), (ROUND(SUM(od.quantity * od.price),2) + (ROUND(SUM(od.quantity * od.price),2) * o.taxpercent / 100)) ) + Sum(od.shipping)   
 		    	orderdue

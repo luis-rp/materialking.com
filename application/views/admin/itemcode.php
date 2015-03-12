@@ -2,6 +2,7 @@
 <?php echo '<script>var getmasterdefaultsurl="'.site_url('admin/itemcode/getmasterdefaults').'";</script>'?>
 <?php echo '<script>var deletedefaultitemurl="'.site_url('admin/itemcode/deletedefaultitem').'";</script>'?>
 <?php echo '<script>var updatemasterdefaulturl="'.site_url('admin/itemcode/updatemasterdefault').'";</script>'?>
+<?php echo '<script>var deletefilesurl="'.site_url('admin/itemcode/deletefiles').'";</script>'?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -305,6 +306,29 @@ $(document).ready(function(){
 		$('.noxls').css('display','block');		
 		$('.forxls').css('display','none');		
 	}
+	
+	function removefile(filename,obj)
+	{
+		var itemiddefault = $("#itemiddefault").val();    	
+    	var data = "itemid="+itemiddefault+"&filename="+filename;
+     
+    	if(confirm("Are you sure you want to delete this image?"))
+		{
+	    	$.ajax({
+	    		type:"post",
+	    		data: data,	    		
+	    		url: deletefilesurl
+	    	}).done(function(data)
+	    	{
+	    		$(obj).parent().parent().parent().fadeOut();
+	    		
+	    		/*if(data)
+	    		{*/
+	    			alert("Image Deleted Successfully.");
+	    		//}
+	    	});	
+		}	
+	}
 
 </script>
 
@@ -549,24 +573,43 @@ $(document).ready(function(){
                      <div class="control-group noxls">
 						<label class="control-label">Add Files</label>
 						 <div class="controls">
-						 
-						  <?php if(@$this->validation->files)
-                                       { echo "<br /><strong>Existing Files :</strong>&nbsp;<br />";
+						
+						  <?php 
+						  
+						  if(@$this->validation->files)
+                                       {
+                                       	echo "<br /><strong>Existing Files :</strong>&nbsp;<br />";
                                        	$files=explode(',',@$this->validation->files);
-                                       	$filecount=count($files); 
+                                       	$filecount=count($files) - 1; 
                                        	   if(@$this->validation->filename)
                                        	   {
                                        	     $filename=explode(',',@$this->validation->filename);
                                        	     $filenamecount=count($filename); 	
                                        	   }
-                                       	    if($filecount==$filenamecount) 
-                                                 {
-                                                   for ($x=0; $x<$filecount; $x++)
-                                                     {                                        
-                                                       if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
-                                    <a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].","; ?></a>  
-                                              <?php    } } } }?>                          
-						    <?php //if(isset($this->validation->filename)) echo "<br /><strong>Existing Alternate Text for File :</strong>&nbsp;<br/ >".$this->validation->filename; ?>
+                                       	    /*if($filecount==$filenamecount) 
+                                                 {*/
+                          ?>
+                           <div style="height:150px;overflow-y:auto;"> 
+                           <table class="table table-bordered" style="background-color:#fff">
+                           <?php             	   
+                               for ($x=0; $x<$filecount; $x++)
+                                 {                                        
+                                   if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
+                           
+                           <tr><td>
+                           		<a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].'<br>'; ?></a>  
+                           	</td>
+                           	<td>
+                           		<a href="#">
+                           			<img src="<?php echo site_url('/templates/front/assets/img/icon/delete.ico') ;?>" onclick="removefile('<?php echo $files[$x].","; ?>',this)">
+                           		</a>
+                           	</td> </tr>	
+                          
+                              <?php    } } ?> 
+							 </table> 	
+                           </div>   						
+							<?php  } //}?>                                                   
+						    
 						 <br />
 							<?php if ($this->session->userdata('usertype_id') == 1) { ?>
 						    <input type="file" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';" />

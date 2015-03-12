@@ -55,7 +55,9 @@ class adminmodel extends Model
 			u.last_logged_date,
 			u.status,
 			u.position,
-			ut.userType
+			ut.userType,
+			u.email,
+			u.companyname
 			FROM
 			".$this->db->dbprefix('usertype')." ut
 			Inner Join ".$this->db->dbprefix('users')." u 

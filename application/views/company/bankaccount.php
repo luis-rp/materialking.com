@@ -1,6 +1,9 @@
 <script src="<?php echo base_url();?>templates/front/assets/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
 <script src="<?php echo base_url();?>templates/front/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
 <link href="<?php echo base_url();?>templates/front/assets/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" rel="stylesheet" type="text/css"/>
+
+<?php echo '<script>var pwdurl="'.site_url('company/checkpwd').'";</script>'?>
+
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
    $("#phone").mask("(999) 999-9999");
@@ -35,6 +38,50 @@ function addEmail()
 		$("#addEmailModal").modal('hide');
 	}
 }
+
+function showpwdfield()
+{
+   $("#pwd").show();
+}
+
+function checkpwd(pwd)
+    {
+        var data = "pwd="+pwd;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: pwdurl
+		    }).done(function(data){
+		    	if(data == 1){
+		    		$("#message").html("<font color='green'> Correct Password. </font>");
+		    		$("#enableaccountnumber").css('display','block'); 
+		    		$('#enableaccountnumber').prop('required',true); 
+		    		$("#disableaccountnumber").css('display','none');
+		    		$("#disableaccountnumber").removeAttr('required');
+		    		
+		    		$("#enableroutingnumber").css('display','block'); 
+		    		$('#enableroutingnumber').prop('required',true);
+		    		$("#disableroutingnumber").css('display','none');
+		    		$("#disableroutingnumber").removeAttr('required');
+		    		
+		    		$("#passwordDiv").css('display','none');
+		    		
+		    		$("#btnSave").removeAttr('disabled');
+		    		
+		    		$("#bankname").removeAttr('disabled');
+		    		
+		    		return true;   				 
+    			}
+    			else
+    			{
+    				$("#message").html("<font color='red'>Wrong Password. </font>");						
+    				return false; 
+    				
+    			}
+
+		    });
+    }
                         
 </script>
 
@@ -44,7 +91,17 @@ function addEmail()
 			<h3>Bank Account Settings</h3>		
 		</div>		
 	   <div id="container">
-		
+
+	   <?php if(isset($bankaccount->accountnumber) && $bankaccount->accountnumber!="") {  
+	   	     $acclen=strlen($bankaccount->accountnumber);
+		     $acclen=$acclen-4; 
+		     $accstr=substr_replace($bankaccount->accountnumber,str_repeat("X",$acclen),0,-4); } 
+		     
+		     if(isset($bankaccount->routingnumber) && $bankaccount->routingnumber!="") { 
+		     $routlen=strlen($bankaccount->routingnumber);
+			 $routlen=$routlen-3; 
+			 $routstr=substr_replace($bankaccount->routingnumber,str_repeat("X",$routlen),0,-3);  }   ?>
+				                                             				                          						
 		<div class="row">
                     <div class="col-md-12">
                         <div class="grid simple ">
@@ -65,7 +122,9 @@ function addEmail()
                     				  <div class="form-group">
 				                        <label class="form-label">Bank Name</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="bankname" value="<?php echo $bankaccount->bankname;?>" required>
+				                          <input type="text" class="form-control" name="bankname" id="bankname"
+												value="<?php if(isset($bankaccount->bankname)) { echo $bankaccount->bankname; }?>" required
+												<?php if(isset($bankaccount->bankname)) { ?> disabled <?php } ?>>
 				                        </div>
 				                      </div>
                     				</div>
@@ -74,7 +133,12 @@ function addEmail()
                     				  <div class="form-group">
 				                        <label class="form-label">Account Number</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="accountnumber" value="<?php echo $bankaccount->accountnumber;?>" required>
+				                          <input type="text" id="disableaccountnumber" class="form-control" name="disableaccountnumber" 
+												value="<?php if(isset($accstr)) { echo $accstr; } ?>" required
+												<?php if(isset($accstr)) { ?> disabled <?php } ?>>
+				                          
+				                         <input type="text"  id="enableaccountnumber" class="form-control" name="enableaccountnumber" style="display:none;"
+				                          		value="<?php if(isset($bankaccount->accountnumber)) { echo $bankaccount->accountnumber; } ?>">
 				                        </div>
 				                      </div>
                     				</div>
@@ -83,7 +147,12 @@ function addEmail()
                     				  <div class="form-group">
 				                        <label class="form-label">Routing Number</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="routingnumber" value="<?php echo $bankaccount->routingnumber;?>" required>
+				                          <input type="text" class="form-control" id="disableroutingnumber" name="disableroutingnumber" 
+				                          		 value="<?php if(isset($routstr)) {  echo $routstr;} ?>" required
+				                          		 <?php if(isset($routstr)) { ?> disabled <?php } ?>>
+				                                             			                          
+				                           <input type="text" class="form-control" id="enableroutingnumber" name="enableroutingnumber"  style="display:none;"
+				                                  value="<?php if(isset($bankaccount->routingnumber)) {  echo $bankaccount->routingnumber; } ?>">
 				                        </div>
 				                      </div>
                     				</div>
@@ -92,11 +161,34 @@ function addEmail()
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">
-				                          <input type="submit" value="Save" class="btn btn-primary btn-cons general">
+				                          <input type="submit" id="btnSave" value="Save" class="btn btn-primary btn-cons general" 
+				                                  <?php if(isset($bankaccount->accountnumber)) { ?> disabled <?php } ?>>
+				                        </div>
+				                      </div>
+                    				</div>
+                    			
+                    			<div id="passwordDiv">
+                    				<div class="col-md-8 col-sm-8 col-xs-8">	
+				                      <div class="form-group">
+				                        <label class="form-label"></label>
+				                        <div class="controls">
+				                          <input type="button" value="Change Bank Setting" class="btn btn-primary btn-cons general" onclick="showpwdfield()"
+											<?php if(!isset($bankaccount->accountnumber)) { ?> disabled <?php } ?>>
 				                        </div>
 				                      </div>
                     				</div>
                     				
+                    			<div class="col-md-8 col-sm-8 col-xs-8" id="pwd" style="display:none;">
+                    				  <div class="form-group">
+				                        <label class="form-label">Please Enter Your Login Password & Press <mark>Enter</mark></label>
+				                        <div class="controls">
+				                          <input type="password" class="form-control" name="loginpwd" onchange="checkpwd(this.value)">
+				                        </div>
+				                        <div class="controls" id="message"></div>				                          
+				                        
+				                      </div>
+                    				</div>
+                    			</div>			
                     				</form>
                     			</div>
                             </div>

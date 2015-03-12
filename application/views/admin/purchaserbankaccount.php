@@ -1,4 +1,4 @@
-
+<?php echo '<script>var pwdurl="'.site_url('admin/admin/checkpwd').'";</script>'?>
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function(){
    $("#phone").mask("(999) 999-9999");
@@ -33,6 +33,50 @@ function addEmail()
 		$("#addEmailModal").modal('hide');
 	}
 }
+
+function showpwdfield()
+{
+   $("#pwd").show();
+}
+
+function checkpwd(pwd)
+    {
+        var data = "pwd="+pwd;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: pwdurl
+		    }).done(function(data){
+		    	if(data == 1){
+		    		$("#message").html("<font color='green'> Correct Password. </font>");
+		    		$("#enableaccountnumber").css('display','block'); 
+		    		$('#enableaccountnumber').prop('required',true); 
+		    		$("#disableaccountnumber").css('display','none');
+		    		$("#disableaccountnumber").removeAttr('required');
+		    		
+		    		$("#enableroutingnumber").css('display','block'); 
+		    		$('#enableroutingnumber').prop('required',true);
+		    		$("#disableroutingnumber").css('display','none');
+		    		$("#disableroutingnumber").removeAttr('required');
+		    		
+		    		$("#passwordDiv").css('display','none');
+		    		
+		    		$("#btnSave").removeAttr('disabled');
+		    		
+		    		$("#bankname").removeAttr('disabled');
+		    		
+		    		return true;   				 
+    			}
+    			else
+    			{
+    				$("#message").html("<font color='red'>Wrong Password. </font>");						
+    				return false; 
+    				
+    			}
+
+		    });
+    }
                         
 </script>
 
@@ -43,6 +87,16 @@ function addEmail()
   <h3 class="box-header"><i class="icon-picture"></i>Bank Account Settings</h3>
     <div class="box">
       <div class="span12">
+      
+	   <?php if(isset($bankaccount->accountnumber) && $bankaccount->accountnumber!="") {  
+	   	     $acclen=strlen($bankaccount->accountnumber);
+		     $acclen=$acclen-4; 
+		     $accstr=substr_replace($bankaccount->accountnumber,str_repeat("X",$acclen),0,-4); } 
+		     
+		     if(isset($bankaccount->routingnumber) && $bankaccount->routingnumber!="") { 
+		     $routlen=strlen($bankaccount->routingnumber);
+			 $routlen=$routlen-3; 
+			 $routstr=substr_replace($bankaccount->routingnumber,str_repeat("X",$routlen),0,-3);  }   ?>
       
 		<!--<div class="row">
                     <div class="col-md-12">
@@ -64,7 +118,8 @@ function addEmail()
                     				  <div class="control-group">
 				                        <label class="control-label">Bank Name</label>
 				                        <div class="controls">
-				                          <input type="text" class="span4" name="bankname" value="<?php echo $bankaccount->bankname;?>" required>
+				                          <input type="text" class="span4" name="bankname" id="bankname" value="<?php echo $bankaccount->bankname;?>" required
+				                          <?php if(isset($bankaccount->bankname)) { ?> disabled <?php } ?>>
 				                        </div>
 				                      </div>
                     			<!--	</div>-->
@@ -73,7 +128,15 @@ function addEmail()
                     				  <div class="control-group">
 				                        <label class="control-label">Account Number</label>
 				                        <div class="controls">
-				                          <input type="text" class="span4" name="accountnumber" value="<?php echo $bankaccount->accountnumber;?>" required>
+				                         <!-- <input type="text" class="span4" name="accountnumber" value="<?php //echo $bankaccount->accountnumber;?>" required>-->
+				                          
+				                           <input type="text" class="span4" id="disableaccountnumber"  name="disableaccountnumber" 
+												value="<?php if(isset($accstr)) { echo $accstr; } ?>" required
+												<?php if(isset($accstr)) { ?> disabled <?php } ?>>
+				                          
+				                         <input type="text"  id="enableaccountnumber" class="span4" name="enableaccountnumber" style="display:none;"
+				                          		value="<?php if(isset($bankaccount->accountnumber)) { echo $bankaccount->accountnumber; } ?>">
+				                          
 				                        </div>
 				                      </div>
                     				<!--</div>-->
@@ -82,7 +145,14 @@ function addEmail()
                     				  <div class="control-group">
 				                        <label class="control-label">Routing Number</label>
 				                        <div class="controls">
-				                          <input type="text" class="span4" name="routingnumber" value="<?php echo $bankaccount->routingnumber;?>" required>
+				                         <!-- <input type="text" class="span4" name="routingnumber" value="<?php //echo $bankaccount->routingnumber;?>" required>-->
+				                          
+				                           <input type="text" class="span4" id="disableroutingnumber" name="disableroutingnumber" 
+				                          		 value="<?php if(isset($routstr)) {  echo $routstr;} ?>" required
+				                          		 <?php if(isset($routstr)) { ?> disabled <?php } ?>>
+				                                             			                          
+				                           <input type="text" class="span4" id="enableroutingnumber" name="enableroutingnumber"  style="display:none;"
+				                                  value="<?php if(isset($bankaccount->routingnumber)) {  echo $bankaccount->routingnumber; } ?>">
 				                        </div>
 				                      </div>
                     				<!--</div>-->
@@ -91,11 +161,39 @@ function addEmail()
 				                      <div class="control-group">
 				                        <label class="control-label"></label>
 				                        <div class="controls">
-				                          <input type="submit" value="Save" class="btn btn-primary btn-cons general">
+				                          <input type="submit" id="btnSave" value="Save" class="btn btn-primary btn-cons general"
+				                          <?php if(isset($bankaccount->accountnumber)) { ?> disabled <?php } ?>>
 				                        </div>
 				                      </div>
                     				<!--</div>
                     				-->
+                    				
+                    					<div id="passwordDiv">
+                    					
+				                      <div class="control-group">
+				                        <label class="control-label"></label>
+				                        <div class="controls">
+				                          <input type="button" value="Change Bank Setting" class="btn btn-primary btn-cons general" onclick="showpwdfield()"
+											<?php if(!isset($bankaccount->accountnumber)) { ?> disabled <?php } ?>>
+				                        </div>
+				                      </div>
+                    				
+                    				
+                    			
+                    				  <div class="control-group" id="pwd" style="display:none;">
+				                        <label class="control-label">Please Enter Your Login Password & Press <mark>Enter</mark></label>
+				                        <div class="controls">
+				                          <input type="password" class="span4" name="loginpwd" onchange="checkpwd(this.value)">
+				                        </div>
+				                        <div class="controls" id="message"></div>				                          
+				                        
+				                      </div>
+                    				
+                    			</div>	
+                    				
+                    				
+                    				
+                    				
                     				</form>
                     			</div>
                             </div>

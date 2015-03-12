@@ -54,7 +54,7 @@ class Admin extends CI_Controller {
 
 		$this->load->library ( 'table' );
 		$this->table->set_empty ( "&nbsp;" );
-		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
+		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name','Email','Company Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
 		$i = 0 + $offset;
 		if(isset($adminusers)) {
 		foreach ($adminusers as $adminuser)
@@ -64,6 +64,8 @@ class Admin extends CI_Controller {
 			    $adminuser->userType,
 			    $adminuser->position,
 			    $adminuser->username,
+			    $adminuser->email,
+			    $adminuser->companyname,
 				$adminuser->created_date?date("m/d/Y h:i A", strtotime($adminuser->created_date)):'',
 				$adminuser->last_logged_date?date("m/d/Y h:i A", strtotime( $adminuser->last_logged_date)):'',
 			    $adminuser->status == '1'
@@ -488,14 +490,67 @@ $loaderEmail = new My_Loader();
 	}
 	
 	 function savebankaccount()
-    {
-    	//echo "<pre>"; print_r($_POST); die;
+    {   	
         $id = $this->session->userdata ( 'id' );
-        $this->db->where('purchasingadmin',$id)->update('purchaserbank',$_POST);
+         if (!$id)
+            redirect('admin/login');
+          
+         if(isset($_POST['disableaccountnumber']) && $_POST['disableaccountnumber']!=""){
+        	$accountnumber=$_POST['disableaccountnumber'];
+        	
+        }
+              
+         if(isset($_POST['enableaccountnumber']) && $_POST['enableaccountnumber']!=""){
+        	$accountnumber=$_POST['enableaccountnumber'];
+        	
+        }
+        
+         if(isset($_POST['disableroutingnumber']) && $_POST['disableroutingnumber']!=""){
+        	$routingnumber=$_POST['disableroutingnumber'];
+        	
+        }
+        
+         if(isset($_POST['enableroutingnumber']) && $_POST['enableroutingnumber']!=""){
+        	$routingnumber=$_POST['enableroutingnumber'];
+        	
+        }    
+            
+        
+        //$this->db->where('purchasingadmin',$id)->update('purchaserbank',$_POST);
+         $this->db->where('purchasingadmin',$id)->update('purchaserbank',array('bankname'=>$_POST['bankname'],'accountnumber'=>$accountnumber,'routingnumber'=>$routingnumber));
         $message = 'Bank Account settings updated.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close">X</button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('admin/admin/set_bank_purchaser');
     }
+    
+    
+    public function checkpwd()
+	{
+		$id = $this->session->userdata ( 'id' );
+         if (!$id)
+            redirect('admin/login');
+		if(!@$_POST['pwd'])
+		{
+			die;
+		}
+		
+        $_POST['pwd'] = md5($_POST['pwd']);
+        $check = $this->db->get_where('users',array('id'=>$id))->row();
+        if ($check) 
+        {
+        	if($check->password==$_POST['pwd'])
+        	{ 
+        		echo 1;
+        		
+        	}
+        	else 
+        	{   
+        		echo 0;
+        	}          
+        }
+        die;
+      	
+	}
 
 	
 	

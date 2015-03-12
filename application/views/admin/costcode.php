@@ -62,7 +62,7 @@ function changeproject(catid){
 </script>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <section class="row-fluid">
-	<h3 class="box-header"><?php echo $heading; ?></h3>
+	<h3 class="box-header"><?php echo $heading; ?> &nbsp;&nbsp; <a href="<?php echo base_url();?>admin/costcode" class="btn btn-green"> Back </a></h3>
 	<div class="box">
 	<div class="span12">
 	<div class="pull-left" style="width:70%;">

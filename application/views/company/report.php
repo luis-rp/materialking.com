@@ -228,6 +228,15 @@ function submitForm(val,invoicequote)
 			    		{
 			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
 			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
+			    			
+			    			if(@$report->discount_percent){
+			    				$amount = $amount - ($amount*$report->discount_percent/100);
+			    			}
+			    			
+			    			if(@$report->penalty_percent){
+			    				$amount = $amount + (($amount*$report->penalty_percent/100)*$report->penaltycount);
+			    			}
+			    			
 			    			$totalallprice += $amount;
 
 			    			$totalquantity += ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
@@ -236,7 +245,8 @@ function submitForm(val,invoicequote)
 			    			{
 			    			    $totalpaid += $amount;
 			    			    $totalallpaid += $amount;
-			    			}
+			    			}		
+			    			
 			    	?>
 			    	<tr>
 			    		<td><?php echo $item->companyname;?></td>
@@ -286,9 +296,9 @@ function submitForm(val,invoicequote)
 		   			    $totalremaining = $totalprice - $totalpaid;
 
     		   			echo '<script>$("#totalquantity'.$i.'").html("'.$totalquantity.'");</script>';
-    		   			echo '<script>$("#totalprice'.$i.'").html("'.$totalprice.'");</script>';
-    		   			echo '<script>$("#totalpaid'.$i.'").html("'.$totalpaid.'");</script>';
-    		   			echo '<script>$("#totalremaining'.$i.'").html("'.$totalremaining.'");</script>';
+    		   			echo '<script>$("#totalprice'.$i.'").html("'.round($totalprice,2).'");</script>';
+    		   			echo '<script>$("#totalpaid'.$i.'").html("'.round($totalpaid,2).'");</script>';
+    		   			echo '<script>$("#totalremaining'.$i.'").html("'.round($totalremaining,2).'");</script>';
 			    	?>
 		      </table>
 		      <br/>
@@ -298,9 +308,9 @@ function submitForm(val,invoicequote)
 		   			$totalallremaining = $totalallprice - $totalallpaid;
 
 		   			echo '<script>$("#totalallquantity").html("'.$totalallquantity.'");</script>';
-		   			echo '<script>$("#totalallprice").html("'.$totalallprice.'");</script>';
-		   			echo '<script>$("#totalallpaid").html("'.$totalallpaid.'");</script>';
-		   			echo '<script>$("#totalallremaining").html("'.$totalallremaining.'");</script>';
+		   			echo '<script>$("#totalallprice").html("'.round($totalallprice,2).'");</script>';
+		   			echo '<script>$("#totalallpaid").html("'.round($totalallpaid,2).'");</script>';
+		   			echo '<script>$("#totalallremaining").html("'.round($totalallremaining,2).'");</script>';
 	    	?>
 	    	</div>
 	    	</div>

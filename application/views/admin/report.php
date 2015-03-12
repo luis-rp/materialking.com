@@ -169,6 +169,17 @@
 			    			else 
 			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
 			    			$amount = round($amount + ($amount*$tax/100),2);
+			    			
+			    			if(@$report->discount_percent){
+
+			    				$amount = $amount - ($amount*$report->discount_percent/100);			    				
+			    			}
+
+			    			if(@$report->penalty_percent){
+
+			    				$amount = $amount + (($amount*$report->penalty_percent/100)*$report->penaltycount);			    				
+			    			}
+			    			
 			    			//$totalallprice += $amount;
 			    	?>
 			    	<tr>

@@ -222,8 +222,27 @@
 								}
 								$taxtotal = $totalprice * $config['taxpercent'] / 100;
 								$grandtotal = $totalprice + $taxtotal;
+								
+								$arradditionalcal = array();
+								if(@$invoice->discount_percent){
+
+									$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
+
+									$arradditionalcal[] = - ($grandtotal*$invoice->discount_percent/100);
+									$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);
+								}
+
+								if(@$invoice->penalty_percent){
+
+									$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';
+
+									$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
+									$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
+								}
+								
+								
 								echo '<tr>
-								    <td colspan="6" rowspan="3">
+								    <td colspan="7" rowspan="4">
 
 			                  		<div style="width:70%">
 			                  		<br/>
@@ -239,8 +258,15 @@
 
 								    <td align="right">Tax</td>
 								    <td align="right">$ '. number_format($taxtotal,2).'</td>
-								  </tr>
-								  <tr>
+								  </tr>';
+								
+								if(count($arradditionalcal)>0){
+									echo '<tr> <td align="right">'.$arradditionalcal[0].'</td>
+					    			<td align="right">$ ' . $arradditionalcal[1] . '</td>
+					  				</tr>';
+								}
+								 
+								echo '<tr>
 								    <td align="right"><strong>Total</strong></td>
 								    <td align="right"><strong>$ '.number_format($grandtotal,2).'</strong></td>
 								  </tr>

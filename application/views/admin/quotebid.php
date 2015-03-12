@@ -201,7 +201,8 @@ function saveitemname(id)
 function invite()
 {
 	var invname = $('input[name="supplyname[]"]').map(function(){return $(this).val();}).get();
-	//var invemail = $('input[name="supplyemail"]').map(function(){return $(this).val();}).get();
+	var invusername = $('input[name="supplyusername[]"]').map(function(){return $(this).val();}).get();
+	$('#una').val(invusername); 
 	var invemail = "";
 	$('#suna').val(invname); 	
 	$('#nonnetworkmessage').html('');
@@ -660,6 +661,7 @@ function showspanimage(image,itemid){
 		   <input type="hidden" id="revisions" name="revisions" value=""/>
 		   <input type="hidden" id="suem" name="suem" value=""/>
 		   <input type="hidden" id="suna" name="suna" value=""/>
+		   <input type="hidden" id="una" name="una" value=""/>
 		   <input type="hidden" id="nonnetuser" name="nonnetuser" value=""/>
 		   <br/>
 		    
@@ -1111,15 +1113,61 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    <span style="color:red" id="nonnetworkmessage"></span> 				      
 					    <div class="controls">
 					    	   <div id="supplydata"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">&nbsp;
+                                <!-- Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">&nbsp;
                                  Email:<input type="email" name="supplyemail[0]" id="supplyemail0" style="width:120px;">&nbsp;
-                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')">                                            </div>
+                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> -->
+
+                                 
+                                  <div class="controls">
+					    	     <label class="control-label" for="supplyname">Company Name</label>
+                                 <input type="text" name="supplyname[]" id="supplyname" style="width:80%;">
+                                 </div> 
+                              
+                                 <div class="controls">
+					    	     <label class="control-label" for="supplyusername">Contact Name</label>
+                                 <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;">
+                                  </div> 
+                                  
+                                 <div class="controls">
+					    	     <label class="control-label" for="supplyemail0">Company Email</label>
+                                 <input type="email" name="supplyemail[0]" id="supplyemail0" style="width:80%;">
+                                 </div>
+                                 
+                                 <div class="controls">
+                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-success" value="Add Next Supplier" onclick="nextinvite('0')">                                           
+                                 </div>
+                                 
+                                                                 
+                                 </div>
                             
                             <?php $i=1; while($i<=10) { ?>			
-                             <div id="supplydata<?php echo $i;?>" style="display:none;float:left;"> 
-                                 Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">
+                             <div id="supplydata<?php echo $i;?>" style="display:none;">
+                              
+                                <!-- Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">
                                  Email:<input type="email" name="supplyemail[<?php echo $i;?>]" id="supplyemail<?php echo $i;?>"  style="width:120px;">
-                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')">                                </div>
+                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')"> -->
+                            
+                            <div class="controls">
+					    	     <label class="control-label" for="supplyname">Company Name</label>
+                                 <input type="text" name="supplyname[]" id="supplyname" style="width:80%;">
+                                 </div> 
+                              
+                                 <div class="controls">
+					    	     <label class="control-label" for="supplyusername">Contact Name</label>
+                                 <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;">
+                                  </div> 
+                                  
+                                 <div class="controls">
+					    	     <label class="control-label" for="supplyemail<?php echo $i;?>">Company Email</label>
+                                 <input type="email" name="supplyemail[<?php echo $i;?>]" id="supplyemail<?php echo $i;?>" style="width:80%;">
+                                 </div>
+                             
+                                 <div class="controls">
+                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-success" value="Add Next Supplier" onclick="nextinvite('<?php echo $i;?>')">                                           
+                                 </div>
+                            
+                                                       
+                                </div>
                               <br>
                             <?php $i++; }?>
                             <input type="hidden" id="finalreturn"/>

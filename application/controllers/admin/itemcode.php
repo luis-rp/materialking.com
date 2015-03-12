@@ -2581,5 +2581,17 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$result = $this->db->update('servicelaboritems',$insertArr,$where);	
 		
 	}
+	
+	function deletefiles()
+	{		
+		if(isset($_POST['filename']) && $_POST['filename'] != '')
+		{
+			$filename = $_POST['filename'];
+			$itemresult = $this->db->select('files')->where('id',$_POST['itemid'])->from('item')->get()->row();
+			$newFile = str_replace($filename,'',$itemresult->files);			
+			$this->db->update('item',array('files'=>$newFile),array('id'=>$_POST['itemid']));
+			return 1;
+		}
+	}
 }
 ?>

@@ -994,6 +994,8 @@ class quote extends CI_Controller
             $invitees = $this->input->post('invitees');
             $nonnetuser=$this->input->post('nonnetuser');
              
+        //    echo "<pre>"; print_r($_POST); die;
+            
             if(isset($nonnetuser)){
             		
             		$nonarray=explode(",",$nonnetuser);
@@ -1009,6 +1011,7 @@ class quote extends CI_Controller
             		}          		
             }
             
+           
             if(isset($nonnetuser))
             {
             	$invitees .=",".$nonnetuser;
@@ -1026,7 +1029,13 @@ class quote extends CI_Controller
               if(isset($_POST['suna']))
              {
              	 $trimname=rtrim($_POST['suna'],',');            	 
-             }          
+             }
+             
+             if(isset($_POST['una']))
+             {
+             	 $trimcontactname=rtrim($_POST['una'],',');            	 
+             }
+                             
              if(isset($trimemail) && $trimemail!="")
              {
                $supplyemailarr=explode(',',$trimemail);
@@ -1034,23 +1043,31 @@ class quote extends CI_Controller
                $newarr[$i]=array();
              	    if(isset($trimemail) && $trimemail!="")
                     {
-             	     $supplynamearr=explode(',',$trimname);  
+             	     $supplynamearr=explode(',',$trimname); 
+             	     $supplycontactarr=explode(',',$trimcontactname); 
+             	      
              	       foreach ($supplyemailarr as $c)
              	        { 
              	          if($c !="undefined"){	
              	        	$a=0;
+             	        	$b=0;
              	        	$newarr[$i]['email']=$c;
              	        	foreach ($supplynamearr as $n)
              	        	{
              	        		$newarr[$a]['name']=$n;
              	        		$a++;
              	        	}
+             	        	foreach ($supplycontactarr as $cn)
+             	        	{
+             	        		$newarr[$b]['cname']=$cn;
+             	        		$b++;
+             	        	}
              	        	$i++;
              	          }	
              	        }
                      }
              }  
-            
+            //echo "<pre>"; print_r($newarr); die;
             if(isset($newarr[0]['name']) && @$newarr[0]['name']!='')  
             {   $limitcompany = array();
                foreach ($newarr as $eachsup)
@@ -1062,6 +1079,7 @@ class quote extends CI_Controller
             		$limitedcompany = array(
             		   'primaryemail' => $eachsup['email'],  	
             		   'title' => $eachsup['name'],
+            		   'contact' => @$eachsup['cname'],
                        'regkey' => '',
                        'username' => $username,
                        'pwd' => md5($password),
@@ -1989,6 +2007,7 @@ class quote extends CI_Controller
             		 	$limitedcompany = array(
             		 	'primaryemail' => $noncomp->companyemail,
             		 	'title' => $noncomp->companyname,
+            		 	'contact' => @$noncomp->contact,
             		 	'regkey' => '',
             		 	'username' => $username,
             		 	'pwd' => md5($password),
@@ -2021,6 +2040,12 @@ class quote extends CI_Controller
             		 		$insert['acceptedon'] = date('Y-m-d H:i:s');
             		 		$insert['status'] = 'Active';
             		 		$this->db->insert('network',$insert);
+            		 		
+            		 		$pinsert = array();
+		            		$pinsert['company'] = $lastid;
+		            		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
+		            		$pinsert['creditonly'] = '1';
+		            		$this->db->insert('purchasingtier',$pinsert);
             		 	}
 
             		 	if(!isset($companyrows[$lastid]))
@@ -2221,10 +2246,16 @@ class quote extends CI_Controller
             }
             
             $suppliername = "";
+            $supplierusername = "";
             $supplieremail ="";
             if(isset($_POST['addsupplyname'.$item->id])){
             	$suppliername = $_POST['addsupplyname'.$item->id];
             	unset($_POST['addsupplyname'.$item->id]);
+            }
+            
+             if(isset($_POST['addsupplyusername'.$item->id])){
+            	$supplierusername = $_POST['addsupplyusername'.$item->id];
+            	unset($_POST['addsupplyusername'.$item->id]);
             }
 
             if(isset($_POST['addsupplyemail'.$item->id])){
@@ -2232,19 +2263,27 @@ class quote extends CI_Controller
             	unset($_POST['addsupplyemail'.$item->id]);
             }
             
+          
             $updatearray = array();
             $key = $item->id;
             while (list($k, $v) = each($item))
             {
                 if ($k != 'id' && $k != 'quote' && $k != 'purchasingadmin')
+                {
                     $updatearray[$k] = @$_POST[$k . $key];
+                }   
                 if ($k == 'ea' || $k == 'totalprice')
+                {
                     $updatearray[$k] = str_replace('$ ', '', $updatearray[$k]);
+                }
             }
             //print_r($updatearray);die;
             $updatearray['totalprice'] = $updatearray['quantity'] * $updatearray['ea'];
             if(isset($updatearray['increment']) || $updatearray['increment'] == "" )
             unset($updatearray['increment']);
+            unset($updatearray['title']);
+            unset($updatearray['item_img']);
+           
             $this->quote_model->db->where('id', $key);
             $this->quote_model->db->update('quoteitem', $updatearray);
             if (!$this->quote_model->finditembycode($updatearray['itemcode'])) {
@@ -2264,11 +2303,13 @@ class quote extends CI_Controller
 
             	$this->db->where('quoteitemid',$key);
             	$nonnetcompanies = $this->db->get('quoteitem_companies')->result();
+            	
             	if($nonnetcompanies){
 
             		$tempcompanies = array(
             		'companyname' => $suppliername,
-            		'companyemail' => $supplieremail
+            		'companyemail' => $supplieremail,
+            		'contact' => $supplierusername
             		);
             		$this->quote_model->db->where('quoteitemid', $key);
             		$this->quote_model->db->update('quoteitem_companies', $tempcompanies);
@@ -2762,10 +2803,16 @@ class quote extends CI_Controller
         unset($_POST['itemincrement']);
         
         $suppliername = "";
+        $supplieusername ="";
         $supplieremail ="";
         if(isset($_POST['addsupplyname'])){
         	$suppliername = $_POST['addsupplyname'];
         	unset($_POST['addsupplyname']);
+        }
+        
+         if(isset($_POST['addsupplyusername'])){
+        	$supplieusername = $_POST['addsupplyusername'];
+        	unset($_POST['addsupplyusername']);
         }
         
         if(isset($_POST['addsupplyemail'])){
@@ -2801,7 +2848,8 @@ class quote extends CI_Controller
         	$tempcompanies = array(
                 'quoteitemid' => $lastquoteitem,
                 'companyname' => $suppliername,
-                'companyemail' => $supplieremail
+                'companyemail' => $supplieremail,
+                'contact' => @$supplieusername
             );	
         	$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
         	

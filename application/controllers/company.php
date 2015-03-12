@@ -1213,6 +1213,7 @@ class Company extends CI_Controller {
     ///bankaccount
     function bankaccount()
     {
+    	
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
@@ -1228,16 +1229,65 @@ class Company extends CI_Controller {
 
     function savebankaccount()
     {
+    	
         $company = $this->session->userdata('company');
         if (!$company)
             redirect('company/login');
-        //////
-        $this->db->where('company',$company->id)->update('bankaccount',$_POST);
+        
+        if(isset($_POST['disableaccountnumber']) && $_POST['disableaccountnumber']!=""){
+        	$accountnumber=$_POST['disableaccountnumber'];
+        	
+        }
+              
+         if(isset($_POST['enableaccountnumber']) && $_POST['enableaccountnumber']!=""){
+        	$accountnumber=$_POST['enableaccountnumber'];
+        	
+        }
+        
+         if(isset($_POST['disableroutingnumber']) && $_POST['disableroutingnumber']!=""){
+        	$routingnumber=$_POST['disableroutingnumber'];
+        	
+        }
+        
+         if(isset($_POST['enableroutingnumber']) && $_POST['enableroutingnumber']!=""){
+        	$routingnumber=$_POST['enableroutingnumber'];
+        	
+        }    
+        //$this->db->where('company',$company->id)->update('bankaccount',$_POST);
+        $this->db->where('company',$company->id)->update('bankaccount',array('bankname'=>$_POST['bankname'],'accountnumber'=>$accountnumber,'routingnumber'=>$routingnumber));
 
         $message = 'Bank Account settings updated.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/bankaccount');
     }
+    
+    public function checkpwd()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');	
+		if(!@$_POST['pwd'])
+		{
+			die;
+		}
+		
+        $_POST['pwd'] = md5($_POST['pwd']);
+        $check = $this->db->get_where('company',array('id'=>$company->id))->row();
+        if ($check) 
+        {
+        	if($check->password==$_POST['pwd'])
+        	{ 
+        		echo 1;
+        		
+        	}
+        	else 
+        	{   
+        		echo 0;
+        	}          
+        }
+        die;
+      	
+	}
 
     function _createThumbnail($fileName, $foldername = "", $width = 170, $height = 150) {
         $config['image_library'] = 'gd2';
