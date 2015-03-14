@@ -58,8 +58,23 @@ class Inventory extends CI_Controller
 		$this->db->where('id',$company->id);
 		$data['company'] = $this->db->get('company')->row();
 				
-		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+		//$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
 		$this->load->view('inventory/items',$data);
+	}
+	
+	
+	function getpreloadoptions(){
+		
+		if(!$_POST)
+		die;
+		
+		$masterdefaults = $this->db->order_by('itemid')->select('md.*,p.title')->where('itemid',$_POST['itemid'])->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+
+		if($masterdefaults)
+		echo json_encode($masterdefaults); 
+		else 
+		echo json_encode("");
+		die;
 	}
 	
 	public function Inventory2(){

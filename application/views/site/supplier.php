@@ -617,6 +617,7 @@ function viewtag(pic_id,company)
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
+        $("#ftqtypricebox").html("Price "+unit+" : $"+ price);
         $("#itemimage").html('<img width="120" height="120" style="max-height: 120px; padding: 20px;width:120px; height:120px;float:right;" src='+imgname+'>');
         $("#unitbox").html("Unit Type: "+unit+"<br/>");
         var strselect = ('Qty');
@@ -2104,7 +2105,7 @@ function changetab(tabname){
           </div>
 
         <div id="cartsavediv"></div>
-
+        <div id="ftqtypricebox"></div>	
         </div>
         <div class="modal-footer">
           <input type="hidden" name="hiddenprice" id="hiddenprice" />

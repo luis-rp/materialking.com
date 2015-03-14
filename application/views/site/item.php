@@ -245,6 +245,7 @@ $( document ).tooltip();
 		$("#qtypricebox").html('');
 		$("#itemnamebox").html('');
        	$("#hiddenprice").val(price);
+       	$("#ftqtypricebox").html("Price "+unit+" : $"+ price);
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
@@ -604,15 +605,22 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-               <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
+            			<div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
+               				<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
                             <input type="hidden" id="breadcrumb" name="breadcrumb"/>
-                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>
-
-                            <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%">
-                            	<?php $this->load->view('site/catmenu.php');?>
-                            </div>
-                        </form>
+                            <input type="hidden" id="formcategory" name="category" value="<?php echo isset($_POST['category'])?$_POST['category']:"";?>"/>                  
+                           	<?php $this->load->view('site/catmenu.php');?>
+                   			</form>                        
+                        
+                        	<form id="manufacturersearchform" name="manufacturersearchform" method="post" action="<?php echo base_url('site/items');?>">
+                            <!-- <input type="hidden" name="keyword" value="<?php // echo isset($keyword)?$keyword:"";?>"/>
+                            <input type="hidden" id="breadcrumb" name="breadcrumb"/> -->
+                            <input type="hidden" id="formmanufacturer" name="manufacturer" value="<?php echo isset($_POST['manufacturer'])?$_POST['manufacturer']:"";?>"/>                            
+                            	<?php $this->load->view('site/manufacturermenu.php');?>                            
+                        	</form>
+                      </div>   
+                     
                 <div class="span9">
                 	<div class="breadcrumb-pms"><ul class="breadcrumb"><?php echo $breadcrumb;?></ul></div>
                 	<?php if(isset($item->searchquery) && $item->searchquery!="") { ?>              	
@@ -1578,7 +1586,8 @@ $( document ).tooltip();
         <div class="modal-body">
 
         <div id="qtypricebox"></div>
-
+       
+		
         <div>
             <div id="cartqtydiv" class="col-md-8">
             </div>
@@ -1588,7 +1597,7 @@ $( document ).tooltip();
           </div>
 
         <div id="cartsavediv"></div>
-
+		 <div id="ftqtypricebox"></div>	
         </div>
         <div class="modal-footer">
           <input type="hidden" name="hiddenprice" id="hiddenprice" />

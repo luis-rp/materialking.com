@@ -436,7 +436,7 @@ $( document ).tooltip();
                         <div class="property span9 PlumbingSupply">
                         <?php if(isset($item->itemcode)) { 
                         $count=strlen($item->itemcode); if($count<=20){ ?>
-                       <h2 class="title_top1" style="height:64px;word-break: break-all;">
+                       <h2 class="title_top1" style="height:104px;word-break: break-all;">
                         <?php //echo $item->itemcode;
                           $arr1="";
                           $str="";
@@ -448,7 +448,7 @@ $( document ).tooltip();
                                     echo $str; ?>
                          </h2>
                         <?php } else {?>
-                        <h2 class="title_top1"  style="height:64px;word-break: break-all;line-height:18px;">
+                        <h2 class="title_top1"  style="height:104px;word-break: break-all;line-height:18px;">
                          <?php //echo $item->itemcode;
 								$arr1="";
                                   $str="";

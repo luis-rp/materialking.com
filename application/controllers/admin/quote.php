@@ -6556,7 +6556,7 @@ class quote extends CI_Controller
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $_POST['amount'] * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount']) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)

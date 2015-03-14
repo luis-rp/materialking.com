@@ -289,7 +289,13 @@ $(function() {
 
 });
 </script>
+<style>
+.null span {
+    color: red !important;
+    top: 25px !important;
+}
 
+</style>
 
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo @$heading; ?> <?php if(!$isawarded){ ?> &nbsp;&nbsp;<a class="btn btn-green" style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/update/'.$quote->id;?>">Edit Quote</a> <?php } ?>
@@ -422,7 +428,7 @@ $(function() {
                                format: '$ {point.y:.f}',
                                style: {
         							fontFamily: 'monospace',
-        							color: 'red !important',
+        							
     							}
                            }
                        }

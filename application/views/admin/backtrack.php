@@ -149,6 +149,7 @@
 			    <table class="table table-bordered">
 			    	<tr>
 			    		<th width="170">Item Code</th>
+			    		<th width="100">Item Image</th>
 			    		<th width="200">Item Name</th>
 			    		<th width="200">Company</th>
 			    		<th width="60">Due Qty.</th>
@@ -162,9 +163,16 @@
 
 			    		foreach($backtrack['items'] as $item)
 			    		{
+			    			 if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+					    		{ 
+                                   $imgName ='<img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="'.site_url('uploads/item/'.$item->item_img).'" alt="'. $item->item_img.'">';
+                                 } else { 
+                                   $imgName ='<img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="'. site_url('uploads/item/big.png') .'" alt="">';
+                                 } 
 			    	?>
 			    	<tr>
 			    		<td><?php echo $item->itemcode;?></td>
+			    		<td><?php echo $imgName;?></td>
 			    		<td><?php echo $item->itemname;?></td>
 			    		<td><?php echo $item->companyname;?></td>
 			    		<td><?php echo $item->duequantity;?>

@@ -680,7 +680,8 @@ iframe.map{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:b
 .infobox .link a a{color:#fff}
 .infobox .link a:hover{text-decoration:none}
 #map{height:485px;width:100%}
-#map img{max-width:inherit}
+/*#map img{max-width:calc()}*/
+#map img{max-width:calc()}
 .map{position:relative}
 .map .row{position:relative}
 .map .row .span3{float:right;margin-top:-450px;z-index:9999}

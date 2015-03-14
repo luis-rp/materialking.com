@@ -227,7 +227,7 @@ class items_model extends Model {
             }
             else
             {
-                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'> <span style='white-space:pre-wrap;line-height:20px;'>" . $item->catname."<span></a>";
+                $ret .= "<li><a href='javascript:void(0)' onclick='return filtercategoryitems(".$item->id.");'> <span style='line-height:15px;word-break: break-all;'>" . $item->catname."<span></a>";
                 
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
@@ -328,11 +328,12 @@ class items_model extends Model {
                         
         }
         $cntfont="<font color='red'>".number_format($cnt)."</font>";
+        if($cnt>0){
         $ret .= "<li><a href='#'>
                  <span style='white-space:pre-wrap;'>Browse By Manufacturer(".$cntfont.") <span></a>";
         
         $ret .= $retsub;
-        
+        }
         $ret .= "</li></ul>";
              
        

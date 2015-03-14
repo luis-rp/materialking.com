@@ -32,6 +32,7 @@ class network extends CI_Controller {
         $_POST['usertype_id'] = 2;
         $_POST['password'] = md5($_POST['password']);
         $_POST['status'] = 1;
+        $_POST['isdeleted'] = 0;
         $this->db->where($_POST);
         $row = $this->db->get('users')->row();
         //print_r($_POST);

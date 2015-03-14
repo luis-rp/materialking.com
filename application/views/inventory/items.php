@@ -67,6 +67,8 @@
 
 <?php echo '<script>var setmasteroptionurl ="' . site_url('inventory/setmasteroption') . '";</script>' ?>
 
+<?php echo '<script>var getpreloadoptionsurl ="' . site_url('inventory/getpreloadoptions') . '";</script>' ?> 
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -423,18 +425,40 @@ function delqtydiscount(id,itemid){
 				//alert(data);
 		    });
     }
-    
+
     
     function preloadoptions(itemid,imgname,itemcode)
     {
-    	if($("#modal"+itemid).length > 0)
-    	{    	
-    		$("#modal"+itemid).modal();   	
-    		$("#masterimagelogo_"+itemid).html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
-    		$("#itemcodedisplay_"+itemid).html(itemcode);
-    	}else
-    	alert("No Preloaded Options Exist for this item");
-    }
+    	$("#masterdefaultbody").html('');
+    	$.ajax({
+		type:"post",
+		data: "itemid="+itemid,
+		dataType: 'json',
+		url: getpreloadoptionsurl
+	}).done(function(data){
+		
+		if(data){
+			var chtml = "";
+			$.each(data, function( index, value ) {
+				
+				chtml +='<div class="row form-row"><div class="col-md-3">'+value.title+'</div><div class="col-md-2"><span>'+value.partnum+'</span></div><div class="col-md-3"><span>'+value.itemname+'</span></div><div class="col-md-2"><span>'+value.price+'</span></div><div class="col-md-2"><span>'+value.minqty+'</span><span>&nbsp;&nbsp;<input type="checkbox" class="check'+itemid+'" name="check'+value.id+'" id="check'+value.id+'" value="'+value.id+'" onclick="setmasteroption(\''+value.id+'\',\''+itemid+'\',\''+value.manufacturer+'\',\''+value.partnum+'\',\''+value.itemname+'\',\''+value.price+'\',\''+value.minqty+'\',\''+value.itemcode+'\')"></span></div></div>';
+				
+			});			
+		
+			chtml += '<div class="row form-row"><div class="col-md-3">Manufacturer</div><div class="col-md-2">Part No.</div><div class="col-md-3">Item Name</div><div class="col-md-2">List Price</div><div class="col-md-2">Min. Qty.</div></div> ';
+						
+			$("#masterdefaultbody").html(chtml);	
+			
+			$("#masterdefaultmodal").modal();   	
+    		$("#masterimagelogo_").html('<img style="max-height: 120px; padding: 0px;width:90px; height:90px;float:left;" src='+imgname+'>');
+    		$("#itemcodedisplay_").html(itemcode);
+			
+		}else
+    		alert("No Preloaded Options Exist for this item");
+    		
+	}); 
+    	
+	}	
     
     
     function showallcompanyprice(itemid,itemname,itemcode,imgname)
@@ -1152,43 +1176,22 @@ function setitemsmanufacturer(manufacturerid){
   
   
   
-   <?php $olditemid=""; $i=0; foreach ($masterdefaults as $masterdata){?>
-    <?php if($olditemid!=$masterdata->itemid) {?>
-    <div id="modal<?php echo $masterdata->itemid;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+  <div id="masterdefaultmodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
           <h4 class="semi-bold" id="myModalLabel">         
-          <div id="masterimagelogo_<?php echo $masterdata->itemid;?>"></div>
+          <div id="masterimagelogo_<?php // echo $masterdata->itemid;?>"></div>
            Master Default Options:          
-           <div id="itemcodedisplay_<?php echo $masterdata->itemid;?>"></div>
+           <div id="itemcodedisplay_<?php // echo $masterdata->itemid;?>"></div>
           </h4>
           <br>
         </div>
-        <div class="modal-body">
-        
-        <div class="row form-row">
-            <div class="col-md-3">
-             Manufacturer
-            </div>
-            <div class="col-md-2">
-             Part No.
-            </div>
-             <div class="col-md-3">
-             Item Name
-            </div>
-             <div class="col-md-2">
-             List Price
-            </div>
-             <div class="col-md-2">
-             Min. Qty.
-            </div>
-          </div> 
-        
-    <?php } ?>        
-         <div class="row form-row">
+        <div id="masterdefaultbody" class="modal-body">            
+    
+         <!-- <div class="row form-row">
             <div class="col-md-3">
              <?php echo $masterdata->title;?>
             </div>
@@ -1205,9 +1208,8 @@ function setitemsmanufacturer(manufacturerid){
               <span><?php echo $masterdata->minqty;?></span>
               <span>&nbsp;&nbsp;<input type="checkbox" class="check<?php echo $masterdata->itemid;?>" name="check<?php echo $masterdata->id;?>" id="check<?php echo $masterdata->id;?>" value="<?php echo $masterdata->id;?>" onclick="setmasteroption('<?php echo $masterdata->id;?>','<?php echo $masterdata->itemid;?>','<?php echo $masterdata->manufacturer;?>','<?php echo $masterdata->partnum;?>','<?php echo htmlentities(addslashes($masterdata->itemname));?>','<?php echo $masterdata->price;?>','<?php echo $masterdata->minqty;?>','<?php echo htmlentities(addslashes(@$masterdata->itemcode));?>')"></span>
             </div>            
-          </div>  
-     <?php if($masterdata->itemid!=@$masterdefaults[$i+1]->itemid) {?>    
-         
+          </div>  --> 
+              
         </div>
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
@@ -1217,9 +1219,6 @@ function setitemsmanufacturer(manufacturerid){
     </div>
     <!-- /.modal-dialog -->
   </div>
-  <?php } ?>    
-  
-  <?php $olditemid=$masterdata->itemid; $i++; } ?>
   
   
   

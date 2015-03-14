@@ -1,3 +1,5 @@
+<?php echo '<script type="text/javascript">var getprojectfromcostcodeurl ="'.site_url('admin/costcode/getprojectfromcostcode').'";</script>'?>
+<?php echo '<script type="text/javascript">var getcostcodefromprojecturl ="'.site_url('admin/costcode/getcostcodefromproject').'";</script>'?>
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -10,7 +12,7 @@ function changeparent(projectid){
 		
 					type: "POST",					
 					data: {"projectid" : projectid},
-					url: "getcostcodefromproject",
+					url: getcostcodefromprojecturl,
 					success: function (data) {
 						if(data){
 							$('#changecost').hide();
@@ -43,11 +45,11 @@ function changeproject(catid){
 		
 					type: "POST",					
 					data: {"catid" : catid},
-					url: "getprojectfromcostcode",
+					url: getprojectfromcostcodeurl,
 					success: function (data) {
-						if(data){
+						if(data){							
 							$('#project').empty();		
-							//$('#parent').append( new Option("Select Project","") ); 				
+						//	$('#project').append( new Option("Select Project","") ); 				
 							$('#project').append(data);														
 							$('#project').val('');
 						}

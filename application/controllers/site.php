@@ -1746,8 +1746,10 @@ class site extends CI_Controller
 
         $data['breadcrumb'] = $this->items_model->getParents($item->category);
         $data['categorymenu'] = $this->data['categorymenu'] = $this->items_model->getCategoryMenu();
-
-
+		$data['manufacturermenu'] = $this->items_model->getManufacturerMenu();		
+        if(@$_POST['manufacturer']!="")
+        $data['breadcrumb'] = $this->items_model->getManufacturername(@$_POST['manufacturer']); 
+		
 	    //echo '<pre>'; print_r($data['relateditems']);die;
 	    $data['page_title'] = $data["item"]->itemname;
 	    
@@ -3019,14 +3021,14 @@ class site extends CI_Controller
 		$data['details'] = $this->db->query($sql)->row();
 		$cid=$data['details']->company;
 	
-		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where id=".$cid."";		
+		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where isdeleted = 0 AND  id=".$cid."";		
 		$data['supplier']=$this->db->query($sql11)->row();
 
 		
-		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d  where d.id <".$id." order by d.id desc";
+		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d LEFT JOIN ".$this->db->dbprefix('company')." c ON c.id = d.company  where d.id <".$id." AND c.isdeleted = 0 order by d.id desc";
 		$data['previd'] = $this->db->query($sql)->row();
     	
-		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d  where d.id >".$id."";
+		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d LEFT JOIN ".$this->db->dbprefix('company')." c ON c.id = d.company  where d.id >".$id." AND c.isdeleted = 0 ";
 		$data['nextid'] = $this->db->query($sql)->row();
 		
 		$data['userquotes'] = array();
