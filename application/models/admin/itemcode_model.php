@@ -53,15 +53,17 @@ class itemcode_model extends Model {
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL)  ";   
             
         //$where .= " AND ai.purchasingadmin='$pa'";
-        $sql = "SELECT i.*, MAX(a.awardedon) awardedon, sum(ai.totalprice) totalpurchase
+        $sql = "SELECT i.*, MAX(IFNULL(a.awardedon,o.purchasedate)) awardedon, sum(ai.totalprice) totalpurchase
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
                 LEFT JOIN $ta a ON ai.award=a.id AND ai.purchasingadmin='$pa'
+                LEFT JOIN ".$this->db->dbprefix('orderdetails') ." od ON i.id=od.itemid 
+				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
                 $where
                 GROUP BY i.id
-                ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
-        //echo $sql;die;
+                ORDER BY IFNULL(a.awardedon,o.purchasedate) DESC LIMIT $newoffset, $limit ";
+       
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
@@ -168,7 +170,7 @@ class itemcode_model extends Model {
         return $leaves;
     }
     
-     function get_all_sub_cats($parent_cat_id, $level_string,$parent_cat_name,$newLevel='')
+     function get_all_sub_cats($parent_cat_id, $level_string,$parent_cat_name,$categoryID='',$newLevel='')
 	  {
 	      $return_str='';
 	      if(!$level_string)
@@ -180,6 +182,7 @@ class itemcode_model extends Model {
 	        $peis="";                   
 	     	$qry =  $this->db->query("select * from ". $this->db->dbprefix('category') ." where parent_id IN('{$parent_cat_id}')");
 	     	$res = $qry->result();
+	        $selected = '';
 	        
 	          foreach($res as $key=>$val)
 	          {
@@ -200,12 +203,20 @@ class itemcode_model extends Model {
 	            {
 	            	$sql1 = "SELECT * FROM " . $this->db->dbprefix('item') . " WHERE category IN('$val->id','$parent_cat_id')";
 	            }
+	            if($categoryID == $val->id)
+	            {
+	            	$selected = ' selected ';
+	            }
+	            else 
+	            {
+	            	$selected = '';
+	            }
 	            
 	            	$item = $this->db->query($sql1)->result(); 
             		$count=number_format(count($item));
 	          	
-	              $return_str .="<option value=\"{$val->id}\" style=\"padding-left:10px\"> {$newLevel} {$parent_cat_name}{$level_string}{$val->catname}({$count})</option>";
-	              $return_str .= $this->get_all_sub_cats($val->id, $level_string.' &nbsp;&nbsp; ',$val->catname,$newLevel.' &nbsp;&nbsp; ');	             
+	              $return_str .="<option value=\"{$val->id}\" style=\"padding-left:10px\" {$selected}>{$newLevel} {$parent_cat_name}{$level_string}{$val->catname}({$count})</option>";
+	              $return_str .= $this->get_all_sub_cats($val->id, $level_string.' &nbsp;&nbsp; ',$val->catname,$categoryID,$newLevel.' &nbsp;&nbsp; ');	             
 	          }	    
 	    
         return $return_str;
@@ -347,6 +358,97 @@ class itemcode_model extends Model {
                 $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
                 $this->db->where('company', $item->company);
                 if ($this->db->get('network')->result()) {
+                	
+                	$wherecode = "";	
+                	if(@$this->session->userdata('managedprojectdetails')->id){
+            			$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+				 	}
+                		            	
+            	 // Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.id='".$item->id."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$item->totalprice = $item->totalprice - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$item->totalprice = $item->totalprice + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+                	
+                	
                     $ret[] = $item;
                 }
             }
@@ -398,7 +500,7 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c
 				WHERE
-				m.company=c.id AND m.itemid='$itemid' and c.isdeleted=0 
+				m.company=c.id AND m.itemid='$itemid' 
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         //echo $sql; die;

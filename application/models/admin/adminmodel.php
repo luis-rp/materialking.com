@@ -104,11 +104,13 @@ class adminmodel extends Model
 	
 	function save() 
 	{
+		
 		$options = $this->input->post();
 		$options['password'] = md5($options['password']);
 		//if($this->session->userdata('usertype_id') == 2)		
 			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 			$options['created_date'] = date ( "Y-m-d h:i:s" );
+			$options['companyname'] = $this->session->userdata('companyname');
 		//unset($options['_wysihtml5_mode']);
 		//if($this->session->userdata('usertype_id') == 2)
 			//$options['usertype_id'] = 3;
@@ -174,6 +176,7 @@ class adminmodel extends Model
 	
 	function update() 
 	{
+		
 		$options = $this->input->post();
 		if(@$options['password'])
 			$options['password'] = md5($options['password']);

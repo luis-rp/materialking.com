@@ -27,10 +27,15 @@ class costcode_model extends Model
 			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
 		}
 		if(@$_POST['parentfilter'])
+		{
 			$sql .= " AND parent='{$_POST['parentfilter']}'";
+		}
 		if(@$_POST['projectfilter'])
+		{
 			$sql .= " AND project='{$_POST['projectfilter']}'";
-		$query = $this->db->query ($sql);
+		}
+		$sql .=" ORDER BY code ASC";
+		$query = $this->db->query($sql);
 		if ($query->result ()) 
 		{
 			$result = $query->result ();
@@ -114,9 +119,13 @@ class costcode_model extends Model
 		}
 	}
 	
-	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = ''){
-		if($this->session->userdata('managedprojectdetails')){
-		$pid=$this->session->userdata('managedprojectdetails')->id;}
+	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = '')
+	{
+	//	echo '<pre>',print_r($this->session->userdata('managedprojectdetails'));
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$pid=$this->session->userdata('managedprojectdetails')->id;
+		}
 		static $temp = '';
 		# retrieve all children of $parent
 		//echo "<pre>session-"; print_r($pid); 
@@ -125,14 +134,7 @@ class costcode_model extends Model
 		$where = "";
 		if($this->session->userdata('managedprojectdetails'))
 		{
-			if($projectid!="")
-			{ //echo "sif-";
-				$where = 'and project = '.$projectid;
-			}
-			else 
-			{ //echo "selse-";
-				$where = 'and project = '.@$pid;
-			}
+			$where = 'and project = '.@$pid;			
 		}
 		else 
 		{
@@ -307,7 +309,7 @@ class costcode_model extends Model
 	
 		function getcostcodeitems2($costcode,$project)
 	{
-		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity
+		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode 
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
@@ -315,7 +317,7 @@ class costcode_model extends Model
 			ai.award=a.id AND ai.costcode='$costcode' ";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity
+			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode 
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q

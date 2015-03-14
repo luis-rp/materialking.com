@@ -1091,50 +1091,56 @@ function changetab(tabname){
                  <div class="carousel property"></div>
                   
                   <div class="nonfbdiv">
-                    <div class="property-detail">
+                    <div class="property-detail">                      
                         <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
                                 <div class="span4" id="mydiv">
-                                    <p style="text-align:center">
+                                   <div>
                                         <?php if($supplier->logo !=""){?>
-                                                <img width="60" src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>"/>
+                                                <img  src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" class="img-responsive" width="300" height="150" alt="Company Logo"/>
                                                 <?php } else {?>
-                                                <img width="60" height="45" src="<?php echo base_url(); ?>templates/site/assets/img/logo.png"/>
+                                          <img src="<?php echo base_url(); ?>templates/site/assets/img/logo.png" class="img-responsive" width="300" height="150" alt="company logo"/>
                                         <?php } ?>
-										<?php  if (@$supplier->company_type==1) { ?>                                                
-                                                	<img style="float:right;margin-top:-1.2em;width:100px;" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
-                                        <?php } ?>
-                                    </p>
-                                    <h2 class="name"><?php echo $supplier->title;?>
-                                   </h2>
-                                    <table width="100%" style="font-size: 12px;">
+										
+                                   </div><br />
+                                    <h2 class="name"><?php echo $supplier->title;?> </h2>
+                                    <table class="table" width="100%" style="font-size: 12px;">
                                         <tr>
                                             <td>Join Date:</td>
                                             <td><?php echo date('m/d/Y',strtotime($supplier->regdate)); ?></td>
+                                            <td rowspan="2"> 
+                                              <?php  if (@$supplier->company_type==1) { ?> 
+                                              <img src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium" class="img-responsive"><?php } else { echo "&nbsp;";}?>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Location:</td>
                                             <td><?php echo nl2br($supplier->address); ?></td>
+                                            
                                         </tr>
                                         <tr>
                                             <td>Email:</td>
-                                            <td><?php echo $supplier->primaryemail; ?></td>
+                                            <td colspan="2"><?php echo $supplier->primaryemail; ?></td>
+                                            
                                         </tr>
                                         <?php if($supplier->phone){?>
                                         <tr>
                                             <td>Tel:</td>
-                                            <td><?php echo $supplier->phone; ?></td>
+                                            <td colspan="2"><?php echo $supplier->phone; ?></td>
+                                             
                                         </tr>
                                         <?php }?>
                                         <?php if($supplier->fax){?>
                                         <tr>
                                             <td>Fax:</td>
-                                            <td><?php echo $supplier->fax; ?></td>
+                                            <td colspan="2"><?php echo $supplier->fax; ?></td>
+                                             
                                         </tr>
                                         <?php }?>
                                         <tr>
                                             <td width="27%">Contact Person:</td>
-                                            <td><?php echo $supplier->contact; ?></td>
+                                            <td colspan="2"><?php echo $supplier->contact; ?></td>
+                                             
                                         </tr>
                                     </table>
                                 </div>
@@ -1163,10 +1169,10 @@ function changetab(tabname){
 						</ul>
                       </div>
                    <?php }  } ?>
-                   <br><br><br>
-
-                         <div class="row expe" style="margin-left: 3px;">
-                            <p><?php echo $supplier->about; ?></p>
+                  
+                
+                         <div class="row expe" style="margin-left:-8px !important;padding-top:10px;width:100%;">
+                            <?php echo $supplier->about; ?>
                         </div>
                      
                         <?php if($supplier->company_type!='3') {?>

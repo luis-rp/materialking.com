@@ -423,6 +423,11 @@ $( document ).tooltip();
                          <img style="float:right;width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
                     <?php } ?>
                     </h3>
+                    <div><?php  if ($company->banner && file_exists('./uploads/logo/' . $company->banner)) { ?>
+	                    <img style="max-height: 120px;max-width:100%;width:100%;height:100px;" src="<?php echo site_url('uploads/logo/' . $company->banner) ?>" alt="">
+	                   
+	                <?php } ?>
+	                </div> 
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a></h3>
                     <br/>
 

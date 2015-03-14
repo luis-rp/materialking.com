@@ -280,7 +280,16 @@ class itemcode extends CI_Controller
         	$offset = $_POST['loadoffset']+$this->limit;
         }
         $data['offset'] = $offset;
-        $itemcodes = $this->itemcode_model->get_itemcodes($this->limit, $offset);              
+        $itemcodes = $this->itemcode_model->get_itemcodes($this->limit, $offset);     
+
+         if ($this->session->userdata('usertype_id') > 1)
+        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+        $wheretax = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$wheretax." ";
+        $taxrate = $this->db->query($cquery)->row();
+               
         $this->load->library('pagination');
         $config ['base_url'] = site_url('admin/itemcode/index');
         $config ['total_rows'] = $totalrows = $this->itemcode_model->get_count_all_itemcodes();
@@ -330,6 +339,8 @@ class itemcode extends CI_Controller
                 if ($itemcode->minprices)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
 
+                $itemcode->totalpoprice = $itemcode->totalpoprice + $itemcode->totalpoprice*(@$taxrate->taxrate/100);    
+                    
                 $itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,2);    
                     
                 $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
@@ -1036,8 +1047,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
     
     
-    function add_itemcode_xls(){
-    	
+    function add_itemcode_xls()
+    {
+    	ini_set('memory_limit', '1024M');
     	$data['heading'] = 'Add Itemcode in Mass';
         $data['action'] = site_url('admin/itemcode/add_itemcode_xls');
         //$data['category'] = $this->itemcode_model->getCategoryList();
@@ -1081,49 +1093,52 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             	$defaultcategory = @$_POST['categories'][0];
             }
          
-            for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) {
+            for ($x = 2; $x <= count($data->sheets[0]["cells"]); $x++) 
+            {
             	$itemcode = $data->sheets[0]["cells"][$x][1];
             	
-            	if($data->sheets[0]["cells"][$x][2] == '' || $data->sheets[0]["cells"][$x][3] == '' || $data->sheets[0]["cells"][$x][4] == '')
+            	if($data->sheets[0]["cells"][$x][2] == '')
             	{
-            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][1]);
-            		$itemname = $data->sheets[0]["cells"][$x][1];
-            		$description = $data->sheets[0]["cells"][$x][1];         
+            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][1]);            		      
             	}
             	else 
             	{
-            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][2]);
-            		$itemname = $data->sheets[0]["cells"][$x][3];
+            		$url = str_replace("/","-",$data->sheets[0]["cells"][$x][2]);            		        	
+            	}
+            	if($data->sheets[0]["cells"][$x][3] == '')
+            	{            		
+            		$itemname = $data->sheets[0]["cells"][$x][1];     
+            	}
+            	else 
+            	{
+            		$itemname = $data->sheets[0]["cells"][$x][3];   	
+            	}
+            	if($data->sheets[0]["cells"][$x][4] == '')
+            	{            		
+            		if($data->sheets[0]["cells"][$x][3] == '')
+            		{
+            			$description = $data->sheets[0]["cells"][$x][1];         
+            		}
+            		else 
+            		{
+            			$description = $data->sheets[0]["cells"][$x][3];        
+            		}
+            	}
+            	else 
+            	{
             		$description = $data->sheets[0]["cells"][$x][4];            	
-            	}	
-            	$unit = $data->sheets[0]["cells"][$x][5];
-            	/*$ea = $data->sheets[0]["cells"][$x][6];
-            	$notes = $data->sheets[0]["cells"][$x][7];
-            	$keyword = $data->sheets[0]["cells"][$x][8];*/
-            	$category = $defaultcategory;
-            	/*$item_img = $data->sheets[0]["cells"][$x][9];
-            	$item_img_alt_text = $data->sheets[0]["cells"][$x][10];
-            	$external_url = $data->sheets[0]["cells"][$x][11];
-            	$length = $data->sheets[0]["cells"][$x][12];
-            	$width = $data->sheets[0]["cells"][$x][13];
-            	$height = $data->sheets[0]["cells"][$x][14];
-            	$weight = $data->sheets[0]["cells"][$x][15];*/
-            	$featuredsupplier = $_POST['featuredsuppliers'];
-            	/*$instore = $data->sheets[0]["cells"][$x][16];
-            	$zoom = $data->sheets[0]["cells"][$x][17];
-            	$wiki = $data->sheets[0]["cells"][$x][18];
-            	$listinfo = $data->sheets[0]["cells"][$x][19];
-            	$tags = $data->sheets[0]["cells"][$x][20];
-            	$files = $data->sheets[0]["cells"][$x][21];
-            	$filename = $data->sheets[0]["cells"][$x][22];
-            	$searchquery = $data->sheets[0]["cells"][$x][23];
-            	$increment = $data->sheets[0]["cells"][$x][24];*/
+            	}
+            		
+            	$unit = $data->sheets[0]["cells"][$x][5];            
+            	$category = $defaultcategory;            	
+            	$featuredsupplier = $_POST['featuredsuppliers'];            	
             	$weight = $data->sheets[0]["cells"][$x][6];
             	$instore = 1;
             	$increment = $data->sheets[0]["cells"][$x][7];
             	
 				$data_user=array('itemcode'=>$itemcode, 'url'=>$url, 'itemname'=>$itemname, 'description'=>$description, 'unit'=>$unit, 'category'=>$category, 'weight'=>$weight, 'featuredsupplier'=>$featuredsupplier, 'instore'=>$instore, 'increment'=>$increment);
 				
+			
 				$itemID = $this->itemcode_model->add_massitem($data_user);
 				
            		$Totalcnt = count($data->sheets[0]["cells"][1]);
@@ -1133,15 +1148,30 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	
 				for ($i=8;$i<=$Totalcnt;$i+= 6)
 				{		
+					
 					$manufacturerename = $data->sheets[0]["cells"][$x][$i];		
-					if($data->sheets[0]["cells"][$x][$i+1] == '' || $data->sheets[0]["cells"][$x][$i+3] == '')
+					if($data->sheets[0]["cells"][$x][$i+1] == '')
 					{
 						$itemcode1 = $data->sheets[0]["cells"][$x][1];
-						$itemname1 = $data->sheets[0]["cells"][$x][1];
 					}
 					else 
 					{
 						$itemcode1 = $data->sheets[0]["cells"][$x][$i+1];
+					}
+					
+					if($data->sheets[0]["cells"][$x][$i+3] == '')
+					{
+						if($data->sheets[0]["cells"][$x][3] == '')
+	            		{
+	            			$itemname1 = $data->sheets[0]["cells"][$x][1];         
+	            		}
+	            		else 
+	            		{
+	            			$itemname1 = $data->sheets[0]["cells"][$x][3];        
+	            		}
+					}
+					else 
+					{
 						$itemname1 = $data->sheets[0]["cells"][$x][$i+3];
 					}
 					
@@ -1169,7 +1199,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 									'itemcode'=>mysql_real_escape_string($itemcode1),
 									'itemid'=>$itemID
 									);
-									
+								
 					$this->itemcode_model->add_massitemmanufacturer($master_data);
 	            	}	
 				}	
@@ -1286,6 +1316,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     
     function update($id)
     {
+    	ini_set('memory_limit', '1024M');
         $this->_set_fields();
         $item = $this->itemcode_model->get_itemcodes_by_id($id);
         
@@ -1454,7 +1485,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	{
     		die;
     	}    	
-		    	
+		 ini_set('memory_limit', '1024M');   	
 		$update['manufacturer'] = $_POST['manufacturerdefault'];
 		$update['partnum'] = $_POST['partnodefault'];
 		$update['price'] = $_POST['pricedefault'];
@@ -1546,6 +1577,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     
     function updateitemcode ()
     {
+    	ini_set('memory_limit', '1024M');
         $data['heading'] = 'Update Item Code';
         $data['action'] = site_url('admin/itemcode/updateitemcode');
         $this->_set_fields();

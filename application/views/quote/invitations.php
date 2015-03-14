@@ -1,6 +1,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
+
                 
 <script type="text/javascript" charset="utf-8">
     $(document).ready( function() {
@@ -14,13 +15,14 @@
             		null,
             		null,
             		{ "bSortable": false},
+            		{ "bSortable": false },
             		{ "bSortable": false }
     		
     			]
     		} );
    	 $('.dataTables_length').hide();
-    })
-                       
+    });
+
 </script>
  
     <div class="content">  
@@ -96,9 +98,10 @@
                                                 <th style="width:10%">Quote Ref#</th>
                                                 <th style="width:10%">Date Received</th>
                                                 <th style="width:10%">Date Sent</th>
-                                                <th style="width:20%">Status</th>
+                                                <th style="width:10%">Status</th>
                                                 <th style="width:15%">Bid</th>
                                                 <th style="width:30%">PO Progress</th>
+                                                <th style="width:10%">Actions</th>
                                             </tr>
                                         </thead>
                                         
@@ -146,6 +149,10 @@
                       									<div class="progress-bar <?php echo $inv->mark; ?>" style="width: <?php echo $inv->progress?>%;" data-percentage="<?php echo $inv->progress?>%"><?php echo $inv->progress?>% </div>
                    									</div>
                     
+                                                </td>
+                                                <td class="v-align-middle"> 	                                               
+		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>
+		                                                <a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>
                                                 </td>
                                             </tr>
                                           <?php } ?>

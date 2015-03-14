@@ -486,6 +486,20 @@ class Company extends CI_Controller {
                 }
             }
 
+	        if (isset($_FILES['banner']['tmp_name']))
+	        {
+	            if (is_uploaded_file($_FILES['banner']['tmp_name'])) {
+	                $nfn = $_FILES['banner']['name'];
+	                $ext = end(explode('.', $nfn));
+	                if (!in_array(strtolower($ext), array('jpg', 'gif', 'jpeg', 'png'))) {
+	                    $errormessage = '* Invalid file type, upload banner file.';
+	                } elseif (move_uploaded_file($_FILES['banner']['tmp_name'], "uploads/logo/" . $nfn)) {
+	                  //  $this->_createThumbnail($nfn, 'banner', 270, 200);
+	                    $_POST['banner'] = $nfn;
+	                }
+	            }    
+	        }      
+	        
             if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
@@ -678,9 +692,9 @@ class Company extends CI_Controller {
         unset($_POST['pwd']);
         }  
         $this->db->where('id', $company->id);
+        
         $this->db->update('company', $_POST);
-
-
+//echo '<pre>',print_r($_POST);die;
         if($this->input->post('address'))
         {
             $geoloc = get_geo_from_address($this->input->post('address'));

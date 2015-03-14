@@ -257,7 +257,7 @@ class Quote extends CI_Controller
 		
 		$sql = "SELECT i.*,q.ponum FROM 
 		".$this->db->dbprefix('invitation')." i, ".$this->db->dbprefix('quote')." q
-		WHERE i.quote=q.id AND i.company='{$company->id}' $pafilter ORDER BY i.senton DESC";
+		WHERE i.quote=q.id AND q.isdeleted=0 AND q.isarchive=0 AND i.company='{$company->id}' $pafilter ORDER BY i.senton DESC";
 		$count = $this->db->query($sql)->num_rows;
 		
 		//echo $sql;
@@ -4570,5 +4570,31 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         	echo 'No Price History Found.'.'*#*#$'.$itemname.'*#*#$'.$companyName.'*#*#$'.$paName;
         }
         die();
+    }
+    
+    function removequote($quoteid)
+    {
+    	$updateArray = array('isdeleted'=>1);
+    	$where = array('id'=>$quoteid);
+    	$this->db->update('quote',$updateArray,$where);
+    
+    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Quote Removed Successfully</div></div></div>');
+		redirect('quote');
+    }
+    
+    function archivequote($quoteid)
+    {
+    	$quotesql = "INSERT INTO ".$this->db->dbprefix('quote_archive')." select * from ".$this->db->dbprefix('quote')." WHERE id='{$quoteid}'";
+		$returnval = $this->db->query($quotesql);
+		
+		if($returnval) 
+		{
+			$updateArray = array('isarchive'=>1);
+    		$where = array('id'=>$quoteid);
+    		$this->db->update('quote',$updateArray,$where);
+		}
+		
+    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Quote Archived Successfully</div></div></div>');
+		redirect('quote');
     }
 }

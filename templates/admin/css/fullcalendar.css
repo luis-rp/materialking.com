@@ -706,6 +706,6 @@ td.fc-widget-content
 {
 	height:120px !important;
 	margin-top:1em !important;
-	z-index:10 !important;
+	z-index:9999 !important;
 	opacity:40 !important;
 }	

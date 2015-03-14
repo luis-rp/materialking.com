@@ -130,6 +130,12 @@ function addEmail()
 	 	if($('#industry_'+val).prop('checked') == true || $('#industryid_'+val).val() == val)
 		{
 		  $(".industryid_"+val).css('display','');
+		  
+		  if($(".industryid_"+val).css('display') == 'inline')
+		  {
+				$("#norecord").css('display','none'); 
+		 		//$("#norecord").html('No Manufacturer is associated with '+industryname+' industry.');
+		  }		
 		}
 		else
 		{	
@@ -550,7 +556,20 @@ function addEmail()
 										    	<div class="controls">									    
 													<input name="pagetour" type="checkbox" <?php echo $company->pagetour==1?'checked="checked"':'';?>>	
 										    	</div>
-										    </div>
+									   </div>
+									   
+									  <div class="form-group">
+				                        <label class="form-label">Banner</label>
+				                        
+				                        <div class="controls">
+				                          <input type="file"  name="banner" id="banner"/>
+				                           <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
+				                          <?php if($company->banner){?>
+				                          <br/>
+				                          <img class="img-responsive" src="<?php echo site_url('uploads/logo/'.$company->banner);?>" width="900" height="100"/>
+				                          <?php }?>
+				                        </div>
+				                      </div>
     								 <?php } ?>
     								 
 				                      <div class="form-group">

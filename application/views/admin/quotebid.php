@@ -854,8 +854,8 @@ function displayBlankRow()
 			    		<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>
 			    		<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
 		    		</td>
-		    		<td>
-			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
+		    		<td width="18%">
+			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
 		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>'); calculatetotalprice('<?php echo $q->id?>');" 
 onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"/><br>
@@ -929,8 +929,8 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
                     </td>
-		    		<td>
-		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
+		    		<td width="18%">
+		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"></textarea>
 		    		</td>
 		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="return checkincrementquantity(this.value);calculatetotalprice('')" required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
 		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();" class="span12"/></td>

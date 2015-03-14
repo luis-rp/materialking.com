@@ -315,6 +315,98 @@ class costcode extends CI_Controller {
         $items = array();
         if ($count >= 1) {
             foreach ($costcodes as $costcode) {
+            	
+            	$wherecode = "";
+            	if(@$this->session->userdata('managedprojectdetails')->id){
+            		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+				}
+            	
+            	// Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$costcode->code."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$costcode->totalspent = $costcode->totalspent - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$costcode->totalspent = $costcode->totalspent + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+        			 
+            	
+            	
                 $costcode->actions = anchor('admin/costcode/update/' . $costcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
                         . ' ' .
                         anchor('admin/costcode/delete/' . $costcode->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
@@ -567,6 +659,14 @@ class costcode extends CI_Controller {
         $costcodeitems = $this->costcode_model->getcostcodeitems($costcode,$project);
         $costcodeitems2 = $this->costcode_model->getcostcodeitems2($costcode,$project);
 		
+        if ($this->session->userdata('usertype_id') > 1)
+        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+        $wheretax = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$wheretax." ";
+        $taxrate = $this->db->query($cquery)->row();
+                
       	$count = count($costcodeitems);
         
         $postatus = "incomplete";
@@ -622,6 +722,94 @@ class costcode extends CI_Controller {
 				 	 $imgName = '<img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="80" width="100" src="'. site_url('uploads/item/big.png').'" alt="">'; 
                  }
                  
+                if(@$this->session->userdata('managedprojectdetails')->id){
+            		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+				}
+                 
+                 // Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$row->costcode."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$row->totalprice = $row->totalprice - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$row->totalprice = $row->totalprice + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+                 
                  
             	if($row->potype=="Contract"){
                 $awarded = $this->quote_model->getawardedcontractbid($row->quote);
@@ -631,7 +819,8 @@ class costcode extends CI_Controller {
                 $row->itemcode = 'N/A';
                 $row->newreceived = $row->newreceived."%";
                 $row->daterequested = 'N/A';
-                $row->totalprice = "$ " . $row->totalprice;
+                $row->totalprice = $row->totalprice + $row->totalprice*(@$taxrate->taxrate/100);
+                $row->totalprice = "$ " . round($row->totalprice,2);
                 $row->itemname = htmlentities($row->itemname);
                 $row->status = strtoupper($awarded->status);
                 $row->actions = //$row->status=='COMPLETE'?'':
@@ -654,7 +843,8 @@ class costcode extends CI_Controller {
                 $row->ponum = '<a href="'.site_url('admin/quote/track').'/'.@$row->quote.'">'.$row->ponum.'</a>'; 
                 $row->itemcode = $link; 	 
                 $row->ea = "$ " . $row->ea;
-                $row->totalprice = "$ " . $row->totalprice;
+                $row->totalprice = $row->totalprice + $row->totalprice*(@$taxrate->taxrate/100);
+                $row->totalprice = "$ " . round($row->totalprice,2);
                 $row->itemname = htmlentities($row->itemname);
                 $row->itemstatus = strtoupper($status);
                 $row->status = strtoupper($postatus);
@@ -674,6 +864,97 @@ class costcode extends CI_Controller {
                 else 
                 $status2 = "incomplete";*/            	
             	
+            	 $wherecode = "";
+            	 if(@$this->session->userdata('managedprojectdetails')->id){
+            		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+				 } 
+            	
+            	 // Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$row2->costcode."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$row2->totalprice = $row2->totalprice - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$row2->totalprice = $row2->totalprice + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+            	
+            	
+            	
             	if($row2->potype=="Contract"){
             		
             	$awarded = $this->quote_model->getawardedcontractbid($row2->quote);
@@ -683,7 +964,13 @@ class costcode extends CI_Controller {
                 $row2->itemcode = 'Contract';
                 $row2->newreceived = $row2->newreceived;
                 $row2->daterequested = isset($awarded->invoices[0]->items[0]->receiveddate)?$awarded->invoices[0]->items[0]->receiveddate:'N/A';
-                $row2->totalprice = "$ " . $row2->totalprice;
+                $row2->totalprice = $row2->totalprice + $row2->totalprice*(@$taxrate->taxrate/100);
+                $row2->totalprice = "$ " . round($row2->totalprice,2);
+                
+                $newarr = explode("$",$row2->ponum);
+                if(count($newarr>1))
+                $row2->ponum = $newarr[0]."".$row2->totalprice;
+                
                 $row2->itemname = htmlentities($row2->itemname);
                 $row2->status = strtoupper($awarded->status);
                 //$row2->newreceived = $row2->newreceived;
@@ -694,7 +981,13 @@ class costcode extends CI_Controller {
             	}else{
                 $awarded = $this->quote_model->getawardedbid($row2->quote);
                 $row2->ea = "$ " . $row2->ea;
-                $row2->totalprice = "$ " . $row2->totalprice;
+                $row2->totalprice = $row2->totalprice + $row2->totalprice*(@$taxrate->taxrate/100);
+                $row2->totalprice = "$ " . round($row2->totalprice,2);
+                
+                $newarr = explode("$",$row2->ponum);
+                if(count($newarr>1))
+                $row2->ponum = $newarr[0]."".$row2->totalprice;
+                
                 $row2->itemname = htmlentities($row2->itemname);
                 //$row2->itemstatus = strtoupper($status2);
                 $row2->status = strtoupper($awarded->status);
