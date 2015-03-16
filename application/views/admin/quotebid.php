@@ -1221,7 +1221,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                                   </div><br>-->
                            
                               <div class="controls" id="invitecomp">
-    					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>
+    					    	<?php $k = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $k++;?>
     					    		<input type="checkbox" class="invite" value="<?php echo $c->id;?>" />
     					    		&nbsp;&nbsp; <?php echo $c->title;?>
     					    		<br/>
@@ -1240,9 +1240,14 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 				    			   
 				</div>
 			    <?php if($i){?>
-		    	 <div class="controls">
-		    		<input name="add" type="submit" class="btn btn-primary" value="Submit Proposal" onclick="return invite();"/>
-		    	</div>
+			    
+			     <div class="control-group">
+                   <label class="control-label" for="">&nbsp;</label>
+                     <div class="controls">
+   		                <input name="add" type="submit" class="btn btn-primary" value="Submit Proposal" onclick="return invite();"/>
+                     </div>
+                 </div>
+			    
 		    	<?php } }?>	    
 	    </div>    
     </div>

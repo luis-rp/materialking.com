@@ -812,9 +812,10 @@ $( document ).tooltip();
 															$domain = strstr($email, 'src="');
 															$newSrc = str_replace('src="',"'",$domain);
 															$newSrc1 = str_replace('">',"'",$newSrc);															
-															?>
+													
+														if($newSrc1 != '') {			?>
 													<li><a  target="_blank" href=<?php echo $newSrc1; ?> >Wiki image </a> </li>
-												<?php  } ?>	
+												<?php  } } ?>	
 												<?php 
 													   if(isset($item->listinfo) && $item->listinfo !='')
 													   {
@@ -822,9 +823,9 @@ $( document ).tooltip();
 															$domain = strstr($email, 'src="');
 															$newSrc = str_replace('src="',"'",$domain);
 															$newSrc1 = str_replace('">',"'",$newSrc);															
-															?>
+														if($newSrc1 != '') {		?>
 													<li><a  target="_blank" href=<?php echo $newSrc1; ?> >List info image </a> </li>
-												<?php  } ?>		
+												<?php  } } ?>		
 												
                                                  	</ul>
                                                  	<?php }  else { echo "No Files For This Item."; }  ?>
@@ -950,19 +951,19 @@ $( document ).tooltip();
                             </div>
                             <div class="newbox">
 
-                            <table id="datatable newtable" class="table table-bordered smallfont ">
+                            <table id="datatable newtable" class="table table-bordered smallfont " style="width:95%;word-break: break-all;">
                             	<thead>
                                 <tr>
-                                    <th>Supplier</th>
-                                    <th>Code</th>
-                                    <th>Item</th>
-                                    <th>Manuf.</th>
-                                    <th>Part#</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Address</th>
-                                    <th>Dist. (mi)</th>
-                                    <th>Buy</th>
+                                    <th width="10%">Supplier</th>
+                                    <th width="10%">Code</th>
+                                    <th width="10%">Item</th>
+                                    <th width="8%">Manuf.</th>
+                                    <th width="7%">Part#</th>
+                                    <th width="9%">Price</th>
+                                    <th width="9%">Stock</th>
+                                    <th width="10%">Address</th>
+                                    <th width="8%">Dist. (mi)</th>
+                                    <th width="1%">Buy</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -975,19 +976,19 @@ $( document ).tooltip();
                                         $price = $inv->ea;
                                 ?>
                                 <tr>
-                                    <td style="padding:0px;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> 
+                                    <td style="padding:0px;word-break:break-all;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> 
                                     <br>
                                      <?php  if (@$inv->companydetails->company_type==1) 
 				                    	  { ?>                                                
-				                         	<img style="width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium_member.jpeg') ?>" alt="Premium Member">
+				                         	<img style="width:95px;" src="<?php echo site_url('uploads/logo/thumbs/premium_member.jpeg') ?>" alt="Premium Member">
 				                    <?php } ?>
                                     
                                     </td>
-                                    <td style="padding:0px;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
-                                    <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
-                                    <td  style="padding:0px;"><?php echo $inv->manufacturername ?> </td>
-                                    <td  style="padding:0px;"class="tinyfont"><?php echo $inv->partnum ?> </td>
-                                    <td style="padding:0px;">
+                                    <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
+                                    <td style="padding:0px;word-break:break-all;"><?php echo $inv->itemname ?> </td>
+                                    <td  style="padding:0px;word-break:break-all;"><?php echo $inv->manufacturername ?> </td>
+                                    <td  style="padding:0px;word-break:break-all;"class="tinyfont"><?php echo $inv->partnum ?> </td>
+                                    <td style="padding:0px;word-break:break-all;">
                                              	
                                   <?php   	
                                    
@@ -1015,7 +1016,7 @@ $( document ).tooltip();
                                   ?>  	                                    	
                                     	<br>Min.Order:<?php echo $inv->minqty;?>
                                     </td>
-                                    <td style="padding:0px;">
+                                    <td style="padding:0px;word-break:break-all;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?><br>
                                     <?php echo $inv->backorder ? 'Backorder' : ''; ?><br>
@@ -1028,9 +1029,9 @@ $( document ).tooltip();
 	                                <?php } else { ?>	                                    
 	                                        <?php $imgName = site_url('uploads/item/big.png'); 
 	                                   }?>
-                                    <td style="padding:0px;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
+                                    <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
-                                    <td style="padding:0px;" align="center">
+                                    <td style="padding:0px;word-break:break-all;" align="center">
                                         <?php if($inv->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
                                        <?php }

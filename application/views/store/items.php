@@ -92,7 +92,19 @@ $(document).ready(function() {
 			alert('Error : please retry');
 		}
 	});
+	
 });
+
+$(function(){
+	bannerimgcnt = $("#bannerimgcnt").val();
+	
+	if(bannerimgcnt != 1)
+	{
+		$('.fadeinbannerimg img:gt(0)').hide();
+		setInterval(function(){$('.fadeinbannerimg :first-child').fadeOut().next('img').fadeIn().end().appendTo('.fadeinbannerimg');}, 2000);
+	}
+});
+
 </script>
 
 <script type="text/javascript">
@@ -412,8 +424,8 @@ $( document ).tooltip();
 
                 <div class="span9">
                    <h3 class="titlebox" style="padding:0px 0px 0px 0px">
-                    <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
-                    else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="<?php echo $supplier->logo; ?>">&nbsp;
+                    <!-- <img style="height:100px; width:100px; position:relative;" src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; }
+                    else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="<?php echo $supplier->logo; ?>">&nbsp;-->
                     Welcome
                     <?php if($this->session->userdata('site_loggedin')){echo $this->session->userdata('site_loggedin')->companyname;}else{echo 'Guest';}?>,
                     to
@@ -423,11 +435,46 @@ $( document ).tooltip();
                          <img style="float:right;width:125px;" src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
                     <?php } ?>
                     </h3>
-                    <div><?php  if ($company->banner && file_exists('./uploads/logo/' . $company->banner)) { ?>
-	                    <img style="max-height: 120px;max-width:100%;width:100%;height:100px;" src="<?php echo site_url('uploads/logo/' . $company->banner) ?>" alt="">
+                    <!--<div>
+                    <input type="hidden" name="bannerimgcnt" id="bannerimgcnt" value="<?php if(isset($companybanner) && $companybanner != '') { echo count($companybanner); } else { echo '0'; }?>">
+                    <?php 
+                    	$imgno = 0;	
+                    	if(isset($companybanner) && $companybanner != '') 
+                    	{
+                    		foreach ($companybanner as $key=>$val)  
+                    		{
+                    			if ($val->banner && file_exists('./uploads/logo/' . $val->banner)) 
+                    			{
+                    			  $imgno++;	?>
+
+	                    <img id="img<?php echo $imgno;?>" style="max-height: 120px;max-width:100%;width:100%;height:100px;display:none;" src="<?php echo site_url('uploads/logo/' . $val->banner) ?>" alt="">
 	                   
-	                <?php } ?>
-	                </div> 
+	                <?php 		} 	
+                    		}
+						}
+					?>
+	                </div>--> 
+					<span class="span7" style="padding-top:2px;width:100%;margin-left:0px;">					
+					 <input type="hidden" name="bannerimgcnt" id="bannerimgcnt" value="<?php if(isset($companybanner) && $companybanner != '') { echo count($companybanner); } else { echo '0'; }?>">
+					
+					<?php 
+					$imgno = 0;	
+                	if(isset($companybanner) && count($companybanner) > 0) 
+                	{ ?>
+                	<div style="width:100%;height:130px; overflow:hidden;">
+                	<?php
+					foreach ($companybanner as $key=>$val)
+					{ ?>
+					
+					<div class="fadeinbannerimg">
+						<img src="<?php echo base_url();?>uploads/logo/<?php echo $val->banner;?>"	alt="<?php if(isset($val->banner)) { echo $val->banner; }else { echo "http://www.materialking.com";} ?>" style="width:100%;height:130px;" onclick="document.location=this.alt;return false;">
+					</div>
+					
+					  <?php } ?>
+					</div>
+					</a>
+					<?php } 	?>
+					</span>
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a></h3>
                     <br/>
 

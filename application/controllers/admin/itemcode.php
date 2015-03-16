@@ -600,11 +600,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	
     	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 		{ 
-         	$img_name = "<img style='max-height: 120px;max-width: 100px;float:right;margin-top:-3em;margin-right:22em' height='120' width='120' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+         	$img_name = "<img style='max-height: 95px;max-width: 220px;float:right;margin-top:-5em;margin-right:22em;margin-bottom:-10px' height='120' width='190' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
          } 
          else 
          { 
-         	$img_name = "<img style='max-height: 120px;max-width: 100px;float:right;margin-top:-3em;margin-right:22em' height='120' width='120' src='".site_url('uploads/item/big.png')."'>";
+         	$img_name = "<img style='max-height: 95px;max-width: 220px;float:right;margin-top:-5em;margin-right:22em;margin-bottom:-10px' height='120' width='190' src='".site_url('uploads/item/big.png')."'>";
          } 
     	$data['title_orders'] = "Orders with the current Item";
     	$data['jsfile'] = 'itemcodeitemjs.php';
@@ -1024,6 +1024,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";
     	$newitemid = $this->db->query($sql)->row();    	
         $data['defaultitemid'] = $newitemid->id+1;
+        $data['itemidexists'] = 0;
         $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
         $this->load->view('admin/itemcode', $data);
     }
@@ -1042,6 +1043,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $sql = "SELECT id FROM " . $this->db->dbprefix('item') . " order by id desc limit 1";
     	$newitemid = $this->db->query($sql)->row();    	
         $data['defaultitemid'] = $newitemid->id+1;
+        $data['itemidexists'] = 0;
         $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
         $this->load->view('admin/itemcode_user', $data);
     }
@@ -1409,6 +1411,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		
         $data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();        
         $data['defaultitemid'] = $id;
+        $data['itemidexists'] = 1;
         if(@$this->session->flashdata('message'))
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
         $this->load->view('admin/itemcode', $data);
@@ -1432,6 +1435,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['items'] = $this->db->get('item')->result();
 		            
         $data['defaultitemid'] = $id;
+        $data['itemidexists'] = 1;
         if(@$this->session->flashdata('message'))
         $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Item Code has been updated.</div>');
         $this->load->view('admin/itemcode_user', $data);
@@ -1462,16 +1466,29 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	{
     		die;
     	}    	
-		if(@$_POST['itemiddefault'])
-    	$insert['itemid'] = $_POST['itemiddefault'];
-    	
-		$insert['manufacturer'] = $_POST['manufacturerdefault'];
-		$insert['partnum'] = $_POST['partnodefault'];
-		$insert['price'] = $_POST['pricedefault'];
-		$insert['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
-		$insert['minqty'] = $_POST['minqtydefault'];
-		$insert['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
-		$defaultitem = $this->db->insert('masterdefault',$insert);
+    	if(@$_POST['itemiddefault'] && @$_POST['itemidexists']==0){
+    		$insert['itemid'] = $_POST['itemiddefault'];
+    		$insert['manufacturer'] = $_POST['manufacturerdefault'];
+    		$insert['partnum'] = $_POST['partnodefault'];
+    		$insert['price'] = $_POST['pricedefault'];
+    		$insert['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
+    		$insert['minqty'] = $_POST['minqtydefault'];
+    		$insert['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
+
+    		/*$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
+//			$query = $this->db->query($sql);*/			
+    		$defaultitem = $this->db->insert('masterdefaulttemp'.$this->session->userdata('timstmp'),$insert);
+    	}elseif (@$_POST['itemiddefault'] && @$_POST['itemidexists']==1){
+    		
+    		$insert['itemid'] = $_POST['itemiddefault'];
+    		$insert['manufacturer'] = $_POST['manufacturerdefault'];
+    		$insert['partnum'] = $_POST['partnodefault'];
+    		$insert['price'] = $_POST['pricedefault'];
+    		$insert['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
+    		$insert['minqty'] = $_POST['minqtydefault'];
+    		$insert['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
+    		$defaultitem = $this->db->insert('masterdefault',$insert);
+    	}
     	if($defaultitem){
     		echo  $defaultitem;
     	}else 
@@ -1492,8 +1509,15 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$update['itemname'] = mysql_real_escape_string($_POST['itemnamedefault']);
 		$update['minqty'] = $_POST['minqtydefault'];
 		$update['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
-		$this->db->where(array('id' => $_POST['id']));
-		$defaultitem = $this->db->update('masterdefault',$update);
+		if(@$_POST['itemidexists']==0){
+			
+			$this->db->where(array('id' => $_POST['id']));
+			$defaultitem = $this->db->update('masterdefaulttemp'.$this->session->userdata('timstmp'),$update);
+			
+		}elseif(@$_POST['itemidexists']==1){
+			$this->db->where(array('id' => $_POST['id']));
+			$defaultitem = $this->db->update('masterdefault',$update);
+		}
     	if($defaultitem){
     		echo  $defaultitem;
     	}else 
@@ -1507,23 +1531,53 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	{
     		die;
     	}
-
-    	$this->db->where('itemid',$_POST['itemiddefault']);
-    	$defaultitems = $this->db->get('masterdefault')->result();
+		if(@$_POST['itemidexists']==1){    	
     	$defaultitems = $this->db->select('md.*,p.title')->where('itemid',$_POST['itemiddefault'])->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+		}elseif (@$_POST['itemidexists']==0){
+			
+		if(!@$this->session->userdata('timstmp'))	
+			$this->session->set_userdata('timstmp',time());
+		
+		$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
+		$query = $this->db->query($sql);
+		
+    	$defaultitems = $this->db->select('md.*,p.title')->from($this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." md")->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+		}		
+		
     	echo json_encode($defaultitems);
     }
     
     
     function deletedefaultitem(){
     	
+    	if(@$_POST['itemidexists']==0){
+			
+			$query = "DELETE FROM ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." WHERE `id` = ".$_POST['id'];
+    		$returnval = $this->db->query($query);
+		}elseif (@$_POST['itemidexists']==1){
+    	
     	$query = "DELETE FROM ".$this->db->dbprefix('masterdefault')." WHERE `id` = ".$_POST['id'];
     	$returnval = $this->db->query($query);
+		}
+		
     	if($returnval)
     	echo "success";
     	else 
     	echo "fail"; die;
     	
+    }
+    
+    
+    function createtmptable(){
+    	
+    	if(!@$this->session->userdata('timstmp'))	
+			$this->session->set_userdata('timstmp',time());
+		
+		$sql = "DROP TABLE IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
+		$query = $this->db->query($sql);
+		
+		$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
+		$query = $this->db->query($sql);
     }
         	 
     function do_upload ()

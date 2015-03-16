@@ -54,10 +54,22 @@ class Inventory extends CI_Controller
 		$data['items'] = $items;
 		//$data['manufacturers'] = $this->db->order_by('title')->get('manufacturer')->result();
 		$data['manufacturers'] = $this->db->order_by('title')->where('category','Manufacturer')->get('type')->result();
+		//echo "<pre>",print_r($data['manufacturers']); die;
+		$i=0;
+		foreach($data['manufacturers'] as $man){
+		$result = $this->db->select('p.*,inf.applied_to_items')->from('type p')->join('company_manufacturer_info inf','p.id=inf.manufacturer', 'left')->where('p.category','Manufacturer')->where('inf.company', $company->id)->where('inf.manufacturer', $man->id)->get()->row();
+		
+		if($result)
+		$data['manufacturers'][$i]->applied_to_items=$result->applied_to_items;
+		else 
+		$data['manufacturers'][$i]->applied_to_items=0;		
+		$i++;
+		}
+		//echo "<pre>",print_r($data['company_manufacturer_info']); die;
 		$data['categories'] = $this->inventorymodel->getcategories();
 		$this->db->where('id',$company->id);
-		$data['company'] = $this->db->get('company')->row();
-				
+		$data['company'] = $this->db->get('company')->row();	
+		
 		//$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
 		$this->load->view('inventory/items',$data);
 	}
@@ -1227,8 +1239,82 @@ class Inventory extends CI_Controller
 				if(@$_POST['instore']==1)
 				$this->modifyitem($res->itemid);
 			}
-			echo "Items set to Selected Manufacturer Successfully"; die;
+			
+		$apparr = array();
+		$apparr['applied_to_items'] = 1;
+		
+		$this->db->where('manufacturer',@$_POST['manufacturer']);
+		$this->db->where('company',$company->id);		
+		$existing = $this->db->get('company_manufacturer_info')->row();
+		if($existing)
+		{
+			$this->db->where('manufacturer',@$_POST['manufacturer']);
+			$this->db->where('company',$company->id);			
+			$this->db->update('company_manufacturer_info',$apparr);
 		}
+		else
+		{
+			$apparr['manufacturer'] = @$_POST['manufacturer'];
+			$apparr['company'] = $company->id;	
+			$this->db->insert('company_manufacturer_info',$apparr);
+		}			
+			
+			echo "Items set to Selected Manufacturer Successfully"; die;
+		}else 
+			echo "No Items Exists For this Manufacturer";
+		
+    }
+    
+    
+    
+    function unsetallitemsmanufacturer(){
+    	
+    	
+		if(!$_POST)
+		die;
+		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$result = $this->db->order_by('itemid')->select('md.itemid,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id')->where('md.manufacturer',$_POST['manufacturer'])->get()->result();		
+		if($result){
+			
+			foreach($result as $res){
+				
+				$this->modifyitemcode($res->itemid,'');
+				$this->modifypartnum($res->itemid,'');
+				$this->modifyitemname($res->itemid, '');
+				$this->modifymanufacturer($res->itemid, '');
+				$this->modifyitemprice($res->itemid, '');
+				$this->modifyminqty($res->itemid, '');
+				
+				/*if(@$_POST['instore']==1)
+				$this->modifyitem($res->itemid);*/
+			}
+			
+		$apparr = array();
+		$apparr['applied_to_items'] = 0;
+		
+		$this->db->where('manufacturer',@$_POST['manufacturer']);
+		$this->db->where('company',$company->id);		
+		$existing = $this->db->get('company_manufacturer_info')->row();
+		if($existing)
+		{
+			$this->db->where('manufacturer',@$_POST['manufacturer']);
+			$this->db->where('company',$company->id);			
+			$this->db->update('company_manufacturer_info',$apparr);
+		}
+		else
+		{
+			$this->db->where('manufacturer',@$_POST['manufacturer']);
+			$this->db->where('company',$company->id);	
+			$this->db->insert('company_manufacturer_info',$apparr);
+		}	
+			
+			echo "Items Unassigned for Selected Manufacturer Successfully"; die;
+		}else 
+			echo "No Items Exists For this Manufacturer";
 		
     }
     

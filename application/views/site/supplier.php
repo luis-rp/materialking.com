@@ -93,10 +93,10 @@ $long = $supplier->com_lng;
 					box-sizing: border-box;
 					-moz-box-sizing: border-box;
 					-webkit-box-sizing: border-box;
-					width: 120px;
-					height: 80px;
+					width: 250px;
+					height: 200px;
 					cursor: pointer;
-					padding: 1px;
+					padding: 17px;
 					border: 1px solid #e7e7e7;
 					margin-left: 1.33333%;
 					margin-bottom: 6px;
@@ -1276,7 +1276,7 @@ function changetab(tabname){
 
                          <p>&nbsp;</p>
 
-                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried:</h3>
+                         <h3 class="titlebox" style="padding:0px 0px 0px 8px">Manufacturers Carried</h3>
 
                             <ul style="float:left; display:inline-block;list-style-type: none; margin:0px; padding:0px;;text-align:center">
             			    <?php
@@ -1286,7 +1286,7 @@ function changetab(tabname){
                             	<li style="display:inline;padding-right:5px;text-align:center">
                                     <a style="text-decoration:none;" href="<?php echo site_url('store/items/'.$supplier->username.'/'.$type->id);?>">
                                     <?php if($type->image){?>
-                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>"/>
+                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>" class="img-resposnsive" height="45" width="120"/>
                                     <?php }else{?>
                                     <?php echo $type->title; ?>
                                     <?php }?>
@@ -1419,22 +1419,31 @@ function changetab(tabname){
                                 ?>
 
                               <div class="supplier_new1">
-                                 <h2><a href="<?php echo site_url('site/item/'.$inv->url);?>"><?php echo $inv->itemcode; ?></a></h2>
-                            <div class="property">
-                                <div class="image span2">
-                                    <div class="content">
-                                    <?php if($inv->image){?>
-                                     <img alt="<?php echo urlencode($inv->itemname); ?>" src="<?php echo site_url('uploads/item/thumbs/'. $inv->image);?>" style="max-height: 120px; padding: 20px;width:120px; height:120px" width="120" height="120">
+                                 <h2 style="height:64px;word-break: break-all;line-height:18px;">
+                                 	<a href="<?php echo site_url('site/item/'.$inv->url);?>">
+                                 		<?php echo $inv->itemcode; ?>
+                                 	</a>
+                                 </h2>
+                                 
+                            <div class="property" style="min-height:320px;height:400px;overflow:auto;">
+                            
+                                <div class="image span2" style="width:150px;">
+                                    <div class="content">                                 
+                                     <?php if($inv->image){ 
+                                    		    if($inv->itemname!="") { $y="No Image"; if(strlen($inv->itemname)>=8)  { $y=substr($inv->itemname,0,8);  }
+												    else  {  echo $y=$inv->itemname; } }  ?>                                    		
+                                     		<img alt="<?php echo urlencode($y); ?>" src="<?php echo site_url('uploads/item/thumbs/'. $inv->image);?>" style="max-height: 120px; padding: 20px;" width="120" height="120">
                                      <?php $imgName = site_url('uploads/item/thumbs/'.$inv->image); ?>
                                      <?php } else {?>
-                                     <img src="<?php echo site_url('uploads/item/big.png');?>" style="max-height: 120px; padding: 20px;width:120px; height:120px;" width="120" height="120">
-                                     <?php $imgName = site_url('uploads/item/big.png'); }?>
-                                    </div>
+                                     <img src="<?php echo site_url('uploads/item/big.png');?>" style="max-height: 120px; padding: 20px;" width="120" height="120">
+                                     <?php $imgName = site_url('uploads/item/big.png'); }?>                                  
                                      <?php if(isset($inv->hasdiscount)){ if($inv->hasdiscount) { ?>
                                                 <div class="price2" style="position:absolute; left:186px; top:5px;">
                                                 <img src="<?php echo base_url(); ?>templates/front/assets/img/icon/discount_icon.png" alt="" width="55" height="55">
                                                 </div>
-                                                <?php } } ?>
+                                     <?php } } ?>
+                                     
+                                    </div>                                  
                                 </div>
 
                                 <div class="body1 span6">
@@ -1448,37 +1457,48 @@ function changetab(tabname){
                                             <?php } ?>
 
                                             <div class="area">
+                                              <div>
                                                 <span class="key"><strong>Item Name:</strong></span>
                                                 <span class="value"><?php echo $inv->itemname ?></span>
-
+                                              </div>
+                                              
+                                              <div>
                                                 <span class="key"><strong>Unit:</strong></span>
                                                 <span class="value">EA</span>
+                                              </div>  
 
-                                                <br>
+                                              <div> 
                                                 <?php if($inv->manufacturername) { ?>
  												 <span class="key"><strong>Manufacturer:</strong></span>
 												 <span class="value"><?php echo $inv->manufacturername; ?></span>
 												 <?php } ?>
-
+                                              </div>
+                                              
+                                              <div>
                                                 <?php if($inv->partnum) { ?>
                                                 <span class="key"><strong>Part #:</strong></span>
                                                 <span class="value"><?php echo $inv->partnum ?></span>
                                                 <?php } ?>
-
+                                              </div>
+                                              
+                                              <div>
                                                  <?php if($inv->qtyavailable) { ?>
 										        <span class="key"><strong>Stock:</strong></span>
 										        <span class="value"><?php echo $inv->qtyavailable;?></span>
 										        <?php } ?>
+										      </div>  
 
-                                                <br/>
+                                              <div>
                                                 <span class="key"><strong>Availability:</strong></span>
                                                 <span class="value"><?php echo $inv->instock?'Available':'Not Available';?></span>
-
+                                             </div>
+                                             
+                                             <div>
                                                 <span class="key"><strong>Min Order Qty:</strong></span>
                                                 <span class="value"><?php echo $inv->minqty ?></span>
-
-                                                </div>
-
+                                            </div>
+                                            
+                                         </div>
                                         </div>
 
                                         <div class="price">

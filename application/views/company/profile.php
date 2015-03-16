@@ -113,6 +113,17 @@ function addEmail()
 	 	upload_number++;
 	}
 	
+	var upload_number = 2;
+	function addFileInput3() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile3[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads3").appendChild(d);
+	 	upload_number++;
+	}
+	
 	 function checkForm(form) 
 	 { 
 	 	 //re = /^[w]+$/; 
@@ -558,20 +569,33 @@ function addEmail()
 										    	</div>
 									   </div>
 									   
-									  <div class="form-group">
+									  
+    								 <?php } ?>
+    								 <div class="form-group">
 				                        <label class="form-label">Banner</label>
 				                        
 				                        <div class="controls">
-				                          <input type="file"  name="banner" id="banner"/>
-				                           <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
-				                          <?php if($company->banner){?>
-				                          <br/>
-				                          <img class="img-responsive" src="<?php echo site_url('uploads/logo/'.$company->banner);?>" width="900" height="100"/>
-				                          <?php }?>
+				                        <table class="table table-striped">
+												<tr>
+													<th>Banner</th><th>Delete</th>
+												</tr>
+												<?php  foreach($companybanner as $bannerdetail)  { ?>
+												<tr>
+													<td><img src="<?php echo site_url('uploads/logo/'.$bannerdetail->banner);?>" height="15%" width="75%" class="img-thumbnail" alt="<?php echo $bannerdetail->banner;?>"/></td>
+													<td><a class="close"  href="<?php echo base_url("company/deletebannerimage/".$bannerdetail->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+												</tr>
+												<?php } ?>
+											</table>
+				                         <!-- <input type="file"  name="banner" id="banner"/>-->
+				                          <!-- <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">-->
+				                          <label class="form-label">Add Files</label>
+										  <input type="file" name="UploadFile3[]" id="UploadFile3" onchange="document.getElementById('moreUploadsLink3').style.display = 'block';" />
+										  <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
+												<div id="moreUploads3"></div>
+										    <div id="moreUploadsLink3" style="display:none;"><a href="javascript:addFileInput3();">Add another File</a>
+											</div>
 				                        </div>
 				                      </div>
-    								 <?php } ?>
-    								 
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">

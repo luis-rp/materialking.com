@@ -23,21 +23,34 @@
 				    <table class="table table-bordered">
 				    	<tr>
 				    		<th width="15%">Item Code</th>
-				    		<th>Company</th>
-				    		<th width="20%">Item Name</th>
-				    		<th>Qty.</th>
-				    		<th>Unit</th>
-				    		<th>Price EA</th>
-				    		<th>Total Price</th>
-				    		<th>Date Requested</th>
-				    		<th>Cost Code</th>
-				    		<th>Notes</th>
+				    		<th width="8%">Item Image</th>
+				    		<th width="10%">Company</th>
+				    		<th width="15%">Item Name</th>
+				    		<th width="5%">Qty.</th>
+				    		<th width="5%">Unit</th>
+				    		<th width="5%">Price EA</th>
+				    		<th width="5%">Total Price</th>
+				    		<th width="10%">Date Requested</th>
+				    		<th width="10%">Cost Code</th>
+				    		<th width="10%">Notes</th>
 				    	</tr>
 				    	<?php $alltotal=0; 
 				    	
-				    	foreach($quoteitems as $q){?><?php $alltotal+=$q->totalprice;?>
+				    	foreach($quoteitems as $q)
+				    	{?><?php $alltotal+=$q->totalprice;
+				    	
+				    		if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
+							 { 
+							 	 $imgName = site_url('uploads/item/'.$q->item_img); 
+							 } 
+							 else 
+							 { 
+							 	 $imgName = site_url('uploads/item/big.png'); 
+	                         }
+				    	?>
 				    	<tr>
 				    		<td><?php echo $q->itemcode;?></td>
+				    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
 				    		<td><?php echo $q->title;?></td>
 				    		<td><?php echo $q->itemname;?></td>
 				    		<td><?php echo $q->quantity;?></td>

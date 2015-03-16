@@ -41,7 +41,7 @@ class Store extends CI_Controller
         $this->data['page_titile'] = "Items List";
         $items = $items->items;
         
-        
+        $this->data['companybanner']=$this->db->get_where('companybanner',array('companyid'=>$company,'isdeleted'=>0))->result();
         $this->data['supplier'] = $this->supplier_model->get_supplier($username);
         
         $id = $this->data['supplier']->id;

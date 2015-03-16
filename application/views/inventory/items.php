@@ -69,6 +69,8 @@
 
 <?php echo '<script>var getpreloadoptionsurl ="' . site_url('inventory/getpreloadoptions') . '";</script>' ?> 
 
+<?php echo '<script>var unsetallitemsmanufacturerurl ="' . site_url('inventory/unsetallitemsmanufacturer') . '";</script>' ?>
+
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
 	});
@@ -760,11 +762,31 @@ function setitemsmanufacturer(manufacturerid){
 		 	location.reload();
 		});
 		
-		$('.checkmanufacturercls').prop('checked', false);
-		$('#checkmanufacturer'+manufacturerid).prop('checked', true);
+		/*$('.checkmanufacturercls').prop('checked', false);
+		$('#checkmanufacturer'+manufacturerid).prop('checked', true);*/
 		
 	}
+	
+	if (!$('#checkmanufacturer'+manufacturerid).is(':checked') ) {		
+	
+	$.ajax({
+			type:"post",
+			data: "manufacturer="+manufacturerid,			
+			url: unsetallitemsmanufacturerurl
+		}).done(function(data){		
+			
+		 	alert(data);
+		 	location.reload();
+		});
+		
+		/*$('.checkmanufacturercls').prop('checked', false);
+		$('#checkmanufacturer'+manufacturerid).prop('checked', false);*/
+		
+	}
+	
+	
 }
+
             
 </script>
 
@@ -1304,7 +1326,7 @@ function setitemsmanufacturer(manufacturerid){
              Manufacturer
             </div>
             <div class="col-md-2">
-             Set Items
+             Set/Unset Items
             </div>                    
           </div> 
         
@@ -1325,7 +1347,7 @@ function setitemsmanufacturer(manufacturerid){
              echo $mf->title." (".$count.")";?>
             </div>            
              <div class="col-md-2">              
-              <span>&nbsp;&nbsp;<input type="checkbox" class="checkmanufacturercls" name="checkmanufacturer<?php echo $mf->id;?>" id="checkmanufacturer<?php echo $mf->id;?>" value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
+              <span>&nbsp;&nbsp;<input type="checkbox" class="checkmanufacturercls" name="checkmanufacturer<?php echo $mf->id;?>" id="checkmanufacturer<?php echo $mf->id;?>" <?php if(@$mf->applied_to_items==1) echo 'checked'; ?>  value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
             </div>            
           </div>      
            <?php } ?>

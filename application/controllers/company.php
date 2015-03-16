@@ -333,6 +333,7 @@ class Company extends CI_Controller {
 		$data['image']=$this->db->get_where('companyattachment',array('company'=>$company->id))->result();
 		$data['files']=$this->db->get_where('company_files',array('company'=>$company->id))->result();
 		$data['gallery']=$this->db->get_where('gallery',array('company'=>$company->id))->result();
+		$data['companybanner']=$this->db->get_where('companybanner',array('companyid'=>$company->id,'isdeleted'=>0))->result();
 		$data['members']=$this->db->where('cid',$company->id)->get("companyteam")->result();
         $this->db->where('company', $company->id);
         $emails = $this->db->get('companyemail')->result();
@@ -486,7 +487,7 @@ class Company extends CI_Controller {
                 }
             }
 
-	        if (isset($_FILES['banner']['tmp_name']))
+	       /* if (isset($_FILES['banner']['tmp_name']))
 	        {
 	            if (is_uploaded_file($_FILES['banner']['tmp_name'])) {
 	                $nfn = $_FILES['banner']['name'];
@@ -498,7 +499,7 @@ class Company extends CI_Controller {
 	                    $_POST['banner'] = $nfn;
 	                }
 	            }    
-	        }      
+	        }*/      
 	        
             if(isset($_FILES['UploadFile']['name']))
             {
@@ -593,6 +594,26 @@ class Company extends CI_Controller {
 
             }
 
+            if(isset($_FILES['UploadFile3']['name']))
+                {
+            	ini_set("upload_max_filesize","128M");
+            	$target='uploads/logo/';
+            	$count=0;
+            	foreach ($_FILES['UploadFile3']['name'] as $filename)
+            	{
+            		$temp=$target;
+            		$tmp=$_FILES['UploadFile3']['tmp_name'][$count];
+            		$origionalFile=$_FILES['UploadFile3']['name'][$count];
+            		$count=$count + 1;
+            		$temp=$temp.basename($filename);
+            		move_uploaded_file($tmp,$temp);
+            		$temp='';
+            		$tmp='';
+                    if(isset($filename) && $filename!=''){
+            		$this->db->insert('companybanner', array('companyid' => $company->id, 'banner' => $filename,'isdeleted'=>0));}
+            	}
+
+            }
 
          $completeaddress="";
             if($_POST['street'])
@@ -2664,6 +2685,24 @@ class Company extends CI_Controller {
 		$this->email->set_mailtype("html");
 		$this->email->send();
 	    }
-	}   
+	}
+
+	function deletebannerimage($id)
+	{
+		$rows['companybanner']=$this->db->get_where('companybanner',array('id'=>$id))->row();
+		$name=$rows['companybanner']->banner;
+
+		if(file_exists('./uploads/logo/'.$name) && !is_dir('./uploads/logo/'.$name))
+		{
+			unlink('./uploads/logo/'.$name);
+		}
+
+		$this->db->update('companybanner',array('isdeleted'=>1) ,array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+	    $res['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		redirect("company/profile");
+
+	}
     
 }

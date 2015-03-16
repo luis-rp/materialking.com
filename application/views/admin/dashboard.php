@@ -411,8 +411,7 @@
 			
 			</div>			
 			<br/>
-			<div class="well span4" id="step2">
-             
+			<div class="well span4" id="step2">            
 				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
 				<table class="table table-bordered stat">
 	   			<tr>
@@ -542,20 +541,22 @@
 				<br><br>
 		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>		
 				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
+				
 				<table class="table table-bordered">
 				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
 				 <?php if(count($suppliers)>0){ foreach ($suppliers as $supplier) { ?>
 				<tr>
-				<td><?php echo $supplier->title; ?></td>
-				<td> <?php if (isset($supplier->city) && isset($supplier->state)) {  
+				<td style="word-break:break-all;"><?php echo $supplier->title; ?></td>
+				<td style="word-break:break-all;"> <?php if (isset($supplier->city) && isset($supplier->state)) {  
 					  echo $supplier->city.",&nbsp;".$supplier->state; } else { echo $supplier->address; } ?>
                 </td>
-				<td><?php echo $supplier->industry; ?></td>
-				<td><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>" target="_blank">View-Apply</a></td>
+				<td style="word-break:break-all;"><?php echo $supplier->industry; ?></td>
+				<td style="word-break:break-all;"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>" target="_blank">View-Apply</a></td>
 				</tr>
 				  <?php } } else{ ?>
 				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
 				</table>
+				
 			<?php } ?>	
 			
 			

@@ -3,6 +3,7 @@
 <?php echo '<script>var deletedefaultitemurl="'.site_url('admin/itemcode/deletedefaultitem').'";</script>'?>
 <?php echo '<script>var updatemasterdefaulturl="'.site_url('admin/itemcode/updatemasterdefault').'";</script>'?>
 <?php echo '<script>var deletefilesurl="'.site_url('admin/itemcode/deletefiles').'";</script>'?>
+<?php echo '<script>var createtmptableurl="'.site_url('admin/itemcode/createtmptable').'";</script>'?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -37,7 +38,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 
-	$( window ).load(function() { fetchmasterdefaults(); });
+	$( window ).load(function() {  createtmptable();  fetchmasterdefaults(); });
 
     $(document).ready(function() {        
         $('#itemcodedate').datepicker();
@@ -75,7 +76,7 @@ $(document).ready(function(){
 
        // $('#tagsInput').tagsinput();
        
-       fetchmasterdefaults();
+       //fetchmasterdefaults();
        
     });
 
@@ -122,6 +123,7 @@ $(document).ready(function(){
     {    	
     	var minqtydefault = $("#minqtydefault").val();
     	var itemnamedefault = $("#itemnamedefault").val();
+    	var itemidexists = $("#itemidexists").val();
     	var pricedefault = $("#pricedefault").val();
     	var pricedefault = Number(pricedefault);    	
     	var partnodefault = $("#partnodefault").val();
@@ -129,7 +131,7 @@ $(document).ready(function(){
     	var itemiddefault = $("#itemiddefault").val();
     	var itemcodedefault = $("#itemcodedefault").val();
     	
-    	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
+    	var data = "itemiddefault="+itemiddefault+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault+"&itemidexists="+itemidexists;
         
     	if(minqtydefault<=0)
         alert("Minimum Quantity required => 1");
@@ -156,13 +158,14 @@ $(document).ready(function(){
     	
     	var minqtydefault = $("#minqtydefault"+id).val();
     	var itemnamedefault = $("#itemnamedefault"+id).val();
+    	var itemidexists = $("#itemidexists").val();
     	var pricedefault = $("#pricedefault"+id).val();
     	var pricedefault = Number(pricedefault);    	
     	var partnodefault = $("#partnodefault"+id).val();
 		var manufacturerdefault = $("#manufacturerdefault"+id).val();    	
 		var itemcodedefault = $("#itemcodedefault"+id).val();  
     	
-    	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault;
+    	var data = "id="+id+"&partnodefault="+partnodefault+"&manufacturerdefault="+manufacturerdefault+"&pricedefault="+pricedefault+"&itemnamedefault="+itemnamedefault+"&minqtydefault="+minqtydefault+"&itemcodedefault="+itemcodedefault+"&itemidexists="+itemidexists;
         
     	if(minqtydefault<=0)
         alert("Minimum Quantity required => 1");
@@ -187,8 +190,9 @@ $(document).ready(function(){
     
     
     function fetchmasterdefaults(){
-    	var itemiddefault = $("#itemiddefault").val();    	
-    	var data = "itemiddefault="+itemiddefault;
+    	var itemiddefault = $("#itemiddefault").val();  
+    	var itemidexists = $("#itemidexists").val();  	
+    	var data = "itemiddefault="+itemiddefault+"&itemidexists="+itemidexists;
            	
     	$.ajax({
     		type:"post",
@@ -252,11 +256,23 @@ $(document).ready(function(){
     	
     }
     
-    function deldefaultoption(id){
+    
+    function createtmptable(){
     	
     	$.ajax({
+    		type:"post",    		
+    		dataType : 'json',
+    		url: createtmptableurl
+    	}).done(function(data){
+    		
+    	});    	
+    }
+    
+    function deldefaultoption(id){
+    	var itemidexists = $("#itemidexists").val();
+    	$.ajax({
     		type:"post",
-    		data: "id="+id,
+    		data: "id="+id+"&itemidexists="+itemidexists,
     		url: deletedefaultitemurl,
     		sync:false
     	}).done(function(data){
@@ -557,7 +573,7 @@ $(document).ready(function(){
                     </div> 
                                         
                     <div class="control-group noxls">
-                        <label class="control-label">File</label>
+                        <label class="control-label">Item Image </label>
                         <div class="controls">
                         	<?php if ($this->session->userdata('usertype_id') == 1) { ?>
                             <input type="file" name="userfile" size="20"  />
@@ -580,7 +596,7 @@ $(document).ready(function(){
                                        {
                                        	echo "<br /><strong>Existing Files :</strong>&nbsp;<br />";
                                        	$files=explode(',',@$this->validation->files);
-                                       	$filecount=count($files) - 1; 
+                                       	$filecount=count($files); 
                                        	   if(@$this->validation->filename)
                                        	   {
                                        	     $filename=explode(',',@$this->validation->filename);
@@ -893,6 +909,7 @@ $(document).ready(function(){
                                         </tbody>
                                     </table>
                                    <input type="hidden" name="itemiddefault" id="itemiddefault" value="<?php echo @$defaultitemid;?>" />
+                                   <input type="hidden" name="itemidexists" id="itemidexists" value="<?php echo @$itemidexists;?>" />
                             </div>
                 
                 
