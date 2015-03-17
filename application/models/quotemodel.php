@@ -282,6 +282,15 @@ class Quotemodel extends Model
             return array();
     }
 
+    
+    function getlowestbidprice($quote, $itemid) {
+        
+        $sql = "SELECT ea as price, bi.id FROM " . $this->db->dbprefix('bid') . " b join " . $this->db->dbprefix('biditem') . " bi on  bi.bid=b.id WHERE b.quote='$quote' AND itemid='$itemid'";        
+        $result = $this->db->query($sql)->result();
+        return $result;
+    }
+    
+    
 	function getquotesubtotal($id)
 	{
 		$sql ="SELECT SUM(totalprice) subtotal

@@ -996,7 +996,7 @@ class quote extends CI_Controller
              
         //    echo "<pre>"; print_r($_POST); die;
             
-            if(isset($nonnetuser)){
+            if(isset($nonnetuser) && $nonnetuser!=""){
             		
             		$nonarray=explode(",",$nonnetuser);
             		

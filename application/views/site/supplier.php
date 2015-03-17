@@ -1425,7 +1425,7 @@ function changetab(tabname){
                                  	</a>
                                  </h2>
                                  
-                            <div class="property" style="min-height:320px;height:400px;overflow:auto;">
+                            <div class="property" style="min-height:320px;height:400px;">
                             
                                 <div class="image span2" style="width:150px;">
                                     <div class="content">                                 
@@ -1448,7 +1448,7 @@ function changetab(tabname){
 
                                 <div class="body1 span6">
                                     <div class="title-price row">
-                                        <div class="title1 span5">
+                                        <div class="title1 span5" style="min-height:100px;height:180px;overflow:auto;">
 
                                             <?php if(!empty($inv->companynotes)){?>
                                             <div class="company-note" style="height:120px;overflow:auto;">
@@ -1514,6 +1514,7 @@ function changetab(tabname){
                                         <?php } ?>
                                         </div>
                                     </div>
+                                    
                                 </div>
                         </div>
                         </div>

@@ -341,6 +341,7 @@ $(document).ready(function(){
 	    		/*if(data)
 	    		{*/
 	    			alert("Image Deleted Successfully.");
+	    			location.reload();
 	    		//}
 	    	});	
 		}	
@@ -434,7 +435,12 @@ $(document).ready(function(){
                         </div>
                     </div>
                     
-                    
+                     <div class="control-group noxls">
+                        <label class="control-label">Featured Item </span></label>
+                        <div class="controls">
+                            <input type="checkbox" id="fi" name="fi"  <?php echo @$this->validation->fi?'checked="CHECKED"':''?>" >
+                        </div>
+                    </div>
                     
                     
 					<?php if(0){?>
@@ -471,6 +477,8 @@ $(document).ready(function(){
                             <?php echo $this->validation->itemname_error; ?>
                         </div>
                     </div>
+                    
+                    
                     
                     <div class="control-group noxls">
                         <label class="control-label">Item Description</label>
@@ -591,35 +599,54 @@ $(document).ready(function(){
 						 <div class="controls">
 						
 						  <?php 
-						  
+						  $comma = '';
+						  $filecount = 0;
+						  $newfileCnt = 0;
 						  if(@$this->validation->files)
-                                       {
-                                       	echo "<br /><strong>Existing Files :</strong>&nbsp;<br />";
-                                       	$files=explode(',',@$this->validation->files);
+                          {
+                                       	echo "<strong>Existing Files :</strong>";
+                                      
+                                       	$files=explode(',',rtrim(@$this->validation->files, ","));
                                        	$filecount=count($files); 
                                        	   if(@$this->validation->filename)
                                        	   {
                                        	     $filename=explode(',',@$this->validation->filename);
                                        	     $filenamecount=count($filename); 	
                                        	   }
+                                       	   if($filecount > 1)
+                                       	    {
+                                       	    	$comma = ",";
+                                       	    }
                                        	    /*if($filecount==$filenamecount) 
                                                  {*/
+                                       	  
+                                       	 
                           ?>
-                           <div style="height:150px;overflow-y:auto;"> 
+                           <div style="height:150px;overflow-y:auto;" class="span10"> 
                            <table class="table table-bordered" style="background-color:#fff">
-                           <?php             	   
+                           <?php        
+                             
                                for ($x=0; $x<$filecount; $x++)
-                                 {                                        
-                                   if(file_exists("./uploads/item/".$files[$x])) {  ?>                                   
-                           
-                           <tr><td>
-                           		<a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].'<br>'; ?></a>  
-                           	</td>
-                           	<td>
-                           		<a href="#">
-                           			<img src="<?php echo site_url('/templates/front/assets/img/icon/delete.ico') ;?>" onclick="removefile('<?php echo $files[$x].","; ?>',this)">
-                           		</a>
-                           	</td> </tr>	
+                               {                                        
+                                   if(file_exists("./uploads/item/".$files[$x])) 
+                                   {  
+                                   	 		/*$newfileCnt++;
+                                   	 
+                                   			if($newfileCnt > 1)
+                                       	    {
+                                       	    	$comma = ",";
+                                       	    }*/
+                                   	?>   
+	                           <tr>
+		                            <td>
+		                           		<a href="<?php echo site_url('uploads/item') . '/' . $files[$x]; ?>" target="_blank"> <?php echo $files[$x].'<br>'; ?></a>  
+		                           	</td>
+		                           	<td>
+		                           		<a href="#">
+		                           			<img src="<?php echo site_url('/templates/front/assets/img/icon/delete.ico') ;?>" onclick="removefile('<?php echo $files[$x].$comma; ?>',this)">
+		                           		</a>
+		                           	</td> 
+	                           	</tr>	
                           
                               <?php    } } ?> 
 							 </table> 	

@@ -634,8 +634,11 @@ class items_model extends Model {
         
         $return->totalresult = $this->db->query($query)->num_rows();
         
-        if(@$orderlookup!="")
-        $orderlookup = "order by ".$orderlookup." desc";
+        if(@$orderlookup!="") {
+        $orderlookup = "order by ".$orderlookup." desc";}
+        else {
+        	 $orderlookup = "order by fi desc";
+        }
         
         $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} $where  GROUP BY i.id $orderlookup LIMIT $start, $limit";
         //echo $query;//die;

@@ -49,7 +49,7 @@ $(document).ready(function() {
 		backLink: false
 	});
 	
-	$.widget( "app.autocomplete", $.ui.autocomplete, {
+	/*$.widget( "app.autocomplete", $.ui.autocomplete, {
         
         // Which class get's applied to matched text in the menu items.
         options: {
@@ -75,7 +75,7 @@ $(document).ready(function() {
             
         }
         
-    });	
+    });*/	
     
 	 if($("#quoteCnt").val() == 0)
 	   {
@@ -438,6 +438,14 @@ function usedefaultaddresscheckchange()
 
 <script type="text/javascript">
 $(function() {
+	
+	$.ui.autocomplete.prototype._renderItem = function (ul, item) {
+    item.label = item.label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(this.term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span class='ui-state-highlight'>$1</span>");
+    return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.label + "</a>")
+            .appendTo(ul);
+};
     
     //autocomplete
     $(".costcode").autocomplete({

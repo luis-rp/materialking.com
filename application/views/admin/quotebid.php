@@ -106,7 +106,7 @@ $(document).ready(function(){
         }
     });*/
 
-    $.widget( "app.autocomplete", $.ui.autocomplete, {
+    /*$.widget( "app.autocomplete", $.ui.autocomplete, {
         
         // Which class get's applied to matched text in the menu items.
         options: {
@@ -132,7 +132,7 @@ $(document).ready(function(){
             
         }
         
-    });	
+    });*/	
    if($("#quoteCnt").val() == 0)
    {
     	$("#newitemrow").css('display','');
@@ -569,11 +569,20 @@ $(function() {
             $('#attachchkbox').attr('checked','checked');
             <?php }*/ ?>
     //xmltype6();
+    
+    $.ui.autocomplete.prototype._renderItem = function (ul, item) {
+    item.label = item.label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(this.term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<span class='ui-state-highlight'>$1</span>");
+    return $("<li></li>")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.label + "</a>")
+            .appendTo(ul);
+};
+    
     //autocomplete
     $(".costcode").autocomplete({
         source: "<?php echo base_url(); ?>admin/quote/findcostcode",
         minLength: 1
-    });
+    });  
     
     //autocomplete
     $(".itemcode").autocomplete({

@@ -593,7 +593,7 @@ class Company extends CI_Controller {
             	}
 
             }
-
+	
             if(isset($_FILES['UploadFile3']['name']))
                 {
             	ini_set("upload_max_filesize","128M");
@@ -609,13 +609,29 @@ class Company extends CI_Controller {
             		move_uploaded_file($tmp,$temp);
             		$temp='';
             		$tmp='';
-                    if(isset($filename) && $filename!=''){
-            		$this->db->insert('companybanner', array('companyid' => $company->id, 'banner' => $filename,'isdeleted'=>0));}
+            		$bannerUrl = (isset($_POST['bannerurl']) && $_POST['bannerurl'][$count] != '') ? $_POST['bannerurl'][$count] : '';
+                    if(isset($filename) && $filename!='')
+                    {
+            			$this->db->insert('companybanner', array('companyid' => $company->id, 'banner' => $filename,'bannerurl'=> $bannerUrl,'isdeleted'=>0));
+                    }
             	}
 
             }
+            
+            if(isset($_POST['bannerurl']) && $_POST['bannerurl']!='')
+            {
+            	foreach ($_POST['bannerurl'] as $key=>$val)
+            	{            		
+            		$check = $this->db->get_where('companybanner',array('id'=>$key))->row();
+            		
+            		if(isset($check))
+            		{
+            			$this->db->update('companybanner',array('bannerurl'=> $val),array('id'=>$key));
+            		}
+            	}
+            }
 
-         $completeaddress="";
+         	$completeaddress="";
             if($_POST['street'])
             {
             	$completeaddress.=$_POST['street'].",";
@@ -712,6 +728,7 @@ class Company extends CI_Controller {
         unset($_POST['password']);      
         unset($_POST['pwd']);
         }  
+        unset($_POST['bannerurl']);
         $this->db->where('id', $company->id);
         
         $this->db->update('company', $_POST);

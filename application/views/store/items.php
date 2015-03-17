@@ -464,18 +464,23 @@ $( document ).tooltip();
                 	<div style="width:100%;height:130px; overflow:hidden;">
                 	<?php
 					foreach ($companybanner as $key=>$val)
-					{ ?>
+					{ 
+						if ($val->banner && file_exists('./uploads/logo/' . $val->banner)) { ?>
 					
-					<div class="fadeinbannerimg">
-						<img src="<?php echo base_url();?>uploads/logo/<?php echo $val->banner;?>"	alt="<?php if(isset($val->banner)) { echo $val->banner; }else { echo "http://www.materialking.com";} ?>" style="width:100%;height:130px;" onclick="document.location=this.alt;return false;">
+					<div class="fadeinbannerimg">					
+						<img src="<?php echo base_url();?>uploads/logo/<?php echo $val->banner;?>"	alt="<?php if(isset($val->bannerurl)) { echo $val->bannerurl; }else { echo "http://www.materialking.com";} ?>" style="width:100%;height:130px;" onclick="window.open('<?php if(isset($val->bannerurl)) { echo $val->bannerurl; }else { echo "http://www.materialking.com";} ?>','_blank');return false;" >
 					</div>
 					
-					  <?php } ?>
+					  <?php } } ?>
 					</div>
 					</a>
 					<?php } 	?>
 					</span>
-                    <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a></h3>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
+	                &nbsp;&nbsp;&nbsp;    <a href="<?php echo site_url('store/items/'.$company->username);?>">
+	        				Back to Store Home
+	        			</a>
+        			</h3>
                     <br/>
 
                 	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>
@@ -711,6 +716,7 @@ $( document ).tooltip();
                             			<a href="<?php echo site_url('site/supplier/'.$company->username);?>">
                             			<h4>Back to Profile</h4>
                             			</a>
+                            			
                         			</td>
                         		</tr>
                         	</tbody></table>

@@ -210,12 +210,15 @@
                             <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
 
-                            		<table style="border:0px !important;float:left;"><form method="post" action="<?php echo site_url('admin/itemcode');?>">
+                            		<table style="border:0px !important;float:left;">
+                            		<form method="post" action="<?php echo site_url('admin/itemcode');?>">
                             		<tr><td  style="border:0px !important;">Category:</td>
-                            		<td  style="border:0px !important;"> <select id="searchcategory" name="searchcategory" style="width: 120px;">
+                            		<td style="border:0px !important;"> 
+                            		<select id="searchcategory" name="searchcategory" style="width: 200px;">
                                         <option value=''>All Categories</option>
                                         <?php
-                                        foreach ($categories as $cat) { ?>
+                                         echo $categories;
+                                        /*foreach ($categories as $cat) { ?>
                                             <option value="<?php echo $cat->id ?>"
                                             <?php
                                             if (@$_POST['searchcategory'] == $cat->id) {
@@ -225,7 +228,7 @@
                                                     >
                                             <?php echo $cat->catname ?>
                                             </option>
-                                        <?php } ?>
+                                        <?php }*/ ?>
                                     </select></td>
                                     <td  style="border:0px !important;"> <button type="search" class="btn"><i class="icon-search"></i></button>
                                      </td>

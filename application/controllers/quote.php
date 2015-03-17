@@ -996,6 +996,31 @@ class Quote extends CI_Controller
 				$item->showinventorylink = true;
 			}
 			
+			$item->firstplacebid=0;
+			if($draftitems){
+        		
+        		$resultmin = $this->quotemodel->getlowestbidprice(@$quote->id,$item->itemid);
+        		if($resultmin){
+        			$lesservalue = "";
+        			$lesserbiditemid = "";
+        			$i=0;
+        			foreach($resultmin as $resm){
+        				if($i==0){
+        					$lesservalue = $resm->price;
+        					$lesserbiditemid = $resm->id;
+        				}else{
+        					if($lesservalue > $resm->price){
+        						$lesservalue = 	$resm->price;
+        						$lesserbiditemid = $resm->id;
+        					}
+        				}
+        				$i++;
+        			}
+        			if($lesserbiditemid == $item->id)
+        			   $item->firstplacebid=1;	
+        		}        		
+        	}
+			
 			$item->priceset = 0;
 			$item->comppriceset = 0;
 			

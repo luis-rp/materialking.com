@@ -384,7 +384,8 @@ class itemcode extends CI_Controller
 
         //uksort($array, 'strcasecmp');
 
-        $data['categories'] = $this->itemcode_model->getcategories(); ;
+       // $data['categories'] = $this->itemcode_model->getcategories(); ;
+        $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','',@$_POST['searchcategory']);
 
         if ($this->session->userdata('usertype_id') == 2)
         {
@@ -1343,6 +1344,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->featuredsupplier = $item->featuredsupplier;
         $this->validation->instore = $item->instore;
         $this->validation->zoom = $item->zoom;
+        $this->validation->fi = $item->fi;
         $this->validation->wiki = $item->wiki;
         $this->validation->listinfo = $item->listinfo;
         $this->validation->url = $item->url;
@@ -1804,6 +1806,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $fields['featuredsupplier'] = 'featuredsupplier';
         $fields['instore'] = 'instore';
         $fields['zoom'] = 'zoom';
+        $fields['fi'] = 'fi';
         $fields['wiki'] = 'wiki';
         $fields['url'] = 'url';
         $fields['length'] = 'length';
@@ -2545,6 +2548,10 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     //links
     function savearticlelink($articleid)
     {
+    	if (!preg_match("~^(?:f|ht)tps?://~i", $_POST['link'])) 
+    	{
+        $_POST['link'] = "http://" .$_POST['link'];
+        }
 		$insert = array();
 		$insert['article'] = $articleid;
 		$insert['title'] = $_POST['title'];

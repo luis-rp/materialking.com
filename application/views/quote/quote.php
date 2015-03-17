@@ -691,6 +691,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    	<thead>
 							    	<tr>
 							    		<th>Item Name</th>
+							    		<th>&nbsp;</th>
 							    		<th>Qty</th>
 							    		<th width="100">Unit</th>
 							    		<th>Price</th>
@@ -751,6 +752,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<?php }?>
 							    		
 							    		</td>
+							    		<td>&nbsp;</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->unit;?></td>
 							    		<td><?php echo $originalitems[$q->itemid]->ea==0?"RFQ":"$".$originalitems[$q->itemid]->ea;?></td>	
@@ -775,6 +777,12 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 	                                        else { ?>
 	                                            <img style="max-height: 120px; padding: 5px;" src="<?php echo base_url(); ?>templates/site/assets/img/default/big.png" alt="">
 	                                        <?php $imgName = site_url('uploads/item/big.png');  } ?>
+							    		</td>
+							    		<td>
+							    		<?php if(@$q->firstplacebid && file_exists("./uploads/logo/firstplace.jpg")) 
+								    		{ ?>
+	                                                 <img style="max-height: 120px; padding: 5px;" height="75" width="75" src="<?php echo site_url('uploads/logo/firstplace.jpg') ?>" alt="<?php echo "First Place";?>">
+	                                        <?php }?> 
 							    		</td>
 							    		<td><input type="text" class="highlight nonzero nopad width50 input-sm" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>');" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg<?php echo $q->id;?>"></span>
 							    								    		
@@ -978,7 +986,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
                               <strong>Item Price:</strong>
                             </div>
                             <div class="col-md-6">
-                              <input type="text" id="itemformpricet" name="ea" required>
+                              <input type="text" id="itemformpricet" name="ea" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required>
                             </div>
                           </div>
                         </div>      

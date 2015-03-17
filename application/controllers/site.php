@@ -2747,7 +2747,7 @@ class site extends CI_Controller
                     }
                     else 
                     {
-                    	$src=base_url().'templates/site/assets/img/default/big.png';
+                    	$src=site_url('uploads/item/big.png');
                     }
                                        
     				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
@@ -2782,7 +2782,16 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
+    				if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
+                    {
+                    	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
+                    }
+                    else 
+                    {
+                    	$src=site_url('uploads/item/big.png');
+                    }
+                    
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td rowspan="6"><img src="'.$src.'" height="100px" width="100px"></td><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
                             $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
@@ -2851,7 +2860,7 @@ class site extends CI_Controller
                     }
                     else 
                     {
-                    	$src=base_url().'templates/site/assets/img/default/big.png';
+                    	$src=site_url('uploads/item/big.png');
                     }
                                        
     				$itemdata = '<div class="table-responsive"><table class="table" style="background-color:white;width:100%;"><tr><td><img src="'.base_url().'templates/site/assets/img/icons/cross.png" style="position:relative;cursor:pointer;" onclick="hidetagdescription(\'view_'.$rs->id.'\');"/>&nbsp;<strong>'.$rs->name.'</strong></td><td><img src="'.$src.'" height="100px" width="100px"></td></tr><tr><td colspan="2">'.$item->itemcode.'</td></tr><tr><td colspan="2">'.$item->itemname.'</td></tr><tr><td colspan="2">'.$rs->description.'</td></tr><tr><td>$'.$item->ea.'</td><td><a class = "btn btn-green" target="blank" href="'.base_url().'site/item/'.$item->url.'">More Info</a></td></tr></table></div></div></div>';
@@ -2885,7 +2894,16 @@ class site extends CI_Controller
     					$item->itemcode = $companyitem->itemcode;
     				}
 
-    				$itemdata = '<table class="table table-bordered;" style="background-color:white;width:98%;"><tr><td><strong>'. $rs->name.'</strong><td><tr><tr><td>
+    				if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
+                    {
+                    	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
+                    }
+                    else 
+                    {
+                    	$src=site_url('uploads/item/big.png');
+                    }
+                    
+    				$itemdata = '<table class="table table-bordered;" style="background-color:white;width:98%;"><tr><td><strong>'. $rs->name.'</strong><td><td rowspan="6"><img src="'.$src.'" height="100px" width="120px"></td><tr><tr><td>
     				<strong>Item Code:&nbsp;</strong>'.$item->itemcode.'</td></tr><tr><td><strong>Item Name:&nbsp;</strong>'.$item->itemname.'</td></tr>
     				<tr><td><strong>Price:&nbsp;</strong>$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">
     				<strong>View Item</strong></a></td></tr>';

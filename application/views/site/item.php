@@ -1059,7 +1059,7 @@ $( document ).tooltip();
 </div>
                         <?php if($amazon){ ?>
                        <div class="newbox">
-                        <table class="table table-bordered">
+                         <table class="table table-bordered">
                             <tr>
                                 <th>Amazon Item Name</th>
                                 <th>Item Price</th>
@@ -1072,7 +1072,23 @@ $( document ).tooltip();
                                 <td><a target="_blank" href="<?php echo $amazon->amazon_url; ?>">Click here</a></td>
                             </tr>
 
-                        </table>
+                        </table> 
+                        
+<script type="text/javascript" language="javascript">
+var amzn_assoc_ad_type = "contextual";
+var amzn_assoc_tracking_id = "tactic03-20";
+var amzn_assoc_marketplace = "amazon";
+var amzn_assoc_region = "US";
+var amzn_assoc_placement = "SEJ6ODWYHLLADOUU";
+var amzn_assoc_linkid = "SEJ6ODWYHLLADOUU";
+var amzn_assoc_emphasize_categories = "2619525011, 1055398, 228013";
+var amzn_assoc_fallback_products = "";
+var amzn_assoc_width = "728";
+var amzn_assoc_height = "90";
+</script>
+<script type="text/javascript" language="javascript" src="//z-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&Operation=GetScript&ID=OneJS&WS=1&MarketPlace=US&source=ac"></script>
+
+                        
 </div>
                         <?php } ?>
                         <?php if(count($inventory)!=0){?>                         

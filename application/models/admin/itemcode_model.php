@@ -655,6 +655,12 @@ class itemcode_model extends Model {
     	else 
     	$primarycategory = "";
     	
+    	$fi;
+    	if(@$_POST['fi'] && $_POST['fi']=='on')
+    	$fi=1;   
+    	else 
+    	$fi =0;
+    	
     	
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
@@ -681,7 +687,8 @@ class itemcode_model extends Model {
 	        'files' => $name,
 	        'filename' => $filename,
 	        'searchquery' => $this->input->post('searchquery'),
-	        'increment' => $this->input->post('increment')
+	        'increment' => $this->input->post('increment'),
+	        'fi' => $fi
         );
 
         if(@$this->session->userdata('purchasingadmin'))
@@ -837,6 +844,12 @@ class itemcode_model extends Model {
     	else 
     	$primarycategory = "";
     	
+    	$fi;
+    	if(@$_POST['fi'] && $_POST['fi']=='on')
+    	$fi=1;   
+    	else 
+    	$fi =0;
+    	
         $options = array(
             'itemcode' => $this->input->post('itemcode'),
             'itemname' => $this->input->post('itemname'),
@@ -864,7 +877,8 @@ class itemcode_model extends Model {
         	'files' => $name,
 	        'filename' => $filename,
 	        'searchquery' => $this->input->post('searchquery'),
-	        'increment' => $this->input->post('increment')
+	        'increment' => $this->input->post('increment'),
+	        'fi' => $fi
         );
         
     	if($_FILES["userfile"]["name"]=="")

@@ -116,10 +116,29 @@ function addEmail()
 	var upload_number = 2;
 	function addFileInput3() {
 	 	var d = document.createElement("div");
+	 	var tr1 = document.createElement("tr");
+	 	var td1 = document.createElement("td");
+	 	var td2 = document.createElement("td");
+	 	var td3 = document.createElement("td");
+	 	
 	 	var file = document.createElement("input");
 	 	file.setAttribute("type", "file");
 	 	file.setAttribute("name", "UploadFile3[]");
-	 	d.appendChild(file);
+	 	
+	 	var text = document.createElement("input");
+	 	text.setAttribute("type", "text");
+	 	text.setAttribute("name", "bannerurl[]");
+	 	
+	 	td1.appendChild(file);
+	 	td2.appendChild(text);
+	 //	td1.appendChild(td2);
+	 	
+	 	tr1.appendChild(td1);
+	 	tr1.appendChild(td2);
+	 	tr1.appendChild(td3);
+	 	
+	 	d.appendChild(tr1);
+	 	
 	 	document.getElementById("moreUploads3").appendChild(d);
 	 	upload_number++;
 	}
@@ -577,23 +596,39 @@ function addEmail()
 				                        <div class="controls">
 				                        <table class="table table-striped">
 												<tr>
-													<th>Banner</th><th>Delete</th>
+													<th>Banner</th><th>Banner URL</th><th>Delete</th>
 												</tr>
 												<?php  foreach($companybanner as $bannerdetail)  { ?>
 												<tr>
 													<td><img src="<?php echo site_url('uploads/logo/'.$bannerdetail->banner);?>" height="15%" width="75%" class="img-thumbnail" alt="<?php echo $bannerdetail->banner;?>"/></td>
+													<td>
+														<input type="text" name="bannerurl[<?php echo $bannerdetail->id;?>]" id="bannerurl_<?php echo $bannerdetail->id;?>" value="<?php if(isset($bannerdetail->bannerurl) && $bannerdetail->bannerurl != '') echo $bannerdetail->bannerurl; else echo '';?>"> 
+													</td>
 													<td><a class="close"  href="<?php echo base_url("company/deletebannerimage/".$bannerdetail->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>
-											</table>
+										
 				                         <!-- <input type="file"  name="banner" id="banner"/>-->
 				                          <!-- <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">-->
+										  <tr>
+										  <td>
 				                          <label class="form-label">Add Files</label>
 										  <input type="file" name="UploadFile3[]" id="UploadFile3" onchange="document.getElementById('moreUploadsLink3').style.display = 'block';" />
-										  <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs" style="margin-left: 87%;">
+										  </td>
+										  <td>
+										  <input type="text" name="bannerurl[]" id="bannerurl" value="">
+										  </td>
+										  <td>
+										  <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs">
+										  </td>
+										  </tr>
+										  <tr>
+										  <td colspan="4">
 												<div id="moreUploads3"></div>
 										    <div id="moreUploadsLink3" style="display:none;"><a href="javascript:addFileInput3();">Add another File</a>
 											</div>
+											</td> </tr>
+											</table>	
 				                        </div>
 				                      </div>
 				                      <div class="form-group">
