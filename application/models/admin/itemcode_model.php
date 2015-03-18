@@ -62,7 +62,7 @@ class itemcode_model extends Model {
 				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
                 $where
                 GROUP BY i.id
-                ORDER BY IFNULL(a.awardedon,o.purchasedate) DESC LIMIT $newoffset, $limit ";
+                ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
        
         $query = $this->db->query($sql);
         if ($query->result()) {

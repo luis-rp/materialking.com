@@ -76,7 +76,8 @@
 						<div class="date pull-right">
 								<a class="remove" href="<?php echo site_url('admin/dashboard/close/'.$newnote->id);?>">X</a>
 						  </div>
-							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
+							<!-- <a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');"> -->
+							<a href="<?php echo site_url('admin/dashboard/close/'.$newnote->id);?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 								<div class="user-profile">
 									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/alert.png">

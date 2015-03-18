@@ -313,7 +313,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	    		<ul class="links">
 
 					<li class="service-links-pinterest-button">
-						<a href="//www.pinterest.com/pin/create/button/?url=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php if(isset($a_title)) echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
+					<a href="//www.pinterest.com/pin/create/button/?url=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id); ?>&amp;media=&amp;description=<?php if(isset($a_title)) echo $a_title; ?>" data-pin-do="buttonPin" data-pin-config="beside"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" /></a>
 						<script type="text/javascript" async src="//assets.pinterest.com/js/pinit.js"></script>
 					</li>
 
@@ -347,14 +347,11 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 						<iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/tweet_button.1384205748.html#_=1384949257081&amp;count=horizontal&amp;counturl=<?php if(isset($a_id)) echo base_url("site/ad/".$a_id) ?>&amp;id=twitter-widget-0&amp;lang=en&amp;original_referer=<?php echo base_url("site/ad/".$a_id) ?>&amp;size=m&amp;text=<?php if(isset($a_title)) echo $a_title ?>&amp;url=<?php if(isset($a_title)) echo $a_title; ?>&amp;via=drupads" class="twitter-share-button service-links-twitter-widget twitter-tweet-button twitter-count-horizontal" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 107px; height: 20px;"></iframe>
 					</li>
 				</ul>
-
-				<div class="ad-detail-content">
-
-	    			<?php if(isset($a_description)) echo $a_description;?>
-
-
-
+            <div><span style="font-size:14px;font-weight:bold;color:black;">Description</span>
+				<div class="ad-detail-content" style="margin-top:10px;background-color:white;min-height:20px;text-align:center;font-weight:bold;border:1px solid #e4e4e4">
+	    			<p style="padding-top:10px;"><?php if(isset($a_description)) echo $a_description;?></p>
 	    		</div>
+	    	</div>	
 	    		<?php if(!empty($a_tags)){?>
 				<div class="ads-tags">
 

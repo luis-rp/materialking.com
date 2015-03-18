@@ -721,7 +721,7 @@ class costcode extends CI_Controller {
 				 { 
 				 	 $imgName = '<img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="80" width="100" src="'. site_url('uploads/item/big.png').'" alt="">'; 
                  }
-                 
+                $wherecode = ""; 
                 if(@$this->session->userdata('managedprojectdetails')->id){
             		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
 				}

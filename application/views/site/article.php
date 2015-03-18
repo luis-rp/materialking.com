@@ -17,7 +17,7 @@
                             	<!-- AddThis Button END -->                        	</td>
                     	</tr>
                     </table>
-                    <div class="property-detail">
+                    <div class="property-detail" style="color:black;">
                         <?php echo $article->content;?>
                     </div>
                 </div>

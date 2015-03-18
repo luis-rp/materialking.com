@@ -93,7 +93,7 @@ function invoice(invoicenum,invoicequote)
 		</div>
 
 	   <div id="container">
-	   		<div class="combofixed" id="tablebox" style="position:relative; padding:2% 2% 0% 0%; margin:0px; width:100%; background:#FFF">
+	   		<div class="combofixed" id="tablebox" style="position:relative; padding:2% 2% 0% 0%; margin:0px; width:100%; background:#FFF;z-index:1;">
 
 				<form method="post" class="form-inline"  action="<?php echo site_url('quote/invoices') ?>">
 				<table cellpadding="0" style="margin-top:40px;width:100%;word-wrap:break-word;">

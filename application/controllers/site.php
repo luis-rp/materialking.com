@@ -2791,12 +2791,12 @@ class site extends CI_Controller
                     	$src=site_url('uploads/item/big.png');
                     }
                     
-    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td rowspan="6"><img src="'.$src.'" height="100px" width="100px"></td><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
+    				 $itemdata = '<div class="table-responsive"><table class="table table-striped"><tr><td rowspan="2"><img src="'.$src.'" height="100px" width="100px"></td><td><strong>'. $rs->name .'</strong></td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>&nbsp;</td><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>&nbsp;</td><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td>&nbsp;</td><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				    				
     				if ($this->session->userdata('site_loggedin')){
-                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
+                            $itemdata .= '<tr><td><a style="width:100px" class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="addtopo('.$item->id.','.$item->increment.')"> <i class="icon icon-plus"></i> Add to RFQ</a></td></tr>';
                     }else{
-                            $itemdata .= '<tr><td><a class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
+                            $itemdata .= '<tr><td><a style="width:100px" class="btn btn-primary btn-xs"  href="javascript:void(0)" onclick="openrfqpopup();"> <i class="icon icon-plus"></i>Add to RFQ</a></td></tr>'; }
     				
     				
                     $itemdata .='</table></div>';
@@ -3064,7 +3064,8 @@ class site extends CI_Controller
             $data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
         }
-		
+		$data['page_title']=$data['details']->name;
+    	$data['page_description']=$data['details']->name;
     	$this->load->view('site/designbookdetail',$data);
     }
 	public function price_check ()

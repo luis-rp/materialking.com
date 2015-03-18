@@ -136,13 +136,12 @@ padding:5px 0px;
 {
 	width: 100%;
 	min-height: 200px;
-	height: 250px; !important;
-	height: 20px;
+	/*height: 250px; !important;*/
 	/*float: left;*/
 	padding: 10px;
 	margin-left: 20px;
 	color: #000;
-	overflow:scroll;
+	/*overflow:scroll;*/
 	
 }
 #taglist OL
@@ -151,9 +150,7 @@ padding:5px 0px;
 	float: left;
 	cursor: pointer;
 }
-#taglist OL A
-{
-}
+
 #taglist OL A:hover
 {
 	text-decoration: underline;
@@ -486,7 +483,7 @@ function viewtag(pic_id,company)
                   <br> 
                </div>
                </div>
-               
+               <br />
                <div>
                	<div id="taglist"></div>
                </div> 

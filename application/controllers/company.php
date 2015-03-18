@@ -593,7 +593,7 @@ class Company extends CI_Controller {
             	}
 
             }
-	
+       
             if(isset($_FILES['UploadFile3']['name']))
                 {
             	ini_set("upload_max_filesize","128M");
@@ -604,33 +604,46 @@ class Company extends CI_Controller {
             		$temp=$target;
             		$tmp=$_FILES['UploadFile3']['tmp_name'][$count];
             		$origionalFile=$_FILES['UploadFile3']['name'][$count];
-            		$count=$count + 1;
+            		
             		$temp=$temp.basename($filename);
             		move_uploaded_file($tmp,$temp);
             		$temp='';
             		$tmp='';
-            		$bannerUrl = (isset($_POST['bannerurl']) && $_POST['bannerurl'][$count] != '') ? $_POST['bannerurl'][$count] : '';
+            		
+            		
+            		if (isset($_POST['bannerurl'][$count]) && $_POST['bannerurl'][$count] != '' && !preg_match("~^(?:f|ht)tps?://~i", $_POST['bannerurl'][$count])) 
+			    	{
+			        	$_POST['bannerurl'][$count] = "http://" .$_POST['bannerurl'][$count];
+			        }
+			        
+            		$bannerUrl = (isset($_POST['bannerurl'][$count]) && $_POST['bannerurl'][$count] != '') ? $_POST['bannerurl'][$count] : '';
+            		
                     if(isset($filename) && $filename!='')
                     {
-            			$this->db->insert('companybanner', array('companyid' => $company->id, 'banner' => $filename,'bannerurl'=> $bannerUrl,'isdeleted'=>0));
+            		 	$this->db->insert('companybanner', array('companyid' => $company->id, 'banner' => $filename,'bannerurl'=> $bannerUrl,'isdeleted'=>0));
                     }
+                    $count=$count + 1;
             	}
 
             }
-            
+           
             if(isset($_POST['bannerurl']) && $_POST['bannerurl']!='')
             {
             	foreach ($_POST['bannerurl'] as $key=>$val)
             	{            		
             		$check = $this->db->get_where('companybanner',array('id'=>$key))->row();
             		
+            		if (isset($val) && $val != '' && !preg_match("~^(?:f|ht)tps?://~i", $val)) 
+			    	{
+			        	$val = "http://" .$val;
+			        }
+			        
             		if(isset($check))
             		{
             			$this->db->update('companybanner',array('bannerurl'=> $val),array('id'=>$key));
             		}
             	}
             }
-
          	$completeaddress="";
             if($_POST['street'])
             {
@@ -732,7 +745,7 @@ class Company extends CI_Controller {
         $this->db->where('id', $company->id);
         
         $this->db->update('company', $_POST);
-//echo '<pre>',print_r($_POST);die;
+
         if($this->input->post('address'))
         {
             $geoloc = get_geo_from_address($this->input->post('address'));

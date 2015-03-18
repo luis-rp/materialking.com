@@ -1095,14 +1095,14 @@ function changetab(tabname){
                         <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
                                 <div class="span4" id="mydiv">
-                                   <div>
-                                        <?php if($supplier->logo !=""){?>
-                                                <img  src="<?php echo site_url('uploads/logo/'.$supplier->logo);?>" class="img-responsive" width="300" height="150" alt="Company Logo"/>
-                                                <?php } else {?>
-                                          <img src="<?php echo base_url(); ?>templates/site/assets/img/logo.png" class="img-responsive" width="300" height="150" alt="company logo"/>
-                                        <?php } ?>
+                                  <!-- <div>
+                                        <?php //if($supplier->logo !=""){?>
+                                                <img  src="<?php //echo site_url('uploads/logo/'.$supplier->logo);?>" class="img-responsive" width="300" height="150" alt="Company Logo"/>
+                                                <?php // } else {?>
+                                          <img src="<?php //echo base_url(); ?>templates/site/assets/img/logo.png" class="img-responsive" width="300" height="150" alt="company logo"/>
+                                        <?php //} ?>
 										
-                                   </div><br />
+                                   </div><br />-->
                                     <h2 class="name"><?php echo $supplier->title;?> </h2>
                                     <table class="table" width="100%" style="font-size: 12px;">
                                         <tr>
@@ -1504,8 +1504,13 @@ function changetab(tabname){
                                         <div class="price">
 
                                            <?php if($inv->price){?>
-                                           <div id="parent">
-                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price</div>
+                                          <div id="parent">
+                                         
+                                           <img src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" height="22" width="22"
+												  title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price
+                                        	
+                                        </div>
+                                        	
                                        <?php }else{?>
                                             <span> <?php echo '$'.$inv->ea;?> <?php echo $inv->unit;?></span>
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'<?php echo $imgName;?>');">

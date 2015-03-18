@@ -473,12 +473,12 @@ function getcatitem(catid){
 		data: "catid="+catid,
 		success: function(items) //we're calling the response json array 'cities'
 		{
-			$('#selectboxid').html('<select name="catiditem" id="catiditem" ></select>');
+			$('#selectboxid').html('<select onkeypress="showselectimage();" onmouseover="showselectimage();"  name="catiditem" id="catiditem" ></select>');
 			$.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
 			{
-				var opt = $('<option />'); // here we're creating a new select option with for each city
+				var opt = $('<option title="'+myItems[1]+'" />'); // here we're creating a new select option with for each city
 				opt.val(id);
-				opt.text(myItems);
+				opt.text(myItems[0]);
 				$('#catiditem').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
 				//savclose();
 			});
@@ -611,6 +611,16 @@ function showspanimage(image,itemid){
 	var imagehtml = '<img src="'+image+'" width="64"/>';	
 	$("#imgsp"+itemid).html(imagehtml);
 }	
+
+
+function showselectimage(){	
+	$("#imgselect").html('');	
+	$("#imgselectpos2").html('');
+	var imagehtml = '<img src="'+$('#catiditem :selected').attr('title')+'" width="64"/>';	
+	$("#imgselect").html(imagehtml);	
+	$("#imgselectpos2").html(imagehtml);	
+}
+
 
 </script>
 
@@ -1088,7 +1098,7 @@ function showspanimage(image,itemid){
 
         
         <div id="selectItemWindow">
-       		 <h2>Item Filter</h2>
+       		 <h2>Item Filter  &nbsp; <span class="imgselect" id="imgselect"></span> </h2>
                     
                     <div>
                             <input type="hidden" name="keyword" value="<?php echo isset($keyword)?$keyword:"";?>"/>
@@ -1120,6 +1130,8 @@ function showspanimage(image,itemid){
                             <div id="selectboxid"></div>
                        <div style="clear:both;"></div>
                        <div align="center"><button aria-hidden="true" data-dismiss="modal" class="btn btn-primary" type="button" onclick="javascript:savclose()">Save</button></div>
+                       
+                       &nbsp; <span style="margin-left:150px;" class="imgselectpos2" id="imgselectpos2"></span>
                        
                     </div>
         </div>

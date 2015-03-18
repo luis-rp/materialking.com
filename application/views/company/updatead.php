@@ -4,13 +4,9 @@
 <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tagsinput.min.js" type="text/javascript"></script>
 
 <script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
-<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script>                
-<style>
-.dataTables_filter
-{
-	margin-right:30px;
-}
-</style>
+<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script>  
+<script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>                
+
 
  <script type="text/javascript">// <![CDATA[
  $(document).ready(function(){
@@ -51,203 +47,165 @@ function checkEnter(event)
 
     <div class="content">  
     	<?php echo $this->session->flashdata('message'); ?>
-		
-	   <div id="container">
-                     <div class="combofixed">       
-                      
-                       
-                       
-<section class="row-fluid">
-    <div class="page-title">	
-			<h3>Update Ad</h3>		
-		</div>		
-    <div class="box">
-            <div class="span12">
-
-                <?php echo @$message; ?>
-                <?php echo $this->session->flashdata('message'); ?>
-                <a class="btn btn-green" href="<?php echo site_url('company/ads'); ?>">&lt;&lt; Back</a>
-                <br/>
-                <form class="" method="post" action="<?php echo base_url("company/updatead/".$adsid); ?>" enctype="multipart/form-data">
-                <input type="hidden" name="adsid" id="adsid" value="<?php if(isset($adsid)) echo $adsid;?>"
-                <div  style="width:100%; float:left;">
-         
-                    <br/>
-
-                  
+		<div class="page-title">	
+			<h3>Update Ad  <a class="btn btn-primary btn-sm btn-small" href="<?php echo site_url('company/ads'); ?>">&lt;&lt; Back</a></h3>		
+		</div>	
+	    <div id="container">
+            <?php echo @$message; ?>
+                <div class="row">
+                 <div class="col-md-12">
+                    <div class="grid simple ">                                                  
+                        <div class="grid-body no-border">
+                           <div class="row">   
+               
+			                <form class="animated fadeIn" method="post" action="<?php echo base_url("company/updatead/".$adsid); ?>" enctype="multipart/form-data" role="form">
+			                <input type="hidden" name="adsid" id="adsid" value="<?php if(isset($adsid)) echo $adsid;?>">
+						      <div class="col-md-10 col-sm-10 col-xs-10">
+						                     
+			                    <div class="form-group">
+			                        <label class="form-label">Title</label>
+			                        <div class="controls">
+			                            <input type="text" id="title" name="title" class="form-control" value='<?php if(isset($ads[0]->title)) echo $ads[0]->title; else echo '';?>' onkeydown="return checkEnter(event);">
+			                        </div>
+			                    </div>
+			                    
+			                    <div class="form-group">    
+			                        <label class="form-label">Address</label>
+			                        <div class="controls">
+			                            <input type="text" id="address" name="address" class="form-control" value='<?php if(isset($ads[0]->address)) echo $ads[0]->address; else echo '';?>' autocomplete="off"  onkeydown="return checkEnter(event);" >
+			                        </div>
+			                        <span class=".sr-only">Start typing an address and select from the dropdown.</span>
+			                    </div>
+			                        
+			                   
+			                    <div class="form-group">
+			                        <label class="form-label">Price</label>
+			                        <div class="controls">
+			                            <input type="text" id="price" name="price" class="form-control" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>' onkeydown="return checkEnter(event);">		                         
+			                        </div>
+			                    </div>
                     
-                    <div class="control-group">
-                    
-                    <div style="float:left;">
-                        <label class="control-label">Title</label>
-                        <div class="controls">
-                            <input type="text" id="title" name="title" class="span10" value='<?php if(isset($ads[0]->title)) echo $ads[0]->title; else echo '';?>' onkeydown="return checkEnter(event);">
-                            <?php //echo $this->validation->itemcode_error; ?>
-                        </div>
-                        </div>
-                         <div style="float:left; margin-left:40px;">
-                        <label class="">Address</label>
-                        <div class="">
-                            <input type="text" id="address" name="address" class="span10" value='<?php if(isset($ads[0]->address)) echo $ads[0]->address; else echo '';?>' autocomplete="off" style="float:left;" onkeydown="return checkEnter(event);" >
-                            <p class="help-block" style="float:left;margin-left:10px;" >Start typing an address and select from the dropdown.</p>
-                        </div>
-                        </div>
-                    </div>
-<div style="clear:both;"></div>
-                    <div class="control-group">
-                        <label class="control-label">Price</label>
-                        <div class="controls">
-                            <input type="text" id="price" name="price" class="span10" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>' onkeydown="return checkEnter(event);">
-                         
-                        </div>
-                    </div>
-                    
-                     <div class="control-group">
-                        <label class="control-label">Category</label>
-                        <div class="controls">
-                            <select id="category" name="category">
-                            	<?php 
-                            	$selCategory = "";
-                            		foreach($categories as $cat){
-                            		if(isset($ads[0]->category))
-                            		{
-                            			if($ads[0]->category == $cat->id)
-                            			{
-                            				$selCategory = " selected ";
-                            			}
-                            			else 
-                            			{
-                            				$selCategory = "";
-                            			}
-                            		}
-                            		?>
-                            	<option value="<?php echo $cat->id;?>" <?php echo $selCategory;?> ><?php echo $cat->catname;?></option>
-                            	<?php }?>
-                            </select>
-                        </div>
-                    </div>
+				                 <div class="form-group">
+				                     <label class="form-label">Category</label>
+				                       <div class="controls">
+				                            <select id="category" name="category">
+				                            	<?php 
+				                            	$selCategory = "";
+				                            		foreach($categories as $cat){
+				                            		if(isset($ads[0]->category))
+				                            		{
+				                            			if($ads[0]->category == $cat->id)
+				                            			{
+				                            				$selCategory = " selected ";
+				                            			}
+				                            			else 
+				                            			{
+				                            				$selCategory = "";
+				                            			}
+				                            		}
+				                            		?>
+				                            	<option value="<?php echo $cat->id;?>" <?php echo $selCategory;?> ><?php echo $cat->catname;?></option>
+				                            	<?php }?>
+				                            </select>
+				                        </div>
+				                    </div>
                     
                       
-                     <div class="control-group">
-                        <label class="control-label">Item</label>
-                        <div class="controls">
-                            <select id="items" name="items">
-                            	<?php 
-                            		$selitem = "";
-                            		foreach($items as $item){
-                            		if($ads[0]->itemid == $item->id)
-                            			{
-                            				$selitem = " selected ";
-                            			}
-                            			else 
-                            			{
-                            				$selitem = "";
-                            			}
-                            		?>
-                            	<option value="<?php echo $item->id;?>" <?php echo $selitem;?> ><?php echo $item->itemcode;?></option>
-                            	<?php }?>
-                            </select>
-                        </div>
-                    </div>
-                    
-             
- 
-                   
-                        
-							<div style="clear:both;"></div>
-                            <div id="map-container" style="padding-top: 32px;">
-						    <div id="map-canvas"></div>
-
-							<script>
-                                $('#map-canvas').locationpicker({
-                                location: {latitude: <?php echo $ads[0]->latitude; ?>, longitude: <?php echo $ads[0]->longitude; ?>},	
-                                radius: 300,
-                                inputBinding: {
-                                    latitudeInput: $('#latitude'),
-                                    longitudeInput: $('#longitude'),
-                                    locationNameInput: $('#address')        
-                                },
-                                enableAutocomplete: true,
-                                onchanged: function(currentLocation, radius, isMarkerDropped) {
-                                    alert("Location changed. New location (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");					
-                                    $('#latitude').val(currentLocation.latitude);	
-                                    $('#longitude').val(currentLocation.longitude);                                   
-                                   
-                                }	
-                                });
-							</script>
-                        
-                   </div>
-         <div style="clear:both;"></div>
-             
-                    <div class="control-group">
-                        <label class="control-label">Latitude</label>
-                        <div class="controls">
-                        	<input type="text" id="latitude" name="latitude" class="span10" value="<?php if(isset($ads[0]->latitude)) echo $ads[0]->latitude;?> "> 
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label class="control-label">Longitude</label>
-                        <div class="controls">
-                            <input type="text" id="longitude" name="longitude" class="span10" value="<?php if(isset($ads[0]->longitude)) echo $ads[0]->longitude;?>">
-                            
-                        </div>
-                    </div>
-          
-                    
-       
-
-                    <div class="control-group">
-                        <label class="control-label">File</label>
-                        <div class="controls">
-                            <input type="file" name="adfile[]" multiple size="20"  />
-                            <a href="<?php echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  
-                            </a> 
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Description</label>
-                        <div class="controls">
-                            <textarea class="span10" rows="10" id="description" name="description" ><?php if(isset($ads[0]->description)) echo $ads[0]->description;?></textarea>
-                        </div>
-                    </div>
-                       <div class="control-group">
-                        <label class="control-label">Tags</label>
-                        <div class="controls">
-                             <input type="text" id="tags" name="tags" class="span10" value='<?php if(isset($ads[0]->tags)) echo $ads[0]->tags;?>'  data-role="tagsinput">
-                        </div>
-                    </div>
-                 
-                    <div class="control-group">
-                            <label class="control-label">&nbsp;</label>
-                            <div class="controls">
-                                <input name="add" type="submit" class="btn btn-primary" value="Update Ads"/>
-                            </div>
-                    </div>
-             
-
-                </div>
-                </form>
-            </div>
-    </div>
-	<!--<div class="control-group">
-                    <label class="control-label">Attachment</label>
-                    <div class="controls">
-                        <form action="<?php //echo base_url();    ?>admin/itemcode/fileupload" id="uploadfrm" name="uploadfrm" enctype="multipart/form-data" method="post">
-      <input type="file" id="filesel" name="filesel"  >
-      <input type="submit" name="btnupload" class="btn btn-primary" value="Upload" />
-
-        </form>
-    </div>
-    </div>-->
-</section>
-                       
-                       
-                      </div>
-                  
-		
-		
+				                     <div class="form-group">
+				                        <label class="form-label">Item</label>
+				                        <div class="controls">
+				                            <select id="items" name="items">
+				                            	<?php 
+				                            		$selitem = "";
+				                            		foreach($items as $item){
+				                            		if($ads[0]->itemid == $item->id)
+				                            			{
+				                            				$selitem = " selected ";
+				                            			}
+				                            			else 
+				                            			{
+				                            				$selitem = "";
+				                            			}
+				                            		?>
+				                            	<option value="<?php echo $item->id;?>" <?php echo $selitem;?> ><?php echo $item->itemcode;?></option>
+				                            	<?php }?>
+				                            </select>
+				                        </div>
+				                    </div>
+				               
+			                        <div id="map-container" style="padding-top: 32px;">
+									<div id="map-canvas" style="border:1px solid #e4e4e4;"></div>
 			
+								    <script>
+			                                $('#map-canvas').locationpicker({
+			                                location: {latitude: <?php echo $ads[0]->latitude; ?>, longitude: <?php echo $ads[0]->longitude; ?>},	
+			                                radius: 300,
+			                                inputBinding: {
+			                                    latitudeInput: $('#latitude'),
+			                                    longitudeInput: $('#longitude'),
+			                                    locationNameInput: $('#address')        
+			                                },
+			                                enableAutocomplete: true,
+			                                onchanged: function(currentLocation, radius, isMarkerDropped) {
+			                                    alert("Location changed. New location (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");					
+			                                    $('#latitude').val(currentLocation.latitude);	
+			                                    $('#longitude').val(currentLocation.longitude);                                   
+			                                   
+			                                }	
+			                                });
+								    </script>
+					                        
+					                    <div class="form-group">
+					                        <label class="form-label">Latitude</label>
+					                        <div class="controls">
+					                        	<input type="text" id="latitude" name="latitude" class="form-control" value="<?php if(isset($ads[0]->latitude)) echo $ads[0]->latitude;?> "> 
+					                        </div>
+					                    </div>
+					
+					                    <div class="form-group">
+					                        <label class="form-label">Longitude</label>
+					                        <div class="controls">
+					                            <input type="text" id="longitude" name="longitude" class="form-control" value="<?php if(isset($ads[0]->longitude)) echo $ads[0]->longitude;?>">				                            
+					                        </div>
+					                    </div>					       
+					
+					                    <div class="form-group">
+					                        <label class="form-label">Image</label>
+					                        <div class="controls">
+					                            <input type="file" name="adfile[]" multiple size="20"  />
+					                            <a href="<?php echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  
+					                            </a> 
+					                        </div>
+					                    </div>
+					                    
+					                    <div class="control-group">
+					                        <label class="control-label">Description</label>
+					                        <div class="controls">
+					                            <textarea rows="10" cols="40" class="form-control ckeditor" id="description" name="description" ><?php if(isset($ads[0]->description)) echo $ads[0]->description;?></textarea>
+					                        </div>
+					                    </div>
+					                    
+					                   <div class="form-group">
+					                        <label class="form-label">Tags</label>
+					                        <div class="controls">
+					                             <input type="text" id="tags" name="tags" class="form-control" value='<?php if(isset($ads[0]->tags)) echo $ads[0]->tags;?>'  data-role="tagsinput">
+					                        </div>
+					                    </div>
+					                 
+					                    <div class="form-group">
+					                            <label class="form-label">&nbsp;</label>
+					                            <div class="controls">
+					                                <input name="add" type="submit" class="btn btn-primary" value="Update Ad"/>
+					                            </div>
+					                    </div>
+					            					
+					                </div>
+					              </form>
+					            </div>
+					        </div>
+	  					</div>
+      				</div>
+   				 </div>
+  			 </div>
 		</div>
-	  </div> 
+    

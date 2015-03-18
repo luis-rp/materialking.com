@@ -875,14 +875,19 @@ class items_model extends Model {
         if ($where)
            $where = " WHERE " . implode(' AND ', $where) . " ";
         
-            $query = "SELECT itemcode, itemname FROM ".$this->db->dbprefix('item').' i '. $where;
+            $query = "SELECT itemcode, itemname,item_img FROM ".$this->db->dbprefix('item').' i '. $where;
         	$result = $this->db->query($query)->result();
         $items = array();
 		//echo "<pre>",print_r($result);  die;
 		if($result){
 			 foreach ($result as $item) {
-				$items[$item->itemcode] = $item->itemname;
-			 } // echo "<pre>",print_r($items); die;
+				//$items[$item->itemcode] = $item->itemname;
+				if(@$item->item_img && file_exists("./uploads/item/".$item->item_img))
+				$imgName = site_url('uploads/item/'.$item->item_img);
+				else
+				$imgName = site_url('uploads/item/big.png');
+				$items[$item->itemcode] = array("{$item->itemname}","{$imgName}");
+			 }  //echo "<pre>",print_r($items); die;
 			 return $items;
 		}else{
 		 	return FALSE;

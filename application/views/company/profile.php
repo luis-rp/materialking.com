@@ -619,15 +619,16 @@ function addEmail()
 										  <input type="text" name="bannerurl[]" id="bannerurl" value="">
 										  </td>
 										  <td>
-										  <input type="submit" value="Save/Upload" class="btn btn-primary btn-xs">
+										  <!--<input type="submit" value="Save/Upload" class="btn btn-primary btn-xs">-->
 										  </td>
 										  </tr>
-										  <tr>
+										  <tr id="lastUploadFile">
 										  <td colspan="4">
-												<div id="moreUploads3"></div>
+											<div id="moreUploads3"></div>
 										    <div id="moreUploadsLink3" style="display:none;"><a href="javascript:addFileInput3();">Add another File</a>
 											</div>
-											</td> </tr>
+											</td> 
+										  </tr>
 											</table>	
 				                        </div>
 				                      </div>
