@@ -42,6 +42,17 @@ function checkEnter(event)
        return false;
     }
 } 
+
+var upload_number = 2;
+	function addFileInput() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads").appendChild(d);
+	 	upload_number++;
+	}
  
 </script>
 
@@ -81,7 +92,11 @@ function checkEnter(event)
 			                    <div class="form-group">
 			                        <label class="form-label">Price</label>
 			                        <div class="controls">
-			                            <input type="text" id="price" name="price" class="form-control" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>' onkeydown="return checkEnter(event);">		                         
+			                            <input type="text" id="price" name="price" class="form-control" value='<?php if(isset($ads[0]->price)) echo $ads[0]->price; else echo '';?>' onkeydown="return checkEnter(event);"  style="width:150px;">		                         
+			                        </div>
+			                         <label class="form-label">Price Unit</label>
+			                        <div class="controls">
+			                            <input type="text" id="priceunit" name="priceunit" class="form-control" value='<?php if(isset($ads[0]->priceunit)) echo $ads[0]->priceunit; else echo '';?>' onkeydown="return checkEnter(event);"  style="width:150px;">		                         
 			                        </div>
 			                    </div>
                     
@@ -169,17 +184,32 @@ function checkEnter(event)
 					                        </div>
 					                    </div>					       
 					
-					                    <div class="form-group">
+					                   <div class="form-group">
 					                        <label class="form-label">Image</label>
 					                        <div class="controls">
-					                            <input type="file" name="adfile[]" multiple size="20"  />
-					                            <a href="<?php echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  
+					                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
+					                            <div id="moreUploads"></div>
+					                            <div id="moreUploadsLink" style="display:none;">
+					                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
+												</div><br />
+					                            <!--<a href="<?php //echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  -->
+					                            <table class="table table-striped">
+												<tr>
+													<th>Image</th><th>Delete</th>
+												</tr>
+												<?php  foreach($image as $items)  { ?>
+												<tr>
+													<td><img src="<?php echo site_url('uploads/AdImage/'.$items->image);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->image;?>"/></td>
+													<td><a class="close"  href="<?php echo base_url("company/deleteadimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+												</tr>
+												<?php } ?>
+											</table>
 					                            </a> 
 					                        </div>
-					                    </div>
+					                    </div>	
 					                    
-					                    <div class="control-group">
-					                        <label class="control-label">Description</label>
+					                    <div class="form-group">
+					                        <label class="form-label">Description</label>
 					                        <div class="controls">
 					                            <textarea rows="10" cols="40" class="form-control ckeditor" id="description" name="description" ><?php if(isset($ads[0]->description)) echo $ads[0]->description;?></textarea>
 					                        </div>

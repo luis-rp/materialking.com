@@ -950,25 +950,26 @@ $( document ).tooltip();
                             <?php }?>
                             </div>
                             <div class="newbox">
-
-                            <table id="datatable newtable" class="table table-bordered smallfont " style="width:95%;word-break: break-all;">
+								
+                            <?php if($inventory) { ?>
+                            <table id="datatable newtable" class="table table-bordered smallfont " style="width:100%;word-break: break-all;">
                             	<thead>
                                 <tr>
-                                    <th width="10%">Supplier</th>
-                                    <th width="10%">Code</th>
-                                    <th width="10%">Item</th>
-                                    <th width="8%">Manuf.</th>
-                                    <th width="7%">Part#</th>
-                                    <th width="9%">Price</th>
-                                    <th width="9%">Stock</th>
-                                    <th width="10%">Address</th>
-                                    <th width="8%">Dist. (mi)</th>
-                                    <th width="1%">Buy</th>
+                                    <th width="11%">Supplier</th>
+                                    <th width="13%">Code</th>
+                                    <th width="13%">Item</th>
+                                    <th width="10%">Manuf.</th>
+                                    <th width="10%">Part#</th>
+                                    <th width="10%">Price</th>
+                                    <th width="8%">Stock</th>
+                                    <th width="13%">Address</th>
+                                    <th width="9%">Dist. (mi)</th>
+                                    <th width="5%">Buy</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <?php                                 
-                                    if($inventory) 
+                                    
                                     foreach ($inventory as $inv) { 
                                     if ($inv->ea) {  
                                     	if(@$inv->companydetails->saleitemdata==0){
@@ -1056,6 +1057,7 @@ $( document ).tooltip();
                                 <?php } } }   ?>
                                 </tbody>
                             </table>
+                            <?php } ?>
 </div>
                         <?php if($amazon){ ?>
                        <div class="newbox">

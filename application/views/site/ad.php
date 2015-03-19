@@ -4,9 +4,15 @@
 <link rel='stylesheet' id='FlatAds-ie-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/ie.css?ver=2013-11-08' type='text/css' media='all' />
 <![endif]-->
 <!-- <link rel='stylesheet' id='boostrat-style-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap.css?ver=2.3.2' type='text/css' media='all' /> -->
+
+<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/admin/js/jquery.bxslider.min.js"></script>
+<link type="text/css" media="all" rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jquery.bxslider.css" />
+
+
+
 <link rel='stylesheet' id='awesomefont-style-css'  href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css?ver=4.0.3' type='text/css' media='all' />
 <link rel='stylesheet' id='boostrat-chosen-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/chosen.min.css?ver=1' type='text/css' media='all' />
-<link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />
+<!--<link rel='stylesheet' id='flexslider-style-css'  href='<?php echo base_url(); ?>templates/classified/assets/css/flexslider.css?ver=1' type='text/css' media='all' />-->
 <link rel='stylesheet' id='main-style-custom-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-custom.css?ver=1' type='text/css' media='all' />
 <!-- <link rel='stylesheet' id='boostrat-style-responsive-css'  href='<?php echo base_url(); ?>templates/site/assets/css/classified-bootstrap-responsive.css' type='text/css' media='all' /> -->
 
@@ -29,7 +35,28 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 /* ]]> */
 </script>
 
-	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<script type='text/javascript'>
+
+$(document).ready(function(){
+  $('.bxslider').bxSlider({
+  	adaptiveHeight: true,
+  	pagerCustom: '#bx-pager',
+  	mode: 'fade',
+    captions: true,
+    auto: true
+   
+   
+});
+});
+
+
+
+ /*jQuery(function() {
+		jQuery('.flexslider').flexslider();		
+	});*/
+</script>
+			
+<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
 <style type="text/css" media="print">#wpadminbar { display:none; }</style>
 <style type="text/css" media="screen">
 		@media screen and ( max-width: 782px ) {
@@ -38,66 +65,51 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	}
 </style>
 <title><?php if(isset($a_title)) echo $a_title;?></title>
-<?php //echo $this->session->flashdata('message'); ?>
-	<section id="ad-page-title">
 
+<section id="ad-page-title">
         <div class="container">
-
         	<div class="span9 first">
         		<h2><?php if(isset($a_title)) echo $a_title;?></h2>
-
         	</div>
+        	<div class="span3"> <span class="ad-page-price"><h2> <?php if(isset($a_price)) echo "$".$a_price; ?> <?php if(isset($a_priceunit)) echo " ".$a_priceunit; ?></h2></span> </div>
+		</div>
+</section>
 
-        	<div class="span3"> <span class="ad-page-price"><h2> <?php if(isset($a_price)) echo "$".$a_price; ?></h2></span> </div>
-
-        </div>
-
-    </section>
-
-    <section id="ad-page-header">
-
-        <div class="container">
-
-        	<div class="span12">
-
-        			<script type='text/javascript'>
-	  				jQuery(function() {
-						jQuery('.flexslider').flexslider();
-					});
-				</script>
-
-				<div class="flexslider">
-
-					<ul class="slides">
-						<?php
-						if(isset($images))
-						foreach ($images as $img){
-
-						?>
-						<li><img class='flexslider-image' height="560" width="950" src="<?php echo base_url("uploads/ads/".$img); ?>"/></li>
-						<?php } ?>
+<section id="ad-page-header">
+	 <div class="container">
+		<div class="span12">						
+             <?php  if(isset($images)) { ?>
+			
+					<ul  class="bxslider">
+											
+					<?php foreach ($images as $img) { ?>
+						<li>
+						<img  src="<?php echo base_url("uploads/AdImage/".$img->image); ?>" title="<?php echo $img->image; ?>"/>
+						</li>
+					<?php } ?>
 					</ul>
-
-				</div>
-
-        	</div>
-
+					
+					<div id="bx-pager" style="background-color:white;text-align:center;">
+						<?php $i=0; foreach ($images as $img) { ?>
+				 			<a data-slide-index="<?php echo $i; ?>" href="">
+				 			    <img src="<?php echo base_url("uploads/AdImage/".$img->image); ?>" width="100"/>
+				 			</a>
+				 	    <?php $i++; }  ?> 
+					</div>
+			     
+           <?php }  ?>         
         </div>
+      </div>
+</section>
 
-    </section>
-
-    <section class="ads-main-page">
-
-    	<div class="container">
-
-	    	<div class="span9 first">
-
-					<!-- Map here -->
-					<?php if(!empty($a_latitude)) {?>
-						    	<div id="single-page-map">
-
-			    	<div id="ad-address"><span><i class="fa fa-map-marker"></i><?php if(isset($a_address)) echo $a_address; ?></span></div>
-
+<section class="ads-main-page">
+	<div class="container">
+		<div class="span9 first">
+			<?php if(!empty($a_latitude)) {?>
+				<div id="single-page-map">
+					<div id="ad-address">
+						<span><i class="fa fa-map-marker"></i><?php if(isset($a_address)) echo $a_address; ?></span>
+					</div>
 					<div id="single-page-main-map"></div>
 
 					<script type="text/javascript">
@@ -139,7 +151,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 													icon: "<?php echo $iconPath; ?>",
 													shadow: "<?php echo base_url() ?>templates/classified/assets/images/shadow.png",
 												},
-												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/AddImage/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 											}
 
 								],
@@ -243,24 +255,10 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 					<tr>
 						<td class="centered-ad-details" style="text-align: center;">
 							<span class="author-avatar">
-				    			<?php
-
-
-
-								if(!empty($c_logo)) {
-
-
-
-									echo "<img class='author-avatar' src='" .base_url("uploads/logo/".$c_logo). "' alt='' />";
-
-								} else {
-
-							?>
-
-
+				    			<?php if(!empty($c_logo)) {
+									   echo "<img class='author-avatar' src='" .base_url("uploads/logo/".$c_logo). "' alt='' />"; } else { ?>
 								<img class="author-avatar" src="<?php echo base_url("uploads/logo/noavatar.png"); ?>" alt="" />
-
-							<?php } ?>
+								<?php } ?>
 				    		</span>
 
 
@@ -407,14 +405,14 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 		    								<div class="ad-image-related">
 		    										<a href="<?php echo base_url("site/ad/".$rel['id']); ?>">
-		    										<?php
-		    										$dis_img;
+		    										<!--<?php
+		    										/*$dis_img;
 		    					$image= explode("|",$rel['image']);
 									if(is_array($image))
 										$dis_img = $image[0];
 									else
-										$dis_img = $image;?>
-		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>
+										$dis_img = $image;*/?>-->
+		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/AdImage/".$rel['adimage']);?>'/>
 
 													</a>
 		    								</div>
@@ -456,20 +454,14 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 
 		    		<div class="cat-widget-content">
 		    			<ul>
-		    			<?php foreach($popular as $pop){
-		    				$dis_img;
-		    					$image= explode("|",$pop['image']);
-									if(is_array($image))
-										$dis_img = $image[0];
-									else
-										$dis_img = $image;
-		    					?>
+		    			<?php foreach($popular as $pop){  ?>
                             <li class="widget-ad-list">
-                            <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$dis_img);?>">
+                            <img class="widget-ad-image" src="<?php echo base_url("uploads/AdImage/".$pop['adimage']);?>">
 						    		<span class="widget-ad-list-content">
-						    			<span class="widget-ad-list-content-title"><a href="<?php echo base_url("site/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
+						    			<span class="widget-ad-list-content-title">
+						    			<a href="<?php echo base_url("site/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>
 
-										<span class="add-price"><?php echo $pop['price']; ?></span>
+										<span class="add-price"><?php echo $pop['price'].' '.$pop['priceunit']; ?></span>
 						    		</span>
 								</li>
 						<?php } ?>

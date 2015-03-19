@@ -31,24 +31,25 @@ function readnotification(id)
                                     <table id="datatable" class="table no-more-tables general">
                                         <thead>
                                             <tr>
-                                                <th style="width:20%">Title</th>
-                                                <th style="width:30%">Desc</th>
+                                                <th style="width:40%">Title</th>
+                                                <!--<th style="width:30%">Desc</th>-->
                                                 <th style="width:30%">Price</th>
-                                                <th style="width:10%">Edit</th>
-                                                <th style="width:10%">Delete</th>
+                                                <th style="width:15%">Edit</th>
+                                                <th style="width:15%">Delete</th>
                                             </tr>
                                         </thead>
                                         
                                         <tbody>
 							              <?php $i = 0;
+							             
 									    	foreach($ads as $ad)
 									    	{
 									    		$i++;
 									      ?>
                                             <tr>
                                                 <td><a href="<?php echo base_url("site/ad/".$ad->id);?>"><?php echo $ad->title;?></a></td>
-                                                <td><?php echo $ad->description;?></td>
-                                                <td><?php echo $ad->price;?></td>
+                                               <!-- <td><?php //echo $ad->description;?></td>-->
+                                                <td><?php echo $ad->price.' '.$ad->priceunit ;?></td>
                                                 <td><a href="<?php echo base_url("company/updatead/".$ad->id);?>">Edit</a></td>
                                                 <td><a class="close" href="<?php echo base_url("company/deletead/".$ad->id);?>" onclick="return confirm('Are you really want to delete this field?');">&times;</a></td>
                                             </tr>

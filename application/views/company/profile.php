@@ -588,9 +588,7 @@ function addEmail()
 										    	</div>
 									   </div>
 									   
-									  
-    								 <?php } ?>
-    								 <div class="form-group">
+									  <div class="form-group">
 				                        <label class="form-label">Banner</label>
 				                        
 				                        <div class="controls">
@@ -632,6 +630,8 @@ function addEmail()
 											</table>	
 				                        </div>
 				                      </div>
+    								 <?php } ?>
+    								 
 				                      <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">

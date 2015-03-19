@@ -98,7 +98,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 										icon: "<?php echo base_url("templates/classified/assets/images/") ?>/icon.png",
 										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>/shadow.png",
 									},
-									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/AdImage/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 								}
 							,
 
@@ -344,108 +344,32 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 	</section>
 	
 
-
-
-
-
-  <!-- <section id="featured-list" style="opacity: 1;">
-        
-        <div class="container">
-            
-            <h3>Check out our Premium Featured Ads</h3>
-            
-            <div id="tabs" class="full">
-			    	
-                			    	
-                <ul class="tabs quicktabs-tabs quicktabs-style-nostyle"> 
-			    	<li class="grid-feat-ad-style"><a class="current" href="#">Grid View</a></li>
-			    	<li class="list-feat-ad-style"><a class="" href="#">List View</a></li>
-                </ul>
-
-                <div class="pane" style="display: block;">
-                 
-                    <div id="carousel-buttons">
-			    	    <a href="#" id="carousel-prev" class="hidden" style="display: none;">← Previous </a>
-			    	    <a href="#" id="carousel-next" class="hidden" style="display: none;"> Next →</a>
-			        </div>
-
-					<div class="caroufredsel_wrapper" style="display: block; text-align: start; float: none; top: auto; right: auto; bottom: auto; left: auto; z-index: auto; margin: 0px; overflow: hidden; position: relative; width: 0px; height: 0px;"><div id="projects-carousel" style="text-align: left; float: none; position: absolute; top: 0px; right: auto; bottom: auto; left: 0px; margin: 0px; width: 0px; height: 0px;">
-
-			    					    			
-												
-						
-			    	</div></div>
-		    											
-				
-
-			    </div>
-
-			    <div class="pane" style="display: none;">		
-
-			    	
-					
-					
-			    													
-					
-			    </div>
-
-			</div>
-        
-        </div>
-
-    </section> -->
-
-    <section id="categories-homepage">
-        
-        <div class="container">
-
-	                    
-            <?php $cnt = 0; if(isset($ads)) { foreach ($ads as $key=>$value) { $cnt += count($value);  } } ?>             
-            <h3>Browse our  <?php echo $cnt; ?> Ads from <?php if(isset($ads)) echo count($ads); else echo 0; ?> Categories</h3>
-            
-            <div class="full" style="height: 509px; overflow-y: auto;">
-
-            	
-            <!-- Categories -->
+    <section id="categories-homepage">      
+        <div class="container">                    
+           <?php $cnt = 0; if(isset($ads)) { foreach ($ads as $key=>$value) { $cnt += count($value);  } } ?>             
+            <h3>Browse our  <?php echo $cnt; ?> Ads from <?php if(isset($ads)) echo count($ads); else echo 0; ?> Categories</h3>          
+            	<div class="full" style="height: 509px; overflow-y: auto;">
            <?php 
-
-		    		$current = -1;
-							      
-						if(isset($ads)) { foreach ($ads as $key=>$value) {
-								
-							
-
-				 ?>
-
+				$current = -1;
+				if(isset($ads)) { foreach ($ads as $key=>$value) {  ?>
+			
             	<div class="category-box span3 <?php if($current%4 == 0) { echo 'first'; } ?>">
-
             		<div class="category-header">
-
-            		
-
 		    			<span class="cat-title"><a href="#"><h4><?php echo $key; ?></h4></a></span>
-
 		    			<span class="category-total"><h4></h4></span>
-
             		</div>
 
             		<div class="category-content">
-
             			<ul>   
-
-		    				<?php
-
-		    					$currentCat = 0;
-
+            			<?php $currentCat = 0;
 								foreach($value as $ad) {
-									$currentCat++;
-							?>
-
-								<li>
+									$currentCat++; ?>
+									<li>
 								  	
-									<img style="float:left;" class='flexslider-image' height="40" width="45" src="<?php if(isset($ad['image'])) echo base_url("uploads/ads/".$ad['image']); ?>"/> 
+									<img style="float:left;" class='flexslider-image' height="40" width="45" 
+									src="<?php if(isset($ad['image'])) echo base_url("uploads/AdImage/".$ad['image']); ?>"/> 
 									
-									<a href="<?php echo base_url("site/ad/".$ad['id']);?>" style="float:none;" >	<?php echo $ad['title'];?>	</a> <div style="margin-left:55px;"> <?php echo $ad['price'];?></div>
+									<a href="<?php echo base_url("site/ad/".$ad['id']);?>" style="float:none;" >	<?php echo $ad['title'];?>	</a> <div style="margin-left:55px;"> <?php echo $ad['price'].' '.$ad['priceunit'];?></div>
 									
 									
 								  	<span class="category-counter"></span>
@@ -459,6 +383,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 		    						<?php if(isset($viewallads)) { if(!$viewallads) { ?> <a target="_blank" href="<?php echo base_url("site/viewallads/".$ad['category']); ?>">ViewAll</a><?php } }?>
 		    					</li>
 		    				<?php } ?>
+
 		    			</ul>
 
             		</div>

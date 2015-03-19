@@ -34,6 +34,7 @@
 
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
 <?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
+<?php echo '<script>var podateurl = "' . site_url('site/getpodate') . '";</script>' ?>
 
 <script>
     function getquotecombo()
@@ -51,6 +52,21 @@
 
     }
 
+function getpodate()
+    {
+    	var pid = $("#additemproject").val();
+    	d = "pid="+pid;
+    	$.ajax({
+            type: "post",
+            url: podateurl,
+            data: d
+        }).done(function(data) {
+        	
+            $("#daterequested").val(data);
+        	//document.getElementById("additempo").innerHTML = data;
+        });
+
+    }
     function getcostcodecombo()
     {
     	var pid = $("#additemproject").val();
@@ -121,7 +137,8 @@
 		$("#additempo").html('<select name="quote" required></select>');
 		$('#additemcostcode').html('<select name="costcode" required></select>');
 		getquotecombo();
-		getcostcodecombo()
+		getcostcodecombo();
+		getpodate();
 		$("#addtoquotemodal").modal();
 	}
 
@@ -503,7 +520,7 @@
                         <input type="hidden" id="additemid" name="itemid" value=""/>
                         <div class="modal-body">
                             <h4>Select Project</h4>
-                            <select id="additemproject" onchange="getquotecombo();getcostcodecombo();">
+                            <select id="additemproject" onchange="getquotecombo();getcostcodecombo();getpodate();">
                                 <option value="">Select</option>
                                 <?php foreach($projects as $up){?>
                                 	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>

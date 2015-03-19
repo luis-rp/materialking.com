@@ -639,7 +639,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     <span class="icon-legal"></span>QUOTE/PO MANAGEMENT
                                 </a>
                             </li>
-                            <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/backtrack"><span class="icon-random"></span>Back orders</a></li>
+                            <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>>                   
+                               		<a href="<?php echo base_url(); ?>admin/backtrack">
+									<span style="color:red;font-size:10px;padding-left:25px;font-weight:bold;margin-top: -36px;"><?php if(isset($qtyDue) && $qtyDue != '') echo $qtyDue; else echo '0';?> </span>
+                               		<span class="icon-random"></span>Back orders</a>
+                             </li>
                             <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
                             <li <?php if ($menu == 'report') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/report"><span class="icon-file"></span>Report</a></li>
 

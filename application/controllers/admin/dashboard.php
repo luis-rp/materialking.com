@@ -1326,6 +1326,83 @@ class Dashboard extends CI_Controller
     		$this->session->unset_userdata('message');
     	}
     	
+    	$uri_segment = 4;
+		$offset = $this->uri->segment ($uri_segment);
+		$quotes = $this->backtrack_model->get_quotes ();
+		
+		$count = count ($quotes);
+		$isBackorder = 0;
+		$qtyDue = 0;
+		$items = array();
+		$companyarr = array();
+		if ($count >= 1) 
+		{	
+			foreach ($quotes as $quote) 
+			{
+				$awarded = $this->quote_model->getawardedbid($quote->id);
+				$items[$quote->ponum]['quote'] = $quote;
+				if($awarded)
+				{
+					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
+					{
+						$isBackorder = 1;
+						foreach($awarded->items as $item)
+						{
+						    $checkcompany = true;
+						    $checkitemname = true;
+						    
+						    if(@$_POST['searchcompany'])
+						    {
+						        $checkcompany = $item->company == @$_POST['searchcompany'];
+						    }
+						    
+						    if(@$_POST['searchitem'])
+						    {
+						        if(strpos($item->itemname, @$_POST['searchitem'])!== FALSE)
+						        {
+						            $checkitemname = true;
+						        }
+						        else
+						        {
+						            $checkitemname = false;
+						        }
+						    }
+						    
+					        if($item->company){
+					       // $companyarr[] = $item->company;	
+						    $item->etalog = $this->db->where('company',$item->company)
+                            			->where('quote',$quote->id)
+                            			->where('itemid',$item->itemid)
+                            			->get('etalog')->result();
+					        }
+					        
+					        $item->quotedaterequested = $this->db->select('daterequested')
+					        ->where('purchasingadmin',$item->purchasingadmin)
+					        ->where('quote',$quote->id)
+					        ->where('itemid',$item->itemid)
+					        ->get('quoteitem')->row();
+					        
+					        
+					        $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                             $item->pendingshipments=$pendingshipments;
+					        
+							if($item->received < $item->quantity && $checkcompany && $checkitemname)
+							{
+								
+								$item->duequantity = $item->quantity - $item->received;
+								$qtyDue += $item->duequantity;								
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		$data['qtyDue'] = $qtyDue;
 		$this->load->view ('admin/dashboard', $data);
 	}
 

@@ -43,6 +43,7 @@ class backtrack extends CI_Controller
 		
 		$count = count ($quotes);
 		$isBackorder = 0;
+		$qtyDue = 0;
 		$items = array();
 		$companyarr = array();
 		if ($count >= 1) 
@@ -108,6 +109,8 @@ class backtrack extends CI_Controller
 									$item->companyname = '&nbsp;';
 								$item->ponum = $quote->ponum;
 								$item->duequantity = $item->quantity - $item->received;
+								$qtyDue += $item->duequantity;
+								
 								if(!isset($items[$quote->ponum]['items']))
 									$items[$quote->ponum]['items'] = array();
 								$items[$quote->ponum]['items'][]=$item;
@@ -179,6 +182,7 @@ class backtrack extends CI_Controller
 		$setting=$this->settings_model->getalldata($uid);
 		$data['settingtour']=(isset($setting[0]->tour)) ? $setting[0]->tour : '';  
 		$data['isBackorder'] = $isBackorder;
+		$data['qtyDue'] = $qtyDue;
 		$this->load->view ('admin/backtrack', $data);
 	}
 	

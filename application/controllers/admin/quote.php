@@ -4416,7 +4416,7 @@ class quote extends CI_Controller
                 $invoice->status_selectbox = $status_html;
                 $invoice->payment_status_selectbox = $payment_status_html;
 
-                $invoice->totalprice = number_format($invoice->totalprice,2);
+                //$invoice->totalprice = number_format($invoice->totalprice,2);
 
                 $items[] = $invoice;
                 $companylist[]=$result;
@@ -4626,7 +4626,7 @@ class quote extends CI_Controller
                 $invoice->status_selectbox = $status_html;
                 $invoice->payment_status_selectbox = $payment_status_html;
 
-                $invoice->totalprice = number_format($invoice->totalprice,2);
+                //$invoice->totalprice = number_format($invoice->totalprice,2);
 
                 $items[] = $invoice;
             }
@@ -11863,7 +11863,7 @@ $loaderEmail = new My_Loader();
     		$this->db->group_by("companyemail");
     		$nonnetcompanies = $this->db->get('quoteitem_companies')->result();*/
     		
-    		$noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid in ('".$companyitemimplode."')";           
+    		$noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid in (".$companyitemimplode.")";           
     		$nonnetcompanies = $this->db->query($noncomp)->result();
     		
     		if($nonnetcompanies){

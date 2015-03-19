@@ -6,12 +6,6 @@
 <script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
 <script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script> 
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>               
-<!--<style>
-.dataTables_filter
-{
-	margin-right:30px;
-}
-</style>-->
 
  <script type="text/javascript">// <![CDATA[
  $(document).ready(function(){
@@ -48,15 +42,17 @@ function checkEnter(event)
 }
 
 
-/*function check_file_upload(){
-    	
-	if($('.fileu').val() !="" || $('.fileu').val() !="undefined");
-	return true;
-	else{
-	alert("Please upload file");	
-	return false;
+	var upload_number = 2;
+	function addFileInput() {
+	 	var d = document.createElement("div");
+	 	var file = document.createElement("input");
+	 	file.setAttribute("type", "file");
+	 	file.setAttribute("name", "UploadFile[]");
+	 	d.appendChild(file);
+	 	document.getElementById("moreUploads").appendChild(d);
+	 	upload_number++;
 	}
-}*/
+	
  
 </script>
     <div class="content">  
@@ -92,9 +88,12 @@ function checkEnter(event)
                              
 
 		                    <div class="form-group">
+		                     <div class="controls">
 		                        <label class="form-label">Price</label>
-		                        <div class="controls">
-		                            <input type="text" id="price" name="price" class="form-control" value="" onkeydown="return checkEnter(event);">		                      						</div>
+		                            <input type="text" id="price" name="price" class="form-control" value="" onkeydown="return checkEnter(event);" style="width:150px;">	
+		                        <label class="form-label">Price Unit</label>
+		                        	<input type="text" id="priceunit" name="priceunit" class="form-control" value="" style="width:150px;">	
+		                       </div>
 		                    </div>
 		                    
                     
@@ -162,12 +161,15 @@ function checkEnter(event)
 		                    <div class="form-group">
 		                        <label class="form-label">Image</label>
 		                        <div class="controls">
-		                            <input type="file" class="fileu" name="adfile[]" multiple size="20"  />
-		                            <a href="<?php echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  
+		                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
+		                            <div id="moreUploads"></div>
+		                            <div id="moreUploadsLink" style="display:none;">
+		                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
+									</div>
+		                            <!--<a href="<?php //echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  -->
 		                            </a> 
 		                        </div>
-		                    </div>
-		                    		                    
+		                    </div>		                    		                    
 		                    
 		                    <div class="form-group">
 		                        <label class="form-label">Description</label>

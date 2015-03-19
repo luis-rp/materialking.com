@@ -1463,7 +1463,7 @@ class site extends CI_Controller
                     $miles = $dist * 60 * 1.1515;
                     $initem->dist = $miles;
                     if (! @$_POST['miles'])
-                        $measure = 20;
+                        $measure = 100;
                     else
                         $measure = $_POST['miles'];
                     //echo ($miles .'<'. $measure.'<br/>');
@@ -1544,7 +1544,7 @@ class site extends CI_Controller
                     if ($this->db->get('network')->result())
                         $initem->joinstatus = ' (In Network)';
                     if (! @$_POST['miles'])
-                        $measure = 20;
+                        $measure = 100;
                     else
                         $measure = $_POST['miles'];
                     $_POST['miles'] = $measure;
@@ -1616,7 +1616,7 @@ class site extends CI_Controller
                 $miles = $dist * 60 * 1.1515;
                 $initem->dist = $miles;
                 if (! @$_POST['miles'])
-                    $measure = 20;
+                    $measure = 100;
                 else
                     $measure = $_POST['miles'];
                 $_POST['miles'] = $measure;
@@ -2102,13 +2102,16 @@ class site extends CI_Controller
     	$data['a_title'] = "Classified area";
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id IN (SELECt category FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id GROUP BY category)";
     	$categories = $this->db->query($sql_cat)->result_array();
+    	
     	$res = array();
     	foreach($categories as $cat){
     		  $sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id'];
     		  $res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
-    	}
+    		 
+    	} 
     	$data['ads'] = $res;
-
+     
+    	
 		/*====*/
 		$catcodes = $this->catcode_model->get_categories_tiered();
      	$itemcodes = $this->itemcode_model->get_itemcodes();
@@ -2123,25 +2126,37 @@ class site extends CI_Controller
         $data['categories'] = $categories;
         $data['items'] = $itemcodes;
 		$data['viewallads'] = 0;
-		/*===============*/
-
-		foreach($data['ads'] as $keycat=>$ad) {
-										foreach($ad as $keyad=>$ad_item){ if($ad_item['latitude']!="" && $ad_item['longitude']!="") { $adi=0;
-							?>
-
-							<?php	foreach($data['ads'] as $ad2) {
-										foreach($ad2 as $ad_item2){
-
-											if( ($ad_item['latitude'] == $ad_item2['latitude'])) {
-												$adi++;
-
-											}
-											if($adi>1){
-												$a = 360.0 / 100;
-
-												$data['ads'][$keycat][$keyad]['latitude'] =  $ad_item['latitude'] + -.00004 * cos((+$a) / 180 * PI());  //x
-												$data['ads'][$keycat][$keyad]['longitude'] = $ad_item['longitude'] + -.00004 * sin((+$a) / 180 * PI());  //Y
-									} } } } } }
+		
+		foreach($data['ads'] as $keycat=>$ad) 
+		   {
+			  foreach($ad as $keyad=>$ad_item)
+			    { 	      
+		   	     $data['images']=$this->db->get_where('AdImage',array('adid'=>$ad_item['id']))->row();
+		   	     if(@$data['images']->image) {
+		   		 $data['ads'][$keycat][$keyad]['image']=$data['images']->image;}
+			    		      
+			  	   if($ad_item['latitude']!="" && $ad_item['longitude']!="") 
+			  	     { 
+			  	     	$adi=0;
+						foreach($data['ads'] as $ad2) 
+						{
+						   foreach($ad2 as $ad_item2)
+						     {					     	
+								if( ($ad_item['latitude'] == $ad_item2['latitude']))
+								 {
+									$adi++;
+								 }
+								if($adi>1)
+								 {
+									$a = 360.0 / 100;
+									$data['ads'][$keycat][$keyad]['latitude'] =  $ad_item['latitude'] + -.00004 * cos((+$a) / 180 * PI());  //x
+									$data['ads'][$keycat][$keyad]['longitude'] = $ad_item['longitude'] + -.00004 * sin((+$a) / 180 * PI());  //Y
+								  } 
+						     } 
+						}
+			  	      } 
+			    }
+		    }
 
     	$this->load->view('site/classified', $data);
     }
@@ -2262,29 +2277,35 @@ class site extends CI_Controller
 
     public function ad($id){
 
-    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c left join ".$this->db->dbprefix('ads')." a on a.user_id=c.id left join ".$this->db->dbprefix('category')." cat on a.category = cat.id WHERE a.id=".$id." ";
+    	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.priceunit a_priceunit,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c left join ".$this->db->dbprefix('ads')." a on a.user_id=c.id left join ".$this->db->dbprefix('category')." cat on a.category = cat.id WHERE a.id=".$id." ";
+
     	$data = $this->db->query($sql)->row_array();
+    	$data['images']=$this->db->get_where('AdImage',array('adid'=>$id))->result();
     	if(isset($data["a_views"])){
     	$view = $data['a_views']+1;
     	}else
     	$view = 0;
-    	if(isset($data["a_image"])){
+    	
+    	/*if(isset($data["a_image"])){
     	$images = explode("|",$data["a_image"]);
     	foreach($images as $image){
     		$data['images'][]=$image;
     	}
-    	}
+    	}*/
 
-    	if(isset($data['images'][0]))
-    	$data['featured_image'] = $data['images'][0];
+    	if(isset($data['images']->image))
+    	$data['featured_image'] = $data['images']->image;
     	else
     	$data['featured_image'] = '';
 
-    	$sql_rel =  "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
+    	$sql_rel =  "SELECT a.*,ai.image as adimage FROM ".$this->db->dbprefix('ads')." a 
+    	LEFT JOIN ".$this->db->dbprefix('AdImage')." ai ON a.id=ai.adid
+    	WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE a.id=".$id.") AND a.id<>".$id;
     	$data['related'] = $this->db->query($sql_rel)->result_array();
-
+        
     	//$sql_popular = "SELECT * FROM ".$this->db->dbprefix('ads')." ORDER BY views ASC LIMIT 3";
-    	$sql_popular = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id ORDER BY views ASC LIMIT 3";
+    	$sql_popular = "SELECT a.*,ai.image as adimage FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id 
+    	LEFT JOIN ".$this->db->dbprefix('AdImage')." ai ON a.id=ai.adid WHERE c.isdeleted='0' ORDER BY views ASC LIMIT 3";
     	$data['popular'] = $this->db->query($sql_popular)->result_array();
 
     	$this->db->where('id', $id);
@@ -3329,6 +3350,30 @@ $loaderEmail = new My_Loader();
         	}
 		}
 		redirect('site/customerbill');
+    }
+    
+    function getpodate()
+    {
+        $pa = $this->session->userdata('site_loggedin');
+        if (!$pa)
+            die;
+        $pid = $_POST['pid'];
+        if(isset($pid))
+        {
+        	$sql = "SELECT * FROM " . $this->db->dbprefix('quote')
+            	    . " WHERE pid='$pid' AND potype='Bid'";
+        	$sql .= " AND purchasingadmin='" . $pa->id . "'";
+        	
+        	$items = $this->db->query($sql)->result();
+        }	      
+        $ret = '';
+        foreach($items as $item)
+        {
+            if(!$this->db->where('quote',$item->id)->get('invitation')->row())
+                $ret .= $item->podate;
+        }
+        	
+        echo $ret;
     }
 	
 }

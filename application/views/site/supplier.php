@@ -1110,7 +1110,7 @@ function changetab(tabname){
                                             <td><?php echo date('m/d/Y',strtotime($supplier->regdate)); ?></td>
                                             <td rowspan="2"> 
                                               <?php  if (@$supplier->company_type==1) { ?> 
-                                              <img src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium" class="img-responsive"><?php } else { echo "&nbsp;";}?>
+                                              <img src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium" class="img-responsive" style="height:80px;width:95px;"><?php } else { echo "&nbsp;";}?>
                                             </td>
                                         </tr>
                                         <tr>
