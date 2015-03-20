@@ -62,7 +62,7 @@ function changeproject(catid){
 }
 
 </script>
-        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo $heading; ?> &nbsp;&nbsp; <a href="<?php echo base_url();?>admin/costcode" class="btn btn-green"> Back </a></h3>
 	<div class="box">
@@ -71,8 +71,8 @@ function changeproject(catid){
 	
 	<?php echo @$message; ?>
    <?php echo $this->session->flashdata('message'); ?>
-
-   <form class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
+   <span style="font-weight:bold;">Note: * Fields Are Mandatory</span> 
+   <form class="form-horizontal" method="post" action="<?php echo $action; ?>" enctype="multipart/form-data"> 
    <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
     <br/>
     
@@ -102,7 +102,7 @@ function changeproject(catid){
     </div>
     
     <div class="control-group">
-    <label class="control-label">Cost Code *:</label>
+    <label class="control-label">Cost Code <span style="color:red;font-weight:bold;"> * </span>:</label>
     <div class="controls">
       <input type="text" id="code" name="code" class="span3" value="<?php echo $this->validation->code; ?>">
       <?php echo $this->validation->code_error;?>
@@ -118,7 +118,7 @@ function changeproject(catid){
     </div>
     
     <div class="control-group">
-    <label class="control-label">Budget *:</label>
+    <label class="control-label">Budget <span style="color:red;font-weight:bold;"> * </span>:</label>
     <div class="controls">
       $ &nbsp;<input type="text" id="cost" name="cost" class="span2" 
       onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');"
@@ -139,6 +139,16 @@ function changeproject(catid){
     <label class="control-label">Turn Off Estimated Cost:</label>
     <div class="controls">
        <input type="checkbox" name="estimate" id="estimate" <?php echo @$this->validation->estimate?'checked="CHECKED"':''?>" />
+    </div>
+    </div>
+    
+    <div class="control-group">
+    <label class="control-label">Image:</label>
+    <div class="controls">
+       <input type="file" name="UploadFile" id="UploadFile" />
+        <a href="<?php echo site_url('uploads/costcodeimages') . '/' . @$this->validation->costcode_image; ?>" target="_blank"> 
+          <?php echo @$this->validation->costcode_image; ?>
+        </a> 
     </div>
     </div>
     

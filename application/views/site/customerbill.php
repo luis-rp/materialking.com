@@ -302,7 +302,7 @@ function jq( myid ) {
 	<div class="modal-body" id="quoteitems">
         <form method="post" action="<?php echo site_url('site/paybillbycc/');?>" onsubmit="return validatecc();">
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
-	        <input type="hidden" id="ccpayinvoiceamount" name="amount" value="<?php echo $amouttopay;?>"/>
+	        <input type="hidden" id="ccpayinvoiceamount" name="amount" value="<?php echo round($amouttopay,2);?>"/>
 	         <input type="hidden" id="ccpayref" name="ccpayref"/>	        
             <div class="control-group">
                 <label class="control-label" for="card">

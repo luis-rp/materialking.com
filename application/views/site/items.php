@@ -115,9 +115,15 @@ function getpodate()
 			content: $('#hierarchybreadcrumb').next().html(),
 			backLink: false
 		});
+		
+	$('#deliverydate').datepicker();
+	$('#podate').datepicker();
+	$('#duedate').datepicker();
+		
     });
 </script>
 <?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
+<?php echo '<script>var addpoquoteurl = "' . site_url('site/addpoquote') . '";</script>' ?>
 <script>
 	function addtopo(itemid, increment)
 	{		
@@ -237,6 +243,53 @@ function getpodate()
         $("#searchform").submit();
         return true;
     }
+    
+    
+    function addpo(){
+
+    	var pid=$('#additemproject').val();
+    	if(pid){
+
+    		$('#addtoquotemodal').modal();
+    		//$('#additemproject').val('');
+    		$('#addtoquotemodal').modal('hide');
+    		$('#Addpomodal').modal();
+    	}
+    }
+    
+    
+    function savepo(){
+    	
+    	var pid=$('#additemproject').val();
+    	var ponum = $("#ponum").val();
+    	if(ponum=="")
+    		alert("Please Enter PO");
+    	
+    	var podate = $("#podate").val();
+		var duedate = $('#duedate').val();
+		var deliverydate = $('#deliverydate').val();
+		
+		var d = "pid="+pid+"&ponum="+ponum+"&podate="+podate+"&duedate="+duedate+"&deliverydate="+deliverydate;
+		
+		$.ajax({
+			type: "post",
+			url: addpoquoteurl,
+			dataType: 'json',
+			data: d
+		}).done(function(data) {			
+			if(data=="Duplicate PO#"){
+				alert(data);
+			}else{		
+					var option = new Option(data.ponum, data.poid);
+					$('[name="quote"]').append($(option));
+					$('[name="quote"]').val(data.poid);
+					$('#Addpomodal').modal('hide');
+					$("#addtoquotemodal").modal();
+				
+			}
+		});
+    }
+    
 </script>
 
 
@@ -407,9 +460,10 @@ function getpodate()
                                                 	 } 
                                                 	else 
                                                 	 { 
+                                                	
                                                 	 if(isset($item->minprice) && $item->minprice!=0)
                                                 	 {
-                                                	 	 $dash=1; 
+                                                	 $dash=1; 
                                                 	  echo '$'.$item->minprice;
                                                 	 }
                                                 	
@@ -421,7 +475,7 @@ function getpodate()
                                                 		{
                                                 			if($dash==1)
                                                 			{
-                                                				echo "&nbsp;-&nbsp;";
+                                                				echo "&nbsp;&nbsp;";
                                                 			}
                                                 			echo ' "CALL"&nbsp;'; 
                                                 		}
@@ -429,7 +483,7 @@ function getpodate()
                                                 		{
                                                 			if($dash==1)
                                                 			{
-                                                				echo "&nbsp;-&nbsp;";
+                                                				echo "&nbsp;&nbsp;";
                                                 			}
                                                 			 echo (isset($item->maxprice) && $item->maxprice!=0)?'$'.$item->maxprice:''; 
                                                 		}
@@ -536,7 +590,8 @@ function getpodate()
                             </select>
                             </span>
 
-                            <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
+                            <!-- <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a> -->
+                            <a href="javascript:void(0)" onclick="addpo()">Add PO</a>   
 
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
@@ -774,3 +829,39 @@ function getpodate()
    		 </div>
     </div>
     </div>
+    
+    
+    
+    <div id="Addpomodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+
+            <div class="modal-header">
+        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            <h3>Please Add Your P.O. Now</h3>
+        	</div>
+        	<div class="modal-body">
+        	
+        	<div class="control-group">
+			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
+                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" >		</div>
+		    </div>
+		    <br><br>		    
+		    <div class="control-group">
+			    <div class="controlss">
+			      Delivery or Pick-Up Date: &nbsp; &nbsp;
+			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" 
+			      	data-date-format="mm/dd/yyyy">			      
+			       &nbsp; &nbsp; <br><br>
+			      PO Date: &nbsp; &nbsp; 
+			      <input type="text" id="podate" name="podate" class="input small span2"
+			      	data-date-format="mm/dd/yyyy">
+			      	&nbsp; &nbsp; &nbsp; &nbsp; <br><br>
+			     Bid Due Date: &nbsp; &nbsp; 
+			      <input type="text" id="duedate" name="duedate" class="input small span2"
+			      data-date-format="mm/dd/yyyy">
+			      <input name="add" type="button" class="btn btn-primary" value="Save" onclick="savepo();"/>
+			    </div>			   
+		    </div>
+        	
+        	</div>
+
+   </div>

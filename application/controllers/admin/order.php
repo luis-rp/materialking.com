@@ -1094,6 +1094,7 @@ function orders_export()
 			
 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
 			$itemdetails->companyName = $this->db->where('id',$itemdetails->company)->get("company")->row()->title;
+			$itemdetails->item_img = $orgitem->item_img;
 			
 			$item->itemdetails = $itemdetails;
 			$item->companyName = $this->db->where('id',$item->company)->get("company")->row()->title;
@@ -1706,6 +1707,7 @@ with the transfer#{$tobj->id}.
     			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
     			
     			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+    			$itemdetails->item_img = $orgitem->item_img;
     			
     			$item->itemdetails = $itemdetails;
     			

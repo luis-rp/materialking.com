@@ -63,8 +63,8 @@ function preloadoptions(fromid)
 								<th>Contact</th>
 								<th>Tier</th>
 								<th>Credit limit</th>
-								<th>Start Date</th>
-								<th>End Date</th>
+								<!--<th>Start Date</th>
+								<th>End Date</th>-->
 								<th>Credit remaining</th>
 								<th>Amount Due</th>
 								<th>Credit Card Only</th>
@@ -101,20 +101,20 @@ function preloadoptions(fromid)
 									<input class="form-control" type="text" name="creditlimit[<?php echo $admin->purchasingadmin;?>]" value="<?php echo $admin->totalcredit;?>" onkeypress="return allowonlydigits(event,'<?php echo $admin->purchasingadmin;?>', 'eaerrmsg<?php echo $admin->purchasingadmin;?>')"  
 							 /> 
 									<br>&nbsp;<span id="eaerrmsg<?php echo $admin->purchasingadmin;?>"></span></p>	
-									<?php if($admin->creditonly==1) { ?><span style="color:red;">*Credit</span><?php } ?>
+									<?php if($admin->creditonly==1) { ?><span style="color:red;">*Credit Card </span><?php } ?>
 								</td>
-								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<input  class="form-control" type="text" name="creditfrom[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
-									<?php if($admin->creditonly==1) { ?><span style="color:red;">Card</span><?php } ?>
+								<!--<td><p <?php //if($admin->creditonly==1) { ?>style="display:none;"<?php //} ?>>
+									<input  class="form-control" type="text" name="creditfrom[<?php //echo $admin->purchasingadmin;?>]" 
+									value="<?php //echo ($admin->creditfrom=='0000-00-00'||$admin->creditfrom=='')?'':date('m/d/Y',strtotime($admin->creditfrom));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
+									<?php //if($admin->creditonly==1) { ?><span style="color:red;">Card</span><?php //} ?>
 								</td>
+								<td><p <?php //if($admin->creditonly==1) { ?>style="display:none;"<?php //} ?>>
+									<input class="form-control" type="text" name="creditto[<?php //echo $admin->purchasingadmin;?>]" 
+									value="<?php //echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
+									<?php //if($admin->creditonly==1) { ?><span style="color:red;">only</span><?php //} ?>
+								</td>-->
 								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<input class="form-control" type="text" name="creditto[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo ($admin->creditto=='0000-00-00'||$admin->creditto=='')?'':date('m/d/Y',strtotime($admin->creditto));?>" class="date" data-date-format="mm/dd/yyyy" /></p>
-									<?php if($admin->creditonly==1) { ?><span style="color:red;">only</span><?php } ?>
-								</td>
-								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
-									<?php echo $admin->creditlimit;?></p><?php if($admin->creditonly==1) { ?><span style="color:red;">Account</span><?php } ?>
+									<?php echo $admin->creditlimit;?></p><?php if($admin->creditonly==1) { ?><span style="color:red;">Only Account</span><?php } ?>
 								</td>								
 								<td>
 									<?php echo $admin->amountdue;?>

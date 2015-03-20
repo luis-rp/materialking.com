@@ -1170,6 +1170,7 @@ class costcode extends CI_Controller {
         $this->validation->parent = $item->parent;
         $this->validation->forcontract = $item->forcontract;
         $this->validation->estimate = $item->estimate;
+        $this->validation->costcode_image = $item->costcode_image;
         
         $this->db->where('id', $id);
         if ($this->session->userdata('usertype_id') > 1)
@@ -1257,7 +1258,7 @@ class costcode extends CI_Controller {
         $rules ['cost'] = 'trim|required|numeric';
 
         $this->validation->set_rules($rules);
-        $this->validation->set_message('required', '* required');
+        $this->validation->set_message('required', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Please fill all mandatory fields.</div></div>');
         $this->validation->set_error_delimiters('<div class="error">', '</div>');
     }
 

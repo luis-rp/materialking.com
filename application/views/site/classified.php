@@ -98,7 +98,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 										icon: "<?php echo base_url("templates/classified/assets/images/") ?>/icon.png",
 										shadow: "<?php echo base_url("templates/classified/assets/images/") ?>/shadow.png",
 									},
-									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/AdImage/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+									data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$ad_item['image']); ?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo addslashes($ad_item['title']); ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $ad_item['price']; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$ad_item['id']); ?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 								}
 							,
 
@@ -367,7 +367,7 @@ var userSettings = {"url":"\/","uid":"1","time":"1406253140"};
 									<li>
 								  	
 									<img style="float:left;" class='flexslider-image' height="40" width="45" 
-									src="<?php if(isset($ad['image'])) echo base_url("uploads/AdImage/".$ad['image']); ?>"/> 
+									src="<?php if(isset($ad['image'])) echo base_url("uploads/ads/".$ad['image']); ?>"/> 
 									
 									<a href="<?php echo base_url("site/ad/".$ad['id']);?>" style="float:none;" >	<?php echo $ad['title'];?>	</a> <div style="margin-left:55px;"> <?php echo $ad['price'].' '.$ad['priceunit'];?></div>
 									

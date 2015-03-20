@@ -1,3 +1,8 @@
+<style>
+.gm-style img { max-width: none; }
+.gm-style label { width: auto; display: inline; }
+</style>
+
 <?php echo '<script>var ipinserturl="' . site_url('site/insertuserip') . '";</script>' ?>
 <?php echo '<script>var getmanufacturersurl="' . site_url('site/getmanufacturers') . '";</script>' ?>
 <?php //var_dump($popups);die;?>

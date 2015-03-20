@@ -352,6 +352,22 @@ class costcode_model extends Model
 	
 	function SaveCostcode()
 	{
+		$imageName = '';
+		if(isset($_FILES['UploadFile']['name']))
+		{
+	        ini_set("upload_max_filesize","128M");            
+            $target='uploads/costcodeimages/';
+            $count=0;
+	        
+        	$temp=$target;
+    		$tmp=$_FILES['UploadFile']['tmp_name'];
+    		$origionalFile=$_FILES['UploadFile']['name'];
+    		$temp=$temp.basename($origionalFile);
+    		move_uploaded_file($tmp,$temp);
+    		
+    		$imageName= $_FILES['UploadFile']['name'];
+		}
+		
 		$forcontract="";
 		if(@$this->input->post('forcontract') == "on")
     		$forcontract = 1;
@@ -372,7 +388,8 @@ class costcode_model extends Model
 			'project'=>$this->input->post('project'),
 			'creation_date' => date('Y-m-d'),
 			'forcontract' => $forcontract,
-			'estimate' => $estimate
+			'estimate' => $estimate,
+			'costcode_image' => $imageName
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('costcode', $options);
@@ -382,6 +399,22 @@ class costcode_model extends Model
 	// updating cost code 
 	function updateCostcode($id)
 	{
+		$imageName = '';
+		if(isset($_FILES['UploadFile']['name']))
+		{
+	        ini_set("upload_max_filesize","128M");            
+            $target='uploads/costcodeimages/';
+            $count=0;
+	        
+        	$temp=$target;
+    		$tmp=$_FILES['UploadFile']['tmp_name'];
+    		$origionalFile=$_FILES['UploadFile']['name'];
+    		$temp=$temp.basename($origionalFile);
+    		move_uploaded_file($tmp,$temp);
+    		
+    		$imageName= $_FILES['UploadFile']['name'];
+		}
+		
 		$forcontract="";
 		if(@$this->input->post('forcontract') == "on")
     		$forcontract = 1;
@@ -401,7 +434,8 @@ class costcode_model extends Model
 			'parent'=>$this->input->post('parent'),
 			'project'=>$this->input->post('project'),
 			'forcontract' => $forcontract,
-			'estimate' => $estimate
+			'estimate' => $estimate,
+			'costcode_image' => $imageName
 		);
 		$oldcoderow = $this->get_costcodes_by_id($this->input->post('id'));
 		$oldcode = $oldcoderow->code;
@@ -420,6 +454,7 @@ class costcode_model extends Model
 		
 		$this->db->where('costcode', $oldcode);
 		$this->db->update('quoteitem',$update);
+		
 	}
 	
 	

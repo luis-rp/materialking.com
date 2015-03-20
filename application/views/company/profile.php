@@ -406,7 +406,7 @@ function addEmail()
 												<?php  foreach($image as $items)  { ?>
 												<tr>
 													<td><img src="<?php echo site_url('uploads/gallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
-													<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+													<td><a class="close"  href="<?php echo base_url("company/deleteimage/".$items->id);?>" onclick="return confirm('Are you sure, you want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>
 											</table>
@@ -427,7 +427,7 @@ function addEmail()
 												<?php  foreach($gallery as $items)  { ?>
 												<tr>
 													<td><img src="<?php echo site_url('uploads/imagegallery/'.$items->imagename);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->imagename;?>"/></td>
-													<td><a class="close"  href="<?php echo base_url("company/deletegalleryimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+													<td><a class="close"  href="<?php echo base_url("company/deletegalleryimage/".$items->id);?>" onclick="return confirm('Are you sure, you want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>
 											</table>
@@ -455,7 +455,7 @@ function addEmail()
 													<td><input type="checkbox" id="file1[<?php echo $items->id;?>]" name="file1[<?php echo $items->id;?>]" <?php if(isset($items->private) && $items->private==1) {echo "checked='checked'";}?>/>
 													<input type="hidden" name="checkid[]" value="<?php echo $items->id;?>"/>
 													</td>
-													<td><a class="close"  href="<?php echo base_url("company/deletefile/".$items->id);?>" onclick="return confirm('Are you really want to delete this File?');">&times;</a></td>
+													<td><a class="close"  href="<?php echo base_url("company/deletefile/".$items->id);?>" onclick="return confirm('Are you sure, you want to delete this File?');">&times;</a></td>
 												</tr>
 												<?php } ?>
 											</table>
@@ -602,7 +602,7 @@ function addEmail()
 													<td>
 														<input type="text" name="bannerurl[<?php echo $bannerdetail->id;?>]" id="bannerurl_<?php echo $bannerdetail->id;?>" value="<?php if(isset($bannerdetail->bannerurl) && $bannerdetail->bannerurl != '') echo $bannerdetail->bannerurl; else echo '';?>"> 
 													</td>
-													<td><a class="close"  href="<?php echo base_url("company/deletebannerimage/".$bannerdetail->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
+													<td><a class="close"  href="<?php echo base_url("company/deletebannerimage/".$bannerdetail->id);?>" onclick="return confirm('Are you sure, you want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>
 										

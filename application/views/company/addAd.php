@@ -174,7 +174,7 @@ function checkEnter(event)
 		                    <div class="form-group">
 		                        <label class="form-label">Description</label>
 		                        <div class="controls">
-		                  <textarea rows="10" cols="40" class="form-control ckeditor" id="description" name="description"><?php echo $company->about;?></textarea>
+		                  <textarea rows="10" cols="40" class="form-control ckeditor" id="description" name="description"></textarea>
 		                        </div>
 		                    </div>
                     

@@ -83,7 +83,7 @@ class quote_model extends Model {
 
 	
 	        function get_pendingshipment_quotes($path,$pid = '') {
-        $sql = "SELECT q.* FROM " . $this->db->dbprefix('quote') . " q join ". $this->db->dbprefix('shipment')." s ON q.id = s.quote where s.accepted = 0 ";
+        $sql = "SELECT SUM(s.quantity) as receiveqty,q.* FROM " . $this->db->dbprefix('quote') . " q join ". $this->db->dbprefix('shipment')." s ON q.id = s.quote where s.accepted = 0 ";
         if ($pid)
             $sql .= " AND q.pid='$pid'";
         /*if (@$_POST['potype'] != 'All' && @$_POST['potype']) {

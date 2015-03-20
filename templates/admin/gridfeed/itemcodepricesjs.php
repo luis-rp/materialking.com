@@ -30,6 +30,11 @@ $(document).ready(function () {
     			property: 'quoteon',
     			label: 'Date Quoted',
     			sortable: true
+    		},
+    		{
+    			property: 'ponum',
+    			label: 'PO#',
+    			sortable: true
     		}
     	],
     	data: sampleData.geonames,

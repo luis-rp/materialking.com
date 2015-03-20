@@ -495,12 +495,16 @@ class itemcode_model extends Model {
 
     function getminimumprices($itemid)
     {
-        $sql = "SELECT c.title companyname, m.*
+        $sql = "SELECT c.title companyname,q.id,q.ponum, m.*
 			   	FROM
 				" . $this->db->dbprefix('minprice') . " m,
-				" . $this->db->dbprefix('company') . " c
+				" . $this->db->dbprefix('company') . " c,
+				" . $this->db->dbprefix('quoteitem') . " qi,
+				" . $this->db->dbprefix('quote') . " q
 				WHERE
 				m.company=c.id AND m.itemid='$itemid' 
+				AND qi.itemid = m.itemid AND qi.purchasingadmin = m.purchasingadmin
+				AND q.id = qi.quote AND qi.purchasingadmin = m.purchasingadmin
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
         //echo $sql; die;

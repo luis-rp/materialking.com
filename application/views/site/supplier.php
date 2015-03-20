@@ -12,7 +12,7 @@
 <?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
 <?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 <?php echo '<script>var companycommentsurl = "' . site_url('company/getcompanycomments') . '";</script>' ?>
-
+<?php echo '<script>var addpoquoteurl = "' . site_url('site/addpoquote') . '";</script>' ?>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <!--  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
 		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/hammer.js/1.0.5/jquery.hammer.min.js"></script>
@@ -44,6 +44,7 @@
 			 $('.bxslider').bxSlider({
 			 adaptiveHeight: true,
   			 mode: 'fade',
+  			 auto: true
 			});
 			});
 		</script>
@@ -536,7 +537,11 @@ border-color: #7C9710
 <script>
 $(document).ready(function() {
 	$("#dialog-form").hide();
-
+	
+	$('#deliverydate').datepicker();
+	$('#podate').datepicker();
+	$('#duedate').datepicker();
+		
 	$('.fixedrating').jRating({
 		length:5,
 		bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
@@ -997,6 +1002,53 @@ function changetab(tabname){
 		$('#receiverid').val(from);
 		$('#reply').val(id);
 	}
+	
+	
+	    function addpo(){
+
+    	var pid=$('#additemproject').val();
+    	if(pid){
+
+    		$('#addtoquotemodal').modal();
+    		//$('#additemproject').val('');
+    		$('#addtoquotemodal').modal('hide');
+    		$('#Addpomodal').modal();
+    	}
+    }
+    
+    
+    function savepo(){
+    	
+    	var pid=$('#additemproject').val();
+    	var ponum = $("#ponum").val();
+    	if(ponum=="")
+    		alert("Please Enter PO");
+    	
+    	var podate = $("#podate").val();
+		var duedate = $('#duedate').val();
+		var deliverydate = $('#deliverydate').val();
+		
+		var d = "pid="+pid+"&ponum="+ponum+"&podate="+podate+"&duedate="+duedate+"&deliverydate="+deliverydate;
+		
+		$.ajax({
+			type: "post",
+			url: addpoquoteurl,
+			dataType: 'json',
+			data: d
+		}).done(function(data) {			
+			if(data=="Duplicate PO#"){
+				alert(data);
+			}else{		
+					var option = new Option(data.ponum, data.poid);
+					$('[name="quote"]').append($(option));
+					$('[name="quote"]').val(data.poid);
+					$('#Addpomodal').modal('hide');
+					$("#addtoquotemodal").modal();
+				
+			}
+		});
+    }
+	
 
 	/*function sendreply(){
 		alert("fffff");	
@@ -1889,19 +1941,6 @@ function changetab(tabname){
                  <?php }?>
 
                 <?php if($adforsupplier){?>
-
-      <script src="<?php echo base_url(); ?>templates/site/assets/js/jquery.bxslider.min.js"></script>
-<!-- bxSlider CSS file -->
-<link href="<?php echo base_url(); ?>templates/site/assets/css/jquery.bxslider.css" rel="stylesheet" />
-
-        <script type="text/javascript">
-			$(function() {$('.bxslider').bxSlider({
-
-				});
-
-			});
-		</script>
-
                     <div class="sidebar span3">
                     <div class="widget contact">
                     <div class="title">
@@ -1913,14 +1952,15 @@ function changetab(tabname){
 
                                    <div class="controls bxcontainer">
                                    		<ul class="bxslider">
-                                    	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img  src="<?php
-                                    	$pathinfo = pathinfo($ad->image);
-                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/>
+                                    	<?php foreach($adforsupplier as $key=>$ad){  ?>
+                                    	<li>
+                                    	<?php $pathinfo = pathinfo($ad->image);?>
+                                    	<img  src="<?php echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" 
+												alt="image<?php echo $key;?>"/>
                                     	<h6><a href="<?php echo base_url("/site/ad/".$ad->id);?>">
                                     	<?php echo $ad->title;?> $<?php echo $ad->price;?></a></h6>
                                     	<p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
-                                     	<?php } ?>
+                                     	<?php }  ?>
                                     	</ul>
 
                                      </div>
@@ -2276,8 +2316,10 @@ function changetab(tabname){
                             </select>
                             </span>
 
-                            <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
+                            <!-- <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a> -->
 
+                            <a href="javascript:void(0)" onclick="addpo()">Add PO</a>
+                            
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
                             <input type="hidden" id="incrementqty" name="incrementqty" />
@@ -2322,3 +2364,39 @@ function changetab(tabname){
                 </div>
             </div>
         </div>
+        
+        
+        
+         <div id="Addpomodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+
+            <div class="modal-header">
+        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            <h3>Please Add Your P.O. Now</h3>
+        	</div>
+        	<div class="modal-body">
+        	
+        	<div class="control-group">
+			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
+                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" >		</div>
+		    </div>
+		    <br><br>		    
+		    <div class="control-group">
+			    <div class="controlss">
+			      Delivery or Pick-Up Date: &nbsp; &nbsp;
+			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" 
+			      	data-date-format="mm/dd/yyyy">			      
+			       &nbsp; &nbsp; <br><br>
+			      PO Date: &nbsp; &nbsp; 
+			      <input type="text" id="podate" name="podate" class="input small span2"
+			      	data-date-format="mm/dd/yyyy">
+			      	&nbsp; &nbsp; &nbsp; &nbsp; <br><br>
+			     Bid Due Date: &nbsp; &nbsp; 
+			      <input type="text" id="duedate" name="duedate" class="input small span2"
+			      data-date-format="mm/dd/yyyy">
+			      <input name="add" type="button" class="btn btn-primary" value="Save" onclick="savepo();"/>
+			    </div>			   
+		    </div>
+        	
+        	</div>
+
+   </div>   

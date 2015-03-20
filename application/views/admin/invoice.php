@@ -313,12 +313,14 @@ function shownotice(newval,oldval,id){
                 $grandtotal = $totalprice + $taxtotal;
                 
                 $arradditionalcal = array();
+                $disocunt = 0;
                 if(@$invoice->discount_percent){
                 	
                 	$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
                 	 
                 	$arradditionalcal[] = - ($grandtotal*$invoice->discount_percent/100);
-                	$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);
+                	$disocunt = $grandtotal*$invoice->discount_percent/100;
+                	$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);                	
                 }
                 
                 if(@$invoice->penalty_percent){
@@ -475,8 +477,20 @@ function shownotice(newval,oldval,id){
                     
                     <?php if(@$invoice->alreadypay==1){?>
                     <div style="text-align:center;" ><a href="javascript:void(0)" onclick="showInvoice('<?php echo @$invoice->paidinvoicenum;?>','<?php echo $quote->id;?>')"><?php echo @$invoice->paidinvoicenum;?></a></div>
-                    <?php }?>
+                    <?php }?>              
                     
+                   <div style="text-align:right;" > <?php if($disocunt>0) echo "Paid Early Savings = ".$disocunt; ?> </div>
+                    
+                   <?php if(@$invoice->fullpaid==1 && @$invoice->relatedinvoices){?>
+                   <div style="text-align:left;" > Invoices Created related to this pre-paid invoice: 
+                   	<?php foreach($invoice->relatedinvoices as $relinvoice){
+                   	?>
+                    <a href="javascript:void(0)" onclick="showInvoice('<?php echo @$relinvoice->invoicenum;?>','<?php echo $quote->id;?>')"><?php echo @$relinvoice->invoicenum;?></a> &nbsp; &nbsp;
+                    <?php }?>
+                    </div>
+                   	<?php }?>
+                    
+                   
                 </div>
             </div>
         </div>

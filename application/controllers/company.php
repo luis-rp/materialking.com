@@ -1259,10 +1259,12 @@ class Company extends CI_Controller {
 	            $arr['tier'] = $tier;
 	            $arr['creditlimit'] = $_POST['creditlimit'][$admin];
 	            $arr['totalcredit'] = $_POST['creditlimit'][$admin];//this is not a mistake, same value is fed to both fields.
-	            if($_POST['creditfrom'][$admin])
+	            $arr['creditfrom']="";
+	            $arr['creditto']="";
+	           /* if($_POST['creditfrom'][$admin])
 	            	$arr['creditfrom'] = date('Y-m-d', strtotime($_POST['creditfrom'][$admin]));
 	            if($_POST['creditto'][$admin])
-	            	$arr['creditto'] = date('Y-m-d', strtotime($_POST['creditto'][$admin])); 
+	            	$arr['creditto'] = date('Y-m-d', strtotime($_POST['creditto'][$admin])); */
 	             if(@$_POST['creditonly'][$admin]=='on')
 	            	$arr['creditonly'] = '1';  	 
 	            $this->db->insert('purchasingtier', $arr);
@@ -1401,7 +1403,7 @@ class Company extends CI_Controller {
     	$this->load->view('company/addAd',$data);
     }
     function saveAd(){
-    	$res = $this->do_upload();
+    	//$res = $this->do_upload();
 
     	//$res = $this->do_upload();
     	/*if(isset($res['error'])){
@@ -1409,7 +1411,7 @@ class Company extends CI_Controller {
 
     	}
     	else {*/
-    	$result = $this->admodel->saveAd($res);
+    	$result = $this->admodel->saveAd();
     	//}
     	if($result){
     		$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
@@ -1557,6 +1559,10 @@ class Company extends CI_Controller {
 	{
 		$this->db->where("id",$id);
     	$res['ads'] = $this->db->get("ads")->result();
+    	if(isset($res['ads']) && $res['ads']!="")
+    	{
+    		$res['image']=$this->db->get_where('AdImage',array('adid'=>$res['ads'][0]->id,'company'=>$res['ads'][0]->user_id))->result();
+    	}
     	$catcodes = $this->catcode_model->get_categories_tiered();
      	$itemcodes = $this->itemcode_model->get_itemcodes();
         $categories = array();
@@ -1573,8 +1579,8 @@ class Company extends CI_Controller {
 
         if(isset($_POST['add']))
         {
-			$res = $_POST;
-	    	$res = $this->do_upload();
+			//$res = $_POST;
+	    	//$res = $this->do_upload();
 
 	    	//$res = $this->do_upload();
 
@@ -1583,7 +1589,7 @@ class Company extends CI_Controller {
 	    		redirect("company/ads");
 	    	}*/
 
-	    		$this->admodel->updateAd($res);
+	    		$this->admodel->updateAd($id);
 
 	    	$message =  '<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Saved Successfully.</div></div></div>';
 			$res['message'] = $message;
@@ -2735,4 +2741,22 @@ class Company extends CI_Controller {
 
 	}
     
+	
+	function deleteadimage($id)
+	{
+		$rows['image']=$this->db->get_where('AdImage',array('id'=>$id))->row();
+		$name=$rows['image']->image;
+
+		if(file_exists('./uploads/ads/'.$name) && !is_dir('./uploads/ads/'.$name))
+		{
+		unlink('./uploads/ads/'.$name);
+		}
+
+		$this->db->delete('AdImage',array('id'=>$id));
+		$message ='<div class="errordiv"><div class="alert alert-success"><button data-dismiss="alert" class="close"></button><div class="msgBox">Data Deleted Successfully.</div></div></div>';
+	    $res['message'] = $message;
+		$this->session->set_flashdata('message', $message);
+		redirect("company/ads");
+
+	}
 }

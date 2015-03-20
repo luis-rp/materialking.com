@@ -42,10 +42,8 @@ $(document).ready(function(){
   	adaptiveHeight: true,
   	pagerCustom: '#bx-pager',
   	mode: 'fade',
-    captions: true,
-    auto: true
-   
-   
+    auto: true,
+    captions: true   
 });
 });
 
@@ -53,7 +51,9 @@ $(document).ready(function(){
 
  /*jQuery(function() {
 		jQuery('.flexslider').flexslider();		
-	});*/
+	});
+	
+	adaptiveHeight: true,captions: true,*/
 </script>
 			
 <style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
@@ -79,12 +79,11 @@ $(document).ready(function(){
 	 <div class="container">
 		<div class="span12">						
              <?php  if(isset($images)) { ?>
-			
-					<ul  class="bxslider">
-											
+			      <div style="width:74%;">
+					<ul  class="bxslider">										
 					<?php foreach ($images as $img) { ?>
 						<li>
-						<img  src="<?php echo base_url("uploads/AdImage/".$img->image); ?>" title="<?php echo $img->image; ?>"/>
+						<img  src="<?php echo base_url("uploads/ads/".$img->image); ?>" title="<?php echo $c_title; ?>"/>
 						</li>
 					<?php } ?>
 					</ul>
@@ -92,11 +91,11 @@ $(document).ready(function(){
 					<div id="bx-pager" style="background-color:white;text-align:center;">
 						<?php $i=0; foreach ($images as $img) { ?>
 				 			<a data-slide-index="<?php echo $i; ?>" href="">
-				 			    <img src="<?php echo base_url("uploads/AdImage/".$img->image); ?>" width="100"/>
+				 			    <img src="<?php echo base_url("uploads/ads/".$img->image); ?>" width="100"/>
 				 			</a>
 				 	    <?php $i++; }  ?> 
 					</div>
-			     
+			     </div>
            <?php }  ?>         
         </div>
       </div>
@@ -151,7 +150,7 @@ $(document).ready(function(){
 													icon: "<?php echo $iconPath; ?>",
 													shadow: "<?php echo base_url() ?>templates/classified/assets/images/shadow.png",
 												},
-												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/AddImage/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
+												data: '<div class="marker-holder"><div class="marker-content"><div class="marker-image"><img src="<?php echo base_url("uploads/ads/".$featured_image);?>" /></div><div class="marker-info-holder"><div class="marker-info"><div class="marker-info-title"><?php echo $a_title; ?></div><div class="marker-info-extra"><div class="marker-info-price"><?php echo $a_price; ?></div><div class="marker-info-link"><a href="<?php echo base_url("site/ad/".$a_id);?>">Details</a></div></div></div></div><div class="arrow-down"></div><div class="close"></div></div></div>'
 											}
 
 								],
@@ -412,7 +411,7 @@ $(document).ready(function(){
 										$dis_img = $image[0];
 									else
 										$dis_img = $image;*/?>-->
-		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/AdImage/".$rel['adimage']);?>'/>
+		    											 <img class='add-box-main-image' src='<?php echo base_url("uploads/ads/".$rel['image']);?>'/>
 
 													</a>
 		    								</div>
@@ -456,7 +455,7 @@ $(document).ready(function(){
 		    			<ul>
 		    			<?php foreach($popular as $pop){  ?>
                             <li class="widget-ad-list">
-                            <img class="widget-ad-image" src="<?php echo base_url("uploads/AdImage/".$pop['adimage']);?>">
+                            <img class="widget-ad-image" src="<?php echo base_url("uploads/ads/".$pop['image']);?>">
 						    		<span class="widget-ad-list-content">
 						    			<span class="widget-ad-list-content-title">
 						    			<a href="<?php echo base_url("site/ad/".$pop['id']); ?>"><?php echo $pop['title']; ?></a></span>

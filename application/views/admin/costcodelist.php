@@ -142,6 +142,7 @@ function endTour(){
             <table id="datatable" class="table table-bordered datagrid">
               <tr>
               	<th width="20%">Code</th>
+              	<th width="10%">Image</th>
               	<th width="7%">Budget</th>
               	<th width="9%">$ Spent</th>
               	<th width="25%">Budget % Allocated</th>
@@ -149,10 +150,19 @@ function endTour(){
               	<th>Status</th>
               	<th width="10%">Actions</th>
               </tr>
-              <?php foreach($items as $item){?>
+              <?php foreach($items as $item)
+              {
+              	$imgName = '';
+              	 if (isset($item->costcode_image) && $item->costcode_image != '' && file_exists('./uploads/costcodeimages/' . $item->costcode_image)) 
+				 { 
+				 	 $imgName = site_url('uploads/costcodeimages/'.$item->costcode_image); 
+				 } 
+				
+              	?>
               <input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
               <tr>
               	<td><span class='cost-code'><?php echo $item->code?></span></td>
+              	<td><?php if($imgName != '') { ?> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'> <?php } ?></td>
               	<td><?php echo $item->cost?></td>
               	<td><span class='total-spent'><?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100) + $shipping),2 ); ?></span></td>
               	<td id="lastpbar"><?php echo $item->budget;?></td>

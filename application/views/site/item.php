@@ -8,6 +8,8 @@
 
 <?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
 
+<?php echo '<script>var addpoquoteurl = "' . site_url('site/addpoquote') . '";</script>' ?>
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -67,6 +69,10 @@ $( document ).tooltip();
 
 		<?php if(isset($item->zoom) && $item->zoom==1) {  ?> $("#contentimage").elevateZoom();  <?php } ?>
 		 $("#bigimage").elevateZoom();
+		 
+	$('#deliverydate').datepicker();
+	$('#podate').datepicker();
+	$('#duedate').datepicker();
 
 	});
 	function setmiles(miles)
@@ -599,6 +605,53 @@ $( document ).tooltip();
 		
 	}
 	
+	
+	    function addpo(){
+
+    	var pid=$('#additemproject').val();
+    	if(pid){
+
+    		$('#addtoquotemodal').modal();
+    		//$('#additemproject').val('');
+    		$('#addtoquotemodal').modal('hide');
+    		$('#Addpomodal').modal();
+    	}
+    }
+    
+    
+    function savepo(){
+    	
+    	var pid=$('#additemproject').val();
+    	var ponum = $("#ponum").val();
+    	if(ponum=="")
+    		alert("Please Enter PO");
+    	
+    	var podate = $("#podate").val();
+		var duedate = $('#duedate').val();
+		var deliverydate = $('#deliverydate').val();
+		
+		var d = "pid="+pid+"&ponum="+ponum+"&podate="+podate+"&duedate="+duedate+"&deliverydate="+deliverydate;
+		
+		$.ajax({
+			type: "post",
+			url: addpoquoteurl,
+			dataType: 'json',
+			data: d
+		}).done(function(data) {			
+			if(data=="Duplicate PO#"){
+				alert(data);
+			}else{		
+					var option = new Option(data.ponum, data.poid);
+					$('[name="quote"]').append($(option));
+					$('[name="quote"]').val(data.poid);
+					$('#Addpomodal').modal('hide');
+					$("#addtoquotemodal").modal();
+				
+			}
+		});
+    }
+	
+	
 </script>
 
 <div id="content">
@@ -956,15 +1009,15 @@ $( document ).tooltip();
                             	<thead>
                                 <tr>
                                     <th width="11%">Supplier</th>
-                                    <th width="13%">Code</th>
-                                    <th width="13%">Item</th>
+                                    <th width="11%">Code</th>
+                                    <th width="12%">Item</th>
                                     <th width="10%">Manuf.</th>
                                     <th width="10%">Part#</th>
-                                    <th width="10%">Price</th>
+                                    <th width="8%">Price</th>
                                     <th width="8%">Stock</th>
-                                    <th width="13%">Address</th>
-                                    <th width="9%">Dist. (mi)</th>
-                                    <th width="5%">Buy</th>
+                                    <th width="12%">Address</th>
+                                    <th width="8%">Dist(mi)</th>
+                                    <th width="12%">Buy</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -1498,8 +1551,10 @@ var amzn_assoc_height = "90";
                             </select>
                             </span>
 
-                            <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a>
+                            <!-- <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a> -->
 
+                            <a href="javascript:void(0)" onclick="addpo()">Add PO</a>  
+                            
                             <h4>Quantity</h4>
                             <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
                             <input type="hidden" id="incrementqty" name="incrementqty" />
@@ -1646,3 +1701,43 @@ var amzn_assoc_height = "90";
                 </div>
             </div>
         </div>
+        
+        
+        
+      
+        
+      <div id="Addpomodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+
+            <div class="modal-header">
+        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            <h3>Please Add Your P.O. Now</h3>
+        	</div>
+        	<div class="modal-body">
+        	
+        	<div class="control-group">
+			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
+                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" >		</div>
+		    </div>
+		    <br><br>		    
+		    <div class="control-group">
+			    <div class="controlss">
+			      Delivery or Pick-Up Date: &nbsp; &nbsp;
+			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" 
+			      	data-date-format="mm/dd/yyyy">			      
+			       &nbsp; &nbsp; <br><br>
+			      PO Date: &nbsp; &nbsp; 
+			      <input type="text" id="podate" name="podate" class="input small span2"
+			      	data-date-format="mm/dd/yyyy">
+			      	&nbsp; &nbsp; &nbsp; &nbsp; <br><br>
+			     Bid Due Date: &nbsp; &nbsp; 
+			      <input type="text" id="duedate" name="duedate" class="input small span2"
+			      data-date-format="mm/dd/yyyy">
+			      <input name="add" type="button" class="btn btn-primary" value="Save" onclick="savepo();"/>
+			    </div>			   
+		    </div>
+        	
+        	</div>
+
+   </div>  
+        
+        

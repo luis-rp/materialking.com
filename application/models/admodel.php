@@ -39,7 +39,7 @@ class Admodel extends Model {
     	if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
-            	$target='uploads/AdImage/';
+            	$target='uploads/ads/';
             	$count=0;
             	foreach ($_FILES['UploadFile']['name'] as $filename)
             	{
@@ -101,7 +101,7 @@ class Admodel extends Model {
     	if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
-            	$target='uploads/AdImage/';
+            	$target='uploads/ads/';
             	$count=0;
             	foreach ($_FILES['UploadFile']['name'] as $filename)
             	{
@@ -123,8 +123,12 @@ class Admodel extends Model {
 
     public function deleteAd($id)
     {
-    	$where = array('id'=>$id);
-    	$query = $this->db->delete('ads',$where);
+    	$image=$this->db->get_where('AdImage',array('adid'=>$id))->result();
+        if(@count($image > 0))
+        {
+    	$this->db->delete('AdImage',array('adid'=>$id));}	
+		$where = array('id'=>$id);
+    	$query = $this->db->delete('ads',$where);   	
     	return 1;
     }
 }

@@ -31,43 +31,33 @@ class site extends CI_Controller
         redirect($_SERVER['HTTP_REFERER']);
         //redirect(base_url('site'));
     }
-
     public function insertuserip(){
     	if(isset($_POST['ipaddress'])){
     		$datatoadd = array('ip' => $_POST['ipaddress']);
     		$this->db->insert('ipaddress',$datatoadd);
     	}
     }
-
     public function index ()
     {
-
     	if(isset($_SERVER['REMOTE_ADDR'])){
-
 			$this->db->where('ip', $_SERVER['REMOTE_ADDR']);
     					if ($this->db->get('ipaddress')->result()){
     						$data['videocount'] = 1;
     					}else{
-
 							$data['videocount'] = 0;
     					}
-
 		}else
 		$data['videocount'] = 0;
-
 		if(isset($_SERVER['REMOTE_ADDR'])){
-
 			$data['ipaddress'] = $_SERVER['REMOTE_ADDR'];
 		}else{
 			$data['ipaddress'] = "";
 		}
-
     	$details = get_my_address();
     	$center = $details->loc;
     	//$center = "56, 38";
     	//var_dump($details);die;
     	$data['my_location'] = get_my_location($details);
-
     	$geo_coords = explode(",", $center);
     	$search = new stdClass();
     	$search->distance = 100000;
@@ -77,9 +67,7 @@ class site extends CI_Controller
     	$data['norecords'] = '';
     	$use_supplier_position = false;
     	$this->homemodel->set_search_criteria($search);
-
     	$location = $this->input->post('location');
-
     	//$lat = $this->input->post('lat');
     	//$lng = $this->input->post('lng');
     	if ($location)
@@ -93,8 +81,6 @@ class site extends CI_Controller
     			$this->homemodel->set_search_criteria($search);
     		}
     	}
-
-
     	$suppliers_near_me = $this->homemodel->get_nearest_suppliers();
     	$data['suppliers_10_miles'] = false;
     	$nearest_10 = false;
@@ -140,7 +126,6 @@ class site extends CI_Controller
     	{
     		$suppliers = $this->homemodel->getSuppliers();
     	}
-
     	$data['suppliers'] = array();
     	$latlongs = array();
     	$popups = array();
@@ -176,7 +161,6 @@ class site extends CI_Controller
     				$this->db->where('totype', 'company');
     				if ($this->db->get('joinrequest')->result())
     					$supplier->joinmark ='<div class="star"><div class="content">Already sent Request</div></div>';
-
     				$this->db->where('purchasingadmin', $currentpa);
     				$this->db->where('company', $supplier->id);
     				if ($this->db->get('network')->result())
@@ -253,7 +237,6 @@ class site extends CI_Controller
     	$data['page_description']="The B2B Network for Contractors & Supply Houses";
     	$this->load->view('site/index', $data);
     }
-
     public function search_supplier ($keyword)
     {
         $details = get_my_address();
@@ -271,7 +254,6 @@ class site extends CI_Controller
         $items = $this->homemodel->find_item();
         return $items;
     }
-
     public function suppliers ($keyword = false)
     {
         //print_r($_POST);
@@ -281,7 +263,6 @@ class site extends CI_Controller
             {
                 $keyword = $this->input->post('keyword');
             }
-
             $query_suppliers = $this->search_supplier($keyword);
             $this->data['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
             $this->data['submiturl'] = 'site/suppliers/' . $keyword;
@@ -308,9 +289,7 @@ class site extends CI_Controller
             $search->earths_radius = 6371;
             $use_supplier_position = false;
             $this->homemodel->set_search_criteria($search);
-
             $location = $this->input->post('location');
-
             //$lat = $this->input->post('lat');
             //$lng = $this->input->post('lng');
             if ($location)
@@ -383,12 +362,10 @@ class site extends CI_Controller
         $this->data['citystates'] = $this->db->query($sql)->result();
         $this->data['states'] = $this->db->get('state')->result();
         $this->data['types'] = $this->db->get('type')->result();
-
        	$this->data['page_title'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
        	$this->data['page_description'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
         $this->load->view('site/suppliers', $this->data);
     }
-
     public function send_supplier_email ()
     {
         $id = $this->input->post('supplier_id');
@@ -431,7 +408,6 @@ class site extends CI_Controller
         }
         redirect(base_url('site/supplier/' . $id));
     }
-
     public function supplier ($username=NULL)
     {
     	$this->load->helper('text');
@@ -450,9 +426,7 @@ class site extends CI_Controller
         if ($this->session->userdata('site_loggedin') && $data['supplier'])
         {
             $data['supplier']->joinstatus = '<input type="button" value="Join Network" onclick="joinnetwork(' . $data['supplier']->id . ')" class="btn btn-primary arrow-right"/>';
-
             $currentpa = $this->session->userdata('site_loggedin')->id;
-
             $this->db->where('fromid', $currentpa);
             $this->db->where('toid', $data['supplier']->id);
             $this->db->where('fromtype', 'users');
@@ -461,12 +435,10 @@ class site extends CI_Controller
             //print_r($checkrequest);die;
             if ($checkrequest)
                 $data['supplier']->joinstatus = 'Already sent request';
-
             $this->db->where('purchasingadmin', $currentpa);
             $this->db->where('company', $data['supplier']->id);
             if ($this->db->get('network')->result())
                 $data['supplier']->joinstatus = 'Already in Network';
-
         }
         //print_r($data['supplier']);die;
         $data['nextid'] = $this->nextsupplier($id);
@@ -485,9 +457,7 @@ class site extends CI_Controller
                 $data['supplier'] = $this->supplier_model->get_supplier($id);
             }
         }
-
         $rating = $this->db->where('company',$id)->select_avg('rating')->get('quotefeedback')->row();
-
         if(@$rating->rating)
         {
             $data['ratingvalue'] = $rating->rating;
@@ -502,15 +472,12 @@ class site extends CI_Controller
                             ->order_by('ratedate','DESC')
                             ->from('quotefeedback')->join('users','quotefeedback.purchasingadmin=users.id')->limit(3)
                             ->where('company',$id)->get()->result();
-
         $inventory = $this->db->where('type','Supplier')
                     ->where('company',$id)
                     ->where('isfeature','1')
                     ->get('companyitem')
                     ->result();
-
          $data['inventory'] = array();
-
          foreach($inventory as $initem)
          {
          	
@@ -518,14 +485,12 @@ class site extends CI_Controller
                             ->where('itemid',$initem->itemid)
                             ->get('qtydiscount')
                             ->result();
-
             if($hasdiscount){
               $initem->hasdiscount = true;}
             else{
              $initem->hasdiscount = false;}
             $this->db->where('id',$initem->manufacturer);
             $initem->manufacturername = @$this->db->get('type')->row()->title;
-
             $this->db->where('id',$initem->itemid);
             $orgitem = $this->db->get('item')->row();
             if(!is_object($orgitem)){
@@ -533,26 +498,20 @@ class site extends CI_Controller
             }
             if(!$initem->itemname)
             	$initem->itemname = $orgitem->itemname;
-
             if(!$initem->itemcode)
             	$initem->itemcode = $orgitem->itemcode;
-
             if(!$initem->image)
             	$initem->image = $orgitem->item_img;
             	
             $initem->increment = $orgitem->increment;	
-
             $initem->unit = $orgitem->unit;
-
             $initem->url = $orgitem->url;
-
             $this->db->where('id', $initem->company);
             $res2 = $this->db->get('company')->row();
             if($res2){
             	$initem->phone = $res2->phone;
             }else
             $initem->phone = "";
-
             if($this->session->userdata('site_loggedin'))
             {
                 $this->db->where('company', $id);
@@ -570,8 +529,6 @@ class site extends CI_Controller
                         $initem->ea = number_format($initem->ea, 2);
                     }
                 }
-
-
                 /*
                 $dealitem = $this->db->where('company',$id)
                     ->where('itemid',$initem->itemid)
@@ -585,7 +542,6 @@ class site extends CI_Controller
                 $initem->qtyreqd = 0;
                 if($dealitem)
                 {
-
                     if(isset($tv))
                     {
                         $dealitem->dealprice = $dealitem->dealprice + ($dealitem->dealprice * $tv / 100);
@@ -596,10 +552,8 @@ class site extends CI_Controller
                 }
                 */
             }
-
             $data['inventory'][] = $initem;
          }
-
         $dealitems = $this->db->where('company',$id)
                     ->where('dealactive','1')
                     ->where('qtyavailable >=','qtyreqd')
@@ -615,12 +569,10 @@ class site extends CI_Controller
             {
                /* if(!$di->image)
                     $di->image="big.png";*/
-
                 $orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
                 $cmpitem = $this->db->where('itemid',$di->itemid)->where('company',$id)->where('type','Supplier')->get('companyitem')->row();
                 $di->itemname = @$cmpitem->itemname?$cmpitem->itemname:$orgitem->itemname;
                 $di->increment = $orgitem->increment;
-
                 $di->price = @$cmpitem->price?$cmpitem->price:'';
                 if(@$cmpitem->company){
                 $this->db->where('id', $cmpitem->company);
@@ -631,7 +583,6 @@ class site extends CI_Controller
             	$di->phone = "";
                 }else
                 $di->phone = "";
-
                 $di->unit = $orgitem->unit;
                 $di->url = $orgitem->url;
                 if(!$di->image)
@@ -648,27 +599,30 @@ class site extends CI_Controller
                 }
             }
         }
-
         $this->db->where("user_id",$data['supplier']->id);
         $ads = $this->db->get("ads")->result();
+        $data['adforsupplier']=array();      
      	foreach($ads as $ad){
-
+     		
+     		$image=$this->db->get_where('AdImage',array('adid'=>$ad->id))->row()->image;
+     		$ad->image="";
+     		if($image!="")
+     		{
+     			$ad->image=$image;
+     		}
      		$config['image_library'] = 'gd2';
      		$config['source_image'] = './uploads/ads/'.$ad->image;
      		$config['create_thumb'] = TRUE;
      		$config['maintain_ratio'] = FALSE;
      		$config['width']     = 190;
      		$config['height']   = 194;
-
      		$this->image_lib->clear();
      		$this->image_lib->initialize($config);
      		$this->image_lib->resize();
-
-     	}
-     	$data['adforsupplier']=$ads;
-
+     		$data['adforsupplier'][] = $ad;
+     	} 
+     	//$data['adforsupplier']=$ads;
      	$membersDB = $this->db->where("cid", $data['supplier']->id)->get("companyteam")->result();
-
      	foreach($membersDB as $mdb){
      		$config['image_library'] = 'gd2';
      		$config['source_image'] = './uploads/companyMembers/'.$mdb->picture;
@@ -676,16 +630,13 @@ class site extends CI_Controller
      		$config['maintain_ratio'] = FALSE;
      		$config['width']     = 190;
      		$config['height']   = 194;
-
      		$this->image_lib->clear();
      		$this->image_lib->initialize($config);
      		$this->image_lib->resize();
-
      		$pathinfo = pathinfo($mdb->picture);
      		$mdb->picture = $pathinfo["filename"]."_thumb.".$pathinfo["extension"];
      		$data["members"][] = $mdb;
      	}
-
         //print_r($data['dealfeed']);die;
         $similarsuppliers = $this->supplier_model->getrelatedsupplier($id);
         $data['similarsuppliers'] = $similarsuppliers;
@@ -697,21 +648,15 @@ class site extends CI_Controller
        	$data['page_description'] = character_limiter($data["supplier"]->shortdetail,150);
        	$upcomingevents = $this->event_model->get_upcoming_items($data['supplier']->id);
        	$data['upcomingevents'] = $upcomingevents;
-
        	if ($this->session->userdata('site_loggedin'))
        	 {
         	 $data['filesprivate']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>1))->result();
        	 }
-
         $data['filespublic']=$this->db->get_where('company_files',array('company'=>$data['supplier']->id,'private'=>0))->result();
-
-
         $data['gallery']=$this->db->get_where('gallery',array('company'=>$data['supplier']->id))->result();
-
         $data['designbook']=$this->db->get_where('designbook',array('company'=>$data['supplier']->id))->result();
         
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
-
         $data['businesshrs'] = $bhrs;
         
         $data['userquotes'] = array();
@@ -820,7 +765,6 @@ class site extends CI_Controller
         }
         return null;
     }
-
     public function search ($keyword = false)
     {
         if ($this->input->post('keyword') != '')
@@ -857,13 +801,10 @@ class site extends CI_Controller
             if($min){
             	$item->callminprice = $min->price;
             }
-
             $query7 = "SELECT ci.ea as maxea , ci.price 
             		   FROM ".$this->db->dbprefix('companyitem')." ci,".$this->db->dbprefix('company')." c 
             		   where  c.id=ci.company AND c.isdeleted=0 AND ci.itemid='".$item->id."' and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
-
             $max = $this->db->query($query7)->row();
-
             if($max){           	
             	$item->callmaxprice = $max->price;
             }
@@ -873,7 +814,6 @@ class site extends CI_Controller
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
             $item->price = $minmax->price;
-
             $cquery = "SELECT count(ci.company) countitem 
             			FROM ".$this->db->dbprefix('companyitem')." ci 
             			join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
@@ -886,9 +826,7 @@ class site extends CI_Controller
             	$item->offercount = $countofitems->countitem;
             else
             	$item->offercount = 0;
-
             $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
-
             $item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;
             $item->hasdeal = $this->db
                             ->where('itemid',$item->id)
@@ -902,17 +840,14 @@ class site extends CI_Controller
                             true
                             :false
                             ;
-
 			$hasdiscount = $this->db
                             ->where('itemid',$item->id)
                             ->get('qtydiscount')
                             ->result();
-
             if($hasdiscount)
               $item->hasdiscount = true;
             else
              $item->hasdiscount = false;
-
             $this->data['items'][] = $item;
         }
         $this->data['norecords'] = '';
@@ -930,7 +865,6 @@ class site extends CI_Controller
             $cat = $this->db->get('category')->row();
             if($cat)
                 $currentcategory = $cat->catname;
-
             $catcodes = $this->catcode_model->get_categories_tiered();
             $categories = $this->itemcode_model->getcategories();
             /*
@@ -939,7 +873,6 @@ class site extends CI_Controller
                     $this->data['breadcrumb'] = 'Current Category: '.$cat->catname;
             */
         }
-
         $this->data['userquotes'] = array();
         $this->data['projects'] = array();
         $this->data['costcodes'] = array();
@@ -955,13 +888,11 @@ class site extends CI_Controller
             $this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
         }
-
          $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);
         $this->data['currentcategory'] = $currentcategory;
         //echo "<pre>",print_r($this->data); die;
         if($keyword){
-
         	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "suppliers"){
         		$this->data2 = $this->suppliers2($keyword);
         		$this->data['data2'] = $this->data2;
@@ -982,8 +913,6 @@ class site extends CI_Controller
         $this->data['searchfor'] = $_POST['searchfor'];
         $this->load->view('site/items', $this->data);
     }
-
-
         public function suppliers2 ($keyword = false)
     {
         //print_r($_POST);
@@ -993,7 +922,6 @@ class site extends CI_Controller
             {
                 $keyword = $this->input->post('keyword');
             }
-
             $query_suppliers = $this->search_supplier($keyword);
            
             $this->data2['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
@@ -1022,9 +950,7 @@ class site extends CI_Controller
             $search->earths_radius = 6371;
             $use_supplier_position = false;
             $this->homemodel->set_search_criteria($search);
-
             $location = $this->input->post('location');
-
             //$lat = $this->input->post('lat');
             //$lng = $this->input->post('lng');
             if ($location)
@@ -1101,7 +1027,6 @@ class site extends CI_Controller
         $this->data2['types'] = $this->db->get('type')->result();
         return $this->data2;
     }
-
     public function items ()
     {
         $limit = 18;
@@ -1128,19 +1053,15 @@ class site extends CI_Controller
             	$item->minprice = $min->minea;
             	$item->callminprice = $min->price;
             }
-
             $query2 = "SELECT ci.ea as maxea , ci.price 
             		   FROM ".$this->db->dbprefix('companyitem')."  ci, ".$this->db->dbprefix('company')." c 
             		   where c.id = ci.company AND c.isdeleted = 0 AND ci.itemid='".$item->id."' 
             		   and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
-
             $max = $this->db->query($query2)->row();
-
             if($max){
             	$item->maxprice = $max->maxea;
             	$item->callmaxprice = $max->price;
             }
-
 			$cquery = "SELECT count(ci.company) countitem 
 						FROM ".$this->db->dbprefix('companyitem')." ci 
 					    join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
@@ -1152,9 +1073,7 @@ class site extends CI_Controller
         	$item->offercount = $countofitems->countitem;
             else
             $item->offercount = 0;
-
             $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
-
             //$item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;
              $hasdeal = $this->db
                             ->where('itemid',$item->id)
@@ -1164,12 +1083,10 @@ class site extends CI_Controller
                             ->where('dealdate >=',date('Y-m-d'))
                             ->get('dealitem')
                             ->result();
-
             if($hasdeal)
               $item->hasdeal = true;
             else
              $item->hasdeal = false;
-
            /* $hasdiscount = $this->db
                             ->where('itemid',$item->id)
                             ->get('qtydiscount')
@@ -1177,12 +1094,10 @@ class site extends CI_Controller
                             
              $sql="SELECT * FROM ".$this->db->dbprefix('qtydiscount')." qd JOIN ".$this->db->dbprefix('company')." c ON qd.company=c.id AND c.isdeleted='0' AND qd.itemid='".$item->id."'";
              $hasdiscount=$this->db->query($sql)->result();                      
-
             if($hasdiscount)
               $item->hasdiscount = true;
             else
              $item->hasdiscount = false;
-
             $this->data['items'][] = $item;
         }
         $this->data['norecords'] = '';
@@ -1196,13 +1111,10 @@ class site extends CI_Controller
         $category = $_POST['category'];
         else
         $category = "";
-
         $this->data['categoriesoptions'] = $this->items_model->getTreeOptions($category);
           
         if($category){
-
         	$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
-
         	$result1 = $this->db->query($sql1)->result();
         	if($result1)
         	$this->data['catname'] = $result1[0]->catname;
@@ -1228,7 +1140,6 @@ class site extends CI_Controller
             $this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
         }
-
         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
         
         if(@$_POST['manufacturer']!="")
@@ -1244,9 +1155,7 @@ class site extends CI_Controller
     {
         if($catID !=0)
         {
-
         $cat_data = $this->db->where('id',$catID)->get('category')->result();
-
        if($cat_data['0']->banner_image =='' || $cat_data['0']->banner_image =='0')
         {
             $cat_dataImage = $this->getCategoryImage($cat_data['0']->parent_id);
@@ -1273,8 +1182,6 @@ class site extends CI_Controller
         
         if(!$item)
             redirect('site');
-
-
         $id = $item->id;
         $item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->get('itemarticle')->result();
         $item->images = $this->db->where('itemid',$item->id)->get('itemimage')->result();
@@ -1286,13 +1193,11 @@ class site extends CI_Controller
         	if($cat_data)
         	$data['cat_image'] = $this->getCategoryImage($cat_data['0']->id);
         }
-
         if(isset($cat_data['0']->title) && $cat_data['0']->title!=""){
         	$data['cat_title'] = $cat_data['0']->title;
         	$data['cat_text'] = $cat_data['0']->text;
         }else {
         	$parentcategories = $this->items_model->getParentids($item->category);
-
         	if($parentcategories){
 				$where = "";
         		$str = explode(',', $parentcategories);
@@ -1304,14 +1209,11 @@ class site extends CI_Controller
         				break;
         			}
         		}
-
         	}else {
-
         		$data['cat_title'] = "";
         		$data['cat_text'] = "";
         	}
         }
-
         $mainimg = new stdClass();
         if($item->item_img)
         {
@@ -1330,16 +1232,17 @@ class site extends CI_Controller
         $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
         */
-        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND ci.ea > '0' AND c.company_type='1' AND isdeleted=0";
+        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND (ci.ea > '0' OR price=1) AND c.company_type='1' AND isdeleted=0";
         $inventory = $this->db->query($sql)->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
-
         if($item->featuredsupplier)
         {
             $this->db->where('itemid', $id);
             $this->db->where('company', $item->featuredsupplier);
             $this->db->where('type', 'Supplier');
-            $this->db->where('ea >', 0);
+            //$this->db->where('ea >', 0);
+            $wherecnd = '(ea > 0 OR price=1)';
+       		$this->db->where($wherecnd);
             $item->featureditem = $this->db->get('companyitem')->row();
             if($item->featureditem)
             {
@@ -1361,7 +1264,6 @@ class site extends CI_Controller
                     $this->db->where('id',$item->featureditem->manufacturer);
                     $item->featureditem->manufacturername = @$this->db->get('type')->row()->title;
                 }
-
                 if ($this->session->userdata('site_loggedin'))
                 {
                     $item->orgea = $item->ea;
@@ -1434,7 +1336,6 @@ class site extends CI_Controller
                 $geo_coords = explode(",", $center);
                 $lat1 = $geo_coords[0];
                 $lon1 = $geo_coords[1];
-
                 if ((! $company->com_lat || ! $company->com_lng) && $company->address)
                 {
                     $geocode = file_get_contents(
@@ -1463,7 +1364,7 @@ class site extends CI_Controller
                     $miles = $dist * 60 * 1.1515;
                     $initem->dist = $miles;
                     if (! @$_POST['miles'])
-                        $measure = 100;
+                        $measure = 20;
                     else
                         $measure = $_POST['miles'];
                     //echo ($miles .'<'. $measure.'<br/>');
@@ -1511,7 +1412,6 @@ class site extends CI_Controller
                     $lat1 = $update['com_lat'] = $output->results[0]->geometry->location->lat;
                     $lon1 = $update['com_lng'] = $output->results[0]->geometry->location->lng;
                 }
-
                 if ((! $company->com_lat || ! $company->com_lng) && $company->address)
                 {
                     $geocode = file_get_contents(
@@ -1544,7 +1444,7 @@ class site extends CI_Controller
                     if ($this->db->get('network')->result())
                         $initem->joinstatus = ' (In Network)';
                     if (! @$_POST['miles'])
-                        $measure = 100;
+                        $measure = 20;
                     else
                         $measure = $_POST['miles'];
                     $_POST['miles'] = $measure;
@@ -1616,7 +1516,7 @@ class site extends CI_Controller
                 $miles = $dist * 60 * 1.1515;
                 $initem->dist = $miles;
                 if (! @$_POST['miles'])
-                    $measure = 100;
+                    $measure = 20;
                 else
                     $measure = $_POST['miles'];
                 $_POST['miles'] = $measure;
@@ -1628,12 +1528,10 @@ class site extends CI_Controller
         //echo '<pre>';print_r($inventorydata);die;
         $data['inventory'] = array();
         $data['filtermanufacturer'] = array();
-
         foreach($inventorydata as $initem)
         {
             if(!isset($data['filtermanufacturer'][$initem->manufacturer]))
                 $data['filtermanufacturer'][$initem->manufacturer] = $this->db->where('id',$initem->manufacturer)->get('type')->row();
-
             if(!@$_POST['manufacturer'])
             {
                 $data['inventory'][] = $initem;
@@ -1647,8 +1545,7 @@ class site extends CI_Controller
         $ri = $this->db->dbprefix('relateditem');
         $query = "SELECT * FROM $ti WHERE id IN (SELECT relateditem FROM $ri WHERE item='$id')";
         $data['relateditems'] = $this->db->query($query)->result();
-
-        $dealitems = $this->db
+        /*$dealitems = $this->db
                     ->select('dealitem.*, item.*')
                     ->from('dealitem')
                     ->join('companyitem',"dealitem.itemid=companyitem.id AND pms_dealitem.company=pms_companyitem.company AND pms_companyitem.type='Supplier'")
@@ -1659,8 +1556,7 @@ class site extends CI_Controller
                     ->where('dealitem.qtyavailable >=','dealitem.qtyreqd')
                     ->where('dealitem.dealdate >=',date('Y-m-d'))
                     ->get()
-                    ->result();
-
+                    ->result();*/
         $dealitems = $this->db
                     ->select('dealitem.*')
                     ->from('dealitem')
@@ -1709,7 +1605,6 @@ class site extends CI_Controller
                 }
             }
         }
-
         $data['userquotes'] = array();
         $data['projects'] = array();
         $data['costcodes'] = array();
@@ -1725,9 +1620,7 @@ class site extends CI_Controller
            // $this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
-
         }
-
         $totalQuote = $this->db->where('itemid',$item->id)->join("pms_quoteitem",'pms_quoteitem.quote = quote.id')->from('quote')->count_all_results();
         $data['totalQuote'] = $totalQuote;
         //print_r($data['dealfeed']);die;
@@ -1739,11 +1632,9 @@ class site extends CI_Controller
                 $data['breadcrumb'] = '<b>Category:</b> '.$cat->catname;
         }
         */
-
         //Add for current Item
         $this->db->where("itemid",$item->id);
         $data['adforitem'] = $this->db->get("ads")->result();
-
         $data['breadcrumb'] = $this->items_model->getParents($item->category);
         $data['categorymenu'] = $this->data['categorymenu'] = $this->items_model->getCategoryMenu();
 		$data['manufacturermenu'] = $this->items_model->getManufacturerMenu();		
@@ -1766,7 +1657,6 @@ class site extends CI_Controller
     }
     public function tag($tag){
     	$tag = str_replace('%7C', '/', $tag);
-
     	$tag=urldecode($tag);
     	$tag=urldecode($tag);
     	$limit = 18;
@@ -1787,7 +1677,6 @@ class site extends CI_Controller
     		$minmax = $this->db->query($query)->row();
     		$item->minprice = $minmax->minea;
     		$item->maxprice = $minmax->maxea;
-
     		$cquery = "SELECT count(ci.company) countitem FROM ".$this->db->dbprefix('companyitem')." ci join ".$this->db->dbprefix('item')." i on ci.itemid=i.id WHERE ci.itemid = ".$item->id." and ci.type='Supplier' group by ci.itemid";
     		$countofitems = $this->db->query($cquery)->row();
     		//echo "<pre>",print_r($countofitems->countitem); die;
@@ -1795,9 +1684,7 @@ class site extends CI_Controller
     			$item->offercount = $countofitems->countitem;
     		else
     			$item->offercount = 0;
-
     		$item->articles = $this->db->where('itemid',$item->id)->order_by('postedon','DESC')->limit(3)->get('itemarticle')->result();
-
     		//$item->hasdeal = $this->db->where('itemid',$item->id)->get('dealitem')->result()?true:false;
     		$item->hasdeal = $this->db
     		->where('itemid',$item->id)
@@ -1811,17 +1698,14 @@ class site extends CI_Controller
     		true
     		:false
     		;
-
     		$hasdiscount = $this->db
                             ->where('itemid',$item->id)
                             ->get('qtydiscount')
                             ->result();
-
             if($hasdiscount)
               $item->hasdiscount = true;
             else
              $item->hasdiscount = false;
-
     		$this->data['items'][] = $item;
     	}
     	$this->data['norecords'] = '';
@@ -1830,18 +1714,13 @@ class site extends CI_Controller
     		$this->data['norecords'] = 'No Records found for the search.';
     	}
     	$this->data['categories'] = $this->itemcode_model->getcategories();
-
     	if(isset($_POST['category']))
     		$category = $_POST['category'];
     	else
     		$category = "";
-
     	$this->data['categoriesoptions'] = $this->items_model->getTreeOptions($category);
-
     	if($category){
-
     		$sql1 = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
-
     		$result1 = $this->db->query($sql1)->result();
     		if($result1)
     			$this->data['catname'] = $result1[0]->catname;
@@ -1851,7 +1730,6 @@ class site extends CI_Controller
     	$this->data['subcategories'] = array();//$this->db->get('subcategory')->result();
     	$this->data['categorymenu'] = $this->items_model->getCategoryMenu();
     	$this->data['breadcrumb'] = @$_POST['breadcrumb'];
-
     	$this->data['userquotes'] = array();
     	$this->data['projects'] = array();
     	$this->data['costcodes'] = array();
@@ -1867,9 +1745,7 @@ class site extends CI_Controller
     		$this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
     		$this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
     	}
-
     	$this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
-
     	//echo '<pre>';print_r($data['categorymenu']);die;
     	$this->load->view('site/tag', $this->data);
     }
@@ -1899,7 +1775,6 @@ class site extends CI_Controller
         }
         return null;
     }
-
     public function article($url)
     {
         $url = urldecode($url);
@@ -1912,12 +1787,10 @@ class site extends CI_Controller
         $data['page_title'] = "Item Articles";
         $this->load->view('site/article',$data);
     }
-
     public function sendrequest($id)
     {
         if(!$_POST)
             die;
-
 	    $settings = (array)$this->homemodel->getconfigurations ();
 	    $data['email_body_title'] = "";
 	    $data['email_body_content'] = "";
@@ -1952,7 +1825,6 @@ class site extends CI_Controller
 		if(@$_POST['phone'])
 		$data['email_body_content'] .= "Phone: ".$_POST['phone']."<br/>";
 		//$body .= "Phone: ".$_POST['phone']."<br/>";
-
 		if(@$_POST['type']) {
 			if($_POST['type'] == 'Request Phone Assistance')
 			{
@@ -1966,9 +1838,7 @@ class site extends CI_Controller
 				if(@$_POST['timetd'])
 				$data['email_body_content'] .= "Appointment time: ".$_POST['timetd']."<br/>";
 			}
-
 		}
-
 		if(@$_POST['regarding'])
 		$data['email_body_content'] .= "Regarding: ".$_POST['regarding']."<br/>";
 		$loaderEmail = new My_Loader();
@@ -1983,18 +1853,14 @@ class site extends CI_Controller
 		$this->email->message($send_body);
 		$this->email->set_mailtype("html");
 		$this->email->send();
-
         $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>');
-
         if(isset($_POST['hiddenad']))
         $adid = $_POST['hiddenad'];
-
 		if(@$_POST['redirect'])
 	    redirect('site/'.$_POST['redirect']);
 	    else
 	    redirect('site/ad/'.$adid);
     }
-
     public function additemtoquote()
     {
         $pa = $this->session->userdata('site_loggedin');
@@ -2003,7 +1869,6 @@ class site extends CI_Controller
         if(!@$_POST['quote'])
         	die('No PO specified.');
         $itemid = $_POST['itemid'];
-
         if($this->db->where('quote',$_POST['quote'])->where('itemid',$_POST['itemid'])->get('quoteitem')->row())
         {
             die('Item already exists in the PO.');
@@ -2030,7 +1895,6 @@ class site extends CI_Controller
         $this->db->insert('quoteitem',$_POST);
         echo 'Success';
     }
-
     function getquotes()
     {
         $pa = $this->session->userdata('site_loggedin');
@@ -2051,7 +1915,6 @@ class site extends CI_Controller
         $ret .= '</select>';
         echo $ret;
     }
-
     function getcostcodes()
     {
         $pa = $this->session->userdata('site_loggedin');
@@ -2071,7 +1934,6 @@ class site extends CI_Controller
         $ret .= '</select>';
         echo $ret;
     }
-
     public function about ()
     {
         $this->load->view('site/about');
@@ -2096,7 +1958,6 @@ class site extends CI_Controller
         $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) + cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
         return $angle * $earthRadius;
     }
-
         public function classified()
     {
     	$data['a_title'] = "Classified area";
@@ -2157,33 +2018,24 @@ class site extends CI_Controller
 			  	      } 
 			    }
 		    }
-
     	$this->load->view('site/classified', $data);
     }
-
-
         public function viewallads($catid){
-
     	$cat = array();
     	$cat['catname'] = "";
-
     	$data['a_title'] = "Classified area";
     	$str = "";
     	$where = "";
     	$subcategories = $this->items_model->getSubCategores($catid);
     	if($subcategories){
-
     		$str .= implode(',', $subcategories);
     		$where .= " AND category in (".$str.")";
     	}else
     	$where .= "AND category = {$catid}";
-
     	//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE 1=1 {$where}";
     	$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id WHERE 1=1 {$where}";
     	$res[$cat['catname']] = $this->db->query($sql_ad)->result_array();
-
     	$data['ads'] = $res;
-
 		/*====*/
 		$catcodes = $this->catcode_model->get_categories_tiered();
      	$itemcodes = $this->itemcode_model->get_itemcodes();
@@ -2203,8 +2055,6 @@ class site extends CI_Controller
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
-
-
     public function searchads(){
 		//echo "===="; exit;
     	$data['a_title'] = "Classified area";
@@ -2214,30 +2064,23 @@ class site extends CI_Controller
     	$cat = array();
     	$cat['catname'] = "";
     	if(isset($_POST['category']) && $_POST['category']!="") {
-
     		if(isset($_POST['items']) && $_POST['items']!=""){
     			$wherecat .= "AND ID = {$_POST['category']}";
     		}else {
     			$subcategories = $this->items_model->getSubCategores($_POST['category']);
     			if($subcategories){
-
     				$str .= implode(',', $subcategories);
     				$wherecat .= " AND ID in (".$str.")";
     			}else
     			$wherecat .= "AND ID = {$_POST['category']}";
     		}
-
     	}
-
     	$sql_cat = "SELECT * FROM ".$this->db->dbprefix('category')." WHERE 1=1 {$wherecat}";
     	$categories = $this->db->query($sql_cat)->result_array();
-
     	if(isset($_POST['s']) && $_POST['s']!="")
 		$where .= " AND title like '%{$_POST['s']}%'";
-
     	if(isset($_POST['items']) && $_POST['items']!="")
     	$where .= " AND itemid = {$_POST['items']}";
-
     	$res = array();
     	foreach($categories as $cat){
     		//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id'];
@@ -2246,17 +2089,14 @@ class site extends CI_Controller
     		if($result)
     		$res[$cat['catname']] = $result;
     	}
-
 		if(count($res)>0)
     	$data['ads'] = $res;
-
     	if(isset($_POST['category']) && $_POST['category']!="")
 		$data['category'] = $_POST['category'];
 		if(isset($_POST['items']) && $_POST['items']!="")
         $data['itemids'] = $_POST['items'];
         if(isset($_POST['geo-radius']) && $_POST['geo-radius']!="")
         $data['georadius'] = $_POST['geo-radius'];
-
         $catcodes = $this->catcode_model->get_categories_tiered();
         $itemcodes = $this->itemcode_model->get_itemcodes();
         $categories = array();
@@ -2273,17 +2113,14 @@ class site extends CI_Controller
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
-
-
     public function ad($id){
-
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.priceunit a_priceunit,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c left join ".$this->db->dbprefix('ads')." a on a.user_id=c.id left join ".$this->db->dbprefix('category')." cat on a.category = cat.id WHERE a.id=".$id." ";
-
     	$data = $this->db->query($sql)->row_array();
-    	$data['images']=$this->db->get_where('AdImage',array('adid'=>$id))->result();
+    	$data['images']=$this->db->get_where('AdImage',array('adid'=>$id))->result(); 
+    	 	
     	if(isset($data["a_views"])){
     	$view = $data['a_views']+1;
-    	}else
+    	}else 
     	$view = 0;
     	
     	/*if(isset($data["a_image"])){
@@ -2292,38 +2129,51 @@ class site extends CI_Controller
     		$data['images'][]=$image;
     	}
     	}*/
-
-    	if(isset($data['images']->image))
-    	$data['featured_image'] = $data['images']->image;
+    	if(isset($data['images'][0]->image))
+    	$data['featured_image'] = $data['images'][0]->image;
     	else
     	$data['featured_image'] = '';
-
-    	$sql_rel =  "SELECT a.*,ai.image as adimage FROM ".$this->db->dbprefix('ads')." a 
-    	LEFT JOIN ".$this->db->dbprefix('AdImage')." ai ON a.id=ai.adid
-    	WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE a.id=".$id.") AND a.id<>".$id;
-    	$data['related'] = $this->db->query($sql_rel)->result_array();
+    	$sql_rel ="SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=(SELECT category FROM ".$this->db->dbprefix('ads')." WHERE id=".$id.") AND id<>".$id;
+    	$rel= $this->db->query($sql_rel)->result_array();
+    	
+    	$data['related']=array(); 	
+    	foreach ($rel as $value) {
+    		
+    		$image=$this->db->get_where('AdImage',array('adid'=>$value['id']))->row()->image;
+     		$value['image']="";
+     		if($image!="")
+     		{
+     			$value['image']=$image;
+     		}
+     		$data['related'][]=$value;
+    	} 
         
     	//$sql_popular = "SELECT * FROM ".$this->db->dbprefix('ads')." ORDER BY views ASC LIMIT 3";
-    	$sql_popular = "SELECT a.*,ai.image as adimage FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id 
-    	LEFT JOIN ".$this->db->dbprefix('AdImage')." ai ON a.id=ai.adid WHERE c.isdeleted='0' ORDER BY views ASC LIMIT 3";
-    	$data['popular'] = $this->db->query($sql_popular)->result_array();
-
+    	$sql_popular = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id 
+    	WHERE c.isdeleted='0' ORDER BY views ASC LIMIT 3";
+    	$pop = $this->db->query($sql_popular)->result_array();
+    	$data['popular']=array(); 	
+    	foreach ($pop as $value) {
+    		
+    		$image=$this->db->get_where('AdImage',array('adid'=>$value['id']))->row()->image;
+     		$value['image']="";
+     		if($image!="")
+     		{
+     			$value['image']=$image;
+     		}
+     		$data['popular'][]=$value;
+    	} 
+    	
     	$this->db->where('id', $id);
     	$this->db->update('ads', array("views"=>$view));
-
     	$this->load->view('site/ad',$data);
-
     }
-
-
     	// List Items of the selected Categories
   	 function get_items($categoryId){
-
 		// $this->load->model('items_model');
 		 header('Content-Type: application/x-json; charset=utf-8');
 		 echo(json_encode($this->items_model->get_items2($categoryId)));
 	}
-
     function formview($id)
     {
     	$data['result'] = $this->form_model->view_field($id);
@@ -2336,7 +2186,6 @@ class site extends CI_Controller
     	      {
     	      $formdata.='<input type="'.$fields->FieldType.'" class="required input-block-level" id="'.$name_id.'" name="formfields['.$fields->Id.']" placeholder="'.$fields->Label.'" required value="'.$fields->Value.'">';
       		  }
-
       		if($fields->FieldType == 'dropdown')
       		 {
       		   $dropdownValues = explode(",",$fields->FieldValue); $k= array_search($fields->Value,$dropdownValues);
@@ -2355,7 +2204,6 @@ class site extends CI_Controller
       		      }
       		   	 $formdata.='</select>';
              }
-
 		     if($fields->FieldType == 'radio')
 		      {
 		      	$dropdownValues = explode(",",$fields->FieldValue);
@@ -2369,7 +2217,6 @@ class site extends CI_Controller
 		                 }
 		      	    }
 		      }
-
  			  if($fields->FieldType == 'checkbox')
  			    {
  			      $dropdownValues = explode(",",$fields->FieldValue);
@@ -2383,19 +2230,14 @@ class site extends CI_Controller
  			  	       }
  			        }
  			     }
-
  			 if($fields->FieldType == 'textarea')
  			  {
  				$formdata.='<textarea id="'.$name_id.'" name="formfields['.$fields->Id.']">'.$fields->Value.'</textarea>';
  			  }
     	 }
-
     	 print_r($formdata);
-
     }
-
                 function getpriceqtydetails(){
-
     	if(!@$_POST)
     	{
     		die;
@@ -2412,21 +2254,16 @@ class site extends CI_Controller
     		$strput = "";
     		$i=0;
     		foreach($qtyresult as $qtyres){
-
     			if($purchasingadmin){
     				$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
-
-
     				$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
 				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
-
     				$istierprice = $this->db->query($sqltier)->row();
     				if($istierprice){
     					$istier = $istierprice->tierprice;
     				}else
     				$istier = 0;
-
     				$tier = $this->db->query($sql)->row();
     				if ($tier && $istier)
     				{
@@ -2441,14 +2278,11 @@ class site extends CI_Controller
     					}
     				}
     			}
-
     			if($i==0){
-
     				$strput .= '<div >
 							 <div style="padding-bottom:9px;" class="col-md-8">1 - '.($qtyres->qty-1).'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $'.$_POST['price'].'</div>
           				  </div>';
     			}
-
     			$strput .= '<div >
 							 <div style="padding-bottom:9px;" class="col-md-8">'.$qtyres->qty.' or more: $'.$qtyres->price.'</div>
           				  </div>';
@@ -2456,11 +2290,8 @@ class site extends CI_Controller
     		}
     		echo $strput;
     	}
-
     }
-
     function getpriceperqtydetails(){
-
     	if(!@$_POST)
     	{
     		die;
@@ -2469,26 +2300,20 @@ class site extends CI_Controller
     	{
     		die;
     	}
-
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
-
     		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
     		if($purchasingadmin){
     			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
-
-
     			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
 				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
-
     			$istierprice = $this->db->query($sqltier)->row();
     			if($istierprice){
     				$istier = $istierprice->tierprice;
     			}else
     			$istier = 0;
-
     			$tier = $this->db->query($sql)->row();
     			if ($tier && $istier)
     			{
@@ -2511,32 +2336,22 @@ class site extends CI_Controller
                 }
     			
     		}
-
     		$strput = "";
     		$strput .= '<div>
 							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$result1->price).'</div>
 							 <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$result1->price)).'</span></div>
           				  </div>';
-
     		echo $strput;
     	}else{
-
     		$strput = "";
     		$strput .= '<div >
 							 <div style="padding-bottom:9px;" class="col-md-8">Total Price Estimation:&nbsp; $'.($_POST['qty']*$_POST['price']).'</div>
 							 <!-- <div class="col-md-4"><span>You Save: &nbsp; $'.( ($_POST['qty']*$_POST['price']) - ($_POST['qty']*$_POST['price'])).'</span></div> -->
           				  </div>';
-
     		echo $strput;
-
     	}
-
     }
-
-
-
     function getnewprice(){
-
     	if(!@$_POST)
     	{
     		die;
@@ -2545,26 +2360,20 @@ class site extends CI_Controller
     	{
     		die;
     	}
-
     	$sql1 = "SELECT * FROM ".$this->db->dbprefix('qtydiscount')." WHERE company = '{$_POST['companyid']}' and itemid = '{$_POST['itemid']}' and qty <= '{$_POST['qty']}' order by qty desc limit 1";
     	$result1 = $this->db->query($sql1)->row();
     	if($result1){
-
     		$purchasingadmin = @$this->session->userdata('site_loggedin')->id;
     		if($purchasingadmin){
     			$sql = "select tier from " . $this->db->dbprefix('purchasingtier') . "
 				    where purchasingadmin='$purchasingadmin' AND company='" . $_POST['companyid'] . "'";
-
-
     			$sqltier = "select tierprice from " . $this->db->dbprefix('companyitem') . "
 				    where itemid='".$_POST['itemid']."' AND company='" . $_POST['companyid'] . "' AND type = 'Supplier'";
-
     			$istierprice = $this->db->query($sqltier)->row();
     			if($istierprice){
     				$istier = $istierprice->tierprice;
     			}else
     			$istier = 0;
-
     			$tier = $this->db->query($sql)->row();
     			if ($tier && $istier)
     			{
@@ -2588,26 +2397,20 @@ class site extends CI_Controller
     			
     			
     		}
-
 			echo $result1->price;
     	}else{
-
     		echo "norecord";
     	}die;
-
     }
-
     function sayhello()
 	{
 		$_POST['inputName'];
 		$_POST['inputEmail'];
 		$_POST['inputMessage'];
-
 		if (empty($_POST["inputName"]))
 		{
 			$Err = "Name is required";
 		}
-
 		if (empty($_POST["inputEmail"]))
 		{
 			$Err = "Email is required";
@@ -2620,7 +2423,6 @@ class site extends CI_Controller
 				$Err ="Invalid email. Please try again.";
 			}
 		}
-
 		if (empty($_POST["inputMessage"]))
 		{
 			$Err = "Message is required";
@@ -2646,51 +2448,40 @@ class site extends CI_Controller
 			redirect('site');
 		}
 		redirect('site');
-
 	}
-
 	 public function savetag(){
-
 	 	$id = $_POST['pic_id'];
 	 	$name = $_POST['name'];
 	 	$description = $_POST['description'];
 	 	$pic_x = $_POST['pic_x'];
 	 	$pic_y = $_POST['pic_y'];
-
     	$datatoadd = array('pic_id' => $_POST['pic_id'],'name' => $_POST['name'], 'description' => $description, 'pic_x' => $_POST['pic_x'], 'pic_y' => $_POST['pic_y'],  'pic_xactual' => $_POST['pic_xactual'],);
     	$this->db->insert('image_tag',$datatoadd);
     	echo $lastid = $this->db->insert_id();
     }
-
     function taglist()
     {
     	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
     	$result = $this->db->get('image_tag')->result();
-
     	$data['boxes'] = '';
     	$data['lists'] = '';
 		$margin = 0;
     	if ($result){
     		foreach ($result as $rs){
-
     			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'">';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div></div>';
     			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
-
     			$itemdata = "";
     			if($rs->itemid!=""){
-
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$this->session->userdata('company')->id);
     				$companyitem = $this->db->get('companyitem')->row();
     				//print_r($companyitem);
-
     				if($companyitem)
     				{
     					$item->ea = $companyitem->ea;
@@ -2699,7 +2490,6 @@ class site extends CI_Controller
     					if($companyitem->itemcode!="")
     					$item->itemcode = $companyitem->itemcode;
     				}
-
     				$itemdata .= '<table  class="table table-bordered" id="tableinnerid" style="background-color:white;"><tr><td id="'.$rs->id.'" ><strong><a>'.$rs->name.'</a></strong>(<a class="remove">Remove</a>)</td></tr><tr><td>Item Code:&nbsp;'.$item->itemcode.'</td></tr><tr><td>Item Name:&nbsp;'.$item->itemname.'</td></tr><tr><td>Price:&nbsp;$'.$item->ea.'</td></tr><tr><td><a target="blank" href="'.base_url().'site/item/'.$item->url.'">View Item</a></td></tr>';
     				
     				if($_POST['view']=='profile'){
@@ -2717,38 +2507,28 @@ class site extends CI_Controller
 			
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a> (<a class="remove">Remove</a>)'.$itemdata.'</div>';
-
 				$margin +=150;
     		}
-
     	}
-
     	echo json_encode( $data );
-
     }
-
-
     function taglistsupplier()
     {
     	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
     	$result = $this->db->get('image_tag')->result();
-
     	$data['boxes'] = '';
     	$data['lists'] = '';
 		$margin = 0;
     	if ($result){
     		foreach ($result as $rs){
-
     			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_x . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" > <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
     			
     			
     			if($rs->itemid!=""){
-
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$_POST[ 'company' ]);
@@ -2781,19 +2561,15 @@ class site extends CI_Controller
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person">' . $rs->name . '</div></div></div>';
     			
     			//$data['boxes'] .= '<img src="' . base_url() . 'uploads/logo/thumbs/big.png"></div>';
-
     			$itemdata = "";
     			if($rs->itemid!=""){
-
     				$this->db->where('id',$rs->itemid);
         			$item = $this->db->get('item')->row();
-
     				$this->db->where('itemid',$rs->itemid);
     				$this->db->where('type','Supplier');
     				$this->db->where('company',$_POST['company']);
     				$companyitem = $this->db->get('companyitem')->row();
     				//print_r($companyitem);
-
     				if($companyitem)
     				{
     					$item->ea = $companyitem->ea;
@@ -2802,7 +2578,6 @@ class site extends CI_Controller
     					if($companyitem->itemcode!="")
     					$item->itemcode = $companyitem->itemcode;
     				}
-
     				if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
                     {
                     	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
@@ -2821,21 +2596,15 @@ class site extends CI_Controller
     				
     				
                     $itemdata .='</table></div>';
-
     				
     				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
     				$data['lists'] .= '<div>'.$itemdata.'</div>';
-
     			}else
     			$data['lists'] .= '<div style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
-
 				$margin +=150;
     		}
-
     	}
-
     	echo json_encode( $data );
-
     }
     
     
@@ -2845,13 +2614,11 @@ class site extends CI_Controller
     	$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
     	$result = $this->db->get('image_tag')->result();
-
     	$data['boxes'] = '';
     	$data['lists'] = '';
 		$margin = 0;
     	if ($result){
     		foreach ($result as $rs){
-
     			$data['boxes'] .= '<div class="tagview tp_circle" style="left:' . $rs->pic_xactual . 'px;top:' . $rs->pic_y . 'px;" id="view_'.$rs->id.'" >
     			 <div onmouseover="viewtagdescription(\'view_'.$rs->id.'\');">&nbsp;</div>';
     			$data['boxes'] .= '<div class="square" id="view_'.$rs->id.'_" style="opacity:0;width:100px;height:10px;">';
@@ -2895,7 +2662,6 @@ class site extends CI_Controller
     			{ 
     			$data['boxes'] .= '<div style="margin-top:20px;" class="person"><strong>' . $rs->name . '</strong></div></div></div>';
     			}
-
     			$itemdata = "";
     			if($rs->itemid!="")
     			{
@@ -2914,7 +2680,6 @@ class site extends CI_Controller
     					if($companyitem->itemcode!="")
     					$item->itemcode = $companyitem->itemcode;
     				}
-
     				if(isset($item->item_img) && $item->item_img!="" && file_exists("uploads/item/thumbs/".$item->item_img))
                     {
                     	$src=base_url().'uploads/item/thumbs/'.$item->item_img;
@@ -2939,30 +2704,21 @@ class site extends CI_Controller
     				
     				$data['lists'] .= '<div style="float:left;">'.$itemdata.'</div>&nbsp;';
     				//$data['lists'] .= '<div  style="margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
-
     			}else
     			//$data['lists'] .= '<div style="float:left;margin-left: '.$margin.'px;position: absolute;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
     			$data['lists'] .= '<div style="float:left;padding-left:5px;" id="'.$rs->id.'"><a>' . $rs->name . '</a>'.$itemdata.'</div>';
-
 				$margin +=150;
     		}
-
     	}
-
     	echo json_encode( $data );
-
     }
     
     
     function removetag(){
-
     	$id = $_POST['id'];
-
     	$where = array('id'=>$id);
     	$query = $this->db->delete('image_tag',$where);
-
     }
-
     function designbook()
     {
 		$this->items_model->set_keyword(false);
@@ -3007,18 +2763,14 @@ class site extends CI_Controller
            
         $this->data['categories'] = $this->itemcode_model->getdesigncategories();
       
-
         if(isset($_POST['category']))
         $category = $_POST['category'];
         else
         $category = "";
          
-
         $this->data['categoriesoptions'] = $this->items_model->getDesignTreeOptions($category);
         if($category){
-
         	$sql1 = "SELECT * FROM ".$this->db->dbprefix('designcategory')." WHERE id = '{$_POST['category']}' ORDER BY catname ASC";
-
         	$result1 = $this->db->query($sql1)->result();
         	if($result1)
         	$this->data['catname'] = $result1[0]->catname;
@@ -3029,30 +2781,21 @@ class site extends CI_Controller
         $this->data['breadcrumb'] = $this->items_model->getDesignParents(@$_POST['category']);
         $this->data['breadcrumb2'] = $this->items_model->getdesignsubcategorynames(@$_POST['category']);
     	$this->load->view('site/designbook',$this->data);
-
     }
-
     function saveitemtotag(){
-
     	$id = $_POST['id'];
 	 	$itemid = $_POST['itemid'];
-
     	$datatoadd = array('itemid' => $_POST['itemid']);
     	$this->db->where('id', $_POST['id']);
     	$this->db->update('image_tag',$datatoadd);
-
     }
-
     function populatetags()
 	{
 		$checkauth = array('pic_id' => $_POST[ 'pic_id' ]);
     	$this->db->where($checkauth);
     	$result = $this->db->get('image_tag')->result();
-
 		echo json_encode($result);
 	}
-
-
 	function designbookdetail($id)
     {
     	$sql = "SELECT  d.*  FROM ".$this->db->dbprefix('designbook')." d  where d.id=".$id."";
@@ -3062,7 +2805,6 @@ class site extends CI_Controller
 	
 		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where isdeleted = 0 AND  id=".$cid."";		
 		$data['supplier']=$this->db->query($sql11)->row();
-
 		
 		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d LEFT JOIN ".$this->db->dbprefix('company')." c ON c.id = d.company  where d.id <".$id." AND c.isdeleted = 0 order by d.id desc";
 		$data['previd'] = $this->db->query($sql)->row();
@@ -3149,7 +2891,6 @@ class site extends CI_Controller
 		$data['purchasingadmin'] = $pa;	
 		$this->load->view('site/unknownuser',$data);
 	}
-
 	function customerbill()
 	{		
 		$this->load->model('admin/settings_model');
@@ -3226,7 +2967,6 @@ class site extends CI_Controller
         $this->session->set_flashdata('billid',$billid);       
 		$this->load->view('site/customerbill',$data);
 	}
-
 	
 	function getmanufacturers(){
 		
@@ -3239,7 +2979,6 @@ class site extends CI_Controller
     	$this->db->where($checkauth);
     	$result = $this->db->get('type')->result();
 		}
-
 		echo json_encode($result);
 	}
 	
@@ -3264,7 +3003,6 @@ class site extends CI_Controller
 		$this->load->model('admin/settings_model');
 		$config = (array)$this->settings_model->get_setting_by_admin($user->id);
 		$config = array_merge($config, $this->config->config);
-
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
@@ -3286,14 +3024,12 @@ class site extends CI_Controller
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
-
               $recObj = Stripe_Recipient::create(array(
               "name" => $user->fullname,
               "type" => "individual",
               "email" => $user->email,
               "bank_account" => $recbankInfo)
               );
-
               $obj = json_decode($recObj);
               $_POST['amount'] = round($_POST['amount'],2);
               $transferObj = Stripe_Transfer::create(array(
@@ -3311,8 +3047,6 @@ class site extends CI_Controller
               $billarray['ispaid'] = 1;
               $this->db->where('id', $_POST['invoicenum']);
               $this->db->update('bill', $billarray);
-
-
               $billhistory = array();
               $billhistory['bill'] = $_POST['invoicenum'];
               $billhistory['paymenttype'] = "Credit Card";
@@ -3326,7 +3060,6 @@ class site extends CI_Controller
     		            ->from('bill')    		           
     		            ->where('id',$_POST['invoicenum'])
     		            ->get()->row();
-
               $data['email_body_title']  = "Dear {$user->username}";
 $data['email_body_content'] = "$ {$_POST['amount']} has been transfered to your bank account for bill#{$bill->billname},
 with the transfer# {$tobj->id}.
@@ -3345,7 +3078,6 @@ $loaderEmail = new My_Loader();
               $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
-
               $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bill paid successfully.</div></div>');
         	}
 		}
@@ -3375,5 +3107,45 @@ $loaderEmail = new My_Loader();
         	
         echo $ret;
     }
+    
+    
+    function addpoquote(){
+    	
+    	if(!$_POST)
+    	die;
+    	
+    	$message = "";
+    	$pid = $_POST['pid'];
+    	$potype = "Bid";
+    	//echo "<pre>",print_r($_POST); die;
+    	       
+        if ($this->quote_model->checkDuplicatePonum($this->input->post('ponum'), 0,$pid)) {
+            	$message = 'Duplicate PO#';   
+            	echo json_encode($message);        
+        }
+        else {            
+        	
+        	$options = array(
+        	'pid' => $pid,
+        	'potype' => $potype,
+        	'ponum' => $this->input->post('ponum'),
+        	'podate' => $this->input->post('podate'),        	
+        	'company' => $this->input->post('company'),
+        	'deliverydate' => $this->input->post('deliverydate'),
+        	'duedate' => $this->input->post('duedate'),        	        	
+        	'creation_date' => date('Y-m-d')        	
+        	);
+        	if(@$this->session->userdata('purchasingadmin'))
+        	$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');        	
+        	$this->db->insert('quote', $options);        	
+        	$result = $this->db->insert_id();
+			if($result){
+				 $data['poid'] = $result;
+				 $data['ponum'] = $this->input->post('ponum');
+            	 echo json_encode($data);         
+			}	 
+        }        
+    	
+    }
 	
-}
+}    

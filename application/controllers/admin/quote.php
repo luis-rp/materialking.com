@@ -4507,8 +4507,10 @@ class quote extends CI_Controller
                    $invoice->paidinvoicenum = $this->db->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->get()->row()->invoicenum;        
         	 }     
         	 
-        	 if(@$invoiceitem->invoice_type == "fullpaid")
+        	 if(@$invoiceitem->invoice_type == "fullpaid"){
         	  	$invoice->fullpaid = 1;	  
+        	  	$invoice->relatedinvoices = $this->db->select('invoicenum')->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->where('invoice_type',"alreadypay")->get()->result();   
+        	 } 	
         }
         
         $awarded = $this->quote_model->getawardedbid($invoice->quote);
@@ -7499,7 +7501,8 @@ $loaderEmail = new My_Loader();
             $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
             $this->db->where('company',$cid);
             $tier = $this->db->get('purchasingtier')->row();
-            if($tier && $tier->creditlimit - $amount > 0 && $tier->creditfrom <= date('Y-m-d') && $tier->creditto >= date('Y-m-d') )
+            //if($tier && $tier->creditlimit - $amount > 0 && $tier->creditfrom <= date('Y-m-d') && $tier->creditto >= date('Y-m-d') )
+            if($tier && $tier->creditlimit - $amount > 0 )
             {
                 $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
                 $this->db->where('company',$cid);
