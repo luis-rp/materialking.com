@@ -224,11 +224,12 @@
 								$grandtotal = $totalprice + $taxtotal;
 								
 								$arradditionalcal = array();
+								$disocunt = 0;
 								if(@$invoice->discount_percent){
 
 									$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
-
-									$arradditionalcal[] = - ($grandtotal*$invoice->discount_percent/100);
+									$disocunt = round(($grandtotal*$invoice->discount_percent/100),2); 
+									$arradditionalcal[] = - $disocunt;
 									$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);
 								}
 

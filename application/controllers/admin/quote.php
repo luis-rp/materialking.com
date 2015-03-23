@@ -992,23 +992,26 @@ class quote extends CI_Controller
     		$emailitems .= '</table>';
             $infolist="";
             $invitees = $this->input->post('invitees');
-            $nonnetuser=$this->input->post('nonnetuser');
-             
-        //    echo "<pre>"; print_r($_POST); die;
-            
-            if(isset($nonnetuser) && $nonnetuser!=""){
-            		
-            		$nonarray=explode(",",$nonnetuser);
-            		
-            		foreach ($nonarray as $non)
-            		{
-            			$insert = array();
-            			$insert['company'] = $non;
-	            		$insert['purchasingadmin'] = $this->session->userdata('id');            		
-	            		$insert['acceptedon'] = date('Y-m-d H:i:s');
-	            		$insert['status'] = 'Active';
-	            		$this->db->insert('network',$insert);         			
-            		}          		
+            $nonnetuser=$this->input->post('nonnetworkuser');          
+                 
+            if(isset($nonnetuser) && $nonnetuser!="")
+            {         		
+            	$nonarray=explode(",",$nonnetuser);           		
+            	foreach ($nonarray as $non)
+            	{
+            		$insert = array();
+            		$insert['company'] = $non;
+	            	$insert['purchasingadmin'] = $this->session->userdata('id');            		
+	            	$insert['acceptedon'] = date('Y-m-d H:i:s');
+	            	$insert['status'] = 'Active';
+	            	$this->db->insert('network',$insert); 
+	            	
+	            	$pinsert = array();
+            		$pinsert['company'] = $non;
+            		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
+            		$pinsert['creditonly'] = '1';
+            		$this->db->insert('purchasingtier',$pinsert);        			
+            	}          		
             }
             
            
@@ -1017,6 +1020,7 @@ class quote extends CI_Controller
             	$invitees .=",".$nonnetuser;
             }
             $invitees=trim($invitees,",");
+            
              if(isset($_POST['suem']))
              {
              	$trimemail=rtrim($_POST['suem'],',');            	
@@ -1067,7 +1071,7 @@ class quote extends CI_Controller
              	        }
                      }
              }  
-            //echo "<pre>"; print_r($newarr); die;
+           
             if(isset($newarr[0]['name']) && @$newarr[0]['name']!='')  
             {   $limitcompany = array();
                foreach ($newarr as $eachsup)
@@ -1113,10 +1117,10 @@ class quote extends CI_Controller
             		$this->db->insert('purchasingtier',$pinsert);
             		
             		}
-                } //$invitees=rtrim($invitees,",");
+                } 
 
             }
-			//echo "<pre>",print_r($invitees); echo "<pre>",print_r($limitcompany); die;
+			
                        
             if ($invitees)
             {
@@ -1156,23 +1160,14 @@ class quote extends CI_Controller
 				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
 				  	$loaderEmail = new My_Loader();
                     $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-                    //$this->load->model('admin/settings_model');
+                 
                     $settings = (array) $this->settings_model->get_current_settings();
                     $this->load->library('email');
                     $config['charset'] = 'utf-8';
                     $config['mailtype'] = 'html';
                     $this->email->initialize($config);
                     $this->email->from($settings['adminemail'], "Administrator");
-
                     $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
-
-                    /* $emails = explode(',',$c->email);
-                      if($emails)
-                      foreach($emails as $email)
-                      {
-                      $this->email->cc($email);
-                      } */
-
                     $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
                     $this->email->message($send_body);
                     $this->email->set_mailtype("html");
@@ -1194,94 +1189,7 @@ class quote extends CI_Controller
 
             }
             
-             /*if(isset($_POST['suem']))
-             {
-             	$trimemail=rtrim($_POST['suem'],',');            	
-             }
-             else 
-             {
-             	$trimemail="";
-             }
-             
-              if(isset($_POST['suna']))
-             {
-             	 $trimname=rtrim($_POST['suna'],',');            	 
-             }          
-             if(isset($trimemail) && $trimemail!="")
-             {
-               $supplyemailarr=explode(',',$trimemail);
-               $i=0;
-               $newarr[$i]=array();
-             	    if(isset($trimemail) && $trimemail!="")
-                    {
-             	     $supplynamearr=explode(',',$trimname);  
-             	       foreach ($supplyemailarr as $c)
-             	        { 
-             	 	     $a=0;        	 	
-             	         $newarr[$i]['email']=$c;         	 	          	 		
-             	 		    foreach ($supplynamearr as $n)
-             	 		      {            	 		 	
-             	 			   $newarr[$a]['name']=$n;
-             	 			   $a++;
-             	 		      }
-             	         $i++;
-             	        }
-                     }
-             }           
-                              
-          if(isset($newarr) && $newarr!='')  
-            {
-                foreach ($newarr as $eachsup)
-                {
-                    $key = md5('-' . $itemid . '-' . date('YmdHisu'));
-                    $insertarray = array('quote' => $itemid,'senton' => date('Y-m-d'),'invitation' => $key,'purchasingadmin' => $this->session->userdata('purchasingadmin'));
-                    $this->quote_model->db->insert('invitation', $insertarray);
-                    $insert_inv_id = $this->db->insert_id();
-                    $link = base_url() . 'home/unknown/' . $key;
-                    $data['email_body_title']= "Dear&nbsp;".$eachsup['name'].",";
-				  	$data['email_body_content'] = "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
-				    <a href='$link' target='blank'>$link</a>.<br><br/>
-				    Please find the details below:<br/><br/>
-		  	        $emailitems
-				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
-				  	$loaderEmail = new My_Loader();
-                    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-                    $settings = (array) $this->settings_model->get_current_settings();
-                    $this->load->library('email');
-                    $config['charset'] = 'utf-8';
-                    $config['mailtype'] = 'html';
-                    $this->email->initialize($config);
-                    $this->email->clear(true);
-                    $this->email->from($settings['adminemail'], "Administrator");
-                    $this->email->to($settings['adminemail'] . ',' . $eachsup['email']);
-                    $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
-                    $this->email->message($send_body);
-                    $this->email->set_mailtype("html");
-                    $this->email->send();
-
-                    $notification = array(
-                        'quote' => $itemid,
-                        'ponum' => $this->input->post('ponum'),
-                        'category' => 'Invitation',
-                        'senton' => date('Y-m-d H:i'),
-                        'isread' => '0',
-                        'purchasingadmin' => $this->session->userdata('purchasingadmin')
-                    );
-                    $this->db->insert('notification', $notification);
-                    $insert_not_id = $this->db->insert_id();
-                    
-                          $invitmail = array(
-                        'invid' =>  $insert_inv_id,
-                        'notid' => $insert_not_id,
-                        'supplyemail' => $eachsup['email'],
-                        'supplyname' => $eachsup['name']);
-                    $this->db->insert('po_invitemail', $invitmail);                   
-                } 
-                $infolist .=$trimemail;
-                $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Quote Sent to Email: ' . $infolist . '</div></div>');
-
-            }*/
-
+            
             $reminders = $this->input->post('reminders');
             if ($reminders)
             {
@@ -8515,25 +8423,19 @@ $loaderEmail = new My_Loader();
     }
 
     // Start ON 21st jan 2014
-    function getcompany_ajax() {
+    function getcompany_ajax() 
+    {
         $localresult = isset($_POST['localresult']) ? $_POST['localresult'] : '';
-        //$supplyresult = isset($_POST['supplyresult']) ? $_POST['supplyresult'] : '1';
-        //$internetresult = isset($_POST['internetresult']) ? $_POST['internetresult'] : '';
         $radiusval = isset($_POST['radiusval']) ? $_POST['radiusval'] : '';
         $id = isset($_POST['id']) ? $_POST['id'] : '';
 
         $arr = array();
         $sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1 AND isdeleted=0";
-
-
-        if ($localresult == 1) {
+        if ($localresult == 1) 
+        {
             $lat = $this->quote_model->getcomplat($this->session->userdata('id'));
             $lng = $this->quote_model->getcomplong($this->session->userdata('id'));
-
-            $sql_radius = "SELECT  *,(3963.191 * acos( cos( radians({$lat}) ) * cos( radians( `com_lat` ) ) * cos( radians( `com_lng` ) - radians({$lng}) ) + sin( radians({$lat}) ) * sin( radians( `com_lat` ) ) ) ) AS distance
-                    FROM " . $this->db->dbprefix('company') . "
-                    HAVING distance <= {$radiusval}
-                    ORDER BY distance ASC";
+            $sql_radius = "SELECT  *,(3963.191 * acos( cos( radians({$lat}) ) * cos( radians( `com_lat` ) ) * cos( radians( `com_lng` ) - radians({$lng}) ) + sin( radians({$lat}) ) * sin( radians( `com_lat` ) ) ) ) AS distance FROM " . $this->db->dbprefix('company') . " HAVING distance <= {$radiusval} ORDER BY distance ASC";
 
             $sql_radius = $this->db->query($sql_radius);
             $dist = $sql_radius->result();
@@ -8542,30 +8444,35 @@ $loaderEmail = new My_Loader();
             {
                 array_push($arr, $ret->id, true);
             }
-            
-            //$netarr = array();
-           /* if($supplyresult==1)
-            {
-              $sqlquery = "SELECT c.* FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
-        	  WHERE c.id=n.company AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
-              $netcompanies = $this->db->query($sqlquery)->result();
-              	foreach ($netcompanies as $ret) 
-              	{
-                	array_push($netarr, $ret->id, true);
-              	}
-              	
-              	$result = array_intersect($netarr, $arr); 
-              	$arr= $result;         	
-            }*/
-
-            
-            
-            if (!empty($arr)) {
-                $arr1 = implode(',', $arr);
+                       
+            $network_arr = array();
+            $this->db->select('company');
+            $this->db->group_by("company");
+         	$network_user=$this->db->get_where('network',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();       
+         	if($network_user!="")
+         	{
+         		foreach ($network_user as $n)
+         		{        		
+         		 array_push($network_arr, $n->company, true);
+         		}
+         	}
+         	
+         	if(!empty($network_arr))
+         	{
+            $result=array_diff($arr,$network_arr);
+         	}
+         	else 
+         	{
+         	$result = $arr;	
+         	}
+                     
+            if (!empty($result)) {
+                $arr1 = implode(',', $result);
                 $sql .= " and id IN ($arr1)";
             } else {
                 return '';
             }
+                       
         }
      
         $str = '';
@@ -8579,7 +8486,7 @@ $loaderEmail = new My_Loader();
             foreach ($companylist as $c) {
                 if (!in_array($c->id, $invited)) {
                     $i++;
-                    $str.= '<input type="checkbox" class="invite" value="' . $c->id . '" />&nbsp;&nbsp;' . $c->title . '<br/>';
+                    $str.= '<input type="checkbox" class="nonexist" value="' . $c->id . '" />&nbsp;&nbsp;' . $c->title . '<br/>';
                 }
             }
             echo $str;

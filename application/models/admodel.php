@@ -36,6 +36,8 @@ class Admodel extends Model {
     	);
     	$res = $this->db->insert('ads', $newAd);
         $addid = $this->db->insert_id();
+        //echo "<pre>"; print_r($_FILES['UploadFile']['name']); 
+        //echo "<pre>"; print_r($_POST['alternate_imagename']); die;
     	if(isset($_FILES['UploadFile']['name']))
             {
             	ini_set("upload_max_filesize","128M");
@@ -46,15 +48,14 @@ class Admodel extends Model {
             		$temp=$target;
             		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
             		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$alternate_imagename = (isset($_POST['alternate_imagename'][$count]) && $_POST['alternate_imagename'][$count] != '') ? $_POST['alternate_imagename'][$count] : '';
             		$count=$count + 1;
             		$temp=$temp.basename($filename);
             		move_uploaded_file($tmp,$temp);
             		$temp='';
-            		$tmp='';
-
-            		$AttachmentName= $_FILES['UploadFile']['name'];
+            		$tmp='';                  
 					if(isset($filename) && $filename!=''){
-            		$this->db->insert('AdImage', array('adid'=>$addid,'company' => $company->id, 'image' => $filename));}           		
+            		$this->db->insert('AdImage', array('adid'=>$addid,'company' => $company->id, 'image' => $filename,'alternate_imagename'=>$alternate_imagename));}           		
             	}
             }   	   	
     	return $res;
@@ -108,15 +109,15 @@ class Admodel extends Model {
             		$temp=$target;
             		$tmp=$_FILES['UploadFile']['tmp_name'][$count];
             		$origionalFile=$_FILES['UploadFile']['name'][$count];
+            		$alternate_imagename = (isset($_POST['alternate_imagename'][$count]) && $_POST['alternate_imagename'][$count] != '') ? $_POST['alternate_imagename'][$count] : '';
             		$count=$count + 1;
             		$temp=$temp.basename($filename);
             		move_uploaded_file($tmp,$temp);
             		$temp='';
             		$tmp='';
 
-            		$AttachmentName= $_FILES['UploadFile']['name'];
 					if(isset($filename) && $filename!=''){
-            		$this->db->insert('AdImage', array('adid'=>$id,'company' => $company->id, 'image' => $filename));}           		
+            		$this->db->insert('AdImage', array('adid'=>$id,'company' => $company->id, 'image' => $filename,'alternate_imagename'=>$alternate_imagename));}           		
             	}
             }   	
     }

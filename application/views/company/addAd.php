@@ -8,7 +8,8 @@
 <script type="text/javascript" src="<?php echo base_url();?>templates/front/js/ckeditor/ckeditor.js"></script>               
 
  <script type="text/javascript">// <![CDATA[
- $(document).ready(function(){
+ $(document).ready(function()
+ {
 	 $('#category').change(function(){ //any select change on the dropdown with id country trigger this code
 	 $("#items > option").remove(); //first of all clear select items
 	 var category_id = $('#category').val(); // here we are taking country id of the selected one.
@@ -18,13 +19,18 @@
 	 
 	 success: function(items) //we're calling the response json array 'cities'
 	 {
-	 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
-	 {
-		 var opt = $('<option />'); // here we're creating a new select option with for each city
-		 opt.val(id);
-		 opt.text(myItems);
-		 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
-	 });
+	 	 var opt1 = $('<option />'); // here we're creating a new select option with for each city
+		 opt1.val('0');
+		 opt1.text('Choose');
+		 $('#items').append(opt1); 
+		 
+		 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+		 {
+			 var opt = $('<option />'); // here we're creating a new select option with for each city
+			 opt.val(id);
+			 opt.text(myItems);
+			 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+		 });
 	 }
 	 
 	 });
@@ -46,11 +52,16 @@ function checkEnter(event)
 	function addFileInput() {
 	 	var d = document.createElement("div");
 	 	var file = document.createElement("input");
+	 	var text = document.createElement("input");
 	 	file.setAttribute("type", "file");
 	 	file.setAttribute("name", "UploadFile[]");
+	 	text.setAttribute("type", "text");
+	 	text.setAttribute("name", "alternate_imagename[]");
 	 	d.appendChild(file);
+	 	d.appendChild(text);
 	 	document.getElementById("moreUploads").appendChild(d);
 	 	upload_number++;
+ 	
 	}
 	
  
@@ -162,11 +173,12 @@ function checkEnter(event)
 		                        <label class="form-label">Image</label>
 		                        <div class="controls">
 		                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
+		                             <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="">
 		                            <div id="moreUploads"></div>
 		                            <div id="moreUploadsLink" style="display:none;">
 		                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
 									</div>
-		                            <!--<a href="<?php //echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  -->
+		                          
 		                            </a> 
 		                        </div>
 		                    </div>		                    		                    

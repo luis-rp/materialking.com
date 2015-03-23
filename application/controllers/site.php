@@ -601,26 +601,30 @@ class site extends CI_Controller
         }
         $this->db->where("user_id",$data['supplier']->id);
         $ads = $this->db->get("ads")->result();
-        $data['adforsupplier']=array();      
-     	foreach($ads as $ad){
-     		
-     		$image=$this->db->get_where('AdImage',array('adid'=>$ad->id))->row()->image;
-     		$ad->image="";
-     		if($image!="")
-     		{
-     			$ad->image=$image;
-     		}
-     		$config['image_library'] = 'gd2';
-     		$config['source_image'] = './uploads/ads/'.$ad->image;
-     		$config['create_thumb'] = TRUE;
-     		$config['maintain_ratio'] = FALSE;
-     		$config['width']     = 190;
-     		$config['height']   = 194;
-     		$this->image_lib->clear();
-     		$this->image_lib->initialize($config);
-     		$this->image_lib->resize();
-     		$data['adforsupplier'][] = $ad;
-     	} 
+       
+        $data['adforsupplier']=array(); 
+        if(count($ads) > 0)
+        {   
+	     	foreach($ads as $ad)
+	     	{	     		
+	     		$image=$this->db->get_where('AdImage',array('adid'=>$ad->id))->row();
+	     		$ad->image="";
+	     		if(@$image->image)
+	     		{
+	     			$ad->image=$image->image;
+	     		}
+	     		$config['image_library'] = 'gd2';
+	     		$config['source_image'] = './uploads/ads/'.$ad->image;
+	     		$config['create_thumb'] = TRUE;
+	     		$config['maintain_ratio'] = FALSE;
+	     		$config['width']     = 190;
+	     		$config['height']   = 194;
+	     		$this->image_lib->clear();
+	     		$this->image_lib->initialize($config);
+	     		$this->image_lib->resize();
+	     		$data['adforsupplier'][] = $ad;
+	     	} 
+        }
      	//$data['adforsupplier']=$ads;
      	$membersDB = $this->db->where("cid", $data['supplier']->id)->get("companyteam")->result();
      	foreach($membersDB as $mdb){
@@ -1232,7 +1236,7 @@ class site extends CI_Controller
         $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
         */
-        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND (ci.ea > '0' OR price=1) AND c.company_type='1' AND isdeleted=0";
+        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND (ci.ea > '0' OR ci.price=1) AND c.company_type='1' AND isdeleted=0";
         $inventory = $this->db->query($sql)->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
         if($item->featuredsupplier)

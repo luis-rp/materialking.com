@@ -1335,10 +1335,10 @@ function changetab(tabname){
             			        foreach ($types as $type)
                                     if ($type->category == 'Manufacturer') {
                             ?>
-                            	<li style="display:inline;padding-right:5px;text-align:center">
+                            	<li style="display:inline;padding-right:4px;text-align:center;">
                                     <a style="text-decoration:none;" href="<?php echo site_url('store/items/'.$supplier->username.'/'.$type->id);?>">
                                     <?php if($type->image){?>
-                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>" class="img-resposnsive" height="45" width="120"/>
+                                    <img src="<?php echo site_url('uploads/type/thumbs/'. $type->image);?>" alt="<?php echo $type->title; ?>" class="img-responsive" height="45" width="120" style="border:1px solid #e4e4e4;"/>
                                     <?php }else{?>
                                     <?php echo $type->title; ?>
                                     <?php }?>
@@ -1954,7 +1954,7 @@ function changetab(tabname){
                                    		<ul class="bxslider">
                                     	<?php foreach($adforsupplier as $key=>$ad){  ?>
                                     	<li>
-                                    	<?php $pathinfo = pathinfo($ad->image);?>
+                                    	<?php if(@$ad->image!="") { $pathinfo = pathinfo($ad->image); } ?>
                                     	<img  src="<?php echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" 
 												alt="image<?php echo $key;?>"/>
                                     	<h6><a href="<?php echo base_url("/site/ad/".$ad->id);?>">

@@ -317,9 +317,10 @@ function shownotice(newval,oldval,id){
                 if(@$invoice->discount_percent){
                 	
                 	$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
-                	 
-                	$arradditionalcal[] = - ($grandtotal*$invoice->discount_percent/100);
-                	$disocunt = $grandtotal*$invoice->discount_percent/100;
+                	
+                	$disocunt = round(($grandtotal*$invoice->discount_percent/100),2); 
+                	$arradditionalcal[] = - $disocunt;
+                	
                 	$grandtotal = $grandtotal - ($grandtotal*$invoice->discount_percent/100);                	
                 }
                 

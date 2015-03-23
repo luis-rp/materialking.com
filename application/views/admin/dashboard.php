@@ -486,20 +486,20 @@
 					</tr>
 					<?php foreach($networkjoinedcompanies as $njc){?>
 						<tr>
-							<td>
+							<td style="word-break:break-all;">
 								<strong><?php echo $njc->title;?></strong>
 							</td>
-							<td>
+							<td style="word-break:break-all;">
 								<strong><?php echo ($njc->totalcredit!="" && $njc->totalcredit!=0)?number_format($njc->totalcredit,2):'0.00';?></strong>
 							</td>
-							<td>
+							<td style="word-break:break-all;">
 								<strong><?php echo ($njc->credit!="" && $njc->credit!=0)?number_format($njc->credit,2):'0.00'; ?></strong>
 							</td>
-							<td>
+							<td style="word-break:break-all;">
 								<strong><?php echo number_format($njc->due,2);?></strong>
 							</td>
 							<?php if(0){?>
-							<td>
+							<td style="word-break:break-all;">
 								<?php if($njc->due && $njc->due!='0.00'){?>
 								<form method="post" action="<?php echo site_url('admin/dashboard/payall');?>">
 									<input type="hidden" name="company" value="<?php echo $njc->id?>"/>
@@ -574,8 +574,8 @@
 				</tr>-->
 				 <?php foreach ($promembers as $promember) { ?>
 				<tr>
-				<td><?php echo $promember->username; ?></td>
-				<td><?php echo $promember->position; ?></td>
+				<td style="word-break:break-all;"><?php echo $promember->username; ?></td>
+				<td style="word-break:break-all;"><?php echo $promember->position; ?></td>
 				</tr>
 				  <?php } ?>
 				</table>

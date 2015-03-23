@@ -280,7 +280,7 @@ function invite()
 	$(".nonexist:checked").each(function() {
 	    nonnet.push(this.value);
 	});
-	$('#nonnetuser').val(nonnet.join(','));
+	$('#nonnetworkuser').val(nonnet.join(','));
 
 	var remind = [];
 	$(".remind:checked").each(function() {
@@ -681,7 +681,7 @@ function showselectimage(){
 		   <input type="hidden" id="suem" name="suem" value=""/>
 		   <input type="hidden" id="suna" name="suna" value=""/>
 		   <input type="hidden" id="una" name="una" value=""/>
-		   <input type="hidden" id="nonnetuser" name="nonnetuser" value=""/>
+		   <input type="hidden" id="nonnetworkuser" name="nonnetworkuser" value=""/>
 		   <br/>
 		    
 		    <div class="control-group">
@@ -745,45 +745,43 @@ function showselectimage(){
        function toggleradius(){
            if(document.getElementById('localresult').checked){
                $('#mileid').show();
-                 getcomplist();
+                 //getcomplist();
 
            }else{
                $('#mileid').hide();
+               $('#invitecomp').hide();
                $('#locradius').val('');
-               getcomplist();
+               //getcomplist();
            }
        }
-       function getcomplist(){
-
+       
+       function getcomplist()
+       {
            var localresult = document.getElementById('localresult').checked;
-           //var supplyresult = document.getElementById('supplynet').checked;
-           
-           //var internetresult = document.getElementById('internetret').checked;
-           //if(supplyresult==true){ supplyresult=1;}else{var supplyresult=0;}
-           //if(localresult!=true && internetresult!=true){
-           	/*if(localresult!=true){
-               document.getElementById('supplynet').setAttribute("checked","checked");
-               supplyresult =1;
-           }*/
-           //alert(supplyresult);
            var radiusval = $('#locradius').val();
-           if(localresult==true){ var localresult=1;}else{var localresult=0;}
-           //if(internetresult==true){ internetresult=1;}else{var internetresult=0;}
-		var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
-	//alert(serviceurl);
-	$.ajax({
-	      type:"post",
-	      url: serviceurl,
-	      //data: "localresult="+localresult+"&supplyresult="+supplyresult+"&internetresult="+internetresult+"&radiusval="+radiusval+"&id=<?php //echo $this->validation->id;?>"
-	      data: "localresult="+localresult+"&radiusval="+radiusval+"&id=<?php echo $this->validation->id;?>"
-	    }).done(function(data){
+           if(localresult==true)
+           { 
+           	var localresult=1;
+           }
+           else
+           {
+           	var localresult=0;
+           }
+           
+			var serviceurl = '<?php echo base_url()?>admin/quote/getcompany_ajax';
+			$.ajax({
+	      		type:"post",
+	      		url: serviceurl,
+	      		data: "localresult="+localresult+"&radiusval="+radiusval+"&id=<?php echo $this->validation->id;?>"
+	    		}).done(function(data){
 
                 if(data==''){
+                	$("#invitecomp").show();
                     $("#invitecomp").html('<b>No company found</b>');
                 }else{
+                	$("#invitecomp").show();
                     $("#invitecomp").html(data);
                 }
-
 	    });
        }
        
@@ -1076,17 +1074,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 				    <div class="control-group span4">
 					    <label class="control-label"><strong>Request Quote to:</strong></label>
 					      <hr/>
-                              <!-- Start On 21st Jan 2013 -->
-                            <!-- <div>
-                                  Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
-                                  <span id="mileid"><br>Mile radius from location
-                                  	<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()">
-                                  </span>
-                              </div>-->
-                              <!-- <div>
-                                  Include Internet and retailers
-                                  <input type="checkbox" name="internetret" id="internetret">
-                                  </div> -->
+                           
                               <div>
                                  Supply Network
                                  <input type="checkbox" name="supplynet1" id="supplynet1" checked onchange="getcomplist1()">
@@ -1106,16 +1094,10 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
     					    	</a>
     					    	<?php }?>
     					    </div>
-                            <!-- End On 21st Jan 2013 -->
-							<!-- <div class="controls">
-					    	<?php $i = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $i++;?>
-					    		<input type="checkbox" class="invite" value="<?php echo $c->id;?>" />
-					    		&nbsp;&nbsp; <?php echo $c->title;?>
-					    		<br/>
-					    	<?php }?>
-					    </div>-->
+                          
 				    </div>
 				    <div class="control-group span4">
+				    <?php //echo "count".count($invited); if(count($company_for_reminder) > 0) { ?>
 					    <label class="control-label"><strong>Send Reminder to:</strong></label>
 					      <hr/>
 					    <div class="controls">
@@ -1126,17 +1108,13 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		&nbsp;&nbsp; <?php echo $c->title;?>
 					    		<br/>
 					    	<?php }?>
-					    </div><br/>
+					    </div><br/><?php //} ?>
 					    				    
 					    <label class="control-label"><strong>Invite Via Email</strong></label><hr/>
 					    <span style="color:red" id="nonnetworkmessage"></span> 				      
 					    <div class="controls">
 					    	   <div id="supplydata"> 
-                                <!-- Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">&nbsp;
-                                 Email:<input type="email" name="supplyemail[0]" id="supplyemail0" style="width:120px;">&nbsp;
-                                 <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('0')"> -->
-
-                                 
+                               
                                   <div class="controls">
 					    	     <label class="control-label" for="supplyname">Company Name</label>
                                  <input type="text" name="supplyname[]" id="supplyname" style="width:80%;">
@@ -1162,10 +1140,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                             <?php $i=1; while($i<=10) { ?>			
                              <div id="supplydata<?php echo $i;?>" style="display:none;">
                               
-                                <!-- Name:<input type="text" name="supplyname[]" id="supplyname" style="width:80px;">
-                                 Email:<input type="email" name="supplyemail[<?php echo $i;?>]" id="supplyemail<?php echo $i;?>"  style="width:120px;">
-                            <input type="button" name="nextsup" id="nextsup" class="btn btn-default" value="Add Another" onclick="nextinvite('<?php echo $i;?>')"> -->
-                            
+                           
                             <div class="controls">
 					    	     <label class="control-label" for="supplyname">Company Name</label>
                                  <input type="text" name="supplyname[]" id="supplyname" style="width:80%;">
@@ -1196,7 +1171,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 				    				   
 				    <div class="control-group span4">
 				     <?php if(0){?>
-					    <label class="control-label"><strong>Send Revision to:</strong></label>
+					    <label class="control-label"><strong>Send Revision to</strong></label>
 					      <hr/>
 					    <div class="controls">
 					    	<?php foreach($companylist as $c) if(in_array($c->id, $invited)){ $i++;?>
@@ -1207,51 +1182,25 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    		<br/>
 					    	<?php }?>
 					    </div>
-					     <?php }?>
+					     <?php  }?>
 					     
-					     <!-- <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
-					      <hr/>
-					       <div class="controls" style="height:150px;overflow:auto;">
-					    	<?php  //if(isset($nonnetuser)){
-					    	          //foreach($nonnetuser as $c) { ?>					    	          	
-					    		        <input type="checkbox" class="nonexist" value="<?php //echo $c->id;?>" />
-    					    		&nbsp;&nbsp; <?php // echo $c->title;?>
-					    		<br/>
-					    	<?php //}  }?>					    	
-					      </div>
-					    <br/>-->
 					    
-					    <label class="control-label"><strong>Request Quote to:</strong></label>
+					    <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
 					      <hr/>
-                              <!-- Start On 21st Jan 2013 -->
                              <div>
-                                  Local results Only<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
-                                  <span id="mileid"><br>Mile radius from location
-                                  	<input type="text" name="locradius" id="locradius" size="3" style="width: 38px;height:15px; " onchange="getcomplist()">
+                                  Local results Only&nbsp;&nbsp;<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">
+                                  <span id="mileid" style="display:none;"><br>Mile radius from location
+                                  	<input type="text" name="locradius" id="locradius" size="3" style="width:38px;height:15px;" onchange="getcomplist()">
                                   </span>
                               </div>
-                              <!-- <div>
-                                  Include Internet and retailers
-                                  <input type="checkbox" name="internetret" id="internetret">
-                                  </div> -->
-                             <!-- <div>
-                                 Supply Network
-                                 <input type="checkbox" name="supplynet" id="supplynet" checked >
-                                  </div><br>-->
                            
-                              <div class="controls" id="invitecomp">
-    					    	<?php $k = 0; foreach($companylist as $c) if(!in_array($c->id, $invited)){ $k++;?>
-    					    		<input type="checkbox" class="invite" value="<?php echo $c->id;?>" />
-    					    		&nbsp;&nbsp; <?php echo $c->title;?>
-    					    		<br/>
-    					    	<?php }?>
-    					    	<?php if(!$companylist){?>
-    					    	No suppliers in your network.
-    					    	<br/>
-    					    	<a href="<?php echo site_url('site/suppliers')?>">
-    					    		Find Suppliers
-    					    	</a>
-    					    	<?php }?>
+                              <div class="controls" id="invitecomp" style="display:none;">
+    					    	<?php $k = 0; 
+    					    			foreach($companylist as $c) { 
+    					    			if(!in_array($c->id, $invited)){ 
+    					    				$k++;?>
+    					    				<input type="checkbox" class="nonexist" value="<?php echo $c->id;?>" />&nbsp;&nbsp; <?php echo $c->title;?><br/>
+    					    	<?php } } ?>
     					    </div>
 					    
 					    			     

@@ -309,7 +309,14 @@ class costcode extends CI_Controller {
 
         $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
         $taxrate = $this->db->query($cquery)->row();
-        $data['taxrate'] = $taxrate->taxrate;
+        if(isset($taxrate) && $taxrate!="")
+        {
+        $data['taxrate'] = $taxrate;
+        }
+        else 
+        {
+         $data['taxrate'] = "";	
+        }
 
         $count = count($costcodes);
         $items = array();

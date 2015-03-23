@@ -463,6 +463,7 @@ class cart extends CI_Controller
 				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
 				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
 				$subject = "Order Details from ezpzp";
+				
 				$this->sendEmail($pdftopurchasingadmin, $this->session->userdata('site_loggedin')->email, $subject);
 			}
 			else 
@@ -470,6 +471,7 @@ class cart extends CI_Controller
 				$pdftopurchasingadmin ="<strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email']."<br>";
 				$pdftopurchasingadmin .= $this->orderpdf('',true,'Credit Card');
 				$subject = "Order Details from ezpzp";				
+			
 				$this->sendEmail($pdftopurchasingadmin, $_POST['email'], $subject);				
 			} 
 			$companies = array();
@@ -1110,6 +1112,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			if(!$item['itemdetails']->itemname)
 			    $item['itemdetails']->itemname = $orgitem->itemname;
 			
+			$item['itemdetails']->item_img = $orgitem->item_img;    
 			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();
 			if(!$company)

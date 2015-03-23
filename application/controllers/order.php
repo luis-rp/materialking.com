@@ -434,6 +434,7 @@ class Order extends CI_Controller
 			        $data['email_body_content'] .= $this->getorderdetails($order->id);	
 			      	$loaderEmail = new My_Loader();
 			        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+			      
 	        		$this->email->subject($subject);
 	        		$this->email->message($send_body);	
 	        		$this->email->set_mailtype("html");
@@ -942,13 +943,15 @@ class Order extends CI_Controller
 			
 			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
 			
+			$itemdetails->item_img = $orgitem->item_img;
 			$item->itemdetails = $itemdetails;
 			
 			$orderitems[]=$item;
 		}
 		$body = '
-			<table class="table table-bordered span12" border="1" width="50%">
+			<table class="table table-bordered span12" border="1" width="80%">
             	<tr>
+            		<th>Item Image</th>
             		<th>Item</th>
             		<th>Price</th>
             		<th>Quantity</th>
@@ -958,9 +961,19 @@ class Order extends CI_Controller
                 	$gtotal=0; 
                 	foreach ($orderitems as $item)
                 	{
+                		 if ($item->itemdetails->item_img && file_exists('./uploads/item/' . $item->itemdetails->item_img)) 
+						 { 
+						 	 $imgName = site_url('uploads/item/'.$item->itemdetails->item_img); 
+						 } 
+						 else 
+						 { 
+						 	 $imgName = site_url('uploads/item/big.png'); 
+                         }
+                         
                 	    $total = $item->price*$item->quantity;
                 	    $gtotal+=$total;
                          $body .= '<tr>
+                            		<td><img style="width:70px;height:70px" src="'.$imgName.'"/></td>
                             		<td>'.$item->itemdetails->itemname.'</td>
                             		<td style="text-align:right;">'.$item->price.'</td>
                             		<td style="text-align:center;">'.$item->quantity.'</td>
@@ -971,23 +984,23 @@ class Order extends CI_Controller
             	    $tax = $gtotal * $order->taxpercent / 100;
             	    $totalwithtax = number_format($tax+$gtotal+$order->shipping,2);
             	
-            	$body .= '<tr><td colspan="5">&nbsp;</td> <tr>
-            		<td colspan="3" align="right">Total</td>
+            	$body .= '<tr><td colspan="6">&nbsp;</td> <tr>
+            		<td colspan="4" align="right">Total</td>
             		<td style="text-align:right;">$'.number_format($gtotal,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="3" align="right">Tax</td>
+            		<td colspan="4" align="right">Tax</td>
             		<td style="text-align:right;">$'. number_format($tax,2).'</td>
             	</tr>
 				
 				<tr>
-            		<td colspan="3" align="right">Shipping</td>
+            		<td colspan="4" align="right">Shipping</td>
             		<td style="text-align:right;">$'. number_format($order->shipping,2).'</td>
             	</tr>
             	
             	<tr>
-            		<td colspan="3" align="right">Total</td>
+            		<td colspan="4" align="right">Total</td>
             		<td style="text-align:right;">$'. $totalwithtax.'</td>
             	</tr>
             	

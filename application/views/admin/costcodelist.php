@@ -164,7 +164,7 @@ function endTour(){
               	<td><span class='cost-code'><?php echo $item->code?></span></td>
               	<td><?php if($imgName != '') { ?> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'> <?php } ?></td>
               	<td><?php echo $item->cost?></td>
-              	<td><span class='total-spent'><?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate/100) + $shipping),2 ); ?></span></td>
+              	<td><span class='total-spent'><?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate->taxrate/100) + $shipping),2 ); ?></span></td>
               	<td id="lastpbar"><?php echo $item->budget;?></td>
               	
               

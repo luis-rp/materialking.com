@@ -1563,8 +1563,9 @@ class Company extends CI_Controller {
     	{
     		$res['image']=$this->db->get_where('AdImage',array('adid'=>$res['ads'][0]->id,'company'=>$res['ads'][0]->user_id))->result();
     	}
+    	
     	$catcodes = $this->catcode_model->get_categories_tiered();
-     	$itemcodes = $this->itemcode_model->get_itemcodes();
+     	$itemcodes = $this->itemcode_model->get_itemcodes(100,0,$res['ads'][0]->category);
         $categories = array();
         if ($catcodes)
         {

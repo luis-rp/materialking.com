@@ -1,4 +1,54 @@
 <?php if (isset($jsfile)) include $this->config->config['base_dir'] . 'templates/admin/gridfeed/' . $jsfile; ?>
+
+<?php echo '<script>var updateminstockurl="'.site_url('admin/inventorymanagement/updateminstock').'";</script>'?>
+<?php echo '<script>var updatemaxstockurl="'.site_url('admin/inventorymanagement/updatemaxstock').'";</script>'?>
+<?php echo '<script>var updatereorderqtyurl="'.site_url('admin/inventorymanagement/updatereorderqty').'";</script>'?>
+
+<script type="text/javascript">
+
+function updateminstock(itemid,val)
+    {    	
+        var data = "itemid="+itemid+"&minstock="+val;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updateminstockurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
+
+
+function updatemaxstock(itemid,val)
+    {    	
+        var data = "itemid="+itemid+"&maxstock="+val;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updatemaxstockurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
+
+
+function updatereorderqty(itemid,qty)
+    {    	
+        var data = "itemid="+itemid+"&reorderqty="+qty;
+        //alert(data);
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updatereorderqtyurl
+		    }).done(function(data){
+				//alert(data);
+		    });
+    }
+        
+    
+</script>
 <html>
 <body>
 <section class="row-fluid">

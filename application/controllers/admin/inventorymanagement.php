@@ -51,9 +51,9 @@ class inventorymanagement extends CI_Controller
     	{
 	    	foreach ($inventoryRes as $row)
 	        {
-	        	$row->minstock = '<input type="text" name="minstock" id="minstock">';
-	        	$row->maxstock = '<input type="text" name="maxstock" id="maxstock">';
-	        	$row->reorderqty = '<input type="text" name="reorderqty" id="reorderqty">';
+	        	$row->minstock = '<input type="text" name="minstock" id="minstock" value="'.@$row->minstock.'" onchange="updateminstock('.$row->itemid.',this.value);" >';
+	        	$row->maxstock = '<input type="text" name="maxstock" id="maxstock" value="'.@$row->maxstock.'"  onchange="updatemaxstock('.$row->itemid.',this.value);" >';
+	        	$row->reorderqty = '<input type="text" name="reorderqty" id="reorderqty" value="'.@$row->reorderqty.'" onchange="updatereorderqty('.$row->itemid.',this.value);"  >';
 	        	$inventory[] = $row;
 	        }
     	}    
@@ -69,4 +69,146 @@ class inventorymanagement extends CI_Controller
     	$data['heading'] = 'Inventory Management';
     	$this->load->view('admin/inventorymanagement', $data);
     }
+    
+    
+    
+    public function updateminstock()
+	{
+		$company = $this->session->userdata('id');
+		if(!$company)
+			redirect('admin/login');
+			
+		if(!@$_POST)
+		{
+			die;
+		}
+		
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+				
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('purchasingadmin',$company);		
+		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 		}		
+		$existing = $this->db->get('inventory')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('purchasingadmin',$company);			
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 			}
+			$this->db->update('inventory',$_POST);
+		}
+		else
+		{
+			$_POST['purchasingadmin'] = $company;
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
+ 			}			
+			$this->db->insert('inventory',$_POST);
+		}
+		//print_r($_POST);
+	}
+	
+	
+	
+	public function updatemaxstock()
+	{
+		$company = $this->session->userdata('id');
+		if(!$company)
+			redirect('admin/login');
+			
+		if(!@$_POST)
+		{
+			die;
+		}
+		
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+				
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('purchasingadmin',$company);		
+		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 		}		
+		$existing = $this->db->get('inventory')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('purchasingadmin',$company);			
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 			}
+			$this->db->update('inventory',$_POST);
+		}
+		else
+		{
+			$_POST['purchasingadmin'] = $company;
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
+ 			}			
+			$this->db->insert('inventory',$_POST);
+		}
+		//print_r($_POST);
+	}
+	
+	
+	public function updatereorderqty()
+	{
+		$company = $this->session->userdata('id');
+		if(!$company)
+			redirect('admin/login');
+			
+		if(!@$_POST)
+		{
+			die;
+		}
+		
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+				
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('purchasingadmin',$company);		
+		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 		}		
+		$existing = $this->db->get('inventory')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('purchasingadmin',$company);			
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 			}
+			$this->db->update('inventory',$_POST);
+		}
+		else
+		{
+			$_POST['purchasingadmin'] = $company;
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
+ 			}			
+			$this->db->insert('inventory',$_POST);
+		}
+		//print_r($_POST);
+	}
+	
+    
 } 

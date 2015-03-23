@@ -19,13 +19,18 @@
 	 
 	 success: function(items) //we're calling the response json array 'cities'
 	 {
-	 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
-	 { 
-		 var opt = $('<option />'); // here we're creating a new select option with for each city
-		 opt.val(id);
-		 opt.text(myItems);
-		 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
-	 });
+	 	 var opt1 = $('<option />'); // here we're creating a new select option with for each city
+		 opt1.val('0');
+		 opt1.text('Choose');
+		 $('#items').append(opt1); 
+		 
+		 $.each(items,function(id,myItems) //here we're doing a foeach loop round each city with id as the key and city as the value
+		 { 
+			 var opt = $('<option />'); // here we're creating a new select option with for each city
+			 opt.val(id);
+			 opt.text(myItems);
+			 $('#items').append(opt); //here we will append these new select options to a dropdown with the id 'cities'
+		 });
 	 }
 	 
 	 });
@@ -47,11 +52,16 @@ var upload_number = 2;
 	function addFileInput() {
 	 	var d = document.createElement("div");
 	 	var file = document.createElement("input");
+	 	var text = document.createElement("input");
 	 	file.setAttribute("type", "file");
 	 	file.setAttribute("name", "UploadFile[]");
+	 	text.setAttribute("type", "text");
+	 	text.setAttribute("name", "alternate_imagename[]");
 	 	d.appendChild(file);
+	 	d.appendChild(text);
 	 	document.getElementById("moreUploads").appendChild(d);
 	 	upload_number++;
+ 	
 	}
  
 </script>
@@ -104,6 +114,7 @@ var upload_number = 2;
 				                     <label class="form-label">Category</label>
 				                       <div class="controls">
 				                            <select id="category" name="category">
+				                            
 				                            	<?php 
 				                            	$selCategory = "";
 				                            		foreach($categories as $cat){
@@ -130,10 +141,25 @@ var upload_number = 2;
 				                        <label class="form-label">Item</label>
 				                        <div class="controls">
 				                            <select id="items" name="items">
+				                            <?php 
+				                            	$selitem1 = "";
+				                            	$selitem = "";
+				                            	
+				                            	if($ads[0]->itemid == '0')
+			                            			{
+			                            				$selitem1 = "selected = 'selected'";
+			                            			}
+			                            			else 
+			                            			{
+			                            				$selitem1 = "";
+			                            			}
+				                           	?> 			
+				                             <option value="0" <?php echo $selitem1;?> >Choose</option>
 				                            	<?php 
-				                            		$selitem = "";
-				                            		foreach($items as $item){
-				                            		if($ads[0]->itemid == $item->id)
+				                            		
+				                            		foreach($items as $item)
+				                            		{
+				                            			if($ads[0]->itemid == $item->id && $ads[0]->itemid != '0')
 				                            			{
 				                            				$selitem = " selected ";
 				                            			}
@@ -188,6 +214,7 @@ var upload_number = 2;
 					                        <label class="form-label">Image</label>
 					                        <div class="controls">
 					                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
+					                              <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="">
 					                            <div id="moreUploads"></div>
 					                            <div id="moreUploadsLink" style="display:none;">
 					                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
@@ -195,11 +222,12 @@ var upload_number = 2;
 					                            <!--<a href="<?php //echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  -->
 					                            <table class="table table-striped">
 												<tr>
-													<th>Image</th><th>Delete</th>
+													<th>Image</th><th>Alternate Text</th><th>Delete</th>
 												</tr>
 												<?php  foreach($image as $items)  { ?>
 												<tr>
 													<td><img src="<?php echo site_url('uploads/ads/'.$items->image);?>" height="100px" width="100px" class="img-thumbnail" alt="<?php echo $items->image;?>"/></td>
+													<td><?php echo $items->alternate_imagename;?></td>
 													<td><a class="close"  href="<?php echo base_url("company/deleteadimage/".$items->id);?>" onclick="return confirm('Are you really want to delete this image?');">&times;</a></td>
 												</tr>
 												<?php } ?>

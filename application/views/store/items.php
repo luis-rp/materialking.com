@@ -857,6 +857,9 @@ $( document ).tooltip();
 
 					        <script type="text/javascript">
 								$(function() {$('.bxslider').bxSlider({
+									 adaptiveHeight: true,
+						  			 mode: 'fade',
+						  			 auto: true
 
 									});
 
@@ -873,10 +876,9 @@ $( document ).tooltip();
 
                                    <div class="controls bxcontainer">
                                    		<ul class="bxslider">
-                                    	<?php foreach($adforsupplier as $key=>$ad){?>
-                                    	<li><img  src="<?php
-                                    	$pathinfo = pathinfo($ad->image);
-                                    	echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
+                                    	<?php foreach($adforsupplier as $key=>$ad){  if(@$ad->image!="") { $pathinfo = pathinfo($ad->image); }?>
+                                    	<li><img  src="<?php echo base_url("/uploads/ads/".$pathinfo["filename"]."_thumb.".$pathinfo["extension"]);?>" 
+												  alt="image<?php echo $key;?>"/><h4><?php echo $ad->title;?> $<?php echo $ad->price;?></h4><p><a href="<?php echo base_url("/site/ad/".$ad->id);?>" class="btn btn-primary">Details</a></p></li>
                                      	<?php } ?>
                                     	</ul>
 

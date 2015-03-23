@@ -81,9 +81,10 @@ $(document).ready(function(){
              <?php  if(isset($images)) { ?>
 			      <div style="width:74%;">
 					<ul  class="bxslider">										
-					<?php foreach ($images as $img) { ?>
+					<?php foreach ($images as $img) { $caption="";if($img->alternate_imagename!="") { $caption=$img->alternate_imagename; } 
+					else { $caption=$img->image;}?>
 						<li>
-						<img  src="<?php echo base_url("uploads/ads/".$img->image); ?>" title="<?php echo $c_title; ?>"/>
+						<img  src="<?php echo base_url("uploads/ads/".$img->image); ?>" title="<?php echo $caption; ?>"/>
 						</li>
 					<?php } ?>
 					</ul>

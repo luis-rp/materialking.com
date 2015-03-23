@@ -28,7 +28,7 @@ class itemcode_model extends Model {
         return $this->db->count_all_results('item');
     }    
     
-    function get_itemcodes($limit = 100, $offset = 0) {
+    function get_itemcodes($limit = 100, $offset = 0,$category = '') {
         if ($offset == 0) {
             $newoffset = 0;
         } else {
@@ -49,6 +49,9 @@ class itemcode_model extends Model {
         if(@$_POST['searchcategory'])
             $where .= " AND i.category = '{$_POST['searchcategory']}'";
        
+        if($category)
+            $where .= " AND i.category = '{$category}'";
+                
         if($pa && $pa!='1')    
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL)  ";   
             
@@ -63,7 +66,7 @@ class itemcode_model extends Model {
                 $where
                 GROUP BY i.id
                 ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
-       
+     
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();

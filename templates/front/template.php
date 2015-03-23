@@ -130,10 +130,10 @@
 <!-- BEGIN CORE TEMPLATE JS --> 
 <script src="<?php echo base_url();?>templates/front/assets/js/core.js" type="text/javascript"></script> 
 <script src="<?php echo base_url();?>templates/front/assets/js/demo.js" type="text/javascript"></script> 
-<link href="../templates/admin/css/bootstrap-tour.min.css" rel="stylesheet"></link>
-<script src="../templates/admin/js/jquery.js"></script>
-<script src="../templates/admin/js/bootstrap.min.js"></script>
-<script src="../templates/admin/js/bootstrap-tour.min.js"></script>
+<link href="<?php echo base_url();?>templates/admin/css/bootstrap-tour.min.css" rel="stylesheet"></link>
+<script src="<?php echo base_url();?>templates/admin/js/jquery.js"></script>
+<script src="<?php echo base_url();?>templates/admin/js/bootstrap.min.js"></script>
+<script src="<?php echo base_url();?>templates/admin/js/bootstrap-tour.min.js"></script>
 <script type="text/javascript">
 
   <?php  if(isset($pagetour->pagetour)) {
@@ -233,7 +233,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 							<button type="submit" style="background:none;border:none;">
 							<span class="badge badge-important"><?php echo count(@$newquotes);?> invitations</span> 
 							</button>
-							<span class="bold"><?php echo strtoupper($this->session->userdata('company')->username);?></span>									
+							<span class="bold"><?php echo strtoupper(@$this->session->userdata('company')->username);?></span>									
 						
 							</form>
 							<?php //}?>
@@ -296,7 +296,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
     <ul>	
       <li class="start <?php if($menu=='dashboard'){echo 'active';}?>"> <a href="<?php echo site_url('dashboard/index');?>"> <i class="fa fa-dashboard1"></i> <span class="title">Dashboard</span> <span class="selected"></span></a> </li>
       
-        <?php if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
+        <?php if(isset($pagetour)) { if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
       
 	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i><span class="title">Tier Price Settings</span> </a> </li>  
 	  <li class="<?php if($menu=='networkconnections'){echo 'active';}?>"> <a href="<?php echo site_url('company/networkconnections');?>"> <i class="fa fa-dollar1"></i><span class="title">Network Connections</span> </a> </li>    
@@ -327,7 +327,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i><span class="title">Form Builder</span></a></li>
 	  <li class="<?php if($menu=='mailinglist'){echo 'active';}?>"> <a href="<?php echo site_url('company/mailinglist');?>"> <i class="fa fa-formmailing"></i><span class="title">Mailing List</span></a></li>
 	  <li class="<?php if($menu=='events'){echo 'active';}?>"> <a href="<?php echo site_url('event');?>"> <i class="fa"></i><span class="title">Manage Events</span></a></li>
-	    <?php } } ?>
+	    <?php } } } ?>
 	     
     </ul>
     

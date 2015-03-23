@@ -145,6 +145,7 @@ function changeproject(catid){
     <div class="control-group">
     <label class="control-label">Image:</label>
     <div class="controls">
+       <input type="hidden" name="costcode_image" id="costcode_image" value="<?php echo @$this->validation->costcode_image; ?>">	
        <input type="file" name="UploadFile" id="UploadFile" />
         <a href="<?php echo site_url('uploads/costcodeimages') . '/' . @$this->validation->costcode_image; ?>" target="_blank"> 
           <?php echo @$this->validation->costcode_image; ?>

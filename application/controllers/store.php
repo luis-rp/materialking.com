@@ -243,21 +243,32 @@ class Store extends CI_Controller
         
         $this->db->where("user_id",$company);
         $ads = $this->db->get("ads")->result();
-        foreach($ads as $ad){
-        	 
-        	$config['image_library'] = 'gd2';
-        	$config['source_image'] = './uploads/ads/'.$ad->image;
-        	$config['create_thumb'] = TRUE;
-        	$config['width']     = 190;
-        	$config['height']   = 194;
-        	 
-        	$this->image_lib->clear();
-        	$this->image_lib->initialize($config);
-        	$this->image_lib->resize();
-        	 
+       
+        $this->data['adforsupplier']=array();    
+        if(count($ads) > 0)
+        {  
+	        foreach($ads as $ad)
+	        {
+	        	$image=$this->db->get_where('AdImage',array('adid'=>$ad->id))->row();
+	     		$ad->image="";
+	     		if(@$image->image)
+	     		{
+	     			$ad->image=$image->image;
+	     		} 
+	        	$config['image_library'] = 'gd2';
+	        	$config['source_image'] = './uploads/ads/'.$ad->image;
+	        	$config['create_thumb'] = TRUE;
+	        	$config['width']     = 190;
+	        	$config['height']   = 194;
+	        	 
+	        	$this->image_lib->clear();
+	        	$this->image_lib->initialize($config);
+	        	$this->image_lib->resize();
+	        	$this->data['adforsupplier'][]=$ad;	        	 
+	        }
         }
-        $this->data['adforsupplier']=$ads;
         
+          
         $this->data['page_title'] = $this->data["company"]->title." Online Store";
         
         $bhrs = $this->db->get_where('company_business_hours',array('company'=>$id))->result();      

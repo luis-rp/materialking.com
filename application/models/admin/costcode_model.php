@@ -400,19 +400,27 @@ class costcode_model extends Model
 	function updateCostcode($id)
 	{
 		$imageName = '';
-		if(isset($_FILES['UploadFile']['name']))
+		
+		if(isset($_POST['costcode_image']) && $_POST['costcode_image'] != '' && $_FILES['UploadFile']['name'] == '')
+		{			
+			$imageName = $_POST['costcode_image'];
+		}
+		else 
 		{
-	        ini_set("upload_max_filesize","128M");            
-            $target='uploads/costcodeimages/';
-            $count=0;
-	        
-        	$temp=$target;
-    		$tmp=$_FILES['UploadFile']['tmp_name'];
-    		$origionalFile=$_FILES['UploadFile']['name'];
-    		$temp=$temp.basename($origionalFile);
-    		move_uploaded_file($tmp,$temp);
-    		
-    		$imageName= $_FILES['UploadFile']['name'];
+			if(isset($_FILES['UploadFile']['name']))
+			{
+		        ini_set("upload_max_filesize","128M");            
+	            $target='uploads/costcodeimages/';
+	            $count=0;
+		        
+	        	$temp=$target;
+	    		$tmp=$_FILES['UploadFile']['tmp_name'];
+	    		$origionalFile=$_FILES['UploadFile']['name'];
+	    		$temp=$temp.basename($origionalFile);
+	    		move_uploaded_file($tmp,$temp);
+	    		
+	    		$imageName= $_FILES['UploadFile']['name'];
+			}
 		}
 		
 		$forcontract="";
@@ -426,7 +434,8 @@ class costcode_model extends Model
     		$estimate = 1;
     		else 
     		$estimate = 0;
-    		
+    	
+    			
 		$options = array(
 			'code'=>$this->input->post('code'),
 			'cost'=>$this->input->post('cost'),
@@ -437,6 +446,7 @@ class costcode_model extends Model
 			'estimate' => $estimate,
 			'costcode_image' => $imageName
 		);
+		
 		$oldcoderow = $this->get_costcodes_by_id($this->input->post('id'));
 		$oldcode = $oldcoderow->code;
 		$newcode = $this->input->post('code');
