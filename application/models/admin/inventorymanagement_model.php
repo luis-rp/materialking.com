@@ -16,7 +16,7 @@ class inventorymanagement_model extends Model
  			$where .= " AND q.pid = ".$this->session->userdata('managedprojectdetails')->id;
  		}
  		
- 		$sql ="SELECT q.id,q.ponum,aw.itemid,aw.itemcode,aw.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, SUM(aw.ea) as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage
+ 		$sql ="SELECT aw.itemid as id,q.ponum,aw.itemid,aw.itemcode,aw.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, SUM(aw.ea) as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage
 				FROM
 				".$this->db->dbprefix('quote')." q
 				JOIN ".$this->db->dbprefix('award')." a ON a.quote = q.id 
@@ -36,7 +36,7 @@ class inventorymanagement_model extends Model
  		
  		foreach($qryresult as $q){
  			
- 			$inventorysql = "select minstock, maxstock,reorderqty from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$q->itemid; 
+ 			$inventorysql = "select minstock, maxstock,reorderqty, adjustedqty from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$q->itemid; 
  			$sqlq = $this->db->query($inventorysql);		
  			$qryinvresult = $sqlq->row();
  			
@@ -44,6 +44,8 @@ class inventorymanagement_model extends Model
  				$qryresult[$i]->minstock = $qryinvresult->minstock;
  				$qryresult[$i]->maxstock = $qryinvresult->maxstock;
  				$qryresult[$i]->reorderqty = $qryinvresult->reorderqty;
+ 				if($qryinvresult->adjustedqty>0)
+ 				$qryresult[$i]->qtyonhand = ($qryresult[$i]->qtyonhand - $qryinvresult->adjustedqty);
  				$i++;
  			}
  		}

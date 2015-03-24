@@ -1,3 +1,9 @@
+
+<style>
+.gm-style img { max-width: none; }
+.gm-style label { width: auto; display: inline; }
+</style>
+
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <?php if($this->session->userdata('managedprojectdetails')){?>

@@ -683,11 +683,11 @@ function closepop()
                         <th width="10%">Cost Code</th>
                         <th width="10%">Notes</th>
                         <th width="5%">Still Due</th>
-                        <th width="20%">History</th>
+                        <th width="18%">History</th>
                         <?php if ($awarded->status == 'incomplete') { ?>
-                        <th width="8%">Received Qty.</th>
+                        <th width="12%">Received Qty.</th>
                         <th width="10%">Invoice #</th>
-                        <th width="16%">Date Received</th>
+                        <th width="14%">Date Received</th>
                         <th width="7%">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
                         <th width="11%">Error</th>
                         <?php } ?>
@@ -859,7 +859,7 @@ function closepop()
                                 <?php }?>
 								</td>
                                 <?php if ($awarded->status == 'incomplete') { ?>
-                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span6 receivedqty"
+                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>                                    	
                                     </td>

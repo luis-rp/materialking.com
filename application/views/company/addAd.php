@@ -173,7 +173,7 @@ function checkEnter(event)
 		                        <label class="form-label">Image</label>
 		                        <div class="controls">
 		                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
-		                             <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="">
+		                             <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="" placeholder="Image Text">
 		                            <div id="moreUploads"></div>
 		                            <div id="moreUploadsLink" style="display:none;">
 		                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>

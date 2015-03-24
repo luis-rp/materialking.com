@@ -442,11 +442,11 @@ function delqtydiscount(id,itemid){
 		if(data){
 			var chtml = "";
 			
-			chtml += '<div class="row form-row"><div class="col-md-3">Manufacturer</div><div class="col-md-2">Part No.</div><div class="col-md-3">Item Name</div><div class="col-md-2">List Price</div><div class="col-md-2">Min. Qty.</div></div> ';
+			chtml += '<div class="row form-row"><div class="col-md-2">Manufacturer</div><div class="col-md-3">Part No.</div><div class="col-md-3">Item Name</div><div class="col-md-2">List Price</div><div class="col-md-2">Min. Qty.</div></div> ';
 			
 			$.each(data, function( index, value ) {
 				
-				chtml +='<div class="row form-row"><div class="col-md-3">'+value.title+'</div><div class="col-md-2"><span>'+value.partnum+'</span></div><div class="col-md-3"><span>'+value.itemname+'</span></div><div class="col-md-2"><span>'+value.price+'</span></div><div class="col-md-2"><span>'+value.minqty+'</span><span>&nbsp;&nbsp;<input type="checkbox" class="check'+itemid+'" name="check'+value.id+'" id="check'+value.id+'" value="'+value.id+'" onclick="setmasteroption(\''+value.id+'\',\''+itemid+'\',\''+value.manufacturer+'\',\''+value.partnum+'\',\''+value.itemname+'\',\''+value.price+'\',\''+value.minqty+'\',\''+value.itemcode+'\')"></span></div></div>';
+				chtml +='<div class="row form-row"><div class="col-md-2">'+value.title+'</div><div class="col-md-3"><span style="word-break:break-all !important;">'+value.partnum+'</span></div><div class="col-md-3"><span>'+value.itemname+'</span></div><div class="col-md-2"><span>'+value.price+'</span></div><div class="col-md-2"><span>'+value.minqty+'</span><span>&nbsp;&nbsp;<input type="checkbox" class="check'+itemid+'" name="check'+value.id+'" id="check'+value.id+'" value="'+value.id+'" onclick="setmasteroption(\''+value.id+'\',\''+itemid+'\',\''+value.manufacturer+'\',\''+value.partnum+'\',\''+value.itemname+'\',\''+value.price+'\',\''+value.minqty+'\',\''+value.itemcode+'\')"></span></div></div>';
 				
 			});			
 							

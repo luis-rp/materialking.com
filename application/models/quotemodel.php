@@ -923,6 +923,7 @@ class Quotemodel extends Model
         					if(@$discountdate){        						
         						if ($now < strtotime($discountdate)) {
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        							$invoice->discount_date = $resultinvoicecycle->discountdate;
         						}
         					}
         				}

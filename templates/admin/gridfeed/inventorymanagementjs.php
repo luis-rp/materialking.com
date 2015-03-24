@@ -41,19 +41,19 @@ $(document).ready(function () {
     			property: 'minstock',
     			label: 'MIN Stock',
     			sortable: false,
-    			width:'10%'
+    			width:'8%'
     		},
     		{
     			property: 'maxstock',
     			label: 'MAX Stock',
     			sortable: false,
-    			width:'10%'
+    			width:'8%'
     		},
     		{
     			property: 'reorderqty',
     			label: 'Reorder Qty',
     			sortable: false,
-    			width:'10%'
+    			width:'8%'
     		},
     		{
     			property: 'daterequested',
@@ -75,9 +75,9 @@ $(document).ready(function () {
     		},
     		{
     			property: 'manage',
-    			label: 'Manage / Transfer',
+    			label: 'Adjust Qty On Hand',
     			sortable: false,
-    			width:'5%'
+    			width:'10%'
     		}
     		
     		

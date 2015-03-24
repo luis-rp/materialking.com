@@ -277,6 +277,28 @@ function checkincrementquantity(quantity){
 }
 
 
+function checkmaxstockreached(quantity,id){
+	
+	if(id==0)
+	var itemid = $("#itemid").val();
+	else
+	var itemid = $("#itemid"+id).val();
+	
+	var data = "itemid="+itemid+"&quantity="+quantity;	
+	$.ajax({
+		type:"post",
+		data: data,
+		url : "<?php echo site_url('admin/inventorymanagement/checkmaxstock');?>"
+	}).done(function(data){
+		
+		if(data == 1){
+			alert('Max Stock Level already reached for this item');
+		}
+		
+	});	
+}
+
+
 function checkupdateincrementquantity(quantity,id){	
 	var incrementval = $('#itemincrement'+id).val();
 	$('#incrementmessage'+id).html('');
@@ -515,7 +537,10 @@ function displayBlankRow()
     		data: "quote=<?php echo $this->validation->id;?>",
     		url: url
     	}).done(function(data){
-    		$('#newcompanybodyid').html(data);    		
+    		$('#newcompanybodyid').html(data);  
+    		if(data){
+    		$('#recentcomp').css('display','block');
+    		}
     	});
 }
 
@@ -749,14 +774,14 @@ function showselectimage(){
 		    		<td>
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
-		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>');  calculatetotalprice('<?php echo $q->id?>')" 
+		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>');  calculatetotalprice('<?php echo $q->id?>'); checkmaxstockreached(this.value,'<?php echo $q->id?>'); " 
 			      	onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/><br><span style="color:red" id="incrementmessage<?php echo $q->id?>"></span><span id="eaerrmsg<?php echo $q->id;?>"></span></td>
 		    		
 		    		<td><input type="text" class="span12" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>" required/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" class="highlight nonzero nopad width50 input-sm span8" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>')" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
+						<input type="text" class="highlight nonzero nopad width50 input-sm span8" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>'); " onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
 		    			</div><span id="eaerrmsg1<?php echo $q->id;?>"></span>
 		    		</td>
 		    		<td>
@@ -883,7 +908,7 @@ function showselectimage(){
 		    		<td>
 		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
 		    		</td>
-		    		<td><input type="text" id="quantity" name="quantity" class="highlight nonzero nopad width50 input-sm span" onblur="return checkincrementquantity(this.value); calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/><br><span style="color:red" id="incrementmessage"></td>
+		    		<td><input type="text" id="quantity" name="quantity" class="highlight nonzero nopad width50 input-sm span" onblur="checkincrementquantity(this.value); calculatetotalprice(''); checkmaxstockreached(this.value,0); " onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/><br><span style="color:red" id="incrementmessage"></td>
 		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();"  class="span"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
@@ -935,7 +960,7 @@ function showselectimage(){
 					    </select> -->	
 				    	  	
 				    	<div id="supplydata"> 				    	
-				    	  <a href="javascript:void(0)" onclick="showrecentaddedcompanies();" >Select Recent Companies</a>	
+				    	  <span style="display:none;" id="recentcomp"><a href="javascript:void(0)" onclick="showrecentaddedcompanies();" >Select Recent Companies</a></span>	
 				    		
 				    	  <span id='newvendorspan' style="display:none;">
                    <!--Name:<input type="text" name="addsupplyname" id="addsupplyname" onblur="checkcompanyusername(this.id,this.value);" style="width:80px;">&nbsp;

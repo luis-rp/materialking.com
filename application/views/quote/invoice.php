@@ -187,7 +187,7 @@
 							    <th bgcolor="#000033" width="75"><font color="#FFFFFF">Quantity</font></th>
 							    <th bgcolor="#000033" width="45"><font color="#FFFFFF">Unit</font></th>
 							    <th bgcolor="#000033" width="120" align="right"><font color="#FFFFFF">Unit Price</font></th>
-							    <th bgcolor="#000033" width="150" align="right"><font color="#FFFFFF">Total Price</font></th>
+							    <th style="width:120px;" bgcolor="#000033" align="right"><font color="#FFFFFF">Total Price</font></th>
 							  </tr>
 							  </thead>
 							  <?php
@@ -226,7 +226,7 @@
 								$arradditionalcal = array();
 								$disocunt = 0;
 								if(@$invoice->discount_percent){
-
+									$arradditionalcal[] = ' Discount Expires on: '.@$invoice->discount_date;
 									$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
 									$disocunt = round(($grandtotal*$invoice->discount_percent/100),2); 
 									$arradditionalcal[] = - $disocunt;
@@ -234,16 +234,15 @@
 								}
 
 								if(@$invoice->penalty_percent){
-
+									$arradditionalcal[] = "";
 									$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';
-
 									$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
 									$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
 								}
 								
 								
 								echo '<tr>
-								    <td colspan="7" rowspan="4">
+								    <td colspan="4" rowspan="4">
 
 			                  		<div style="width:70%">
 			                  		<br/>
@@ -252,24 +251,28 @@
 			                    <h5 class="text-right semi-bold">Thank you for your business</h5>
 			                  		</div>
 			                  		</td>
-								    <td align="right">Subtotal</td>
-								    <td align="right">$ '. number_format($totalprice,2).'</td>
+			                  		<td colspan="2">&nbsp;</td>
+								    <td align="left">Subtotal</td>
+								    <td align="left">$ '. number_format($totalprice,2).'</td>
 								  </tr>
 								  <tr>
-
-								    <td align="right">Tax</td>
-								    <td align="right">$ '. number_format($taxtotal,2).'</td>
+									<td colspan="2">&nbsp;</td>
+								    <td align="left">Tax</td>
+								    <td align="left">$ '. number_format($taxtotal,2).'</td>
 								  </tr>';
 								
 								if(count($arradditionalcal)>0){
-									echo '<tr> <td align="right">'.$arradditionalcal[0].'</td>
-					    			<td align="right">$ ' . $arradditionalcal[1] . '</td>
+									echo '<tr> 
+									<td colspan="2">'.$arradditionalcal[0].'</td>
+									<td align="left">'.$arradditionalcal[1].'</td>
+					    			<td align="left">$ ' . $arradditionalcal[2] . '</td>
 					  				</tr>';
 								}
 								 
 								echo '<tr>
-								    <td align="right"><strong>Total</strong></td>
-								    <td align="right"><strong>$ '.number_format($grandtotal,2).'</strong></td>
+								     <td colspan="2">&nbsp;</td>
+								    <td align="left"><strong>Total</strong></td>
+								    <td align="left"><strong>$ '.number_format($grandtotal,2).'</strong></td>
 								  </tr>
 								';                
 							  ?>

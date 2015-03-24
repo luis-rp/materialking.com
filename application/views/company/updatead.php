@@ -214,7 +214,7 @@ var upload_number = 2;
 					                        <label class="form-label">Image</label>
 					                        <div class="controls">
 					                            <input type="file" class="fileu" name="UploadFile[]" id="UploadFile" onchange="document.getElementById('moreUploadsLink').style.display = 'block';"  />
-					                              <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="">
+					                              <input type="text" name="alternate_imagename[]" id="alternate_imagename" value="" placeholder="Image Text">
 					                            <div id="moreUploads"></div>
 					                            <div id="moreUploadsLink" style="display:none;">
 					                            	<a href="javascript:void(0);" onclick="javascript:addFileInput();">Add another Image</a>
@@ -222,7 +222,7 @@ var upload_number = 2;
 					                            <!--<a href="<?php //echo site_url('uploads/ads') . '/' . @$this->validation->ad_img; ?>" target="_blank">  -->
 					                            <table class="table table-striped">
 												<tr>
-													<th>Image</th><th>Alternate Text</th><th>Delete</th>
+													<th>Image</th><th>Image Text</th><th>Delete</th>
 												</tr>
 												<?php  foreach($image as $items)  { ?>
 												<tr>

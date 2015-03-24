@@ -3,8 +3,40 @@
 <?php echo '<script>var updateminstockurl="'.site_url('admin/inventorymanagement/updateminstock').'";</script>'?>
 <?php echo '<script>var updatemaxstockurl="'.site_url('admin/inventorymanagement/updatemaxstock').'";</script>'?>
 <?php echo '<script>var updatereorderqtyurl="'.site_url('admin/inventorymanagement/updatereorderqty').'";</script>'?>
-
+<?php echo '<script>var updateadjustedqtyurl="'.site_url('admin/inventorymanagement/updateadjustedqty').'";</script>'?>
 <script type="text/javascript">
+
+function reduceval(itemid){
+	var value = parseInt($('#adjustqty'+itemid).val());	
+	if(value > 0){
+		value = value - 1;
+		$('#save'+itemid).css('display','block');
+	}	
+	$('#adjustqty'+itemid).val(value);	
+}
+                 
+function updateadjustedqty(itemid,oldqtyinhand){
+
+	adjustedqty = oldqtyinhand - $('#adjustqty'+itemid).val();	
+	if(confirm("Do you really want to reduce the quantity on hand by "+adjustedqty+"?")){
+		
+		var data = "itemid="+itemid+"&adjustedqty="+adjustedqty;        
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: updateadjustedqtyurl
+		    }).done(function(data){
+			   $('#qtyonhand'+itemid).val($('#adjustqty'+itemid).val());	
+			   alert('Quantity In Hand Value Modified ');
+		    });		
+		
+	}else{
+		$('#adjustqty'+itemid).val(oldqtyinhand);	
+	}
+	
+	$('#save'+itemid).css('display','none');
+}
+
 
 function updateminstock(itemid,val)
     {    	

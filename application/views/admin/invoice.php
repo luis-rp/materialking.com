@@ -275,7 +275,7 @@ function shownotice(newval,oldval,id){
                         <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Unit</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Unit Price</font></th>
-                        <th bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
+                        <th style="width:70px;" bgcolor="#000033"><font color="#FFFFFF">Total Price</font></th>
                     </tr>
                 </thead>
                 <?php
@@ -316,8 +316,8 @@ function shownotice(newval,oldval,id){
                 $disocunt = 0;
                 if(@$invoice->discount_percent){
                 	
-                	$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';
-                	
+                	$arradditionalcal[] = ' Discount Expires on: '.@$invoice->discount_date;
+                	$arradditionalcal[] = 'Discount('.$invoice->discount_percent.' %)';                	
                 	$disocunt = round(($grandtotal*$invoice->discount_percent/100),2); 
                 	$arradditionalcal[] = - $disocunt;
                 	
@@ -326,15 +326,15 @@ function shownotice(newval,oldval,id){
                 
                 if(@$invoice->penalty_percent){
                 	
-                	$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';
-                	 
+                	$arradditionalcal[] = "";
+                	$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';                	 
                 	$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
                 	$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
                 }
                 
                 
                 echo '<tr>
-					    <td colspan="7" rowspan="4">
+					    <td colspan="5" rowspan="4">
                       		<div style="width:70%">
                           		<br/>
                           		<h4 class="semi-bold">Terms and Conditions</h4>
@@ -342,23 +342,27 @@ function shownotice(newval,oldval,id){
                                 <h5 class="text-right semi-bold">Thank you for your business</h5>
                       		</div>
                   		</td>
+                  		<td colspan="2">&nbsp;</td>
 					    <td align="right">Subtotal</td>
 					    <td align="right">$ ' . number_format($totalprice, 2) . '</td>
 					  </tr>
 					  <tr>
+					    <td colspan="2">&nbsp;</td>
 					    <td align="right">Tax</td>
 					    <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
 					  </tr>';
 					  
                 	if(count($arradditionalcal)>0){
                 	echo '<tr>
-					    <td align="right">'.$arradditionalcal[0].'</td>
-					    <td align="right">$ ' . $arradditionalcal[1] . '</td>
+                		<td colspan="2">'.$arradditionalcal[0].'</td>
+					    <td align="right">'.$arradditionalcal[1].'</td>
+					    <td align="right">$ ' . $arradditionalcal[2] . '</td>
 					  </tr>
 					';
                 }	
                 
 					  echo '<tr>
+					    <td colspan="2">&nbsp;</td>
 					    <td align="right">Total</td>
 					    <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
 					  </tr>

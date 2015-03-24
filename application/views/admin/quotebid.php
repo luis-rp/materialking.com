@@ -391,6 +391,28 @@ function checkincrementquantity(quantity){
 }
 
 
+function checkmaxstockreached(quantity,id){
+		
+	if(id==0)
+	var itemid = $("#itemid").val();
+	else
+	var itemid = $("#itemid"+id).val();
+	
+	var data = "itemid="+itemid+"&quantity="+quantity;	
+	$.ajax({
+		type:"post",
+		data: data,
+		url : "<?php echo site_url('admin/inventorymanagement/checkmaxstock');?>"
+	}).done(function(data){
+		
+		if(data == 1){
+			alert('Max Stock Level already reached for this item');
+		}
+		
+	});	
+}
+
+
 function checknewitem(){
 	
 	if($('#itemcode').val()!="" && $('#itemname').val()!="" && $('#unit').val()!="" && $('#itemid').val()==""){
@@ -874,10 +896,11 @@ function displayBlankRow()
 		    		<td width="18%">
 			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
-		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>'); calculatetotalprice('<?php echo $q->id?>');" 
+		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>'); calculatetotalprice('<?php echo $q->id?>'); checkmaxstockreached(this.value,'<?php echo $q->id?>'); " 
 onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"/><br>
 		    		<span id="eaerrmsg<?php echo $q->id;?>"></span>
-		    		<span style="color:red" id="incrementmessage<?php echo $q->id?>"></span> </td>
+		    		<span style="color:red" id="incrementmessage<?php echo $q->id?>"></span>		    		
+		    		</td>
 		    		
 		    		<td><input type="text" class="span12" id="unit<?php echo $q->id;?>" name="unit<?php echo $q->id;?>" value="<?php echo $q->unit;?>" required/></td>
 		    		<td>
@@ -949,7 +972,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<td width="18%">
 		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"></textarea>
 		    		</td>
-		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="return checkincrementquantity(this.value);calculatetotalprice('')" required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
+		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="checkincrementquantity(this.value);calculatetotalprice(''); checkmaxstockreached(this.value,0); " required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
 		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();" class="span12"/></td>
 		    		<td>
 		    			<div class="input-prepend input-append">
