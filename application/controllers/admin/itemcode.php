@@ -340,6 +340,9 @@ class itemcode extends CI_Controller
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
 
                 $itemcode->totalpoprice = $itemcode->totalpoprice + $itemcode->totalpoprice*(@$taxrate->taxrate/100);    
+                
+                if(@$itemcode->ordershipping)
+                	$itemcode->totalpoprice += $itemcode->ordershipping;
                     
                 $itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,2);    
                     

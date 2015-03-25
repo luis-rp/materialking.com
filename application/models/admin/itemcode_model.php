@@ -103,14 +103,21 @@ class itemcode_model extends Model {
                         $item->qty += $po->quantity;
                     }
 				$item->qty += $orderQty;
-                $sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+                /*$sql2 = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	 totalprice2 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";*/
+                
+                $sql2 = "SELECT (SUM(od.quantity * od.price)) 
+		    	 totalprice2, od.shipping  FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";
+                
                 $query2 = $this->db->query($sql2);
                  if ($query2->result()) {
             		$result2 = $query2->result();
-                	if(isset($result2[0]->totalprice2))
-                	$item->totalpoprice += $result2[0]->totalprice2;
+                	if(isset($result2[0]->totalprice2)){
+                		$item->totalpoprice += $result2[0]->totalprice2;
+                		$item->ordershipping = $result2[0]->shipping;
+                	}
                  }
 
                 //$item->minprices = $this->getminimumprices($item->itemcode);

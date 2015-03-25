@@ -769,7 +769,7 @@ class site extends CI_Controller
         }
         return null;
     }
-    public function search ($keyword = false)
+    public function search($keyword = false)
     {
         if ($this->input->post('keyword') != '')
         {
@@ -892,29 +892,55 @@ class site extends CI_Controller
             $this->data['projects'] = $this->db->where('purchasingadmin',$pa)->get('project')->result();
             $this->data['costcodes'] = $this->db->where('purchasingadmin',$pa)->get('costcode')->result();
         }
-         $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
+        $this->data['breadcrumb'] = $this->items_model->getParents(@$_POST['category']);
         $this->data['breadcrumb2'] = $this->items_model->getsubcategorynames(@$_POST['category']);
         $this->data['currentcategory'] = $currentcategory;
-        //echo "<pre>",print_r($this->data); die;
-        if($keyword){
-        	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "suppliers"){
+        
+        if($keyword)
+        {
+        	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "suppliers")
+        	{
         		$this->data2 = $this->suppliers2($keyword);
         		$this->data['data2'] = $this->data2;
         	}
+        	
+        	/*if(isset($_POST['searchfor']) && $_POST['searchfor'] == "contractors")
+        	{
+        		$data['contractors'] = $this->contractors($keyword);
+        	}*/
+        	
         	if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
         	$tagarray = $this->items_model->find_tags($keyword);
         	
-        	if(@$tagarray){
+        	if(@$tagarray)
+        	{
         		$tagarray2 = array();
         		foreach($tagarray as $tag)
         		$tagarray2[] = trim(strtolower($tag));
         		$tagarray2 = array_unique($tagarray2);
         		$this->data['datatags'] = $tagarray2;
-        	}/*else
-        	$this->data['datatags'] = $tagarray;*/
+        	}
         }
+        
         if(isset($_POST['searchfor']))
         $this->data['searchfor'] = $_POST['searchfor'];
+        
+       /* if(isset($_POST['searchfor']) && $_POST['searchfor'] == "suppliers")
+        {
+           $this->load->view('site/suppliers', $this->data);
+        }
+        if(isset($_POST['searchfor']) && $_POST['searchfor'] == "contractors")
+        {
+           $this->load->view('site/contractors', $data);
+        }
+        if(isset($_POST['searchfor']) && $_POST['searchfor'] == "itemandtags")
+        {
+           $this->load->view('site/items', $this->data);
+        }*/
+        	
+       
+        
+        
         $this->load->view('site/items', $this->data);
     }
         public function suppliers2 ($keyword = false)
@@ -3151,5 +3177,206 @@ $loaderEmail = new My_Loader();
         }        
     	
     }
+    
+    
+     public function contractors($keyword = false)
+      {
+      	
+        if ($this->input->post('keyword') || $keyword)
+        {
+            if (!$keyword)
+            {
+                $keyword = $this->input->post('keyword');
+            }
+           
+            $query_contractors = $this->search_contractor($keyword); 
+            $this->data['found_records'] = "Found " . $query_contractors->totalresult . "Contractors";
+            $this->data['submiturl'] = 'site/contractors/' . $keyword;
+            $this->data['keyword'] = $keyword;
+            if ($keyword)
+            {
+                $this->data['page_titile'] = "Search for \"$keyword\"";
+            }
+            else
+            {
+                $this->data['page_titile'] = "Contractors List";
+            }
+            
+        }
+        else
+        {
+            $details = get_my_address();
+            $center = $details->loc;
+            $this->data['my_location'] = get_my_location($details);
+            $geo_coords = explode(",", $center);
+            $search = new stdClass();
+            $search->distance = 100000;
+            $search->current_lat = $geo_coords[0];
+            $search->current_lon = $geo_coords[1];
+            $search->earths_radius = 6371;
+            $use_contractor_position = false;
+            $this->homemodel->set_search_criteria($search);
+            $location = $this->input->post('location');
+            if ($location)
+            {
+                $return = get_geo_from_address($location);
+               
+                if($return)
+                {
+                    $center = "{$return->lat}, {$return->long}";
+                    $search->current_lat = $return->lat;
+                    $search->current_lon = $return->long;             	 
+                    $this->homemodel->set_search_criteria($search);
+                }
+            }
+            $this->homemodel->set_distance(20);
+            $query_contractors = $this->homemodel->get_nearest_contractors();
+           
+            if (!$query_contractors->totalresult)
+            {       
+                $this->homemodel->set_distance(15000);
+                $query_contractors = $this->homemodel->get_nearest_contractors($ignore_location = true);
+                $this->homemodel->set_distance(20);
+                $this->data['found_records'] = "Found " . $query_contractors->totalresult . " contractors";
+            }
+            else
+            {
+                $this->data['found_records'] = "Found " . $query_contractors->totalresult . " nearest contractors";
+            }
+            $this->data['submiturl'] = 'site/contractors';
+        }
+        
+        
+        $this->data['norecords'] = false;
+        if ($query_contractors->totalresult == 0)
+        {
+            $this->data['norecords'] = 'No Records found for the search.';
+        }
+        
+        $limit = 6;
+        $this->data['totalcount'] = $query_contractors->totalresult;
+        $this->data['currentpage'] = $_POST['pagenum'] + 1;
+        $this->data['totalpages'] = ceil($this->data['totalcount'] / $limit);
+        $this->data['submitmethod'] = 'POST';
+        $this->data['pagingfields'] = $_POST;
+        $this->data['contractors'] = array();
+        $contractors = $query_contractors->contractors;
+         
+        $this->load->helper('text');
+        foreach ($contractors as $contractor)
+        {
+            if ($keyword)
+            {
+                $contractor->fullname = highlight_phrase($contractor->fullname, $keyword, '<span style="color:#990000">', '</span>');
+                $contractor->address = highlight_phrase($contractor->address, $keyword, '<span style="color:#990000">', '</span>');
+                $contractor->companyname = highlight_phrase($contractor->companyname, $keyword, '<span style="color:#990000">', '</span>');
+            }
+            $this->data['contractors'][] = $contractor;
+            
+        }
+         
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('users') ." WHERE isdeleted = 0";
+        $this->data['citystates'] = $this->db->query($sql)->result();
+        $this->data['states'] = $this->db->get('state')->result();
+       	$this->data['page_title'] = "Contractor Info.";
+       	$this->data['page_description'] = "Contractor";       	
+       	$this->load->view('site/contractors', $this->data);	
+       	
+    }
+    
+    public function search_contractor($keyword)
+    {
+        $details = get_my_address();
+        $center = $details->loc;
+        $this->data['my_location'] = get_my_location($details);
+        $geo_coords = explode(",", $center);
+        $search = new stdClass();
+        $search->distance = 100000;
+        $search->current_lat = $geo_coords[0];
+        $search->current_lon = $geo_coords[1];
+        $search->earths_radius = 6371;
+        $use_contractor_position = false;
+        $this->homemodel->set_search_criteria($search);
+        $this->homemodel->set_keyword($keyword);
+        $con = $this->homemodel->FindContractor();       
+        return $con;
+    }
+    
+   public function contractor($username=NULL)
+    {
+    	$this->load->helper('text');
+    	$this->load->library('image_lib');
+        $username = urldecode($username);
+        $data['message'] = $this->session->flashdata('message'); 
+        $data['contractor'] = $this->supplier_model->get_contractor($username);              
+        if(!$data['contractor'])
+        	redirect('');
+        if(!@$data['contractor']->username || !@$data['contractor']->id)
+        {
+        	sleep(5);
+        	redirect('site/contractor/'.$username);
+        }
+        $id = $data['contractor']->id;
+        $data['nextid'] = $this->nextcontractor($id);
+        $data['previd'] = $this->prevcontractor($id);
+        if (!trim(@$data['contractor']->user_lat) && @$data['contractor']->address)
+        {
+            $geoloc = get_geo_from_address($data['contractor']->address);
+            if(@$geoloc->lat && @$geoloc->lat)
+            {
+                $update_contractor['user_lat'] = $geoloc->lat;
+                $update_contractor['user_lng'] = $geoloc->long; 
+                
+                $this->supplier_model->update_contractor($id, $update_contractor);
+                $data['contractor'] = $this->supplier_model->get_contractor($id);
+            }
+        }
+         	
+        $similarcontractors = $this->supplier_model->getrelatedcontractor($id);
+        $data['similarcontractors'] = $similarcontractors;     
+        $data['image']=$this->db->get_where('Contractor_Images',array('contractor'=>$data['contractor']->id))->result();
+       	$data['page_title'] = $data["contractor"]->companyname;
+       	$data['page_description'] = character_limiter($data["contractor"]->shortdetail,150);
+       
+       	if ($this->session->userdata('site_loggedin'))
+       	 {
+        	 $data['filesprivate']=$this->db->get_where('Contractor_Files',array('contractor'=>$data['contractor']->id,'private'=>1))->result();
+       	 }
+        $data['filespublic']=$this->db->get_where('Contractor_Files',array('contractor'=>$data['contractor']->id,'private'=>0))->result();
+        $data['gallery']=$this->db->get_where('Contractor_Gallery',array('contractor'=>$data['contractor']->id))->result();
+        //$bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
+        //$data['businesshrs'] = $bhrs;       
+        $this->load->view('site/contractor', $data);
+    }
+    
+    public function nextcontractor($id)
+    {
+        $sql = "SELECT * FROM " . $this->db->dbprefix('users') . "  ORDER BY companyname ASC";
+        $result = $this->db->query($sql)->result();
+        for ($i = 0; $i < count($result); $i ++)
+        {
+            if ($result[$i]->id == $id && isset($result[$i + 1]))
+            {
+                return $result[$i + 1]->id;
+            }
+        }
+        return null;
+    }
+    
+    public function prevcontractor($id)
+    {
+        $sql = "SELECT * FROM " . $this->db->dbprefix('users') . "  ORDER BY companyname ASC";
+        $result = $this->db->query($sql)->result();
+        for ($i = 0; $i < count($result); $i ++)
+        {
+            if ($result[$i]->id == $id && isset($result[$i - 1]))
+            {
+                return $result[$i - 1]->id;
+            }
+        }
+        return null;
+    }
+    
+   
 	
 }    

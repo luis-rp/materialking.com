@@ -15,9 +15,9 @@ function reduceval(itemid){
 	$('#adjustqty'+itemid).val(value);	
 }
                  
-function updateadjustedqty(itemid,oldqtyinhand){
+function updateadjustedqty(itemid,ea){
 
-	adjustedqty = oldqtyinhand - $('#adjustqty'+itemid).val();	
+	adjustedqty = $('#qtyonhand'+itemid).val() - $('#adjustqty'+itemid).val();	
 	if(confirm("Do you really want to reduce the quantity on hand by "+adjustedqty+"?")){
 		
 		var data = "itemid="+itemid+"&adjustedqty="+adjustedqty;        
@@ -27,11 +27,12 @@ function updateadjustedqty(itemid,oldqtyinhand){
 		      url: updateadjustedqtyurl
 		    }).done(function(data){
 			   $('#qtyonhand'+itemid).val($('#adjustqty'+itemid).val());	
+			   $('#valueonhand'+itemid).val($('#adjustqty'+itemid).val()*ea);
 			   alert('Quantity In Hand Value Modified ');
 		    });		
 		
 	}else{
-		$('#adjustqty'+itemid).val(oldqtyinhand);	
+		$('#adjustqty'+itemid).val($('#qtyonhand'+itemid).val());	
 	}
 	
 	$('#save'+itemid).css('display','none');

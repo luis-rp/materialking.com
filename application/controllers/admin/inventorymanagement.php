@@ -25,6 +25,7 @@ class inventorymanagement extends CI_Controller
         $this->load->model('admin/quote_model');
         $this->load->model('admin/settings_model');
         $this->load->model('admin/inventorymanagement_model');
+        $this->load->model('admin/statmodel');
         $id = $this->session->userdata('id');
 		$setting=$this->settings_model->getalldata($id);
 		if(empty($setting)){
@@ -47,7 +48,7 @@ class inventorymanagement extends CI_Controller
     	$inventory = array();
     	$inventoryRes = $this->inventorymanagement_model->get_inventorydetails();
     	
-    	if(count($inventoryRes) > 1)
+    	if(count($inventoryRes) > 0)
     	{
     		if($this->session->userdata('managedprojectdetails') != '')
  			{
@@ -58,15 +59,38 @@ class inventorymanagement extends CI_Controller
     		
 	    	foreach ($inventoryRes as $row)
 	        {
+	        	$criticallevel= "";
+	        	$mistock = $row->minstock+($row->minstock*25/100);
+	        	if($row->qtyonhand<$mistock)
+	        	$criticallevel = '<font color="red">*Criticai Stock Level</font> <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qtyreorder/' . @$row->itemid . '/'.$row->reorderqty.'">Reorder Quantity</span></a>';
+	        	
+	        	
+	        	$row->itemcode = $row->itemcode."<br>".$criticallevel;
+	        	
 	        	$row->minstock = '<input style="width:50px;" '.$readonly.' type="text" name="minstock" id="minstock" value="'.@$row->minstock.'" onchange="updateminstock('.$row->itemid.',this.value);" >';
 	        	$row->maxstock = '<input style="width:50px;"  '.$readonly.' type="text" name="maxstock" id="maxstock" value="'.@$row->maxstock.'"  onchange="updatemaxstock('.$row->itemid.',this.value);" >';
 	        	$row->reorderqty = '<input style="width:50px;"  '.$readonly.' type="text" name="reorderqty" id="reorderqty" value="'.@$row->reorderqty.'" onchange="updatereorderqty('.$row->itemid.',this.value);"  >';
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = '<input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" />  <input type="button" style="display:none;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->qtyonhand.');" value="save"/> ';
+	        	$row->manage = ' <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> <input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
+				
+	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	
 	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
+	        	
+	        	$row->valueonhand = '<input style="width:50px;" type="text" name="valueonhand" id="valueonhand'.@$row->itemid.'" readonly value="'.@$row->valueonhand.'" >';
+	        	
+	        	if (@$row->item_img && file_exists('./uploads/item/' . @$row->item_img))
+	        	{
+	        		$imgName = site_url('uploads/item/'.$row->item_img);
+	        	}
+	        	else
+	        	{
+	        		$imgName = site_url('uploads/item/big.png');
+	        	}
+	        	
+	        	$row->item_img = '<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src="'.$imgName.'">';
 	        	
 	        	$inventory[] = $row;
 	        }
@@ -330,5 +354,149 @@ class inventorymanagement extends CI_Controller
 		}
 		die;
 	}
+	
+	
+	public function qty_adjust($itemid){
+		
+		if(@!$itemid)
+		die;
+		
+		$inventory = array();
+    	$inventoryRes = $this->inventorymanagement_model->get_inventorydetails($itemid);
+    	
+    	if(count($inventoryRes) > 0)
+    	{
+    		if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 				$readonly = '';
+ 			}else 
+ 				$readonly = 'readonly';
+    		
+    		
+	    	foreach ($inventoryRes as $row)
+	        {
+	        	$row->minstock = '<input style="width:50px;" '.$readonly.' type="text" name="minstock" id="minstock" value="'.@$row->minstock.'" onchange="updateminstock('.$row->itemid.',this.value);" >';
+	        	$row->maxstock = '<input style="width:50px;"  '.$readonly.' type="text" name="maxstock" id="maxstock" value="'.@$row->maxstock.'"  onchange="updatemaxstock('.$row->itemid.',this.value);" >';
+	        	$row->reorderqty = '<input style="width:50px;"  '.$readonly.' type="text" name="reorderqty" id="reorderqty" value="'.@$row->reorderqty.'" onchange="updatereorderqty('.$row->itemid.',this.value);"  >';
+	        	$clickfunc = "";
+	        	if($readonly =="")
+	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
+	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
+				&nbsp; &nbsp; &nbsp;
+	        	<input type="button" style="text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
+	        	
+	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
+	        	
+	        	$row->valueonhand = '<input style="width:50px;" type="text" name="valueonhand" id="valueonhand'.@$row->itemid.'" readonly value="'.@$row->valueonhand.'" >';
+	        	
+	        	$inventory[] = $row;
+	        }
+    	}    
+        else 
+        {
+            $data['items'] = array();
+            $data['message'] = 'No Records';
+        }
+      
+    	$data['items'] = $inventory;       	
+    	$this->load->view('admin/qtyadjust', $data);
+		
+	}
+	
+	
+	public function qtyreorder($itemid,$reorderqty){
+		
+		$project = $this->session->userdata('managedproject');
+		
+		/*if(!$project)
+			redirect('admin/dashboard');*/	
+		
+		if(@$this->session->flashdata('message'))
+			$data['message'] = $this->session->flashdata('message');
+									
+			/*$this->db->where('id',$id);
+			$order = $this->db->get('order')->row();
+			if(!$order)
+				redirect('admin/order');			
+						
+			$data['order'] = $order;				
+			$data['projects']  =  $this->statmodel->getProjects();
+			$data['orderid'] = $id;*/
+			$data['projects']  =  $this->statmodel->getProjects();
+			$data['itemid'] =  $itemid;
+			$data['reorderqty'] = $reorderqty;
+			$this->load->view('admin/qtyreorder', $data);
+			
+	}
+	
+	
+	function get_quotes_by_project(){
+		
+		$pid = $this->input->post("projectfilter");
+		$itemid = $this->input->post("itemid");    	
+		$wherecomb = "(potype = 'Bid' OR potype = 'Direct') ";
+		$this->db->where($wherecomb);
+		/*$wherecomb2 = " id not in (select quote from ".$this->db->dbprefix('invitation')." where purchasingadmin = ".$this->session->userdata('id').") ";
+		$this->db->where($wherecomb2);*/
+		$this->db->where('`id` not IN (select quote from '.$this->db->dbprefix('invitation').' where purchasingadmin = '.$this->session->userdata('id').')', NULL, FALSE);
+    	$this->db->where('pid', $pid);
+    	$this->db->where('purchasingadmin', $this->session->userdata('id'));
+    	//$this->db->where('itemid', $itemid);
+        $quotes = $this->db->get('quote')->result();		
+    	echo json_encode($quotes);
+    }
+
+    
+    function additemtoquote(){
+
+    	if(@$_POST['ccid']){
+    		$this->db->select('code');
+    		$this->db->where('id',$_POST['ccid']);
+    		$costcode = $this->db->get('costcode')->row();
+    	}
+    	if(@$_POST['hiddenitemid'] && @$_POST['qid'] && @$_POST['hiddenreorderqty'] && @$costcode->code){
+
+    		$this->db->where('itemid',$_POST['hiddenitemid']);
+    		$this->db->where('purchasingadmin',$this->session->userdata('id'));
+    		$this->db->where('quote',$_POST['qid']);
+    		$quoteitemresult = $this->db->get('quoteitem')->row();
+
+    		if($quoteitemresult){
+				$updatearray = array();
+				$newquantity = $quoteitemresult->quantity+$_POST['hiddenreorderqty'];
+				$newtotalprice = $quoteitemresult->totalprice+($_POST['hiddenreorderqty']*$quoteitemresult->ea);
+				$updatearray['quantity'] = $newquantity;
+				$updatearray['totalprice'] = $newtotalprice;
+				$updatearray['costcode'] = $costcode->code;
+    			$this->db->where('id', $quoteitemresult->id);
+            	$this->db->update('quoteitem', $updatearray);
+            	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Quantity Updated for the Quote Successfully.</div></div>');
+    				redirect('admin/inventorymanagement/qtyreorder/' . $_POST['hiddenitemid'].'/'.$_POST['hiddenreorderqty']);    			
+    		}else{
+
+    			$this->db->where('id',$_POST['hiddenitemid']);
+    			$itemresult = $this->db->get('item')->row();
+    			//echo "<pre>",print_r($itemresult); die;
+    			if($itemresult){
+    				$items = array();
+    				$items['itemid'] = $itemresult->id;
+    				$items['itemcode'] = $itemresult->itemcode;
+    				$items['itemname'] = $itemresult->itemname;
+    				$items['unit'] = $itemresult->unit;
+    				$items['ea'] = $itemresult->ea;
+    				$items['quantity'] = $_POST['hiddenreorderqty'];
+    				$items['notes'] = $itemresult->notes;
+    				$items['purchasingadmin'] = $this->session->userdata('id');
+    				$items['quote'] = $_POST['qid'];    								
+					$items['costcode'] = $costcode->code;
+    				$items['totalprice'] = $itemresult->ea*$_POST['hiddenreorderqty'];
+    				$this->quote_model->db->insert('quoteitem', $items);
+    				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Added to Quote Successfully.</div></div>');
+    				redirect('admin/inventorymanagement/qtyreorder/' . $_POST['hiddenitemid'].'/'.$_POST['hiddenreorderqty']);
+    			}
+
+    		}
+    	}
+    }
     
 } 

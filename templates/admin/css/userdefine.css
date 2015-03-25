@@ -1,0 +1,281 @@
+.gallery-photos {
+					padding: 6px;
+
+				}
+.gallery-photos .big-photo {
+					display: block;
+					background-color: #ffffff;
+					padding: 1px;
+					border: 1px solid #e7e7e7;
+				}
+				.gallery-photos .big-photo img {
+					display: block;
+					max-width: 100%;
+					height: auto;
+					margin: 0 auto;
+				}
+				.gallery-photos .photo-thumbnails {
+					width: 800px;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail {
+					float: left;
+					box-sizing: border-box;
+					-moz-box-sizing: border-box;
+					-webkit-box-sizing: border-box;
+					width: 250px;
+					height: 150px;
+					cursor: pointer;
+					padding: 17px;
+					border: 1px solid #e7e7e7;
+					margin-left: 1.33333%;
+					margin-bottom: 6px;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail.current {
+					background-color: #ffffff;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail .thumbnail-inner {
+					height: 100%;
+					overflow: hidden;
+				}
+				.gallery-photos .photo-thumbnails .thumbnail img {
+					display: block;
+					width: auto;
+					max-height: 100%;
+					margin: 0 auto;
+					opacity: 1;
+				}
+				
+				#cke_27 
+				{
+				display:none;
+				}
+				
+				#cke_32 
+				{
+				display:none;
+				}
+				
+				#cke_42 
+				{
+				display:none;
+				}
+				
+				#cke_50 
+				{
+				display:none;
+				}
+				
+				#cke_63 
+				{
+				display:none;
+				}
+				
+				#cke_75 
+				{
+				display:none;
+				}
+
+				#cke_78 
+				{
+				display:none;
+				}
+				
+				#cke_67 
+				{
+				display:none;
+				}
+				
+				#cke_about 
+				{
+				width:78%;
+				}
+				
+				#cke_1_contents
+				{
+				height:99px !important;
+				}
+				.bx-viewport
+				{
+				height:290px !important;
+				}
+
+#parent
+{
+	font-size:17px;
+	color:white;
+	text-align:center;
+	font-weight:bold;
+}
+.supplier_new1 .price {
+padding:5px 0px;
+}
+
+ .ui-tooltip {
+	padding: 2px;
+	font-size:10px !important;
+	font-weight:bold;
+	position: absolute;
+	z-index: 9999;
+	max-width: 150px;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+	color:#06A7EA !important;
+}
+
+ 
+ 
+ #logo
+{
+	width: 505px;
+	margin: 0 auto;
+	text-align: center;
+}
+#pgtitle
+{
+	margin: 0px 0px 20px;
+	font-size: 18pt;
+}
+#container2
+{
+	display: block;
+	width: 1236px;
+	height: 100px;
+	margin: 0 auto;
+}
+#imgtag
+{
+	position: relative;
+	min-width: 300px;
+	min-height: 300px;
+	float: none;
+	border: 3px solid #FFF;
+	cursor: crosshair;
+	text-align: center;
+}
+.tagview
+{
+	border: 1px solid #F10303;
+	width: 50px;
+	height: 50px;
+	position: absolute;
+/*display:none;*/	
+	color: #FFFFFF;
+	text-align: center;
+}
+.square
+{
+	display: block;
+	height: 79px;
+	opacity: 1.0;
+}
+.person
+{
+	background: #282828;
+	border-top: 1px solid #F10303;
+}
+#tagit
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 288px;
+	border: 1px solid #D7C7C7;
+}
+#tagit .box
+{
+	border: 1px solid #F10303;
+	width: 10px;
+	height: 10px;
+	float: left;
+}
+#tagit .name
+{
+	float: left;
+	background-color: #C5C5C5;
+	width: 280px;
+	height: 180px;
+	padding: 5px;
+	font-size: 10pt;
+}
+#tagit DIV.text
+{
+	margin-bottom: 5px;
+}
+#tagit INPUT[type=text]
+{
+	margin-bottom: 5px;
+}
+#tagit #tagname
+{
+	width: 110px;
+}
+#taglist
+{
+	width: 30px;
+	min-height: 200px;
+	height: auto !important;
+	height: 20px;
+	float: left;
+	padding: 10px;
+	margin-left: 20px;
+	color: #000;
+}
+#taglist OL
+{
+	padding: 0 20px;
+	float: left;
+	cursor: pointer;
+}
+#taglist OL A
+{
+}
+#taglist OL A:hover
+{
+	text-decoration: underline;
+}
+.tagtitle
+{
+	font-size: 14px;
+	text-align: center;
+	width: 100%;
+	float: left;
+}
+ 
+.tp_circle {
+    background: none repeat scroll 0 0 #ACC70A;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50% 50% 50% 50%;
+    box-shadow: 0 0 10px #000000;
+    color: #FFFFFF;    
+    height: 16px;
+    line-height: 13px;
+    padding-top: 4px;
+    /*position: absolute;
+    text-align: center;*/
+    width: 20px;
+    z-index: 2;
+}
+
+#tableinnerid {
+	background: none repeat scroll 0 0 #F5F5F5;
+    border-collapse: separate;
+    box-shadow: 0 1px 0 #FFFFFF inset;
+    font-size: 12px;
+    line-height: 24px;
+    margin: 0 auto;
+    text-align: left;
+
+}
+
+.modal{
+left:22%;
+width:92%;
+}
+
+
+.btn-green {
+background-color: #ACC70A;
+background-image: linear-gradient(to bottom, #BACF0B, #98BA09);
+background-repeat: repeat-x;
+border-color: #7C9710
+}

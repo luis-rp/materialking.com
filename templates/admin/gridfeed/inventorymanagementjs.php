@@ -17,13 +17,19 @@ $(document).ready(function () {
     			property: 'itemcode',
     			label: 'Item Code',
     			sortable: false,
-    			width:'10%'
+    			width:'8%'
     		},
     		{
     			property: 'itemname',
     			label: 'Item Name',
     			sortable: false,
-    			width:'10%'
+    			width:'8%'
+    		},
+    		{
+    			property: 'item_img',
+    			label: 'Item Image',
+    			sortable: false,
+    			width:'8%'
     		},
     		{
     			property: 'qtyonhand',
@@ -74,10 +80,16 @@ $(document).ready(function () {
     			width:'5%'
     		},
     		{
-    			property: 'manage',
-    			label: 'Adjust Qty On Hand',
+    			property: 'valuecomitted',
+    			label: 'Value Comitted',
     			sortable: false,
-    			width:'10%'
+    			width:'5%'
+    		},
+    		{
+    			property: 'manage',
+    			label: 'Adjust_Quantity On Hand',
+    			sortable: false,
+    			width:'14%'
     		}
     		
     		

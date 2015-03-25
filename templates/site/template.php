@@ -284,6 +284,15 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                             echo 'class="current"';
                                         }
                                         ?>><a href="<?php echo base_url('site/suppliers'); ?>">Suppliers</a></li>
+                                        
+                                        <li <?php
+                                            if ($function == 'contractors') {
+                                                echo 'class="current"';
+                                            }
+                                        ?>>
+                                        <a href="<?php echo base_url('site/contractors'); ?>">Contractors</a>
+										</li>
+                                        
                                  
                                         <li <?php
                                             if ($function == 'items') {
@@ -326,6 +335,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                                             <select style="width:160px;height:20px;height:40px; border-radius:0px; margin-right:5px;" name = "searchfor" id="searchfor" >
                                             <option value="itemandtags" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="itemandtags") echo "selected";  ?>>Items & Tags</option>
                                             <option value="suppliers" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="suppliers") echo "selected";  ?>>Suppliers</option>
+                                            <!--<option value="contractors" <?php if(isset($_POST['searchfor']) && $_POST['searchfor']!="" && $_POST['searchfor']=="contractors") echo "selected";  ?>>Contractors</option>-->
                                             </select>&nbsp;&nbsp;
                                             <input title="Enter the terms you wish to search for." class="search-query span2 form-text" placeholder="Search" type="text" name="keyword" value='<?php echo isset($keyword) ? $keyword : ""; ?>'>
                                             <button type="submit" class="btn"><i class="icon-search"></i></button>
@@ -460,7 +470,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
    <div class="modal hide fade" id="loginmodal" style="width:30% !important;left:50% !important;">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Login As Purchasing Admin</h3>
+    <h3>Login As Purchasing Admin123</h3>
     </div>
     <div class="modal-body">
    
@@ -539,7 +549,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                     &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/register')?>">Create Purchasing Account</a>
                      <br/>
                     <br/>
-                    &nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="$('#loginmodal').modal('show'); $('#createmodal').modal('hide');">Login</a>
+                    &nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="$('#loginmodal').modal('show'); $('#createmodal').modal('hide');">Login1</a>
                      <br/>
                     <br/>
                      <br/>
