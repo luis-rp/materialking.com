@@ -3344,8 +3344,25 @@ $loaderEmail = new My_Loader();
        	 }
         $data['filespublic']=$this->db->get_where('Contractor_Files',array('contractor'=>$data['contractor']->id,'private'=>0))->result();
         $data['gallery']=$this->db->get_where('Contractor_Gallery',array('contractor'=>$data['contractor']->id))->result();
-        //$bhrs = $this->db->get_where('company_business_hours',array('company'=>$data['supplier']->id))->result();
-        //$data['businesshrs'] = $bhrs;       
+        
+        $membersDB = $this->db->where("contractorid", $data['contractor']->id)->get("Contractor_Team")->result();
+     	foreach($membersDB as $mdb){
+     		$config['image_library'] = 'gd2';
+     		$config['source_image'] = './uploads/ContractorTeam/'.$mdb->picture;
+     		$config['create_thumb'] = TRUE;
+     		$config['maintain_ratio'] = FALSE;
+     		$config['width']     = 190;
+     		$config['height']   = 194;
+     		$this->image_lib->clear();
+     		$this->image_lib->initialize($config);
+     		$this->image_lib->resize();
+     		$pathinfo = pathinfo($mdb->picture);
+     		$mdb->picture = $pathinfo["filename"]."_thumb.".$pathinfo["extension"];
+     		$data["members"][] = $mdb;
+     	}
+        
+        $bhrs = $this->db->get_where('Contractor_Business_Hour',array('contractor'=>$data['contractor']->id))->result();
+        $data['businesshrs'] = $bhrs;       
         $this->load->view('site/contractor', $data);
     }
     
@@ -3375,6 +3392,74 @@ $loaderEmail = new My_Loader();
             }
         }
         return null;
+    }
+    
+     public function sendcontractrequest($id)
+    	{
+        if(!$_POST)
+            die;
+	    $settings = (array)$this->homemodel->getconfigurations ();
+	    $data['email_body_title'] = "";
+	    $data['email_body_content'] = "";
+	    if(strpos(@$_POST['redirect'], 'contractor') === 0)
+	    {
+	        $contractor = $this->db->where('id',$id)->get('users')->row();
+	        $to = $contractor->email;
+		    $data['email_body_title'] = 'You have a new request for assistance.';
+	    }
+	    else
+	    {
+	        $to = $settings['adminemail'];
+	        if(@$_POST['redirect'])
+		    $data['email_body_title'] = 'You have a new request for assistance regarding '.site_url($_POST['redirect']).'.';
+		    else
+		    $data['email_body_title'] = 'You have a new request for assistance.';
+	    }
+		$data['email_body_content'] .= ' Details are:<br/><br/>';
+		if(@$_POST['contactName'])
+		$data['email_body_content'] .= "Name: ".$_POST['contactName']."<br/>";
+		if(@$_POST['name'])
+		$data['email_body_content'] .= "Name: ".$_POST['name']."<br/>";
+		if(@$_POST['email'])
+		$data['email_body_content'] .= "Email: ".$_POST['email']."<br/>";
+		if(@$_POST['subject'])
+		$data['email_body_content'] .= "Subject: ".$_POST['subject']."<br/>";
+		if(@$_POST['comments'])
+		$data['email_body_content'] .= "Details: ".$_POST['comments']."<br/>";
+		if(@$_POST['phone'])
+		$data['email_body_content'] .= "Phone: ".$_POST['phone']."<br/>";
+		
+		if(@$_POST['type']) {
+			if($_POST['type'] == 'Request Phone Assistance')
+			{
+				if(@$_POST['daytd'])
+				$data['email_body_content'] .= "Best day to call: ".$_POST['daytd']."<br/>";
+				if(@$_POST['timetd'])
+				$data['email_body_content'] .= "Best time to call: ".$_POST['timetd']."<br/>";
+			}else {
+				if(@$_POST['daytd'])
+				$data['email_body_content'] .= "Appointment date: ".$_POST['daytd']."<br/>";
+				if(@$_POST['timetd'])
+				$data['email_body_content'] .= "Appointment time: ".$_POST['timetd']."<br/>";
+			}
+		}
+		if(@$_POST['regarding'])
+		$data['email_body_content'] .= "Regarding: ".$_POST['regarding']."<br/>";
+		$loaderEmail = new My_Loader();
+		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+		$this->load->library('email');
+		$config['charset'] = 'utf-8';
+		$config['mailtype'] = 'html';
+		$this->email->initialize($config);
+		$this->email->from($settings['adminemail']);
+		$this->email->to($to);
+		$this->email->subject('Request for assistance');
+		$this->email->message($send_body);
+		$this->email->set_mailtype("html");
+		$this->email->send();
+        $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Email was sent successfully</div></div>');      
+	    redirect('site/'.$_POST['redirect']);
+	    
     }
     
    

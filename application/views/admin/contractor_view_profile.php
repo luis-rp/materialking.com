@@ -64,23 +64,19 @@
 	  $(".editMemberBtn").click(function(){
 	   var id = $(this).attr("name");
 	   $.ajax({
-		    url:"<?php echo base_url("company/getMemberInfo/");?>/"+id,
+		    url:"<?php echo base_url("admin/contractor_profile/getMemberInfo/");?>/"+id,
 		    type:"GET",
 		    success:function(msg){		    
 		    	$("#idMember","#editMember").val(msg.id);
 		    	$("#memberName","#editMember").val(msg.name);
 		   		$("#memberTitle","#editMember").val(msg.title);
 		   		$("#memberPhone","#editMember").val(msg.phone);
-		   		$("#memberEmail","#editMember").val(msg.email);
-		   		
-		   		$("#memberLinkedin","#editMember").val(msg.linkedin);
-		   		
-				
+		   		$("#memberEmail","#editMember").val(msg.email);		   		
+		   		$("#memberLinkedin","#editMember").val(msg.linkedin);				
 		    },
 		    dataType : "json"
 		});
-	  
-		
+	 		
 	   $("#editMember").modal();
 	   });
 	   		
@@ -203,7 +199,7 @@
 				<div class="control-group">
 			        <label class="control-label">Logo</label>
 					  <div class="controls">
-						 <input type="file"  name="logo" id="logo"/>			                          
+						 <input type="file" name="logo" id="logo"/>			                          
 							   <?php if($contractor->logo){?><br/>
 							      <img src="<?php echo site_url('uploads/logo/'.$contractor->logo);?>" width="100" height="100"/>
 							    <?php }?>
@@ -306,11 +302,11 @@
 					   </div>
 				</div>
 				                      
-				<!--<div class="control-group">
+				<div class="control-group">
 					<label class="control-label">Team Members</label>
 					<div class="controls">
 						<a href="javascript:void(0);" id="addMemberBtn">Add Team Member</a>
-						<?php if(count($contractorteam) > 0) { ?>
+						<?php if(count(@$contractorteam) > 0) { ?>
 						<table class="table table-striped">
 		        		<tr>
 							<th>Name</th><th>Title</th><th>Picture</th><th>Phone</th><th>Email</th><th>LinkedIn</th><th>Actions</th>
@@ -324,13 +320,71 @@
 							<td><?php echo $member->email;?></td>
 							<td><a href="http://<?php echo $member->linkedin;?>"><?php echo $member->linkedin;?></a></td>
 							<td><a href="#" class="editMemberBtn" name="<?php echo $member->id;?>">Edit</a>&nbsp;-&nbsp;
-								<a href="<?php echo base_url("company/deletecontractmember/".$member->id);?>" onclick="return confirm('Are you sure?')">Delete</a></td>
+						    <a href="<?php echo base_url("admin/contractor_profile/deletecontractmember/".$member->id);?>" onclick="return confirm('Are you sure to Delete This Record?')">Delete</a></td>
 						</tr>
 						<?php } ?>
 						</table>
 				        <?php }?>
 				     </div>
-				</div>-->
+				</div>
+				
+				
+					 <div class="form-group">
+				                        <label class="form-label">Business Hours:</label>
+				                        <div class="controls">				                           
+				                          <table class="table table-striped">
+												<tr>
+													<th>Day</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>Is Closed?</th>													
+												</tr>												
+												<tr>
+													<td>Monday</td>
+													<td><input type="text" id="monstart" name="monstart" class="span2 time" value="<?php if(isset($businesshrs['monstart'])) echo $businesshrs['monstart']; ?>">&nbsp;(eg: 06:00 am)</td>
+													<td><input type="text" id="monend" name="monend" class="span2 time" value="<?php if(isset($businesshrs['monend'])) echo $businesshrs['monend']; ?>">&nbsp;(eg: 05:00 pm)</td>
+													<td><input type="checkbox" name="monclosed" id="monclosed" <?php if(isset($businesshrs['monclosed']) && $businesshrs['monclosed']==1) echo 'checked = "checked"';?> /></td>			
+												</tr>	
+												<tr>
+													<td>Tuesday</td>
+													<td><input type="text" id="tuestart" name="tuestart" class="span2 time" value="<?php if(isset($businesshrs['tuestart'])) echo $businesshrs['tuestart']; ?>"></td>
+													<td><input type="text" id="tueend" name="tueend" class="span2 time" value="<?php if(isset($businesshrs['tueend'])) echo $businesshrs['tueend']; ?>"></td>
+													<td><input type="checkbox" name="tueclosed" id="tueclosed" <?php if(isset($businesshrs['tueclosed']) && $businesshrs['tueclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Wednesday</td>
+													<td><input type="text" id="wedstart" name="wedstart" class="span2 time" value="<?php if(isset($businesshrs['wedstart'])) echo $businesshrs['wedstart']; ?>"></td>
+													<td><input type="text" id="wedend" name="wedend" class="span2 time" value="<?php if(isset($businesshrs['wedend'])) echo $businesshrs['wedend']; ?>"></td>
+													<td><input type="checkbox" name="wedclosed" id="wedclosed" <?php if(isset($businesshrs['wedclosed']) && $businesshrs['wedclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Thusrday</td>
+													<td><input type="text" id="thustart" name="thustart" class="span2 time" value="<?php if(isset($businesshrs['thustart'])) echo $businesshrs['thustart']; ?>"></td>
+													<td><input type="text" id="thuend" name="thuend" class="span2 time" value="<?php if(isset($businesshrs['thuend'])) echo $businesshrs['thuend']; ?>"></td>
+													<td><input type="checkbox" name="thuclosed" id="thuclosed" <?php if(isset($businesshrs['thuclosed']) && $businesshrs['thuclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Friday</td>
+													<td><input type="text" id="fristart" name="fristart" class="span2 time" value="<?php if(isset($businesshrs['fristart'])) echo $businesshrs['fristart']; ?>"></td>
+													<td><input type="text" id="friend" name="friend" class="span2 time" value="<?php if(isset($businesshrs['friend'])) echo $businesshrs['friend']; ?>"></td>
+													<td><input type="checkbox" name="friclosed" id="friclosed" <?php if(isset($businesshrs['friclosed']) && $businesshrs['friclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Saturday</td>
+													<td><input type="text" id="satstart" name="satstart" class="span2 time" value="<?php if(isset($businesshrs['satstart'])) echo $businesshrs['satstart']; ?>"></td>
+													<td><input type="text" id="satend" name="satend" class="span2 time" value="<?php if(isset($businesshrs['satend'])) echo $businesshrs['satend']; ?>"></td>
+													<td><input type="checkbox" name="satclosed" id="satclosed" <?php if(isset($businesshrs['satclosed']) && $businesshrs['satclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>
+												<tr>
+													<td>Sunday</td>
+													<td><input type="text" id="sunstart" name="sunstart" class="span2 time" value="<?php if(isset($businesshrs['sunstart'])) echo $businesshrs['sunstart']; ?>"></td>
+													<td><input type="text" id="sunend" name="sunend" class="span2 time" value="<?php if(isset($businesshrs['sunend'])) echo $businesshrs['sunend']; ?>"></td>
+													<td><input type="checkbox" name="sunclosed" id="sunclosed" <?php if(isset($businesshrs['sunclosed']) && $businesshrs['sunclosed']==1) echo 'checked = "checked"';?>/></td>			
+												</tr>											
+											</table>
+				                          
+				                        </div>
+				                      </div>
                     				
 				                      
 				<div class="control-group">
@@ -360,135 +414,132 @@
   </section>
 
 
-<!-- <div class="modal fade" id="addmember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php //echo site_url('admin/contractor_profile/addcontractember');?>" enctype="multipart/form-data">
-        <div class="modal-body" style="background-color:#FFFFFF;">
-          <div class="row form-row">
-            <div class="col-md-8">
-             	
-              					     <div class="form-group">
-				                        <label class="form-label">Name:</label>
+						 <div class="modal fade" id="addmember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+						    <div class="modal-dialog">
+						      <div class="modal-content">
+						       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php echo site_url('admin/contractor_profile/addcontractember');?>" enctype="multipart/form-data">
+						       	
+						       	<div class="modal-header">
+					          		<h3>Team</h3>    
+					        	</div>
+						       	
+						        <div class="modal-body" style="max-height:500px;">          		
+              					     <div class="control-group">
+				                        <label class="control-label">Name *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberName" id="memberName" >
+				                          <input type="text"  class="span4" name="memberName" id="memberName" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">Title:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">Title *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberTitle" id="memberTitle" >
+				                          <input type="text" class="span4" name="memberTitle" id="memberTitle" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">Phone:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">Phone</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberPhone" id="memberPhone" >
+				                          <input type="text" class="span4"  name="memberPhone" id="memberPhone" >
 				                        </div>
 				                      </div>
 				                      
-				                      <div class="form-group">
-				                        <label class="form-label">Email:</label>
+				                      <div class="control-group">
+				                        <label class="control-label">Email *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberEmail" id="memberEmail" >
+				                          <input type="email" class="span4" name="memberEmail" id="memberEmail" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">LinkedInd:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">LinkedInd</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberLinkedin" id="memberLinkedin" >
+				                          <input type="text"  class="span4" name="memberLinkedin" id="memberLinkedin" >
 				                        </div>
 				                      </div>
 				                      
-				                      <div class="form-group">
-				                        <label class="form-label">Picture:</label>
+				                      <div class="control-group">
+				                        <label class="control-label">Picture</label>
 				                        <div class="controls">
 				                         <input type="file" name="memberPicture" id="memberPicture" />
 				                        </div>
-				                      </div>
-				                      
-				                      
-          		 
-            </div>
-          </div>
-         
-        </div>
-        <div class="modal-footer">
-          <input type="submit" class="btn btn-primary" value="Save"/>
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-          
-        </div>
-          </form>
-      </div>
-    </div>
-  </div>
+				                      </div>        
+			        			</div>
+			        			
+					        	<div class="modal-footer">
+					          		<input type="submit" class="btn btn-primary" value="Save"/>
+					          		<button data-dismiss="modal" class="btn btn-default" type="button">Close</button>        
+					        	</div>
+        	
+          					</form>
+     					 </div>
+    					</div>
+ 					 </div>
+ 					 
   
-     <div class="modal fade" id="editMember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php //echo site_url('company/editMember');?>" enctype="multipart/form-data">
-        <div class="modal-body" style="background-color:#FFFFFF;">
-          <div class="row form-row">
-            <div class="col-md-8">
-             	
-              					     <div class="form-group">
-				                        <label class="form-label">Name:</label>
+						 <div class="modal fade" id="editMember" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+						    <div class="modal-dialog">
+						      <div class="modal-content">
+						       	<form id="formMember" name="formMember" class="animated fadeIn" method="post" action="<?php echo site_url('admin/contractor_profile/editcontractmember');?>" enctype="multipart/form-data">
+						       	
+						       	<div class="modal-header">
+					          		<h3>Team</h3>    
+					        	</div>
+						       	
+						        <div class="modal-body" style="max-height:500px;">
+					                   	
+              					     <div class="control-group">
+				                        <label class="control-label">Name *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberName" id="memberName" >
+				                          <input type="text" class="span4" name="memberName" id="memberName" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">Title:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">Title *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberTitle" id="memberTitle" >
+				                          <input type="text" class="span4" name="memberTitle" id="memberTitle" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">Phone:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">Phone</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberPhone" id="memberPhone" >
+				                          <input type="text" class="span4" name="memberPhone" id="memberPhone" >
 				                        </div>
 				                      </div>
 				                      
-				                      <div class="form-group">
-				                        <label class="form-label">Email:</label>
+				                      <div class="control-group">
+				                        <label class="control-label">Email *</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberEmail" id="memberEmail" >
+				                          <input type="text" class="span4" name="memberEmail" id="memberEmail" required>
 				                        </div>
 				                      </div>
 				                      
-				                       <div class="form-group">
-				                        <label class="form-label">LinkedInd:</label>
+				                       <div class="control-group">
+				                        <label class="control-label">LinkedInd</label>
 				                        <div class="controls">
-				                          <input type="text" class="form-control" name="memberLinkedin" id="memberLinkedin" >
+				                          <input type="text" class="span4" name="memberLinkedin" id="memberLinkedin" >
 				                        </div>
 				                      </div>
 				                      
-				                      <div class="form-group">
-				                        <label class="form-label">Picture:</label>
+				                      <div class="control-group">
+				                        <label class="control-label">Picture</label>
 				                        <div class="controls">
 				                         <input type="file" name="memberPicture" id="memberPicture" />
 				                        </div>
 				                      </div>
-				                      
-				                      
-          		 
-            </div>
-          </div>
-         
-        </div>
-        <div class="modal-footer">
-          <input name="idMember" id="idMember" type="hidden" value=""/>
-          <input type="submit" class="btn btn-primary" value="Save"/>
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-          
-        </div>
-          </form>
-      </div>
-    </div>
-  </div>-->
+				                         
+       							 </div>
+       							 
+						        <div class="modal-footer">
+						          <input name="idMember" id="idMember" type="hidden" value=""/>
+						          <input type="submit" class="btn btn-primary" value="Save"/>
+						          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+						          
+						        </div>
+						          </form>
+						      </div>
+						    </div>
+						  </div>

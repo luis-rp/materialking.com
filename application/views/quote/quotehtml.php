@@ -31,8 +31,9 @@
 		<td colspan="2">
 			<table border="0" style="text-align:center;" cellpadding="8" cellspacing="2">
         		<tr>
-            		<th>Itemcode</th>
-            		<th>Itemname</th>
+            		<th>Item Image</th>
+            		<th>Item Code</th>
+            		<th>Item Name</th>
             		<th>Qty</th>
             		<th>Price</th>
             		<th>Unit</th>
@@ -44,9 +45,19 @@
         		foreach($biditems as $bi)
         		{
         		    $total += $bi->quantity * $bi->ea;
+        		    
+        		    if ($bi->item_img && file_exists('./uploads/item/' . $bi->item_img)) 
+					{ 
+					 	 $imgName = site_url('uploads/item/'.$bi->item_img); 
+					} 
+					else 
+					{ 
+					 	 $imgName = site_url('uploads/item/big.png'); 
+                    }
         		?>
         		<?php $extprice=$bi->quantity * $bi->ea;?>
     		    <tr>
+    		    <td><img width="80" height="80" src="<?php echo $imgName;?>"></td>
         		<td><?php echo ($bi->itemcode)?$bi->itemcode:$bi->defaultitemcode; ?></td>
         		<td><?php echo ($bi->itemname)?$bi->itemname:$bi->defaultitemname; ?></td>
         		<td><?php echo $bi->quantity; ?></td>
@@ -64,12 +75,12 @@
         		?>
 
     		    <tr>
-        		<td colspan="7">&nbsp;</td>
+        		<td colspan="8">&nbsp;</td>
         		</tr>
         	    <tr>
 
-        		<td>Supplier Quote # </td>
-        		<td colspan="7"><?php echo $bid->quotenum; ?></td>
+        		<td colspan="3" align="left">Supplier Quote # </td>
+        		<td colspan="5"><?php echo $bid->quotenum; ?></td>
                     </tr>
     		    <tr>
 				<?php
@@ -84,30 +95,30 @@
 				   		$newdate = '00/00/0000';
 				   }
 				?>	
-        		<td>Supplier Expire Date</td>
-        		<td colspan="7"><?php  echo $newdate; ?></td>
+        		<td colspan="3" align="left">Supplier Expire Date</td>
+        		<td colspan="5"><?php  echo $newdate; ?></td>
                     </tr>
 
                 <tr>
 
-        		<td>Supplier Quote Date</td>
-        		<td colspan="7"><?php $olddate1=strtotime($bid->submitdate); $newdate1 = date('m/d/Y', $olddate1); echo $newdate1; ?></td>
+        		<td colspan="3" align="left">Supplier Quote Date</td>
+        		<td colspan="5"><?php $olddate1=strtotime($bid->submitdate); $newdate1 = date('m/d/Y', $olddate1); echo $newdate1; ?></td>
                     </tr>
 
     		    <tr>
 
-        		<td>Quote Total: </td>
-        		<td colspan="7">$<?php echo number_format($total,2); ?></td>
+        		<td colspan="3" align="left">Quote Total: </td>
+        		<td colspan="5">$<?php echo number_format($total,2); ?></td>
         		</tr>
 
     		    <tr>
-        		<td>Tax: </td>
-        		<td colspan="7">$<?php echo number_format($tax,2); ?></td>
+        		<td colspan="3" align="left">Tax: </td>
+        		<td colspan="5">$<?php echo number_format($tax,2); ?></td>
         		</tr>
 
     		    <tr>
-        		<td>Total: </td>
-        		<td colspan="7">$<?php echo number_format($alltotal,2); ?></td>
+        		<td colspan="3" align="left">Total: </td>
+        		<td colspan="5">$<?php echo number_format($alltotal,2); ?></td>
         		</tr>
 
 			</table>

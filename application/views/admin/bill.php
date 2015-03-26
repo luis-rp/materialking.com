@@ -192,11 +192,11 @@ function shownotice(newval,oldval,id){
                                 <td width="7%" valign="top">&nbsp;</td>
                                 <td width="60%" valign="top"><?php echo $quote->ponum ?></td>
                             </tr>
-                            <tr>
+                            <!--<tr>
                                 <td valign="top">Subject</td>
                                 <td valign="top">&nbsp;</td>
                                 <td valign="top"><?php echo $quote->subject; ?></td>
-                            </tr>
+                            </tr>-->
                             <tr>
                                 <td valign="top">PO# Date</td>
                                 <td valign="top">&nbsp;</td>

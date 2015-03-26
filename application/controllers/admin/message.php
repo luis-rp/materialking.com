@@ -303,12 +303,27 @@ class message extends CI_Controller
 		  		$data['email_body_content'] .="
 		  		<dd>
 		  			<table cellspacing=5 cellpadding=25 border=1 clsss='table table-bordered col-md-4' style='border-radius: 3px;border-style: solid solid solid solid;border-width: 1px 1px 1px 1px;'>
-		  				<tr><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th><th>Comment</th></tr>
+		  				<tr><th>Item Image</th><th>Item</th><th>Qty</th><th>Invoice#</th><th>Date</th><th>Comment</th></tr>
 		  			";
 		  			foreach($items as $item)
 		  			{
+		  				$itemRes = $this->db->select('item_img')
+			                        ->from('item')
+			                        ->where('id',$item->itemid)
+			                        ->get()->row();	  
+			               
+			            if(isset($itemRes->item_img) && ($itemRes->item_img!= "" && file_exists("./uploads/item/".($itemRes->item_img)))) 
+			    		{
+			    			 $imgName = site_url('uploads/item/'.$itemRes->item_img);  
+			    		} 
+		                else 
+		                { 
+		                	 $imgName = site_url('uploads/item/big.png');  
+		                } 
+		                                      
 	  					$data['email_body_content']  .= "
 	  					<tr>
+	  						<td><img width='80' height='80' src=".$imgName."></td>
 	  						<td>".$item->itemcode."</td>
 	  						<td>".$company['quantities'][$e][$i]."</td>
 	  						<td>".$company['invoicenums'][$e][$i]."</td>

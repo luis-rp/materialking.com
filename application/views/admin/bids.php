@@ -495,6 +495,7 @@ $(function() {
 					  	<div class="modal-body">
 					      <table class="table table-bordered">
 					      	<tr>
+					    		<th>Item Image</th>
 					    		<th>Item Code</th>
 					    		<th>Item Name</th>
 					    		<th>Qty.</th>
@@ -509,8 +510,17 @@ $(function() {
 
 				    			if($notbid)
 				    			{
+				    				if ($quoteitem->item_img && file_exists('./uploads/item/' . $quoteitem->item_img)) 
+									 { 
+									 	 $imgName = site_url('uploads/item/'.$quoteitem->item_img); 
+									 } 
+									 else 
+									 { 
+									 	 $imgName = site_url('uploads/item/big.png'); 
+                                     }
 				    		?>
 						      	<tr>
+						    		<td><img src="<?php echo $imgName;?>" width="80" height="80"></td>
 						    		<td><?php echo $quoteitem->itemcode?></td>
 						    		<td><?php echo $quoteitem->itemname?></td>
 						    		<td><?php echo $quoteitem->quantity?></td>

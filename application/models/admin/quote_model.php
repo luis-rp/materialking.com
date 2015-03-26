@@ -477,7 +477,7 @@ class quote_model extends Model {
             $invoicenums = $invoicequery->result();
             $invoices = array();
             foreach ($invoicenums as $invoicenum) {
-                $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea, ai.award  
+                $itemsql = "SELECT r.*, ai.itemid, ai.itemname, ai.ea, ai.award, ai.quantity as aiquantity      
 							  FROM 
 							  " . $this->db->dbprefix('received') . " r, 
 							  " . $this->db->dbprefix('awarditem') . " ai,

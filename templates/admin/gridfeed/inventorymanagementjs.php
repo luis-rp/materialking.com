@@ -27,9 +27,9 @@ $(document).ready(function () {
     		},
     		{
     			property: 'item_img',
-    			label: 'Item Image',
+    			label: 'Item_Image',
     			sortable: false,
-    			width:'8%'
+    			width:'10%'
     		},
     		{
     			property: 'qtyonhand',

@@ -900,7 +900,8 @@ class quote extends CI_Controller
         
 		$data['minprices'] = $minprices;
         
-        $data['guesttotal'] = number_format($gusttotal,2)." ".$message."";
+        $data['guesttotal'] = $gusttotal;
+        $data['guesttotalmessage'] = $message;
         
 	    if ($data['potype'] == 'Bid')
             $this->load->view('admin/quotebid', $data);
@@ -969,6 +970,7 @@ class quote extends CI_Controller
             $quoteitems = $this->quote_model->getitems($itemid);
     		$emailitems = '<table BORDER CELLPADDING="12">';
     		$emailitems.= '<tr>';
+    		$emailitems.= '<th>Item Image</th>';
     		$emailitems.= '<th> Itemcode  </th>';
     		$emailitems.= '<th>Itemname</th>';
     		$emailitems.= '<th>Qty</th>';
@@ -980,7 +982,18 @@ class quote extends CI_Controller
     		foreach($quoteitems as $q)
     		{
     			if($q->ea > 0){ $priceea=$q->ea; } else { $priceea='RFQ';}
+    			
+    			if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
+				{ 
+				 	 $imgName = site_url('uploads/item/'.$q->item_img); 
+				} 
+				else 
+				{ 
+				 	 $imgName = site_url('uploads/item/big.png'); 
+	            }
+		                                     
     		    $emailitems.= '<tr>';
+        		$emailitems.= '<td style="padding-left:5;"><img src="'.$imgName.'" width="80" height="80"></td>';
         		$emailitems.= '<td style="padding-left:5;">'.$q->itemcode.'</td>';
         		$emailitems.= '<td style="padding-left:5;">'.$q->itemname.'</td>';
         		$emailitems.= '<td style="padding-left:5;">'.$q->quantity.'</td>';
@@ -990,6 +1003,7 @@ class quote extends CI_Controller
         		$emailitems.= '</tr>';
     		}   		
     		$emailitems .= '</table>';
+    		
             $infolist="";
             $invitees = $this->input->post('invitees');
             $nonnetuser=$this->input->post('nonnetworkuser');          
@@ -1960,7 +1974,18 @@ class quote extends CI_Controller
             		 	{
             		 		$companyrows[$lastid] = array();
             		 	}
+            		 	
+            		 	if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+						 { 
+						 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+						 } 
+						 else 
+						 { 
+						 	 $imgName = site_url('uploads/item/big.png'); 
+		                 }
+                 
             		 	$companyrow = '<tr>';
+            		 	$companyrow.= '<td><img width="75" height="75" src="'.$imgName.'"></td>';
             		 	$companyrow.= '<td>'.$item->itemcode.'</td>';
             		 	$companyrow.= '<td>'.$item->itemname.'</td>';
             		 	$companyrow.= '<td>'.$item->quantity.'</td>';
@@ -1977,13 +2002,24 @@ class quote extends CI_Controller
 
             	}
             }
-
-            if($item->company){
+            if($item->company)
+            {
             	if(!isset($companyrows[$item->company]))
             	{
             		$companyrows[$item->company] = array();
             	}
+            	
+            	 if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
+				 { 
+				 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+				 } 
+				 else 
+				 { 
+				 	 $imgName = site_url('uploads/item/big.png'); 
+                 }
+		                                     
             	$companyrow = '<tr>';
+            	$companyrow.= '<td><img width="75" height="75" src="'.$imgName.'"></td>';
             	$companyrow.= '<td>'.$item->itemcode.'</td>';
             	$companyrow.= '<td>'.$item->itemname.'</td>';
             	$companyrow.= '<td>'.$item->quantity.'</td>';
@@ -2000,10 +2036,11 @@ class quote extends CI_Controller
         $companynames = array();
         foreach ($companies as $c)
         {
-    		$emailitems = '<table>';
+    		$emailitems = '<table border="1" width="100%">';
     		$emailitems.= '<tr>';
-    		$emailitems.= '<th>Itemcode</th>';
-    		$emailitems.= '<th>Itemname</th>';
+    		$emailitems.= '<th>Item Image</th>';
+    		$emailitems.= '<th>Item Code</th>';
+    		$emailitems.= '<th>Item Name</th>';
     		$emailitems.= '<th>Qty</th>';
     		$emailitems.= '<th>Price</th>';
     		$emailitems.= '<th>Unit</th>';
@@ -2054,6 +2091,7 @@ class quote extends CI_Controller
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
             $this->email->subject('Request for Quote Proposal (PO# ' . $quote->ponum.')');
+           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
@@ -4011,9 +4049,7 @@ class quote extends CI_Controller
                 }
 
                 $invoice->status_selectbox = $status_html;
-                $invoice->payment_status_selectbox = $payment_status_html;
-
-                $invoice->totalprice = number_format($invoice->totalprice,2);
+                $invoice->payment_status_selectbox = $payment_status_html;              
 
                 $items[] = $invoice;
             }
@@ -4047,6 +4083,19 @@ class quote extends CI_Controller
 
     		if($i->totalprice > 0)
     		{
+    			
+    			if(@$i->discount_percent){                	
+                	       	                	
+                	$i->totalprice = $i->totalprice - ($i->totalprice*$i->discount_percent/100);                	
+                }
+                
+                if(@$invoice->penalty_percent){                	
+                	
+                	$i->totalprice = $i->totalprice + (($i->totalprice*$i->penalty_percent/100)*$i->penaltycount);
+                }
+    			
+                $i->totalprice = number_format($i->totalprice,2);
+    			
     			$total_price = '$ '.$i->totalprice;
     		}
 
@@ -4161,7 +4210,7 @@ class quote extends CI_Controller
                 $invoice->status_selectbox = $status_html;
                 $invoice->payment_status_selectbox = $payment_status_html;
 
-                $invoice->totalprice = number_format($invoice->totalprice,2);
+                $invoice->totalprice = $invoice->totalprice;
 
                 $items[] = $invoice;
             }
@@ -4195,7 +4244,19 @@ class quote extends CI_Controller
     		$total_price = '';
 
     		if($i->totalprice > 0)
-    		{
+    		{              
+                if(@$i->discount_percent){                	
+                	       	                	
+                	$i->totalprice = $i->totalprice - ($i->totalprice*$i->discount_percent/100);                	
+                }
+                
+                if(@$invoice->penalty_percent){                	
+                	
+                	$i->totalprice = $i->totalprice + (($i->totalprice*$i->penalty_percent/100)*$i->penaltycount);
+                }
+    			
+                $i->totalprice = number_format($i->totalprice,2);
+    			
     			$total_price = '$ '.$i->totalprice;
     		}
 
@@ -6508,7 +6569,7 @@ class quote extends CI_Controller
               			status='Verified',
               			paymentdate='".date('Y-m-d')."',
               			paymenttype='Credit Card',
-              			refnum='".$chargeobj->balance_transaction."'
+              			refnum='".$chargeobj->id."'
               			WHERE invoicenum='".$_POST['invoicenum']."'";
               //echo $query;die;
               $this->db->query($query);
@@ -7777,25 +7838,59 @@ $loaderEmail = new My_Loader();
             $i = 0;
             $totalprice = 0;
             foreach ($company['items'] as $item) {
+            	
+            	$totalprice += $item->ea * (($item->invoice_type != "fullpaid")? (($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity);
+                    
+                $quantity = ($item->invoice_type != "fullpaid")? (($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
+            	
                 $pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
 					    <td style="border: 1px solid #000000;">' . ($item->willcall?'For Pickup/Will Call':$item->daterequested) . '</td>
-					    <td style="border: 1px solid #000000;">' . $item->quantity . '</td>
+					    <td style="border: 1px solid #000000;">' . $quantity . '</td>
 					    <td style="border: 1px solid #000000;">' . $item->unit . '</td>
 					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->ea . '</td>
-					    <td align="right" style="border: 1px solid #000000;">$ ' . $item->totalprice . '</td>
+					    <td align="right" style="border: 1px solid #000000;">$ ' . $totalprice . '</td>
 					  </tr>
 					  ';
-                $totalprice += $item->totalprice;
+                //$totalprice += $item->totalprice;
             }
             $config = (array) $this->settings_model->get_current_settings();
             $config = array_merge($config, $this->config->config);
             $taxtotal = $totalprice * $config['taxpercent'] / 100;
             $grandtotal = $totalprice + $taxtotal;
 
+            if($awarded->invoices){ 
+        			
+            	foreach ($awarded->invoices as $awinv){
+            		
+            		$arradditionalcal = array();
+            		$disocunt = 0;
+            		if(@$awinv->discount_percent){
+
+            			$arradditionalcal[] = ' Discount Expires on: '.@$awinv->discount_date;
+            			$arradditionalcal[] = 'Discount('.$awinv->discount_percent.' %)';
+            			$disocunt = round(($grandtotal*$awinv->discount_percent/100),2);
+            			$arradditionalcal[] = - $disocunt;
+
+            			$grandtotal = $grandtotal - ($grandtotal*$awinv->discount_percent/100);
+            		}
+
+            		if(@$invoice->penalty_percent){
+
+            			$arradditionalcal[] = "";
+            			$arradditionalcal[] = 'Penalty('.$awinv->penalty_percent.' %)';
+            			$arradditionalcal[] = + (($grandtotal*$awinv->penalty_percent/100)*$awinv->penaltycount);
+            			$grandtotal = $grandtotal + (($grandtotal*$awinv->penalty_percent/100)*$awinv->penaltycount);
+            		}
+
+            	}
+        	
+        	}
+            
+            
             $pdfhtml.='<tr>
-            <td colspan="5" rowspan="3">
+            <td colspan="4" rowspan="4">
             <div style="width:70%">
             <br/>
             <h4 class="semi-bold">Terms and Conditions</h4>
@@ -7803,14 +7898,28 @@ $loaderEmail = new My_Loader();
             <h5 class="text-right semi-bold">Thank you for your business</h5>
             </div>
             </td>
+            <td>&nbsp;</td>
             <td align="right">Subtotal</td>
             <td align="right">$ ' . number_format($totalprice, 2) . '</td>
             </tr>
             <tr>
+            <td>&nbsp;</td>
             <td align="right">Tax</td>
             <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
-            </tr>
-            <tr>
+            </tr>';
+            
+            if(count($arradditionalcal)>0){
+            	$pdfhtml .='<tr>
+                		<td>'.$arradditionalcal[0].'</td>
+					    <td align="right">'.$arradditionalcal[1].'</td>
+					    <td align="right">$ ' . $arradditionalcal[2] . '</td>
+					  </tr>
+					';
+            }
+            
+            
+            $pdfhtml .='<tr>
+            <td>&nbsp;</td>
             <td align="right">Total</td>
             <td align="right">$ ' . number_format($grandtotal, 2) . '</td>
             </tr></table>
@@ -7869,7 +7978,7 @@ $loaderEmail = new My_Loader();
                 $toemail = $toemail . ',' . $pu->email;
             }
             $this->email->to($toemail);
-
+			
             $this->email->subject('Your Purchase order for PO#:' . $quote->ponum);
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
@@ -11138,7 +11247,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                           'paymentstatus'=>'Paid',
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
-                          'refnum'=>$chargeobj->balance_transaction,
+                          'refnum'=>$chargeobj->id,
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',
@@ -11195,9 +11304,8 @@ $loaderEmail = new My_Loader();
 
     
     
-    function payquotebidbycc(){
-        //echo "<pre>",print_r($_POST); die;
-       
+    function payquotebidbycc(){    	
+        //echo "<pre>",print_r($_POST); die;        
         if ($_POST['bidcopy'])
         {        	
             $bid = $this->quote_model->getbidbyid($_POST['bidcopy']);       
@@ -11369,7 +11477,7 @@ $loaderEmail = new My_Loader();
                           'paymentstatus'=>'Paid',
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
-                          'refnum'=>$chargeobj->balance_transaction,
+                          'refnum'=>$chargeobj->id,
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',
@@ -11597,7 +11705,7 @@ $loaderEmail = new My_Loader();
                           'paymentstatus'=>'Paid',
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
-                          'refnum'=>$chargeobj->balance_transaction,
+                          'refnum'=>$chargeobj->id,
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',

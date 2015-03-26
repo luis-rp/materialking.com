@@ -38,25 +38,38 @@ class contractor_profile extends CI_Controller
      {
      	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');
+            redirect("admin/login/index");
         $contractor = $this->db->where('id',$contractorid)->get('users')->row();
         $data['contractor']=$contractor;
         $data['states'] = $this->db->get('state')->result();
 		$data['contractorimages']=$this->db->get_where('Contractor_Images',array('contractor'=>$contractor->id))->result();
 		$data['contractorgallery']=$this->db->get_where('Contractor_Gallery',array('contractor'=>$contractor->id))->result();
 		$data['contractorfiles']=$this->db->get_where('Contractor_Files',array('contractor'=>$contractor->id))->result();
-		//$data['contractorteam']=$this->db->where('contractorid',$contractor->id)->get("Contractor_Team")->result();
+		$data['contractorteam']=$this->db->where('contractorid',$contractor->id)->get("Contractor_Team")->result();
+		
+		$bhrs = $this->db->get_where('Contractor_Business_Hour',array('contractor'=>$contractor->id))->result();
+        if($bhrs){
+        $businesshrs = array();
+        foreach($bhrs as $dbh){
+
+        	$businesshrs[$dbh->day.'start'] = $dbh->start;
+        	$businesshrs[$dbh->day.'end'] = $dbh->end;
+        	$businesshrs[$dbh->day.'closed'] = $dbh->isclosed;
+
+        }
+        $data['businesshrs'] = $businesshrs;
+
+        }
+		
         $this->load->view('admin/contractor_view_profile', $data);
       
      } 
      
     function saveprofile() 
      { 
-     	//echo "<pre>"; print_r($_POST); 
-     	//echo "<pre>"; print_r($_FILES); die;
      	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');  	
+           redirect("admin/login/index");	
         if (!$_POST)
             die('Wrong Access.');
 
@@ -205,13 +218,53 @@ class contractor_profile extends CI_Controller
                     if(isset($filename) && $filename!=''){
             		$this->db->insert('Contractor_Gallery', array('contractor' => $contractorid, 'image' => $filename));}
             	}
-
          }
        
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close">X</button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('admin/contractor_profile');
         }
+        
+        
+         $dayarray = array('mon','tue','wed','thu','fri','sat','sun');
+
+        foreach($dayarray as $day){
+        	if(isset($_POST[$day."start"]) || isset($_POST[$day."end"]) || isset($_POST[$day."closed"]) ) {
+
+        		if(isset($_POST[$day."start"]))
+        		$start = $_POST[$day."start"];
+        		else
+        		$start = '';
+
+        		if(isset($_POST[$day."end"]))
+        		$end = $_POST[$day."end"];
+        		else
+        		$end = '';
+
+        		if(isset($_POST[$day."closed"]))
+        		$closed = 1;
+        		else
+        		$closed = 0;
+
+        		$this->db->where('contractor =', $contractorid);
+        		$this->db->where('day', $day);
+        		if ($this->db->get('Contractor_Business_Hour')->num_rows > 0) {
+        			$this->db->where('contractor =', $contractorid);
+        			$this->db->where('day', $day);
+        			$this->db->update('Contractor_Business_Hour', array('start' => $start,'end' => $end,'isclosed' => $closed));
+        		}else{
+        			$this->db->insert('Contractor_Business_Hour', array('contractor' => $contractorid, 'day' => $day, 'start' => $start,'end' => $end,'isclosed' => $closed));
+        		}
+        	  if(isset($_POST[$day."start"]))
+			  	unset($_POST[$day."start"]);
+			  if(isset($_POST[$day."end"]))
+			  	unset($_POST[$day."end"]);
+			  if(isset($_POST[$day."closed"]))
+        		unset($_POST[$day."closed"]);
+        	}
+        }
+        
+        
  
         unset($_POST['_wysihtml5_mode']);
         if(isset($_POST['checkid']))
@@ -280,7 +333,7 @@ class contractor_profile extends CI_Controller
 	 {
 	 	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');
+            redirect("admin/login/index");
 		$rows['contractorimages']=$this->db->get_where('Contractor_Images',array('id'=>$id))->row();
 		$name=$rows['contractorimages']->image;
 		if(file_exists('./uploads/ContractorImages/'.$name) && !is_dir('./uploads/ContractorImages/'.$name))
@@ -299,7 +352,7 @@ class contractor_profile extends CI_Controller
 	 {
 	 	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');
+            redirect("admin/login/index");
 		$rows['contractorgallery']=$this->db->get_where('Contractor_Gallery',array('id'=>$id))->row();
 		$name=$rows['contractorgallery']->image;
 
@@ -320,7 +373,7 @@ class contractor_profile extends CI_Controller
 	 {
 	 	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');
+           redirect("admin/login/index");
 		$rows['contractorfiles']=$this->db->get_where('Contractor_Files',array('id'=>$id))->row();
 		$name=$rows['contractorfiles']->file;
 
@@ -335,16 +388,108 @@ class contractor_profile extends CI_Controller
 		redirect("admin/contractor_profile");
 
 	 }
-	 
-   /* function deletecontractmember($id)
+   
+     function addcontractember(){
+    	$id = $this->session->userdata('id');
+    	if (!$id)
+    		redirect("admin/login/index");
+    	$contractor = $this->db->where('id',$id)->get('users')->row();
+    	if(!$_POST)
+    	    die;
+    	 $picture="";  	
+    	if (isset($_FILES['memberPicture']['tmp_name']) && $_FILES['memberPicture']['tmp_name']!="")
+        {
+            if (is_uploaded_file($_FILES['memberPicture']['tmp_name'])) 
+            {
+                $nfn = $_FILES['memberPicture']['name'];
+                $ext = end(explode('.', $nfn));
+                if (!in_array(strtolower($ext), array('jpg', 'gif', 'jpeg', 'png')))
+                 {
+                    $errormessage = '* Invalid file type, upload logo file.';
+                 } 
+                elseif (move_uploaded_file($_FILES['memberPicture']['tmp_name'], "uploads/ContractorTeam/" . $nfn)) 
+                {
+                    $picture = $nfn;
+                }
+            }
+        }
+        
+             $insertarray=array("contractorid"=>$contractor->id,
+    	    "name"=>$this->input->post("memberName"),
+    	    "email"=>$this->input->post("memberEmail"),
+    	    "title"=>$this->input->post("memberTitle"),
+    	    "phone"=>$this->input->post("memberPhone"),
+    	    "linkedin"=>$this->input->post("memberLinkedin"),
+    	    "picture"=>$picture);
+    	    
+    	    if($_POST!="")
+    	    {
+    	    	$this->db->insert("Contractor_Team",$insertarray);
+    	    }  	    
+        redirect("admin/contractor_profile");
+    }
+    
+    function getMemberInfo($id){
+    	$cid = $this->session->userdata('id');
+    	if (!$cid)
+    		 redirect("admin/login/index");
+
+    	$this->db->where("id",$id);
+    	$this->db->where("contractorid",$cid);
+    	$row = $this->db->get("Contractor_Team")->row();
+    	echo json_encode($row);
+    }
+    
+     function editcontractmember()
+     {
+    	$id = $this->session->userdata('id');
+    	if (!$id)
+    		redirect("admin/login/index");
+    	$contractor = $this->db->where('id',$id)->get('users')->row();
+
+    	 $picture="";  	
+    	if (isset($_FILES['memberPicture']['tmp_name']) && $_FILES['memberPicture']['tmp_name']!="")
+         {
+            if (is_uploaded_file($_FILES['memberPicture']['tmp_name'])) 
+            {
+                $nfn = $_FILES['memberPicture']['name'];
+                $ext = end(explode('.', $nfn));
+                if (!in_array(strtolower($ext), array('jpg', 'gif', 'jpeg', 'png')))
+                 {
+                    $errormessage = '* Invalid file type, upload logo file.';
+                 } 
+                elseif (move_uploaded_file($_FILES['memberPicture']['tmp_name'], "uploads/ContractorTeam/" . $nfn)) 
+                {
+                    $picture = $nfn;
+                }
+            }
+         }
+        
+            $insertarray=array("contractorid"=>$contractor->id,
+    	    "name"=>$this->input->post("memberName"),
+    	    "email"=>$this->input->post("memberEmail"),
+    	    "title"=>$this->input->post("memberTitle"),
+    	    "phone"=>$this->input->post("memberPhone"),
+    	    "linkedin"=>$this->input->post("memberLinkedin"),
+    	    "picture"=>$picture);
+    	    
+    	    if($_POST!="")
+    	    {
+    	    	$this->db->where("id",$this->input->post("idMember"));
+    	    	$this->db->update("Contractor_Team",$insertarray);
+    	    }  	    
+	    	redirect("admin/contractor_profile");
+       }
+       
+     function deletecontractmember($id)
 	 {
 	 	$contractorid = $this->session->userdata('id');
         if (!$contractorid)
-            redirect('admin/dashboard');
+            redirect("admin/login/index");
     	$this->db->where('id', $id);
     	$this->db->delete('Contractor_Team');
     	redirect("admin/contractor_profile");
-    }*/
+    }
 
 }
 ?>

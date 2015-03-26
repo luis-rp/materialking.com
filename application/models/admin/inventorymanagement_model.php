@@ -20,7 +20,7 @@ class inventorymanagement_model extends Model
  			$where .= " AND q.pid = ".$this->session->userdata('managedprojectdetails')->id;
  		}
  		
- 		$sql ="SELECT aw.itemid as id,q.ponum,aw.itemid,aw.itemcode,aw.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, SUM(aw.ea) as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage, SUM(aw.ea*(aw.quantity - aw.received)) valuecomitted, i.item_img 
+ 		$sql ="SELECT aw.itemid as id,q.ponum,aw.itemid,i.itemcode,i.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, SUM(aw.ea) as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage, SUM(aw.ea*(aw.quantity - aw.received)) valuecomitted, i.item_img 
 				FROM
 				".$this->db->dbprefix('quote')." q
 				JOIN ".$this->db->dbprefix('award')." a ON a.quote = q.id 

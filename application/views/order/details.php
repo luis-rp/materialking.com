@@ -66,9 +66,9 @@ function pickupfun()
     	                            	<?php }?>
     	                            	<br/>
     	                            	<?php if($orderitems[0]->status == 'Pending' || $orderitems[0]->status == ''){?>
-    	                            	<a href="<?php echo site_url('order/status/'.$order->id.'/Accepted'); ?>">Approve</a>
+    	                            	<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('order/status/'.$order->id.'/Accepted'); ?>">Approve</a>
     	                            	&nbsp;
-    	                            	<a href="<?php echo site_url('order/status/'.$order->id.'/Void'); ?>">Void</a>
+    	                            	<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('order/status/'.$order->id.'/Void'); ?>">Void</a>
     	                            	<?php }?>
                                 	<?php }elseif($orderitems[0]->paymentstatus=='Unpaid'){?>
                                 		<a href="<?php echo site_url('order/requestpayment/'.$order->id); ?>">Request Payment</a>

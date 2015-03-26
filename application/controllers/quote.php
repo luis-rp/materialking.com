@@ -1968,6 +1968,9 @@ class Quote extends CI_Controller
 					if(array_key_exists('quote',$updatearray))
 					unset($updatearray['quote']);
 					
+					if(array_key_exists('item_img',$updatearray))
+					unset($updatearray['item_img']);
+					
 					$this->quotemodel->db->update('biditem',$updatearray);
 					$this->quotemodel->saveminimum($invitation->company,$invitation->purchasingadmin,$updatearray['itemid'],$updatearray['itemcode'],$updatearray['itemname'],$updatearray['ea'],$updatearray['substitute']);
 					
@@ -2162,8 +2165,7 @@ class Quote extends CI_Controller
     		    ";
     		$loaderEmail = new My_Loader();
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-    		//echo($to.'<br/>');
-    		//echo $body;
+    		
            	$this->email->subject('Bid Notification for PO# '.$quote->ponum. " by ".$company->title);
             $this->email->message($send_body);	
             if(isset($attachment)) { 
@@ -2856,11 +2858,102 @@ or edit your quote.</div></div></div>');
 				$ai->item_img = '';	
 			}
 			
+			
+						            	// Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND ai.id='".$ai->id."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$ai->totalprice = $ai->totalprice - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$ai->totalprice = $ai->totalprice + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+			
+        			
+        			$settings = $this->settings_model->get_setting_by_admin(@$ai->purchasingadmin);
+        			if(@$settings->taxrate)
+        			$ai->totalprice = $ai->totalprice + (($ai->totalprice*$settings->taxrate)/100);
+			
+			
 			$data['allawardeditems'][] = $ai;
 			if($ai->company == $company->id)
 				$itemswon++;
 			else
-				$itemslost++;
+				$itemslost++;	
 		}
 		//print_r($allawardeditems);die;
 		$data['itemswon'] = $itemswon;
@@ -3199,6 +3292,96 @@ or edit your quote.</div></div></div>');
 			{
 				$ai->item_img = '';
 			}
+            	
+            	// Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND ai.id='".$ai->id."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$ai->totalprice = $ai->totalprice - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$ai->totalprice = $ai->totalprice + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+			
+        			
+        			$settings = $this->settings_model->get_setting_by_admin(@$ai->purchasingadmin);
+        			if(@$settings->taxrate)
+        			$ai->totalprice = $ai->totalprice + (($ai->totalprice*$settings->taxrate)/100);
+			
 			$data['awarditems'][] = $ai;
 		}
 		if(!$noitemsgiven)
@@ -3335,7 +3518,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			                        ->where('quote',$quoteid)->where('company',$company->id)
 			                        ->where('itemid',$ai->itemid)->where('accepted',0)
 			                        ->get()->row()->pendingshipments;
-                
+			                        
+			     $itemRes = $this->db->select('item_img')
+			                        ->from('item')
+			                        ->where('id',$ai->itemid)
+			                        ->get()->row();	            
+			  
 	        $quantity = $_POST['quantity'.$ai->id];
 	        $invoicenum = $_POST['invoicenum'.$ai->id];
 	        if( $quantity && $invoicenum && $quantity <= $ai->quantity - $ai->received )
@@ -3358,7 +3546,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            else 
 	            $Pendingitemacceptance = $quantity;
 	            
-	            $shipitems .= "<tr><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
+	           
+	            if(isset($itemRes->item_img) && ($itemRes->item_img!= "" && file_exists("./uploads/item/".($itemRes->item_img)))) 
+	    		{
+	    			 $imgName = site_url('uploads/item/'.$itemRes->item_img);  
+	    		} 
+                else 
+                { 
+                	 $imgName = site_url('uploads/item/big.png');  
+                }  
+	           
+	            $shipitems .= "<tr><td><img src={$imgName}  width='75' height='75'></td><td>{$ai->itemcode}</td><td>{$quantity}</td><td>{$ai->quantity}</td><td>".($ai->quantity - $ai->received - $quantity)." ( ".$Pendingitemacceptance." Pending Acknowledgement )</td></tr>";
 	        }
 	    }
 	    
@@ -3379,10 +3577,11 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 				$this->db->insert('shippingdoc',$insert);
 			}
 		}
+		
 		if($shipitems)
 		{
 			$pa = $this->db->where('id',$quote->purchasingadmin)->get('users')->row();
-		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
+		    $shipitems = "<table cellpadding='5' cellspacing='5' border='1'><tr><th>Item Image</th> <th>Item</th><th>Quantity Shippped</th><th>Quantity Ordered</th><th>Quantity Remaining</th></tr>$shipitems</table>";
     	    $settings = (array)$this->homemodel->getconfigurations ();
     		$this->load->library('email');
     		$config['charset'] = 'utf-8';
@@ -3398,12 +3597,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     		$data['email_body_content'] = "<br><br>Details:".$shipitems;
     		$loaderEmail = new My_Loader();
     		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-    		$this->email->subject($subject);
+    		$this->email->subject($subject);    		
     		$this->email->message($send_body);
     		$this->email->set_mailtype("html");
     		$this->email->reply_to($company->primaryemail);
     		$this->email->send();
-		}
+		}		
 		redirect('quote/track/'.$quoteid.'/'.$awardid);
 	}
 	

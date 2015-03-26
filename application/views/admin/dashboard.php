@@ -1,8 +1,8 @@
 
-<style>
-.gm-style img { max-width: none; }
+<!--<style>
+.gm-style img { max-width: 20%; }
 .gm-style label { width: auto; display: inline; }
-</style>
+</style>-->
 
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

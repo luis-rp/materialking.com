@@ -604,11 +604,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	
     	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 		{ 
-         	$img_name = "<img style='max-height: 95px;max-width: 220px;float:right;margin-top:-5em;margin-right:22em;margin-bottom:-10px' height='120' width='190' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
          } 
          else 
          { 
-         	$img_name = "<img style='max-height: 95px;max-width: 220px;float:right;margin-top:-5em;margin-right:22em;margin-bottom:-10px' height='120' width='190' src='".site_url('uploads/item/big.png')."'>";
+         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='".site_url('uploads/item/big.png')."'>";
          } 
     	$data['title_orders'] = "Orders with the current Item";
     	$data['jsfile'] = 'itemcodeitemjs.php';

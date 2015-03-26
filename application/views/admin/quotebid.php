@@ -1050,7 +1050,27 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    	
 		    <div class="span3">			    	
 				    <div class="controls">
-				    	Our Price Guestimate:$<?php echo @$guesttotal;?>
+				    <?php if(@$guesttotal) { ?>
+				    <table class="table table-striped">
+					    <tr>
+						    <th>
+						    	Our Price Guestimate
+						    </th>
+					    </tr>
+					    <tr>
+						    <td style="color:green;">
+						    	<?php echo "$".@$guesttotal;?>
+						    </td>
+					    </tr>
+					    <?php if(@$guesttotalmessage) { ?>
+					    <tr>
+						    <td>
+						    	<?php echo @$guesttotalmessage;?>
+						    </td>
+					    </tr>
+					    <?php } ?>
+				    </table>
+				    <?php } ?>	
 				    </div>
 			</div>
 		    </div>

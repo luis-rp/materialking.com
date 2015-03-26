@@ -62,7 +62,7 @@ class inventorymanagement extends CI_Controller
 	        	$criticallevel= "";
 	        	$mistock = $row->minstock+($row->minstock*25/100);
 	        	if($row->qtyonhand<$mistock)
-	        	$criticallevel = '<font color="red">*Criticai Stock Level</font> <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qtyreorder/' . @$row->itemid . '/'.$row->reorderqty.'">Reorder Quantity</span></a>';
+	        	$criticallevel = '<font color="red">*Critical Stock Level</font> <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qtyreorder/' . @$row->itemid . '/'.$row->reorderqty.'">Reorder Quantity</span></a>';
 	        	
 	        	
 	        	$row->itemcode = $row->itemcode."<br>".$criticallevel;
@@ -73,7 +73,7 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> <input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
+	        	$row->manage = ' <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> <input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
 				
 	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	
@@ -90,7 +90,7 @@ class inventorymanagement extends CI_Controller
 	        		$imgName = site_url('uploads/item/big.png');
 	        	}
 	        	
-	        	$row->item_img = '<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src="'.$imgName.'">';
+	        	$row->item_img = '<img style="max-height: 120px; padding: 0px;width:100px; height:70px;float:left;" src="'.$imgName.'">';
 	        	
 	        	$inventory[] = $row;
 	        }
@@ -381,7 +381,7 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
+	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
 				&nbsp; &nbsp; &nbsp;
 	        	<input type="button" style="text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	

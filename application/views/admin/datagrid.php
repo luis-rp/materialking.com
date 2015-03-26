@@ -37,6 +37,9 @@
 			start7();
 		});
 
+	<?php if(!@$items2) { ?>	
+    	$("#MyGrid").css("display","none");		
+    <?php } ?>	
 	 });
 		$('#canceltour').live('click',endTour7);
 	 function start7(){
@@ -49,6 +52,8 @@
 		 $("#tourcontrols").remove();
 		 tour7.end();
 			}
+			
+	
  </script>
 	<?php }?>
 	<?php if($jsfile=="itemcodeitemjs.php"){?>
@@ -159,7 +164,7 @@
                </tr>
               </tfoot>
             </table>
-            <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo "No Records Exist"; ?>
+            <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
             <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo "No Records Exist"; ?>
            </div>
          </div>
@@ -536,7 +541,7 @@
                 </table>
             	<?php }else{ ?>
             	<table id="datatable" class="table">
-            	<tr><td>No Store Orders.</td></tr>
+            	<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Store Orders.</div></div>
             	</table>
             	<?php }
             	}

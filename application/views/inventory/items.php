@@ -950,7 +950,8 @@ function setitemsmanufacturer(manufacturerid){
                                                 <td class="v-align-middle">
                                                 <span id="name<?php echo $item->id;?>"><?php echo $item->itemname;?></span>
                                                 <br>
-                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$item->id ?>','<?php echo $imgName;?>');"><i class="icon icon-search"></i>Price History</a>	
+                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$item->id ?>','<?php echo $imgName;?>');"><i class="icon icon-search"></i>Price History</a><br>
+                                                <img src="<?php echo $imgName;?>" width="80" height="80">
                                                 </td>
 
                                                 <td class="v-align-middle">

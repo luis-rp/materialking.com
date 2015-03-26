@@ -243,8 +243,8 @@ class Quotemodel extends Model
 
 	function getdraftitems($quote,$company)
 	{
-		$sql = "SELECT bi.*,b.quote FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b
-			   WHERE bi.bid=b.id AND b.quote='$quote' AND b.company='$company'
+		$sql = "SELECT bi.*,b.quote,i.item_img FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b, ".$this->db->dbprefix('item')." i
+			   WHERE bi.bid=b.id AND i.id = bi.itemid AND b.quote='$quote' AND b.company='$company'
 		 	   ";
 		$query = $this->db->query ($sql);
 		if($query->num_rows>0)
@@ -375,7 +375,11 @@ class Quotemodel extends Model
 								->where('quote',$quote->id)
 								->where('itemid',$item->itemid)
 								->get('quoteitem')->row();
-
+								
+								$item->itemimage = $this->db->select('item_img')
+								->where('id',$item->itemid)
+								->get('item')->row();
+						
 								if(!isset($items[$quote->ponum]['items']))
 								$items[$quote->ponum]['items'] = array();
 								$items[$quote->ponum]['items'][]=$item;

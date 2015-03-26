@@ -1,16 +1,5 @@
 <?php echo '<script>var loggedin = ' . ($this->session->userdata('site_logintype') == 'users' ? 'true' : 'false') . ';</script>' ?>
 <?php echo '<script>var loginurl = "' . site_url('network/login/users') . '";</script>' ?>
-<?php echo '<script>var joinurl = "' . site_url('network/join') . '";</script>' ?>
-<?php echo '<script>var addtocarturl="' . site_url('cart/addtocart') . '";</script>' ?>
-<?php echo '<script>var checkbankaccount="' . site_url('cart/checkbankaccount') . '";</script>' ?>
-<?php echo '<script>var itemsurl="' . site_url('site/items') . '";</script>' ?>
-<?php echo '<script>var getpriceqtydetails="' . site_url('site/getpriceqtydetails') . '";</script>' ?>
-<?php echo '<script>var getpriceperqtydetails="' . site_url('site/getpriceperqtydetails') . '";</script>' ?>
-<?php echo '<script>var getnewprice="' . site_url('site/getnewprice') . '";</script>' ?>
-<?php echo '<script>var checksubscriberemail="' . site_url('subscriber/checksubscriberemail') . '";</script>' ?>
-<?php echo '<script>var quoteurl = "' . site_url('site/getquotes') . '";</script>' ?>
-<?php echo '<script>var costcodeurl = "' . site_url('site/getcostcodes') . '";</script>' ?>
-<?php echo '<script>var rfqurl = "' . site_url('site/additemtoquote') . '";</script>' ?>
 <?php echo '<script>var companycommentsurl = "' . site_url('company/getcompanycomments') . '";</script>' ?>
 <?php echo '<script>var addpoquoteurl = "' . site_url('site/addpoquote') . '";</script>' ?>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
@@ -85,43 +74,8 @@ $long = $contractor->user_lng;
             'minTime': '6:00am',
             'maxTime': '11:30pm',
             'showDuration': false
-        });
-	$("#dialog-form").hide();
-        $(".join-newsletter").click(function(){
-        	$( "#dialog-form" ).dialog();
-            });
-        $("#subscribe").click(function(){
-            	if(confirm("Please confirm you wish to subscribe to this users newsletter.")){
-
-            		if($('#email').val() !=""){
-
-            			var data = "email="+$('#email').val()+"&cid="+$('#cid').val();
-
-            			$.ajax({
-            				type:"post",
-            				data: data,
-            				sync: false,
-            				url: checksubscriberemail
-            			}).done(function(data){
-            				if(data!=1){
-            					$("#form-addsubscriber").submit();
-            				}else
-            				alert('Subscriber E-Mail already exists');
-            			});
-            		}	
-				}
-
-
-            });
-            
-       $("#daterequested").datepicker();     
+        });        
     });
-
-    function industryitems(id)
-    {
-    	$("#typei").val(id);
-    	$("#supplierform").submit();
-    }
 
     function setlabel()
     {
@@ -165,7 +119,7 @@ $long = $contractor->user_lng;
             });
 
             var myOptions = {
-                content: '<div class="infobox"><div class="image"><img src="<?php if($supplier->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $supplier->logo; } else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="" width="100"></div><div class="title"><a href=""><?php echo $supplier->title; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $supplier->contact; ?><br/><?php echo $supplier->city.",&nbsp;".$supplier->state; ?></span><span class="value"></span></div><div class="link"><a href="<?php echo site_url('store/items/' . $supplier->username); ?>">Go to Store</a></div></div>',
+                content: '<div class="infobox"><div class="image"><img src="<?php if($contractor->logo) { echo base_url(); ?>uploads/logo/thumbs/<?php echo $contractor->logo; } else { echo base_url(); ?>templates/site/assets/img/default/big.png <?php } ?>" alt="" width="100"></div><div class="title"><a href=""><?php echo $contractor->companyname; ?></a></div><div class="area"><div class="price">&nbsp;</div><span class="key"><?php echo $contractor->fullname; ?><br/><?php echo $contractor->city.",&nbsp;".$contractor->state; ?></span><span class="value"></span></div></div>',
                 disableAutoPan: false,
                 maxWidth: 0,
                 pixelOffset: new google.maps.Size(-146, -190),
@@ -242,380 +196,6 @@ $long = $contractor->user_lng;
         mywindow.close();
         return true;
     }
-</script>
-<link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
-<script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jRating.jquery.js"></script>
-
-<script>
-$(document).ready(function() {
-	$("#dialog-form").hide();
-	
-	$('#deliverydate').datepicker();
-	$('#podate').datepicker();
-	$('#duedate').datepicker();
-		
-	$('.fixedrating').jRating({
-		length:5,
-		bigStarsPath : '<?php echo site_url('templates/admin/css/icons/stars.png');?>',
-		nbRates : 0,
-		isDisabled:true,
-		sendRequest: false,
-		canRateAgain : false,
-		decimalLength:1,
-		 onClick : function(element,rate) {
-
-	        },
-		onError : function(){
-			alert('Error : please retry');
-		}
-	});
-	
-	var counter = 0;
-    var mouseX = 0;
-    var mouseY = 0;
-	
-	// mouseover the tagboxes that is already there but opacity is 0.
-	/*$( '#tagbox' ).on( 'mouseover', '.tagview', function( ) {
-		var pos = $( this ).position();
-		 id = $(this).attr("id");	
-		 // alert(id);	 
-		//$(this).css({ opacity: 1.0 }); // div appears when opacity is set to 1.
-		$('#' + id+'_').css({ opacity: 1.0 });
-	}).on( 'mouseout', '.tagview', function( ) {
-		//$(this).css({ opacity: 0.0 }); // hide the div by setting opacity to 0.
-		$('#' + id+'_').css({ opacity: 0.0 });
-	});*/
-
-	
-	// load the tags for the image when page loads.
-    var img = $('#imgtag').find( 'img' );
-	var id = $( img ).attr( 'id' );	
-	var company = $('#company').val();	
-	viewtag(id,company);   
-	
-});
-
-
-function viewtagdescription(id){
-	
-	$('#' + id+'_').css({ opacity: 1.0 });
-}
-
-
-function hidetagdescription(id){
-	
-	$('#' + id+'_').css({ opacity: 0.0 });
-}
-
-   
-function viewtag(pic_id,company)
-{	
-	// get the tag list with action remove and tag boxes and place it on the image.
-	$.post( "<?php echo site_url('site/taglistsupplier');?>" ,  "pic_id=" + pic_id + "&company=" + company, function( data ) {
-		$('#taglist').html(data.lists);
-		$('#tagbox').html(data.boxes);
-	}, "json");	
-}
-
-</script>
-
-<script>
-    function addtocart(itemid, companyid, price, minqty, unit, itemcode, itemname, increment, imgname, isdeal)
-    {
-    	if(typeof(minqty)==='undefined') minqty = 0;
-    	if(typeof(isdeal)==='undefined') isdeal = 0;
-    	if(increment==0) { increment=1;} 
-        //var qty = prompt("Please enter the quantity you want to buy",minqty?minqty:"1");
-		$('#cartqtydiv').html('');
-		$("#cartsavediv").html('');
-		$("#qtypricebox").html('');
-		$("#itemnamebox").html('');
-       	$("#hiddenprice").val(price);
-        $("#cartprice").modal();
-        var selected = "";
-        $("#itemnamebox").html(itemcode+"  /  "+itemname);
-        $("#ftqtypricebox").html("Price "+unit+" : $"+ price);
-        $("#itemimage").html('<img width="120" height="120" style="max-height: 120px; padding: 20px;width:120px; height:120px;float:right;" src='+imgname+'>');
-        $("#unitbox").html("Unit Type: "+unit+"<br/>");
-        var strselect = ('Qty');
-        strselect += '&nbsp;<select style="width:80px;" id="qtycart" onchange="showmodifiedprice('+itemid+','+companyid+','+price+','+isdeal+');">';
-       /* for (i = 1; i <=500; i++) {
-        	if(i == minqty)
-        	selected = 'selected';
-        	else
-        	selected = "";
-           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-   			}*/
-       
-       increment = parseInt(increment);
-   		i = increment;
-       	while(i <=500){
-       		if(i == minqty)
-        	selected = 'selected';
-        	else
-        	selected = "";
-           	strselect += '<option value="'+i+'"'+selected+'>'+i+'</option>';
-       		i=i+increment;	
-       	}	 	
-   		strselect += '</select>&nbsp;&nbsp; <input type="button" class="btn btn-primary" value="Add to cart" onclick="addtocart2('+itemid+','+companyid+','+price+','+minqty+','+isdeal+')" id="addtocart" name="addtocart"/>';
-        $('#cartqtydiv').html(strselect);
-
-       // if(!isdeal) {
-
-        	var data = "itemid="+itemid+"&companyid="+companyid+"&price="+price;
-        	$("#qtypricebox").html("");
-        	$.ajax({
-        		type:"post",
-        		data: data,
-        		sync: false,
-        		url: getpriceqtydetails
-        	}).done(function(data){
-        		if(data){
-
-        			$("#qtypricebox").html(data);
-        		}
-        	});
-
-        	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+minqty+"&price="+price;
-
-        	$.ajax({
-        		type:"post",
-        		data: data2,
-        		sync: false,
-        		url: getpriceperqtydetails
-        	}).done(function(data){
-        		if(data){
-
-        			$("#cartsavediv").html("");
-        			$("#cartsavediv").html(data);
-        		}
-        	});
-
-        	$.ajax({
-        		type:"post",
-        		data: data2,
-        		url: getnewprice,
-        		sync:false
-        	}).done(function(data){
-        		if(data){
-
-        			if(data!="norecord")
-        			$("#hiddenprice").val(data);
-        		}
-        	});
-       // }
-
-    }
-
-    function showmodifiedprice(itemid, companyid, price, isdeal){
-
-    	qty = ($('#qtycart').val());
-    	var data2 = "itemid="+itemid+"&companyid="+companyid+"&qty="+qty+"&price="+price;
-    	//if(!isdeal) {
-    		$.ajax({
-    			type:"post",
-    			data: data2,
-    			sync: false,
-    			url: getpriceperqtydetails
-    		}).done(function(data){
-    			if(data){
-
-    				$("#cartsavediv").html("");
-    				$("#cartsavediv").html(data);
-    			}
-    		});
-
-    		$.ajax({
-    			type:"post",
-    			data: data2,
-    			url: getnewprice,
-    			sync:false
-    		}).done(function(data){
-    			if(data){
-
-    				if(data!="norecord")
-    				$("#hiddenprice").val(data);
-    			}
-    		});
-    	//}
-    }
-
-    function addtocart2(itemid, companyid, price, minqty, isdeal){
-
-    	qty = ($('#qtycart').val());
-
-    	if(isNaN(parseInt(qty)))
-        {
-            return false;
-        }
-        if(qty < minqty)
-        {
-            alert('Minimum quantity to order is '+ minqty);
-            return false;
-        }
-        
-         var data2 = "company=" + companyid;
-        
-        $.ajax({
-            type: "post",
-            data: data2,
-            url: checkbankaccount,
-            sync:false
-        }).done(function(data) {
-            if(data!='true'){            	
-            	alert('Supplier has not set bank account settings');
-            	return false;
-            }else{
-            	
-            	var data = "itemid=" + itemid + "&company=" + companyid + "&price=" + $("#hiddenprice").val() + "&qty=" + qty + "&isdeal=" + isdeal;
-            	//alert(data); return false;
-            	$.ajax({
-            		type: "post",
-            		data: data,
-            		url: addtocarturl,
-            		sync:false
-            	}).done(function(data) {
-            		alert(data);
-            		window.location = window.location;
-            	});
-            	
-            }
-            
-        });
-
-    }
-
-    function displayeventindetail(eventid){
-
-    	$("#eventdetails"+eventid).modal();
-
-    }
-    
-    
-    function showimagewithtag(imgid,imagsrc,imagename){
-    
-    	$("#imgmodaltag").modal();
-    	var img = $('#imgtag').find( 'img' );
-		$( img ).attr( 'id' ,imgid);	
-		$( img ).attr( 'src' , imagsrc);
-		$('#headimagename').html('<h3>'+imagename+'</h3>');
-		$('.fb-like').attr('data-href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
-		$('.fb-like').attr('href', '<?php echo base_url(); ?>site/designbookdetail/'+imgid);
-		var frame = $('#fbshareandlike').find('iframe');		
-		var str = $( frame ).attr('src');
-		var res = str.split("href=");
-		var res2 = res[1].split("&layout=");
-		var res3 = res2[0].split("designbookdetail%2F");
-		$( frame ).attr('src',res[0]+"href="+res3[0]+"designbookdetail%2F"+imgid+"&layout="+res2[1]);		
-		var company = $('#company').val();	
-		viewtag(imgid,company);   
-		//viewtag(imgid); 
-    }
-
-    
-    function openrfqpopup(){ 
-    	$('#imgmodaltag').modal('hide');
-    	$('#createmodal').modal();
-    	
-    }
-    
-    
-    function addtopo(itemid, increment)
-	{
-		$('#imgmodaltag').modal('hide');
-		$("#addform").trigger("reset");
-		$("#additemid").val(itemid);
-		if(increment>0){
-		$("#additemqty").val(increment);
-		$("#incrementqty").val(increment);
-		}else{
-		$('#additemqty').val('');
-		$("#incrementqty").val(1);
-		}
-		//$('#additemproject').attr('selectedIndex',0);
-		//$('#additemproject option:first-child').attr("selected", "selected");
-		//document.getElementById('additemproject').value=2;	
-		$("#additempo").html('<select name="quote" required></select>');
-		$('#additemcostcode').html('<select name="costcode" required></select>');
-		getquotecombo();
-		getcostcodecombo()
-		$("#addtoquotemodal").modal();
-	}
-    
-	function getquotecombo()
-    {
-    	var pid = $("#additemproject").val();
-    	d = "pid="+pid;
-    	$.ajax({
-            type: "post",
-            url: quoteurl,
-            data: d
-        }).done(function(data) {
-            $("#additempo").html(data);
-        	//document.getElementById("additempo").innerHTML = data;
-        });
-
-    }
-	
-    function getcostcodecombo()
-    {
-    	var pid = $("#additemproject").val();
-    	d = "pid="+pid;
-    	$.ajax({
-            type: "post",
-            url: costcodeurl,
-            data: d
-        }).done(function(data) {
-            $("#additemcostcode").html(data);
-        });
-    }
-    
-    function addtopo1(quote)
-	{
-		//var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
-
-		var string = '<h3>RFQ created for the item.</h3><div><a target="_blank" href="<?php echo site_url("admin/quote/update/"); ?>/'+quote+'">Click here to view the Quote</a><br/><br/><br/><button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>';
-		$("#modalhtm").html(string);
-		$("#addtoquotemodal1").modal();
-
-	}
-    
-    
-    function showimgmodal(){
-    	
-    	$('#imgmodaltag').modal();   	
-    }
-    
-    
-    function rfqformsubmit()
-	{
-		
-		if($('#additemqty').val()%$("#incrementqty").val()!=0){
-			alert('Sorry this item is only available in increments of '+$("#incrementqty").val());
-			return false;
-		}
-		
-		var d = $("#addtoquoteform").serialize();
-		var quote = $('[name="quote"]').val();
-
-        $.ajax({
-            type: "post",
-            url: rfqurl,
-            data: d
-        }).done(function(data) {
-            if (data == 'Success')
-            {
-               addtopo1(quote);
-            }
-            else
-            {
-                alert(data);
-            }
-            $("#addtoquotemodal").modal('hide');
-        });
-        return false;
-	}
-    
 </script>
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
@@ -715,51 +295,6 @@ function changetab(tabname){
 		$('#reply').val(id);
 	}
 	
-	
-	    function addpo(){
-
-    	var pid=$('#additemproject').val();
-    	if(pid){
-
-    		$('#addtoquotemodal').modal();
-    		//$('#additemproject').val('');
-    		$('#addtoquotemodal').modal('hide');
-    		$('#Addpomodal').modal();
-    	}
-    }
-    
-    
-    function savepo(){
-    	
-    	var pid=$('#additemproject').val();
-    	var ponum = $("#ponum").val();
-    	if(ponum=="")
-    		alert("Please Enter PO");
-    	
-    	var podate = $("#podate").val();
-		var duedate = $('#duedate').val();
-		var deliverydate = $('#deliverydate').val();
-		
-		var d = "pid="+pid+"&ponum="+ponum+"&podate="+podate+"&duedate="+duedate+"&deliverydate="+deliverydate;
-		
-		$.ajax({
-			type: "post",
-			url: addpoquoteurl,
-			dataType: 'json',
-			data: d
-		}).done(function(data) {			
-			if(data=="Duplicate PO#"){
-				alert(data);
-			}else{		
-					var option = new Option(data.ponum, data.poid);
-					$('[name="quote"]').append($(option));
-					$('[name="quote"]').val(data.poid);
-					$('#Addpomodal').modal('hide');
-					$("#addtoquotemodal").modal();
-				
-			}
-		});
-    }
 	
 
 	/*function sendreply(){
@@ -955,15 +490,44 @@ function changetab(tabname){
 						</div>
 					<?php }   ?>
 
+					
+                        <?php if(@$members){?>
+                        <div>
+
+                              <h3 class="titlebox" style="padding:0px 0px 0px 8px; margin:0px;">
+                           Meet The Team</h3>
+                           <div class="meet_team" style="border-bottom-style:none;border-left-style:none;border-right-style:none;">
+                            <table>
+
+                            	<?php $key = 0; foreach($members as $member){?>
+                            	<?php if($key==0){?>
+                            	<tr>
+                            	<?php }?>
+
+                            	<td style="position:relative;">
+
+                            
+  <div>
+  <div style="height:40px;width:200px;"><h1 style="overflow:auto;"><?php echo $member->name;?>&nbsp;<?php echo $member->title;?></h1></div>
+  <div style="height:180px;width:200px;overflow:hidden;"><img src="<?php echo base_url("uploads/ContractorTeam/".$member->picture);?>" alt="Profile Image"/></div>
+  <div style="height:40px;width:200px;"><h2 style="overflow:auto;font-family: Arial, Helvetica, sans-serif;font-size:15px;"><?php echo $member->phone;?><br/><?php echo $member->email;?></h2></div>
+ </div>  
+
+</td>
 
 
 
+                            	<?php if($key==4){ $key=0; ?>
+                            	</tr>
 
-                        
-                      
-                        
-						
-						
+
+                            	<?php } $key++;?>
+                            	<?php }?>
+                            	</tr>
+                            </table>
+                           </div>
+                        </div>
+                        <?php }?>				
 
 
 						<br/>
@@ -987,9 +551,8 @@ function changetab(tabname){
                         <div id="property-map"></div>
                         <a name="form"></a>
                           <h3 class="titlebox" style="padding:0px 0px 0px 8px">Request Assistance</h3>
-                        <?php // echo $this->session->flashdata('message'); ?>
-        				<form method="post" action="<?php echo site_url('site/sendrequest/'.$contractor->id);?>">
-        					<input type="hidden" name="redirect" value="supplier/<?php echo $contractor->username?>"/>
+        				<form method="post" action="<?php echo site_url('site/sendcontractrequest/'.$contractor->id);?>">
+        					<input type="hidden" name="redirect" value="contractor/<?php echo $contractor->username?>"/>
                             <div class="newbox">
         					<table>
         						<tr>
@@ -1026,10 +589,10 @@ function changetab(tabname){
         							<td>Regarding</td>
         							<td><textarea name="regarding" rows="5" style="width: 350px;"></textarea>
         						</tr>
-        						<!--<tr>
+        						<tr>
         							<td></td>
         							<td><input type="submit" class="btn btn-primary" value="Send"/></td>
-        						</tr>-->
+        						</tr>
         					</table>
                           </div>
         				</form>
@@ -1222,6 +785,67 @@ function changetab(tabname){
 
                     </div>
                  </div>
+                 
+                 
+                     <?php if(@$businesshrs){ ?>
+                 <?php if(@$businesshrs[0]->start != '' || @$businesshrs[1]->start != '' || @$businesshrs[2]->start != '' || @$businesshrs[3]->start != '' || @$businesshrs[4]->start != '' || @$businesshrs[5]->start != '' || @$businesshrs[6]->start != ''){ ?>
+                 <div class="sidebar span3">
+                    <div class="widget contact">
+                    	<div class="title">
+                            <h2 align="center" class="block-title">
+                            <img style="height:20px;" src="<?php echo base_url(); ?>uploads/logo/time.png"/>&nbsp;Business Hours</h2>
+                        </div>
+                        <div class="content_sup">
+                            <div class="control-group">
+                                <div class="controls">
+                    <table border="1" cellpadding="7" class="table">
+				   <?php $todayhtml=''; $bhtml=''; foreach($businesshrs as $bhrs) { 
+				   	$bhrs->day = ucfirst($bhrs->day);
+				   	$bhtml.='<tr><td>'.$bhrs->day.'</td>';
+				   	if(date('D') == $bhrs->day)
+				   	$todayhtml.='<tr><td>Today</td>';
+				   	if($bhrs->isclosed==1){
+				   		$bhtml.='<td colspan="2">closed</td>';
+				   		if(date('D') == $bhrs->day)
+				   		$todayhtml.='<td colspan="2">closed</td>';
+				   	}else{
+				   		$bhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
+				   		if(date('D') == $bhrs->day)
+				   		$todayhtml.='<td>'.$bhrs->start.'&nbsp;</td><td>&nbsp'.$bhrs->end.'</td>';
+				   	}
+				   	if(date('D') == $bhrs->day)	{
+				   		echo 'Current time:'.$current_time = date('g:i a');
+				   		$date1 = DateTime::createFromFormat('H:i a', $current_time);
+				   		$date2 = DateTime::createFromFormat('H:i a', $bhrs->start);
+				   		$date3 = DateTime::createFromFormat('H:i a', $bhrs->end);
+				   		if($bhrs->isclosed==1){
+				   			$bhtml.='<td>&nbsp;</td></tr>';
+				   			$todayhtml.='<td>&nbsp;</td></tr>';
+				   		}else {
+				   			if ($date1 >= $date2 && $date1 <= $date3)
+				   			{
+				   				$bhtml.='<td>Open Now</td></tr>';
+				   				$todayhtml.='<td>Open Now</td></tr>';
+				   			}else {
+				   				$bhtml.='<td>Closed Now</td></tr>';
+				   				$todayhtml.='<td>Closed Now</td></tr>';
+				   			}
+				   		}
+				   	}else {
+				   		$bhtml.='<td>&nbsp;</td></tr>';
+				   	}
+				   }
+				   $todayhtml.='</tr>';
+				   echo $todayhtml.''.$bhtml;
+					 ?>
+					 </table>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                 </div>
+                 <?php } } ?>
 
 
 
@@ -1231,67 +855,7 @@ function changetab(tabname){
                  </div>
               </div>
               </div>
-            
-
-                              <!-- Start Dialog Form -->
-               <div class="dialog-form" id="dialog-form">
-				            		<form  role="form" method="post" name="form-addsubscriber" id="form-addsubscriber" action="<?php echo base_url();?>subscriber/addsubscriber">
-				                     <div class="col-md-6 col-sm-6 col-xs-6">
-				                     <div class="form-group">
-				    						<label for="label" class="form-label">Name:</label>
-				    						<div class="controls">
-				    							<input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
-				    						</div>
-				                     </div>
-
-				                     <div class="form-group">
-				    						<label for="label" class="form-label">Email:</label>
-				    						<div class="controls">
-				    							<input type="text" class="form-control" id="email" name="email" placeholder="email" required >
-				    						</div>
-				                     </div>
-				 					<?php  foreach($fields as $key=>$field) { $name_id=trim($field->Label);  ?><br>
-				 					<div class="form-group">
-				    						<label for="label" class="form-label"><?php echo $field->Label ?></label>
-				    						<div class="controls">
-				      					    <?php if($field->FieldType == 'text' || $field->FieldType == 'email' || $field->FieldType == 'password') {?>
-				      							<?php if($field->FieldType == 'email' ){?>
-				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="email" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>"><br>
-				      							<?php }else{?>
-				      							<input type="<?php echo $field->FieldType ?>" class="form-control" id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>" placeholder="<?php echo $field->Label; ?>" required value="<?php echo $field->Value;?>"><br>
-				      							<?php } ?>
-				      					<?php  }  ?>
-
-				      					<?php if($field->FieldType == 'dropdown') { $dropdownValues = explode(",",$field->FieldValue); $k= array_search($field->Value,$dropdownValues); ?>
-				      					<select id="<?php echo $name_id; ?>" name="<?php echo $field->Name; ?>"><?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><option value="<?php echo $dropdownValues[$i];?>" <?php if($dropdownValues[$i]==$field->Value) { echo " selected ";} else { echo " "; } ?>><?php echo $dropdownValues[$i];?></option> <?php  } } ?></select><br>
-
-				    							<?php   } ?>
-										<?php if($field->FieldType == 'radio') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?>
-
-										<br><input type="radio" name="<?php echo $field->Name; ?>" id="<?php echo $dropdownValues[$i];?>"
-                                         value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'checked'; ?>>
-										<?php echo $dropdownValues[$i];?> <?php  } } ?>
-
-				 					    		<?php  } ?>
-				 					    <?php if($field->FieldType == 'checkbox') { $dropdownValues = explode(",",$field->FieldValue); ?> <?php if(count($dropdownValues) > 0) { for($i=0;$i<count($dropdownValues); $i++) { ?><br><input type="checkbox" name="<?php echo $field->Name; ?>" id="<?php echo $name_id; ?>"  value="<?php echo $dropdownValues[$i];?>" <?php if($field->Value ==$dropdownValues[$i]) echo 'selected'; ?>><?php echo $dropdownValues[$i];?><?php  } } ?>
-
-				 					    		<?php } ?>
-				 					    <?php if($field->FieldType == 'textarea') { ?> <br><textarea id="<?php echo $name_id;?>" name="<?php echo $field->Name; ?>"><?php echo $field->Value;?></textarea>
-				 					    		<?php  }  ?>
-				 					    	</div>
-				 					    </div>
-										<?php } ?>
-				 					    <div class="form-group">
-					                        <label class="form-label"></label>
-					                        <div class="controls">
-					                        	  <input type="hidden" name="cid" id="cid" class="cid" value="<?php echo $supplier->id;?>">
-					                              <input type="button" value="Subscribe" name="subscribe" id="subscribe" class="btn btn-primary btn-lg">
-					                        </div>
-					                    </div>
-				 						 </div>
-									</form>
-
-				</div><!-- End Dialog Form -->
+           
 
             </div><!--End of Container -->
         </div><!-- End of Content -->
@@ -1299,254 +863,13 @@ function changetab(tabname){
 </div>
 
 
-   <div id="cartprice" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;width:365px;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <i class="icon-credit-card icon-7x"></i>
-
-          <h4 class="semi-bold" id="myModalLabel">
-          <div id="itemnamebox"></div>
-          <div id="itemimage"></div>
-          <br> Select Quantity
-          </h4>
-          <br/>
-          <div id="unitbox"></div>
-        </div>
-        <div class="modal-body">
-
-        <div id="qtypricebox"></div>
-
-        <div>
-            <div id="cartqtydiv" class="col-md-8">
-            </div>
-            <div class="col-md-4">
-              <span id="qtylistprice"></span>
-            </div>
-          </div>
-
-        <div id="cartsavediv"></div>
-        <div id="ftqtypricebox"></div>	
-        </div>
-        <div class="modal-footer">
-          <input type="hidden" name="hiddenprice" id="hiddenprice" />
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
-
-
-  <?php if(@$upcomingevents) { foreach($upcomingevents as $event){?>
-  <div id="eventdetails<?php echo $event->id;?>" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      	 <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <br>
-          <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel">
-          <div id="itemnamebox"></div>
-           <?php echo $event->title; ?>
-          </h4>
-        </div>
-        <div class="modal-body">
-
-	  	<table class="table table-bordered  col-lg-10">
-	  		<tr>
-	  			<td><strong>Title</strong></td>
-	  			<td><?php echo $event->title;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Date</strong></td>
-	  			<td><?php echo date("m/d/Y", strtotime( $event->evtdate));?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Start</strong></td>
-	  			<td><?php echo $event->eventstart;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>End</strong></td>
-	  			<td><?php echo $event->eventend;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Location</strong></td>
-	  			<td><?php echo $event->location;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Notes</strong></td>
-	  			<td><?php echo $event->notes;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Contact Name</strong></td>
-	  			<td><?php echo $event->contactname;?></td>
-	  		</tr>
-	  		<tr>
-	  			<td><strong>Contact Phone</strong></td>
-	  			<td><?php echo $event->contactphone;?></td>
-	  		</tr>
-	  	</table>
-
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
-
-  <?php } } ?>
-  
-  
-  
-  
-  
   
 
-
-
-	<div id="imgmodaltag" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-		 <div class="modal-dialog">
-		     <div class="modal-content">
-		      
-		        <div class="modal-header">
-		        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button><i class="icon-credit-card icon-7x"></i>                 
-		        	<div style="text-align:center;" id="headimagename"></div>          
-		        </div>
-		        
-		        <div class="modal-body">        
-		          <div id="container2">		            
-				        <div id="imgtag" style="float:left;">  
-				  			<img id="pic1" src=""/>
-				 		    <div id="tagbox"></div>
-						</div>								
-					<div  style="width:400px;height:300px;overflow-y:scroll;padding-left:150px;">
-						<div id="taglist"></div>
-					</div>
-					<div style="clear:both;"></div>			
-				  </div>
-		        </div>
-		        
-		        <div class="modal-footer">          
-		        	<div class="fb-like" id="fbshareandlike" style="z-index: 9999;" data-href="<?php echo base_url(); ?>site/designbookdetail/<?php echo $designbook[0]->id;?>" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div> &nbsp;
-		          	<button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-		        </div>
-		        
-		     </div>
-		  </div>
-	 </div>
   
-  
-  
-   <!-- Modal -->
-        <div class="modal hide fade" id="addtoquotemodal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title nobottompadding" id="myModalLabel">Request for quote</h3>
-                    </div>
-                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" onsubmit="rfqformsubmit(); return false;">
-                        <input type="hidden" id="additemid" name="itemid" value=""/>
-                        <div class="modal-body">
-                            <h4>Select Project</h4>
-                            <select id="additemproject" onchange="getquotecombo();getcostcodecombo();">
-                                <option value="">Select</option>
-                                <?php foreach($projects as $up){?>
-                                	<option value="<?php echo $up->id?>"><?php echo $up->title;?></option>
-                                <?php }?>
-                            </select>
+ 
 
-                            <h4>Select PO</h4>
-                            <span id="additempo">
-                            <select name="quote" required>
-                                <?php if(0)foreach($userquotes as $uq){?>
-                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
-                                <?php }?>
-                            </select>
-                            </span>
-
-                            <!-- <a href="javascript:void(0)" target="_blank" onclick="var pid=$('#additemproject').val();if(pid){$(this).attr('href','<?php echo site_url('admin/quote/add/');?>/'+pid);$('#additemproject').val('');$('#addtoquotemodal').modal('hide');}else{return false;}">Add PO</a> -->
-
-                            <a href="javascript:void(0)" onclick="addpo()">Add PO</a>
-                            
-                            <h4>Quantity</h4>
-                            <input type="text" id="additemqty" name="quantity" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
-                            <input type="hidden" id="incrementqty" name="incrementqty" />
-                            <h4>Costcode</h4>
-                            <span id="additemcostcode">
-                            <select name="costcode" required>
-                                <?php if(0)foreach($userquotes as $uq){?>
-                                	<option value="<?php echo $uq->id?>"><?php echo $uq->ponum;?></option>
-                                <?php }?>
-                            </select>
-                            </span>
-
-                            <h4>Date Requested</h4>
-                            <input type="text" id="daterequested" name="daterequested"/>
-
-                            <br/><br/>
-                            <div>
-                            <button type="button" class="btn btn-primary" onclick="showimgmodal();" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="rfqformsubmit();">Add</button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal hide fade" id="addtoquotemodal1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <form id="addtoquoteform" action="<?php echo site_url('site/additemtoquote'); ?>" method="post" return false;">
-                        <input type="hidden" id="additemid" name="itemid" value=""/>
-                        <div class="modal-body">
-                        <div id="modalhtm">
-
-                        </div>
-                        </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+       
         
         
         
-         <div id="Addpomodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-
-            <div class="modal-header">
-        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-            <h3>Please Add Your P.O. Now</h3>
-        	</div>
-        	<div class="modal-body">
-        	
-        	<div class="control-group">
-			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
-                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" >		</div>
-		    </div>
-		    <br><br>		    
-		    <div class="control-group">
-			    <div class="controlss">
-			      Delivery or Pick-Up Date: &nbsp; &nbsp;
-			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" 
-			      	data-date-format="mm/dd/yyyy">			      
-			       &nbsp; &nbsp; <br><br>
-			      PO Date: &nbsp; &nbsp; 
-			      <input type="text" id="podate" name="podate" class="input small span2"
-			      	data-date-format="mm/dd/yyyy">
-			      	&nbsp; &nbsp; &nbsp; &nbsp; <br><br>
-			     Bid Due Date: &nbsp; &nbsp; 
-			      <input type="text" id="duedate" name="duedate" class="input small span2"
-			      data-date-format="mm/dd/yyyy">
-			      <input name="add" type="button" class="btn btn-primary" value="Save" onclick="savepo();"/>
-			    </div>			   
-		    </div>
-        	
-        	</div>
-
-   </div>   
+         

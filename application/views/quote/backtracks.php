@@ -66,7 +66,7 @@ function jq( myid ) {
                                         </thead>
                                         
                                         <tbody>
-							              <?php
+							              <?php 
 									    	$i = 0;
 									    	foreach($backtracks as $bck)
 									    	{
@@ -85,20 +85,32 @@ function jq( myid ) {
                                             
                                     <table class="table no-more-tables general" style="width: 95%;">
 							    	<tr>
-							    		<th>Item Name</th>
-							    		<th>Qty. Req'd</th>
-							    		<th>Qty. Due</th>
-							    		<th>Unit</th>
-							    		<th>Price EA</th>
-							    		<th>Total Price</th>
-							    		<th>Date Available</th>
-							    		<th>Notes</th>
-							    		<th>History</th>
+							    		<th width="8%">Item Image</th>
+							    		<th width="15%">Item Name</th>
+							    		<th width="6%">Qty. Req'd</th>
+							    		<th width="6%">Qty. Due</th>
+							    		<th width="7%">Unit</th>
+							    		<th width="7%">Price EA</th>
+							    		<th width="7%">Total Price</th>
+							    		<th width="7%">Date Available</th>
+							    		<th width="12%">Notes</th>
+							    		<th width="12%">History</th>
 							    	</tr>
 							    	<form id="olditemform" class="form-horizontal" method="post">
 
-									<?php foreach($bck['items'] as $q) { //echo "<pre>data-"; print_r($quote->id); die;?>
+									<?php  foreach($bck['items'] as $q) { //echo "<pre>data-"; print_r($quote->id); die;
+									      
+								        if(isset($q->itemimage->item_img) && $q->itemimage->item_img!= "" && file_exists("./uploads/item/".$q->itemimage->item_img)) 
+							    		{
+							    			$imgName = site_url('uploads/item/'.$q->itemimage->item_img);  
+							    		} 
+                                        else 
+                                        { 
+                                        	 $imgName = site_url('uploads/item/big.png');  
+                                        } 
+									      ?>
 							    	<tr>
+							    		<td><img src="<?php echo $imgName;?>" width="100px" height="100px"> </td>
 							    		<td><?php echo htmlentities($q->itemname);?></td>
 							    		<td><?php echo $q->quantity;?></td>
 							    		<td><?php echo $q->quantity - $q->received;?>
