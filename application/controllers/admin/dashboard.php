@@ -1333,6 +1333,7 @@ class Dashboard extends CI_Controller
 		$count = count ($quotes);
 		$isBackorder = 0;
 		$qtyDue = 0;
+		$pastdueqtys = array(); // Used for storing all past due (Backorder) quantities, and comparing inventory items with this array to mark past due
 		$receiveqty = 0;
 		$items = array();
 		$companyarr = array();
@@ -1395,7 +1396,8 @@ class Dashboard extends CI_Controller
 							{
 								
 								$item->duequantity = $item->quantity - $item->received;
-								$qtyDue += $item->duequantity;								
+								$qtyDue += $item->duequantity;		
+								$pastdueqtys[] = $item->itemid;						
 							}
 						}
 						
@@ -1405,7 +1407,7 @@ class Dashboard extends CI_Controller
 		}
 		//$data['qtyDue'] = $qtyDue;
 		$this->session->set_userdata('qtyDue', $qtyDue);
-		
+		$this->session->set_userdata('pastdueqtys',$pastdueqtys);
 		if($this->session->userdata('managedprojectdetails')->id != '')
 		{
 			$projectid = $this->session->userdata('managedprojectdetails')->id;

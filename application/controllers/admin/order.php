@@ -1156,6 +1156,17 @@ function orders_export()
 		redirect('admin/order/details/'.$_POST['id']);
 	}
 	
+	function updateorderitemreceived()
+	{
+		if(!$_POST)
+		die;
+		
+		$this->db->where('id',$_POST['id']);
+		$result = $this->db->update('orderdetails',$_POST);		
+		echo $result; die;
+	}
+	
+	
 	function pay()
 	{
 	    $amount = $_POST['amount'];

@@ -65,7 +65,7 @@ class inventorymanagement extends CI_Controller
 	        	$criticallevel = '<font color="red">*Critical Stock Level</font> <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qtyreorder/' . @$row->itemid . '/'.$row->reorderqty.'">Reorder Quantity</span></a>';
 	        	
 	        	
-	        	$row->itemcode = $row->itemcode."<br>".$criticallevel;
+	        	$row->itemcode = '<a href="javascript:void(0)" onclick="viewitems2(\''.$row->itemid.'\')">'.$row->itemcode.'</a><br>'.$criticallevel;
 	        	
 	        	$row->minstock = '<input style="width:50px;" '.$readonly.' type="text" name="minstock" id="minstock" value="'.@$row->minstock.'" onchange="updateminstock('.$row->itemid.',this.value);" >';
 	        	$row->maxstock = '<input style="width:50px;"  '.$readonly.' type="text" name="maxstock" id="maxstock" value="'.@$row->maxstock.'"  onchange="updatemaxstock('.$row->itemid.',this.value);" >';
@@ -75,11 +75,25 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
 	        	$row->manage = ' <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> <input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
 				
-	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
+	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';      	
 	        	
 	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
 	        	
+	        	$row->valueonhand = round($row->valueonhand,2);
+	        	
 	        	$row->valueonhand = '<input style="width:50px;" type="text" name="valueonhand" id="valueonhand'.@$row->itemid.'" readonly value="'.@$row->valueonhand.'" >';
+	        	
+	        	
+	        	$row->valuecomitted = round($row->valuecomitted,2);
+	        	
+	        	$pastdue = "";
+	        	if(@$this->session->userdata('pastdueqtys')){
+	        		
+	        		if(in_array($row->itemid,$this->session->userdata('pastdueqtys')))
+	        		$pastdue = "PAST DUE";
+	        	}
+	        	
+	        	$row->daterequested = $row->daterequested." <br>".$pastdue;
 	        	
 	        	if (@$row->item_img && file_exists('./uploads/item/' . @$row->item_img))
 	        	{
@@ -387,7 +401,11 @@ class inventorymanagement extends CI_Controller
 	        	
 	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
 	        	
+	        	$row->valueonhand = round($row->valueonhand,2);
+	        	
 	        	$row->valueonhand = '<input style="width:50px;" type="text" name="valueonhand" id="valueonhand'.@$row->itemid.'" readonly value="'.@$row->valueonhand.'" >';
+	        	
+	        	$row->valuecomitted = round($row->valuecomitted,2);
 	        	
 	        	$inventory[] = $row;
 	        }
@@ -403,6 +421,11 @@ class inventorymanagement extends CI_Controller
 		
 	}
 	
+	
+	public function qtyadjustmob($itemid){
+		
+		redirect('admin/inventorymanagementmob/qty_adjust/'.$itemid);
+	}
 	
 	public function qtyreorder($itemid,$reorderqty){
 		
@@ -424,6 +447,9 @@ class inventorymanagement extends CI_Controller
 			$data['orderid'] = $id;*/
 			$data['projects']  =  $this->statmodel->getProjects();
 			$data['itemid'] =  $itemid;
+			$this->db->select('itemcode,itemname');
+			$this->db->where('id',$itemid);
+			$data['itemdetails'] = $this->db->get('item')->row();			
 			$data['reorderqty'] = $reorderqty;
 			$this->load->view('admin/qtyreorder', $data);
 			
@@ -470,7 +496,7 @@ class inventorymanagement extends CI_Controller
 				$updatearray['costcode'] = $costcode->code;
     			$this->db->where('id', $quoteitemresult->id);
             	$this->db->update('quoteitem', $updatearray);
-            	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Quantity Updated for the Quote Successfully.</div></div>');
+            	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Quantity Updated for the Quote Successfully. <a target="blank" href="' . base_url() . 'admin/quote/update/' . $_POST['qid'] . '">Click Here to view the Quote</a> </div></div>');
     				redirect('admin/inventorymanagement/qtyreorder/' . $_POST['hiddenitemid'].'/'.$_POST['hiddenreorderqty']);    			
     		}else{
 
@@ -491,7 +517,7 @@ class inventorymanagement extends CI_Controller
 					$items['costcode'] = $costcode->code;
     				$items['totalprice'] = $itemresult->ea*$_POST['hiddenreorderqty'];
     				$this->quote_model->db->insert('quoteitem', $items);
-    				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Added to Quote Successfully.</div></div>');
+    				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Added to Quote Successfully. <a target="blank" href="' . base_url() . 'admin/quote/update/' . $_POST['qid'] . '">Click Here to view the Quote</a> </div></div>');
     				redirect('admin/inventorymanagement/qtyreorder/' . $_POST['hiddenitemid'].'/'.$_POST['hiddenreorderqty']);
     			}
 

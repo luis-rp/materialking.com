@@ -141,14 +141,14 @@ function endTour(){
             <?php if($items){?>
             <table id="datatable" class="table table-bordered datagrid">
               <tr>
-              	<th width="20%">Code</th>
-              	<th width="10%">Image</th>
+              	<th width="18%">Code</th>
+              	<th width="8%">Image</th>
               	<th width="7%">Budget</th>
-              	<th width="9%">$ Spent</th>
+              	<th width="7%">$ Spent</th>
               	<th width="25%">Budget % Allocated</th>
-              	<th>Task Progress % Complete</th>
-              	<th>Status</th>
-              	<th width="10%">Actions</th>
+              	<th width="22%">Task Progress % Complete</th>
+              	<th width="5%">Status</th>
+              	<th width="8%">Actions</th>
               </tr>
               <?php foreach($items as $item)
               {

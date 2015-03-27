@@ -393,7 +393,7 @@ function changetab(tabname){
                         <div class="pull-left overview effect5" style="float:left;">
                             <div class="row">
                                 <div class="span4" id="mydiv">
-                                  <div>
+                                  <div style="text-align:center">
                                         <?php if($contractor->logo !=""){?>
                                                 <img  src="<?php echo site_url('uploads/logo/'.$contractor->logo);?>" class="img-responsive" width="200" height="100" alt="Company Logo"/>
                                                 <?php } else {?>

@@ -1,16 +1,3 @@
-<?php if($this->session->userdata('managedprojectdetails')){?>
-
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/sparkline/jquery.sparkline.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.resize.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-	
-<?php }?>
 <?php echo '<script>var addpoquoteurl = "' . site_url('site/addpoquote') . '";</script>' ?>
 <script type="text/javascript">
             $(document).ready(function() {                
@@ -102,6 +89,35 @@
 			 <?php echo @$this->session->flashdata('message'); ?>
 			<div class="well">				
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/inventorymanagement/additemtoquote" method="post" >
+				
+					<div class="control-group">
+						<label for="Itemcode" class="control-label">
+						<strong>Item Code:</strong>
+						</label>
+						<div class="controls">							
+						<?php echo @$itemdetails->itemcode; ?>
+						</div>
+					</div>	
+				
+				
+					<div class="control-group">
+						<label for="Itemcode" class="control-label">
+						<strong>Item Name:</strong>
+						</label>
+						<div class="controls">							
+						<?php echo @$itemdetails->itemname; ?>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label for="Itemcode" class="control-label">
+						<strong>ReOrderQty:</strong>
+						</label>
+						<div class="controls">							
+						<?php echo @$reorderqty; ?>
+						</div>
+					</div>
+					
 					<div class="control-group">
 						<label for="inputEmail" class="control-label">
 						<strong>Select Project to assign order to</strong>

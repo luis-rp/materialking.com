@@ -278,7 +278,7 @@ class contractor_profile extends CI_Controller
         $this->db->where('id', $contractorid);       
         $this->db->update('users', $_POST);
         $sms="";
-        	$link = site_url('admin/dashboard'); 	  	
+        	$link = site_url('site/contractor/'.@$_POST['username']); 	  	
         	$data['email_body_title']  = "Dear " .@$_POST['companyname'];
 		  	$data['email_body_content']  = "You have updated Contractor Company Information as Follow:  <br><br>
 		  	Username : ".@$_POST['username']."<br/>
@@ -301,12 +301,12 @@ class contractor_profile extends CI_Controller
 	        $this->email->initialize($config);
 	        $this->email->from($settings['adminemail'], "Administrator");
 	        $this->email->to(@$_POST['companyname'] . ',' . @$_POST['email']);
-	        $this->email->subject('Updated Contactor Company Information');
+	        $this->email->subject('Updated Contractor Company Information');
 	        $this->email->message($send_body);
 	        $this->email->set_mailtype("html");
 	        $this->email->send();
 	        $sms="Email Sent Successfully.";
-         
+         //echo '<pre>',print_r($send_body);die;
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X
         </a><div class="msgBox">Your profile has been saved.'.$sms.'</div></div></div>');
        redirect("admin/contractor_profile");

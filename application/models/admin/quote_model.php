@@ -539,11 +539,13 @@ class quote_model extends Model {
                 					if(@$discountdate){
 
                 						if ($now < strtotime($discountdate)) {
-                							$invoicenum->discount_percent = $resultinvoicecycle->discount_percent;
+                							$invoicenum->discount_percent = $resultinvoicecycle->discount_percent;      							
                 						}
                 					}
                 				}
                 			}
+                			
+                		  $invoicenum->discount_date = $resultinvoicecycle->discountdate;
 
                 		}
                 	}
@@ -731,6 +733,11 @@ class quote_model extends Model {
                 $query = $this->db->get('company');
                 $awarditem->companyname = $query->row('title');
                 $awarditem->companydetails = $query->row();
+                
+                $this->db->where('id', $awarditem->itemid);
+                $query1 = $this->db->get('item');
+                
+                $awarditem->item_img = $query1->row('item_img');
                 $awarditems[] = $awarditem;
             }
             $item->items = $awarditems;
@@ -984,6 +991,7 @@ class quote_model extends Model {
         						
         						if ($now < strtotime($discountdate)) {
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        							$invoice->discount_date = $resultinvoicecycle->discountdate;
         						}
         					}
         				}
@@ -1124,6 +1132,7 @@ class quote_model extends Model {
         					if(@$discountdate){        						
         						if ($now < strtotime($discountdate)) {
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        							$invoice->discount_date = $resultinvoicecycle->discountdate;
         						}
         					}
         				}
@@ -1255,6 +1264,7 @@ class quote_model extends Model {
         					if(@$discountdate){        						
         						if ($now < strtotime($discountdate)) {
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
+        							$invoice->discount_date = $resultinvoicecycle->discountdate;
         						}
         					}
         				}

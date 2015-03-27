@@ -86,15 +86,15 @@ function jq( myid ) {
                                     <table class="table no-more-tables general" style="width: 95%;">
 							    	<tr>
 							    		<th width="8%">Item Image</th>
-							    		<th width="15%">Item Name</th>
+							    		<th width="20%">Item Name</th>
 							    		<th width="6%">Qty. Req'd</th>
 							    		<th width="6%">Qty. Due</th>
 							    		<th width="7%">Unit</th>
 							    		<th width="7%">Price EA</th>
 							    		<th width="7%">Total Price</th>
 							    		<th width="7%">Date Available</th>
-							    		<th width="12%">Notes</th>
-							    		<th width="12%">History</th>
+							    		<th width="10%">Notes</th>
+							    		<th width="10%">History</th>
 							    	</tr>
 							    	<form id="olditemform" class="form-horizontal" method="post">
 
@@ -110,7 +110,7 @@ function jq( myid ) {
                                         } 
 									      ?>
 							    	<tr>
-							    		<td><img src="<?php echo $imgName;?>" width="100px" height="100px"> </td>
+							    		<td><img src="<?php echo $imgName;?>" width="90px" height="90px"> </td>
 							    		<td><?php echo htmlentities($q->itemname);?></td>
 							    		<td><?php echo $q->quantity;?></td>
 							    		<td><?php echo $q->quantity - $q->received;?>
@@ -121,8 +121,8 @@ function jq( myid ) {
 							    		<td><?php echo $q->unit;?></td>
 							    		<td>$<?php echo $q->ea;?></td>
 							    		<td>$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
-							    		<td><input readonly type="text" class="span daterequested highlight" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" /></td>
-							    		<td><textarea readonly style="width: 175px" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>
+							    		<td><input readonly type="text" class="span daterequested highlight" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" style="width:90px;" /></td>
+							    		<td><textarea readonly style="width: 85px;height:110px;" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>
 							    		<td>
 							    		<?php if($q->etalog){?>
 							    			<a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">

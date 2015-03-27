@@ -81,6 +81,32 @@ function updatereorderqty(itemid,qty)
     }
         
     
+    function viewitems2(itemid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+		//alert(quoteid);
+		$("#quoteitemdetails").html('loading ...');
+
+		$.ajax({
+			type:"post",
+			url: serviceurl,
+		}).done(function(data){			
+			$("#quoteitemdetails").html(data);
+			$("#quoteitemdetails").css({display: "block"});
+			$("#quoteitemdetailsm").css({display: "block"});
+			$("#quoteitemdetailsm").removeClass("hide");
+			//$("#quoteitemdetailsm").modal();
+		});
+	}
+	
+	
+	function closepop(){
+		$("#quoteitemdetails").html('');
+		$("#quoteitemdetails").css({display: "none"});
+		$("#quoteitemdetailsm").css({display: "none"});		
+	}
+    
+    
 </script>
 <html>
 <body>
@@ -168,5 +194,24 @@ function updatereorderqty(itemid,qty)
         </div>
     </div>
 </section>
+
+
+<div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+        		
+        	</div>
+        	<div class="modal-body" id="quoteitemdetails">
+        	</div>
+            
+        </div>
+
+
+
 </body>
 </html>
+
+
+
+

@@ -661,9 +661,15 @@ function changeduedate(count,invoicenum,datedue)
           	$htmlbd .='<tr>
           <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.date('m/d/Y',strtotime(@$pay_h->paymentdate)).'</td>
           </tr>';
-           } } 
-          }else{ 
-          $htmlbd = "<tr><td>No Payment History Available</td></tr>";
+           }
+           else{ 
+          	$htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
+          } 
+          } 
+          }
+          else
+          { 
+          $htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
           }
           
           echo $htmlhd."".$htmlbd;     ?>     

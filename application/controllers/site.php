@@ -2955,9 +2955,10 @@ class site extends CI_Controller
         	        	
          	$data['selectedbill'] = $_POST['billid'];
          	
-			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid, pb.bankname, pb.accountnumber, pb.routingnumber 
+			$sql2 = "SELECT b.id as billid ,b.*,bi.*,bph.*,bi.id as billitemid, pb.bankname, pb.accountnumber, pb.routingnumber,i.item_img 
 					 FROM ".$this->db->dbprefix('billitem')." bi 
 					 LEFT JOIN ".$this->db->dbprefix('bill')." b ON b.id=bi.bill 
+					 LEFT JOIN ".$this->db->dbprefix('item')." i ON i.id=bi.itemid 
 					 LEFT JOIN ".$this->db->dbprefix('bill_payment_history')." bph ON bph.bill = b.id  
 					 LEFT JOIN ".$this->db->dbprefix('purchaserbank')." pb ON b.purchasingadmin = pb.purchasingadmin 
 					 WHERE b.id = ".$_POST['billid'] ." GROUP BY bi.itemid";	

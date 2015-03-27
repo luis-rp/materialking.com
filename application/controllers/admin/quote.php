@@ -10328,7 +10328,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     }
     
     
-    function createbill(){
+    function createbill() {
     	
     	//echo '<pre>',print_r($_POST);die;
     	
@@ -10393,6 +10393,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$finaltotal = 0;
 		$emailitems = '<table BORDER CELLPADDING="12">';
 		$emailitems.= '<tr>';
+		$emailitems.= '<th> Item Image  </th>';
 		$emailitems.= '<th> Itemcode  </th>';
 		$emailitems.= '<th>Itemname</th>';
 		$emailitems.= '<th>Qty</th>';
@@ -10467,12 +10468,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 								$totPrice = @$_POST['servicelaboritemprice'][$k] * $qty;
 								
 								$emailitems1 .= '<tr>';
-								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">'.@$_POST['servicelaboritemname'][$k].'</td>';
+								$emailitems1 .= '<td colspan="6" style="padding-left:5; text-align:right;">'.@$_POST['servicelaboritemname'][$k].'</td>';
 								$emailitems1 .= '<td style="padding-left:5;text-align:right;">$'.@$_POST['servicelaboritemprice'][$k].'</td><td>&nbsp;</td><td>&nbsp;</td>';
 								$emailitems1 .= '</tr><tr>';
-								$emailitems1 .= '<td colspan="5" style="padding-left:5; text-align:right;">Qty</td>';
+								$emailitems1 .= '<td colspan="6" style="padding-left:5; text-align:right;">Qty</td>';
 								$emailitems1 .= '<td style="padding-left:5;text-align:right;">'.$qty.'</td><td>&nbsp;</td><td>&nbsp;</td>';
-								$emailitems1 .= '</tr><tr><td colspan="5" style="padding-left:5; text-align:right;">Tax ('.@$_POST['servicelaboritemtax'][$k].' % )</td>';
+								$emailitems1 .= '</tr><tr><td colspan="6" style="padding-left:5; text-align:right;">Tax ('.@$_POST['servicelaboritemtax'][$k].' % )</td>';
 								$emailitems1 .= '<td style="padding-left:5; text-align:right;">$'.($totPrice * (@$_POST['servicelaboritemtax'][$k]/100)).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';		
 								$serviceItemTax += @$totPrice + (@$totPrice * (@$_POST['servicelaboritemtax'][$k]/100)) ;									
 						}
@@ -10509,7 +10510,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                     
                     $this->quote_model->db->insert('billitem', $itemarray);
                     
+                    if ($item['item_img'] && file_exists('./uploads/item/' . $item['item_img'])) 
+					 { 
+					 	 $imgName = site_url('uploads/item/'.$item['item_img']); 
+					 } 
+					 else 
+					 { 
+					 	 $imgName = site_url('uploads/item/big.png'); 
+                     }
+		                                     
                     $emailitems.= '<tr>';
+                    $emailitems.= '<td style="padding-left:5;"><img src="'.$imgName.'"  width="80" height="80"></td>';
                     $emailitems.= '<td style="padding-left:5;">'.$item['itemcode'].'</td>';
                     $emailitems.= '<td style="padding-left:5;">'.$item['itemname'].'</td>';
                     $emailitems.= '<td style="padding-left:5;">'.$item['quantity'].'</td>';
@@ -10528,7 +10539,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	}
     	$settings = $this->settings_model->get_current_settings();
     	$emailitems.= '<tr>';    	
-    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Markup Total ('.@$_POST['markuptotalpercent'].'%)</td>';
+    	$emailitems.= '<td colspan="6" style="padding-left:5; text-align:right;">Markup Total ('.@$_POST['markuptotalpercent'].'%)</td>';
     	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format((@$totalprice*@$_POST['markuptotalpercent']/100),2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
@@ -10537,7 +10548,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	$subtotal = @$totalprice + (@$totalprice*@$_POST['markuptotalpercent']/100);
     	
     	$emailitems.= '<tr>';    	
-    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Subtotal</td>';
+    	$emailitems.= '<td colspan="6" style="padding-left:5; text-align:right;">Subtotal</td>';
     	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format(@$subtotal,2).'</td>';    	
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
@@ -10545,7 +10556,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	
     	$emailitems.= '<tr>';    	
-    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Tax</td>';
+    	$emailitems.= '<td colspan="6" style="padding-left:5; text-align:right;">Tax</td>';
     	$emailitems.= '<td style="padding-left:5;text-align:right;">$'.number_format((@$totalprice*@$settings->taxrate/100),2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
@@ -10555,7 +10566,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
     	
     	$finaltotal = $serviceItemTax + $subtotal + (@$totalprice*@$settings->taxrate/100);
     	$emailitems.= '<tr>';    	
-    	$emailitems.= '<td colspan="5" style="padding-left:5; text-align:right;">Total</td>';
+    	$emailitems.= '<td colspan="6" style="padding-left:5; text-align:right;">Total</td>';
     	$emailitems.= '<td style="padding-left:5;text-align:right;">'.number_format(@$finaltotal,2).'</td>';
 		$emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
         $emailitems.= '<td style="padding-left:5;">&nbsp;</td>';
@@ -10572,7 +10583,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->load->library('email');
 		$config['charset'] = 'utf-8';
 		$config['mailtype'] = 'html';
-//echo '<pre>',print_r($send_body);die;
+//		echo '<pre>',print_r($send_body);die;
 	
 		$this->email->initialize($config);
 		$this->email->from($settings->adminemail);

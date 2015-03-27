@@ -55,7 +55,7 @@ class purchaseuser extends CI_Controller
 		//print_r($users);die;
 		if(!$users)
 		{
-			die('No users created.');
+			die('<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No users created.</div></div><a href="'.site_url('admin/admin/add').'"> Create New User </a>');
 		}
 		$ret = '';
 		$ret .= '<form action="'.site_url('admin/purchaseuser/savequotepermission').'" method="POST">';

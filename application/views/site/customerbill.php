@@ -14,9 +14,11 @@ function showreport(billnum,i)
 	if($('a','td#billdetailid_'+i).text() == "Expand"){
 		$('a','td#billdetailid_'+i).text('Collapse');
 		$(jq("reportdiv"+billnum)).css('display','block');
+		$("#billitemdetailsrow").css('display','');
 	}else{
 		$('a','td#billdetailid_'+i).text('Expand');
 		$(jq("reportdiv"+billnum)).css('display','none');
+		$("#billitemdetailsrow").css('display','none');
 	}
 }
 
@@ -184,7 +186,7 @@ function jq( myid ) {
 					</td>					
 					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['billedon']));?> </td>
 					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['customerduedate']));?> </td>
-					<td>$<?php echo number_format($totalprice,2);?> </td>
+					<td style="padding-left:5; text-align:right;">$<?php echo number_format($totalprice,2);?> </td>
 					<!---->
 					<!--<td><?php //echo $value['costcode'];?> </td>-->
 			    </tr>
@@ -209,6 +211,56 @@ function jq( myid ) {
                     		<?php } ?>
                     </td>
 	    	</tr>
+	    	<!--</table>-->
+	  <tr id="billitemdetailsrow" style="display:none;"> 
+	  <td colspan="6">
+	
+	<table class="table table-bordered reportdiv<?php echo $value['billid']; ?> dclose" style="display:none;">
+		<tr>
+			<th width="10%">Item Image  </th>
+			<th width="20%">Itemcode  </th>
+			<th width="25%">Itemname</th>
+			<th width="10%">Date Requested</th>
+			<th width="10%">Cost Code</th>
+			<th width="5%">Qty</th>
+			<th width="5%">Unit</th>
+			<th width="5%">Price</th>
+			<th width="10%">Total Price</th>
+			
+		</tr>	
+	<?php	
+			$totalprice = 0;	
+			
+			foreach ($billItemdetails as $k=>$value)
+			{
+				if ($value['item_img'] && file_exists('./uploads/item/' . $value['item_img'])) 
+				 { 
+				 	 $imgName = site_url('uploads/item/'.$value['item_img']); 
+				 } 
+				 else 
+				 { 
+				 	 $imgName = site_url('uploads/item/big.png'); 
+                 }
+				?>	
+				 <tr> 
+					<td><img src="<?php echo $imgName;?>" width="80" height="80"></td>
+					<td><?php echo $value['itemcode'];?> </td>
+					<td><?php echo $value['itemname'];?> </td>
+					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
+					<td><?php echo $value['costcode'];?> </td>
+					<td><?php echo $value['quantity'];?> </td>
+					<td><?php echo $value['unit'];?> </td>
+					<td style="padding-left:5; text-align:right;">$<?php echo $value['ea'];?> </td>
+					<td style="padding-left:5; text-align:right;">$<?php echo number_format($value['quantity'] * $value['ea'],2);?> </td>					
+				</tr>
+				</tr>
+	<?php   } ?>
+	 			
+	</table>
+	
+	</td>
+	</tr>
+	    <!--	<table id="" border="1" width="100%"  class="table table-bordered">  -->
 			<tr>   	
 		    	<td colspan="3" style="padding-left:5; text-align:right;">Markup Total (<?php echo $markuptotalpercent.'%'?>)</td>
 		    	<td style="padding-left:5; text-align:right;">$<?php echo number_format(($totalprice * $markuptotalpercent/100),2); ?></td>				
@@ -255,38 +307,7 @@ function jq( myid ) {
 	       </tr>
 	</table>
 	<br><br>
-	<div>
 	
-	<table class="table table-bordered reportdiv<?php echo $value['billid']; ?> dclose" style="display:none;">
-		<tr>
-			<th width="30%">Itemcode  </th>
-			<th width="30%">Itemname</th>
-			<th width="5%">Qty</th>
-			<th width="5%">Unit</th>
-			<th width="5%">Price</th>
-			<th width="5%">Total Price</th>
-			<th width="10%">Date Requested</th>
-			<th width="10%">Cost Code</th>
-		</tr>	
-	<?php	
-			$totalprice = 0;	
-			foreach ($billItemdetails as $k=>$value)
-			{  ?>	
-				 <tr> 
-					<td><?php echo $value['itemcode'];?> </td>
-					<td><?php echo $value['itemname'];?> </td>
-					<td><?php echo $value['quantity'];?> </td>
-					<td><?php echo $value['unit'];?> </td>
-					<td>$<?php echo $value['ea'];?> </td>
-					<td>$<?php echo number_format($value['quantity'] * $value['ea'],2);?> </td>
-					<td><?php echo date('m/d/Y', strtotime($value['daterequested']));?> </td>
-					<td><?php echo $value['costcode'];?> </td>
-				</tr>
-				</tr>
-	<?php   } ?>
-	 			
-	</table>
-	</div>
 	<?php	} ?>
 </div>
 </form>
