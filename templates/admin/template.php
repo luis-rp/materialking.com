@@ -551,7 +551,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);  ?>						
-    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billings' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' ) { echo 'active'; } ?>"  >
+    <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billings' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' || $menu== 'contractor_profile') { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                                <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
 
@@ -578,6 +578,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li <?php if ($menu == 'company') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
                                 </li>
+                                                             
                                 <li <?php if ($menu == 'catcode') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
                                 </li>
@@ -601,6 +602,10 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
                                 </li>
+                                
+                                  <li <?php if ($menu == 'contractor_profile') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractor_profile"><i class="icon-ok"></i>&nbsp;&nbsp;Profile</a>
+                                </li>
                                 <?php } ?>
 
                                 <?php if ($this->session->userdata('usertype_id') == 2) { ?>
@@ -611,7 +616,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                     </li>
                                 <?php } ?>
 
-                            	<li <?php if ($menu == 'admin') { ?>class="active"<?php } ?>>
+                            	<li <?php if ($menu == 'admin' && $function == 'index') { ?>class="active"<?php } ?>>
                                 	<a href="<?php echo base_url(); ?>admin/admin/index">
                                 		<i class="icon-user"></i>
                                 		Manage Users
@@ -625,8 +630,11 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 	</a>
                             	</li>
                             	
-                            	 <li <?php if ($menu == 'set_bank_purchaser') { ?>class="active"<?php } ?>>
+                            	 <li <?php if ($menu == 'admin' && $function == 'set_bank_purchaser') { ?>class="active"<?php } ?>>
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/admin/set_bank_purchaser"><i class="icon-picture"></i>&nbsp;&nbsp;Bank Account</a>
+                                </li>
+                                <li <?php if ($menu == 'inventorymanagement') { ?>class="active"<?php } ?>>
+                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/inventorymanagement"><i class="icon-picture"></i>&nbsp;&nbsp;Inventory Management</a>
                                 </li>
                             </ul>
                         </li>
@@ -641,7 +649,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             </li>
                             <li <?php if ($menu == 'backtrack') { ?>class="active"<?php } ?>>                   
                                		<a href="<?php echo base_url(); ?>admin/backtrack">
-									<span style="color:red;font-size:10px;padding-left:25px;font-weight:bold;margin-top: -36px;"><?php if(isset($qtyDue) && $qtyDue != '') echo $qtyDue; else echo '0';?> </span>
+									<span style="color:red;font-size:10px;padding-left:25px;font-weight:bold;margin-top: -36px;"><?php if(@$this->session->userdata('qtyDue') && $this->session->userdata('qtyDue') != '') echo $this->session->userdata('qtyDue'); else echo '0';?> </span>
                                		<span class="icon-random"></span>Back orders</a>
                              </li>
                             <li <?php if ($menu == 'invoices') { ?>class="active"<?php } ?>><a href="<?php echo base_url(); ?>admin/quote/invoices"><span class="icon-list"></span>Invoices</a></li>
@@ -656,6 +664,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                             
                             <li <?php if ($menu == 'quote' && $function == 'receive') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/quote/receive/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
+                                <span style="color:red;font-size:10px;padding-left:25px;font-weight:bold;margin-top: -36px;"><?php if(@$this->session->userdata('receiveqty') && $this->session->userdata('receiveqty') != '') echo $this->session->userdata('receiveqty'); else echo '0';?> </span>
                                     <span class="icon-cog"></span>RECEIVE
                                 </a>
                         </li>

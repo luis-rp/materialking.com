@@ -2860,7 +2860,7 @@ or edit your quote.</div></div></div>');
 			
 			
 						            	// Code for getting discount/Penalty per invoice
-					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+					/*$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,				   
@@ -2940,7 +2940,7 @@ or edit your quote.</div></div></div>');
 
         				}
 
-        			}      			
+        			}*/      			
         			// Code for getting discount/Penalty Ends
 			
         			
@@ -3294,7 +3294,7 @@ or edit your quote.</div></div></div>');
 			}
             	
             	// Code for getting discount/Penalty per invoice
-					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+					/*$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,				   
@@ -3374,7 +3374,7 @@ or edit your quote.</div></div></div>');
 
         				}
 
-        			}      			
+        			}*/      			
         			// Code for getting discount/Penalty Ends
 			
         			

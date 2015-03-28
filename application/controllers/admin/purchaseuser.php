@@ -417,11 +417,11 @@ $link
 		$quotewhere = '';
 		if($quote)
 			$quotewhere = ' AND m.quote='.$quote;
-		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail FROM 
-		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q,
+		$messagesql = "SELECT m.*,q.id quoteid, q.ponum, c.title companyname, c.email companyemail, u.email adminemail,q.potype, b.complete FROM 
+		".$this->db->dbprefix('message')." m, ".$this->db->dbprefix('quote')." q, ".$this->db->dbprefix('bid')." b,
 		".$this->db->dbprefix('quoteuser')." qu, ".$this->db->dbprefix('company')." c,
 		".$this->db->dbprefix('users')." u
-		WHERE m.quote=q.id AND m.company=c.id AND q.id=qu.quote AND m.adminid=u.id
+		WHERE m.quote=q.id AND m.company=c.id AND q.id=qu.quote AND q.id = b.quote AND m.adminid=u.id 
 		AND qu.userid='{$this->session->userdata('id')}' 
 		AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
 		$quotewhere ORDER BY m.senton DESC";
@@ -433,6 +433,7 @@ $link
 		//echo $quotesql;
 		$msgs = $this->db->query($messagesql)->result();
 		$messages = array();
+		
 		foreach($msgs as $msg)
 		{
 			if(strpos($msg->from, '(Admin)') > 0)
@@ -445,6 +446,8 @@ $link
 			$messages[$msg->ponum]['messages'][]=$msg;
 			$messages[$msg->ponum]['quote']['id']=$msg->quoteid;
 			$messages[$msg->ponum]['quote']['ponum']=$msg->ponum;
+			$messages[$msg->ponum]['quote']['potype']=$msg->potype;
+			$messages[$msg->ponum]['quote']['complete'] = $msg->complete;
 		}
 		//echo '<pre>';print_r($messages);die;
 		$data['messages'] = $messages;

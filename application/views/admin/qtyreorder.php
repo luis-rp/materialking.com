@@ -91,11 +91,24 @@
 				<form class="form-horizontal" action="<?php echo base_url()?>admin/inventorymanagement/additemtoquote" method="post" >
 				
 					<div class="control-group">
-						<label for="Itemcode" class="control-label">
+						<label style="margin-top:50px;" for="Itemcode" class="control-label">
 						<strong>Item Code:</strong>
 						</label>
 						<div class="controls">							
-						<?php echo @$itemdetails->itemcode; ?>
+						<span style="margin-top:50px;"><?php echo @$itemdetails->itemcode;?></span>   
+						<?php 
+						if (@$itemdetails->item_img && file_exists('./uploads/item/' . @$itemdetails->item_img))
+			    		{
+			    			$imgName = site_url('uploads/item/'.$itemdetails->item_img);
+			    		}
+			    		else
+			    		{
+			    			$imgName = site_url('uploads/item/big.png');
+			    		}			    		
+			    	?>
+			    	<span style="margin-left:100px;">
+			    	<img style="max-height: 120px; padding: 0px;width:150px; height:150px;" src="<?php echo $imgName;?>">
+			    	</span>						
 						</div>
 					</div>	
 				

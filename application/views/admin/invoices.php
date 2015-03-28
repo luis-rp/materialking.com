@@ -309,7 +309,7 @@ function jq( myid ) {
                     		echo "<pre>",print_r($aginginvoices); die;*/
                     		foreach($items as $item){ $i++;
                     		 
-                    		$item->totalprice = (float) str_replace(',', '', $item->totalprice);
+                    		//$item->totalprice = (float) str_replace(',', '', $item->totalprice);
                     		                   		
                     		if(@$item->discount_percent){
                     			
@@ -335,13 +335,13 @@ function jq( myid ) {
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?>
                     			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
                     			</td>
-                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".$item->totalprice;?>
+                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".round($item->totalprice,2);?>
                     			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
                     			</td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>
-                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo $item->totalprice?>');">
+                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo round($item->totalprice,2); ?>');">
                     				<option value="">Select Payment Type</option>
                     				<?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                     				<option <?php echo $item->paymenttype=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>

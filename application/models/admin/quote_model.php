@@ -494,6 +494,19 @@ class quote_model extends Model {
                         $invoiceitem->itemcode = $companyitem->itemcode;
                         $invoiceitem->itemname = $companyitem->itemname;
                     }
+                    
+                    if($item->items){
+                    	$j=0;
+                    	foreach($item->items as $itm){
+                    		
+                    		if($itm->id == $invoiceitem->awarditem)
+                    		$item->items[$j]->invoice_type = $invoiceitem->invoice_type;
+                    		$item->items[$j]->aiquantity = $invoiceitem->aiquantity;
+                    		$j++;
+                    	}
+                    }
+                    
+                    
                     $invoicenum->items[] = $invoiceitem;
                 }
                 

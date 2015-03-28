@@ -207,7 +207,8 @@ tr.still-due td
                                         <td class="v-align-middle"><?php echo $ai->quantity;?></td>
                                         <td class="v-align-middle"><?php echo $ai->unit;?></td>
                                         <td class="v-align-middle">$<?php echo $ai->ea;?></td>
-                                        <td class="v-align-middle">$<?php echo round($ai->quantity * $ai->ea,2);?></td>
+                                        <td class="v-align-middle">$<?php // echo round($ai->quantity * $ai->ea,2); 
+								    		echo round($ai->totalprice,2); ?></td>
                                         <td class="v-align-middle">
                                         <?php echo $ai->daterequested;
                                               $orgdate=date('Y-m-d', strtotime( $ai->daterequested));
@@ -393,6 +394,17 @@ tr.still-due td
 				    { 
 				        $amount = $i->totalprice;
 				        $amount = $amount + ($amount*$settings->taxpercent/100);
+				        				        
+				        if(@$i->discount_percent){
+				        	
+				        	$amount = $amount - ($amount*$i->discount_percent/100);
+				        }
+
+				        if(@$invoice->penalty_percent){
+				        	
+				        	$amount = $amount + (($amount*$i->penalty_percent/100)*$i->penaltycount);
+				        }
+				        
 				        $amount = number_format($amount,2);
 				?>
 				<tr>

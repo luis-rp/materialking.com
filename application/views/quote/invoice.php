@@ -49,7 +49,7 @@
 			                  	</form>
 			                  	<?php }elseif($invoice->paymentstatus=='Paid'){?>
 			                  	Payment type: <?php echo $invoice->paymenttype;?>
-			                  	Ref#: <?php echo $invoice->refnum;?>
+			                  	Ref#: <?php echo @$invoice->transfernum;?>
 			                  	<?php }?>
 			                  	Verification: <?php echo $invoice->status;?>
 			                  	<?php if($invoice->status=='Pending' && $invoice->paymentstatus=='Paid'){?>

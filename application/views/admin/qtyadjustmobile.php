@@ -1,8 +1,10 @@
 <html>
 <head>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-
-<?php if (isset($jsfile)) include $this->config->config['base_dir'] . 'templates/admin/gridfeed/' . $jsfile; ?>
+ <link href="<?php echo base_url(); ?>templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+<link href="<?php echo base_url(); ?>templates/admin/css/adminflare.min.css" media="all" rel="stylesheet" type="text/css" id="adminflare-css">
+<script src="<?php echo base_url(); ?>templates/admin/js/jquery.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="<?php echo base_url(); ?>templates/admin/js/adminflare.min.js" type="text/javascript"></script>
 
 <?php echo '<script>var updateadjustedqtyurl="'.site_url('admin/inventorymanagement/updateadjustedqty').'";</script>'?>
 <script type="text/javascript">
@@ -41,26 +43,19 @@ function updateadjustedqty(itemid,ea){
 </head>
 
 <body>
-<section class="row-fluid">
-    <h3 class="box-header" style="display:inline;" ><span id="step1"><?php echo 'Quantity Adjustment'; ?></span>   
+<section class="row-fluid" style="margin-top:-100px;">
+    <h3 class="box-header" style="display:inline;width:50%;align:center;text-align:center;" ><span id="step1"><?php echo 'Inventory Adjustment'; ?></span>   
     &nbsp;&nbsp;   
     </h3>
-    <div class="box">
+    <div class="box" style="width:50%;align:center;" >
         <div class="span12">
 			<div id="msg"></div>
             <?php // echo $this->session->flashdata('message'); ?>
 
 			<?php if($items){ ?>		
-            <table class="table table-bordered">
-			    	<tr>
-			    		<th width="20%">Itemcode</th>
-			    		<th width="20%">Itemname</th>
-			    		<th width="10%">Item Image</th>
-			    		<th width="10%">Qty On Hand</th>
-			    		<th width="10%">Qty On PO</th>
-			    		<th width="20%">Adjust Qty On Hand</th>
-			    	</tr>
-			    	<?php foreach ($items as $item){ 
+            <table style="align:center;text-align:center;" class="table-bordered">
+			    	
+            		<?php foreach ($items as $item){ 
 			    	
 			    		if (@$item->item_img && file_exists('./uploads/item/' . @$item->item_img))
 			    		{
@@ -72,13 +67,52 @@ function updateadjustedqty(itemid,ea){
 			    		}			    		
 			    	?>
 			    	<tr>
-			    		<td><?php echo $item->itemcode; ?></td>
+			    	<td><img style="max-height: 120px; padding: 0px;width:150px; height:150px;" src="<?php echo $imgName;?>"></td>
+			    	</tr>
+            
+            		<tr>
+			    		<td width="20%"><strong>Itemcode</strong></td>
+			    	</tr>	
+			    	
+			    	<tr>
+			    	<td><?php echo $item->itemcode; ?></td>
+			    	</tr>
+			    	
+			    	<tr>
+			    	<td width="20%"><strong>Itemname</strong></td>			    		
+			    	</tr>	
+			    	
+			    	<tr>	
 			    		<td><?php echo $item->itemname; ?></td>
-			    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src="<?php echo $imgName;?>"></td>
+			    	</tr>
+			    	
+			    	<tr>
+			    	<td width="10%"><strong>Qty On Hand</strong></td>
+			    	</tr>	
+			    	
+			    	<tr>	
 			    		<td><?php echo $item->qtyonhand; ?></td>
+			    	</tr>
+			    	
+			    	<tr>
+			    		<td width="10%"><strong>Qty On PO</strong></td>
+			    	</tr>
+			    	
+			    	<tr>
 			    		<td><?php echo $item->qtyonpo; ?></span></td>
+			    	</tr>
+			    	
+			    	<tr>	
+			    		<td width="20%"><strong>Adjust Qty On Hand</strong></td>
+			    	</tr>	
+			    	
+			    	<tr>
 			    		<td><?php echo $item->manage; ?></span></td>
 			    	</tr>
+			    	
+			    	
+			    			
+			    	
 			    	<?php } ?>
 	    	</table>
             <?php }else echo $message; ?>

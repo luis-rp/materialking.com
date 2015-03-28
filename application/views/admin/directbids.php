@@ -417,14 +417,13 @@ $(document).ready(function(){
 						$allcctotal = number_format(($allcctotal + $taxtotal),2);	
         		  
         		 ?>
-        		 <span id="creditcardnotebycompany"></span>
-        		 <input type=hidden id="totalamount" value="<?php echo @$allcctotal;?>" />
+        		 <span id="creditcardnotebycompany"></span>        		 
         	<span id="creditcardnote"><?php if(count($creditaccarray)>0){ echo "Supplier/s (".implode(",",$creditaccarray).") has set your account to credit card only. Awarding any item to this supplier/s will require upfront credit card payment to that items value.<br/>"; }?></span>
         		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$allcctotal;?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
         		<?php } else {?>
         		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;
         		<?php }?>
-        		
+        		<input type=hidden id="totalamount" value="<?php echo @$allcctotal;?>" />
         	</div>
             </form>
         </div>

@@ -873,7 +873,7 @@ class Quotemodel extends Model
 	{
 
 		$invoicesql = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, r.status,
-					 r.paymentstatus, r.paymenttype, r.refnum, receiveddate, r.datedue, r.paymentdate, r.invoice_type ,r.attachmentname , r.sharewithsupplier, r.attachment
+					 r.paymentstatus, r.paymenttype, r.refnum, r.transfernum, receiveddate, r.datedue, r.paymentdate, r.invoice_type ,r.attachmentname , r.sharewithsupplier, r.attachment
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,

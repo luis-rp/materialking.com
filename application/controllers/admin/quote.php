@@ -6527,7 +6527,7 @@ class quote extends CI_Controller
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount']) * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount'],2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)
@@ -6569,7 +6569,8 @@ class quote extends CI_Controller
               			status='Verified',
               			paymentdate='".date('Y-m-d')."',
               			paymenttype='Credit Card',
-              			refnum='".$chargeobj->id."'
+              			refnum='".$chargeobj->id."',
+              			transfernum ='".$tobj->id."' 
               			WHERE invoicenum='".$_POST['invoicenum']."'";
               //echo $query;die;
               $this->db->query($query);
@@ -11126,7 +11127,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $totalprice * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		
@@ -11247,6 +11248,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
                           'refnum'=>$chargeobj->balance_transaction,
+                          'transfernum' => $tobj->id, 
                           'amount' => $amount
                           );
               
@@ -11353,7 +11355,7 @@ $loaderEmail = new My_Loader();
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $totalprice * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		$qid = $_POST['invoicenum'];
@@ -11489,6 +11491,7 @@ $loaderEmail = new My_Loader();
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
                           'refnum'=>$chargeobj->id,
+                          'transfernum' => $tobj->id, 
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',
@@ -11584,7 +11587,7 @@ $loaderEmail = new My_Loader();
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $totalprice * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		$qid = $_POST['invoicenum'];
@@ -11717,6 +11720,7 @@ $loaderEmail = new My_Loader();
                           'paymentdate' => date('Y-m-d'),
                           'paymenttype' =>'Credit Card',
                           'refnum'=>$chargeobj->id,
+                          'transfernum' => $tobj->id, 
                           'invoicenum' => 'paid-in-full-already'.$awardid,
                           'quantity' => 0,
                           'status' => 'Verified',

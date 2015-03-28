@@ -73,8 +73,10 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> <input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
-				
+	        	$row->manage = '<input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
+				<a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> &nbsp;
+	        	<a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagementmob/qty_adjust/' . @$row->itemid . '"><img style= "margin-top:-20px;" width="25px" height="25px" src="'.site_url('templates/admin/images/mobile_icon.jpg').'"/></a>
+	        	
 	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';      	
 	        	
 	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
@@ -90,7 +92,7 @@ class inventorymanagement extends CI_Controller
 	        	if(@$this->session->userdata('pastdueqtys')){
 	        		
 	        		if(in_array($row->itemid,$this->session->userdata('pastdueqtys')))
-	        		$pastdue = "PAST DUE";
+	        		$pastdue = " <a target='blank' href='".site_url('admin/backtrack')."'>PAST DUE</a>";
 	        	}
 	        	
 	        	$row->daterequested = $row->daterequested." <br>".$pastdue;
@@ -422,11 +424,6 @@ class inventorymanagement extends CI_Controller
 	}
 	
 	
-	public function qtyadjustmob($itemid){
-		
-		redirect('admin/inventorymanagementmob/qty_adjust/'.$itemid);
-	}
-	
 	public function qtyreorder($itemid,$reorderqty){
 		
 		$project = $this->session->userdata('managedproject');
@@ -447,7 +444,7 @@ class inventorymanagement extends CI_Controller
 			$data['orderid'] = $id;*/
 			$data['projects']  =  $this->statmodel->getProjects();
 			$data['itemid'] =  $itemid;
-			$this->db->select('itemcode,itemname');
+			$this->db->select('itemcode,itemname,item_img');
 			$this->db->where('id',$itemid);
 			$data['itemdetails'] = $this->db->get('item')->row();			
 			$data['reorderqty'] = $reorderqty;

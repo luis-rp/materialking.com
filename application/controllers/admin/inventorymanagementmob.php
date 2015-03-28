@@ -35,64 +35,13 @@ class inventorymanagementmob extends CI_Controller
 		$data['timezone']=$setting[0]->tour;
 		$data['timezone']=$setting[0]->timezone;
 		}
-        $this->load->model('admin/catcode_model');
-        $data['pendingbids'] = $this->quote_model->getpendingbids();
+        $this->load->model('admin/catcode_model');       
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data['title'] = "Administrator";
         //$this->load = new My_Loader();
         //$this->load->template('../../templates/admin/template', $data);
     }
 
-    
-    
-    
-    
-    public function updateadjustedqty()
-	{
-		$company = $this->session->userdata('id');
-		if(!$company)
-			redirect('admin/login');
-			
-		if(!@$_POST)
-		{
-			die;
-		}
-		
-		if(!@$_POST['itemid'])
-		{
-			die;
-		}
-				
-		$this->db->where('itemid',$_POST['itemid']);
-		$this->db->where('purchasingadmin',$company);		
-		if($this->session->userdata('managedprojectdetails') != '')
- 		{
- 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
- 		}		
-		$existing = $this->db->get('inventory')->row();
-		if($existing)
-		{
-			$_POST['adjustedqty'] += $existing->adjustedqty; 
-			$this->db->where('itemid',$_POST['itemid']);
-			$this->db->where('purchasingadmin',$company);			
-			if($this->session->userdata('managedprojectdetails') != '')
- 			{
- 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
- 			}
-			$this->db->update('inventory',$_POST);
-		}
-		else
-		{
-			$_POST['purchasingadmin'] = $company;
-			if($this->session->userdata('managedprojectdetails') != '')
- 			{
- 			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
- 			}			
-			$this->db->insert('inventory',$_POST);
-		}
-		//print_r($_POST);
-	}
-	
 	
 	public function qty_adjust($itemid){
 		
@@ -119,8 +68,8 @@ class inventorymanagementmob extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
-				&nbsp; &nbsp; &nbsp;
+	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <br> <img src="http://i.imgur.com/yOadS1c.png" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
+				<br><br>
 	        	<input type="button" style="text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	
 	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
@@ -141,7 +90,7 @@ class inventorymanagementmob extends CI_Controller
         }
       
     	$data['items'] = $inventory;       	
-    	$this->load->view('admin/qtyadjust', $data);
+    	$this->load->view('admin/qtyadjustmobile', $data);
 		
 	}
 
