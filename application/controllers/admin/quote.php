@@ -7840,9 +7840,9 @@ $loaderEmail = new My_Loader();
             $totalprice = 0;
             foreach ($company['items'] as $item) {
             	
-            	$totalprice += $item->ea * (($item->invoice_type != "fullpaid")? (($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity);
+            	$totalprice += $item->ea * ((@$item->invoice_type != "fullpaid")? ((@$item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity);
                     
-                $quantity = ($item->invoice_type != "fullpaid")? (($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
+                $quantity = (@$item->invoice_type != "fullpaid")? ((@$item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
             	
                 $pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
