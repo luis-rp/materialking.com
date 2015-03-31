@@ -327,14 +327,26 @@ function jq( myid ) {
            <table id="ship<?php echo $shipments[0]->quote;?>" class="table table-bordered" style="display:none;">
            	<tr>
            		<th>Item</th>
+           		<th>Item Image </th>
            		<th>Date Sent</th>
            		<th>Quantity</th>
            		<th>Reference #</th>
            		
            	</tr>
-           	<?php foreach($shipments as $s){?>
+           	<?php 
+           	foreach($shipments as $s)
+           	{
+           		if(isset($s->item_img) && $s->item_img!= "" && file_exists("./uploads/item/".$s->item_img)) 
+	    		{ 
+					$imgName1 = site_url('uploads/item/'.$s->item_img);
+	    		} 
+	    		else 
+	    		{
+	    			$imgName1 = site_url('uploads/item/big.png');	
+	    		} ?>
            	<tr>
            		<td><?php echo $s->itemname;?></td>
+           		<td><img src="<?php echo $imgName1;?>" width="80" height="80"> </td>
            		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>

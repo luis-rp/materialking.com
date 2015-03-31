@@ -36,6 +36,16 @@
 						</option>
 					<?php }?>
 				</select>
+				<select id="searchcostcode" name="searchcostcode">
+					<option value=''>All Costcode</option>
+					<?php foreach($costcodelist as $costcode){?>
+						<option value="<?php echo $costcode->code?>"
+							<?php if(@$_POST['searchcostcode']==$costcode->code){echo 'SELECTED';}?>
+							>
+							<?php echo $costcode->code?>
+						</option>
+					<?php }?>
+				</select>
                 &nbsp;&nbsp;
                 <input type="submit" value="Filter" class="btn btn-primary"/>
                 <a href="<?php echo site_url('admin/report');?>">

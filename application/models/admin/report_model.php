@@ -39,6 +39,10 @@ class report_model extends Model
  			{
  				$filter = " AND ai.company='".$_POST['searchcompany']."'";
  			}
+ 			if(@$_POST['searchcostcode'])
+ 			{
+ 				$filter .= " AND ai.costcode='".$_POST['searchcostcode']."'";
+ 			}
  		}
  		
  		if($this->session->userdata('usertype_id')>1)
@@ -61,7 +65,7 @@ class report_model extends Model
 					  GROUP BY receiveddate
 					  $search ";
  		
- 		
+ 		//echo '<pre>'.$datesql;die;
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,  ai.company, ai.purchasingadmin,  r.datedue, r.paymentstatus, r.paymentdate, 
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
  						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice

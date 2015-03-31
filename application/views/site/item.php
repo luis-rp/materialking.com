@@ -997,6 +997,7 @@ $( document ).tooltip();
                             	<a href="javascript:void(0)" onclick="setmiles(60)">60</a>&nbsp;&nbsp;
                             	<a href="javascript:void(0)" onclick="setmiles(120)">120</a>&nbsp;&nbsp;
                             	<a href="javascript:void(0)" onclick="setmiles(240)">240</a>&nbsp;&nbsp;
+                            	<a href="javascript:void(0)" onclick="setmiles(2400)">View All</a>&nbsp;&nbsp;
                             </h4>
                             <?php if(!$inventory){?>
                             No nearby suppliers for the item. Try a larger search radius.

@@ -551,6 +551,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         <?php if ($this->session->userdata('usertype_id') < 3) {
 						 $menu = trim($menu);  ?>						
+						  <?php if ($mp) { ?>
     <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billings' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' || $menu== 'contractor_profile') { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
                                <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
@@ -641,7 +642,7 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 
                         
                         
-                         <?php if ($mp) { ?>
+                        
                             <li <?php if ($menu == 'quote' && $function == 'index') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/quote/index/' . ($this->session->userdata('managedproject') ? $this->session->userdata('managedproject') : '')) ?>">
                                     <span class="icon-legal"></span>QUOTE/PO MANAGEMENT
@@ -685,16 +686,16 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                                 </a>
                             </li>
                         <?php } ?>
-                          <?php } ?>
+                          <?php //} ?>
                         <li <?php if ($menu == 'settings') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
                         
-                        <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
+                       <!-- <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
-                        </li>               
+                        </li>  -->             
                         
-                          <?php } else { ?>
+                          <?php } } else { ?>
                             <?php if ($mp) { ?>
                             <li <?php if ($menu == 'purchaseuser' && $function == 'quotes') { ?>class="active"<?php } ?>>
                                 <a href="<?php echo site_url('admin/purchaseuser/quotes/') ?>">

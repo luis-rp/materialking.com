@@ -30,17 +30,21 @@
 
 		<script type="text/javascript" language="javascript">
 			jQuery(function( $ ) {
+			 $(".bxslider").hide();	
 			 $('.bxslider').bxSlider({
 			 adaptiveHeight: true,
   			 mode: 'fade',
-  			 auto: true
+  			 auto: true,
+  			 onSliderLoad : function(){
+               $(".bxslider").fadeIn();
+            }
 			});
 			});
 		</script>
 
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$(".fancybox").fancybox();				
+							
 			});
 		</script>
 
@@ -851,7 +855,7 @@ function changetab(tabname){
 
                <div class="sidebar span3">
                   <div class="widget contact">
-                      <div class="fb-like-box" data-href="<?php if(isset($supplier->fbpageurl)) echo $supplier->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
+                      <div class="fb-like-box" data-href="<?php if(isset($contractor->fbpageurl)) echo $contractor->fbpageurl; ?>" data-width="200" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
                  </div>
               </div>
               </div>

@@ -47,8 +47,9 @@ class inventorymanagement_model extends Model
  		$qry = $this->db->query($unionquery);		
  		$qryresult = $qry->result();
  		//echo "<pre>",print_r($qryresult); die; 		
- 		
- 		if($qryresult){ $i=0;
+ 		$inventoryarray = array();
+ 		$i=0;
+ 		if($qryresult){ 
  		
  		$whereproject = '';
  		if($this->session->userdata('managedprojectdetails') != '')
@@ -66,10 +67,12 @@ class inventorymanagement_model extends Model
  				$qryresult[$i]->minstock = $qryinvresult->minstock;
  				$qryresult[$i]->maxstock = $qryinvresult->maxstock;
  				$qryresult[$i]->reorderqty = $qryinvresult->reorderqty;
- 				if($qryinvresult->adjustedqty>0){
+ 				//if($qryinvresult->adjustedqty>0){
  					$qryresult[$i]->qtyonhand = ($qryresult[$i]->qtyonhand - $qryinvresult->adjustedqty);
  					$qryresult[$i]->valueonhand = ($qryresult[$i]->valueonhand - ($qryinvresult->adjustedqty*$qryresult[$i]->ea));
- 				}
+ 				//}
+ 				
+ 				$inventoryarray[] = $qryresult[$i]->itemid;
  				
  			}else{
  				$qryresult[$i]->minstock = 0;
@@ -79,6 +82,51 @@ class inventorymanagement_model extends Model
  			$i++;
  		}
  		}
+ 		
+ 		$whereproject2 = '';
+ 		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$whereproject2 .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;
+ 		}
+ 		
+ 		
+ 		if(count($inventoryarray>0)){
+ 			
+ 		  $inventorystring	= implode(",",$inventoryarray);
+ 		  if($inventorystring!="")
+ 		  $whereproject2 .= " AND i.itemid NOT IN (".$inventorystring.")";
+ 		}
+ 		
+ 		$inventorysql2 = "select i.itemid as id,i.itemid, itm.itemcode, itm.itemname, 0 as qtyonhand, 0 as qtyonpo, 0 as quantity, itm.ea as ea, 0 as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, 0 as valuecomitted, itm.item_img, i.minstock, i.maxstock, i.reorderqty, i.adjustedqty from ".$this->db->dbprefix('inventory')." i JOIN ".$this->db->dbprefix('item')." itm ON i.itemid = itm.id	 WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject2} ";
+ 			$sqlq2 = $this->db->query($inventorysql2);		
+ 			$qryinvresult2 = $sqlq2->result();
+ 			
+ 			if($qryinvresult2){
+
+ 				foreach($qryinvresult2 as $qryres2){
+					$qryresult[$i] = new stdClass;
+ 					$qryresult[$i]->minstock = $qryres2->minstock;
+ 					$qryresult[$i]->maxstock = $qryres2->maxstock;
+ 					$qryresult[$i]->reorderqty = $qryres2->reorderqty;
+ 					$qryresult[$i]->qtyonhand = (0-$qryres2->adjustedqty);
+ 					$qryresult[$i]->valueonhand = $qryres2->valueonhand;
+ 					$qryresult[$i]->id = $qryres2->id;
+ 					$qryresult[$i]->itemid = $qryres2->itemid;		
+ 					$qryresult[$i]->itemcode = $qryres2->itemcode;	
+ 					$qryresult[$i]->itemname = $qryres2->itemname;	
+ 					$qryresult[$i]->quantity = $qryres2->quantity;	 					
+ 					$qryresult[$i]->qtyonpo = $qryres2->qtyonpo;
+ 					$qryresult[$i]->ea = $qryres2->ea;	
+ 					$qryresult[$i]->daterequested = $qryres2->daterequested;	
+ 					$qryresult[$i]->lastaward = $qryres2->lastaward;		
+ 					$qryresult[$i]->valuecomitted = $qryres2->valuecomitted;	
+ 					$qryresult[$i]->item_img = $qryres2->item_img;	
+ 					$qryresult[$i]->manage = $qryres2->manage;	 					
+ 					$i++;
+ 				}
+ 			}
+ 		
+ 		
  		return $qryresult;
  	}
 }	

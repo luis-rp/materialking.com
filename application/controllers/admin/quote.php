@@ -5597,7 +5597,7 @@ class quote extends CI_Controller
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')
 		             ->where('quote',$qid)->get()->result();*/
 		             
-		             $shipments = $this->db->select('shipment.*, item.itemname,awarditem.itemname as iii')
+		             $shipments = $this->db->select('shipment.*, item.itemname,awarditem.itemname as iii,item_img')
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')->join('awarditem','awarditem.itemid=shipment.itemid','left')
 		             ->where('quote',$qid)->where('accepted',0)->group_by("shipment.itemid")->get()->result();
 
@@ -7861,11 +7861,12 @@ $loaderEmail = new My_Loader();
             $taxtotal = $totalprice * $config['taxpercent'] / 100;
             $grandtotal = $totalprice + $taxtotal;
 
+            $arradditionalcal = array();
             if($awarded->invoices){ 
         			
             	foreach ($awarded->invoices as $awinv){
             		
-            		$arradditionalcal = array();
+            		
             		$disocunt = 0;
             		if(@$awinv->discount_percent){
 
@@ -7909,7 +7910,7 @@ $loaderEmail = new My_Loader();
             <td align="right">$ ' . number_format($taxtotal, 2) . '</td>
             </tr>';
             
-            if(count($arradditionalcal)>0){
+            if(count(@$arradditionalcal)>0){
             	$pdfhtml .='<tr>
                 		<td>'.$arradditionalcal[0].'</td>
 					    <td align="right">'.$arradditionalcal[1].'</td>
@@ -10148,7 +10149,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 //echo '<pre>';print_r($quote->awardedbid);die;
                 if ($quote->status == 'AWARDED') {
 
-                	$shipmentsquery = "SELECT s.*, qi.itemname FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) where s.quote='{$quote->id}' and s.accepted = 0";
+                	$shipmentsquery = "SELECT s.*, qi.itemname,i.item_img FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) LEFT JOIN ".$this->db->dbprefix('item')." i ON i.id=qi.itemid  where s.quote='{$quote->id}' and s.accepted = 0";
         			$shipments = $this->db->query($shipmentsquery)->result();
         			/*$shipments = $this->db->select('shipment.*, item.itemname')
 		             ->from('shipment')->join('item','shipment.itemid=item.id','left')

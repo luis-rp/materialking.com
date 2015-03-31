@@ -971,14 +971,26 @@ function closepop()
            <table class="table table-bordered" >
            	<tr>
            		<th>Item</th>
+           		<th>Item Image</th>
            		<th>Date Sent</th>
            		<th>Quantity</th>
            		<th>Reference #</th>
            		<th>Action</th>
            	</tr>
-           	<?php foreach($shipments as $s){ ?>
+           	<?php foreach($shipments as $s)
+           	{ 
+           		if(isset($s->item_img) && $s->item_img!= "" && file_exists("./uploads/item/".$s->item_img)) 
+	    		{ 
+					$imgName1 = site_url('uploads/item/'.$s->item_img);
+	    		} 
+	    		else 
+	    		{
+	    			$imgName1 = site_url('uploads/item/big.png');	
+	    		}            		
+           		?>
            	<tr>
-           		 <td><?php if($s->itemname=="") {echo $s->iii;} else { echo $s->itemname;}?></td>
+           		<td><?php if($s->itemname=="") {echo $s->iii;} else { echo $s->itemname;}?></td>
+           		<td><img src="<?php echo $imgName1;?>" width="80" height="80"> </td>
            		<td id="shipdate<?php echo $s->id;?>"><?php echo date("m/d/Y h:i A", strtotime($s->shipdate));?></td>
            		<td id="acceptqty<?php echo $s->id;?>"><?php echo $s->quantity;?></td>
            		<td id="acceptinvoicenum<?php echo $s->id;?>"><?php echo $s->invoicenum;?></td>

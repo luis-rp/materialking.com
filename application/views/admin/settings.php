@@ -23,14 +23,6 @@
     </div>
     </div>
 
-   <!-- <div class="control-group">
-    <label class="control-label" for="pricepercent">Target Price</label>
-    <div class="controls">
-     <input type="text" id="pricepercent" name="pricepercent" class="span2" value="<?php //echo $this->validation->pricepercent;?>"> %
-    </div>
-    </div>-->
-
-
     <div class="control-group">
     <label class="control-label" for="adminemail">Admin Email</label>
     <div class="controls">
@@ -68,20 +60,7 @@
     </select>
 
      </div>
-    </div>
-    
-    
-    <?php //echo "<pre>data-"; print_r($this->validation->logo); die; ?>
-     <div class="control-group">
-        <label class="control-label">Logo</label>
-		  <div class="controls">
-			 <input type="file"  name="logo" id="logo"/>			                          
-				   <?php if($this->validation->logo){?><br/>
-				      <img src="<?php echo site_url('uploads/logo/'.$this->validation->logo);?>" width="100" height="100"/>
-				    <?php }?>
-		  </div>
-    </div>
-
+    </div>  
 
     <div class="control-group">
     <label class="control-label">&nbsp;</label>

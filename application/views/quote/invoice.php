@@ -17,6 +17,15 @@
 
         return true;
     }
+    
+    function showInvoice(invoicenum,invoicequote)
+    {
+       $("#relinvoicenum").val(invoicenum);
+       $("#relinvoicequote").val(invoicequote);	
+       $("#invoiceform").submit();
+    }
+    
+    
 </script>
 
 <div class="content">
@@ -101,11 +110,11 @@
 							        <td width="7%" valign="top">&nbsp;</td>
 							        <td width="60%" valign="top"><?php echo $quote->ponum?></td>
 							      </tr>
-							      <tr>
+							     <!-- <tr>
 							        <td valign="top">Subject</td>
 							        <td valign="top">&nbsp;</td>
 							        <td valign="top"><?php echo $quote->subject;?></td>
-							      </tr>
+							      </tr>-->
 							      <tr>
 							        <td valign="top">PO# Date</td>
 							        <td valign="top">&nbsp;</td>
@@ -282,6 +291,26 @@
 							        	{ ?>
 							        	<a href="<?php echo site_url('uploads/invoiceattachments/'.$invoice->attachmentname);?>" target="_blank">View Attached File</a>
 							     <?php   } ?>
+							     
+							     
+					<form id="invoiceform" class="form-inline" style="padding:0px; margin:0px" method="post" action="<?php echo site_url('quote/invoice'); ?>">
+                        <input type="hidden" id="relinvoicenum" name="relinvoicenum"/>                                 
+                        <input type="hidden" id="relinvoicequote" name="relinvoicequote"/>
+                    </form>   		     
+
+                     <?php if(@$invoice->alreadypay==1){?>
+                    <div style="text-align:center;" > Invoice was pre-paid under Invoice# <a href="javascript:void(0)" onclick="showInvoice('<?php echo @$invoice->paidinvoicenum;?>','<?php echo $quote->id;?>')"><?php echo @$invoice->paidinvoicenum;?></a></div>
+                    <?php }?>     
+							     
+				    <?php if(@$invoice->fullpaid==1 && @$invoice->relatedinvoices){?>
+                    <div style="text-align:left;" > Invoices Associated with this pre-paid invoice: 
+                   	<?php foreach($invoice->relatedinvoices as $relinvoice){
+                   	?>
+                    <a href="javascript:void(0)" onclick="showInvoice('<?php echo @$relinvoice->invoicenum;?>','<?php echo $quote->id;?>')"><?php echo @$relinvoice->invoicenum;?></a> &nbsp; &nbsp;
+                    <?php }?>
+                    </div>
+                   	<?php }?>   
+							     
                             </div>
                         </div>
                     </div>

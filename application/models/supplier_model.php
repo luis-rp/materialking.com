@@ -43,6 +43,7 @@ class supplier_model extends Model {
     function get_contractor($username){
         $this->db->where('username', $username);
         $this->db->where('isdeleted', 0);
+        $this->db->where('profile', 1);
         $result = $this->db->get('users');
         if($result->num_rows()){
             $row = $result->row();
@@ -118,7 +119,7 @@ class supplier_model extends Model {
         {
             return $related;
         }
-        $contractors = $this->db->where('username !=','')->where('id !=',$id)->where('isdeleted =',0)->where('status',1)->get('users')->result();
+        $contractors = $this->db->where('username !=','')->where('id !=',$id)->where('isdeleted =',0)->where('status',1)->where('profile',1)->get('users')->result();
         foreach($contractors as $contractor)
         {
             if(count($related) == 5)

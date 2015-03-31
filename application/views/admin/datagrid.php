@@ -13,7 +13,7 @@
 
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
-	<?php if($jsfile=="costcodeitemjs.php"){?>
+	<?php if($jsfile=="costcodeitemjs.php") {?>
 	 <script type="text/javascript">
 	 $(document).ready(function(){
  tour7 = new Tour({
@@ -56,7 +56,7 @@
 	
  </script>
 	<?php }?>
-	<?php if($jsfile=="itemcodeitemjs.php"){?>
+	<?php if($jsfile=="itemcodeitemjs.php") {?>
 	 <script type="text/javascript">
 	 $(document).ready(function(){
  tour9 = new Tour({
@@ -79,6 +79,10 @@
 			tour9.init();
 			start9();
 		});
+
+	<?php if(!@$items) { ?>	
+    	$("#MyGrid").css("display","none");		
+    <?php } ?>	
 	 });
 		$('#canceltour').live('click',endTour9);
 	 function start9(){
@@ -165,7 +169,7 @@
               </tfoot>
             </table>
             <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
-            <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo "No Records Exist"; ?>
+            <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
            </div>
          </div>
 

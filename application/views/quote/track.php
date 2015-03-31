@@ -165,18 +165,18 @@ tr.still-due td
     						<table id="datatable" class="table no-more-tables general">
                                 <thead>
                                     <tr>
-                                        <th>Item Code/Name</th>
-                                        <th>Item Image</th>
-                                        <th>Qty.</th>
-                                        <th>Unit</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-                                        <th>Requested</th>
-                                        <th>Notes</th>
-                                        <th>Shipped</th>
-                                        <th>Due</th>
-                                        <th>Ship Qty</th>
-                                        <th>Ref#</th>
+                                        <th width="12%">Item Code/Name</th>
+                                        <th width="12%">Item Image</th>
+                                        <th width="6%">Qty.</th>
+                                        <th width="6%">Unit</th>
+                                        <th width="6%">Price</th>
+                                        <th width="6%">Total</th>
+                                        <th width="6%">Requested</th>
+                                        <th width="12%">Notes</th>
+                                        <th width="6%">Shipped</th>
+                                        <th width="6%">Due</th>
+                                        <th width="12%">Ship Qty</th>
+                                        <th width="10%">Ref#</th>
                                     </tr>
                                 </thead>
 
@@ -189,7 +189,7 @@ tr.still-due td
     						    		$i++;
     						      ?>
                                     <tr class="<?php echo $ai->quantity - $ai->received > 0?'still-due':'';?>">
-                                        <td class="v-align-middle"><?php echo $ai->itemcode;?>
+                                        <td class="v-align-middle" style="break-word:break-all;"><?php echo $ai->itemcode;?>
                                         <br/>
                                         <span style="font-size:11px; color:#999999;float:left;"><?php echo $ai->itemname;?></span>
                                        
@@ -218,7 +218,7 @@ tr.still-due td
 											  $diff12 = date_diff($date1, $date2);
 											  //$days = $diff12->d;
 											  echo "<br>Due in&nbsp;".$diff12->format("%R%a days");?></td>
-                                        <td class="v-align-middle"><?php echo $ai->notes;?></td>
+                                        <td class="v-align-middle" style="break-word:break-all;"><?php echo $ai->notes;?></td>
                                         <td class="v-align-middle"><?php echo $ai->received;?><br>
                                         <?php if($ai->pendingshipments){?>
                                         <br/><?php echo round($ai->pendingshipments,2);?>

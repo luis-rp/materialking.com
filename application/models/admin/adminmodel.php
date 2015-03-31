@@ -54,6 +54,7 @@ class adminmodel extends Model
 			u.created_date,
 			u.last_logged_date,
 			u.status,
+			u.profile,
 			u.position,
 			ut.userType,
 			u.email,
@@ -177,6 +178,7 @@ class adminmodel extends Model
 	function update() 
 	{
 		
+		
 		$options = $this->input->post();
 		if(@$options['password'])
 			$options['password'] = md5($options['password']);
@@ -224,6 +226,26 @@ class adminmodel extends Model
 	{
 		$options = array(
 			'status'=>'0'
+		);
+		
+		$this->db->where('id',$id);
+		$this->db->update('users', $options);
+	}
+	
+	function profileon($id)
+	{
+		$options = array(
+			'profile'=>'1'
+		);
+		
+		$this->db->where('id',$id);
+		$this->db->update('users', $options);
+	}
+	
+	function profileoff($id)
+	{
+		$options = array(
+			'profile'=>'0'
 		);
 		
 		$this->db->where('id',$id);

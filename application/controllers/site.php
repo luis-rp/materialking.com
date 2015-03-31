@@ -2085,8 +2085,10 @@ class site extends CI_Controller
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
-    public function searchads(){
-		//echo "===="; exit;
+    
+    public function searchads()
+    {
+		 
     	$data['a_title'] = "Classified area";
     	$where = "";
     	$wherecat = "";
@@ -2112,13 +2114,33 @@ class site extends CI_Controller
     	if(isset($_POST['items']) && $_POST['items']!="")
     	$where .= " AND itemid = {$_POST['items']}";
     	$res = array();
-    	foreach($categories as $cat){
-    		//$sql_ad = "SELECT * FROM ".$this->db->dbprefix('ads')." WHERE category=".$cat['id'];
-    		$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN ".$this->db->dbprefix('company')." c ON c.id=a.user_id where a.category=".$cat['id']."";
+    	foreach($categories as $cat)
+    	{
+    		$sql_ad = "SELECT a.* FROM ".$this->db->dbprefix('ads')." a JOIN 
+    		".$this->db->dbprefix('company')." c ON c.id=a.user_id 
+    		where a.category=".$cat['id']."";
     		$result = $this->db->query($sql_ad)->result_array();
+    		 
     		if($result)
-    		$res[$cat['catname']] = $result;
-    	}
+    		{
+    			$res[$cat['catname']] =$result;
+    			$i=0;
+    			foreach ($result as $re)
+    			{
+    				$image=$this->db->get_where('AdImage',array('adid'=>$re['id']))->row()->image;
+    				if($image!="")
+    				{
+    				$res[$cat['catname']][$i]['image'] = $image;
+    				}
+    				else 
+    				{
+    				$res[$cat['catname']][$i]['image'] = "";	
+    				}
+    				
+    				$i++;				
+   			    }   			
+    		}  		
+    	} 
 		if(count($res)>0)
     	$data['ads'] = $res;
     	if(isset($_POST['category']) && $_POST['category']!="")
@@ -2143,6 +2165,8 @@ class site extends CI_Controller
 		/*===============*/
     	$this->load->view('site/classified', $data);
     }
+    
+    
     public function ad($id){
     	$sql = "SELECT c.id c_id,c.title c_title,c.address c_address,c.logo c_logo,c.username c_username,a.id a_id,a.title a_title,a.description a_description,a.price a_price,a.priceunit a_priceunit,a.address a_address,a.latitude a_latitude,a.longitude a_longitude,a.published a_published, a.image a_image,a.views a_views,a.tags a_tags,c.phone c_phone,c.primaryemail c_primaryemail,a.category a_category, cat.catname FROM ".$this->db->dbprefix('company')." c left join ".$this->db->dbprefix('ads')." a on a.user_id=c.id left join ".$this->db->dbprefix('category')." cat on a.category = cat.id WHERE a.id=".$id." ";
     	$data = $this->db->query($sql)->row_array();

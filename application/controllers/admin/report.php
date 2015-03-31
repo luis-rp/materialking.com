@@ -344,7 +344,12 @@ class report extends CI_Controller
 					$sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c," . $this->db->dbprefix('awarditem') . " ai
 					  WHERE c.id=ai.company AND ai.id='{$value->awarditem}'";           
             	    $result= $this->db->query($sql)->row();	
-            	    $companylist[]=$result;			
+            	    $companylist[]=$result;		
+            	    
+            	    $sql1 = "SELECT c.* FROM " . $this->db->dbprefix('costcode') . " c
+					  		WHERE c.code='{$value->costcode}'";           
+            	    $result1= $this->db->query($sql1)->row();	
+            	    $costcodelist[]=$result1;		
 				}
 				
 				$items[] = $report;
@@ -352,6 +357,8 @@ class report extends CI_Controller
 			}
 			$companylist = array_map("unserialize", array_unique(array_map("serialize", $companylist)));
 			$data['companylist1'] = $companylist;
+			$costcodelist = array_map("unserialize", array_unique(array_map("serialize", $costcodelist)));
+			$data['costcodelist'] = $costcodelist;
 		    $data['reports'] = $items;
 		}
 		if(!$items)
@@ -366,7 +373,7 @@ class report extends CI_Controller
         
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Report';
-		
+				
 		$this->load->view ('admin/report', $data);
 	}
 	

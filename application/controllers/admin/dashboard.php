@@ -818,7 +818,7 @@ class Dashboard extends CI_Controller
 					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
 					$taxrate = $this->db->query($cquery)->row();
 
-					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
 							".$this->db->dbprefix('orderdetails')." od
 					WHERE cc.code =  '".$c->label."' and o.project='".$this->session->userdata('managedprojectdetails')->id."'
@@ -832,7 +832,11 @@ class Dashboard extends CI_Controller
 							$c->data += $totalOrder->sumT;
 					}
 					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					if(@$c->shipping)
 					$c->data = round( ($c->data + $c->shipping ),2);
+					elseif (@$totalOrder->shipping)
+					$c->data = round( ($c->data + @$totalOrder->shipping ),2);
+					
 					/*********/
 					$c->label = $c->label . ' - $'.$c->data;
 					$costcodesjson[]=$c;

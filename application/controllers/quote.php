@@ -3735,11 +3735,15 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			
 		if(isset($_POST['invoicenum']) && $_POST['invoicenum']!="")	
 			$invoicenum = $_POST['invoicenum'];
+		elseif(@$_POST['relinvoicenum'])	
+			$invoicenum = $_POST['relinvoicenum'];		
 		else 
 			$invoicenum = "";
 			
 		if(isset($_POST['invoicequote']) && $_POST['invoicequote']!="")	
 			$invoicequote = $_POST['invoicequote'];
+		elseif(@$_POST['relinvoicequote'])	
+			$invoicequote = $_POST['relinvoicequote'];	
 		elseif($invoicequote!="") 
 			$invoicequote = $invoicequote;
 		else 
@@ -3752,6 +3756,20 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			redirect('quote/invoices');
 		}
 		$invoice = $this->quotemodel->getinvoicebynum($invoicenum, $company->id,$invoicequote);
+		
+		foreach ($invoice->items as $invoiceitem) {
+        	
+        	 if(@$invoiceitem->invoice_type == "alreadypay"){ 
+                  $invoice->alreadypay = 1;
+                   $invoice->paidinvoicenum = $this->db->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->get()->row()->invoicenum;        
+        	 }     
+        	 
+        	 if(@$invoiceitem->invoice_type == "fullpaid"){
+        	  	$invoice->fullpaid = 1;	  
+        	  	$invoice->relatedinvoices = $this->db->select('invoicenum')->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->where('invoice_type',"alreadypay")->get()->result();   
+        	 } 	
+        }
+		
 		$awarded = $this->quotemodel->getawardedbid($invoice->quote, $company->id);
 		//echo '<pre>';print_r($invoice);die;
 		

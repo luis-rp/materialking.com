@@ -869,32 +869,49 @@ function displayBlankRow()
 		  <div class="control-group">
 		    <table class="table table-bordered">
 		    	<tr>
-		    		<th>Item Code</th>
-		    		<th>Item Name</th>
-		    		<th>Qty.</th>
-		    		<th>Unit</th>
-		    		<th>Price EA</th>
-		    		<th>Total Price</th>
-		    		<th>Date Requested</th>
-		    		<th>Cost Code</th>
-		    		<th>Notes</th>
-		    		<th>Delete</th>
+		    		<th width="15%">Item Code</th>
+		    		<th width="15%">Item Name</th>
+		    		<th width="5%">Qty.</th>
+		    		<th width="5%">Unit</th>
+		    		<th width="9%">Price EA</th>
+		    		<th width="9%">Total Price</th>
+		    		<th width="10%">Date Requested</th>
+		    		<th width="10%">Cost Code</th>
+		    		<th width="10%">Notes</th>
+		    		<th width="3%">Delete</th>
 		    	</tr>
 		    	<?php if($quoteitems){?>
 		    	<form id="olditemform" class="form-horizontal" method="post"
 		    	action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>"> 
 			  	<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
-		    	<?php foreach($quoteitems as $q){?>
+		    	<?php foreach($quoteitems as $q)
+		    	{
+		    		if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
+		    		{ 
+                       $imgName = site_url('uploads/item/'.$q->item_img);
+                    } 
+                    else 
+                    { 
+                       $imgName = site_url('uploads/item/big.png');
+                    } 
+		    		?>
 		    	<tr>
 		    		<td>
 			    		<input type="hidden" name="company<?php echo $q->id;?>" />
 		    			<input type="hidden" id="itemid<?php echo $q->id;?>" name="itemid<?php echo $q->id;?>" class="span itemid" value="<?php echo $q->itemid;?>"/>
 		    			<input type="hidden" id="itemincrement<?php echo $q->id;?>" name="itemincrement<?php echo $q->id;?>" value="<?php echo $q->increment;?>"/>
-			    		<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>
+		    			
+			    		<!--<input type="text" required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="<?php echo $q->itemcode;?>" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/>-->
+			    		
+			    		<textarea required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/><?php echo $q->itemcode;?></textarea>
+			    		<br>
+			    		<img src="<?php echo $imgName;?>" width="90" height="90" style="padding-top:5px;">
+			    		<br>
 			    		<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
+			    		
 		    		</td>
 		    		<td width="18%">
-			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"><?php echo htmlentities($q->itemname);?></textarea>
+			    		<textarea id="itemname<?php echo $q->id;?>" name="itemname<?php echo $q->id;?>" required <?php if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;height:130px;"><?php echo htmlentities($q->itemname);?></textarea>
 		    		</td>
 		    		<td><input type="text" class="highlight nonzero nopad width50 input-sm span12" id="quantity<?php echo $q->id;?>" name="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="checkupdateincrementquantity(this.value,'<?php echo $q->id;?>'); calculatetotalprice('<?php echo $q->id?>'); checkmaxstockreached(this.value,'<?php echo $q->id?>'); " 
 onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrmsg<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;"/><br>
@@ -932,7 +949,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<input type="checkbox" name="willcall<?php echo $q->id;?>" value="1" <?php if($q->willcall){echo 'CHECKED';}?>/>For Pickup/Will Call
 		    		</td>
 		    		<td>
-		    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="costcode" onchange="defaultcostcode(this.value)">
+		    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="costcode" onchange="defaultcostcode(this.value)" style="width:150px;">
 		    				<?php foreach($costcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($q->costcode==$costcode->code){echo 'SELECTED';}?>>
@@ -941,7 +958,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    				<?php }?>
 		    			</select>
 		    		</td>
-		    		<td><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>"><?php echo $q->notes;?></textarea></td>
+		    		<td><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="height:130px;width:95%;"><?php echo $q->notes;?></textarea></td>
 		    		<td>
 		    		<?php echo anchor ( 'admin/quote/deleteitem/' . $q->id.'/'.$this->validation->id, '<span class="icon-2x icon-trash"></span>', array ('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this item?')" ) ) ?>
 					
@@ -970,7 +987,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
                     </td>
 		    		<td width="18%">
-		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;"></textarea>
+		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;height:100px;"></textarea>
 		    		</td>
 		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="checkincrementquantity(this.value);calculatetotalprice(''); checkmaxstockreached(this.value,0); " required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
 		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();" class="span12"/></td>
@@ -998,7 +1015,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<input type="checkbox" name="willcall" value="1"/> For Pickup/Will Call
 		    		</td>
 		    		<td>
-		    			<select id="costcode" name="costcode" class="costcode" onchange="defaultcostcode(this.value)">
+		    			<select id="costcode" name="costcode" class="costcode" onchange="defaultcostcode(this.value)" style="width:150px;">
 		    				<?php foreach($costcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($this->session->userdata('defaultcostcode')==$costcode->code){echo 'SELECTED';}?>>
@@ -1008,7 +1025,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			</select>
 		    			
 		    		</td>
-		    		<td><textarea id="notes" name="notes"></textarea></td>
+		    		<td><textarea id="notes" name="notes" style="width:95%;height:100px;"></textarea></td>
 		    		<td></td>
 		    	</tr>
 		    	<tr>
@@ -1054,7 +1071,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 				    <table class="table table-striped">
 					    <tr>
 						    <th>
-						    	Our Price Guestimate
+						    	Our Price Guesstimate
 						    </th>
 					    </tr>
 					    <tr>

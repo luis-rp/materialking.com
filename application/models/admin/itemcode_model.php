@@ -53,7 +53,7 @@ class itemcode_model extends Model {
             $where .= " AND i.category = '{$category}'";
                 
         if($pa && $pa!='1')    
-            $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL)  ";   
+            $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL OR i.purchasingadmin = '1')  ";   
             
         //$where .= " AND ai.purchasingadmin='$pa'";
         $sql = "SELECT i.*, MAX(IFNULL(a.awardedon,o.purchasedate)) awardedon, sum(ai.totalprice) totalpurchase
@@ -1428,6 +1428,17 @@ class itemcode_model extends Model {
     	$this->db->where(array('title'=>$str,'category'=>'Manufacturer'));
     	$query = $this->db->get('type');
     	return  $query->result();
+    }
+    
+    
+    public function checkinventoryresult($itemid){
+    	
+    	$this->db->where('itemid',$itemid);
+    	$this->db->where('project',@$this->session->userdata('managedprojectdetails')->id);
+    	$this->db->where('purchasingadmin',$this->session->userdata('id'));
+    	$query = $this->db->get('inventory');
+    	return  $query->row();
+    	    	
     }
     
 //End By Dhruvisha

@@ -459,10 +459,12 @@ class costcode extends CI_Controller {
 											 data-slider-value="' . $costcode->manualprogress . '"/>&nbsp;&nbsp;
 											 <span id="progresslabel' . $costcode->id . '">' . $costcode->manualprogress . '%</span>';
                 $per = str_replace('%', '', $per);
-                if ($per <= $costcode->manualprogress)
+                if ($per <= $costcode->manualprogress || $costcode->estimate==1)
                 {
+                	
                     $costcode->status = 'Good';
                     $costcode->status = "<img src='".site_url('templates/admin/images/ok.gif')."'/>";
+                	
                 }
                 else
                 {

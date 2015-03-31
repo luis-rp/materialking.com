@@ -308,7 +308,8 @@ $(document).ready(function(){
 	 	d.appendChild(file);
 	 	abc.appendChild(file1);
 	 	document.getElementById("moreUploads").appendChild(d);
-	 	document.getElementById("moreUploads").appendChild(abc);
+	 	
+	 	
 	 	upload_number++;
 	}
 	

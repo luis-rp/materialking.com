@@ -88,7 +88,9 @@
 
 <section class="row-fluid">
 	<?php echo $this->session->flashdata('message');?>
-	<h3 class="box-header"><i class="icon-cog"></i>Contractor Profile <span style="margin-left:62em"> <a href="<?php echo site_url('site/contractor/'.$contractor->username);?>" target="_blank"> View Profile </a> </span> </h3> 
+	<h3 class="box-header"><i class="icon-cog"></i>Contractor Profile&nbsp;<span>
+	   <a class="btn btn-success btn-sm btn-small" href="<?php echo site_url('site/contractor/'.$contractor->username)?>" target="_blank">View Profile</a>
+    </span></h3> 
 		<div class="box">
 			<div class="span12">	
 			   <form class="form-horizontal" method="post" action="<?php echo site_url('admin/contractor_profile/saveprofile'); ?>" enctype="multipart/form-data" onsubmit="return checkForm(this);" autocomplete="off">

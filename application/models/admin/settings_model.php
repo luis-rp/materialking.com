@@ -73,26 +73,17 @@ class settings_model extends Model
 	// updating
 	function updatesettings($id)
 	{
-		$logoname='';
 		$updatedata=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
-		if($this->input->post('logo')=="")
-		{
-			$logoname=$updatedata->logo;
-		}
-		else 
-		{
-			$logoname=$this->input->post('logo');
-		}
+		
 		$options = array(
 			'taxrate'=>$this->input->post('taxrate'),
           	'adminemail'=>$this->input->post('adminemail'),
           	'pricedays'=>$this->input->post('pricedays'),
-          	//'pricepercent'=>$this->input->post('pricepercent'),
           	'pricepercent'=>"",
           	'tour'=>$this->input->post('tour'),
           	'pagetour'=>$this->input->post('pagetour'),
           	'timezone'=>$this->input->post('timezone'),
-          	'logo'=>$logoname
+          	'logo'=>""
 		);
 
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));

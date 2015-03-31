@@ -339,6 +339,13 @@ class itemcode extends CI_Controller
                 if ($itemcode->minprices)
                     $itemcode->actions .= ' ' . anchor('admin/itemcode/companyprices/' . $itemcode->id, '<span class="icon-2x icon-file"></span>', array('class' => 'view'));
 
+                if(@$this->session->userdata('managedprojectdetails') != '')
+ 				{
+ 					$invresult = $this->itemcode_model->checkinventoryresult($itemcode->id);
+ 					if(@!$invresult->id)
+ 			 		$itemcode->actions .= '<br>' . '<a href="javascript:void(0)" onclick="addtoinventory('.$itemcode->id.')" >ADD To Inventory</a>';   				}	    
+                 
+                    
                 $itemcode->totalpoprice = $itemcode->totalpoprice + $itemcode->totalpoprice*(@$taxrate->taxrate/100);    
                 
                 if(@$itemcode->ordershipping)
@@ -601,15 +608,21 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$order->purchasedate = date("m/d/Y", strtotime($order->purchasedate));
     		$data['orders'][] = $order;
     	}
-    	
-    	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
-		{ 
-         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
-         } 
+    	if ($count >= 1)
+    	{
+	    	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+			{ 
+	         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+	         } 
+	         else 
+	         { 
+	         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='".site_url('uploads/item/big.png')."'>";
+	         } 
+    	}
          else 
-         { 
-         	$img_name = "<img style='max-height: 95px;max-width: 201px;float:right;margin-top:3px;margin-right:22em;' height='100' width='100' src='".site_url('uploads/item/big.png')."'>";
-         } 
+         {
+         	$img_name = '';
+         }
     	$data['title_orders'] = "Orders with the current Item";
     	$data['jsfile'] = 'itemcodeitemjs.php';
     	$data['addlink'] = '';
@@ -2689,5 +2702,55 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			return 1;
 		}
 	}
+	
+	function addqtytoinventory(){
+		
+		$company = $this->session->userdata('id');
+		if(!$company)
+			redirect('admin/login');
+			
+		if(!@$_POST)
+		{
+			die;
+		}
+		
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+				
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('purchasingadmin',$company);		
+		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 		}		
+		$existing = $this->db->get('inventory')->row();
+		if($existing)
+		{
+			$_POST['adjustedqty'] -= $existing->adjustedqty; 
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('purchasingadmin',$company);			
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 			}
+			$this->db->update('inventory',$_POST);
+			echo "Item Updated to Inventory Sucessfully!";
+		}
+		else
+		{
+			$_POST['purchasingadmin'] = $company;
+			if($this->session->userdata('managedprojectdetails') != '')
+ 			{
+ 			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
+ 			}
+ 			$_POST['adjustedqty'] = "-".$_POST['adjustedqty'];			
+			$this->db->insert('inventory',$_POST);
+			echo "Item Added to Inventory Sucessfully!";
+		}
+		die;
+	}
+	
 }
 ?>

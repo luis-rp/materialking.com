@@ -54,7 +54,7 @@ class Admin extends CI_Controller {
 
 		$this->load->library ( 'table' );
 		$this->table->set_empty ( "&nbsp;" );
-		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name','Email','Company Name', 'Created Date', 'Last Logged', 'Status', 'Actions' );
+		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name','Email','Company Name', 'Created Date', 'Last Logged', 'Profile','Status', 'Actions' );
 		$i = 0 + $offset;
 		if(isset($adminusers)) {
 		foreach ($adminusers as $adminuser)
@@ -68,6 +68,13 @@ class Admin extends CI_Controller {
 			    $adminuser->companyname,
 				$adminuser->created_date?date("m/d/Y h:i A", strtotime($adminuser->created_date)):'',
 				$adminuser->last_logged_date?date("m/d/Y h:i A", strtotime( $adminuser->last_logged_date)):'',
+			    $adminuser->profile == '1'
+			    ?
+			    'On&nbsp;&nbsp;'
+			    .anchor ('admin/admin/profileoff/' . $adminuser->id,'<span class="icon-2x icon-remove-sign"></span>',array ('class' => 'disapprove' ) )
+			    :
+			    'Off&nbsp;&nbsp;'
+			    .anchor ( 'admin/admin/profileon/' . $adminuser->id, '<span class="icon-2x icon-ok"></span>', array ('class' => 'approve' ) ),
 			    $adminuser->status == '1'
 			    ?
 			    'Active&nbsp;&nbsp;'
@@ -96,6 +103,26 @@ class Admin extends CI_Controller {
 		$this->load->view ( 'admin/userlist', $data );
 	}
 
+	function profileon($id)
+	{
+		if($this->session->userdata('usertype_id')==3)
+		{
+			redirect('admin/dashboard', 'refresh');
+		}
+		$this->adminmodel->profileon ($id);
+		redirect ('admin/admin', 'refresh');
+	}
+
+	function profileoff($id)
+	{
+		if($this->session->userdata('usertype_id')==3)
+		{
+			redirect('admin/dashboard', 'refresh');
+		}
+		$this->adminmodel->profileoff ($id);
+		redirect ('admin/admin', 'refresh');
+	}
+	
 	function activate($id)
 	{
 		if($this->session->userdata('usertype_id')==3)
@@ -115,6 +142,7 @@ class Admin extends CI_Controller {
 		$this->adminmodel->deactivate ($id);
 		redirect ('admin/admin', 'refresh');
 	}
+
 
 	function add()
 	{
@@ -216,6 +244,7 @@ $loaderEmail = new My_Loader();
 		//$data ['plantypes'] = $this->adminmodel->getplantypes ();
 
 		$adminuser = $this->adminmodel->get_by_id ( $id )->row ();
+		
 		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('id'))
 		{
 			redirect('admin/dashboard', 'refresh');
@@ -229,7 +258,7 @@ $loaderEmail = new My_Loader();
 			$this->validation->$column['Field'] = $adminuser->$column['Field'];
 		}
 		$_POST ['status'] = $this->validation->status = $adminuser->status;
-
+        $_POST ['profile'] = $this->validation->profile = $adminuser->profile;
 		$data ['title'] = 'Update Admin User';
 		$data ['message'] = '';
 		$data ['action'] = site_url ('admin/admin/updateAdminuser' );
@@ -445,6 +474,7 @@ $loaderEmail = new My_Loader();
 		$rules ['username'] = 'trim|required';
 		$rules ['email'] = 'trim|required';
 		$rules ['status'] = 'trim|required';
+		$rules ['profile'] = 'trim|required';
 		$rules ['fullname'] = 'trim|required';
 		$rules ['position'] = 'trim';
 

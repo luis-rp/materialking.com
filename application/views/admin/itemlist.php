@@ -4,7 +4,7 @@
 <?php echo '<script>var insertserviceandlabor="'.site_url('admin/itemcode/insertserviceandlabor').'";</script>'?>
 <?php echo '<script>var removeserviceitem="'.site_url('admin/itemcode/delserviceitem').'";</script>'?>
 <?php echo '<script>var updtserviceandlabor="'.site_url('admin/itemcode/updateserviceandlabor').'";</script>'?>
-
+<?php echo '<script>var addqtytoinventoryurl="'.site_url('admin/itemcode/addqtytoinventory').'";</script>'?>
 <script>
 	function updateitem(id)
 	{
@@ -165,6 +165,35 @@
     	});
     	
     }
+    
+    
+    function addtoinventory(id){
+		
+		$('#invitemid').val(id);
+		$('#addinventorymodal').modal();		
+	}
+	
+	
+	function saveitemtoinventory(){
+		
+		if($('#invquantity').val()<=0)
+			alert("Please enter value greater than zero");
+		else{
+			var data = "itemid="+$('#invitemid').val()+"&adjustedqty="+$('#invquantity').val();
+			$.ajax({
+    		type:"post",
+    		data: data,
+    		url: addqtytoinventoryurl
+    	}).done(function(data){
+    		if(data){
+    			
+    			alert(data);
+    			
+    		}
+    	});
+			
+		}
+	}
     
  </script>
 <style type="text/css">
@@ -366,3 +395,21 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
+  
+  
+  
+  
+  
+  <div id="addinventorymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+
+    <div class="modal-header">
+        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+        <h4>Add Quantity to Inventory</h4>
+    </div>
+    <div class="modal-body">
+    <input type="text" name="invquantity" id="invquantity"/>
+    <input type="hidden" name="invitemid" id="invitemid"/>
+    <input type="button" value="save" onclick="saveitemtoinventory();"/>
+    </div>
+
+</div>

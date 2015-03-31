@@ -331,11 +331,11 @@ class Homemodel extends Model {
             $lookup = "  (`fullname` like '%$this->keyword%' OR `address` like '%$this->keyword%' or `companyname` like '%$this->keyword%')";
             $where .= " AND  " . $lookup;
         }
-        $query = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 ". $where;
+        $query = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 AND profile=1 ". $where;
         $return->totalresult = $this->db->query($query)->num_rows();
         $search = $this->search;
 
-        $query = "SELECT *,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance   FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 $where GROUP BY id ORDER BY distance ASC  LIMIT $start, $limit";
+        $query = "SELECT *,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance   FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 AND profile=1 $where GROUP BY id ORDER BY distance ASC  LIMIT $start, $limit";
         $return->contractors = $this->db->query($query)->result();
         return $return;
     }
@@ -403,7 +403,7 @@ class Homemodel extends Model {
         else 
         {
             $query = "SELECT * ,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance "
-                                . " FROM " . $this->db->dbprefix('users') . " WHERE 1=1  AND isdeleted=0 AND address !='' $where_2" . " ORDER BY  "
+                                . " FROM " . $this->db->dbprefix('users') . " WHERE 1=1  AND isdeleted=0 AND profile=1 AND status=1 AND address !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
             ;

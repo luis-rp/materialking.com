@@ -108,6 +108,20 @@ $(document).ready(function(){
     <?php }else{?>
     <input type="hidden" name="status" value="<?php $this->validation->status;?>"/>
     <?php } ?>
+    
+    <?php if($this->session->userdata('usertype_id') < 3){?>
+    <div class="control-group">
+    <label class="control-label">Profile</label>
+    <div class="controls">
+  	<input type="radio" name="profile" value="1" <?php echo $this->validation->set_radio('profile', '1'); ?>/> On <br/><br/>
+	<input type="radio" name="profile" value="0" <?php echo $this->validation->set_radio('profile', '0'); ?>/> Off
+	<?php echo $this->validation->profile_error; ?>
+    </div>
+    </div>
+    <?php }else{?>
+    <input type="hidden" name="profile" value="<?php $this->validation->profile;?>"/>
+    <?php } ?>
+    
     <div class="control-group">
     <label class="control-label">&nbsp;</label>
     <div class="controls">
