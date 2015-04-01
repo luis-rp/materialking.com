@@ -1,5 +1,7 @@
 <script src="<?php echo base_url(); ?>templates/site/assets/js/creditcard.js"></script>
 
+<?php echo '<script>var updateorderitemreceivedurl ="' . site_url('admin/order/updateorderitemreceived') . '";</script>' ?>
+
 <script> 
 	function validatecc()
 	{		  
@@ -36,6 +38,24 @@ function paycc(ptype,company, amount)
 	$("#ccpayamountshow").html(amount);
 	$("#paymodal").modal();
 }
+
+function updateorderitemrecvd(orderitemid){
+	var received = 0;
+	if($('#isreceived'+orderitemid).is(':checked'))
+		received = 1;
+		
+		$.ajax({
+            type:"post",
+            url: updateorderitemreceivedurl,
+            data: "isreceived="+received+"&id="+orderitemid 
+        }).done(function(data){    
+        	
+        	if(data==1)
+        	alert('item received status updated successfully!');
+        	
+        });
+}
+
 </script>
 <a class="btn btn-green" href="<?php echo base_url();?>admin/order">&lt;&lt; Back</a>&nbsp;&nbsp;&nbsp;<a href="<?php echo site_url('admin/order/details_export').'/'.$orderid; ?>" class="btn btn-green">Export</a>&nbsp;&nbsp;<a href="<?php echo site_url('admin/order/details_pdf').'/'.$orderid; ?>" class="btn btn-green">View PDF</a>
 <a href="<?php echo base_url();?>admin/order/add_to_project/<?php echo $orderid;?>" class="btn btn-green"> Assign Order</a>
@@ -61,11 +81,13 @@ function paycc(ptype,company, amount)
                     <thead>
                         <tr>
                             <th style="width:10%">Item Code</th>
-                            <th style="width:20%">Quantity</th>
+                            <th style="width:10%">Quantity</th>
+                            <th style="width:10%">Item Image</th>
                             <th style="width:20%">Company</th>
                             <th style="width:20%">Price</th>
                             <th style="width:10%">Total</th>
                             <th style="width:10%">Status</th>
+                            <th style="width:10%">Received</th>
                         </tr>
                     </thead>
                     
@@ -73,19 +95,31 @@ function paycc(ptype,company, amount)
 		              <?php
 				    	$i = 0;
 				    	$gtotal = 0;
+				    	$imgName = '';
 				    	foreach($orderitems as $item)
 				    	{
+				    		 if (isset($item->itemdetails->item_img) && file_exists('./uploads/item/' . $item->itemdetails->item_img)) 
+							 { 
+							 	 $imgName = site_url('uploads/item/'.$item->itemdetails->item_img); 
+							 } 
+							 else 
+							 { 
+							 	 $imgName = site_url('uploads/item/big.png'); 
+	                         }
+	                         
 				    		$total = $item->quantity * $item->price;
 				    		$gtotal+=$total;
 				    		$i++;
 				      ?>
                         <tr>
-                            <td><?php echo $item->itemdetails->itemname;?></td>
+                            <td><?php echo $item->itemdetails->itemname;?></td>                          
                             <td><?php echo $item->quantity;?></td>
+                            <td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
                             <td><?php echo $item->companyName;?></td>
                             <td>$<?php echo $item->price;?></td>
                             <td>$<?php echo number_format($total,2);?></td>
                             <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
+                            <td><input type="checkbox" onchange="updateorderitemrecvd(<?php echo $item->id;?>);" id="isreceived<?php echo $item->id;?>" <?php if($item->isreceived==1) echo "checked";?>/></td>
                         </tr>
                       <?php } ?>
                       <?php 
@@ -94,20 +128,20 @@ function paycc(ptype,company, amount)
                     	    $totalwithtax = $tax+$gtotal+$order->shipping;
                       ?>
                         <tr>
-                            <td colspan="4">Total</td>
-                            <td colspan="2">$<?php echo number_format($gtotal,2);?></td>
+                            <td colspan="5">Total</td>
+                            <td colspan="3">$<?php echo number_format($gtotal,2);?></td>
                         </tr>
                         <tr>
-                            <td colspan="4">Tax</td>
-                            <td colspan="2">$<?php echo number_format($tax,2);?></td>
+                            <td colspan="5">Tax</td>
+                            <td colspan="3">$<?php echo number_format($tax,2);?></td>
                         </tr>
                          <tr>
-                            <td colspan="4">shipping Rate</td>
-                            <td colspan="2">$<?php echo number_format($order->shipping,2);?></td>
+                            <td colspan="5">shipping Rate</td>
+                            <td colspan="3">$<?php echo number_format($order->shipping,2);?></td>
                         </tr>
                         <tr>
-                            <td colspan="4">Total</td>
-                            <td colspan="2">$<?php echo number_format($totalwithtax,2);?></td>
+                            <td colspan="5">Total</td>
+                            <td colspan="3">$<?php echo number_format($totalwithtax,2);?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -329,6 +363,7 @@ Send Message:
                                             <tr>
                                                 <th style="width:40%">Cost Code</th>
                                                 <th style="width:40%">Budget</th>
+                                                <th style="width:40%">Spent</th>
                                                 <th style="width:20%">Actions</th>
                                             </tr>
                                         </thead>
@@ -343,6 +378,7 @@ Send Message:
                                             <tr>
                                                 <td><?php echo $cc->code;?></td>
                                                 <td><?php echo $cc->cost;?></td>
+                                                <td><?php echo round(@$totalwithtax,2);?></td>
                                                 <td><a href="<?php  echo base_url(); ?>/admin/costcode/items/<?php echo $cc->code;?>" class="view"><span class="icon-2x icon-search"></span></a></td>
 
                                             </tr>

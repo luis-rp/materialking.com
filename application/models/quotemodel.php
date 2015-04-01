@@ -1013,6 +1013,52 @@ class Quotemodel extends Model
           return NULL;
 
     }
+    
+    
+    function getforthcomings($company)
+	{		
+		$this->db->order_by("podate", "asc");
+		$quotes = $this->db->get('quote')->result();
+
+		$count = count ($quotes);
+		$items = array();
+		if ($count >= 1)
+		{
+			foreach ($quotes as $quote)
+			{
+				$this->db->where('quote',$quote->id);
+				$awarded = $this->db->get('award')->row();
+				if($awarded)
+				{
+					$this->db->where('award',$awarded->id);
+					$awardeditems = $this->db->get('awarditem')->result();
+					if($awardeditems)
+					{
+						foreach($awardeditems as $item)
+						{			
+							if($item->daterequested){					
+							$orgdate=date('Y-m-d', strtotime( $item->daterequested));
+							$currentdate=date('Y-m-d');
+							$date1 = date_create($currentdate);
+							$date2 = date_create($orgdate);
+							$diff12 = date_diff($date1, $date2);
+							$diffindays = $diff12->days;							
+							if($diffindays>=0 && $diffindays<=7 && ($diff12->invert==0) ){								
+								$items[$quote->ponum]['quoteid'] = $quote->id;
+								$items[$quote->ponum]['podate'] = $quote->podate;
+								$items[$quote->ponum]['awardid'] = $awarded->id;		
+							}
+							
+							}	
+										
+						}
+
+					}
+				}
+			}
+		}
+		return $items;
+	}
 
 }
 ?>

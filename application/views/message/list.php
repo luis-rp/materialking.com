@@ -1,4 +1,6 @@
-
+<script type="text/javascript">
+$.noConflict();
+ </script>
  <div class="combofixed">       
    <form method="post" class="form-inline" action="<?php echo site_url('message') ?>">
     <div class="form-group">

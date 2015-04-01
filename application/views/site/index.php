@@ -11,6 +11,7 @@
 	{
 		var address = $("#inputLocation").val();
 		
+		
 		if(address)
 		{
     		var geocoder = new google.maps.Geocoder();
@@ -266,6 +267,18 @@
                                                             <?php } ?>
                                             </select>
                                         </div>
+                                    </div>                             
+                                    
+                              <div class="type control-group">
+                                 <label class="control-label" for="Miles">Miles</label>
+                                    <div id="miles" class="controls">
+                                      <select id="radius" name="radius">
+                                        <option value='1000'  <?php if (1000 == @$_POST['radius']) { echo 'selected="selected"'; } ?>>View All</option>
+                                         <?php if(count($milesradius) > 0 ) {  foreach ($milesradius as $t) { ?>
+                                           <option value='<?php echo $t; ?>' <?php if ($t == @$_POST['radius']) { echo 'selected="selected"'; } ?>>
+                                                         <?php echo $t; ?></option> <?php } }?>                                       
+                                       </select>
+                                     </div>
                                     </div>
 
                                     <div class="form-actions">
@@ -770,9 +783,3 @@ width="530" height="350" title="Video">
     
    
 </div>
-
-
-
-
-
- 

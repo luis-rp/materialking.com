@@ -56,7 +56,7 @@
 				    		<td><?php echo $q->quantity;?></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php if($q->ea==0) { echo "RFQ";} else { echo "$".$q->ea;}?></td>
-				    		<td><?php echo "$".$q->totalprice;?></td>
+				    		<td><?php echo "$".round($q->totalprice,2);?></td>
 				    		<td><?php echo $q->daterequested;?></td>
 				    		<td><?php echo $q->costcode;?></td>
 				    		<td><?php echo $q->notes;?></td>
@@ -67,16 +67,19 @@
 							$grandtotal = $alltotal + $taxtotal;
 				    	?>
 				    	<tr>
-				    		<td colspan="5" style="text-align:right">Subtotal: </td>
-				    		<td colspan="4">$ <?php echo $alltotal;?></td>
+				    		<td colspan="7" style="text-align:right">Subtotal: </td>
+				    		<td>$ <?php echo round($alltotal,2);?></td>
+				    		<td colspan="6">&nbsp;</td>
 				    	</tr>
 				    	<tr>
-				    		<td colspan="5" style="text-align:right">Tax: </td>
-				    		<td colspan="4">$ <?php echo $taxtotal;?></td>
+				    		<td colspan="7" style="text-align:right">Tax: </td>
+				    		<td>$ <?php echo round($taxtotal,2);?></td>
+				    		<td colspan="6">&nbsp;</td>
 				    	</tr>
 				    	<tr>
-				    		<td colspan="5" style="text-align:right">Total: </td>
-				    		<td colspan="4">$ <?php echo $grandtotal;?></td>
+				    		<td colspan="7" style="text-align:right">Total: </td>
+				    		<td>$ <?php echo round($grandtotal,2);?></td>
+				    		<td colspan="6">&nbsp;</td>
 				    	</tr>
 				    </table>
 			    </div>

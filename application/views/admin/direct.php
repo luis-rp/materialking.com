@@ -120,6 +120,7 @@ function fetchItem(codeid)
 	var itemcode = document.getElementById(codeid).value;
 
 	var idid = codeid.replace('itemcode','itemid');
+	var projectid = document.getElementById('pid').value;
 	var incrementid = codeid.replace('itemcode','itemincrement');
 	var nameid = codeid.replace('itemcode','itemname');
 	var unitid = codeid.replace('itemcode','unit');
@@ -133,7 +134,7 @@ function fetchItem(codeid)
 		$.ajax({
 			type:"post",
 			url: '<?php echo base_url()?>admin/quote/getitembycode/',
-			data: "code="+encodeURIComponent(itemcode)
+			data: "code="+encodeURIComponent(itemcode)+"&projectid="+encodeURIComponent(projectid)
 		}).done(function(data){
 			var obj = $.parseJSON(data);
 			if(obj.itemname !== undefined)
@@ -692,7 +693,7 @@ function showselectimage(){
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
 		   <input type="hidden" name="quoteCnt" id="quoteCnt" value="<?php echo count($quoteitems);?>">       
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
-		   <input type="hidden" name="pid" value="<?php echo $pid;?>"/>
+		   <input type="hidden" name="pid" id="pid" value="<?php echo $pid;?>"/>
 		   <input type="hidden" name="potype" value="<?php echo $this->validation->potype;?>"/>
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
 		   <br/>
@@ -721,7 +722,7 @@ function showselectimage(){
 			      <input type="hidden" id="makedefaultdeliverydate" name="makedefaultdeliverydate"/>
 			      &nbsp; &nbsp; 
 			      PO Date: &nbsp; &nbsp; 
-			      <input type="text" id="podate" name="podate" class="input small span2"
+			      <input type="text" id="podate" name="podate" class="input small span2 daterequested"
 			      	value="<?php echo $this->validation->podate; ?>" data-date-format="mm/dd/yyyy">
 			      	&nbsp; &nbsp; &nbsp; &nbsp; 
 			     Bid Due Date: &nbsp; &nbsp; 

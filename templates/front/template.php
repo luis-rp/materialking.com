@@ -54,6 +54,11 @@
 	{
 		$menu = 'designbook';
 	}
+	if($function=='forthcomings')
+	{
+		$menu = 'forthcomings';
+	}
+	
 ?>
 <!DOCTYPE html>
 <html>
@@ -306,6 +311,8 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 	  <li class="<?php if($menu=='message'){echo 'active';}?>"> <a href="<?php echo site_url('message');?>"> <i class="fa fa-envelope1"></i><span class="title">My Messages</span> </a> </li>      
 	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal1"></i><span class="title">Quotes, P.O's & Tracking</span></a></li>  
 	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i><span class="title">Manage Back Orders</span></a></li>
+	  
+	  <li class="<?php if($menu=='forthcomings'){echo 'active';}?>"> <a href="<?php echo site_url('quote/forthcomings');?>"> <i class="fa fa-random1"></i><span class="title">Forthcoming PO's</span></a></li>
 	  
 	  <?php if($this->session->userdata('company')->company_type!='3') { ?>
 	  <li class="<?php if($menu=='order'){echo 'active';}?>"> <a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar02"></i><span class="title">Shopping/Store Sales</span></a></li>

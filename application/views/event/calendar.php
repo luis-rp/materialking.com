@@ -1,4 +1,6 @@
-
+<script type="text/javascript">
+$.noConflict();
+ </script>
 
 <link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
 <script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.custom.min.js'></script>

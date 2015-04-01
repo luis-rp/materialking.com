@@ -1,4 +1,8 @@
 <script type="text/javascript">
+$.noConflict();
+ </script>
+
+<script type="text/javascript">
 
     function PrintElem(elem)
     {

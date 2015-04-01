@@ -830,12 +830,11 @@ class Dashboard extends CI_Controller
 
 							$totalOrder = $queryOrder->row();
 							$c->data += $totalOrder->sumT;
+							$c->shipping = $totalOrder->shipping;
 					}
 					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
 					if(@$c->shipping)
-					$c->data = round( ($c->data + $c->shipping ),2);
-					elseif (@$totalOrder->shipping)
-					$c->data = round( ($c->data + @$totalOrder->shipping ),2);
+					$c->data = round( ($c->data + $c->shipping ),2);					
 					
 					/*********/
 					$c->label = $c->label . ' - $'.$c->data;

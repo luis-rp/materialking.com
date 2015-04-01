@@ -18,6 +18,11 @@
 //});
 //-->
 </script>
+
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <script>
 $(document).ready(function(){
         <?php if($per=='0.00%') { ?>
@@ -81,20 +86,20 @@ function caloclick(){
 									 </tr>
 								</table>
 
-							    <table class="table no-more-tables general" style="width: 95%;">
+							    <table class="table">
 							    	<tr>
-							    		<th>Item Name</th>
-							    		<th>Item Image</th>
-							    		<th>Qty. Req'd</th>
-							    		<th>Qty. Due</th>
-							    		<th>Unit</th>
-							    		<th>Price EA</th>
-							    		<th>Total Price</th>
-							    		<th>Date Available</th>
-							    		<th>Notes</th>
-							    		<th>History</th>
+							    		<th width="15%">Item Name</th>
+							    		<th width="15%">Item Image</th>
+							    		<th width="8%">Qty. Req'd</th>
+							    		<th width="8%">Qty. Due</th>
+							    		<th width="8%">Unit</th>
+							    		<th width="8%">Price EA</th>
+							    		<th width="8%">Total Price</th>
+							    		<th width="12%">Date Available</th>
+							    		<th width="12%">Notes</th>
+							    		<th width="6%">History</th>
 							    	</tr>
-							    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>">
+							    	<form id="olditemform"  method="post" action="<?php echo base_url(); ?>quote/updateeta/<?php echo $quote->id;?>">
 
 									<?php foreach($backtrack['items'] as $q) { 
 										
@@ -105,20 +110,20 @@ function caloclick(){
 	                                        <?php $imgName = site_url('uploads/item/big.png');  } 
 										?>
 							    	<tr>
-							    		<td><?php echo htmlentities($q->itemname);?></td>
+							    		<td style="word-break:break-all;"><?php echo htmlentities($q->itemname);?></td>
 							    		<td><img style="max-height: 120px; padding: 5px;" height="120" width="120" src="<?php echo $imgName;?>" alt="<?php echo $imgName;?>"></td>
-							    		<td><?php echo $q->quantity;?></td>
-							    		<td><?php echo $q->quantity - $q->received;?>
+							    		<td style="word-break:break-all;"><?php echo $q->quantity;?></td>
+							    		<td style="word-break:break-all;"><?php echo $q->quantity - $q->received;?>
 							    		 <?php if($pendingshipments){?>
                                         <br/><?php echo $pendingshipments;?> - Pending Acknowledgement
                                         <?php }?>
 							    		</td>
-							    		<td><?php echo $q->unit;?></td>
-							    		<td>$<?php echo $q->ea;?></td>
-							    		<td>$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
-							    		<td><input type="text" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="clearnotes('notes<?php echo $q->id;?>');" /></td>
-							    		<td><textarea style="width: 175px" id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" class="highlight"><?php echo $q->notes;?></textarea></td>
-							    		<td>
+							    		<td style="word-break:break-all;"><?php echo $q->unit;?></td>
+							    		<td style="word-break:break-all;">$<?php echo $q->ea;?></td>
+							    		<td style="word-break:break-all;">$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
+							    		<td style="word-break:break-all;"><input type="text" style="width:100%;" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="clearnotes('notes<?php echo $q->id;?>');" /></td>
+							    		<td style="word-break:break-all;"><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="width:100%;" class="highlight"><?php echo $q->notes;?></textarea></td>
+							    		<td style="word-break:break-all;">
 							    		<?php if($q->etalog){?>
 							    			<a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
 							    				<i class="icon icon-search"></i>View
@@ -128,7 +133,7 @@ function caloclick(){
 							    	</tr>
 							    	<?php }?>
 							    	<tr>
-							    		<td colspan="8">
+							    		<td colspan="10">
 										<input type="button" value="Update" class="btn btn-primary" onclick="$('#olditemform').submit();"/>&nbsp;&nbsp;
 										<a href="<?php echo site_url('quote/track/'.$quote->id.'/'.$q->award);?>" target="_blank">
 										<input type="button" value="Track/Send Shipment" class="btn btn-primary"/></a>

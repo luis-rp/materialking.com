@@ -23,6 +23,10 @@
 <?php echo '<script>var setcompanypriceurl ="' . site_url('quote/setcompanyprice') . '";</script>' ?>
 
 <script type="text/javascript">
+$.noConflict();
+ </script>
+
+<script type="text/javascript">
 
 $(document).ready(function(){
 $('.date').datepicker();
@@ -659,6 +663,10 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    			<i class="fa fa-edit"></i>
 							    		</a>
 								    		
+							    		<?php if(@$q->attachment){?>
+							    			<a href="<?php echo site_url('uploads/item/'.$q->attachment);?>" target="_blank">View</a>
+							    		<?php }?>
+							    		
 							    		</td>
 							    		<td><?php echo $q->quantity;?></td>
 							    		<td><?php echo $q->unit;?></td>

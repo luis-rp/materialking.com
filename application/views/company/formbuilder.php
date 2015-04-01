@@ -1,9 +1,4 @@
 <script type="text/javascript">
-$.noConflict();
- </script>
-
-
-<script type="text/javascript">
 function showOptions(obj)
 {
 	var fieldType = $(obj).val();
@@ -22,25 +17,18 @@ function showOptions(obj)
          <div class="grid simple ">
             <div class="grid-title no-border">
               <?php  if(isset($message)) echo $message; else echo ''; ?>
-            <h4>Create Required Fields for Your Newsletter Subscription Request</h4>
+            <h4>Create Form Fields</h4>
             </div>
 
                   <div class="grid-body no-border">
                    <div class="row">
-            		<form  class="animated fadeIn" role="form" method="post" action="<?php echo site_url('company/insertformsubscriptions');?>">
+            		<form  class="animated fadeIn" role="form" method="post" action="<?php echo site_url('company/createformdata');?>">
                      <div class="col-md-6 col-sm-6 col-xs-6">
 
   						<div class="form-group">
     						<label for="label" class="form-label">Enter Label*</label>
     							<div class="controls">
       							<input type="text" class="form-control" id="label" name="label" placeholder="Enter Label" required>
-    							</div>
- 					    </div>
- 					    
- 					    <div class="form-group">
-    						<label for="label" class="form-label">Enter Name*</label>
-    							<div class="controls">
-      							<input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
     							</div>
  					    </div>
 
@@ -65,12 +53,13 @@ function showOptions(obj)
     							 </div>
   						</div>
 						</div>
- 					     <div class="form-group">
+ 					    <div class="form-group">
 				                        <label class="form-label"></label>
 				                        <div class="controls">
 				                         <input type="submit" value="Create Form Field" class="btn btn-primary btn-lg">&nbsp;&nbsp;
-	<a href="<?php echo base_url() . 'company/formsubscriptionsview';?>"><input type="button"  class="btn btn-primary" value="View Current Form"></a>
-<a href="<?php echo base_url() . 'company/listsubscribers';?>"><input type="button"  class="btn btn-primary" value="View Submissions"></a>
+	<a href="<?php echo base_url() . 'company/formview';?>"><input type="button"  class="btn btn-primary" value="View Current Form"></a>
+	<a href="<?php echo base_url() . 'company/formsubmission';?>"><input type="button"  class="btn btn-primary" value="View Submissions"></a>
+
 				                        </div>
 				                      </div>
  						 </div>

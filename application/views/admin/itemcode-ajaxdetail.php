@@ -47,7 +47,7 @@
 
 
 <section class="row-fluid">
-  	<span><img style="max-height: 120px; padding: 0px;width:80px; height:80px;margin-left:215px;" src='<?php echo $imgName; ?>'>
+  	<span><span style="font-weight:bold;text-align:center;margin-left:175px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;margin-left:215px;" src='<?php echo $imgName; ?>'>
     <h3 class="box-header" style="width:100%" ><?php echo $heading; ?> </h3>    
     </span>
     <div class="box">

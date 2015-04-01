@@ -311,6 +311,8 @@ class itemcode extends CI_Controller
         {
             foreach ($itemcodes as $itemcode)
             {
+            	$itemcode->itemcode = '<a href="javascript:void(0)" onclick="viewitems2('.$itemcode->id.');">'.$itemcode->itemcode.'</a>'; 
+            	
             	if($itemcode->awardedon)
             	$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
 
@@ -1304,7 +1306,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['heading'] = 'Add New Itemcode';
         $data['action'] = site_url('admin/itemcode/add_itemcode_user');       
         $this->_set_fields();
-           
+        $this->do_upload();    
         /*if ($this->validation->run() == FALSE)
         {
             $data['message'] = $this->validation->error_string;            
@@ -1313,13 +1315,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }*/
         if ($this->itemcode_model->checkDuplicateuserCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), 0))
         {
-            $data['message'] = 'Duplicate Itemcode';            
+            $data['message'] = '<font color="red">Duplicate Itemcode</font>';            
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode_user', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateUserItemName($this->input->post('itemname'),  $this->session->userdata('purchasingadmin'), 0))
         {
-            $data['message'] = 'Duplicate Itemname';            
+            $data['message'] = '<font color="red">Duplicate Itemname</font>';            
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode_user', $data);
         }        
@@ -1445,6 +1447,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $this->validation->itemcode = $item->itemcode;
         $this->validation->itemname = $item->itemname;        
         $this->validation->unit = $item->unit;         
+        $this->validation->item_img = $item->item_img;         
                 
         $data['heading'] = 'Update Item Code';
         $data['message'] = '';
@@ -1555,11 +1558,12 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			
 		if(!@$this->session->userdata('timstmp'))	
 			$this->session->set_userdata('timstmp',time());
-		
-		$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
+		$prefix = substr_replace($this->db->dbprefix, "", -1);
+		$sql = "SHOW TABLES FROM ".$prefix." LIKE '".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))."'";
 		$query = $this->db->query($sql);
-		
+		if($query->num_rows>0){
     	$defaultitems = $this->db->select('md.*,p.title')->from($this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." md")->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+		}
 		}		
 		
     	echo json_encode($defaultitems);
@@ -1591,13 +1595,24 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	if(!@$this->session->userdata('timstmp'))	
 			$this->session->set_userdata('timstmp',time());
 		
-		$sql = "DROP TABLE IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
-		$query = $this->db->query($sql);
+		/*$sql = "DROP TABLE IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
+		$query = $this->db->query($sql);*/
 		
 		$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
 		$query = $this->db->query($sql);
     }
-        	 
+        	
+    function deletetmptable(){
+    	
+    	if(@$this->session->userdata('timstmp')){	
+			
+		
+		$sql = "DROP TABLE IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
+		$query = $this->db->query($sql);
+		
+    	}
+    }
+     
     function do_upload ()
     {
         $config['upload_path'] = './uploads/item/';
@@ -1763,7 +1778,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['action'] = site_url('admin/itemcode/updateitemcode_user');        
         $itemid = $this->input->post('id');
         $item = $this->itemcode_model->get_itemcodes_by_id($itemid);        
-        
+        $this->do_upload();
         /*if ($this->validation->run() == FALSE)
         {
             $data['message'] = $this->validation->error_string;
@@ -1774,13 +1789,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }*/
         if ($this->itemcode_model->checkDuplicateuserCode($this->input->post('itemcode'),  $this->session->userdata('purchasingadmin'), $itemid))
         {
-            $data['message'] = 'Duplicate Itemcode';            
+            $data['message'] = '<font color="red">Duplicate Itemcode</font>';            
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode_user', $data);
         }
         elseif ($this->itemcode_model->checkDuplicateUserItemName($this->input->post('itemname'),  $this->session->userdata('purchasingadmin'), $itemid))
         {
-            $data['message'] = 'Duplicate Itemname';            
+            $data['message'] = '<font color="red">Duplicate Itemname</font>';            
             $data['companies'] = $this->db->get('company')->result();
             $this->load->view('admin/itemcode_user', $data);
         }
@@ -1902,6 +1917,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $priceid = $_POST['priceid'];
         $item = $this->itemcode_model->get_itemcodes_by_id2($itemid, $quantity);
         
+        $daysavgprice = $this->itemcode_model->getdaysmeanprice($itemid);
+        $avgforpricedays = number_format($daysavgprice, 2);
+           
+        $trendstring = 'Item AVG. Price : $ '. $avgforpricedays.'<br/>';
+            
         $companyarr = array('0');
         if (@$item->tierprices){
         foreach ($item->tierprices as $mp)
@@ -1931,8 +1951,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         echo '<div class="modal-header">
         		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
             	<h3>Company prices : <span id="minpriceitemcode">' . @$item->itemcode . '</span>
-            	<img style="max-height: 120px; padding: 0px;width:80px; height:60px;float:right;" src='.$imgName.'></h3>
+            	<img style="max-height: 120px; padding: 0px;width:80px; height:60px;float:right;" src='.$imgName.'></h3>            	
             	<br>
+            	<span style="font-weight:bold;">'.$trendstring.'</span>
         	</div>
         	<div class="modal-body" id="minprices">
         	';
@@ -2279,12 +2300,14 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['minprices'] = array();
         $data['poitems'] = '';
         $trend = '';
+        $trendstring = '';
         if (! empty($item))
         {
             $data['minprices'] = $item->minprices;
             $data['poitems'] = $item->poitems;
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
+            $avgforpricedays = number_format($daysavgprice, 2);
             if ($daysavgprice > $totalminprice)
                 $trend = 'HIGH';
             elseif ($daysavgprice < $totalminprice)
@@ -2293,6 +2316,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $trend = 'EQUAL';
             if ($daysavgprice == null)
                 $trend = 'NO DATA';
+                
+            $trendstring = 'Item AVG. Price : $ '. $avgforpricedays.'<br/>';
         }
         if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
 		 { 
@@ -2303,6 +2328,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		 	 $imgName = site_url('uploads/item/big.png'); 
          }
          
+        $data['itemavgprice'] = $trendstring;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
         $data['heading'] = 'Item Code Detail for '.@$item->itemcode;

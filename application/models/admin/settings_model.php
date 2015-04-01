@@ -74,7 +74,15 @@ class settings_model extends Model
 	function updatesettings($id)
 	{
 		$updatedata=$this->db->get_where('settings',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->row();
-		
+		$miles="";
+		if($this->input->post('miles')!="")
+		{
+		$miles=preg_replace("/[a-zA-Z]/", "", $this->input->post('miles'));
+		$miles=explode(",",$miles);
+		$miles=array_filter($miles);
+		$miles=implode(",",$miles);
+    	$miles = str_replace("\n",",",$miles);
+		}
 		$options = array(
 			'taxrate'=>$this->input->post('taxrate'),
           	'adminemail'=>$this->input->post('adminemail'),
@@ -83,7 +91,8 @@ class settings_model extends Model
           	'tour'=>$this->input->post('tour'),
           	'pagetour'=>$this->input->post('pagetour'),
           	'timezone'=>$this->input->post('timezone'),
-          	'logo'=>""
+          	'logo'=>"",
+          	'miles'=>$miles
 		);
 
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));

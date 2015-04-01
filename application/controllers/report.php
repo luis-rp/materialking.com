@@ -25,11 +25,17 @@ class report extends CI_Controller
 		$this->load->template ( '../../templates/front/template', $data);
 	}
 	
-	function index($offset = 0) 
+	function index($offset = 0,$pid="") 
 	{
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
+			
+		if($pid!="")
+		{
+			$_POST['purchasingadmin']=$pid;
+		}	
+		
 		$uri_segment = 4;
 		$filter = '';		
 		
@@ -82,6 +88,9 @@ class report extends CI_Controller
 		$data ['heading'] = 'Report';
 		$this->load->view ('company/report', $data);
 	}
+	
+	
+	
 	
 	function export($offset = 0)
 	{

@@ -3606,11 +3606,16 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		redirect('quote/track/'.$quoteid.'/'.$awardid);
 	}
 	
-	function invoices ()
+	function invoices ($pid="")
 	{
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
+			
+		if($pid!="")
+		{
+			$_POST['searchpurchasingadmin']=$pid;
+		}		
 		
 		if(!@$_POST)
 		{
@@ -4838,5 +4843,18 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
     	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Quote Archived Successfully</div></div></div>');
 		redirect('quote');
-    }
+    }    
+    
+    function forthcomings()
+	{		
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		
+		$forthcoming = $this->quotemodel->getforthcomings($company->id);
+		//echo "<pre>",print_r($forthcoming); die;				
+		$data['company'] = $company;
+		$data['forthcoming'] = $forthcoming;
+		$this->load->view('quote/forthcomings',$data);
+	}
 }

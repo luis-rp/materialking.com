@@ -348,7 +348,7 @@ class Register extends CI_Controller
 		}
 		elseif($_POST['password'] != $_POST['repassword'])
 		{
-			$errormessage = 'Password and Confirm Password does not matched. Please try again.';
+			$errormessage = 'Password and Confirm Password does not match. Please try again.';
 		}		
 		$this->db->where('username',$_POST['username']);
 		if($rowcount=$this->db->get('users')->num_rows > 0)
@@ -580,7 +580,7 @@ class Register extends CI_Controller
 		}
 		elseif($_POST['password'] != $_POST['repassword'])
 		{
-			$errormessage = 'Password and Confirm Password does not matched. Please try again.';
+			$errormessage = 'Password and Confirm Password does not match. Please try again.';
 		}
 		
 		if($errormessage)

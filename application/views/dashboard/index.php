@@ -1,6 +1,11 @@
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <?php echo '<script>var emailalerturl="'.site_url('dashboard/sendemailalert').'";</script>'?>
 <?php echo '<script>var alertsentdateurl="'.site_url('dashboard/alertsentdate').'";</script>'?>
+
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <script>
 function readnotification(id)
 {

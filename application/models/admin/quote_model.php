@@ -502,6 +502,8 @@ class quote_model extends Model {
                     		if($itm->id == $invoiceitem->awarditem)
                     		$item->items[$j]->invoice_type = $invoiceitem->invoice_type;
                     		$item->items[$j]->aiquantity = $invoiceitem->aiquantity;
+                    		$item->items[$j]->paymentstatus = $invoiceitem->paymentstatus;
+                    		$item->items[$j]->status = $invoiceitem->status;
                     		$j++;
                     	}
                     }

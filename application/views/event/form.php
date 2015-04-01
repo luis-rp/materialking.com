@@ -1,4 +1,7 @@
-          
+<script type="text/javascript">
+$.noConflict();
+ </script>
+           
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">

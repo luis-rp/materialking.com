@@ -326,6 +326,16 @@ $(document).ready(function(){
                         </div>
                     </div>                                              
 
+                    <div class="control-group noxls">
+                        <label class="control-label">Item Image </label>
+                        <div class="controls">                        	
+                            <input type="file" name="userfile" size="20"  />                            
+                            <a href="<?php echo site_url('uploads/item') . '/' . @$this->validation->item_img; ?>" target="_blank"> 
+                             <?php echo @$this->validation->item_img; ?>
+                            </a> 
+                           <!-- <label>Alternate Text for Image</label><input type="text" name="item_img_alt_text" id="item_img_alt_text" value="<?php if(isset($this->validation->item_img_alt_text)) echo $this->validation->item_img_alt_text; else echo "";?>" class="span10">-->
+                        </div>
+                    </div>
                     
                     <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                         <div class="control-group noxls">

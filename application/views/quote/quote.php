@@ -19,6 +19,11 @@
 <?php if(@$tiers->tier2)  echo "<script>var tier2=".$tiers->tier2."</script>";?>
 <?php if(@$tiers->tier3)  echo "<script>var tier3=".$tiers->tier3."</script>";?>
 <?php if(@$tiers->tier4)  echo "<script>var tier4=".$tiers->tier4."</script>";?>
+
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <script type="text/javascript">
 <!--
 $(document).ready(function(){

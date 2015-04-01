@@ -1,4 +1,5 @@
 <section class="row-fluid">
+	<?php echo @$message; ?>
 	<?php echo $this->session->flashdata('message');?>
 	<h3 class="box-header"><i class="icon-cog"></i>Application Settings</h3>
 	<div class="box">
@@ -10,21 +11,22 @@
     <br/>
 
     <div class="control-group">
-    <label class="control-label" for="taxrate">Tax Rate</label>
+    <label class="control-label" for="taxrate">Tax Rate *</label>
     <div class="controls">
      <input type="text" id="taxrate" name="taxrate" class="span2" value="<?php echo $this->validation->taxrate;?>"> %
+     <?php echo @$this->validation->error_taxrate; ?>
     </div>
     </div>
 
     <div class="control-group">
-    <label class="control-label" for="pricedays">Price Trend Days</label>
+    <label class="control-label" for="pricedays">Price Trend Days *</label>
     <div class="controls">
      <input type="text" id="pricedays" name="pricedays" class="span2" value="<?php echo $this->validation->pricedays;?>">
     </div>
     </div>
 
     <div class="control-group">
-    <label class="control-label" for="adminemail">Admin Email</label>
+    <label class="control-label" for="adminemail">Admin Email *</label>
     <div class="controls">
      <input type="email" required id="adminemail" class="span3" name="adminemail" value="<?php echo $this->validation->adminemail;?>">
     </div>
@@ -61,6 +63,16 @@
 
      </div>
     </div>  
+    
+    <?php if($this->session->userdata('usertype_id')=='1') { ?>
+      <div class="control-group noxls">
+          <label class="control-label">Set Miles For Supplier</label>
+               <div class="controls">
+                   <input type="text" d="miles" name="miles" value="<?php echo @$this->validation->miles; ?>" data-role="tagsinput">
+                   <?php echo @$this->validation->error_miles; ?>
+               </div>
+      </div>
+     <?php } ?>              
 
     <div class="control-group">
     <label class="control-label">&nbsp;</label>

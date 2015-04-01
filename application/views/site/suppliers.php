@@ -130,26 +130,20 @@
                                                 <div class="title1 span4" style="margin-left:25px;">
                                                     <h2><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>"><?php echo $supplier->title; ?></a></h2>
                                                 </div>
-<<<<<<< .mine
-=======
                                                 <div class="price1" style="float:right; margin:-11px 0 0 7px; padding:0px 25px 0 0px;" >
->>>>>>> .r19588
                                                 <?php if (isset($supplier->city) && isset($supplier->state)) { ?>
-                                                <div class="price1">
+                                                
                                                      <?php echo $supplier->city.",&nbsp;".$supplier->state;
 													?>
-                                                </div>
+                                                
                                                 <?php } ?>
-<<<<<<< .mine
-=======
                                                 <br>
                                                 <?php  if (@$supplier->company_type==1) { ?>
                                                 
-                                                	<img src="<?php echo site_url('uploads/logo/thumbs/premium.jpg') ?>" alt="Premium">
+                                                	<img src="<?php echo site_url('uploads/logo/thumbs/premium.png') ?>" alt="Premium">
                                                
                                                 <?php } ?>
                                                 </div>
->>>>>>> .r19588
                                               </div>
 
                                             <div class="location"><?php echo $supplier->contact; ?></div>
@@ -245,6 +239,20 @@
                                         </select>
                                     </div>
                                 </div>
+                              
+                                 <div class="type control-group">
+                                 <label class="control-label" for="Miles">Miles</label>
+                                    <div id="miles" class="controls">
+                                      <select id="radius" name="radius">
+                                        <option value='1000'  <?php if (1000 == @$_POST['radius']) { echo 'selected="selected"'; } ?>>View All</option>
+                                         <?php if(count($milesradius) > 0 ) {  foreach ($milesradius as $t) { ?>
+                                           <option value='<?php echo $t; ?>' <?php if ($t == @$_POST['radius']) { echo 'selected="selected"'; } ?>>
+                                                         <?php echo $t; ?></option> <?php } }?>                                                    
+                                       </select>
+                                     </div>
+                                    </div>
+                                
+                                
                                     <?php if ($found_records) { ?>
                                     <div class="form-actions">
                                         <div class="notfound"><?php echo $found_records; ?></div>

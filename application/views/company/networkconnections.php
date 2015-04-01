@@ -84,7 +84,11 @@ function preloadoptions(fromid)
 								</td>
 								<td><?php echo $admin->purchasingfullname;?><br />								
 								<a href="<?php echo site_url('dashboard/creditapplication/'.$admin->purchasingadmin);?>" target="_blank">
-								<span>View Credit App.</span></a>
+								<span>View Credit App.</span></a><br />
+								<a href="<?php echo site_url('report/index/0/'.$admin->purchasingadmin);?>" target="_blank">
+								<span>Run Report.</span></a> <br />
+								<a href="<?php echo site_url('quote/invoices/'.$admin->purchasingadmin);?>" target="_blank">
+								<span>View Invoices</span></a>
 								</td>
 								<td>
 																

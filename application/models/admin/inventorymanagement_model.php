@@ -20,7 +20,7 @@ class inventorymanagement_model extends Model
  			$where .= " AND q.pid = ".$this->session->userdata('managedprojectdetails')->id;
  		}
  		
- 		$sql ="SELECT aw.itemid as id,aw.itemid,i.itemcode,i.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, SUM(aw.ea) as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage, SUM(aw.ea*(aw.quantity - aw.received)) valuecomitted, i.item_img 
+ 		$sql ="SELECT aw.itemid as id,aw.itemid,i.itemcode,i.itemname, SUM(aw.received) as qtyonhand, SUM(aw.quantity - aw.received) as qtyonpo, SUM(aw.quantity) quantity, aw.ea as ea, SUM(aw.ea*aw.received) as valueonhand, Min(IF(aw.quantity > aw.received, aw.daterequested, NULL )) daterequested, Max(DATE_FORMAT(a.awardedon,'%m/%d/%Y')) as lastaward,'' as manage, SUM(aw.ea*(aw.quantity - aw.received)) valuecomitted, i.item_img 
 				FROM
 				".$this->db->dbprefix('quote')." q
 				JOIN ".$this->db->dbprefix('award')." a ON a.quote = q.id 
@@ -36,13 +36,13 @@ class inventorymanagement_model extends Model
  		if($itemid!="") 		
  			$whereo .= " AND od.itemid = ".$itemid;
  		
- 		$orderSql = "SELECT od.itemid as id,od.itemid, i.itemcode, i.itemname, SUM(IF(od.isreceived=1, od.quantity, 0)) as qtyonhand, SUM(IF(od.isreceived=0, od.quantity, 0)) as qtyonpo, SUM(od.quantity) quantity, SUM(od.price) as ea, SUM(od.price*IF(od.isreceived=1, od.quantity, 0)) as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, SUM(od.price*IF(od.isreceived=0, od.quantity, 0)) as valuecomitted, i.item_img  FROM ".$this->db->dbprefix('order')." o left join
+ 		$orderSql = "SELECT od.itemid as id,od.itemid, i.itemcode, i.itemname, SUM(IF(od.isreceived=1, od.quantity, 0)) as qtyonhand, SUM(IF(od.isreceived=0, od.quantity, 0)) as qtyonpo, SUM(od.quantity) quantity, od.price as ea, SUM(od.price*IF(od.isreceived=1, od.quantity, 0)) as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, SUM(od.price*IF(od.isreceived=0, od.quantity, 0)) as valuecomitted, i.item_img  FROM ".$this->db->dbprefix('order')." o left join
  		        			 ".$this->db->dbprefix('orderdetails')." od on o.id=od.orderid 
  		        			 JOIN ".$this->db->dbprefix('item')." i ON od.itemid = i.id				
 		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereo}  
 		        			 GROUP BY od.itemid";
  		
- 		$unionquery = "SELECT comb.itemid as id,comb.itemid, comb.itemcode, comb.itemname, SUM(comb.qtyonhand) qtyonhand, SUM(comb.qtyonpo) as qtyonpo, SUM(comb.quantity) as quantity, SUM(comb.ea) as ea, SUM(comb.valueonhand) as valueonhand, comb.daterequested as daterequested, comb.lastaward as lastaward , comb.manage as manage, SUM(comb.valuecomitted) as valuecomitted, comb.item_img as item_img from ( (".$sql.") union (".$orderSql.") ) comb group by comb.itemid ";
+ 		$unionquery = "SELECT comb.itemid as id,comb.itemid, comb.itemcode, comb.itemname, SUM(comb.qtyonhand) qtyonhand, SUM(comb.qtyonpo) as qtyonpo, SUM(comb.quantity) as quantity, comb.ea as ea, ROUND(SUM(comb.valueonhand),2) as valueonhand, comb.daterequested as daterequested, comb.lastaward as lastaward , comb.manage as manage, SUM(comb.valuecomitted) as valuecomitted, comb.item_img as item_img from ( (".$sql.") union (".$orderSql.") ) comb group by comb.itemid ";
  		
  		$qry = $this->db->query($unionquery);		
  		$qryresult = $qry->result();
@@ -89,6 +89,9 @@ class inventorymanagement_model extends Model
  			$whereproject2 .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;
  		}
  		
+ 		
+ 		if($itemid!="") 		
+ 			$whereproject2 .= " AND i.itemid = ".$itemid;
  		
  		if(count($inventoryarray>0)){
  			

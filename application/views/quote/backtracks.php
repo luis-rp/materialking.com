@@ -1,3 +1,7 @@
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <script type="text/javascript" charset="utf-8">
 
 function showdetail(quoteid)

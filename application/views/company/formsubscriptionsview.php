@@ -1,3 +1,8 @@
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
+
 <div class="content">
   <div class="container">
   	<div class="row">

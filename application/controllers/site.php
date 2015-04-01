@@ -53,10 +53,9 @@ class site extends CI_Controller
 		}else{
 			$data['ipaddress'] = "";
 		}
-    	$details = get_my_address();
+    	
+    	$details = get_my_address();   	
     	$center = $details->loc;
-    	//$center = "56, 38";
-    	//var_dump($details);die;
     	$data['my_location'] = get_my_location($details);
     	$geo_coords = explode(",", $center);
     	$search = new stdClass();
@@ -67,9 +66,8 @@ class site extends CI_Controller
     	$data['norecords'] = '';
     	$use_supplier_position = false;
     	$this->homemodel->set_search_criteria($search);
-    	$location = $this->input->post('location');
-    	//$lat = $this->input->post('lat');
-    	//$lng = $this->input->post('lng');
+    	$location = $this->input->post('location'); 
+    	 
     	if ($location)
     	{
     		$return = get_geo_from_address($location);
@@ -78,13 +76,18 @@ class site extends CI_Controller
     			$center = "{$return->lat}, {$return->long}";
     			$search->current_lat = $return->lat;
     			$search->current_lon = $return->long;
+    			if($this->input->post('radius')!=0)
+    			{
+    				$search->distance = $this->input->post('radius');
+    			}
     			$this->homemodel->set_search_criteria($search);
     		}
     	}
+    	
     	$suppliers_near_me = $this->homemodel->get_nearest_suppliers();
     	$data['suppliers_10_miles'] = false;
     	$nearest_10 = false;
-    	if (! $suppliers_near_me)
+    	if (!$suppliers_near_me)
     	{
     		$suppliers_near_me = $this->homemodel->get_nearest_suppliers($ignore_location = true);
     		$data['norecords'] = "Found " . $suppliers_near_me->totalresult . "  suppliers";
@@ -122,10 +125,12 @@ class site extends CI_Controller
     		}
     	}
     	//get suppliers on the map
-    	if (! $suppliers = $nearest_10)
+    	
+    	if (!$suppliers = $nearest_10)
     	{
     		$suppliers = $this->homemodel->getSuppliers();
     	}
+    	
     	$data['suppliers'] = array();
     	$latlongs = array();
     	$popups = array();
@@ -235,6 +240,14 @@ class site extends CI_Controller
     	}
     	$data['page_title']="The B2B Network for Contractors & Supply Houses";
     	$data['page_description']="The B2B Network for Contractors & Supply Houses";
+    	$query="SELECT s.miles from ".$this->db->dbprefix('settings')." s JOIN ".$this->db->dbprefix('users')." u ON s.purchasingadmin=u.id WHERE u.usertype_id=1 AND u.isdeleted=0";
+    	$allmiles=$this->db->query($query)->row()->miles;
+    	if(isset($allmiles) && $allmiles!="")
+    	{
+    		$milesradius=explode(",",$allmiles);
+    		$data['milesradius']=$milesradius;
+    	}
+    	
     	$this->load->view('site/index', $data);
     }
     public function search_supplier ($keyword)
@@ -290,8 +303,6 @@ class site extends CI_Controller
             $use_supplier_position = false;
             $this->homemodel->set_search_criteria($search);
             $location = $this->input->post('location');
-            //$lat = $this->input->post('lat');
-            //$lng = $this->input->post('lng');
             if ($location)
             {
                 $return = get_geo_from_address($location);
@@ -300,6 +311,10 @@ class site extends CI_Controller
                     $center = "{$return->lat}, {$return->long}";
                     $search->current_lat = $return->lat;
                     $search->current_lon = $return->long;
+                    if($this->input->post('radius')!=0)
+    				{
+    				$search->distance = $this->input->post('radius');
+    				}
                     $this->homemodel->set_search_criteria($search);
                 }
             }
@@ -364,6 +379,15 @@ class site extends CI_Controller
         $this->data['types'] = $this->db->get('type')->result();
        	$this->data['page_title'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
        	$this->data['page_description'] = "Construction & Building Supply House Search Engine, Directory, Reviews & Business Info.";
+       	
+       	$query="SELECT s.miles from ".$this->db->dbprefix('settings')." s JOIN ".$this->db->dbprefix('users')." u ON s.purchasingadmin=u.id WHERE u.usertype_id=1 AND u.isdeleted=0";
+    	$allmiles=$this->db->query($query)->row()->miles;
+    	if(isset($allmiles) && $allmiles!="")
+    	{
+    		$milesradius=explode(",",$allmiles);
+    		$this->data['milesradius']=$milesradius;
+    	}
+       	
         $this->load->view('site/suppliers', $this->data);
     }
     public function send_supplier_email ()
@@ -1057,8 +1081,18 @@ class site extends CI_Controller
         $this->data2['types'] = $this->db->get('type')->result();
         return $this->data2;
     }
-    public function items ()
+    public function items ($categroyname="")
     {
+    	
+    	if(!@$_POST['category']){
+    		 $catid = $this->items_model->getcategoryid_fromname(urldecode($categroyname));
+    		 if(@$catid->id)
+    		 $_POST['category'] = $catid->id;
+    	}
+    	if($this->session->userdata('currentpage') != '')
+    	{
+    		$_POST['pagenum'] = $this->session->userdata('currentpage');
+    	}
         $limit = 18;
         $this->items_model->set_keyword(false);
         $items = $this->items_model->find_item();
@@ -1069,6 +1103,12 @@ class site extends CI_Controller
         $this->data['submitmethod'] = 'POST';
         $this->data['pagingfields'] = $_POST;
         $this->data['page_titile'] = "Items List";
+               
+        if($this->session->userdata('currentpage') != $_POST['pagenum'])
+        {
+        	$this->session->set_userdata('currentpage',$_POST['pagenum']);
+        }	
+     
         $this->data['items'] = array();
         $items = $items->items;
         
@@ -3303,6 +3343,7 @@ $loaderEmail = new My_Loader();
         $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('users') ." WHERE isdeleted = 0";
         $this->data['citystates'] = $this->db->query($sql)->result();
         $this->data['states'] = $this->db->get('state')->result();
+        $this->data['contractcategory'] = $this->db->get('contractcategory')->result();
        	$this->data['page_title'] = "Contractor Info.";
        	$this->data['page_description'] = "Contractor";       	
        	$this->load->view('site/contractors', $this->data);	

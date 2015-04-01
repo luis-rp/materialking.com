@@ -4,6 +4,7 @@
 <?php echo '<script>var updatemasterdefaulturl="'.site_url('admin/itemcode/updatemasterdefault').'";</script>'?>
 <?php echo '<script>var deletefilesurl="'.site_url('admin/itemcode/deletefiles').'";</script>'?>
 <?php echo '<script>var createtmptableurl="'.site_url('admin/itemcode/createtmptable').'";</script>'?>
+<?php echo '<script>var deletetmptableurl="'.site_url('admin/itemcode/deletetmptable').'";</script>'?>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -38,7 +39,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 
-	$( window ).load(function() {  createtmptable();  fetchmasterdefaults(); });
+	$( window ).load(function() { deletetmptable();  fetchmasterdefaults(); });
 
     $(document).ready(function() {        
         $('#itemcodedate').datepicker();
@@ -121,6 +122,7 @@ $(document).ready(function(){
     
     function addmasterdefaultoptions()
     {    	
+    	createtmptable(); 
     	var minqtydefault = $("#minqtydefault").val();
     	var itemnamedefault = $("#itemnamedefault").val();
     	var itemidexists = $("#itemidexists").val();
@@ -155,7 +157,7 @@ $(document).ready(function(){
     
     
     function updatedefaultoption(id){
-    	
+    	createtmptable(); 
     	var minqtydefault = $("#minqtydefault"+id).val();
     	var itemnamedefault = $("#itemnamedefault"+id).val();
     	var itemidexists = $("#itemidexists").val();
@@ -263,6 +265,17 @@ $(document).ready(function(){
     		type:"post",    		
     		dataType : 'json',
     		url: createtmptableurl
+    	}).done(function(data){
+    		
+    	});    	
+    }
+    
+    function deletetmptable(){
+    	
+    	$.ajax({
+    		type:"post",    		
+    		dataType : 'json',
+    		url: deletetmptableurl
     	}).done(function(data){
     		
     	});    	

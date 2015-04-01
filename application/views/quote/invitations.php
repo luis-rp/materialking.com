@@ -1,3 +1,8 @@
+
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/datatable.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
@@ -150,9 +155,12 @@
                    									</div>
                     
                                                 </td>
-                                                <td class="v-align-middle"> 	                                               
+                                                <td class="v-align-middle"> 	
+                                                <?php if($inv->status == 'Awarded')
+                                                {?>                                               
 		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>
 		                                                <a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>
+		                                        <?php } ?>        
                                                 </td>
                                             </tr>
                                           <?php } ?>

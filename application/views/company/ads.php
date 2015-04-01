@@ -1,3 +1,7 @@
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 
 <script>

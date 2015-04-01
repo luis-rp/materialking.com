@@ -1,4 +1,7 @@
-
+<script type="text/javascript">
+$.noConflict();
+ </script>
+ 
     <div class="content">  
 		<div class="page-title">	
 			<h3>Send Reply </h3>		

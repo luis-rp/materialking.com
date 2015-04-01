@@ -44,6 +44,7 @@ class Settings extends CI_Controller
 		$this->validation->tour = $data->tour;
 		$this->validation->pagetour = $data->pagetour;
 		$this->validation->timezone = $data->timezone;
+		$this->validation->miles = $data->miles;
 		$var ['action'] = site_url ('admin/settings/update');
 		$this->load->view ('admin/settings', $var);
 	}
@@ -67,8 +68,8 @@ class Settings extends CI_Controller
 		$rules ['adminemail']= 'trim|required';
 		$rules ['pricedays'] = 'trim|required';
 		$rules ['pricepercent']= 'trim';
-		$this->validation->set_rules ( $rules );
-		$this->validation->set_message ( 'required', '* required' );
+		$this->validation->set_rules($rules);
+		$this->validation->set_message ( 'required', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Please fill all mandatory fields.</div></div>' );
 		$this->validation->set_error_delimiters ( '<div class="error">', '</div>');
 	}
 
@@ -77,6 +78,7 @@ class Settings extends CI_Controller
 		$data ['heading'] = 'Update Settings';
 		$this->_set_fields ();
 		$this->_set_rules ();
+		
 		if(isset($_POST['tour']))
 		{
 			$_POST['tour']=1;

@@ -1,4 +1,9 @@
 <script type="text/javascript">
+$.noConflict();
+ </script>
+
+
+<script type="text/javascript">
 function showOptions(obj)
 {
 	var fieldType = $(obj).val();

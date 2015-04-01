@@ -61,6 +61,7 @@ class quote extends CI_Controller
         $added_date = array();
         foreach ($quotes as $quote) {
             $quote->awardedbid = $this->quote_model->getawardedbid($quote->id);
+           // echo '<pre>##',print_r($quote->awardedbid);
             if ($quote->awardedbid) {
                 if (@$quote->awardedbid->items) {
                     //echo $quote->id;
@@ -79,12 +80,13 @@ class quote extends CI_Controller
                     
                      
                      	$res = $this->db->query($SQL)->result();	 
+                     
                      	$i = 1;
                      	if(isset($res) && count($res) > 0)
                      	{
 	                     	foreach ($res as $key=>$val)
 	                     	{                        	
-	                     		$itemcode .= '   '. $i.' )  '. $val->itemcode;
+	                     		$itemcode .= '             '. $i.' )  '. $val->itemcode. '   '. '('.$val->quantity.')';
 	                     		$i++;
 	                     	}
                      	}
@@ -6637,6 +6639,22 @@ $loaderEmail = new My_Loader();
         $received = array();
         $invoices = array();
         $credits = array();
+        
+        $invoiceDetailStr = '<table class="table table-bordered" style="" border="1">
+					    	<tr>
+					    		<th width="10%">Company</th>					    	
+					    		<th width="10%">Item Code</th>
+					    		<th width="10%">Item Name</th>
+					    		<th width="9%">Item Image</th>
+					    		<th width="4%">Unit</th>
+					    		<th width="4%">Qty.</th>
+					    		<th width="4%">EA</th>
+					    		<th width="5%">Total Price</th>
+					    		<th width="8%">Payment</th>
+					    		<th width="8%">Verification</th>
+					    		<th width="10%">Cost Code</th>
+					    	</tr>';
+        
         foreach ($awarded->items as $item)
         {
             $received[$item->id] = (array) $item;
@@ -6821,7 +6839,33 @@ $loaderEmail = new My_Loader();
 
               }
             }
+            
+            if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+    		 { 
+             	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='75' width='75' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+             } 
+             else 
+             { 
+             	$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' height='75' width='75' src='".site_url('uploads/item/big.png')."'>";
+             } 		
+         
+            $invoiceDetailStr .='<tr>
+            						<td>'.$item->companyname.'</td>            						
+            						<td>'.$item->itemcode.'</td>
+            						<td>'.$item->itemname.'</td>
+            						<td>'.$img_name.'</td>
+            						<td>'.$item->unit.'</td>
+            						<td>'.$item->quantity.'</td>
+            						<td>'.$item->ea.'</td>
+            						<td>'.$item->totalprice.'</td>
+            						<td>'.$item->paymentstatus.'</td>
+            						<td>'.$item->status.'</td>
+            						<td>'.$item->costcode.'</td>
+            					</tr>';   
+            
         }
+        
+        	$invoiceDetailStr .= '</table>';
         //print_r($invoices);die;
         //echo '<pre>';print_r($credits);die;
         $config = (array) $this->settings_model->get_current_settings();
@@ -7026,8 +7070,9 @@ $loaderEmail = new My_Loader();
             $pdfname = $config['base_dir'] . 'uploads/pdf/' . $quote->ponum . '_invoice_' . $invoice['invoicenum'] . '_' . date('YmdHis') . '.pdf';
             $pdf->Output($pdfname, 'f');
 
+
             $data['email_body_content'] = "Please find the attachment invoice for PO#: " . $quote->ponum . ".<br/><br/>";
-            $data['email_body_content'] .= "You have been awarded by " . $cpa->companyname . ".  for PO#: " . $quote->ponum . ".<br/><br/>";
+            $data['email_body_content'] .= "The following items have been marked as received by (" . $cpa->companyname . ")  from PO#: (" . $quote->ponum . ")<br/><br/>".$invoiceDetailStr;
 
             $settings = (array) $this->settings_model->get_current_settings();
 
@@ -7048,7 +7093,7 @@ $loaderEmail = new My_Loader();
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
 
-            $this->email->subject('Invoice for PO#:' . $quote->ponum);
+            $this->email->subject('Invoice for PO#:' . $quote->ponum);           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->attach($pdfname);
@@ -10685,7 +10730,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             $search = "  AND (" . implode(" AND ", $searches) . " )";
         }
         
-        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername,ph.paymenttype,ph.refnum
+        $billquery = "select sum(bi.totalprice) as total, b.*, c.address, c.email, c.name as customername,ph.paymenttype,ph.refnum,ph.id as billhistoryid
         from ". $this->db->dbprefix('bill') ." b 
         left join ". $this->db->dbprefix('billitem') ." bi on b.id=bi.bill 
         left join ". $this->db->dbprefix('bill_payment_history') ." ph on b.id=ph.bill 
@@ -10849,9 +10894,16 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		    $this->data['message'] = 'No Records';
 		} */
 		
-		$payment_history = $this->db->select('bill_payment_history.*')->get('bill_payment_history')->result(); 
+		/*$payment_history = $this->db->select('bill_payment_history.*')->get('bill_payment_history')->result(); 
+		$data['payment_history'] = $payment_history;*/
+		$payment_history = $this->db->select('bill_payment_history.*')
+									->from('bill_payment_history')
+									->join('bill','bill.id=bill_payment_history.bill')
+									->where('bill.project',$this->session->userdata('managedprojectdetails')->id)
+									->get()->result(); 
 		//echo "<pre>",print_r($payment_history);
 		$data['payment_history'] = $payment_history;
+		
 		//echo "<pre>",print_r($_POST); die;
 		if(@$_POST['message_hidden_div'])
 		$data['message_hidden_div'] = $_POST['message_hidden_div'];

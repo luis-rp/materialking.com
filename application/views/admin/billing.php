@@ -246,9 +246,18 @@ function changeduedate(count,invoicenum,datedue)
 	}
 	
 	
-	function showhistorymodal(billid){
+	function showhistorymodal(billid,billhistoryid){
 		
 		$('#billhistorymodal'+billid).modal();
+				
+		if(billhistoryid == '')
+		{
+			$(".billhistorytable").css('display','');
+		}
+		else
+		{
+			$(".billhistorytable").css('display','none');
+		}
 	}
 
 </script>
@@ -349,7 +358,7 @@ function changeduedate(count,invoicenum,datedue)
                     		$daysold60 = array();
                     		$daysold90 = array();
                     		$daysold120 = array();
-                    		//echo "<pre>",print_r($items); die;
+                    	//	echo "<pre>",print_r($items); die;
                     		foreach($items as $item){ $i++;
                     		?>
                     		<tr>
@@ -388,7 +397,7 @@ function changeduedate(count,invoicenum,datedue)
                     				<?php }else{//verified payment, show notes?>
                     				/ <?php echo (@$item->paymenttype) ? $item->paymenttype : ''?> / <?php echo (@$item->refnum) ? $item->refnum : '';?>
                     				<?php }?>
-                    				<br/><a href="javascript:void(0)" onclick="showhistorymodal('<?php echo $item->id;?>');">view payment history</a>
+                    				<br/><a href="javascript:void(0)" onclick="showhistorymodal('<?php echo $item->id;?>','<?php echo $item->billhistoryid;?>');">view payment history</a>
                     				<?php if($item->paymentstatus=='Requested Payment'){?>
                     				<br/>
                     				<i class="icon-lightbulb">
@@ -629,7 +638,7 @@ function changeduedate(count,invoicenum,datedue)
 
 
 
-<?php foreach($items as $item){ ?>
+<?php foreach($items as $item) { ?>
 
 <div class="modal hide fade" id="billhistorymodal<?php echo $item->id;?>" style="display: none;">
 		<div class="modal-header">		
@@ -649,30 +658,35 @@ function changeduedate(count,invoicenum,datedue)
          
           </div>
           <table>          
-          <?php if(@$payment_history){ 
-          $htmlbd = "";
-          $htmlhd = "";
-          foreach ($payment_history as $pay_h){ if($pay_h->bill == $item->id){
-          
-          	$htmlhd = '<tr>
-          <th>Amount Paid</th><th>Payment Type</th><th>Date Paid</th>
-          </tr>';
-          	
-          	$htmlbd .='<tr>
-          <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.date('m/d/Y',strtotime(@$pay_h->paymentdate)).'</td>
-          </tr>';
-           }
-           else{ 
-          	$htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
-          } 
-          } 
+          <?php 
+          if(@$payment_history)
+          { 
+	          $htmlbd = "";
+	          $htmlhd = "";
+	          
+	          foreach ($payment_history as $pay_h)
+	          { 
+		          	if($pay_h->bill == $item->id)
+		          	{	
+			          	$htmlhd = '<tr>
+			          <th>Amount Paid</th><th>Payment Type</th><th>Date Paid</th>
+			          </tr>';
+			          	
+			          	$htmlbd .='<tr>
+			          <td>'.@$pay_h->amountpaid.'</td><td>'.@$pay_h->paymenttype.'</td><td>'.date('m/d/Y',strtotime(@$pay_h->paymentdate)).'</td>
+			          </tr>';
+			          
+		           }
+	          } 
           }
           else
           { 
-          $htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
+          		$htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
           }
-          
-          echo $htmlhd."".$htmlbd;     ?>     
+         
+          echo $htmlhd."".$htmlbd;     
+          ?>     
+          <tr class="billhistorytable"><td colspan="2"> <div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div></td></tr>
           
           </table>
           

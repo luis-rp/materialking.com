@@ -192,6 +192,27 @@
                                         <?php } ?>
                                     </div>
                                 </div>
+                                
+                                
+                                <div class="type control-group">
+                                        <label class="control-label" for="inputType">
+                                            Category
+                                        </label>
+                                        <div id="manuselect" class="controls">
+                                            <select id="typec" name="typec">
+                                                <option value=''>All</option>
+                                                <?php
+                                                foreach ($contractcategory as $t)
+                                                {  ?>
+                                                <option value='<?php echo $t->id; ?>' <?php
+                                                        if ($t->id == @$_POST['typec']) {
+                                                            echo 'selected="selected"';
+                                                        }
+                                                        ?>><?php echo $t->catname; ?></option>
+                                                            <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
 
                                 
                                 

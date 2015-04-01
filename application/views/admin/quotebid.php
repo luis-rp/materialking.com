@@ -736,7 +736,7 @@ function showselectimage(){
 			      <input type="hidden" id="makedefaultdeliverydate" name="makedefaultdeliverydate"/>
 			       &nbsp; &nbsp; 
 			      PO Date: &nbsp; &nbsp; 
-			      <input type="text" id="podate" name="podate" class="input small span2"
+			      <input type="text" id="podate" name="podate" class="input small span2 daterequested"
 			      	value="<?php echo $this->validation->podate; ?>" data-date-format="mm/dd/yyyy">
 			      	&nbsp; &nbsp; &nbsp; &nbsp; 
 			     Bid Due Date: &nbsp; &nbsp; 

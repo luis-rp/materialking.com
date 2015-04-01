@@ -73,7 +73,7 @@ class items_model extends Model {
             {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
                  //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
-                 $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                 $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->catname."');\">
                    <span style='white-space:pre-wrap;'><b>" . $item->catname."(".$count.")</b><span></a>";
 			   	   
 			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
@@ -81,7 +81,7 @@ class items_model extends Model {
             else
           {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
-                $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
+                $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->catname."');\">
                  <span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")<span></a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
@@ -420,7 +420,7 @@ class items_model extends Model {
         $cat = $this->db->where('id',$catid)->get('category')->row();
         if(!$cat)
         	return '';
-        $ret = '<li onclick="filtercategory('.$cat->id.')"><a href="#">'.$cat->catname.'</a></li>';//array($cat);
+        $ret = '<li onclick=\'filtercategory1('.$cat->id.',"'.$cat->catname.'")\'><a href="#">'.$cat->catname.'</a></li>';//array($cat);
         $parent = $this->db->where('id',$cat->parent_id)->get('category')->result();
         if($parent)
         {
@@ -479,7 +479,7 @@ class items_model extends Model {
             
             if(!$hasitems)
                 continue;
-               $ret .= '<ul><li onclick="filtercategory('.$item->id.')"><a href="#">'.$item->catname.' &nbsp;&nbsp;('.count($hasitems).')</a></li></ul>';
+               $ret .= '<ul><li onclick=\'filtercategory1('.$item->id.',"'.$item->catname.'")\'><a href="#">'.$item->catname.' &nbsp;&nbsp;('.count($hasitems).')</a></li></ul>';
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
            
             
@@ -937,6 +937,16 @@ class items_model extends Model {
 		 	return FALSE;
 		}
         
+    }
+    
+    
+    
+    function getcategoryid_fromname($categoryname){
+    	
+    	$this->db->select('id');
+    	$this->db->where('catname',$categoryname);
+        $menus = $this->db->get('category')->row();
+    	return $menus;
     }
     
 }

@@ -16,9 +16,16 @@ class Homemodel extends Model {
     }
 
     private function get_distance_condition($search, $distance = false) {
-        if ($distance) {
+        if($distance) 
+        {
             $this->distance = $distance;
         }
+        // My Condition
+        if($this->input->post('radius')!=0)
+        {
+            $this->distance = $this->input->post('radius');
+        }
+        //
         $condition = " AND 1*(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
             sin((c.`com_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * 
             cos((c.`com_lat`*pi()/180)) * cos(((" . $search->current_lon . "- c.`com_lng`)* 
@@ -33,9 +40,9 @@ class Homemodel extends Model {
         }
         $condition = " AND 1*(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
             sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * 
-            cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "-`user_lng`)* 
+            cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- u.`user_lng`)* 
             pi()/180))))*180/pi())*60*1.1515)<" . $this->distance;
-       
+       $this->set_contractortype_condition($condition);
         return $condition;
     }
 
@@ -45,8 +52,8 @@ class Homemodel extends Model {
 
     public function set_search_criteria($search)
      {
-        $this->search = $search;
-    }
+        $this->search = $search;      
+     }
 
     function getconfigurations() {
         $query = $this->db->get('settings');
@@ -58,7 +65,9 @@ class Homemodel extends Model {
         $distance = "1500";
 
         $search = $this->search;
-        if ($search) {
+       
+        if ($search) 
+        {
             $distance_condition = $this->get_distance_condition($search, $distance);
             $this->set_type_condition($where);
             
@@ -71,10 +80,10 @@ class Homemodel extends Model {
                 pi()/180))))*180/pi())*60*1.1515
             ) as distance "
                         . " FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
-    		ON c.id=ct.companyid $where AND c.isdeleted = 0 GROUP BY c.`id` ORDER BY distance ASC LIMIT 0,3";
+    		ON c.id=ct.companyid where 1=1 $where AND c.isdeleted = 0 AND c.address !=''   GROUP BY c.`id` ORDER BY distance ASC LIMIT 0,20";
         } else {
             $query = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
-			ON c.id=ct.companyid $where AND c.isdeleted = 0 GROUP BY c.id LIMIT 0,3";
+			ON c.id=ct.companyid where 1=1 $where AND c.isdeleted = 0 AND c.address !='' GROUP BY c.id LIMIT 0,20";
         }
         //echo $query;
         $items = $this->db->query($query)->result();
@@ -125,9 +134,14 @@ class Homemodel extends Model {
     public function get_nearest_suppliers($ignore_location = false) 
     {
     	if($this->router->method == 'index')
+    	{
         	$limit = 10000;
+        	        	
+    	}
     	else
+    	{
     		$limit = 6;
+    	}
         $ignore_distance_sorting = false;
         $return = new stdClass();
 
@@ -152,68 +166,35 @@ class Homemodel extends Model {
             $where[] = " state='$citystates[1]'";
         }
         $distance_condition = "";
-
-        if ($search = $this->search) {
+        
+        // Original Condition
+        if ($search = $this->search) 
+        {
             $distance_condition = $this->get_distance_condition($search);
-        }
-
-
-//        if (!empty($where)) {
-//            $where_1 = " AND (" . implode(' OR ', $where) . ") " . $distance_condition;
-//        } else {
-//            $where_1 = ' ' . $distance_condition;
-//        }
-//        $query = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
-//		ON c.id=ct.companyid WHERE address !='' $where_1 GROUP BY c.id";
-//
-//echo $query;
-//
-//        $return->totalresult = $this->db->query($query)->num_rows();
-
+        } 
+       
+       // My condition       
+       //$search = $this->search;
+        // End
+       
         $sorting_distance = ($ignore_distance_sorting) ? "" : ("distance " . $_POST['orderdir']);
-
-        if (!empty($where)) {
-            if ($search = $this->search) {
+        
+        if (!empty($where)) 
+        {
+        	if ($search = $this->search) {
                 $where_2 = " AND (" . implode(' OR ', $where) . ") " . "  " . $distance_condition . " GROUP BY c.id";
             } else {
                 //$where_2 .= " AND (" . implode(' OR ', $where) . ")  GROUP BY c.id ORDER BY " . $_POST['orderby'] . " " . $_POST['orderdir'] . " LIMIT $start, $limit";
             }
-        } else {
-            $where_2 = $distance_condition . " GROUP BY c.id  " . (($sorting_distance) ? ", " . $sorting_distance : "");
+            
         }
-        /*
-        if ($this->input->post('get_by') && $this->input->post('get_by') == "in_network" && $this->session->userdata('site_loggedin')) 
+         else 
         {
-            $user_id = $this->session->userdata('site_loggedin')->id;
-            $query = "SELECT c.*, ct.*,  "
-                    . "(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
-                            sin((`com_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * 
-                            cos((`com_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `com_lng`)* 
-                            pi()/180))))*180/pi())*60*1.1515
-                        ) as distance "
-                                    . " FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('companytype') . " ct, " . $this->db->dbprefix('network') . " n
-                            
-                		WHERE c.id=ct.companyid AND 
-                            n.company=c.id AND n.status='Active' AND n.purchasingadmin='" . $user_id . "' AND 
-                            c.id=ct.companyid AND address !='' $where_2" . " ORDER BY  "
-                    . (($sorting_distance) ? $sorting_distance . ", " : "")
-                    . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT  $start, $limit";
-        } 
-        else 
-        {
-            $query = "SELECT c.*, ct.*,  "
-                    . "(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
-                        sin((`com_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * 
-                        cos((`com_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `com_lng`)* 
-                        pi()/180))))*180/pi())*60*1.1515
-                    ) as distance "
-                                . " FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('companytype') . " ct
-            		WHERE c.id=ct.companyid AND  c.address !='' $where_2" . " ORDER BY  "
-                    . (($sorting_distance) ? $sorting_distance . ", " : "")
-                    . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT  $start, $limit";
-            ;
+        	$where_2 = $distance_condition . " GROUP BY c.id  " . (($sorting_distance) ? ", " . $sorting_distance : "");
+            
         }
-        */
+        
+      
         if ($this->input->post('get_by') && $this->input->post('get_by') == "in_network" && $this->session->userdata('site_loggedin')) 
         {
             $user_id = $this->session->userdata('site_loggedin')->id;
@@ -245,17 +226,17 @@ class Homemodel extends Model {
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
             ;
         }
+       
         
-        //echo $query.'<br>';//die;
         $return->suppliers = $this->db->query($query)->result();
+        // Original Code commented
+        /*$totalquery = str_replace("LIMIT $start, $limit","",$query);
+        $totalsuppliers = $this->db->query($totalquery)->result(); */
         
-        $totalquery = str_replace("LIMIT $start, $limit","",$query);
-        //die($totalquery);
-        
-        $totalsuppliers = $this->db->query($totalquery)->result();
-        
+        // My Code
+        $totalsuppliers = $this->db->query($query)->result();  
+        // End      
         $return->totalresult = ($totalsuppliers) ? count($totalsuppliers) : 0;
-        //echo $return->totalresult;
         return $return;
     }
 
@@ -271,6 +252,25 @@ class Homemodel extends Model {
         }
         if ($category_conditions) {
             $term_condition = "ct.typeid IN (" . implode(",", $category_conditions) . ")";
+
+            if (trim($where)) {
+                $where .= " AND " . $term_condition;
+            } else {
+                $where .= " AND  " . $term_condition;
+            }
+        }
+    }
+    
+    private function set_contractortype_condition(&$where) {
+        $typec = $this->input->post('typec');
+        $category_conditions = false;
+       
+        if ($typec) {
+            $category_conditions[] = $typec;
+        }
+        if ($category_conditions) 
+        {
+            $term_condition = "cot.id IN (" . implode(",", $category_conditions) . ")";
 
             if (trim($where)) {
                 $where .= " AND " . $term_condition;
@@ -325,17 +325,21 @@ class Homemodel extends Model {
         if (!isset($_POST['pagenum']))
             $_POST['pagenum'] = 0;
         $start = $_POST['pagenum'] * $limit;
-
         $where = "";
         if ($this->keyword) {
             $lookup = "  (`fullname` like '%$this->keyword%' OR `address` like '%$this->keyword%' or `companyname` like '%$this->keyword%')";
             $where .= " AND  " . $lookup;
         }
-        $query = "SELECT * FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 AND profile=1 ". $where;
+        
+        $this->set_contractortype_condition($where);
+        
+        $query = "SELECT u.* FROM " . $this->db->dbprefix('users') . " u  LEFT JOIN " . $this->db->dbprefix('contractcategory') . " 
+        cot ON u.category=cot.id WHERE  u.isdeleted=0 AND u.profile=1 ". $where;
         $return->totalresult = $this->db->query($query)->num_rows();
         $search = $this->search;
 
-        $query = "SELECT *,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance   FROM " . $this->db->dbprefix('users') . " WHERE  isdeleted=0 AND profile=1 $where GROUP BY id ORDER BY distance ASC  LIMIT $start, $limit";
+        $query = "SELECT u.*,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance   FROM " . $this->db->dbprefix('users') . " u LEFT JOIN " . $this->db->dbprefix('contractcategory') . " 
+        cot ON u.category=cot.id WHERE  u.isdeleted=0 AND u.profile=1 $where GROUP BY id ORDER BY distance ASC  LIMIT $start, $limit";
         $return->contractors = $this->db->query($query)->result();
         return $return;
     }
@@ -393,17 +397,24 @@ class Homemodel extends Model {
         if ($this->input->post('get_by') && $this->session->userdata('site_loggedin')) 
         {
             $user_id = $this->session->userdata('site_loggedin')->id;
-            $query = "SELECT * ". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
+            $query = "SELECT u.* ". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * 
                             sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * 
-                            cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* 
+                            cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- u. `user_lng`)* 
                             pi()/180))))*180/pi())*60*1.1515
-                        ) as distance " . " FROM " . $this->db->dbprefix('users') . " ORDER BY  ". (($sorting_distance) ? $sorting_distance . ", " : "")
+                        ) as distance " . " FROM " . $this->db->dbprefix('users') . " u
+                        LEFT JOIN " . $this->db->dbprefix('contractcategory') . " 
+        cot ON u.category=cot.id
+                        ORDER BY  ". (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
         } 
         else 
         {
-            $query = "SELECT * ,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance "
-                                . " FROM " . $this->db->dbprefix('users') . " WHERE 1=1  AND isdeleted=0 AND profile=1 AND status=1 AND address !='' $where_2" . " ORDER BY  "
+            $query = "SELECT u.* ,". "(((acos(sin((" . $search->current_lat . "*pi()/180)) * sin((`user_lat`*pi()/180))+cos((" . $search->current_lat . "*pi()/180)) * cos((`user_lat`*pi()/180)) * cos(((" . $search->current_lon . "- `user_lng`)* pi()/180))))*180/pi())*60*1.1515) as distance "
+                                . " FROM " . $this->db->dbprefix('users') . " u
+                                
+                                LEFT JOIN " . $this->db->dbprefix('contractcategory') . " 
+        cot ON u.category=cot.id
+                                WHERE 1=1  AND u.isdeleted=0 AND u.profile=1 AND u.status=1 AND u.address !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
             ;

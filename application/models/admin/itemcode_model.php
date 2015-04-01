@@ -779,7 +779,8 @@ class itemcode_model extends Model {
             'unit' => $this->input->post('unit'),            
         	'weight' => 1,           
 	        'increment' => 1,
-	        'category' => 248
+	        'category' => 248,
+	        'item_img' => $_FILES["userfile"]["name"],
         );
 
         if(@$this->session->userdata('purchasingadmin'))
@@ -802,6 +803,7 @@ class itemcode_model extends Model {
     			$insert['itemname'] = mysql_real_escape_string($res1->itemname);
     			$insert['minqty'] = $res1->minqty;
     			$insert['itemcode'] = mysql_real_escape_string($res1->itemcode);
+    			
     			
 	        	$this->db->insert('masterdefault', $insert);    				
     		} }
@@ -984,6 +986,16 @@ class itemcode_model extends Model {
         $oldcode = $oldcoderow->itemcode;
         $newcode = $this->input->post('itemcode');
 
+        if($_FILES["userfile"]["name"]=="")
+    	{
+    		$updatedata=$this->db->get_where('item',array('id'=>$this->input->post('id')))->row();
+    		$options['item_img'] = $updatedata->item_img;
+    	}
+    	else 
+    	{
+    		$options['item_img'] = $_FILES["userfile"]["name"];
+    	}
+    	
         $this->db->where('id', $this->input->post('id'));
         $this->db->update('item', $options);
         

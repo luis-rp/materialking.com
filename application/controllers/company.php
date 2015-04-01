@@ -153,7 +153,7 @@ class Company extends CI_Controller {
         if (!@$_POST['username'] || !@$_POST['password'] || !@$_POST['repassword']) {
             $errormessage = 'Please Fill up all the fields.';
         } elseif ($_POST['password'] != $_POST['repassword']) {
-            $errormessage = 'Password and Confirm Password does not matched. Please try again.';
+            $errormessage = 'Password and Confirm Password does not match. Please try again.';
         }
 
         $this->db->where('username', $_POST['username']);
@@ -931,7 +931,7 @@ class Company extends CI_Controller {
         if (!@$_POST['password'] || !@$_POST['repassword']) {
             $errormessage = 'Please Fill up all the fields.';
         } elseif ($_POST['password'] != $_POST['repassword']) {
-            $errormessage = 'Password and Confirm Password does not matched. Please try again.';
+            $errormessage = 'Password and Confirm Password does not match. Please try again.';
         }
 
         if ($errormessage) {

@@ -1,3 +1,8 @@
+
+<script type="text/javascript">
+$.noConflict();
+ </script>
+
 <script type="text/javascript" charset="utf-8">
 $(document).ready( function() {
 	$("#status").select2();
