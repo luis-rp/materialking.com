@@ -299,41 +299,127 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 	<p class="menu-title"><hr style="border:0;color:#999;background:#999;height:1px;"/></p>
 	
     <ul>	
-      <li class="start <?php if($menu=='dashboard'){echo 'active';}?>"> <a href="<?php echo site_url('dashboard/index');?>"> <i class="fa fa-dashboard1"></i> <span class="title">Dashboard</span> <span class="selected"></span></a> </li>
+    	<li class="start <?php if($menu=='dashboard'){echo 'active';}?>">
+    		<a href="<?php echo site_url('dashboard/index');?>"> <i class="fa fa-dashboard1"></i> 
+    			<span class="title">Dashboard</span> <span class="selected"></span>
+    		</a> 
+    	</li>
       
-        <?php if(isset($pagetour)) { if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
+        <?php if(isset($pagetour)) { 
+        	if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
       
-	  <li class="<?php if($menu=='tier'){echo 'active';}?>"> <a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i><span class="title">Tier Price Settings</span> </a> </li>  
-	  <li class="<?php if($menu=='networkconnections'){echo 'active';}?>"> <a href="<?php echo site_url('company/networkconnections');?>"> <i class="fa fa-dollar1"></i><span class="title">Network Connections</span> </a> </li>    
+	    <li class="<?php if($menu=='tier'){echo 'active';}?>"> 
+	    	<a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i>
+	    		<span class="title">Tier Price Settings</span> 
+	    	</a> 
+	    </li> 
+	     
+	  	<li class="<?php if($menu=='networkconnections'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('company/networkconnections');?>"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp;&nbsp;
+	  			<span class="title">Network Connections</span> 
+	  		</a> 
+	  	</li>    
 	  
-	  <li class="<?php if($menu=='invoicecycle'){echo 'active';}?>"> <a href="<?php echo site_url('company/invoicecycle');?>"> <i class="fa fa-dollar1"></i><span class="title">Invoice Cycle</span> </a> </li>    
+	  	<li class="<?php if($menu=='invoicecycle'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('company/invoicecycle');?>"><span class="glyphicon glyphicon-euro" aria-hidden="true"></span>&nbsp;&nbsp;
+	  			<span class="title">Invoice Cycle</span> 
+	  		</a> 
+	  	</li>    
 	  
-	  <li class="<?php if($menu=='message'){echo 'active';}?>"> <a href="<?php echo site_url('message');?>"> <i class="fa fa-envelope1"></i><span class="title">My Messages</span> </a> </li>      
-	  <li class="<?php if($menu=='quote'){echo 'active';}?>"> <a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal1"></i><span class="title">Quotes, P.O's & Tracking</span></a></li>  
-	  <li class="<?php if($menu=='backtracks'){echo 'active';}?>"> <a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i><span class="title">Manage Back Orders</span></a></li>
+	  	<li class="<?php if($menu=='message'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('message');?>"><i class="fa fa-formmailing"></i>
+	  			<span class="title">My Messages</span> 
+	  		</a> 
+	  	</li>  
+	  	    
+	  	<li class="<?php if($menu=='quote'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('quote');?>"> <i class="fa fa-legal1"></i>
+	  			<span class="title">Quotes, P.O's & Tracking</span>
+	  		</a>
+	  	</li>
+	  	  
+	  	<li class="<?php if($menu=='backtracks'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i>
+	  			<span class="title">Manage Back Orders</span>
+	  		</a>
+	  	</li>
 	  
-	  <li class="<?php if($menu=='forthcomings'){echo 'active';}?>"> <a href="<?php echo site_url('quote/forthcomings');?>"> <i class="fa fa-random1"></i><span class="title">Forthcoming PO's</span></a></li>
+	 	<li class="<?php if($menu=='forthcomings'){echo 'active';}?>"> 
+	 		<a href="<?php echo site_url('quote/forthcomings');?>"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>&nbsp;&nbsp;
+	 			<span class="title">Forthcoming PO's</span>
+	 		</a>
+	 	</li>
 	  
 	  <?php if($this->session->userdata('company')->company_type!='3') { ?>
-	  <li class="<?php if($menu=='order'){echo 'active';}?>"> <a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar02"></i><span class="title">Shopping/Store Sales</span></a></li>
+	  	<li class="<?php if($menu=='order'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('order');?>"> <i class="fa fa-dollar02"></i>
+	  			<span class="title">Shopping/Store Sales</span>
+	  		</a>
+	  	</li>
 	  <?php } ?>
 	  
-	  <li class="<?php if($menu=='report'){echo 'active';}?>"> <a href="<?php echo site_url('report');?>"> <i class="fa fa-dollar1N"></i><span class="title">Run Reports</span></a></li>
-	  <li class="<?php if($menu=='invoices' || $menu=='invoice'){echo 'active';}?>"> <a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar2N"></i><span class="title">Manage Invoices</span></a></li>
-	  <li class="<?php if($menu=='inventory'){echo 'active';}?>"> <a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive1"></i><span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span></a></li>
+	  	<li class="<?php if($menu=='report'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('report');?>"> <i class="fa fa-dollar1N"></i>
+	  			<span class="title">Run Reports</span>
+	  		</a>
+	  	</li>
+	  	
+	  	<li class="<?php if($menu=='invoices' || $menu=='invoice'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('quote/invoices');?>"> <i class="fa fa-dollar2N"></i>
+	  			<span class="title">Manage Invoices</span>
+	  		</a>
+	  	</li>
+	  	
+	  	<li class="<?php if($menu=='inventory'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('inventory');?>"> <i class="fa fa-archive1"></i>
+	  			<span class="title">Inventory, Deal Feeds, Pricing & Store Settings</span>
+	  		</a>
+	  	</li>
 	  
 	   <?php if($this->session->userdata('company')->company_type!='3') { ?>
-	  <li class="<?php if($menu=='performance'){echo 'active';}?>"> <a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search1"></i><span class="title">Sales Analytics & Performance</span></a></li>	   
-	  <li class="<?php if($menu=='ads'){echo 'active';}?>"> <a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag1"></i><span class="title">Classifieds</span></a></li>
+	  	<li class="<?php if($menu=='performance'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('quote/performance');?>"> <i class="fa fa-search1"></i>
+	  			<span class="title">Sales Analytics & Performance</span>
+	  		</a>
+	  	</li>
+	  		   
+	  	<li class="<?php if($menu=='ads'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('company/ads');?>"> <i class="fa fa-flag1"></i>
+	  			<span class="title">Classifieds</span>
+	  		</a>
+	  	</li>
 	   <?php } ?>
 	   
-	  <li class="<?php if($menu=='company'){echo 'active';}?>"> <a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i><span class="title tour2D">Profile & Settings</span></a></li>
+	  	<li class="<?php if($menu=='company'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('company/profile');?>"> <i class="fa fa-male1"></i>
+	  			<span class="title tour2D">Profile & Settings</span>
+	  		</a>
+	  	</li>
 	  
 	   <?php if($this->session->userdata('company')->company_type!='3') { ?>
-	  <li class="<?php if($menu=='designbook'){echo 'active';}?>"> <a href="<?php echo site_url('company/designbook');?>"> <i class="fa fa-male1"></i><span class="title">Design Book</span></a></li>
-	  <li class="<?php if($menu=='createformfields'){echo 'active';}?>"> <a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i><span class="title">Form Builder</span></a></li>
-	  <li class="<?php if($menu=='mailinglist'){echo 'active';}?>"> <a href="<?php echo site_url('company/mailinglist');?>"> <i class="fa fa-formmailing"></i><span class="title">Mailing List</span></a></li>
-	  <li class="<?php if($menu=='events'){echo 'active';}?>"> <a href="<?php echo site_url('event');?>"> <i class="fa"></i><span class="title">Manage Events</span></a></li>
+	  	<li class="<?php if($menu=='designbook'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('company/designbook');?>"> <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp;&nbsp;
+	  			<span class="title">Design Book</span>
+	  		</a>
+	  	</li>
+	  	
+	  	<li class="<?php if($menu=='createformfields'){echo 'active';}?>">	
+	  		<a href="<?php echo site_url('company/createformfields');?>"> <i class="fa fa-formbuilder"></i>
+	  			<span class="title">Form Builder</span>
+	  		</a>
+	  	</li>
+	  	
+	  	<li class="<?php if($menu=='mailinglist'){echo 'active';}?>">
+	  		<a href="<?php echo site_url('company/mailinglist');?>"><span class="glyphicon glyphicon-inbox" aria-hidden="true"></span>&nbsp;&nbsp; 
+	  			<span class="title">Mailing List</span>
+	  		</a>
+	  	</li>
+	  	
+	  	<li class="<?php if($menu=='events'){echo 'active';}?>"> 
+	  		<a href="<?php echo site_url('event');?>"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>&nbsp;&nbsp; 
+	  			<span class="title">Manage Events</span>
+	  		</a>
+	  	</li>
 	    <?php } } } ?>
 	     
     </ul>

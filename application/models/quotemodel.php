@@ -497,7 +497,7 @@ class Quotemodel extends Model
 			if($query->result())
 			{
 				$item->quotedetails = $query->row();
-
+				$item->award = $item->id;
 				$this->db->where('award',$item->id);
 				$query = $this->db->get('awarditem');
 				$awarditems = array();
@@ -625,12 +625,14 @@ class Quotemodel extends Model
         	if(@$_POST['searchfrom'])
 			{
 				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-				$searches[] = " ( date(receiveddate) >= '$fromdate' ) ";
+				$searches[] = " ( date(datedue) >= '$fromdate' ) ";
+				//$searches[] = " ( date(receiveddate) >= '$fromdate' ) ";
 			}
 			if(@$_POST['searchto'])
 			{
 				$todate = date('Y-m-d', strtotime($_POST['searchto']));
-				$searches[] = " ( date(receiveddate) <= '$todate' ) ";
+				$searches[] = " ( date(datedue) <= '$todate' ) ";
+				//$searches[] = " ( date(receiveddate) <= '$todate' ) ";
 			} 		 
         	
         }
@@ -1032,8 +1034,9 @@ class Quotemodel extends Model
 				{
 					$this->db->where('award',$awarded->id);
 					$awardeditems = $this->db->get('awarditem')->result();
-					if($awardeditems)
-					{
+					if($awardeditems  && $this->checkitemdue($awarded->id))
+					{	$olddate="";
+						$qtydue= 0;
 						foreach($awardeditems as $item)
 						{			
 							if($item->daterequested){					
@@ -1046,7 +1049,15 @@ class Quotemodel extends Model
 							if($diffindays>=0 && $diffindays<=7 && ($diff12->invert==0) ){								
 								$items[$quote->ponum]['quoteid'] = $quote->id;
 								$items[$quote->ponum]['podate'] = $quote->podate;
-								$items[$quote->ponum]['awardid'] = $awarded->id;		
+								$items[$quote->ponum]['awardid'] = $awarded->id;	
+								if($olddate==""){
+								$items[$quote->ponum]['datereqested'] = $item->daterequested;									
+								$olddate = $item->daterequested;
+								}elseif(strtotime($item->daterequested)<strtotime($olddate)){
+									$items[$quote->ponum]['datereqested'] = $item->daterequested;										
+								}
+								$qtydue += ($item->quantity-$item->received);
+								$items[$quote->ponum]['quantitydue'] = $qtydue;
 							}
 							
 							}	
@@ -1058,6 +1069,25 @@ class Quotemodel extends Model
 			}
 		}
 		return $items;
+	}
+	
+	
+	
+	function checkitemdue($awardid)
+	{
+		$sql ="SELECT received, quantity 
+		FROM
+		".$this->db->dbprefix('awarditem')." WHERE award='$awardid'";
+
+		$ret = array();
+		$query = $this->db->query ($sql);
+		if ($query->result ())
+		{
+			foreach($query->result () as $item)
+				if($item->received<$item->quantity)
+					return true;				
+		}
+		return false;
 	}
 
 }

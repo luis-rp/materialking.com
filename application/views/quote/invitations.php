@@ -1,6 +1,6 @@
 
 <script type="text/javascript">
-$.noConflict();
+//$.noConflict();
  </script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
@@ -156,7 +156,7 @@ $.noConflict();
                     
                                                 </td>
                                                 <td class="v-align-middle"> 	
-                                                <?php if($inv->status == 'Awarded')
+                                                <?php if($inv->status == 'Completed')
                                                 {?>                                               
 		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>
 		                                                <a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>

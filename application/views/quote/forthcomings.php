@@ -28,6 +28,8 @@ $.noConflict();
                                             <tr>
                                                 <th style="width:9%">PO Number</th>
                                                 <th style="width:22%">PO Date</th>
+                                                <th style="width:22%">Upcoming Item Due Date</th>
+                                                <th style="width:22%">Qty Due</th>
                                                 <th style="width:6%">View Details</th>
                                             </tr>
                                         </thead>
@@ -41,6 +43,8 @@ $.noConflict();
                                                 <td id="cellid_<?php echo @$ponum;?>" class="v-align-middle"><?php echo $ponum;?>
                                                 <!-- <a href="javascript:void(0)" onclick="showdetail('<?php echo @$bck2->id;?>');">Expand</a> -->						                                    </td>
                                                 <td class="v-align-middle"><?php echo $ftc['podate'];?></td>
+                                                <td char="v-align-middle"><?php echo $ftc['datereqested'];?></td>
+                                                <td char="v-align-middle"><?php echo $ftc['quantitydue'];?></td>
                                                 <td class="v-align-middle">
                                                 	<a class="btn-xs btn-mini" target="_blank" href="<?php echo site_url('quote/track/'.$ftc['quoteid'].'/'.$ftc['awardid']);?>">Details</a>
                                                 </td>

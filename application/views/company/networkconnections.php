@@ -68,6 +68,8 @@ function preloadoptions(fromid)
 								<th>Credit remaining</th>
 								<th>Amount Due</th>
 								<th>Credit Card Only</th>
+								
+								
 							</tr>
 							<?php 
 							foreach($admins as $admin)
@@ -78,15 +80,15 @@ function preloadoptions(fromid)
 								}
 							?>
 							<tr>
-								<td><a class="remove" href="<?php echo site_url('company/deletepurchasingtier/'.$admin->purchasingadmin);?>" onclick="javascript:return confirm('Do You Really Want to Delete This Company?');">X</a></td>	
-								<td><?php echo $admin->purchasingcompany;?><br />
-								<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities($admin->purchasingadmin)?>');">View Stats</a>
+							<td><a class="remove" href="<?php echo site_url('company/deletepurchasingtier/'.$admin->purchasingadmin);?>" onclick="javascript:return confirm('Do You Really Want to Delete This Company?');">X</a></td>
+							<td><?php echo $admin->purchasingcompany;?><br />
+							<a href="javascript:void(0)" onclick="preloadoptions('<?php echo htmlentities($admin->purchasingadmin)?>');">View Stats</a>
 								</td>
 								<td><?php echo $admin->purchasingfullname;?><br />								
 								<a href="<?php echo site_url('dashboard/creditapplication/'.$admin->purchasingadmin);?>" target="_blank">
 								<span>View Credit App.</span></a><br />
 								<a href="<?php echo site_url('report/index/0/'.$admin->purchasingadmin);?>" target="_blank">
-								<span>Run Report.</span></a> <br />
+								<span>Run Report</span></a> <br />
 								<a href="<?php echo site_url('quote/invoices/'.$admin->purchasingadmin);?>" target="_blank">
 								<span>View Invoices</span></a>
 								</td>
@@ -126,6 +128,8 @@ function preloadoptions(fromid)
 								<td>					
 <input type="checkbox" name="creditonly[<?php echo $admin->purchasingadmin;?>]" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?> />
 								</td>
+							
+									
 							</tr>
 							<?php } ?>
 							<tr>

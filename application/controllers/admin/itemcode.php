@@ -1496,8 +1496,11 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$insert['minqty'] = $_POST['minqtydefault'];
     		$insert['itemcode'] = mysql_real_escape_string($_POST['itemcodedefault']);
 
-    		/*$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
-//			$query = $this->db->query($sql);*/			
+    		if(!@$this->session->userdata('timstmp'))	
+			$this->session->set_userdata('timstmp',time());
+    		
+    		$sql = "CREATE TABLE IF NOT EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'))." like ".$this->db->dbprefix('masterdefault');
+			$query = $this->db->query($sql);			
     		$defaultitem = $this->db->insert('masterdefaulttemp'.$this->session->userdata('timstmp'),$insert);
     	}elseif (@$_POST['itemiddefault'] && @$_POST['itemidexists']==1){
     		
@@ -2189,6 +2192,46 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     }
 
 
+    function getstoreorderhistory ()
+    {
+        $company = $_POST['companyid'];
+        $itemid = $_POST['itemid'];
+		$ret = '';
+        $sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,o.purchasedate as date,od.status,od.quantity,od.price
+			   	FROM
+				" . $this->db->dbprefix('minprice') . " m,
+				" . $this->db->dbprefix('company') . " c,
+				" . $this->db->dbprefix('order') . " o,
+				" . $this->db->dbprefix('orderdetails') . " od
+				WHERE
+				m.company=c.id AND m.itemid='$itemid' 
+				AND od.itemid = m.itemid AND o.purchasingadmin = m.purchasingadmin
+				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				GROUP By c.id";
+       
+        $query = $this->db->query($sql);
+        $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
+        $itemqry = $this->db->query($itemnamesql);
+        $itemnameResult = $itemqry->result_array();
+        if ($query->num_rows > 0)
+        {
+        	$itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
+            $result = $query->result();
+            $ret .= '<table class="table table-bordered">';
+            $ret .= '<tr><th>Date</th><th>Status</th><th>Order Number</th><th>Qty.</th><th>Price</th></tr>';
+            foreach ($result as $item)
+            {
+                
+                $ret .= '<tr><td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->status . '</td><td>' . $item->ordernumber . '</td><td>' . $item->quantity . '</td><td>' . $item->price .
+                 '</td></tr>';
+            }
+            $ret .= '</table>';
+            echo $ret.'*#*#$'.$itemname;
+        }
+        die();
+    }
+    
+    
     public function get_amazon_details ($url = false)
     {
         $do_return = false;
@@ -2305,6 +2348,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         {
             $data['minprices'] = $item->minprices;
             $data['poitems'] = $item->poitems;
+            $data['soitems'] = $item->soitems;
+           // echo '<pre>',print_r($data['soitems']);
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
             $avgforpricedays = number_format($daysavgprice, 2);

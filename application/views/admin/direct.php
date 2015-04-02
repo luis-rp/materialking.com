@@ -23,7 +23,10 @@ $(document).ready(function() {
 	$('#duedate').datepicker();
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();
-	$('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	//$('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	<?php if( @$this->session->flashdata('message')=="" && @$message=="") {?>
+	$('#sendpo').focus();
+	<?php } ?>
 	$("#showpricelink").hide();
 	$("#showpricelinkbrow").show();
 	
@@ -569,7 +572,7 @@ function checknewitem(){
 		
 		if(confirm('Do you want to add/Save this item?'))
 		{
-
+			$("#userdefineitem").css('display','');
 			var itemcode = $("#itemcode").val();
 			var itemname = $("#itemname").val();
 			var unit = $("#unit").val();
@@ -585,7 +588,7 @@ function checknewitem(){
 				if(data)
 				$('#itemid').val(data);
 				$('#ea').attr("readonly", false);
-				alert("Item got added successfully!");
+				alert("Item got added successfully!\n\r You can add image to newly created item using browse button.");
 			});
 			
 			
@@ -915,13 +918,14 @@ function showselectimage(){
 		    	<?php if(!$bids){?>
 			  	<form id="newitemform" class="form-horizontal" method="post" 
 			  		action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>" 
-			  		onsubmit="return checkzero('pricefieldnew')"> 
+			  		onsubmit="return checkzero('pricefieldnew')" enctype="multipart/form-data"> 
 			  	
 		    	<tr class="newitemrow" style="display:none;">
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="hidden" id="itemincrement" name="itemincrement" />
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');showhideviewprice('');" onchange="//showhideviewprice('');"/>
+		    			<input id="userdefineitem" type="file" name="userdefineitemfile" size="20" style="display:none;" />
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
@@ -1096,7 +1100,7 @@ function showselectimage(){
 				    <div class="controls">
 				    	<form id="assignform" method="post" action="<?php echo site_url('admin/quote/assignpo');?>">
 						<input type="hidden" name="id" value="<?php echo $this->validation->id;?>">
-				    	<input type="submit" class="btn btn-primary" value="Send PO"/>
+				    	<input id="sendpo" type="submit" class="btn btn-primary" value="Send PO"/>
 				    	</form>
 				    </div>
 			    </div>

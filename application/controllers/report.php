@@ -27,12 +27,19 @@ class report extends CI_Controller
 	
 	function index($offset = 0,$pid="") 
 	{
+		
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
 			
 		if($pid!="")
 		{
+			$networkdata=$this->db->get_where('network',array('company'=>$company->id,'purchasingadmin'=>$pid))->row()->acceptedon;
+			if($networkdata!="")
+			{
+				$_POST['searchfrom'] = date('Y-m-d', strtotime($networkdata));
+ 				$_POST['searchto'] = date('Y-m-d');
+			}
 			$_POST['purchasingadmin']=$pid;
 		}	
 		

@@ -929,7 +929,6 @@ class quote extends CI_Controller
     
     function updatequote()
     {
-    	  
         $data ['heading'] = 'Update Quote Item';
         $data ['action'] = site_url('message/updatequote');
         $this->_set_fields();
@@ -2735,8 +2734,7 @@ class quote extends CI_Controller
     }
 
     function additem($qid)
-    {     
-
+    {  
     	$itemcode = @$_POST['itemcode'];
     	if ( $itemcode && !$this->db->where('itemcode',$itemcode)->get('item')->row() )
     	{
@@ -2777,6 +2775,26 @@ class quote extends CI_Controller
             redirect('admin/quote/update/' . $qid);
 
         }
+        
+        if(isset($_FILES['userdefineitemfile']['name']) && $_FILES['userdefineitemfile']['name'] != '')
+        {        
+	        if (is_uploaded_file($_FILES['userdefineitemfile']['tmp_name'])) 
+	        {
+                $nfn = $_FILES['userdefineitemfile']['name'];
+                $ext = end(explode('.', $nfn));
+                if (!in_array(strtolower($ext), array('jpg', 'gif', 'jpeg', 'png'))) 
+                {
+                    $errormessage = '* Invalid file type, upload logo file.';
+                } 
+                else
+                {
+                   move_uploaded_file($_FILES['userdefineitemfile']['tmp_name'], "uploads/item/" . $nfn);
+                }
+	        }
+         
+	        $this->quote_model->db->update('item',array('item_img'=>$_FILES["userdefineitemfile"]["name"]),array('id'=>$_POST['itemid']));
+        }   
+        
         $this->quote_model->db->insert('quoteitem', $_POST);
         $lastquoteitem = $this->quote_model->db->insert_id();
         if (!$this->quote_model->finditembycode($_POST['itemcode']))
@@ -2805,8 +2823,7 @@ class quote extends CI_Controller
         
         redirect('admin/quote/update/' . $qid);
     }
-    
-    
+           
     function addcontractitem($qid)
     {
         if(isset($_FILES['attach']['name']) && $_FILES['attach']['name']!="")

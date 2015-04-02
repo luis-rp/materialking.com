@@ -122,7 +122,7 @@ $(document).ready(function(){
     
     function addmasterdefaultoptions()
     {    	
-    	createtmptable(); 
+    	//createtmptable(); 
     	var minqtydefault = $("#minqtydefault").val();
     	var itemnamedefault = $("#itemnamedefault").val();
     	var itemidexists = $("#itemidexists").val();

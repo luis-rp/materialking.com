@@ -34,6 +34,24 @@
             $("#minpricesearch").html(data);
         });
     }
+    
+    function showorderhistory(companyid, itemid, companyname,imgname)
+    {
+        var serviceurl = '<?php echo base_url() ?>admin/itemcode/getstoreorderhistory/';
+      
+        $.ajax({
+            type:"post",
+            url: serviceurl,
+            data: "companyid="+companyid+"&itemid="+encodeURIComponent(itemid)
+        }).done(function(data){        
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory").html(arr[0]);
+            $("#itemcode").html(arr[1]);
+            $("#itemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:right;margin-top:-3em;" src='+imgname+'>');
+            $("#historycompanyname").html(companyname);
+            $("#historymodal").modal();
+        });
+    }
 
     function openamazon(keyword)
     {
@@ -121,6 +139,45 @@
                                     <td><?php echo $m->substitute ? 'Substitute [' . $m->itemname . ']' : '-' ?></td>
                                     <td>
                                         <a href="javascript: void(0);" onclick="showhistory('<?php echo $m->company ?>','<?php echo $m->itemid ?>','<?php echo $m->companyname ?>','<?php echo $imgName; ?>')"><i class="icon icon-search"></i></a>
+                                    </td>
+                                </tr>
+                        <?php } ?>
+                        </table>
+                    <?php } ?>
+
+                     <?php
+                    if (@$soitems) {
+                        ?>
+                        <h3 class="box-header"><i class="icon-ok"></i>Store Order Company Prices for <?php echo @$item?@$item->itemcode:$this->validation->itemcode; ?></h3>
+        <?php if ($this->validation->keyword) { ?>
+                            <a class="btn btn-primary" onclick="searchprice('<?php echo $this->validation->keyword; ?>')">Amazon Lookup</a>
+                            <a class="btn btn-primary" onclick="openamazon('<?php echo $this->validation->keyword; ?>')">Search</a>
+                            <br/><br/>
+        <?php } ?>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Date</th>
+                                <th>Purchase Price</th>
+                                <th>Substitute</th>
+                                <th>History</th>
+                            </tr>
+                            <?php
+                            //print_r($minprices);
+                            foreach ($soitems as $m) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $m->companyname; ?></td>
+                                    <td><?php echo $m->quoteon; ?></td>
+                                    <td>
+                                        <div class="input-prepend input-append span6">
+                                            <span class="add-on">$</span>
+                                            <input type="text" class="span12" id="price<?php echo $m->company; ?>" name="price<?php echo $m->company; ?>" value="<?php echo $m->price; ?>" required/>
+                                        </div>
+                                    </td>
+                                    <td><?php echo $m->substitute ? 'Substitute [' . $m->itemname . ']' : '-' ?></td>
+                                    <td>
+                                        <a href="javascript: void(0);" onclick="showorderhistory('<?php echo $m->company ?>','<?php echo $m->itemid ?>','<?php echo $m->companyname ?>','<?php echo $imgName; ?>')"><i class="icon icon-search"></i></a>
                                     </td>
                                 </tr>
                         <?php } ?>

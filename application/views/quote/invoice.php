@@ -43,7 +43,7 @@ $.noConflict();
                     <div class="col-md-11">
                         <div class="grid simple ">
                             <div class="grid-title no-border">
-                                <h4>&nbsp;</h4>
+                                <h4 style="text-align:center"><a target="_blank" href="<?php echo site_url('quote/track/'.$awarded->quote.'/'.$awarded->award);?>">VIEW PO TRACKING PAGE</a></h4>
 
                             </div>
                             <div id="invoicewrapper" class="grid-body no-border">

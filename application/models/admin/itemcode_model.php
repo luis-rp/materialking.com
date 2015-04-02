@@ -516,8 +516,8 @@ class itemcode_model extends Model {
 				AND qi.itemid = m.itemid AND qi.purchasingadmin = m.purchasingadmin
 				AND q.id = qi.quote AND qi.purchasingadmin = m.purchasingadmin
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				";
-        //echo $sql; die;
+				GROUP By c.id";
+        //echo '<pre>', $sql; 
         $query = $this->db->query($sql);
         if ($query->num_rows > 0) {
             $result = $query->result();
@@ -780,7 +780,7 @@ class itemcode_model extends Model {
         	'weight' => 1,           
 	        'increment' => 1,
 	        'category' => 248,
-	        'item_img' => $_FILES["userfile"]["name"],
+	        'item_img' =>  (isset($_FILES["userfile"]["name"]) && $_FILES["userfile"]["name"] != '') ? $_FILES["userfile"]["name"] : '' ,
         );
 
         if(@$this->session->userdata('purchasingadmin'))
@@ -1079,7 +1079,37 @@ class itemcode_model extends Model {
         return NULL;
     }
 
-
+	function getstoredorderitems($itemid)
+	{
+		$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*
+			   	FROM
+				" . $this->db->dbprefix('minprice') . " m,
+				" . $this->db->dbprefix('company') . " c,
+				" . $this->db->dbprefix('order') . " o,
+				" . $this->db->dbprefix('orderdetails') . " od
+				WHERE
+				m.company=c.id AND m.itemid='$itemid' 
+				AND od.itemid = m.itemid AND o.purchasingadmin = m.purchasingadmin
+				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				GROUP By c.id";
+        //echo '<pre>', $sql; 
+        $query = $this->db->query($sql);
+        if ($query->num_rows > 0) {
+            $result = $query->result();
+            $ret = array();
+            foreach ($result as $item) {
+                $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+                $this->db->where('company', $item->company);
+                $this->db->where('status', 'Active');
+                if ($this->db->get('network')->result()) {
+                    $ret[] = $item;
+                }
+            }
+            return $ret;
+        }
+        return NULL;
+	}
+    
         function get_itemcodes_by_idandbidid($id,$bidid) {
         $this->db->where('id', $id);
         $query = $this->db->get('item');
@@ -1094,6 +1124,7 @@ class itemcode_model extends Model {
             $ret->minprices = $this->getminimumprices($id);
             $ret->poitems = $this->getpoitems($id);
             $ret->tierprices = $this->gettierprices($id);
+            $ret->soitems = $this->getstoredorderitems($id);
 
 
             // LAST QUOTED DATE

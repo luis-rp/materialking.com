@@ -247,7 +247,7 @@ function preloadoptions(fromid)
 					</div>
 				</div>
 
-				<div class="tiles white">
+				<!--<div class="tiles white">
 					  <div class="tiles-body">
 						<div class="tiles-title">
 							PURCHASING COMPANIES IN YOUR NETWORK
@@ -292,7 +292,7 @@ function preloadoptions(fromid)
 							</div>
 						<?php }  }?>
 					</div>
-				</div>
+				</div>-->
 
 			</div>
 		</div>

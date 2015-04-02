@@ -38,7 +38,10 @@ $(document).ready(function(){
 	//$('textarea').autosize();
 	//$('.price').priceFormat({prefix: '$ ', centsSeparator: '.',thousandsSeparator: ','});
 	//$("input,select,textarea").not("[type=submit]").jqBootstrapValidation();
-	$('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	//$('html, body').animate({scrollTop:$(document).height()}, 'slow');
+	<?php if( @$this->session->flashdata('message')=="" && @$message=="") {?>
+	$('#saveandcontinue').focus();
+	<?php } ?>
 	$("#showpricelink").hide();
     $("#showpricelinkbrow").show();
     $("#selectCategoryWindow").hide();
@@ -419,7 +422,7 @@ function checknewitem(){
 		
 		if(confirm('Do you want to add/Save this item?'))
 		{
-
+			$("#userdefineitem").css('display','');
 			var itemcode = $("#itemcode").val();
 			var itemname = $("#itemname").val();
 			var unit = $("#unit").val();
@@ -434,13 +437,12 @@ function checknewitem(){
 			}).done(function(data){
 				if(data)
 				$('#itemid').val(data);
-				alert("Item got added successfully!");
+				alert("Item got added successfully!\n\r You can add image to newly created item using browse button.");
 			});
 			
 			
 		}
-	}
-	
+	}	
 }
 
 function checkupdateincrementquantity(quantity,id){	
@@ -975,19 +977,21 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    	<?php if(!$invited){?>
 		    	
 			  	<form id="newitemform" class="form-horizontal" method="post"
-			  	action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>"> 
+			  	action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>" enctype="multipart/form-data"> 
 			  	
 		    	<tr id="newitemrow" style="display:none;">
 		    		<td>
 		    			<input type="hidden" id="itemid" name="itemid" class="span itemid"/>
 		    			<input type="hidden" id="itemincrement" name="itemincrement" />
 		    			<input type="text" id="itemcode" name="itemcode" required class="span itemcode" onblur="fetchItem('itemcode');" onchange="showhideviewprice('');"/>
+		    			<input id="userdefineitem" type="file" name="userdefineitemfile" size="20" style="display:none;" />
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
                     </td>
 		    		<td width="18%">
 		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;height:100px;"></textarea>
+		    			 
 		    		</td>
 		    		<td><input type="text" id="quantity" name="quantity" class="span12" onblur="checkincrementquantity(this.value);calculatetotalprice(''); checkmaxstockreached(this.value,0); " required  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br><span style="color:red" id="incrementmessage"></span></td>
 		    		<td><input type="text" id="unit" name="unit" onblur="return checknewitem();" class="span12"/></td>
@@ -1033,7 +1037,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
                                 
 		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
-		    		<input type="submit" value="Save & Continue" class="btn btn-primary"/>
+		    		<input id="saveandcontinue" type="submit" value="Save & Continue" class="btn btn-primary"/>
 					</td>
 		    	</tr>
 		    	</form>

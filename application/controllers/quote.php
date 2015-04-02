@@ -3614,6 +3614,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			
 		if($pid!="")
 		{
+			$networkdata=$this->db->get_where('network',array('company'=>$company->id,'purchasingadmin'=>$pid))->row()->acceptedon;
+			if($networkdata!="")
+			{
+				$_POST['searchfrom'] = date('m/d/Y', strtotime($networkdata));
+ 				$_POST['searchto'] = date('m/d/Y');
+			}
 			$_POST['searchpurchasingadmin']=$pid;
 		}		
 		
