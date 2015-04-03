@@ -119,8 +119,12 @@ class company_model extends Model {
         if (isset($options['types']))
             unset($options['types']);
         //print_r($options);die;
+        $this->db->insert('systemusers', array('parent_id'=>''));
+		$cid = $this->db->insert_id();
+		
+		$options['id'] = $cid;
         $this->db->insert('company', $options);
-        $cid = $this->db->insert_id();
+        
         if (isset($_POST['types']))
             foreach ($_POST['types'] as $type) {
                 $insert = array();

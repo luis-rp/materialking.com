@@ -168,7 +168,7 @@
                                 ?>
                                 <tr>
                                     <td><?php echo $m->companyname; ?></td>
-                                    <td><?php echo $m->quoteon; ?></td>
+                                    <td><?php echo $m->purchasedate; ?></td>
                                     <td>
                                         <div class="input-prepend input-append span6">
                                             <span class="add-on">$</span>

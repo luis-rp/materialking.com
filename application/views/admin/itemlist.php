@@ -179,7 +179,7 @@
 		if($('#invquantity').val()<=0)
 			alert("Please enter value greater than zero");
 		else{
-			var data = "itemid="+$('#invitemid').val()+"&adjustedqty="+$('#invquantity').val();
+			var data = "itemid="+$('#invitemid').val()+"&quantity="+$('#invquantity').val();
 			$.ajax({
     		type:"post",
     		data: data,

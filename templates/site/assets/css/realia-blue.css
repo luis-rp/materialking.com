@@ -1108,7 +1108,7 @@ ul#css3menu1 li.topmenu:hover > a, ul#css3menu1 li.topmenu a.pressed{background-
 ul#css3menu2, ul#css3menu2 ul{border-style:solid;border-width:0;list-style:none outside none;margin:0;padding:0;}
 ul#css3menu2 ul{background:#555555;background-repeat:repeat;border-radius:0;left:0;opacity:0;padding:0 1px 1px;position:absolute;top:100%;transition:opacity 0.5s ease 0s;visibility:hidden;width:210px;float:left;position:relative;}
 ul#css3menu2 li:hover > ul{opacity:1;visibility:visible;}
-ul#css3menu2 li{display:block;float:left;font-size:0;position:relative;white-space:nowrap;}
+ul#css3menu2 li{display:block; font-size:0;position:relative;white-space:nowrap;}
 ul#css3menu2 li:hover{z-index:1;}
 ul#css3menu2 ul ul{left:100%;position:absolute;top:0;}
 ul#css3menu2{border-radius:0 0 0 0;display:inline-block;float:right;font-size:0px;position:relative;top:-64px;width:25%;z-index:999;}

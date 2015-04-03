@@ -344,7 +344,7 @@ class itemcode extends CI_Controller
                 if(@$this->session->userdata('managedprojectdetails') != '')
  				{
  					$invresult = $this->itemcode_model->checkinventoryresult($itemcode->id);
- 					if(@!$invresult->id)
+ 					//if(@!$invresult->id)
  			 		$itemcode->actions .= '<br>' . '<a href="javascript:void(0)" onclick="addtoinventory('.$itemcode->id.')" >ADD To Inventory</a>';   				}	    
                  
                     
@@ -2799,7 +2799,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		$existing = $this->db->get('inventory')->row();
 		if($existing)
 		{
-			$_POST['adjustedqty'] -= $existing->adjustedqty; 
+			$_POST['quantity'] = $existing->quantity+$_POST['quantity']; 
 			$this->db->where('itemid',$_POST['itemid']);
 			$this->db->where('purchasingadmin',$company);			
 			if($this->session->userdata('managedprojectdetails') != '')
@@ -2815,8 +2815,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			if($this->session->userdata('managedprojectdetails') != '')
  			{
  			$_POST['project'] = $this->session->userdata('managedprojectdetails')->id;
- 			}
- 			$_POST['adjustedqty'] = "-".$_POST['adjustedqty'];			
+ 			} 					
 			$this->db->insert('inventory',$_POST);
 			echo "Item Added to Inventory Sucessfully!";
 		}

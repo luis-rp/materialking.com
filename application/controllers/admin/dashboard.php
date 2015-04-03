@@ -1480,7 +1480,7 @@ class Dashboard extends CI_Controller
                     	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance <a id="hrefa_'.$quote->id.'" href="javascript:void(0)" onclick="previewshipment('.$quote->id.');">Preview Shipment</a><img height="15px;" width="15px;" id="imageholder_'.$quote->id.'" src="'.site_url('templates/admin/css/icons/plus.gif').'" >';
                            }
                            
-                           $receiveqty = $quote->receiveqty;
+                           $receiveqty += $quote->receiveqty;
                           
                 	  }
                 }
@@ -1875,9 +1875,13 @@ class Dashboard extends CI_Controller
 				  }
 			      else
 			      {			       	
-			       $password = $this->getRandomPassword();
-			       $username = str_replace(' ', '-', strtolower($_POST['ctitle']));                                                         	               	
+			      	$this->db->insert('systemusers', array('parent_id'=>''));
+					$lastid = $this->db->insert_id();
+			        $password = $this->getRandomPassword();
+			        $username = str_replace(' ', '-', strtolower($_POST['ctitle']));     
+			                                                            	               	
             		$limitedcompany = array(
+            		   'id'=>$lastid,
             		   'primaryemail' => $_POST['email'],  	
             		   'title' => $_POST['ctitle'],
             		   'contact' => $_POST['cname'],
@@ -1889,8 +1893,7 @@ class Dashboard extends CI_Controller
                        'regdate' => date('Y-m-d')                       
                     );
                     $this->db->insert('company', $limitedcompany);
-            		$lastid = $this->db->insert_id();
-             		             		       		
+            		             		             		       		
             		$insert = array();
             		$insert['company'] = $lastid;
             		$insert['purchasingadmin'] = $id;            		

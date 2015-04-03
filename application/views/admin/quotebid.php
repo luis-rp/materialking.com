@@ -1080,7 +1080,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					    </tr>
 					    <tr>
 						    <td style="color:green;">
-						    	<?php echo "$".@$guesttotal;?>
+						    	<?php echo "$".round(@$guesttotal,2);?>
 						    </td>
 					    </tr>
 					    <?php if(@$guesttotalmessage) { ?>

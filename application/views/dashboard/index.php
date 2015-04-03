@@ -68,30 +68,34 @@ function preloadoptions(fromid)
 
 </script>
     <div class="content">
-   <?php echo $this->session->flashdata('message'); ?>
+      <?php echo $this->session->flashdata('message'); ?>
 		<div class="page-title">
 			<h3>Dashboard </h3>
 		</div>
-
-	   <div id="container">
-
-		<div class="row">
-
-			<div class="col-md-6 col-sm-6">
+		<div id="container">
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
+			
 				<div class="tiles white">
-				 <div style="height:500px;overflow:auto;">
+					<div style="height:500px;overflow:auto;">
 					  <div class="tiles-body">
+					  
 						<div class="controller">
 							<a class="reload" href="javascript:;"></a>
 							<a class="remove" href="javascript:;"></a>
 						 </div>
+						 
 						 <div class="tiles-title">NOTIFICATIONS</div><br>
-							<?php if(!$newnotifications){?>
-								<span class="label label-important">No New Notifications</span>
-							<?php }?>
-							<?php foreach($newnotifications as $newnote){?>
+						 <?php if(!$newnotifications){?>
+							<span class="label label-important">No New Notifications</span>
+						 <?php }?>
+						 <?php foreach($newnotifications as $newnote){
+						 	 ?>
 
-							<div class="date pull-right"><a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a></div>
+							<div class="date pull-right">
+								<a class="remove" href="<?php echo site_url('dashboard/close/'.$newnote->id);?>">X</a>
+							</div>
+							
 							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
 								<div class="user-profile">
@@ -107,7 +111,7 @@ function preloadoptions(fromid)
 								</div>
 							</div>
 							</a>
-						<?php }?>
+						<?php }  ?>
 					</div>
 					</div>
 					
@@ -147,46 +151,10 @@ function preloadoptions(fromid)
 							</a>
 						<?php }?>
 						</div>
-					
-					
-					<div class="tiles-title extrabox">
-					<div class="heading">SEND PAST DUE INVOICE ALERTS:</div>
-					
-					<table cellpadding="3">
-					<?php 
-					if(isset($invoices) && count($invoices)>0)
-					{ ?>
-					  <tr>
-					  <td>Invoice</td>
-					  <td>Due Date</td>
-					  <td>&nbsp;</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($invoices as $invoice) {  ?>
-					  <tr>
-					  <td><a href="javascript:void(0)" onclick="invoice('<?php echo $invoice->invoicenum;?>','<?php echo $invoice->quoteid;?>');"><?php echo $invoice->invoicenum; ?></a></td>
-					  <td><?php echo $invoice->datedue; ?></td>
-					  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->ponum;?>');" value="Send Alert" > </td>
-					  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
-					  </tr>
-
-
-				<?php } ?>
-				<?php } else {?> <span class="label label-important">No Past Due Invoices</span><?php } ?>
-				
-				</table>
-				
-				</div>
-
-				</div>
-			</div>
-			<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
-                	<input type="hidden" id="invoicenum" name="invoicenum"/>
-                	<input type="hidden" id="invoicequote" name="invoicequote"/>
-                </form>
+		           </div>
+			   </div>
 
 			<div class="col-md-6 col-sm-6">
-
 				<div class="tiles white">
 					  <div class="tiles-body">
 						<div class="controller">
@@ -241,10 +209,58 @@ function preloadoptions(fromid)
 								</div>
 
 							</div>
-
-
 						<?php } }?>
 					</div>
+				</div>
+				
+					
+					<div class="tiles white">
+					  <div class="tiles-body">
+						
+						<div class="tiles-title">
+							SEND PAST DUE INVOICE ALERTS
+						</div>
+					  <br>
+						<?php if(!$invoices){ ?>
+							<span class="label label-important">No Past Due Invoices</span>
+						<?php } ?>
+
+							<div class="notification-messages">
+								<div class="message-wrapper" style="height:auto !important;">
+									<div class="heading">
+										&nbsp;
+                                  </div>
+                                  
+                                  <div class="description">
+										<table class="table">
+											<?php if(isset($invoices) && count($invoices)>0) { ?>
+											  <tr>
+												  <th>Invoice</th>
+												  <th>Due Date</th>
+												  <th>Action</th>
+												  <th>Message</th>
+											  </tr>
+										<?php foreach($invoices as $invoice) {  ?>
+											  <tr>
+												  <td><a href="javascript:void(0)" onclick="invoice('<?php echo $invoice->invoicenum;?>','<?php echo $invoice->quoteid;?>');"><?php echo $invoice->invoicenum; ?></a>
+												  </td>
+												  <td><?php echo $invoice->datedue; ?>
+												  </td>
+												  <td><input class="sendbutton" type="button" name="<?php echo $invoice->invoicenum; ?>" id="<?php echo $invoice->invoicenum; ?>" onclick="sendemailalert('<?php echo $invoice->invoicenum; ?>', '<?php echo $invoice->purchasingadmin;?>','<?php echo $invoice->totalprice; ?>', '<?php echo $invoice->datedue; ?>','<?php echo $invoice->id; ?>','<?php echo $invoice->ponum;?>');" value="Send Alert" >
+												   </td>
+												  <td class="errormsg" id="<?php echo $invoice->id; ?>"><?php if(isset($invoice->alertsentdate) && $invoice->alertsentdate!="") echo "Alert Sent ".date("m/d/Y",strtotime($invoice->alertsentdate)); ?></td>
+											  </tr>					
+										<?php } }?>										
+									</table>
+									</div>
+                                  
+								</div>
+							</div>					
+					</div>
+					<form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
+                	<input type="hidden" id="invoicenum" name="invoicenum"/>
+                	<input type="hidden" id="invoicequote" name="invoicequote"/>
+                </form>
 				</div>
 
 				<!--<div class="tiles white">

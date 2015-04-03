@@ -1090,12 +1090,15 @@ class quote extends CI_Controller
             if(isset($newarr[0]['name']) && @$newarr[0]['name']!='')  
             {   $limitcompany = array();
                foreach ($newarr as $eachsup)
-                {      		
+                {      
+                	$this->db->insert('systemusers', array('parent_id'=>''));
+					$lastid = $this->db->insert_id();		
                 	$password = $this->getRandomPassword();
                 	
                 	$username = str_replace(' ', '-', strtolower($eachsup['name']));                	
                 	
             		$limitedcompany = array(
+            		   'id'=>$lastid,
             		   'primaryemail' => $eachsup['email'],  	
             		   'title' => $eachsup['name'],
             		   'contact' => @$eachsup['cname'],
@@ -1107,7 +1110,7 @@ class quote extends CI_Controller
                        'regdate' => date('Y-m-d')                       
                     );
                     $this->db->insert('company', $limitedcompany);
-            		$lastid = $this->db->insert_id();
+            		
             		if($lastid){
             		if($invitees!=""){	
             		$invitees = $invitees.",".$lastid;
@@ -1923,11 +1926,14 @@ class quote extends CI_Controller
             			$companyexisits = 1;
             		 	$lastid = $nonnetcompanies->companyid;	
             		 }else {	
+            		 	$this->db->insert('systemusers', array('parent_id'=>''));
+						$lastid = $this->db->insert_id();
             		 	$password = $this->getRandomPassword();
 
             		 	$username = str_replace(' ', '-', strtolower($noncomp->companyname));
 
             		 	$limitedcompany = array(
+            		 	'id'=>$lastid,
             		 	'primaryemail' => $noncomp->companyemail,
             		 	'title' => $noncomp->companyname,
             		 	'contact' => @$noncomp->contact,
@@ -1938,9 +1944,7 @@ class quote extends CI_Controller
             		 	'company_type' => '3',
             		 	'regdate' => date('Y-m-d')
             		 	);
-            		 	$this->db->insert('company', $limitedcompany);
-            		 	$lastid = $this->db->insert_id();
-            		
+            		 	$this->db->insert('company', $limitedcompany);            		 
             		 }
             		
             		 if($lastid){
@@ -6720,7 +6724,7 @@ $loaderEmail = new My_Loader();
 
 						
                 		$insertarray = array('awarditem' => $item->id, 'quantity' => $ship->quantity, 'invoicenum' => $inv, 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
-                		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');        		            		
                 		
                 		if($resultinvoicecycle){
                 			
@@ -6750,6 +6754,39 @@ $loaderEmail = new My_Loader();
             				 $this->quote_model->db->update('received', $insertarray);                		 	
                 		 }else*/                		
                 			$this->quote_model->db->insert('received', $insertarray);
+                			
+                			$stockarray = array();
+                			$stockarray['quantity'] = (@$ship->quantity)?$ship->quantity:0;            			
+                			
+                			$this->db->where('itemid',$item->itemid);
+                			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                			if($quote->pid)
+                			{
+                				$this->db->where('project',$quote->pid);
+                			}
+                			$existing = $this->db->get('inventory')->row();
+                			if($existing)
+                			{
+                				$stockarray['quantity'] += $existing->quantity; 
+                				$this->db->where('itemid',$item->itemid);
+                				$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                				if($quote->pid)
+                				{
+                					$this->db->where('project',$quote->pid);
+                				}
+                				$this->db->update('inventory',$stockarray);
+                			}
+                			else
+                			{
+                				$stockarray['itemid'] = $item->itemid;
+                				$stockarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                				if($quote->pid)
+                				{
+                					$stockarray['project'] = $quote->pid;
+                				}
+                				$this->db->insert('inventory',$stockarray);
+                			}
+                			
 
                 		$insertarray['id'] = $item->id;
                 		$insertarray['itemname'] = $item->itemname;
@@ -6789,8 +6826,8 @@ $loaderEmail = new My_Loader();
                 		 	 $this->db->where('invoicenum', trim($_POST['invoicenum' . $key]));
                 		 	 $this->db->where('awarditem', $item->id);
             				 $this->quote_model->db->update('received', $insertarray);                		 	
-                }else*/   
-                
+                }else*/           
+               
                 
                 if($resultinvoicecycle){
 
@@ -6815,17 +6852,55 @@ $loaderEmail = new My_Loader();
                 }/*else 
 				$insertarray['datedue'] = $_POST['datedue' . $key];*/
                 
+                $paymentstatus = 'Unpaid';
+                $status = 'Pending';
                 if(@$_POST['invoicetype' . $key] == "fullpaid"){
                 $insertarray['invoice_type'] = "alreadypay";
                 $insertarray['paymentstatus']='Paid';
                 $insertarray['paymentdate'] = $_POST['paymentdate' . $key];
                 $insertarray['paymenttype'] = 'Credit Card';
                 $insertarray['refnum'] = $_POST['refnum' . $key];
-                $insertarray['status'] = 'Verified';               
+                $insertarray['status'] = 'Verified'; 
+                
+                $status = 'Verified'; 
+                $paymentstatus =  "Paid";              
                 }
+                
                              
-                $this->quote_model->db->insert('received', $insertarray);
+                $this->quote_model->db->insert('received', $insertarray);              
 
+                $stockarray = array();
+                $stockarray['quantity'] = ($received[$item->id]['received'])?$received[$item->id]['received']:0;
+
+                $this->db->where('itemid',$item->itemid);
+                $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                if($quote->pid)
+                {
+                	$this->db->where('project',$quote->pid);
+                }
+                $existing = $this->db->get('inventory')->row();
+                if($existing)
+                {
+                	$stockarray['quantity'] += $existing->quantity; 
+                	$this->db->where('itemid',$item->itemid);
+                	$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                	if($quote->pid)
+                	{
+                		$this->db->where('project',$quote->pid);
+                	}
+                	$this->db->update('inventory',$stockarray);
+                }
+                else
+                {
+                	$stockarray['itemid'] = $item->itemid;
+                	$stockarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                	if($quote->pid)
+                	{
+                		$stockarray['project'] = $quote->pid;
+                	}
+                	$this->db->insert('inventory',$stockarray);
+                }
+                
 
                 $insertarray['id'] = $item->id;
                 $insertarray['itemname'] = $item->itemname;
@@ -6875,8 +6950,8 @@ $loaderEmail = new My_Loader();
             						<td>'.$item->quantity.'</td>
             						<td>'.$item->ea.'</td>
             						<td>'.$item->totalprice.'</td>
-            						<td>'.$item->paymentstatus.'</td>
-            						<td>'.$item->status.'</td>
+            						<td>'.$paymentstatus.'</td>
+            						<td>'.$status.'</td>
             						<td>'.$item->costcode.'</td>
             					</tr>';   
             
@@ -6884,7 +6959,7 @@ $loaderEmail = new My_Loader();
         
         	$invoiceDetailStr .= '</table>';
         //print_r($invoices);die;
-        //echo '<pre>';print_r($credits);die;
+        //echo '<pre>';print_r($invoiceDetailStr);die;
         $config = (array) $this->settings_model->get_current_settings();
         $config = array_merge($config, $this->config->config);
         $this->db->where('id',$this->session->userdata('purchasingadmin'));

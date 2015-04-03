@@ -22,7 +22,7 @@ function updateadjustedqty(itemid,ea){
 	adjustedqty = $('#qtyonhand'+itemid).val() - $('#adjustqty'+itemid).val();	
 	if(confirm("Do you really want to reduce the quantity on hand by "+adjustedqty+"?")){
 		
-		var data = "itemid="+itemid+"&adjustedqty="+adjustedqty;        
+		var data = "itemid="+itemid+"&quantity="+adjustedqty;        
         $.ajax({
 		      type:"post",
 		      data: data,

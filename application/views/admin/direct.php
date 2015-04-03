@@ -1034,7 +1034,7 @@ function showselectimage(){
 					    </tr>
 					    <tr>
 						    <td style="color:green;">
-						    	<?php echo "$".@$guesttotal;?>
+						    	<?php echo "$".round(@$guesttotal,2);?>
 						    </td>
 					    </tr>
 					     <?php if(@$guesttotalmessage) { ?>

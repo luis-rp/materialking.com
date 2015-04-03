@@ -291,7 +291,7 @@ class inventorymanagement extends CI_Controller
 		$existing = $this->db->get('inventory')->row();
 		if($existing)
 		{
-			$_POST['adjustedqty'] += $existing->adjustedqty; 
+			$_POST['quantity'] = $existing->quantity-$_POST['quantity']; 
 			$this->db->where('itemid',$_POST['itemid']);
 			$this->db->where('purchasingadmin',$company);			
 			if($this->session->userdata('managedprojectdetails') != '')
@@ -340,7 +340,7 @@ class inventorymanagement extends CI_Controller
 		if($existing)
 		{
 			
-			$where = '';
+			/*$where = '';
 			if($this->session->userdata('managedprojectdetails') != '')
 			{
 				$where .= " AND q.pid = ".$this->session->userdata('managedprojectdetails')->id;
@@ -354,16 +354,13 @@ class inventorymanagement extends CI_Controller
 				WHERE 1=1 AND q.purchasingadmin='".$this->session->userdata('purchasingadmin')."' and itemid = ".$_POST['itemid']." {$where} GROUP by aw.itemid ";
 			
 			$qry = $this->db->query($sql);		
- 			$qryresult = $qry->row();
-			
- 			if($qryresult){
+ 			$qryresult = $qry->row();*/
+						
  				
- 				if(($qryresult->quantity - $existing->adjustedqty)>=$existing->maxstock)
- 				echo 1; 
- 				else 
- 				echo 0; 				
- 			}else 
- 			echo 0;
+			if($existing->quantity>=$existing->maxstock)
+			echo 1;
+			else
+			echo 0;
  			
 		}else{ 
 			echo 0;	

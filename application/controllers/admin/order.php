@@ -1162,7 +1162,47 @@ function orders_export()
 		die;
 		
 		$this->db->where('id',$_POST['id']);
-		$result = $this->db->update('orderdetails',$_POST);		
+		$result = $this->db->update('orderdetails',$_POST);
+
+		$stockarray = array();
+		$stockarray['quantity'] = (@$_POST['quantity'])?$_POST['quantity']:0;
+
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+		if($this->session->userdata('managedprojectdetails') != '')
+ 		{
+ 			$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+ 		}
+		$existing = $this->db->get('inventory')->row();
+		if($existing)
+		{
+			if($_POST['isreceived']==0)
+			$stockarray['quantity'] = $existing->quantity - $stockarray['quantity'];
+			else
+			$stockarray['quantity'] += $existing->quantity;
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+			if($this->session->userdata('managedprojectdetails') != '')
+			{
+				$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+			}
+			$this->db->update('inventory',$stockarray);
+		}
+		else
+		{
+			if($_POST['isreceived']==0)
+			$stockarray['quantity'] = 0;
+			
+			$stockarray['itemid'] = $_POST['itemid'];
+			$stockarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+			if($this->session->userdata('managedprojectdetails') != '')
+			{
+				$stockarray['project'] = $this->session->userdata('managedprojectdetails')->id;
+			}			
+			
+			$this->db->insert('inventory',$stockarray);
+		}
+		
 		echo $result; die;
 	}
 	

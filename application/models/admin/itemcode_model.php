@@ -71,16 +71,20 @@ class itemcode_model extends Model {
         if ($query->result()) {
             $result = $query->result();
             $ret = array();
+            $where1 = "";
+            if(@$this->session->userdata('managedprojectdetails')->id)
+            $where1 = " AND o.project='".$this->session->userdata('managedprojectdetails')->id."' ";
+            
             foreach ($result as $item)
             {
                 $item->poitems = $this->getpoitems($item->id);
                 $item->minprices = $this->getminimumprices($item->id);
-                $item->tierprices = $this->gettierprices($item->id);
-
+                $item->tierprices = $this->gettierprices($item->id);           
+                
                 $orderSql = "SELECT *,od.quantity as qty FROM pms_order o,
 		        			 pms_orderdetails od
 		        			 WHERE o.id=od.orderid
-		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where1} 
 		        			 AND od.itemid={$item->id} GROUP BY od.orderid";
                 
                 $orderRes = $this->db->query($orderSql)->result();
@@ -109,7 +113,7 @@ class itemcode_model extends Model {
                 
                 $sql2 = "SELECT (SUM(od.quantity * od.price)) 
 		    	 totalprice2, od.shipping  FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-                WHERE od.orderid=o.id AND od.itemid = ".$item->id." AND o.purchasingadmin='$pa'";
+                WHERE od.orderid=o.id AND od.itemid = ".$item->id." {$where1} AND o.purchasingadmin='$pa'";
                 
                 $query2 = $this->db->query($sql2);
                  if ($query2->result()) {
@@ -1081,7 +1085,7 @@ class itemcode_model extends Model {
 
 	function getstoredorderitems($itemid)
 	{
-		$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*
+		$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate
 			   	FROM
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c,

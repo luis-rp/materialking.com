@@ -549,7 +549,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                     &nbsp;&nbsp;&nbsp; <a href="<?php echo site_url('admin/register')?>">Create Purchasing Account</a>
                      <br/>
                     <br/>
-                    &nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="$('#loginmodal').modal('show'); $('#createmodal').modal('hide');">Login1</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="$('#loginmodal').modal('show'); $('#createmodal').modal('hide');">Login</a>
                      <br/>
                     <br/>
                      <br/>

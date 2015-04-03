@@ -86,11 +86,15 @@ class Company extends CI_Controller {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/register');
         }
-
+        
+        $this->db->insert('systemusers', array('parent_id'=>''));
+		$itemid = $this->db->insert_id();
         $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
         $_POST['regkey'] = $key;
+        $_POST['id']= $itemid;
+      //  echo '<pre>',print_r($_POST);die;
         $this->db->insert('company', $_POST);
-        $itemid = $this->db->insert_id();
+       
         $this->sendRegistrationEmail($itemid, $key);
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
         redirect('company/register');
@@ -764,7 +768,7 @@ class Company extends CI_Controller {
         if($this->session->userdata('company')->company_type=='3')
         {  
         	//$link = '<a href="'.site_url('company/login').'">Login</a>'; 
-        	$link = site_url('company/login'); 	  	
+        	$link = site_url('site/supplier/'.@$_POST['username']); 	  	
         	$data['email_body_title']  = "Dear " .@$_POST['title'];
 		  	$data['email_body_content']  = "You have updated Company Information as Follow:  <br><br>
 		  	Username : ".@$_POST['username']."<br/>

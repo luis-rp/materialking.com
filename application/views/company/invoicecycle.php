@@ -104,7 +104,7 @@ function preloadoptions(fromid)
 								
 								<td colspan="10" align="right"><input type="submit" value="Save" class="btn btn-primary btn-cons general"></td>
 							</tr>
-						<?php } else { echo  '<div class="alert alert-info"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Invoice Due Date Set.</div></div>'; } ?>	
+						<?php } else { echo  '<div class="alert alert-info"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">No Companies in Your Network.</div></div>'; } ?>	
 						</table>
 						</form>
 					</div>

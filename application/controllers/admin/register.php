@@ -54,10 +54,14 @@ class Register extends CI_Controller
 			redirect('admin/register'); 
 		}
 		
+		$this->db->insert('systemusers', array('parent_id'=>''));
+		$itemid = $this->db->insert_id();
 		$key =  md5(uniqid($_POST['companyname']).'-'.date('YmdHisu'));
 		$_POST['regkey'] = $key;
+		$_POST['id']= $itemid;
+		
 		$this->db->insert('users',$_POST);
-		$itemid = $this->db->insert_id();
+		
 		$this->sendRegistrationEmail($itemid, $key);
 		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
 		$this->session->set_userdata('companysname', $_POST['companyname']);
@@ -131,10 +135,15 @@ class Register extends CI_Controller
 			redirect('admin/register'); 
 		}
 		
+		$this->db->insert('systemusers', array('parent_id'=>''));
+		$itemid = $this->db->insert_id();
+		
 		$key =  md5(uniqid($request2['companyname']).'-'.date('YmdHisu'));
 		$request2['regkey'] = $key;
+		$request2['id'] = $itemid;
+		
 		$this->db->insert('users',$request2);
-		$itemid = $this->db->insert_id();
+		
 		$this->sendRegistrationEmail($itemid, $key);
 		$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
 		$this->session->set_userdata('companysname', $request2['companyname']);

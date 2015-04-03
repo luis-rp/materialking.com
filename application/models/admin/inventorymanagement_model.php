@@ -36,7 +36,7 @@ class inventorymanagement_model extends Model
  		if($itemid!="") 		
  			$whereo .= " AND od.itemid = ".$itemid;
  		
- 		$orderSql = "SELECT od.itemid as id,od.itemid, i.itemcode, i.itemname, SUM(IF(od.isreceived=1, od.quantity, 0)) as qtyonhand, SUM(IF(od.isreceived=0, od.quantity, 0)) as qtyonpo, SUM(od.quantity) quantity, od.price as ea, SUM(od.price*IF(od.isreceived=1, od.quantity, 0)) as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, SUM(od.price*IF(od.isreceived=0, od.quantity, 0)) as valuecomitted, i.item_img  FROM ".$this->db->dbprefix('order')." o left join
+ 		$orderSql = "SELECT od.itemid as id,od.itemid, i.itemcode, i.itemname, SUM(IF(od.isreceived=1, od.quantity, 0)) as qtyonhand, SUM(IF(od.isreceived=0, od.quantity, 0)) as qtyonpo, SUM(od.quantity) quantity, od.price as ea, SUM(od.price*IF(od.isreceived=1, od.quantity, 0)) as valueonhand, '' as daterequested, date_format(o.purchasedate,'%m/%d/%Y')  as lastaward ,'' as manage, SUM(od.price*IF(od.isreceived=0, od.quantity, 0)) as valuecomitted, i.item_img  FROM ".$this->db->dbprefix('order')." o left join
  		        			 ".$this->db->dbprefix('orderdetails')." od on o.id=od.orderid 
  		        			 JOIN ".$this->db->dbprefix('item')." i ON od.itemid = i.id				
 		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereo}  
@@ -59,7 +59,7 @@ class inventorymanagement_model extends Model
  		
  		foreach($qryresult as $q){
  			
- 			$inventorysql = "select minstock, maxstock,reorderqty, adjustedqty from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$q->itemid; 
+ 			$inventorysql = "select minstock, maxstock,reorderqty, adjustedqty, quantity from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$q->itemid; 
  			$sqlq = $this->db->query($inventorysql);		
  			$qryinvresult = $sqlq->row();
  			
@@ -68,8 +68,10 @@ class inventorymanagement_model extends Model
  				$qryresult[$i]->maxstock = $qryinvresult->maxstock;
  				$qryresult[$i]->reorderqty = $qryinvresult->reorderqty;
  				//if($qryinvresult->adjustedqty>0){
- 					$qryresult[$i]->qtyonhand = ($qryresult[$i]->qtyonhand - $qryinvresult->adjustedqty);
- 					$qryresult[$i]->valueonhand = ($qryresult[$i]->valueonhand - ($qryinvresult->adjustedqty*$qryresult[$i]->ea));
+ 					//$qryresult[$i]->qtyonhand = ($qryresult[$i]->qtyonhand - $qryinvresult->adjustedqty);
+ 					$qryresult[$i]->qtyonhand = $qryinvresult->quantity;
+ 					//$qryresult[$i]->valueonhand = ($qryresult[$i]->valueonhand - ($qryinvresult->adjustedqty*$qryresult[$i]->ea));
+ 					$qryresult[$i]->valueonhand = ($qryinvresult->quantity*$qryresult[$i]->ea);
  				//}
  				
  				$inventoryarray[] = $qryresult[$i]->itemid;
@@ -100,7 +102,7 @@ class inventorymanagement_model extends Model
  		  $whereproject2 .= " AND i.itemid NOT IN (".$inventorystring.")";
  		}
  		
- 		$inventorysql2 = "select i.itemid as id,i.itemid, itm.itemcode, itm.itemname, 0 as qtyonhand, 0 as qtyonpo, 0 as quantity, itm.ea as ea, 0 as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, 0 as valuecomitted, itm.item_img, i.minstock, i.maxstock, i.reorderqty, i.adjustedqty from ".$this->db->dbprefix('inventory')." i JOIN ".$this->db->dbprefix('item')." itm ON i.itemid = itm.id	 WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject2} ";
+ 		$inventorysql2 = "select i.itemid as id,i.itemid, itm.itemcode, itm.itemname, quantity as qtyonhand, 0 as qtyonpo, 0 as quantity, itm.ea  as ea, (itm.ea*quantity) as valueonhand, '' as daterequested, '' as lastaward ,'' as manage, 0 as valuecomitted, itm.item_img, i.minstock, i.maxstock, i.reorderqty, i.adjustedqty from ".$this->db->dbprefix('inventory')." i JOIN ".$this->db->dbprefix('item')." itm ON i.itemid = itm.id	 WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject2} ";
  			$sqlq2 = $this->db->query($inventorysql2);		
  			$qryinvresult2 = $sqlq2->result();
  			
@@ -111,7 +113,7 @@ class inventorymanagement_model extends Model
  					$qryresult[$i]->minstock = $qryres2->minstock;
  					$qryresult[$i]->maxstock = $qryres2->maxstock;
  					$qryresult[$i]->reorderqty = $qryres2->reorderqty;
- 					$qryresult[$i]->qtyonhand = (0-$qryres2->adjustedqty);
+ 					$qryresult[$i]->qtyonhand = $qryres2->qtyonhand;
  					$qryresult[$i]->valueonhand = $qryres2->valueonhand;
  					$qryresult[$i]->id = $qryres2->id;
  					$qryresult[$i]->itemid = $qryres2->itemid;		
