@@ -1033,6 +1033,7 @@ class Quotemodel extends Model
 				if($awarded)
 				{
 					$this->db->where('award',$awarded->id);
+					$this->db->where('company',$company);
 					$awardeditems = $this->db->get('awarditem')->result();
 					if($awardeditems  && $this->checkitemdue($awarded->id))
 					{	$olddate="";

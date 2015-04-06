@@ -148,7 +148,7 @@ class quote extends CI_Controller
         $quotes = $this->quote_model->get_quotes('',$pid);
        // echo "<pre>"; print_r($quotes); die;
         $config ['total_rows'] = $this->quote_model->total_quote();
-
+		$usersettings = (array)$this->settings_model->get_current_settings();
         $this->load->library('table');
         $this->table->set_empty("&nbsp;");
         $this->table->set_heading('ID', 'Name', 'Actions');
@@ -177,6 +177,8 @@ class quote extends CI_Controller
         if ($count >= 1) {
 			
             foreach ($quotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
+            	$quote->subtotal = 0;
+            	$quote->total = 0;
                 $quote->invitations = $this->quote_model->getInvitedquote($quote->id);
                 $quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
                 $quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
@@ -239,6 +241,12 @@ class quote extends CI_Controller
                     		$quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
                     		//$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
                     	}
+                    	
+                    	foreach($quote->awardedbid->items as $awditems){
+                    		$quote->subtotal += @$awditems->totalprice;
+                    	}
+                    	if(@$usersettings['taxpercent'])
+                    	$quote->total = round($quote->subtotal + (@$usersettings['taxpercent']*$quote->subtotal/100),2);
                 }
                 //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
                 $quote->podate = $quote->podate ? $quote->podate : '';
@@ -258,7 +266,7 @@ class quote extends CI_Controller
                 	       }
                         else 
                            {
-                    	    $quote->status = $quote->status .'<br> *Shipment(s) Pending Acceptance';
+                    	    $quote->status = $quote->status .'<br> <a href="'.site_url('admin/quote/receive/'.$this->session->userdata('managedprojectdetails')->id).'" > *Shipment(s) Pending Acceptance </a>';
                            }
                 	  }
                 }
@@ -6950,8 +6958,8 @@ $loaderEmail = new My_Loader();
             						<td>'.$item->quantity.'</td>
             						<td>'.$item->ea.'</td>
             						<td>'.$item->totalprice.'</td>
-            						<td>'.$paymentstatus.'</td>
-            						<td>'.$status.'</td>
+            						<td>'.@$paymentstatus.'</td>
+            						<td>'.@$status.'</td>
             						<td>'.$item->costcode.'</td>
             					</tr>';   
             
@@ -6966,6 +6974,7 @@ $loaderEmail = new My_Loader();
         $cpa = $this->db->get('users')->row();
 
        // $company = $this->company_model->get_companys_by_id($cid);
+      // echo '<pre>',print_r($awarded);die;
         foreach ($invoices as $invoice)
         {
             $pdfhtml = '
@@ -7009,6 +7018,11 @@ $loaderEmail = new My_Loader();
 				        <td valign="top">Invoice Date</td>
 				        <td valign="top">&nbsp;</td>
 				        <td valign="top">' . date('m/d/Y') . '</td>
+				      </tr>
+				      <tr>
+				        <td valign="top">Invoice Due Date</td>
+				        <td valign="top">&nbsp;</td>
+				        <td valign="top">' . @$invoice->datedue . '</td>
 				      </tr>
 				    </table></td>
 				  </tr>
@@ -7107,7 +7121,7 @@ $loaderEmail = new My_Loader();
             $grandtotal = $totalprice + $taxtotal;
 
             $pdfhtml.='<tr>
-            <td colspan="5" rowspan="3">
+            <td colspan="6" rowspan="3">
             <div style="width:70%">
             <br/>
             <h4 class="semi-bold">Terms and Conditions</h4>
@@ -7128,7 +7142,7 @@ $loaderEmail = new My_Loader();
             </tr></table>
             ';
 
-
+//echo '<pre>',print_r($pdfhtml);
             if (!class_exists('TCPDF')) {
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
@@ -7184,7 +7198,7 @@ $loaderEmail = new My_Loader();
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
-
+ 	
             $this->email->subject('Invoice for PO#:' . $quote->ponum);           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
@@ -7964,6 +7978,7 @@ $loaderEmail = new My_Loader();
 				  <thead>
 				  <tr>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Item Image</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
@@ -7975,14 +7990,25 @@ $loaderEmail = new My_Loader();
 				  ';
             $i = 0;
             $totalprice = 0;
+            
             foreach ($company['items'] as $item) {
             	
             	$totalprice += $item->ea * ((@$item->invoice_type != "fullpaid")? ((@$item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity);
                     
                 $quantity = (@$item->invoice_type != "fullpaid")? ((@$item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;
             	
+                if(@$item->item_img && file_exists("./uploads/item/".$item->item_img))
+                { 
+            		$imgName = site_url('uploads/item/'.$item->item_img); 
+                }	
+            	else 
+            	{
+            		$imgName = site_url('uploads/item/big.png'); 
+            	}
+            	
                 $pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+					    <td style="border: 1px solid #000000;"><img src="'.$imgName.'" width="80" height="80"></td>
 					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
 					    <td style="border: 1px solid #000000;">' . ($item->willcall?'For Pickup/Will Call':$item->daterequested) . '</td>
 					    <td style="border: 1px solid #000000;">' . $quantity . '</td>
@@ -8064,6 +8090,7 @@ $loaderEmail = new My_Loader();
             </tr></table>
             ';
 
+            
             $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             $pdf->SetCreator(PDF_CREATOR);
@@ -8117,7 +8144,8 @@ $loaderEmail = new My_Loader();
                 $toemail = $toemail . ',' . $pu->email;
             }
             $this->email->to($toemail);
-			
+		
+           
             $this->email->subject('Your Purchase order for PO#:' . $quote->ponum);
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
@@ -8386,6 +8414,7 @@ $loaderEmail = new My_Loader();
 				  <thead>
 				  <tr>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Item Image</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
@@ -8415,9 +8444,19 @@ $loaderEmail = new My_Loader();
             
             }else{
             	
-            	foreach ($company['items'] as $item) {
+            	foreach ($company['items'] as $item) 
+            	{
+            		if(@$item->item_img && file_exists("./uploads/item/".$item->item_img))
+	                { 
+	            		$imgName = site_url('uploads/item/'.$item->item_img); 
+	                }	
+	            	else 
+	            	{
+	            		$imgName = site_url('uploads/item/big.png'); 
+	            	}
             		$pdfhtml.='<tr nobr="true">
 					    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+					    <td style="border: 1px solid #000000;"><img src="'.$imgName.'" width="80" height="80"></td>
 					    <td style="border: 1px solid #000000;">' . htmlentities($item->itemname) . '</td>
 					    <td style="border: 1px solid #000000;">' . (@$item->willcall)?'For Pickup/Will Call':@$item->daterequested . '</td>
 					    <td style="border: 1px solid #000000;">' . (@$item->quantity?$item->quantity:"") . '</td>

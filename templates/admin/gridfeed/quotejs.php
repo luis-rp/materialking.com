@@ -20,6 +20,11 @@ $(document).ready(function () {
     			sortable: true
     		},
     		{
+    			property: 'total',
+    			label: 'Total',
+    			sortable: true
+    		},
+    		{
     			property: 'pricerank',
     			label: 'Price Rank',
     			width: 100,

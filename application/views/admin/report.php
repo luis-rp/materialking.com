@@ -6,6 +6,44 @@
  $(document).ready(function() {
         $('.datefield').datepicker();
     });
+    
+    function viewitems2(itemid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+		//alert(quoteid);
+		$("#quoteitemdetails").html('loading ...');
+
+		$.ajax({
+			type:"post",
+			url: serviceurl,
+		}).done(function(data){			
+			$("#quoteitemdetails").html(data);
+			$("#quoteitemdetails").css({display: "block"});
+			$("#quoteitemdetailsm").css({display: "block"});
+			$("#quoteitemdetailsm").removeClass("hide");
+			//$("#quoteitemdetailsm").modal();
+		});
+	}
+	
+	function viewitems(quoteid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/quote/getitemsajax/';
+		//alert(serviceurl);
+		$.ajax({
+		      type:"post",
+		      url: serviceurl,
+		      data: "quote="+quoteid
+		    }).done(function(data){
+		        $("#quoteitems").html(data);
+		        $("#itemsmodal").modal();
+		    });
+	}
+	
+	function closepop(){
+		$("#quoteitemdetails").html('');
+		$("#quoteitemdetails").css({display: "none"});
+		$("#quoteitemdetailsm").css({display: "none"});		
+	}
 </script>
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo @$heading; ?> - <?php echo $this->session->userdata('managedprojectdetails')->title?> <a href="<?php echo site_url('admin/report/export'); ?>" class="btn btn-green">Export</a> &nbsp;&nbsp; <a href="<?php echo site_url('admin/report/reportpdf'); ?>" class="btn btn-green">View PDF</a></h3>
@@ -171,7 +209,7 @@
 			    		<th>Due Date</th>
 			    	</tr>
 			    	<?php
-					
+					//echo '<pre>',print_r($report);die;
 			    		foreach($report->items as $item)
 			    		{	
 			    			if($item->potype == "Contract" )
@@ -194,10 +232,12 @@
 			    	?>
 			    	<tr>
 			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->ponum;?>
+			    		<td><a href="javascript:void(0)" onclick="viewitems('<?php echo $item->quoteid; ?>');"> <?php echo $item->ponum;?></a>
 			    		<?php echo ($item->invoice_type == "fullpaid" || $item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
 			    		</td>
-			    		<td><?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }?>
+			    		<?php /*if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }*/?>
+			    		
+			    		<td> <a href="javascript:void(0)" onclick="viewitems2('<?php echo $item->itemid; ?>');"> <?php echo $item->itemcode;?></a> 
 			    		<br>
 			    		 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 			    		{ ?>
@@ -206,7 +246,7 @@
                             <img style="max-height: 120px;max-width: 100px;  padding: 5px;" src="<?php echo site_url('uploads/item/big.png');?>" alt="">
                         <?php } ?>
 			    		</td>
-			    		<td><?php echo $item->itemname;?></td>
+			    		<td><a href="<?php echo site_url("site/item/".$item->itemurl);?>"><?php echo $item->itemname;?></a></td>
 			    		<td><?php echo $item->unit;?></td>
 			    		<td><?php echo ($item->invoice_type == "fullpaid")?$item->aiquantity:$item->quantity;?>
 			    		<?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid'; }?>	
@@ -217,7 +257,7 @@
 			    		<?php echo (@$item->invoice_type == "fullpaid" || @$item->invoice_type == "alreadypay")?"*Pre-Paid":""; ?>
 			    		</td>
 			    		<td><?php echo $item->status;?></td>
-			    		<td><?php echo $item->costcode;?></td>
+			    		<td><a href="<?php echo site_url('admin/costcode/items/'.$item->costcode.'/'.$this->session->userdata('managedprojectdetails')->id);?>"><?php echo $item->costcode;?></a></td>
 			    		<td><?php echo $item->notes;?></td>
 			    		<td>
 			    		<?php	if($item->potype=='Contract') { ?>
@@ -254,4 +294,27 @@
 	    	?>
 	    </div>
     </div>
+    
+    <div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+        <div class="modal-header">
+    		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+    		
+    	</div>
+    	<div class="modal-body" id="quoteitemdetails">
+    	</div>
+            
+    </div>
+    
+    <div id="itemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            	<h3>Items<span id="minpriceitemcode"></span></h3>
+        	</div>
+        	<div class="modal-body" id="quoteitems">
+        	
+        	</div>
+            
+   </div>
 </section>

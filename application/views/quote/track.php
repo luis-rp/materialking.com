@@ -169,7 +169,7 @@ tr.still-due td
     						<table id="datatable" class="table no-more-tables general">
                                 <thead>
                                     <tr>
-                                        <th width="12%">Item Code/Name</th>
+                                        <th width="12%">Item Code/Name123</th>
                                         <th width="12%">Item Image</th>
                                         <th width="6%">Qty.</th>
                                         <th width="6%">Unit</th>
@@ -179,8 +179,8 @@ tr.still-due td
                                         <th width="12%">Notes</th>
                                         <th width="6%">Shipped</th>
                                         <th width="6%">Due</th>
-                                        <th width="12%">Ship Qty</th>
-                                        <th width="10%">Ref#</th>
+                                        <th width="8%">Ship Qty</th>
+                                        <th width="14%">Ref#</th>
                                     </tr>
                                 </thead>
 
@@ -193,7 +193,7 @@ tr.still-due td
     						    		$i++;
     						      ?>
                                     <tr class="<?php echo $ai->quantity - $ai->received > 0?'still-due':'';?>">
-                                        <td class="v-align-middle" style="break-word:break-all;"><?php echo $ai->itemcode;?>
+                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->itemcode;?>
                                         <br/>
                                         <span style="font-size:11px; color:#999999;float:left;"><?php echo $ai->itemname;?></span>
                                        
@@ -202,18 +202,18 @@ tr.still-due td
                                         
                                         <?php if(isset($ai->item_img) && $ai->item_img!= "" && file_exists("./uploads/item/".$ai->item_img)) 
 								    		{ ?>
-	                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$ai->item_img) ?>" alt="<?php echo $ai->item_img;?>">
+	                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="100%" width="100%" src="<?php echo site_url('uploads/item/'.$ai->item_img) ?>" alt="<?php echo $ai->item_img;?>">
 	                                        <?php } else { ?>
-	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="100" width="120" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
+	                                            <img style="max-height: 120px;max-width: 100px;  padding: 5px;"height="100%" width="100%" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
 	                                        <?php } ?>
 	                                     
                                         </td>
-                                        <td class="v-align-middle"><?php echo $ai->quantity;?></td>
-                                        <td class="v-align-middle"><?php echo $ai->unit;?></td>
-                                        <td class="v-align-middle">$<?php echo $ai->ea;?></td>
-                                        <td class="v-align-middle">$<?php // echo round($ai->quantity * $ai->ea,2); 
+                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->quantity;?></td>
+                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->unit;?></td>
+                                        <td class="v-align-middle" style="word-break:break-all;">$<?php echo $ai->ea;?></td>
+                                        <td class="v-align-middle" style="word-break:break-all;">$<?php // echo round($ai->quantity * $ai->ea,2); 
 								    		echo round($ai->totalprice,2); ?></td>
-                                        <td class="v-align-middle">
+                                        <td class="v-align-middle" style="word-break:break-all;">
                                         <?php echo $ai->daterequested;
                                               $orgdate=date('Y-m-d', strtotime( $ai->daterequested));
                                               $surrentdate=date('Y-m-d');                                     
@@ -222,24 +222,24 @@ tr.still-due td
 											  $diff12 = date_diff($date1, $date2);
 											  //$days = $diff12->d;
 											  echo "<br>Due in&nbsp;".$diff12->format("%R%a days");?></td>
-                                        <td class="v-align-middle" style="break-word:break-all;"><?php echo $ai->notes;?></td>
-                                        <td class="v-align-middle"><?php echo $ai->received;?><br>
+                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->notes;?></td>
+                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->received;?><br>
                                         <?php if($ai->pendingshipments){?>
                                         <br/><?php echo round($ai->pendingshipments,2);?>
                                         <?php }?>
                                         </td>
-                                        <td class="v-align-middle">
+                                        <td class="v-align-middle" style="word-break:break-all;">
                                         <?php echo $ai->quantity - $ai->received;?>
                                         <?php if($ai->pendingshipments){?>
                                         <br/><?php echo $ai->pendingshipments;?> Pending Acknowledgement
                                         <?php }?>
                                         </td>
-                                        <td>
+                                        <td style="word-break:break-all;">
                                         	<?php if($ai->quantity - $ai->received){?>
                                         	<input class="form-control" type="text" name="quantity<?php echo $ai->id;?>" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                         	<?php }?>
                                         </td>
-                                        <td>
+                                        <td style="word-break:break-all;">
                                         	<?php  $isupfrontinvoice = 0; if($ai->quantity - $ai->received){?>                                       
                                         	<input class="form-control" type="text"  name="invoicenum<?php echo $ai->id;?>" value="" />
                                         	<?php }?>

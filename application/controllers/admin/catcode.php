@@ -256,7 +256,10 @@ class catcode extends CI_Controller {
         } elseif ($this->catcode_model->checkDuplicateCat($this->input->post('catname'), 0)) {
             $data ['message'] = 'Duplicate Category';
             $this->load->view('admin/catcode', $data);
-        } else {
+        } elseif ($this->catcode_model->checkDuplicateCaturl($this->input->post('categoryurl'), 0)) {
+            $data ['message'] = 'Duplicate Category URL';
+            $this->load->view('admin/catcode', $data);
+        }else {
             $itemid = $this->catcode_model->SaveCategory($image_name);
             $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Category Added Successfully</div></div>');
             redirect('admin/catcode');
@@ -338,6 +341,7 @@ class catcode extends CI_Controller {
         $this->validation->parent_id = $cat[0]->parent_id;
         $this->validation->title = $cat[0]->title;
         $this->validation->text = $cat[0]->text;
+        $this->validation->categoryurl = $cat[0]->categoryurl;
 
         $data['banner_image'] = $cat[0]->banner_image;
 
@@ -407,13 +411,19 @@ class catcode extends CI_Controller {
             $data ['action'] = site_url('admin/catcode/update/' . $catid);
             $data['parentoptions'] = $this->catcode_model->getTreeOptions($this->input->post('parent_id'));
             $this->load->view('admin/catcode', $data);
-        } else {
+        } elseif ($this->catcode_model->checkDuplicateCaturl($this->input->post('categoryurl'), $catid)) {
+            $data ['message'] = 'Duplicate Category URL';
+            $data ['action'] = site_url('admin/catcode/update/' . $catid);
+            $data['parentoptions'] = $this->catcode_model->getTreeOptions($this->input->post('parent_id'));
+            $this->load->view('admin/catcode', $data);
+        }else {
 
             $dataUpdate = array(
                             "catname"=>$this->input->post('catname'),
                             "parent_id"=>$this->input->post('parent_id'),
                             "banner_image"=>$image_name,
                             "title"=>$this->input->post('catTitle'),
+                            "categoryurl"=>$this->input->post('categoryurl'),
                             "text"=>$this->input->post('catText'),
             );
 

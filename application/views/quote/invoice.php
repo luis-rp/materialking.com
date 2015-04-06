@@ -248,7 +248,7 @@ $.noConflict();
 
 								if(@$invoice->penalty_percent){
 									$arradditionalcal[] = "";
-									$arradditionalcal[] = 'Penalty('.$invoice->penalty_percent.' %)';
+									$arradditionalcal[] = 'Penalty('.($invoice->penalty_percent*@$invoice->penaltycount).' %)';
 									$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
 									$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
 								}

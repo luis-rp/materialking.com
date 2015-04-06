@@ -316,7 +316,7 @@ class itemcode_model extends Model {
                 }
             }
             
-            $sql1 = "SELECT * FROM " . $this->db->dbprefix('designbook') . " WHERE category='$leaf->id'  ";
+            $sql1 = "SELECT * FROM " . $this->db->dbprefix('designbook_category') . " WHERE categoryid='$leaf->id'  ";
             $item = $this->db->query($sql1)->result(); 
             $count=number_format(count($item));
             $leaf->catname .="(".$count.")";
@@ -1266,8 +1266,23 @@ class itemcode_model extends Model {
         		" . $this->db->dbprefix('bid') . " b
 			  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND DATEDIFF(NOW(),b.submitdate) <=$pricedays
               AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
+        
         //echo $sql.'<br>';
         $row = $this->db->query($sql)->row();
+        
+        if(count($row)>0)
+        {
+        	$pa = $this->session->userdata('purchasingadmin');
+	        $sql = "select c.id companyid, c.title companyname, avg(ci.ea) avgprice
+					FROM " . $this->db->dbprefix('company') . " c,
+					" . $this->db->dbprefix('companyitem') . " ci,
+					" . $this->db->dbprefix('network') . " n
+					WHERE c.id=ci.company AND c.id=n.company AND
+					n.purchasingadmin='" . $pa . "'
+					AND ci.itemid='" . $itemid . "' AND c.isdeleted=0  AND n.status='Active' AND ci.ea != 0";
+	       
+	        $row = $this->db->query($sql)->row();
+        }
         return $row->avgprice;
     }
 

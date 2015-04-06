@@ -1,9 +1,9 @@
 <script>
-	 function filtercategory1(id,catname)
+	 function filtercategory1(id,caturl)
 	 {	 	
 	    $("#formcategory").val(id);
 	    var a = $("#categorysearchform").attr('action');		
-		$("#categorysearchform").attr('action', a+"/"+catname);		
+		$("#categorysearchform").attr('action', a+"/"+caturl);		
 	    document.forms['categorysearchform'].submit();
 	    //setTimeout("doPost()", 10);
 	    return false;

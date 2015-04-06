@@ -72,6 +72,15 @@
                         </div>
                     </div>
                     
+                    
+                    <div class="control-group">
+                        <label class="control-label">Category URL</label>
+                        <div class="controls">
+                             <input type="text" id="categoryurl" name="categoryurl" class="span10" onkeyup="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'');" value="<?php if(isset($this->validation->categoryurl)) echo $this->validation->categoryurl; ?>">
+                        </div>
+                    </div> 
+                    
+                    
                     <div class="control-group">
                         <label class="control-label">Text</label>
                         <div class="controls">

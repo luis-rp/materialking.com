@@ -1081,11 +1081,11 @@ class site extends CI_Controller
         $this->data2['types'] = $this->db->get('type')->result();
         return $this->data2;
     }
-    public function items ($categroyname="")
+    public function items ($categroyurl="")
     {
     	
     	if(!@$_POST['category']){
-    		 $catid = $this->items_model->getcategoryid_fromname(urldecode($categroyname));
+    		 $catid = $this->items_model->getcategoryid_fromurl(urldecode($categroyurl));
     		 if(@$catid->id)
     		 $_POST['category'] = $catid->id;
     	}
@@ -2834,17 +2834,12 @@ class site extends CI_Controller
        
         foreach ($items as $item)
         {
-           $company=$this->db->get_where('company',array('id'=>$item->company))->row();
+           $company=$this->db->get_where('company',array('id'=>$item->company,'isdeleted'=>'0'))->row();
            $item->supplier=$company->title;
            $catnamefor=$this->db->get_where('designcategory',array('id'=>$item->categoryid))->row();
            $item->catnamefor=@$catnamefor->catname;
            $this->data['items'][] = $item;
-        }
-        
-        
-        
-        
-        
+        }      
         $this->data['items'] =$items;
         $this->data['norecords'] = '';
         
@@ -2876,6 +2871,7 @@ class site extends CI_Controller
         $this->data['breadcrumb2'] = $this->items_model->getdesignsubcategorynames(@$_POST['category']);
     	$this->load->view('site/designbook',$this->data);
     }
+    
     function saveitemtotag(){
     	$id = $_POST['id'];
 	 	$itemid = $_POST['itemid'];

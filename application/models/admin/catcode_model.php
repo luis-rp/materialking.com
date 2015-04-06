@@ -85,6 +85,7 @@ class catcode_model extends Model {
             'catname' => $this->input->post('catname'),
             'banner_image'=>$image_name,
             'title'=>$this->input->post('catTitle'),
+            'categoryurl'=>$this->input->post('categoryurl'),
             'text'=>$this->input->post('catText')
         );
         $this->db->insert('category', $options);
@@ -116,6 +117,24 @@ class catcode_model extends Model {
             return false;
         }
     }
+
+    
+    function checkDuplicateCaturl($categoryurl, $edit_id = 0) {
+        if ($edit_id > 0) {
+            $this->db->where(array('id !=' => $edit_id, 'categoryurl' => $categoryurl));
+        } else {
+            $this->db->where('categoryurl', $categoryurl);
+        }
+        $query = $this->db->get('category');
+        $result = $query->result();
+
+        if ($query->num_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     
     function checkDesignDuplicateCat($catname, $edit_id = 0) {
         if ($edit_id > 0) {

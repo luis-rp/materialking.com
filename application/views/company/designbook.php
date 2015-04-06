@@ -471,7 +471,7 @@ $(function() {
                      </tr>
                    </thead>
                    <tbody>
-		           <?php  foreach($design as $items)  { ?>
+		           <?php  foreach($design as $items)  {   ?>
 				   <tr>
 				     <td>
 			           <?php $arr1=explode('.',$items->imagename); $ext=end($arr1);
@@ -486,10 +486,10 @@ $(function() {
                        <div class="control-group">
                         <label class="control-label">Category</label>
                         <div class="controls">
-                            <select style="width:400px;" multiple id="category[<?php echo $items->id;?>]" name="category[<?php echo $items->id;?>]">
+                            <select style="width:400px;" multiple id="category[<?php echo $items->id;?>][]" name="category[<?php echo $items->id;?>][]">
                             	<?php foreach($categories as $cat){?>
                             	<option title="<?php echo htmlentities($cat->catname);?>" value="<?php echo $cat->id;?>" 
-				                 <?php if(isset($this->validation->category[0])) { if(in_array($cat->id,$this->validation->category)){echo 'selected';} } ?>>
+				                 <?php if(isset($items->catid)) { if(in_array($cat->id,$items->catid)){echo 'selected';} } ?>>
                             	 <?php echo htmlentities($cat->catname);?></option>
                             	<?php  } ?>
                             </select>
@@ -504,7 +504,7 @@ $(function() {
 					 </td>
 					 <td><a class="close"  href="<?php echo base_url("company/deletedesignfile/".$items->id);?>" onclick="return confirm('Are you really want to delete this Image?');">&times;</a></td>
 					</tr>
-				    <?php } ?>				    
+				    <?php }  ?>				    
 				   <tbody>
 			    </table>
                <?php } else {?>
@@ -538,18 +538,19 @@ $(function() {
         <div id="container2">
         
         <div style="width:100%;">
-        <div id="imgtag" class="pull-left" style="width:48%;">  
+        <div id="imgtag" class="pull-left" style="width:52%;padding: 9px 0 0 13px;">  
 			<img id="pic1"/>
 			  <input type="hidden" name="taghidid" id="taghidid"/>
 			  <input type="hidden" id="pictureid" name="pictureid"/> 
 			  <div id="tagbox"></div>
 		</div> 
 		
-		<div class="pull-right" style="overflow:auto;width:48%;height:500px;">
+		<div class="pull-right" style="overflow:auto;width:45%;height:500px;">
 			<div id="taglist"></div>
 		</div>
 		<div style="clear:both;"></div>
 	   </div>
+	   
 		<div><br>	
 	   Select Tag:<SELECT  id="tagcombo" name="tagcombo" style='WIDTH:100px' onchange="sethiddentag(this);"><option value="">Choose </option></SELECT> &nbsp; &nbsp;  
 		Select Item Code:

@@ -713,8 +713,10 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
 									<input type="hidden" id="draft" name="draft" value=""/>
 									<?php 
-									
-									foreach($quoteitems as $q)if(@$q->itemid){ //echo "<pre>"; print_r($q); die;?>
+									$distot="";
+									foreach($quoteitems as $q)if(@$q->itemid){ 
+										$distot += $q->totalprice;
+										//echo "<pre>"; print_r($q); die;?>
 									<?php if(@$originalitems[$q->itemid]){?>
 							    	<tr>
 							    		<td>
@@ -834,6 +836,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		</td>
 							    		<td>	
 											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
+											
 							    		</td>
 							    		
 							    		<td>
@@ -884,17 +887,26 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<td>
 											Quote#
 							    		</td>
-							    		<td colspan="5">
+							    		<td colspan="3">
 							    		<?php $sub=strtoupper($this->session->userdata('company')->title); $subst=substr($sub,0,4); $fstr=$subst."Q";?>
 											<input type="text" name="quotenum" value="<?php if(isset($revisionno) && isset($quotenum) && $quotenum!="") { $quotearr = explode(".",$bid->quotenum); echo $quotearr[0]."."; printf('%03d',($revisionno)); } elseif(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { echo $fstr;   printf('%06d',($invid)); echo ".000"; } ?>"/>
 							    		</td>
-							    		<td>
-											<?php // if($draft){?>
-											<!--<a href="<?php // echo site_url('quote/viewbid/'.$bid->id);?>">View Quote</a>-->
-											<?php // }?>
+							    		<td style="text-align:right;">
+							    		<span><strong>SubTotal : </strong></span>
 							    		</td>
-							    		<td colspan="4">
-											
+							    		<td>
+							    		<?php if(isset($distot) && $distot!="") { echo "$".number_format($distot,2); } ?> 
+							    		</td>
+							    		<td style="text-align:right;">
+											<span><strong>Total : </strong></span>
+							    		</td>
+							    		<td>
+											<?php if(isset($distot) && $distot!="") { 
+												$distotwithtax = $distot + ($distot * $taxpercent/100);
+												echo "$".number_format($distotwithtax,2); } ?> 
+							    		</td>
+							    		<td colspan="2">
+											&nbsp;
 							    		</td>
 							    	</tr>
 							    	<?php if($quote->quoteattachment){?>

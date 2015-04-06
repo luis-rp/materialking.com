@@ -1863,7 +1863,26 @@ class Company extends CI_Controller {
         /*---------------------------------------------------------------------------*/
         
 		$company = $this->session->userdata('company');
-        $data['design']=$this->db->get_where('designbook',array('company'=>$company->id))->result();
+        $design=$this->db->get_where('designbook',array('company'=>$company->id))->result();
+        
+        if(isset($design) && count($design) > 0)
+        {
+        	foreach ($design as $d)
+        	{
+        		$designcat = $this->db->get_where('designbook_category',array('itemid'=>$d->id))->result();
+        		if(isset($designcat) && count($designcat) > 0)
+        		{
+	        		$ccid=array();
+	        		foreach ($designcat as $value) 
+	        		{
+	        		 array_push($ccid,$value->categoryid);        			
+	        		}	        		
+	        		$d->catid = $ccid;
+        		}
+        	} 
+        }
+        $data['design']=$design;
+        //echo "<pre>"; print_r($data['design']); die;
         
        	$codes = $this->db->get('item')->result();        
         $items = array();
@@ -1980,37 +1999,27 @@ class Company extends CI_Controller {
            {
               foreach($_POST['designcatid'] as $check1)
               {
-            	 if(isset($_POST['category'][$check1]))
+              	
+            	if(isset($_POST['category'][$check1]))
             	 {
-            	    $catid = $_POST['category'][$check1];
+            	    $catid = $_POST['category'][$check1][0];
             	    $this->db->where('id', $check1);
             		$this->db->update('designbook', array('category' => $catid));
             		
             		$options2 = array();
-				    $options2['itemid'] = $check1;
-				    $options2['categoryid'] = $_POST['category'][$check1];
-				    $this->db->insert('designbook_category', $options2);
+            		$this->db->delete('designbook_category', array('itemid' => $check1));
+            		foreach ($_POST['category'][$check1] as $value) 
+            		{
+            		$options2['itemid'] = $check1;
+				    $options2['categoryid'] = $value;
+				    $this->db->insert('designbook_category', $options2);          			
+            		}				  
             	 }
-               }
+               }  
            }
 	        
 	        
-	       /* $data['category'] = $categories;     
-	        foreach($_POST['designcatid'] as $check2)
-              { 
-              	    $primarycategory = $_POST['category'][0];              	    
-            	    $this->db->where('id', $check2);
-            		$this->db->update('designbook', array('category' => $primarycategory)); 
-            		
-            		  foreach ($_POST['category'] as $category)
-				          {				          	
-				        	$options2 = array();
-				        	$options2['itemid'] = $check2;
-				        	$options2['categoryid'] = $category;
-				        	$this->db->insert('designbook_category', $options2);
-			              }
-            		        	 
-               }*/
+	     
 			/*---------------------End My Code-------------------------------*/
              
             

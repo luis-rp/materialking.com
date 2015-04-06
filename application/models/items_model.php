@@ -73,7 +73,7 @@ class items_model extends Model {
             {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
                  //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
-                 $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->catname."');\">
+                 $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->categoryurl."');\">
                    <span style='white-space:pre-wrap;'><b>" . $item->catname."(".$count.")</b><span></a>";
 			   	   
 			    $ret .= $this->getCategoryMenu($item->id); // here is the recursion
@@ -81,7 +81,7 @@ class items_model extends Model {
             else
           {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
-                $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->catname."');\">
+                $ret .= "<li><a href='#' onclick=\"return filtercategory1(".$item->id.",'".$item->categoryurl."');\">
                  <span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")<span></a>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
@@ -158,9 +158,15 @@ class items_model extends Model {
 	  
 	    foreach ($menus as $item) 
         {
-           $subcategories = $this->getDesignSubCategores($item->id,true);
-           $hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
-            
+           $subcategories = $this->getDesignSubCategores($item->id,true); 
+           //$hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
+			$hasitems = $this->db->select('*')
+			->where_in('categoryid',$subcategories)
+			->where('publish','1')
+			->where('isdeleted','0')
+			->join('designbook','designbook_category.itemid=designbook.id','LEFT')
+			->join('company','designbook.company=company.id','LEFT')
+			->get('designbook_category')->result();
             if(!$hasitems)
                 continue;
             $this->db->where('parent_id',$item->id);
@@ -168,7 +174,7 @@ class items_model extends Model {
             if ($submenus) 
             {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
-                 //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->catname."</a>";
+                 //$ret .= "<li ><a href='#' onclick='return filtercategory1(".$item->id.");' >" . $item->categoryurl."</a>";
                  $ret .= "<li><a href='#' onclick='return filtercategory1(".$item->id.");'>
                    <span style='white-space:pre-wrap;'><b>" . $item->catname."(".$count.")</b><span></a>";
 			   	   
@@ -182,7 +188,7 @@ class items_model extends Model {
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
             }
             $ret .= "</li>";
-        }
+        }  
         $ret .= "</ul>";
         return $ret;
     }
@@ -420,7 +426,7 @@ class items_model extends Model {
         $cat = $this->db->where('id',$catid)->get('category')->row();
         if(!$cat)
         	return '';
-        $ret = '<li onclick=\'filtercategory1('.$cat->id.',"'.$cat->catname.'")\'><a href="#">'.$cat->catname.'</a></li>';//array($cat);
+        $ret = '<li onclick=\'filtercategory1('.$cat->id.',"'.$cat->categoryurl.'")\'><a href="#">'.$cat->catname.'</a></li>';//array($cat);
         $parent = $this->db->where('id',$cat->parent_id)->get('category')->result();
         if($parent)
         {
@@ -479,7 +485,7 @@ class items_model extends Model {
             
             if(!$hasitems)
                 continue;
-               $ret .= '<ul><li onclick=\'filtercategory1('.$item->id.',"'.$item->catname.'")\'><a href="#">'.$item->catname.' &nbsp;&nbsp;('.count($hasitems).')</a></li></ul>';
+               $ret .= '<ul><li onclick=\'filtercategory1('.$item->id.',"'.$item->categoryurl.'")\'><a href="#">'.$item->catname.' &nbsp;&nbsp;('.count($hasitems).')</a></li></ul>';
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
            
             
@@ -497,7 +503,14 @@ class items_model extends Model {
         foreach ($menus as $item) 
         {
             $subcategories = $this->getDesignSubCategores($item->id,true);
-            $hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
+            //$hasitems = $this->db->where_in('category',$subcategories)->where('publish','1')->get('designbook')->result();
+            $hasitems = $this->db->select('*')
+			->where_in('categoryid',$subcategories)
+			->where('publish','1')
+			->where('isdeleted','0')
+			->join('designbook','designbook_category.itemid=designbook.id','LEFT')
+			->join('company','designbook.company=company.id','LEFT')
+			->get('designbook_category')->result();
             
             if(!$hasitems)
                 continue;
@@ -686,7 +699,7 @@ class items_model extends Model {
         $query = "SELECT i.*,ic.* FROM " . $this->db->dbprefix('designbook') . " i 
         		  left join " . $this->db->dbprefix('designbook_category') ." ic on i.id = ic.itemid 
         		  left join " . $this->db->dbprefix('company') ." c on c.id = i.company  AND c.isdeleted = 0
-        		  $where AND c.isdeleted = 0 LIMIT $start, $limit";
+        		  $where AND c.isdeleted = 0 GROUP BY i.id LIMIT $start, $limit";
         $return->items = $this->db->query($query)->result();
         return $return;
     }
@@ -941,10 +954,10 @@ class items_model extends Model {
     
     
     
-    function getcategoryid_fromname($categoryname){
+    function getcategoryid_fromurl($categoryurl){
     	
     	$this->db->select('id');
-    	$this->db->where('catname',$categoryname);
+    	$this->db->where('categoryurl',$categoryurl);
         $menus = $this->db->get('category')->row();
     	return $menus;
     }

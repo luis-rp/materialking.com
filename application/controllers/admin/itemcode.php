@@ -2352,6 +2352,12 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
            // echo '<pre>',print_r($data['soitems']);
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
+            
+            if(@$totalminprice)
+            $totalminprice = round($totalminprice,2);
+            if(@$daysavgprice)
+            $daysavgprice = round($daysavgprice,2);
+            
             $avgforpricedays = number_format($daysavgprice, 2);
             if ($daysavgprice > $totalminprice)
                 $trend = 'HIGH';
