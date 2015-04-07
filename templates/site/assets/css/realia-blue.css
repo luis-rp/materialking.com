@@ -1088,7 +1088,7 @@ ul#css3menu1 li:hover > ul{opacity:1;visibility:visible;}
 ul#css3menu1 li{display:block;float:left;font-size:0;position:relative;white-space:nowrap;}
 ul#css3menu1 li:hover{z-index:1;}
 ul#css3menu1 ul ul{left:100%;position:absolute;top:0;}
-ul#css3menu1{background-color:#ffffff;border-radius:0;display:inline-block;font-size:0;padding:0;position:relative;z-index:999;width:100%;}
+ul#css3menu1{background-color:#ffffff;border-radius:0;display:inline-block;font-size:0;padding:0;position:relative;width:100%;}
 * html ul#css3menu1 li a{display:inline-block;}
 ul#css3menu1 > li{margin:0;}
 ul#css3menu1 a:active, ul#css3menu1 a:focus{outline-style:none;}
@@ -1111,7 +1111,9 @@ ul#css3menu2 li:hover > ul{opacity:1;visibility:visible;}
 ul#css3menu2 li{display:block; font-size:0;position:relative;white-space:nowrap;}
 ul#css3menu2 li:hover{z-index:1;}
 ul#css3menu2 ul ul{left:100%;position:absolute;top:0;}
-ul#css3menu2{border-radius:0 0 0 0;display:inline-block;float:right;font-size:0px;position:relative;top:-64px;width:25%;z-index:999;}
+ul#css3menu2{border-radius:0 0 0 0;display:inline-block;font-size:0px;right: 85px;
+    top: 219px;
+    width: 25%;}
 * html ul#css3menu2 li a{display:inline-block;}
 ul#css3menu2 > li{margin:0;}
 ul#css3menu2 a:active, ul#css3menu2 a:focus{outline-style:none;}

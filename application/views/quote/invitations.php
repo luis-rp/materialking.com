@@ -112,6 +112,7 @@
                                         
                                         <tbody>
 							              <?php
+							             
 									    	$i = 0;
 									    	foreach($invitations as $inv)
 									    	{
@@ -156,11 +157,16 @@
                     
                                                 </td>
                                                 <td class="v-align-middle"> 	
-                                                <?php if($inv->status == 'Completed')
-                                                {?>                                               
-		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>
-		                                                <a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>
-		                                        <?php } ?>        
+                                                <?php 
+                                                if($inv->status == 'New')
+                                                { $bidorquoteid = (@$inv->bidid)?$inv->bidid:$inv->quote;
+                                                  $usebidorquote = (@$inv->bidid)?"Bid":"Quote"; ?>
+                                                	<a href="<?php echo site_url('quote/rejectquote/'.@$bidorquoteid.'/'.$usebidorquote);?>">Reject </a> &nbsp;
+                                                	<a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>
+                                             <?php }
+                                                if($inv->status == 'Completed')
+                                                {?>                                            
+		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>		                                  <?php } ?>        
                                                 </td>
                                             </tr>
                                           <?php } ?>

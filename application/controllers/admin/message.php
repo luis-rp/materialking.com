@@ -264,6 +264,26 @@ class message extends CI_Controller
                                 "comments"=> $_POST['comments']
                                 );  
                         $this->db->insert('pms_quote_errorlog',$insertArray);
+
+            $insertarrayrec = array();                       
+            $insertarrayrec['purchasingadmin'] =  $item->purchasingadmin;
+            $insertarrayrec['awarditem'] = $item->id;
+            $insertarrayrec['invoicenum'] = $invoicenums[$i]."-Error";         
+            $insertarrayrec['quantity'] = -$quantities[$i];
+            $insertarrayrec['status'] = "Verified";
+            $insertarrayrec['receiveddate'] = (isset($dates[$i]) && $dates[$i]!="")?date("Y-m-d",  strtotime($dates[$i])):"";  
+            $insertarrayrec['invoice_type'] = "error";  
+			$this->db->insert('received',$insertarrayrec);
+            
+			$this->db->where('id',$item->id);			
+			$awardeditem = $this->db->get('awarditem')->row();
+			if($awardeditem){
+			$updatearray = array();	
+			$updatearray['received'] = $awardeditem->received -  $quantities[$i];	
+			$this->quote_model->db->where('id',$item->id);
+            $this->quote_model->db->update('awarditem', $updatearray);	
+			}
+			  
 			$i++;
 		}
 		//print_r($companies);die;

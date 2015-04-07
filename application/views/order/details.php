@@ -91,8 +91,10 @@ function pickupfun()
                                     <table id="datatable" class="table no-more-tables general">
                                         <thead>
                                             <tr>
-                                                <th style="width:20%">Item</th>
-                                                <th style="width:30%">Quantity</th>
+                                                <th style="width:25%">Item</th>
+                                               <!-- <th style="width:20%">Item Code</th>-->
+                                                <th style="width:25%">Item Name</th>
+                                                <th style="width:10%">Quantity</th>
                                                 <th style="width:20%">Price</th>
                                                 <th style="width:10%">Total</th>
                                             </tr>
@@ -111,9 +113,10 @@ function pickupfun()
 									    		$gtotal += $total;
 									    		
 									      ?>
-                                            <tr>
-                                                <td><?php echo $item->itemdetails->itemname;?>
-                                                <span style="float:right;">
+                                            <tr>                                             	
+                                                <td><?php echo $item->itemdetails->itemorgcode;?>
+                                                <br>
+                                                <span>
                                                 <?php if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
 									    		{ ?>
 		                                           <img style="max-height: 120px;max-width: 100px; padding: 5px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$item->item_img) ?>" alt="<?php echo $item->item_img;?>">
@@ -122,6 +125,8 @@ function pickupfun()
 		                                        <?php } ?>
 		                                        </span>
                                                 </td>
+                                                <!--<td><?php echo $item->itemdetails->itemorgcode;?></td>-->
+                                             	<td><?php echo $item->itemdetails->itemorgname;?></td>
                                                 <td><?php echo $item->quantity;?></td>
                                                 <td>$<?php echo $item->price;?></td>
                                                 <td>$<?php echo number_format($total,2);?></td>
@@ -134,19 +139,19 @@ function pickupfun()
                                         	    $totalwithtax = $tax+$gtotal+$shipping;
                                           ?>
                                             <tr>
-                                                <td colspan="3">Total</td>
+                                                <td colspan="4">Total</td>
                                                 <td>$<?php echo number_format($gtotal,2);?></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="3">Tax</td>
+                                                <td colspan="4">Tax</td>
                                                 <td>$<?php echo number_format($tax,2);?></td>
                                             </tr>
                                              <tr>
-                                                <td colspan="3">Shipment Rate</td>
+                                                <td colspan="4">Shipment Rate</td>
                                                 <td>$<?php echo number_format($shipping,2);?></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="3">Total</td>
+                                                <td colspan="4">Total</td>
                                                 <td>$<?php echo number_format($totalwithtax,2);?></td>
                                             </tr>
                                         </tbody>

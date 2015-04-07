@@ -675,12 +675,12 @@ function setcompanypriceprompt(val,companyid,itemid,purchasingadmin){
             url: showbidpricehistoryurl,
             data: "itemid="+itemid
         }).done(function(data){    
-        	//alert(data);
+        	
         	var arr = data.split('*#*#$');        	
             $("#pricehistory").html(arr[0]);
             $("#itemcode").html(arr[1]);
-            $("#itemimagelogo").html('<img style="margin-top:-2em ;  max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');
-          //  $("#historycompanyname").html(arr[2]+' to ( '+arr[3] +' )');
+            $("#orderpricehistory").html(arr[2]);          
+            $("#itemimagelogo").html('<img style="margin-top:-2em ;  max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');          
             $("#historymodal").modal();
         });
     }
@@ -1304,6 +1304,8 @@ function setitemsmanufacturer(manufacturerid){
              <br>
 	    </div>
 	    <div class="modal-body" id="pricehistory" style="height:250px;overflow-y:auto;">
+	    </div>
+	    <div class="modal-body" id="orderpricehistory" style="height:250px;overflow-y:auto;">
 	    </div>
 	 </div> 
   </div>

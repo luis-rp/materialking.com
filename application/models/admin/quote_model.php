@@ -465,7 +465,7 @@ class quote_model extends Model {
               $invoices = $invoicequery->result();
              */
             $invoicesql = "SELECT distinct(invoicenum) invoicenum, ai.company, ai.purchasingadmin, 
-            				   r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum, r.datedue, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
+            				   r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum, r.datedue, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, r.invoice_type 
 							   FROM 
 							   " . $this->db->dbprefix('received') . " r,
 							   " . $this->db->dbprefix('awarditem') . " ai

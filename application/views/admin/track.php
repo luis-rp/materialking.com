@@ -43,6 +43,10 @@ $per .='%';
 //$per = '80%';
 //print_r($combocompanies);die;
 ?>
+
+<!--<style>
+.tableoverflow{ margin:0ppx; padding:0px; width:100%; overflow-x:scroll}
+</style>-->
 <?php echo '<script type="text/javascript">var senderrorurl = "' . site_url('admin/message/senderror/' . $quote->id) . '";</script>'; ?>
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jquery-ui.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
@@ -669,24 +673,25 @@ function closepop()
             </div>
             <br/>
             <div class="control-group" style="overflow-x:auto;">
+           
                 <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;width:150%;">
                     <tr>
                         <th width="10%">Company</th>
-                        <th width="13%">Item Code</th>
+                        <th width="11%">Item Code</th>
                         <th width="10%">Item Name</th>
                         <th width="13%">Item Progress</th>
                         <th width="7%">Qty.</th>
                         <th width="5%">Unit</th>
                         <th width="7%">Price EA</th>
-                        <th width="10%">Total Price</th>
-                        <th width="10%">Date Requested</th>
+                        <th width="8%">Total Price</th>
+                        <th width="8%">Date Requested</th>
                         <th width="10%">Cost Code</th>
                         <th width="10%">Notes</th>
                         <th width="5%">Still Due</th>
                         <th width="18%">History</th>
                         <?php if ($awarded->status == 'incomplete') { ?>
                         <th width="12%">Received Qty.</th>
-                        <th width="10%">Invoice #</th>
+                        <th width="16%">Invoice #</th>
                         <th width="14%">Date Received</th>
                         <th width="7%">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
                         <th width="11%">Error</th>
@@ -881,7 +886,7 @@ function closepop()
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"';
                                                else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
                                               value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$awarded->id; ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?>
-                                               onchange="defaultinvoicenum('<?php echo $q->id; ?>');"/>
+                                               onchange="defaultinvoicenum('<?php echo $q->id; ?>');" style="width:100%;"/>
                                     </td>
                                     <td>
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
@@ -896,7 +901,7 @@ function closepop()
                                         <?php } ?>
                                     </td>
                                     <td>
-                                        <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:65px;">
+                                        <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:100%;">
                                             <option value=''>No Error</option>
                                             <option value='<?php echo $q->id ?>-Wrong Item Sent'>Wrong Item Sent</option>
                                             <option value='<?php echo $q->id ?>-Quantity Discrepancy'>Quantity Discrepancy</option>
@@ -918,6 +923,14 @@ function closepop()
                         </form>
                     <?php } ?>
                     <?php
+                    //echo "<pre>",print_r($awarded->invoices);
+                    if($awarded->invoices){
+                    	foreach ($awarded->invoices as $invoice) {
+							if(@$invoice->invoice_type == "error"){ 
+								$alltotal = $alltotal + $invoice->totalprice;
+							}	
+                    	}
+                    }
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;
                     ?>
@@ -940,6 +953,7 @@ function closepop()
                         </td>
                     </tr>
                 </table>
+               
             </div>
             <?php
             if (@$shipments)
@@ -1148,6 +1162,7 @@ function closepop()
                                     </td>
                                 </tr>
                                  <?php
+                                if(@$invoice->invoice_type != "error"){ 
                                 $f1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                 $f_total +=$f1_total;
                                 if($invoice->paymentstatus=='Paid')
@@ -1159,6 +1174,7 @@ function closepop()
                                 {
                                 	 $u1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                      $u_total +=$u1_total;
+                                }
                                 }
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
@@ -1220,7 +1236,7 @@ function closepop()
                                    $p1_total=$invoice->amountpaid;
                                    $p_total +=$p1_total;
                                 
-                                	 $u1_total=number_format(($finalTotal - $invoice->amountpaid),2);
+                                	 $u1_total=$finalTotal - $invoice->amountpaid;
                                      $u_total +=$u1_total;
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>

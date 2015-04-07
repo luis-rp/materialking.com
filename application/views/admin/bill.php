@@ -277,7 +277,7 @@ function shownotice(newval,oldval,id){
                     <tr>
                         <th bgcolor="#000033"><font color="#FFFFFF">Item No.</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
-                        <th bgcolor="#000033"><font color="#FFFFFF">&nbsp;</font></th>
+                        <th bgcolor="#000033"><font color="#FFFFFF">Item Image</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>                       
                         <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
                         <th bgcolor="#000033"><font color="#FFFFFF">Date Received</font></th>
@@ -350,12 +350,12 @@ function shownotice(newval,oldval,id){
 		        $finaltotal = $serviceItemTax + $subtotal1 + (@$totalprice*$config['taxpercent']/100);
                // $grandtotal = $subtotal + $taxtotal;
                 echo '  <tr>
-					    <td colspan="7" align="left">&nbsp;</td>
+					    <td colspan="8" align="left">&nbsp;</td>
 					    <td align="left">Markup Total('.@$invoiceitem['markuptotalpercent'].' %)</td>
 					    <td align="right">$ ' . number_format($totalprice*@$invoiceitem['markuptotalpercent']/100,2) . '</td>
 					  </tr>
                 		<tr>
-					    <td colspan="7" rowspan="12">
+					    <td colspan="8" rowspan="12">
                       		<div style="width:70%">
                           		<br/>
                           		<!-- <h4 class="semi-bold">Terms and Conditions</h4>

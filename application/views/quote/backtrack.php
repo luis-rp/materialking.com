@@ -121,7 +121,9 @@ function caloclick(){
 							    		<td style="word-break:break-all;"><?php echo $q->unit;?></td>
 							    		<td style="word-break:break-all;">$<?php echo $q->ea;?></td>
 							    		<td style="word-break:break-all;">$<?php echo round($q->ea * ($q->quantity - $q->received), 2);?></td>
-							    		<td style="word-break:break-all;"><input type="text" style="width:100%;" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="clearnotes('notes<?php echo $q->id;?>');" /></td>
+							    		<td style="word-break:break-all;"><input type="text" style="width:100%;" class="span daterequested highlight" onmouseover="caloclick()" name="daterequested<?php echo $q->id;?>" value="<?php echo $q->daterequested;?>" data-date-format="mm/dd/yyyy" onchange="clearnotes('notes<?php echo $q->id;?>');" />
+							    		<?php $datediff = (strtotime($q->daterequested) - time()); $datediff = abs(floor($datediff/(60*60*24))); echo "Item is ".@$datediff." Days Late";?>
+							    		</td>
 							    		<td style="word-break:break-all;"><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="width:100%;" class="highlight"><?php echo $q->notes;?></textarea></td>
 							    		<td style="word-break:break-all;">
 							    		<?php if($q->etalog){?>

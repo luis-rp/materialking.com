@@ -65,6 +65,8 @@ function jq( myid ) {
                                             <tr>
                                                 <th style="width:9%">PO Number</th>
                                                 <th style="width:22%">PO Date</th>
+                                                <th style="width:6%">Last Updated Date</th>
+                                                <th style="width:6%">Days Late</th>
                                                 <th style="width:6%">Details</th>
                                             </tr>
                                         </thead>
@@ -81,6 +83,19 @@ function jq( myid ) {
                                                 <td id="cellid_<?php echo @$bck2->id;?>" class="v-align-middle"><?php echo $bck2->ponum;?>
                                                 <a href="javascript:void(0)" onclick="showdetail('<?php echo @$bck2->id;?>');">Expand</a>						                                    </td>
                                                 <td class="v-align-middle"><?php echo $bck2->podate;?></td>
+                                                <?php $lastupdateddate = "";  foreach($bck['items'] as $q) {
+                                                	
+                                                	if($lastupdateddate=="")
+                                                	$lastupdateddate = $q->daterequested;
+                                                	else{
+                                                		if(strtotime($lastupdateddate)>$q->daterequested)
+                                                		$lastupdateddate = $q->daterequested;
+                                                	}
+                                                	
+                                                }?>	
+                                                
+                                                <td class="v-align-middle"><?php echo $lastupdateddate;?></td>
+                                                <td class="v-align-middle"><?php $datediff = (strtotime($lastupdateddate) - time()); echo $datediff = abs(floor($datediff/(60*60*24)));?></td>
                                                 <td class="v-align-middle">
                                                 	<a class="btn btn-primary btn-xs btn-mini" href="<?php echo site_url('quote/viewbacktrack/'.$bck2->id);?>">Details</a>
                                                 </td>

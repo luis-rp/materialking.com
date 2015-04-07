@@ -1170,7 +1170,7 @@ class Inventory extends CI_Controller
         $itemid = $_POST['itemid'];
         //$quoteid = $_POST['quoteid'];
 
-        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject,u.companyname
+        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject,u.companyname,a.quotenum
 			   	FROM pms_bid a 
 			   	join pms_biditem ai  on ai.bid=a.id 
 			   	join pms_quote q on a.quote = q.id 
@@ -1184,6 +1184,9 @@ class Inventory extends CI_Controller
 		$itemname = '';
         $query = $this->db->query($sql);
         $itemname = 'Item :'.(@$itemnameResult[0]['itemname']) ? @$itemnameResult[0]['itemname'] : '' ;
+        $ret = '';
+        $ret1 = '';
+        
         if ($query->num_rows > 0)
         {
             $result = $query->result();
@@ -1191,7 +1194,7 @@ class Inventory extends CI_Controller
 			$companyName = (@$result[0]->title) ? @$result[0]->title : '';
 			$paName = (@$result[0]->fullname) ? @$result[0]->fullname : '';           
           
-            $ret = '';
+            
             $ret .= '<table class="table table-bordered">';
             $ret .= '<tr><th>Company</th><th>PO#</th><th>Quote#</th><th>Date</th><th>Qty.</th><th>Price</th><th>Quoted</th><th>Awarded</th></tr>';
             
@@ -1200,16 +1203,50 @@ class Inventory extends CI_Controller
             	$qdate =  ($item->quotedate != '') ? date('m/d/Y',strtotime($item->quotedate)) : '-';
             	$awarddate =  ($item->awarddate != '') ? date('m/d/Y',strtotime($item->awarddate)) : '-';
             	
-                $ret .= '<tr><td>'.$item->companyname.'</td><td>'.$item->ponum.'</td><td>'.$item->subject.'</td> <td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .'<td>' . $qdate . '</td><td>'. $awarddate .'</td></tr>';
+                $ret .= '<tr><td>'.$item->companyname.'</td><td>'.$item->ponum.'</td><td>'.@$item->quotenum.'</td> <td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quantity . '</td><td>' . $item->ea .'<td>' . $qdate . '</td><td>'. $awarddate .'</td></tr>';
             }
             $ret .= '</table>';
-            echo $ret.'*#*#$'.$itemname;
+            
         }
         else 
         {
-        	echo 'No Bid History Found.'.'*#*#$'.$itemname;
+        	$ret .= 'No Bid History Found.';
+        	//echo $ret.'*#*#$'.$itemname.'*#*#$'.$ret1;
         }
-        die();
+        
+        $orderSql = "SELECT od.*,o.ordernumber,o.purchasedate,u.companyname
+				   	FROM 			   	
+					pms_orderdetails od 
+				   	left join pms_order o on o.id = od.orderid		
+				    left join pms_users u on  o.purchasingadmin=u.id   	
+				   	WHERE od.company='$company' AND od.itemid='$itemid'";
+        
+        $orderquery = $this->db->query($orderSql); 
+        $orderresult = $orderquery->result();
+       
+        
+        if(count($orderresult) > 0)
+        {
+        	$ret1 .= '<br><br> <center><h4>Purchase Order History<h4></center>';
+            $ret1 .= '<table class="table table-bordered">';
+            $ret1 .= '<tr><th>Company</th><th>Order #</th><th>Date</th><th>Qty.</th><th>Price</th></tr>';
+            
+            foreach ($orderresult as $item1)
+            {
+            	$ret1 .= '<tr><td>'.$item1->companyname.'</td><td>'.$item1->ordernumber.'</td><td>' . date('m/d/Y',strtotime($item1->purchasedate)) . '</td><td>' . $item1->quantity . '</td><td>' . $item1->price .'</td></tr>';
+            }
+            
+             $ret1 .= '</table>';
+           // echo ''.'*#*#$'.$itemname.'*#*#$'.$ret1;
+        }
+        else 
+        {
+        	$ret1 .= '<br><br>';
+        	$ret1 .= 'No Purchase Order History Found.';
+        	//echo ''.'*#*#$'.$itemname.'*#*#$'.$ret1;
+        }
+        echo $ret.'*#*#$'.$itemname.'*#*#$'.$ret1;
+	        die();
     }
     
     

@@ -277,12 +277,13 @@ class Quote extends CI_Controller
     		
 			$awarded = $this->quotemodel->checkbidcomplete($inv->quote);
 			$inv->awardedtothis = false;
-			
+						
 			if($bid){
 				$sqlq = "SELECT daterequested FROM ".$this->db->dbprefix('quoterevisions')." qr WHERE bid='".$bid->id."' AND purchasingadmin='".$bid->purchasingadmin."' order by id desc limit 1";
 				$revisionquote = $this->db->query($sqlq)->row();
 				if($revisionquote)
 				$inv->daterequested = $revisionquote->daterequested;
+				$inv->bidid = $bid->id;
 			}
 			
 			if($awarded)
@@ -652,6 +653,7 @@ class Quote extends CI_Controller
 	
 	public function reviewpo()
 	{
+		//echo '<pre>',print_r($_POST);die;
 	    $key = $_POST['invitation'];
 		$company = $this->session->userdata('company');
 		if(!$company)
@@ -4863,4 +4865,59 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['forthcoming'] = $forthcoming;
 		$this->load->view('quote/forthcomings',$data);
 	}
+	
+	 function rejectquote($bidid,$usebidorquote="Bid")
+    {    	
+    	$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');    	
+    	
+		if($bidid) 
+		{
+			if($usebidorquote=="Bid"){				
+				$updateArray = array('postatus'=>'Rejected');
+				$where = array('bid'=>$bidid);
+				$this->db->update('biditem',$updateArray,$where);				
+			}elseif ($usebidorquote=="Quote"){
+				
+				$quote = $this->quotemodel->getquotebyid($bidid);
+				//echo "<pre>",print_r($quote);
+	    		$quoteitems = $this->quotemodel->getquoteitems($bidid);	
+				$bidarray = array('quote'=>$quote->id,'company'=>$company->id,'submitdate'=>date('Y-m-d'));
+    			$bidarray['quotenum'] = $quote->ponum;
+    			$bidarray['purchasingadmin'] = $quote->purchasingadmin;        		
+    			$this->db->insert('bid',$bidarray);
+    			$biddedid = $this->quotemodel->db->insert_id();
+				//echo "<pre>",print_r($quoteitems); 
+	            foreach($quoteitems as $item)
+	            {
+	            	if($company->id == $item->company){
+	            		$insertarray = array();
+	            		$insertarray['bid'] = $biddedid;
+	            		$item = (array)$item;	            		
+	            		$insertarray['totalprice'] = $item['quantity'] * $item['ea'];
+	            		$insertarray['purchasingadmin'] = $item['purchasingadmin'];
+	            		$insertarray['postatus'] = "Rejected";
+	            		$insertarray['itemid'] = $item['itemid'];
+	            		$insertarray['itemcode'] = $item['itemcode'];	            		
+	            		$insertarray['itemname'] = $item['itemname'];
+	            		$insertarray['quantity'] = $item['quantity'];
+	            		$insertarray['unit'] = $item['unit']; 
+	            		$insertarray['ea'] = $item['ea'];
+	            		$insertarray['daterequested'] = $item['daterequested'];
+	            		$insertarray['willcall'] = $item['willcall'];
+	            		$insertarray['costcode'] = $item['costcode'];
+	            		$insertarray['notes'] = $item['notes'];
+	            		//echo "<pre>",print_r($insertarray); die;
+	            		$this->quotemodel->db->insert('biditem',$insertarray);
+	            	}
+						
+	            }
+				
+			}
+		}
+		
+    	$this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">Quote Rejected Successfully</div></div></div>');
+		redirect('quote');
+    }
 }

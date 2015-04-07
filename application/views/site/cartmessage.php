@@ -37,6 +37,7 @@ $(document).ready(function (e) {
         <div class="row">
             <div class="span9">
                 <h1 class="page-header"><?php echo $message;?></h1>
+                <?php echo $messagenotification;?>
                 <?php 
                 if($this->session->userdata('site_loggedin')){?>
                 <a href="<?php echo base_url().'admin/order/details/'.$order;?>">Order Management</a>
@@ -51,7 +52,8 @@ $(document).ready(function (e) {
             
               <table class="table table-bordered">
             	<tr>
-            		<th>Item</th>
+            		<th>Item Code</th>
+            		<th>Item Name</th>
             		<th>Supplier Company</th>
             		<th>Price</th>
             		<th>Quantity</th>
@@ -72,6 +74,7 @@ $(document).ready(function (e) {
             	}*/
             	?>
             	<tr>
+            		<td><?php echo $item['itemdetails']->itemorgcode;?></td>
             		<td><?php echo $item['itemdetails']->itemname;?></td>
             		<td><?php echo $item['companydetails']->title;?></td>
             		<td>$<?php echo $item['price'];?></td>
@@ -85,20 +88,20 @@ $(document).ready(function (e) {
             	    $totalwithtax = number_format($tax+$gtotal+$totalRates,2);
             	?>
             	<tr>
-            		<td colspan="4" align="right">SubTotal</td>
+            		<td colspan="5" align="right">SubTotal</td>
             		<td>$<?php echo number_format($gtotal,2);?></td>
             	</tr>
             	
             	<tr>
-            		<td colspan="4" align="right">Tax</td>
+            		<td colspan="5" align="right">Tax</td>
             		<td>$<?php echo number_format($tax,2);?></td>
             	</tr>
             	<tr>
-            		<td colspan="4" align="right">Shipment rate</td>
+            		<td colspan="5" align="right">Shipment rate</td>
             		<td>$<?php echo number_format($totalordershipping,2);?></td>
             	</tr>
             	<tr>
-            		<td colspan="4" align="right">Total</td>
+            		<td colspan="5" align="right">Total</td>
             		<td>$<?php echo $totalwithtax;?></td>
             	</tr>
             </table>

@@ -104,7 +104,7 @@ class items_model extends Model {
         
         $ret = "";  
         $retsub = "";  
-	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;' id='css3menu2' >";        
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:0; float: inherit; position: absolute;' id='css3menu2'  >";        
 	    
 	    foreach ($manufacturers as $man) 
         {
@@ -122,7 +122,7 @@ class items_model extends Model {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
             	$cnt += count($hasitems);
                 $retsub .= "<ul><li><a href='#' onclick='return filtermanufacturer(".$man->id.");'>
-                 <span style='white-space:pre-wrap;'>" . $man->title."(".$count.")<span></a></li></ul>";
+                 <span style='white-space:pre-wrap;'><b>" . $man->title."(".$count.")</b><span></a></li></ul>";
                 //$ret .= "<li><input type='submit' name='category' value='" . $item->id."'/>";
                         
         }

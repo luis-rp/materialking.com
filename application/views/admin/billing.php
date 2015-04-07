@@ -659,6 +659,9 @@ function changeduedate(count,invoicenum,datedue)
           </div>
           <table>          
           <?php 
+          $htmlbd = "";
+	      $htmlhd = "";
+	          
           if(@$payment_history)
           { 
 	          $htmlbd = "";
@@ -679,14 +682,10 @@ function changeduedate(count,invoicenum,datedue)
 		           }
 	          } 
           }
-          else
-          { 
-          		$htmlbd = '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>';
-          }
          
           echo $htmlhd."".$htmlbd;     
           ?>     
-          <tr class="billhistorytable"><td colspan="2"> <div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div></td></tr>
+           <div class="alert billhistorytable"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Payment History.</div></div>
           
           </table>
           

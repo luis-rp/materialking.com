@@ -303,10 +303,10 @@ class Order extends CI_Controller
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$orderdetails = $this->db->get('orderdetails')->result();
-		//echo '<pre>';print_r($orderdetails);die;
+		
 		$data['order'] = $order;
 		$data['orderitems'] = array();
-		//echo '<pre>';print_r($order);die;
+		
 		foreach($orderdetails as $item)
 		{
 			if($item->company == $company->id)
@@ -319,6 +319,9 @@ class Order extends CI_Controller
     			$orgitem = $this->db->where('id',$item->itemid)->get('item')->row();
     			
     			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+    			
+    			$itemdetails->itemorgcode = @$itemdetails->itemcode?$itemdetails->itemcode:$orgitem->itemcode;
+    			$itemdetails->itemorgname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
     			
 				$item->itemdetails = $itemdetails;
 				

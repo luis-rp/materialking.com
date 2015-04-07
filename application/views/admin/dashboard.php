@@ -406,7 +406,7 @@
 		
 			</div>
 			
-			<div class="well span11" style="width:65% !important;">			
+			<div class="well span11" style="width:75% !important;">			
 				<h3 class="box-header" style="width:97.5%;">My Project Map</h3>
 			    <div class="map-wrapper" style="float:left;width:100%;height:400px;">
 					<div class="map">
@@ -417,7 +417,7 @@
 			
 			</div>			
 			<br/>
-			<div class="well span4" id="step2">            
+			<div class="well span6" id="step2">            
 				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
 				<table class="table table-bordered stat">
 	   			<tr>

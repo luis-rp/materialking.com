@@ -169,7 +169,7 @@ tr.still-due td
     						<table id="datatable" class="table no-more-tables general">
                                 <thead>
                                     <tr>
-                                        <th width="12%">Item Code/Name123</th>
+                                        <th width="12%">Item Code/Name</th>
                                         <th width="12%">Item Image</th>
                                         <th width="6%">Qty.</th>
                                         <th width="6%">Unit</th>
