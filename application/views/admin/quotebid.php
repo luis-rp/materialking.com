@@ -426,13 +426,13 @@ function checknewitem(){
 			var itemcode = $("#itemcode").val();
 			var itemname = $("#itemname").val();
 			var unit = $("#unit").val();
-			var d = "itemcode="+itemcode+"&itemname="+itemname+"&unit="+unit;
+			//var d = "itemcode":itemcode,"itemname="+itemname+"&unit="+unit;
 
 			useritemurl = "<?php echo site_url('admin/quote/addNewUserItem');?>";
 
 			$.ajax({
 				type:"post",
-				data: d,
+				data: {"itemcode":itemcode,"itemname":itemname,"unit":unit},
 				url: useritemurl
 			}).done(function(data){
 				if(data)
@@ -852,6 +852,29 @@ function displayBlankRow()
 	$("#newitemrow").css('display','');
 }
 
+function cancelitem()
+{
+	$("#itemid").val('');
+	$("#itemincrement").val('');
+	$("#itemcode").val('');
+	$("#itemname").val('');
+	$("#quantity").val('');
+	$("#unit").val('');
+	$("#ea").val('');
+	$("#totalprice").val('');
+	$("#daterequested").val('');
+	$("#notes").val('');
+	$("#itemcode").removeAttr('required');
+	$("#itemname").removeAttr('required');
+	$("#quantity").removeAttr('required');
+	$("#ea").removeAttr('required');
+	$("#daterequested").removeAttr('required');
+	$("#unit").removeAttr('required');
+	$("#totalprice").removeAttr('required');
+	$("#notes").removeAttr('required');
+	
+	$("#newitemrow").css('display','none');
+}
 </script>
                      <hr/>
 		  <?php if($this->validation->id && !$awarded){?>
@@ -988,6 +1011,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
 		    			<div><span id="showItemsFromStore"><a href="javascript:void(0)" id='browseItemsFromStore'>Browse Items From Store</a></span></div>
+		    			<div><a href="javascript:void(0)" onclick="cancelitem();" >Cancel Item</a></div>
                     </td>
 		    		<td width="18%">
 		    			<textarea id="itemname" name="itemname" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?> style="width:95%;height:100px;"></textarea>

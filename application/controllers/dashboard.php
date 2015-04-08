@@ -155,6 +155,8 @@ class Dashboard extends CI_Controller
 	    	{
 	    		 $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">'.$sms.' &nbsp;&nbsp;&nbsp;<a href='.site_url('company/bankaccount').' > Click Here. </a></div></div>');
 	    	}
+	    	
+	    $data['ctitle']=$this->db->select('u.companyname')->from('users u')->join('network n','u.id=n.purchasingadmin')->where('n.company',$company->id)->get()->row();
 	    
 	    if(@$basic->contact!="" && @$basic->address!="" && @$basic->city!="" && @$basic->state!="" && @$basic->zip!="" && @$basic->address!="")
 	    {	
@@ -162,7 +164,7 @@ class Dashboard extends CI_Controller
 	    }
 	    else 
 	    {    	
-	    	$this->load->view('dashboard/basic');
+	    	$this->load->view('dashboard/basic',$data);
 	    }
 		
 	}

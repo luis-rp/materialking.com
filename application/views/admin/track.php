@@ -811,7 +811,7 @@ function closepop()
  <?php if(date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s')) { if(($q->quantity - $q->received)!=0) { echo "*Item Past Due";} } ?></td>
                                 <td><?php echo $q->costcode; ?></td>
                                 <td><?php echo $q->notes; ?></td>
-                                <td><span id="due<?php echo $q->id; ?>"><?php echo $q->quantity - $q->received; ?></span>
+                                <td><span id="due<?php echo $q->id; ?>"><?php if(($q->received) < 0) echo $q->quantity; else echo $q->quantity - $q->received;?></span>
                                <br><?php if($q->quantity - $q->received!=0){                              
                                 echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"PAST DUE":""; } ?></td>
                                 <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
@@ -1400,7 +1400,7 @@ function closepop()
                                     <td><?php echo $error->error;?></td>
                                     <td><?php echo $error->itemcode;?></td>
                                     <td><?php echo $error->quantity;?></td>
-                                    <td><?php echo $error->invoicenum;?></td>
+                                    <td><a href="javascript:void(0);" onclick="showInvoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $awarded->quote; ?>);"><?php echo $error->invoicenum;?></a></td>
                                     <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
                         <?php

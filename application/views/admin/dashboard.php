@@ -406,6 +406,22 @@
 		
 			</div>
 			
+			<?php if($this->session->userdata('managedprojectdetails')){?>    	
+	    	<div class="well span11" style="width:75% !important;">
+	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
+			    		<?php if(@$costcodesjson){?>
+			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
+					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
+						    </div>
+			    		
+			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
+			    		<?php } else {?>		
+			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
+			    			<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
+			    			</div>            
+	    				<?php }?>    		 		
+	    	</div>
+			<?php }else{?>	
 			<div class="well span11" style="width:75% !important;">			
 				<h3 class="box-header" style="width:97.5%;">My Project Map</h3>
 			    <div class="map-wrapper" style="float:left;width:100%;height:400px;">
@@ -413,7 +429,8 @@
 	            	<div id="map" style="height:400px;width:100%;" class="map-inner" ></div>
 	           		</div>
 				</div>
-			</div>	
+			</div>
+			<?php } ?>
 			
 			</div>			
 			<br/>
@@ -588,27 +605,9 @@
 	    	
 			<?php } }?>					
 		</div>		
-	    	<?php if($this->session->userdata('managedprojectdetails')){?>
-	    	
-	    	<div class="span10" style="padding:19px;">
-	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
-			    		<?php if(@$costcodesjson){?>
-			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
-					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
-						    </div>
-			    		
-			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
-			    		<?php } else {?>		
-			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
-			    			<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
-			    			</div>            
-	    				<?php }?>
-	    		 		
-	    	</div>
-	    
+	    	<?php if(!$this->session->userdata('managedprojectdetails')){?>
 	    	
 
-			<?php }else{?>
 			<div  class="span10" style="margin-left:1%;">
 		
 

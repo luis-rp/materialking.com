@@ -311,7 +311,7 @@ class items_model extends Model {
         
         $ret = "";  
         $retsub = "";  
-	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;' id='css3menu2' >";        
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:0; float: inherit; position: absolute;' id='css3menu2' >";        
 	    
 	    foreach ($manufacturers as $man) 
         {

@@ -84,6 +84,7 @@ $(document).ready(function() {
 	   {
 	    	$(".newitemrow").css('display','');
 	   }
+	
 });
 //datedefault = true;
 //ccdefault = true;
@@ -556,12 +557,13 @@ function showrecentaddedcompanies(){
 }
 
 
-function setnewcompany(companyname,companyemail){
+function setnewcompany(companyname,companyemail,contact){
 	
 	$('#newvendorspan').css('display','block');	
 	$('#ea').attr("readonly", false);
 	$('#addsupplyname').val(companyname);
 	$('#addsupplyemail').val(companyemail);
+	$('#addsupplyusername').val(contact);
 	
 }
 
@@ -576,13 +578,13 @@ function checknewitem(){
 			var itemcode = $("#itemcode").val();
 			var itemname = $("#itemname").val();
 			var unit = $("#unit").val();
-			var d = "itemcode="+itemcode+"&itemname="+itemname+"&unit="+unit;
+			//var d = "itemcode="+itemcode+"&itemname="+itemname+"&unit="+unit;
 
 			useritemurl = "<?php echo site_url('admin/quote/addNewUserItem');?>";
 
 			$.ajax({
 				type:"post",
-				data: d,
+				data: {"itemcode":itemcode,"itemname":itemname,"unit":unit},
 				url: useritemurl
 			}).done(function(data){
 				if(data)
@@ -651,7 +653,38 @@ function showselectimage(){
 	$("#imgselectpos2").html(imagehtml);	
 }
 
+function cancelitem()
+{
+	$("#itemid").val('');
+	$("#itemincrement").val('');
+	$("#itemcode").val('');
+	$("#itemname").val('');
+	$("#quantity").val('');
+	$("#unit").val('');
+	$("#ea").val('');
+	$("#totalprice").val('');
+	$("#daterequested").val('');
+	$("#notes").val('');
+	$("#itemcode").removeAttr('required');
+	$("#itemname").removeAttr('required');
+	$("#quantity").removeAttr('required');
+	$("#ea").removeAttr('required');
+	$("#daterequested").removeAttr('required');
+	$("#unit").removeAttr('required');
+	$("#totalprice").removeAttr('required');
+	$("#notes").removeAttr('required');
+	
+	$("#ea").removeClass('pricefieldnew');
+	$(".newitemrow").css('display','none');
+}
 
+function checkNewRowData()
+{	
+	if($(".newitemrow").css('display') == 'none')
+	{
+		cancelitem();
+	}
+}
 </script>
 
 <style>
@@ -805,7 +838,7 @@ function showselectimage(){
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" class="highlight nonzero nopad width50 input-sm span8" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>'); " onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" readonly required/>
+						<input type="text" class="highlight nonzero nopad width50 input-sm span8" id="ea<?php echo $q->id;?>" name="ea<?php echo $q->id;?>" value="<?php echo $q->ea;?>" onblur="calculatetotalprice('<?php echo $q->id?>'); " onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg1<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" required/>
 		    			</div><span id="eaerrmsg1<?php echo $q->id;?>"></span>
 		    		</td>
 		    		<td>
@@ -918,7 +951,7 @@ function showselectimage(){
 		    	<?php if(!$bids){?>
 			  	<form id="newitemform" class="form-horizontal" method="post" 
 			  		action="<?php echo base_url(); ?>admin/quote/additem/<?php echo $this->validation->id;?>" 
-			  		onsubmit="return checkzero('pricefieldnew')" enctype="multipart/form-data"> 
+			  		onsubmit="return checkzero('pricefieldnew');" enctype="multipart/form-data"> 
 			  	
 		    	<tr class="newitemrow" style="display:none;">
 		    		<td>
@@ -929,6 +962,7 @@ function showselectimage(){
 		    			<span id="showpricelink"><a href="javascript:void(0)" onclick="viewminprices('itemid',0,0)">View Prices</a></span>
 		    			<!-- <span id="showpricelinkbrow"><a href="javascript:void(0)" onclick="viewminpricesbrow('itemcodeshow');">Browse Item</a></span> -->
 		    			<span id="showpricelinkbrow"><a href="javascript:void(0)" id="browseItem">Browse Item</a></span>
+		    			<div><a href="javascript:void(0)" onclick="cancelitem();" >Cancel Item</a></div>
 		    		</td>
 		    		<td>
 		    			<textarea id="itemname" name="itemname" style="width:95%;height:130px;" required <?php // if ($this->session->userdata('usertype_id') == 2){echo 'readonly';}?>></textarea>
@@ -938,7 +972,7 @@ function showselectimage(){
 		    		<td>
 		    			<div class="input-prepend input-append">
 						<span class="add-on">$</span>
-						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span8 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" readonly required/>
+						<input type="text" id="ea" name="ea" class="highlight nonzero nopad width50 input-sm span8 price pricefieldnew" onblur="calculatetotalprice('')" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" required/>
 		    			</div>
 		    		</td>
 		    		<td>
@@ -1013,7 +1047,7 @@ function showselectimage(){
 		    		<td colspan="10">
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
 		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
-		    		<input type="submit" value="Save & Continue" class="btn btn-primary"/>
+		    		<input type="submit" value="Save & Continue" class="btn btn-primary" onclick="checkNewRowData();"/>
 					</td>
 		    	</tr>
 		    	</form>

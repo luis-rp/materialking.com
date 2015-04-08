@@ -2778,16 +2778,19 @@ class quote extends CI_Controller
         	unset($_POST['addsupplyemail']);
         }
        
-        if($quote->potype=='Direct')
-        if(!$_POST['ea'] || $_POST['ea']=='0.00')
+        if($_POST['itemcode'] !='')
         {
-            $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a>
-    			<div class="msgBox">Item price cannot be 0</div></div>');
-
-            redirect('admin/quote/update/' . $qid);
-
+	        if($quote->potype=='Direct')
+	        if(!$_POST['ea'] || $_POST['ea']=='0.00')
+	        {
+	            $this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a>
+	    			<div class="msgBox">Item price cannot be 0</div></div>');
+	
+	            redirect('admin/quote/update/' . $qid);
+	
+	        }
         }
-        
+         
         if(isset($_FILES['userdefineitemfile']['name']) && $_FILES['userdefineitemfile']['name'] != '')
         {        
 	        if (is_uploaded_file($_FILES['userdefineitemfile']['tmp_name'])) 
@@ -2807,32 +2810,34 @@ class quote extends CI_Controller
 	        $this->quote_model->db->update('item',array('item_img'=>$_FILES["userdefineitemfile"]["name"]),array('id'=>$_POST['itemid']));
         }   
         
-        $this->quote_model->db->insert('quoteitem', $_POST);
-        $lastquoteitem = $this->quote_model->db->insert_id();
-        if (!$this->quote_model->finditembycode($_POST['itemcode']))
+        if($_POST['itemcode'] !='')
         {
-            $itemcode = array(
-                'itemcode' => $_POST['itemcode'],
-                'itemname' => $_POST['itemname'],
-                'unit' => $_POST['unit'],
-                'ea' => $_POST['ea'],
-                'notes' => $_POST['notes']
-            );
-            $this->quote_model->db->insert('item', $itemcode);
-        }
+	        $this->quote_model->db->insert('quoteitem', $_POST);
+	        $lastquoteitem = $this->quote_model->db->insert_id();
+	        if (!$this->quote_model->finditembycode($_POST['itemcode']))
+	        {
+	            $itemcode = array(
+	                'itemcode' => $_POST['itemcode'],
+	                'itemname' => $_POST['itemname'],
+	                'unit' => $_POST['unit'],
+	                'ea' => $_POST['ea'],
+	                'notes' => $_POST['notes']
+	            );
+	            $this->quote_model->db->insert('item', $itemcode);
+	        }
         
-        if($quote->potype=='Direct' && $suppliername!="" && $supplieremail!=""){
-        
-        	$tempcompanies = array(
-                'quoteitemid' => $lastquoteitem,
-                'companyname' => $suppliername,
-                'companyemail' => $supplieremail,
-                'contact' => @$supplieusername
-            );	
-        	$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
-        	
-        }
-        
+	        if($quote->potype=='Direct' && $suppliername!="" && $supplieremail!=""){
+	        
+	        	$tempcompanies = array(
+	                'quoteitemid' => $lastquoteitem,
+	                'companyname' => $suppliername,
+	                'companyemail' => $supplieremail,
+	                'contact' => @$supplieusername
+	            );	
+	        	$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
+	        	
+	        }
+       }  
         redirect('admin/quote/update/' . $qid);
     }
            
@@ -4499,7 +4504,7 @@ class quote extends CI_Controller
         if (!$invoicenum)
             redirect('quote/invoices');
         $invoice = $this->quote_model->getinvoicebynum($invoicenum,$invoicequote);
-        
+        $invoice->error = 0;
         foreach ($invoice->items as $invoiceitem) {
         	
         	 if(@$invoiceitem->invoice_type == "alreadypay"){ 
@@ -4511,6 +4516,10 @@ class quote extends CI_Controller
         	  	$invoice->fullpaid = 1;	  
         	  	$invoice->relatedinvoices = $this->db->select('invoicenum')->from('received')->where('purchasingadmin',$invoiceitem->purchasingadmin)->where('awarditem',$invoiceitem->awarditem)->where('invoice_type',"alreadypay")->get()->result();   
         	 } 	
+        	 
+        	 if(@$invoiceitem->invoice_type == "error"){ 
+        	 	 $invoice->error = 1;
+        	 }	
         }
         
         $awarded = $this->quote_model->getawardedbid($invoice->quote);
@@ -12040,7 +12049,7 @@ $loaderEmail = new My_Loader();
             echo "itemname(".$itemname->itemname.") already exists"; die; 
             }
             
-			$itemid = $this->itemcode_model->SaveItemcode_user();
+			$itemid = $this->itemcode_model->SaveItemcode_user('useritem');
 			if($itemid)
 			echo $itemid; die;            
     }
@@ -12089,7 +12098,7 @@ $loaderEmail = new My_Loader();
     						
 	        	$html .='<tr>
 		        	<td colspan="2">
-						<strong>'.$nonnetcomp->companyname.'</strong>&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="setnewcompany(\''.$nonnetcomp->companyname.'\',\''.$nonnetcomp->companyemail.'\')">
+						<strong>'.$nonnetcomp->companyname.'</strong>&nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="setnewcompany(\''.$nonnetcomp->companyname.'\',\''.$nonnetcomp->companyemail.'\',\''.$nonnetcomp->contact.'\')">
 		        	</td>
 	        	</tr>';    	
     				

@@ -223,13 +223,24 @@ tr.still-due td
 											  //$days = $diff12->d;
 											  echo "<br>Due in&nbsp;".$diff12->format("%R%a days");?></td>
                                         <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->notes;?></td>
-                                        <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->received;?><br>
+                                        <td class="v-align-middle" style="word-break:break-all;">
+                                        <?php // echo $ai->received; 
+										if($invoices){
+											foreach($invoices as $invoice){
+												$totalshipped = $ai->received;
+												if(@$invoice->invoice_type=="error")
+													$totalshipped +=  abs($invoice->quantity);
+											}
+											echo $totalshipped; 
+										}else 
+										echo $ai->received; 
+										?><br>
                                         <?php if($ai->pendingshipments){?>
                                         <br/><?php echo round($ai->pendingshipments,2);?>
                                         <?php }?>
                                         </td>
                                         <td class="v-align-middle" style="word-break:break-all;">
-                                        <?php echo $ai->quantity - $ai->received;?>
+                                        <?php if(($ai->received) < 0) echo $ai->quantity; else echo $ai->quantity - $ai->received;?>
                                         <?php if($ai->pendingshipments){?>
                                         <br/><?php echo $ai->pendingshipments;?> Pending Acknowledgement
                                         <?php }?>
@@ -326,7 +337,7 @@ tr.still-due td
                                     <td><?php echo $error->error;?></td>
                                     <td><?php echo $error->itemcode;?></td>
                                     <td><?php echo $error->quantity;?></td>
-                                    <td><?php echo $error->invoicenum;?></td>
+                                    <td><a href="javascript:void(0);" onclick="invoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $quote->id; ?>);"><?php echo $error->invoicenum;?></a></td>
                                     <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
                         <?php
@@ -429,10 +440,10 @@ tr.still-due td
 	                  		<input type="submit" name="companystatus" value="Request Payment">
 	                  	</form>
 	                  	<?php }elseif($i->status=='Verified'){?>
-	                  	/ <?php echo $i->paymenttype;?> / <?php echo $i->refnum;?>
+	                  	/ <?php echo @$i->paymenttype;?> / <?php echo @$i->refnum;?>
 	                  	<?php }?>
 					</td>
-					<td><input type="text" class="span daterequested highlight" id="daterequested<?php echo $i->invoicenum;?>" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" />
+					<td><?php if($i->paymentstatus!='Credit'){?><input type="text" class="span daterequested highlight" id="daterequested<?php echo $i->invoicenum;?>" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /><?php } ?>
 					 <input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />				
 					</td>
 				</tr>

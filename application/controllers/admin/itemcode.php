@@ -283,7 +283,7 @@ class itemcode extends CI_Controller
         $itemcodes = $this->itemcode_model->get_itemcodes($this->limit, $offset);     
 
          if ($this->session->userdata('usertype_id') > 1)
-        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('id');
         else
         $wheretax = "";
 
@@ -533,8 +533,17 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         	$postatus = "incomplete";
         }
     	
+        if ($this->session->userdata('usertype_id') > 1)
+        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('id');
+        else
+        $wheretax = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$wheretax." ";
+        $taxrate = $this->db->query($cquery)->row();
+        
     	$count = count($poitems);
     	$items = array();
+    	
     	if ($count >= 1)
     	{
     		foreach ($poitems as $row)
@@ -545,8 +554,13 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 else 
                 $status = "incomplete";
     			$awarded = $this->quote_model->getawardedbid($row->quote);
+    			
+    			$row->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . @$row->quote . '\')">'.$row->ponum.'</a>'; 
     			$row->awardedon = date("m/d/Y", strtotime($row->awardedon));
     			$row->ea = "$ " . $row->ea;
+    			if(@$taxrate->taxrate){
+    				$row->totalprice = round($row->totalprice + ($row->totalprice*$taxrate->taxrate/100),2);    				
+    			}
     			$row->totalprice = "$ " . $row->totalprice;
     			$row->status = strtoupper($awarded->status);
     			$row->itemstatus = strtoupper($status);
@@ -1327,7 +1341,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         }        
         else
         {        	 
-            $itemid = $this->itemcode_model->SaveItemcode_user();
+            $itemid = $this->itemcode_model->SaveItemcode_user('useritem');
             $this->session->set_flashdata('message',
             '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Item Code Added Successfully</div></div>');
             redirect('admin/itemcode');

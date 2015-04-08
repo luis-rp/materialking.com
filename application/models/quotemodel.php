@@ -699,7 +699,7 @@ class Quotemodel extends Model
 
 
 		 $query = "SELECT invoicenum,  ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice,s.taxrate,
-					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue, ai.award,r.attachmentname,r.sharewithsupplier 
+					receiveddate, r.status, r.paymentstatus, r.paymenttype, r.refnum, r.paymentdate, r.datedue, ai.award,r.attachmentname,r.sharewithsupplier, r.quantity, r.invoice_type   
 				   FROM
 				   ".$this->db->dbprefix('received')." r,
 				   ".$this->db->dbprefix('awarditem')." ai,

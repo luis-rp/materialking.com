@@ -271,6 +271,7 @@ class message extends CI_Controller
             $insertarrayrec['invoicenum'] = $invoicenums[$i]."-Error";         
             $insertarrayrec['quantity'] = -$quantities[$i];
             $insertarrayrec['status'] = "Verified";
+            $insertarrayrec['paymentstatus'] = "Credit";
             $insertarrayrec['receiveddate'] = (isset($dates[$i]) && $dates[$i]!="")?date("Y-m-d",  strtotime($dates[$i])):"";  
             $insertarrayrec['invoice_type'] = "error";  
 			$this->db->insert('received',$insertarrayrec);

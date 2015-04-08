@@ -775,7 +775,7 @@ class itemcode_model extends Model {
 
     
     
-   function SaveItemcode_user() {   	    	
+   function SaveItemcode_user($useritem="") {   	    	
          	
 	        $options = array(
             'itemcode' => $this->input->post('itemcode'),
@@ -793,29 +793,30 @@ class itemcode_model extends Model {
         $this->db->insert('item', $options);
         $id = $this->db->insert_id();      
         
-        if(@$this->session->userdata('timstmp') && $id){
-        	
-        	$sql1 = "SELECT * FROM ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
-    		$result1 = $this->db->query($sql1)->result();
-        	if($result1){
-    		foreach($result1 as $res1){    		
-    			
-    			$insert['itemid'] = $id;
-    			$insert['manufacturer'] = $res1->manufacturer;
-    			$insert['partnum'] = $res1->partnum;
-    			$insert['price'] = $res1->price;
-    			$insert['itemname'] = mysql_real_escape_string($res1->itemname);
-    			$insert['minqty'] = $res1->minqty;
-    			$insert['itemcode'] = mysql_real_escape_string($res1->itemcode);
-    			
-    			
-	        	$this->db->insert('masterdefault', $insert);    				
-    		} }
-    		    		
-        	$query = "DROP TABLE  IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
-    		$returnval = $this->db->query($query);
-        }			        
-          
+        if($useritem==""){
+        	if(@$this->session->userdata('timstmp') && $id){
+
+        		$sql1 = "SELECT * FROM ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
+        		$result1 = $this->db->query($sql1)->result();
+        		if($result1){
+        			foreach($result1 as $res1){
+
+        				$insert['itemid'] = $id;
+        				$insert['manufacturer'] = $res1->manufacturer;
+        				$insert['partnum'] = $res1->partnum;
+        				$insert['price'] = $res1->price;
+        				$insert['itemname'] = mysql_real_escape_string($res1->itemname);
+        				$insert['minqty'] = $res1->minqty;
+        				$insert['itemcode'] = mysql_real_escape_string($res1->itemcode);
+
+
+        				$this->db->insert('masterdefault', $insert);
+        			} }
+
+        			$query = "DROP TABLE  IF EXISTS ".$this->db->dbprefix('masterdefaulttemp'.$this->session->userdata('timstmp'));
+        			$returnval = $this->db->query($query);
+        	}
+        }
         return $id;
     }
     
@@ -1270,7 +1271,7 @@ class itemcode_model extends Model {
         //echo $sql.'<br>';
         $row = $this->db->query($sql)->row();
         
-        if(count($row)>0)
+        if(@$row->avgprice<=0)
         {
         	$pa = $this->session->userdata('purchasingadmin');
 	        $sql = "select c.id companyid, c.title companyname, avg(ci.ea) avgprice

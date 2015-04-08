@@ -799,9 +799,10 @@ class Company extends CI_Controller {
 	        $sms="Email Sent Successfully.";
         }
 
-        $company = $this->supplier_model->get_supplier($company->id);    
+        $company = $this->supplier_model->get_supplier($company->id);  
+        $anch= base_url() . 'dashboard';  
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">
-        </a><div class="msgBox">Your profile has been saved.'.$sms.'</div></div></div>');
+        </a><div class="msgBox">Your profile has been saved.'.$sms.'<a href='.$anch.' target=blank>Click here to go to your dashboard.</a></div></div></div>');
         redirect('company/profile');
     }
 

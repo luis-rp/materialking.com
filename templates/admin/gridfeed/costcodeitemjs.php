@@ -8,67 +8,86 @@ $(document).ready(function () {
     		{
     			property: 'id',
     			label: 'ID',
-    			sortable: false
+    			sortable: false,
+    			width:'2%'
     		},
     		{
     			property: 'ponum',
     			label: 'PO#',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'itemcode',
     			label: 'Code',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
+    		},
+    		{
+    			property: 'item_img',
+    			label: 'Item Image',
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'itemname',
     			label: 'Item Name',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'unit',
     			label: 'Unit',
-    			sortable: true
+    			sortable: true,
+    			width:'4%'
     		},
     		{
     			property: 'quantity',
     			label: 'Quantity',
-    			sortable: true
+    			sortable: true,
+    			width:'4%'
     		},
     		{
     			property: 'newreceived',
     			label: 'Qty Received',
-    			sortable: true
+    			sortable: true,
+    			width:'4%'
     		},
     		{
     			property: 'ea',
     			label: 'Price EA',
-    			sortable: true
+    			sortable: true,
+    			width:'4%'
     		},
     		{
     			property: 'totalprice',
     			label: 'Total Price',
-    			sortable: true
+    			sortable: true,
+    			width:'5%'
     		},
     		{
     			property: 'daterequested',
     			label: 'Date Requested',
-    			sortable: false
+    			sortable: false,
+    			width:'10%'
     		},
     		{
     			property: 'itemstatus',
     			label: 'Item Status',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'status',
     			label: 'P.O. Status',
-    			sortable: true
+    			sortable: true,
+    			width:'10%'
     		},
     		{
     			property: 'actions',
     			label: 'Actions',
-    			sortable: false
+    			sortable: false,
+    			width:'10%'
     		}
     	],
     	data: sampleData.geonames,

@@ -843,18 +843,19 @@ class costcode extends CI_Controller {
             	
             	if($row->IsMyItem == 0) 
                  {
-                    $link =	'<a href="'.site_url("site/item/".$row->url).'" target="_blank">'.$row->itemcode.'</a>';
+                    $link =	'<a href="'.site_url("site/item/".$row->url).'">'.htmlentities($row->itemname).'</a>';
                  } 
                  else 
                  { 
-                 	$link = $row->itemcode; 
+                 	$link = htmlentities($row->itemname); 
                  }
-                $row->ponum = '<a href="'.site_url('admin/quote/track').'/'.@$row->quote.'">'.$row->ponum.'</a>'; 
-                $row->itemcode = $link; 	 
+              //  $row->ponum = '<a href="'.site_url('admin/quote/track').'/'.@$row->quote.'">'.$row->ponum.'</a>'; 
+                $row->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . @$row->quote . '\')">'.$row->ponum.'</a>'; 
+                $row->itemcode = '<a href="javascript:void(0)" onclick="viewitems2(\'' . @$row->itemid . '\')">'.$row->itemcode.'</a>'; ; 	 
                 $row->ea = "$ " . $row->ea;
                 $row->totalprice = $row->totalprice + $row->totalprice*(@$taxrate->taxrate/100);
                 $row->totalprice = "$ " . round($row->totalprice,2);
-                $row->itemname = htmlentities($row->itemname);
+                $row->itemname = $link;
                 $row->itemstatus = strtoupper($status);
                 $row->status = strtoupper($postatus);
                 $row->item_img = $imgName;

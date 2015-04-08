@@ -98,6 +98,49 @@
 
  </script>
 	<?php }?>
+	
+	<script type="text/javascript">
+	function viewitems(quoteid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/quote/getitemsajax/';
+		//alert(serviceurl);
+		$.ajax({
+		      type:"post",
+		      url: serviceurl,
+		      data: "quote="+quoteid
+		    }).done(function(data){
+		        $("#quoteitems").html(data);
+		        $("#itemsmodal").modal();
+		    });
+	}
+	
+	function viewitems2(itemid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+		//alert(quoteid);
+		$("#quoteitemdetails").html('loading ...');
+
+		$.ajax({
+			type:"post",
+			url: serviceurl,
+		}).done(function(data){
+			//$("#quoteitems").css({display: "none"});
+			$("#quoteitemdetails").html(data);
+			$("#quoteitemdetails").css({display: "block"});
+			$("#quoteitemdetailsm").css({display: "block"});
+			$("#quoteitemdetailsm").removeClass("hide");
+			//$("#quoteitemdetailsm").modal();
+		});
+	}
+	
+	function closepop()
+	{
+		$("#quoteitemdetails").html('');
+		$("#quoteitemdetails").css({display: "none"});
+		$("#quoteitemdetailsm").css({display: "none"});
+		$("#quoteitems").css({display: "block"});
+	}
+	</script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
 <p>First time here?</p>
@@ -554,5 +597,26 @@
             	
             </div>
       </div>
+    </div>
+    <div id="itemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            	<h3>Items<span id="minpriceitemcode"></span></h3>
+        	</div>
+        	<div class="modal-body" id="quoteitems">
+        	
+        	</div>
+            
+    </div>
+    <div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+        		
+        	</div>
+        	<div class="modal-body" id="quoteitemdetails">
+        	</div>
+            
     </div>
 </section>

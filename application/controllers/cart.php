@@ -810,6 +810,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 			$itemdetails = $this->db->get('companyitem')->row();
  			$orgitem = $this->db->where('id',$item['itemid'])->get('item')->row();
  			$itemdetails->itemname = @$itemdetails->itemname?$itemdetails->itemname:$orgitem->itemname;
+ 			$itemdetails->itemorgcode = @$itemdetails->itemcode?$itemdetails->itemcode:$orgitem->itemcode;
  			$item['itemdetails'] = $itemdetails;
  			$this->db->where('id',$item['company']);
 			$item['companydetails'] = $this->db->get('company')->row();
@@ -1031,6 +1032,7 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
 		}
 		$this->removeallcart();
 		$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber;
+		$data['messagenotification'] = '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Order Summary has been emailed.</div></div>';
 		$data['ordernumber'] = $ordernumber;
 		$data['order'] = $oid;
 		$data['status'] = 'Success';
