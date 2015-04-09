@@ -232,9 +232,8 @@ $.noConflict();
 									    <td align="right">$ '.$invoiceitem['ea'] * $quantity.'</td>
 									  </tr>
 									  ';
-								}
-								$taxtotal = $totalprice * $config['taxpercent'] / 100;
-								$grandtotal = $totalprice + $taxtotal;
+								}								
+								$grandtotal = $totalprice;
 								
 								$arradditionalcal = array();
 								$disocunt = 0;
@@ -253,6 +252,8 @@ $.noConflict();
 									$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
 								}
 								
+								$taxtotal = $grandtotal * $config['taxpercent'] / 100;
+								$grandtotal = $grandtotal + $taxtotal;
 								
 								echo '<tr>
 								    <td colspan="4" rowspan="4">

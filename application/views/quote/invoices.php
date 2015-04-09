@@ -211,7 +211,7 @@ function invoice(invoicenum,invoicequote)
                                                 			</a>
                                                 			</td>
                                                 			<td style="padding: 10px 4px !important;"><?php if(@$i->receiveddate) echo date('m/d/Y', strtotime($i->receiveddate));?></td>
-                               <td>$<?php $total=(($i->totalprice*$i->taxrate)/100); $gtotal=$total+$i->totalprice;
+                               <td>$<?php $gtotal= $i->totalprice;
 
                                if(@$i->discount_percent){
 
@@ -222,6 +222,8 @@ function invoice(invoicenum,invoicequote)
 
                                	$gtotal = $gtotal + (($gtotal*$i->penalty_percent/100)*$i->penaltycount);
                                }
+                               
+                               $gtotal=(($gtotal*$i->taxrate)/100)+$gtotal;
                                
                                echo number_format($gtotal,2); ?></td>
                                

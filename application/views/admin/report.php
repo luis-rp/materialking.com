@@ -131,10 +131,7 @@
 		   		else
 		   			foreach($reports as $report)
 		   			{
-			    		if(!$report->totalpaid) $report->totalpaid = 0;
-		   				$report->totalpaid = $report->totalpaid + ($report->totalpaid*$tax/100);		   				
-
-		   				$report->totalprice = $report->totalprice + ($report->totalprice*$tax/100);
+			    		if(!$report->totalpaid) $report->totalpaid = 0;		   				
 		   				
 		   				if(@$report->discount_percent){
 
@@ -147,6 +144,10 @@
 		   					$report->totalprice = $report->totalprice + (($report->totalprice*$report->penalty_percent/100)*$report->penaltycount);
 		   					$report->totalpaid = $report->totalpaid + (($report->totalpaid*$report->penalty_percent/100)*$report->penaltycount);
 		   				}
+		   				
+		   				$report->totalpaid = $report->totalpaid + ($report->totalpaid*$tax/100);		   				
+
+		   				$report->totalprice = $report->totalprice + ($report->totalprice*$tax/100);
 		   				
 		   				$report->totalpaid = round($report->totalpaid,2);
 		   				

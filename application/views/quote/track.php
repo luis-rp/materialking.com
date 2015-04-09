@@ -407,8 +407,7 @@ tr.still-due td
 				<?php
 				    foreach($invoices as $i)
 				    { 
-				        $amount = $i->totalprice;
-				        $amount = $amount + ($amount*$settings->taxpercent/100);
+				        $amount = $i->totalprice;				        
 				        				        
 				        if(@$i->discount_percent){
 				        	
@@ -419,6 +418,8 @@ tr.still-due td
 				        	
 				        	$amount = $amount + (($amount*$i->penalty_percent/100)*$i->penaltycount);
 				        }
+				        
+				        $amount = $amount + ($amount*$settings->taxpercent/100);
 				        
 				        $amount = number_format($amount,2);
 				?>

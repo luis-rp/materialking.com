@@ -741,7 +741,7 @@ class costcode extends CI_Controller {
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,				   
 				   " . $this->db->dbprefix('award') . " a,
-				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$row->costcode."' GROUP by invoicenum";		
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.award='" . $row->award."' GROUP by invoicenum";		
 					
 					$invoicequery = $this->db->query($query);
         			$itemsinv = $invoicequery->result();
@@ -885,7 +885,7 @@ class costcode extends CI_Controller {
 				   " . $this->db->dbprefix('received') . " r,
 				   " . $this->db->dbprefix('awarditem') . " ai,				   
 				   " . $this->db->dbprefix('award') . " a,
-				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$row2->costcode."' GROUP by invoicenum";		
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.award='" . $row2->award."' GROUP by invoicenum";		
 					
 					$invoicequery = $this->db->query($query);
         			$itemsinv = $invoicequery->result();

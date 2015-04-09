@@ -2584,7 +2584,12 @@ class Company extends CI_Controller {
 	            $arr['penalty_percent'] = $_POST['penalty_percent'][$admin];	           
 	            
 	            if($_POST['duedate'][$admin])
+	            {
 	            	$arr['duedate'] = date('Y-m-d', strtotime($_POST['duedate'][$admin]));
+	            	$arr = array('purchasingadmin' => $admin, 'company' => $company->id);
+	            	$this->db->where($arr);
+	            	$this->db->update('purchasingtier',array('creditonly'=>'0'));
+	            }
 	            
 	            if($_POST['term'][$admin])
 	            	$arr['term'] = $_POST['term'][$admin]; 	    

@@ -226,8 +226,7 @@ function submitForm(val,invoicequote)
 
 			    		foreach($report->items as $item)
 			    		{
-			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
-			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
+			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;			    			
 			    			
 			    			if(@$report->discount_percent){
 			    				$amount = $amount - ($amount*$report->discount_percent/100);
@@ -236,7 +235,9 @@ function submitForm(val,invoicequote)
 			    			if(@$report->penalty_percent){
 			    				$amount = $amount + (($amount*$report->penalty_percent/100)*$report->penaltycount);
 			    			}
-			    			
+			    	
+			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
+			    					
 			    			$totalallprice += $amount;
 
 			    			$totalquantity += ($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity;

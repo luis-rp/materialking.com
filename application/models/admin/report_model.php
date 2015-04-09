@@ -287,7 +287,7 @@ class report_model extends Model
 		{
 			$itemsql = "SELECT 
 						r.*, ai.itemcode, c.title companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.item_img ,i.id as itemid   
+						ai.itemname, ai.ea as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.item_img ,i.id as itemid,q.id as quoteid   
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
@@ -310,7 +310,7 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.item_img ,i.id as itemid 
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.item_img ,i.id as itemid,q.id as quoteid 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,

@@ -437,7 +437,7 @@ function checknewitem(){
 			}).done(function(data){
 				if(data)
 				$('#itemid').val(data);
-				alert("Item got added successfully!\n\r You can add image to newly created item using browse button.");
+				alert("Item Added Successfully!\n\r You can add an image to the newly created item, use the choose file button.");
 			});
 			
 			
@@ -852,6 +852,14 @@ function displayBlankRow()
 	$("#newitemrow").css('display','');
 }
 
+function checkNewRowData()
+{	
+	if($("#newitemrow").css('display') == 'none')
+	{
+		cancelitem();
+	}
+}
+
 function cancelitem()
 {
 	$("#itemid").val('');
@@ -907,7 +915,7 @@ function cancelitem()
 		    	</tr>
 		    	<?php if($quoteitems){?>
 		    	<form id="olditemform" class="form-horizontal" method="post"
-		    	action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>"> 
+		    	action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>" enctype="multipart/form-data"> 
 			  	<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
 		    	<?php foreach($quoteitems as $q)
 		    	{
@@ -931,6 +939,7 @@ function cancelitem()
 			    		<textarea required class="span12 itemcode itemcodeold" id="itemcode<?php echo $q->id;?>" name="itemcode<?php echo $q->id;?>" value="" onblur="fetchItem('itemcode<?php echo $q->id;?>');" onchange="showhideviewprice('<?php echo $q->id;?>');"/><?php echo $q->itemcode;?></textarea>
 			    		<br>
 			    		<img src="<?php echo $imgName;?>" width="90" height="90" style="padding-top:5px;">
+			    		<?php if($q->category == '248') { ?> <br> Add Image : <input style="padding-top:10px;" type="file" name="ownitemcodefile[<?php echo $q->itemid;?>]" id="ownitemcodefile">  <?php } ?>
 			    		<br>
 			    		<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
 			    		
@@ -1061,7 +1070,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
                                 
 		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
-		    		<input id="saveandcontinue" type="submit" value="Save & Continue" class="btn btn-primary"/>
+		    		<input id="saveandcontinue" type="submit" value="Save & Continue" class="btn btn-primary" onclick="checkNewRowData();"/>
 					</td>
 		    	</tr>
 		    	</form>

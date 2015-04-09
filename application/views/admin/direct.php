@@ -548,6 +548,7 @@ function displayBlankRow()
     		$('#recentcomp').css('display','block');
     		}
     	});
+    $('#saveandcontinue').css('display','block');	
 }
 
 
@@ -590,7 +591,7 @@ function checknewitem(){
 				if(data)
 				$('#itemid').val(data);
 				$('#ea').attr("readonly", false);
-				alert("Item got added successfully!\n\r You can add image to newly created item using browse button.");
+				alert("Item Added Successfully!\n\r You can add an image to the newly created item, use the choose file button.");
 			});
 			
 			
@@ -799,7 +800,7 @@ function checkNewRowData()
 		    		<th width="3%">Delete</th>
 		    	</tr>
 		    	<?php if($quoteitems) {?>
-		    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>"> 
+		    	<form id="olditemform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/updateitems/<?php echo $this->validation->id;?>" enctype="multipart/form-data"> 
 			  	<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
 		    	<?php 
 		    	foreach($quoteitems as $q)
@@ -824,6 +825,8 @@ function checkNewRowData()
 			    		
 			    		<br>
 			    		<img src="<?php echo $imgName;?>" width="90" height="90" style="padding-top:5px;">
+			    		
+			    		<?php if($q->category == '248') { ?> <br> Add Image : <input style="padding-top:10px;" type="file" name="ownitemcodefile[<?php echo $q->itemid;?>]" id="ownitemcodefile">  <?php } ?>
 			    		<br>
 			    		
 		    			<a href="javascript:void(0)" onclick="viewminprices('itemid<?php echo $q->id;?>','quantity<?php echo $q->id;?>','ea<?php echo $q->id;?>')">View Prices</a>
@@ -876,6 +879,7 @@ function checkNewRowData()
 				    	<?php if(0) foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>" <?php if($q->company==$company->id){echo 'selected="selected"';}?>><?php echo $company->title;?></option>
 				    	<?php }?>
+				    	<option value="" price="" >Select Company</option>
 				    	<option value="addnewcompany<?php echo $q->id;?>" price="" >Add New Vendor</option>
 				    	</select>
 				    	<script>getminpricecompanies('<?php echo $q->itemid;?>','company<?php echo $q->id;?>','<?php echo $q->quantity;?>','<?php echo $q->company;?>','<?php echo $q->ea;?>');</script>
@@ -1008,6 +1012,7 @@ function checkNewRowData()
 				    	<?php foreach($companylist as $company){?>
 				    		<option value="<?php echo $company->id;?>"><?php echo $company->title;?></option>
 				    	<?php }?>
+				    		<option value="" price="" >Select Company</option>
 				    		<option value="addnewcompany" price="" >Add New Vendor</option>
 				    	</select>				    	
 				    	
@@ -1047,7 +1052,7 @@ function checkNewRowData()
 		    		<td colspan="10">
 		    		<input type="hidden" name="quote" value="<?php echo $this->validation->id;?>"/>
 		    		<input type="submit" value="Add Next Item" class="btn btn-primary" onclick="displayBlankRow();"/>
-		    		<input type="submit" value="Save & Continue" class="btn btn-primary" onclick="checkNewRowData();"/>
+		    		<input type="submit" id="saveandcontinue" value="Save & Continue" <?php if($quoteitems) { ?> style="display:none;" <?php }?> class="btn btn-primary" onclick="checkNewRowData();"/>
 					</td>
 		    	</tr>
 		    	</form>

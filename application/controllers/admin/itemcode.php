@@ -355,7 +355,7 @@ class itemcode extends CI_Controller
                     
                 $itemcode->totalpoprice = "$ " . number_format($itemcode->totalpoprice,2);    
                     
-                $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'';
+                $itemcode->awardedon = $itemcode->awardedon?$itemcode->awardedon:'No Purchase History.';
 
                 $specs="";
 

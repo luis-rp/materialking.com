@@ -182,6 +182,9 @@ function preloadoptions(fromid)
 		        <div>
 		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$admin->awar;?></p>
 		        </div>  
+		          <div>
+		        	<p><?php echo "Total Account Spend "; echo count(@$admin->directquo)+count(@$admin->quo); ?></p>
+		        </div>  
 	        </div>	  
         </div>       
         <div class="modal-footer">

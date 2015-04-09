@@ -309,8 +309,8 @@ function shownotice(newval,oldval,id){
 						  ';
                    
                 }
-                $taxtotal = $totalprice * $config['taxpercent'] / 100;
-                $grandtotal = $totalprice + $taxtotal;
+                
+                $grandtotal = $totalprice;
                 
                 $arradditionalcal = array();
                 $disocunt = 0;
@@ -331,7 +331,8 @@ function shownotice(newval,oldval,id){
                 	$arradditionalcal[] = + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
                 	$grandtotal = $grandtotal + (($grandtotal*$invoice->penalty_percent/100)*$invoice->penaltycount);
                 }
-                
+                 $taxtotal = $grandtotal * $config['taxpercent'] / 100;
+                 $grandtotal = $grandtotal + $taxtotal;
                 
                 echo '<tr>
 					    <td colspan="5" rowspan="4">

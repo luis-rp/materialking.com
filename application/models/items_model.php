@@ -19,6 +19,7 @@ class items_model extends Model {
         {
             $subcategories = $this->getSubCategores($item->id,true);
             $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+           
             
             if(!$hasitems)
                 continue;
@@ -218,7 +219,8 @@ class items_model extends Model {
 	    foreach ($menus as $item) 
         {
             $subcategories = $this->getSubCategores($item->id,true);
-            $hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            //$hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
+            $hasitems = $this->db->where_in('category',$subcategories)->get('item')->result();
             
             if(!$hasitems)
                 continue;

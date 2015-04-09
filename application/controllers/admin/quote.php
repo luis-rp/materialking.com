@@ -1194,7 +1194,7 @@ class quote extends CI_Controller
                     $this->email->initialize($config);
                     $this->email->from($settings['adminemail'], "Administrator");
                     $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
-                    $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum'));
+                    $this->email->subject('Request for Quote Proposal PO# ' . $this->input->post('ponum').' From '.$this->session->userdata('companyname'));
                     $this->email->message($send_body);
                     $this->email->set_mailtype("html");
                     $this->email->send();
@@ -2044,6 +2044,7 @@ class quote extends CI_Controller
             	$companyrows[$item->company][] = $companyrow;
             }
         }
+        if($invitees){
         $companies = $this->quote_model->getcompanylistbyids(implode(',',$invitees));
         
         $companynames = array();
@@ -2122,6 +2123,7 @@ class quote extends CI_Controller
         }
         $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a>
         	<div class="msgBox">Purchase Order Sent to Companies: ' . implode(', ', $companynames) . '</div></div>');
+    }        
 
         redirect('admin/quote/index/' . $project->id);
 
@@ -2174,8 +2176,7 @@ class quote extends CI_Controller
     }
 
     function updateitems($qid)
-    {
-
+    {    	
         $items = $this->quote_model->getitems($qid);
         $quote = $this->quote_model->get_quotes_by_id($qid);
         //echo '<pre>';print_r($_POST);die;
@@ -2242,6 +2243,7 @@ class quote extends CI_Controller
             unset($updatearray['increment']);
             unset($updatearray['title']);
             unset($updatearray['item_img']);
+            unset($updatearray['category']);
            
             $this->quote_model->db->where('id', $key);
             $this->quote_model->db->update('quoteitem', $updatearray);
@@ -2278,13 +2280,35 @@ class quote extends CI_Controller
             		$tempcompanies = array(
             		'quoteitemid' => $key,
             		'companyname' => $suppliername,
-            		'companyemail' => $supplieremail
+            		'companyemail' => $supplieremail,
+            		'contact' => $supplierusername
             		);
             		$this->quote_model->db->insert('quoteitem_companies', $tempcompanies);
             	}
              }
 			
-            }
+             if(isset($_FILES['ownitemcodefile']))
+             {
+             	ini_set("upload_max_filesize","128M");
+		        $target='uploads/item/';
+		            	
+             	foreach ($_FILES['ownitemcodefile']['name'] as $key=>$val)
+             	{
+             		if($val != '')
+             		{             			
+	            		$temp=$target;
+	            		$tmp=$_FILES['ownitemcodefile']['tmp_name'][$key];
+	            		$origionalFile=$_FILES['ownitemcodefile']['name'][$key];	            
+	            		move_uploaded_file($tmp, $temp.$origionalFile);
+	            		$temp='';
+	            		$tmp='';
+	            		
+	            		$this->quote_model->db->where('id', $key);
+            			$this->quote_model->db->update('item', array('item_img'=>$val));
+             		}
+             	}
+             }
+          }
         redirect('admin/quote/update/' . $qid);
     }
     
@@ -4369,7 +4393,7 @@ class quote extends CI_Controller
                 $invoice->bankaccount = $bankaccount;
 
                 $invoice->companydetails = $company;
-                $invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
+                //$invoice->totalprice = $invoice->totalprice + ($invoice->totalprice*$settings->taxpercent/100);
                 //$invoice->status = $invoice->quote->status;
                 if($invoice->quote->potype=='Contract')
                 $invoice->actions = '<a href="javascript:void(0)" onclick="showContractInvoice(\'' . $invoice->invoicenum . '\',\''.$invoice->quote->id.'\')"><span class="icon-2x icon-search"></span></a>';
@@ -7098,6 +7122,7 @@ $loaderEmail = new My_Loader();
 				  <thead>
 				  <tr>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+				    <th bgcolor="#000033"><font color="#FFFFFF">Item Image</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Company</font></th>
 				    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
@@ -7111,10 +7136,12 @@ $loaderEmail = new My_Loader();
 				  ';
             $totalprice = 0;
             $i = 0;
+       //     echo '<pre>',print_r($invoice);
             foreach ($invoice['items'] as $invoiceitem) {
                 $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
                 $pdfhtml.='<tr nobr="true">
 				    <td style="border: 1px solid #000000;">' . ++$i . '</td>
+				    <td style="border: 1px solid #000000;">' . @$img_name . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['itemname']) . '</td>
 				    <td style="border: 1px solid #000000;">' . htmlentities($invoiceitem['companyname']) . '</td>
 				    <td style="border: 1px solid #000000;">' . $invoiceitem['daterequested'] . '</td>
@@ -7151,7 +7178,7 @@ $loaderEmail = new My_Loader();
             </tr></table>
             ';
 
-//echo '<pre>',print_r($pdfhtml);
+//echo '<pre>',print_r($pdfhtml);die;
             if (!class_exists('TCPDF')) {
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');

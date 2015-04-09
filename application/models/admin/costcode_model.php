@@ -309,7 +309,7 @@ class costcode_model extends Model
 	
 		function getcostcodeitems2($costcode,$project)
 	{
-		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode 
+		$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company, ai.itemname, ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode, ai.award  
 			FROM
 			".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 			 ".$this->db->dbprefix('quote')." q
@@ -317,7 +317,7 @@ class costcode_model extends Model
 			ai.award=a.id AND ai.costcode='$costcode' ";
 		if($this->session->userdata('usertype_id')>1)
 		{
-			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode 
+			$sql ="SELECT sum(ai.totalprice) as totalprice, ai.company,  ai.itemname,  ai.ea, ai.daterequested as daterequested, GROUP_CONCAT(q.ponum,' : $',ai.totalprice) as ponum, q.potype, a.awardedon, a.quote,SUM(IFNULL(ai.received,0)) as  newreceived,SUM(IFNULL(ai.quantity,0)) as newquantity, ai.costcode, ai.award  
 				FROM
 				".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a,
 				 ".$this->db->dbprefix('quote')." q

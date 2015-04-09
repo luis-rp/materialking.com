@@ -44,9 +44,9 @@ $per .='%';
 //print_r($combocompanies);die;
 ?>
 
-<!--<style>
-.tableoverflow{ margin:0ppx; padding:0px; width:100%; overflow-x:scroll}
-</style>-->
+<style>
+.tableoverflow{ margin:0px; padding:0px; width:100%; overflow-x:scroll}
+</style>
 <?php echo '<script type="text/javascript">var senderrorurl = "' . site_url('admin/message/senderror/' . $quote->id) . '";</script>'; ?>
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jquery-ui.js"></script>
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
@@ -673,28 +673,28 @@ function closepop()
             </div>
             <br/>
             <div class="control-group" style="overflow-x:auto;">
-           
+             <div class="tableoverflow">
                 <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;width:150%;">
                     <tr>
-                        <th width="10%">Company</th>
-                        <th width="11%">Item Code</th>
-                        <th width="10%">Item Name</th>
-                        <th width="13%">Item Progress</th>
-                        <th width="7%">Qty.</th>
-                        <th width="5%">Unit</th>
-                        <th width="7%">Price EA</th>
-                        <th width="8%">Total Price</th>
-                        <th width="8%">Date Requested</th>
-                        <th width="10%">Cost Code</th>
-                        <th width="10%">Notes</th>
-                        <th width="5%">Still Due</th>
-                        <th width="18%">History</th>
+                        <th width="100px">Company</th>
+                        <th width="120px">Item Code</th>
+                        <th width="150px">Item Name</th>
+                        <th width="100px">Item Progress</th>
+                        <th width="100px">Qty.</th>
+                        <th width="100px">Unit</th>
+                        <th width="100px">Price EA</th>
+                        <th width="100px">Total Price</th>
+                        <th width="100px">Date Requested</th>
+                        <th width="120px">Cost Code</th>
+                        <th width="100px">Notes</th>
+                        <th width="100px">Still Due</th>
+                        <th width="150px">History</th>
                         <?php if ($awarded->status == 'incomplete') { ?>
-                        <th width="12%">Received Qty.</th>
-                        <th width="16%">Invoice #</th>
-                        <th width="14%">Date Received</th>
-                        <th width="7%">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
-                        <th width="11%">Error</th>
+                        <th width="120px">Received Qty.</th>
+                        <th width="150px">Invoice #</th>
+                        <th width="100px">Date Received</th>
+                        <th width="100px">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
+                        <th width="150px">Error</th>
                         <?php } ?>
                     </tr>
                         <?php if ($awarded->status == 'incomplete') { ?>
@@ -953,7 +953,7 @@ function closepop()
                         </td>
                     </tr>
                 </table>
-               
+               </div>
             </div>
             <?php
             if (@$shipments)

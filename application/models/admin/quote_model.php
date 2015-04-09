@@ -338,7 +338,8 @@ class quote_model extends Model {
 
     function getitems($id) {
         
-        $sql = "SELECT qi.*, i.increment,c.title,i.item_img FROM ".$this->db->dbprefix('quoteitem'). " qi 
+        $sql = "SELECT qi.*, i.increment,c.title,i.item_img,i.category 
+        		FROM ".$this->db->dbprefix('quoteitem'). " qi 
         		left join ". $this->db->dbprefix('item') ." i on qi.itemid = i.id 
         		left join ". $this->db->dbprefix('company') ." c on c.id = qi.company        		
         		WHERE quote='$id' ";
@@ -892,14 +893,14 @@ class quote_model extends Model {
         if (@$_POST['searchfrom'] && @$_POST['searchto']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " ( (receiveddate >= '$fromdate'
-						AND date(receiveddate) <= '$todate') ) ";
+            $searches[] = " ( (".$_POST['datefilter']." >= '$fromdate'
+						AND date(".$_POST['datefilter'].") <= '$todate') ) ";
         } elseif (@$_POST['searchfrom']) {
             $fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-            $searches[] = " ( receiveddate >= '$fromdate' ) ";
+            $searches[] = " ( ".$_POST['datefilter']." >= '$fromdate' ) ";
         } elseif (@$_POST['searchto']) {
             $todate = date('Y-m-d', strtotime($_POST['searchto']));
-            $searches[] = " ( date(receiveddate) <= '$todate' ) ";
+            $searches[] = " ( date(".$_POST['datefilter'].") <= '$todate' ) ";
         }
         if ($this->session->userdata('usertype_id') > 1) {
             $searches[] = " r.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' ";
@@ -916,7 +917,6 @@ class quote_model extends Model {
 
         $managedprojectdetails_id_sql = ($managedprojectdetails_id) ? "AND q.pid='" . $managedprojectdetails_id . "'" : " ";
 
-
        $query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
@@ -930,7 +930,8 @@ class quote_model extends Model {
 				  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract' " .
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
-                
+
+  //echo '<pre>',$query;die;     
          $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 

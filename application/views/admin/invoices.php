@@ -188,11 +188,53 @@ function upload_attachment(receivedid,invoicenum)
 		});
 	}
 
-function jq( myid ) {
- 
-    return "." + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
- 
-}
+	function viewitems(quoteid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/quote/getitemsajax/';
+		
+		$.ajax({
+		      type:"post",
+		      url: serviceurl,
+		      data: "quote="+quoteid
+		    }).done(function(data){
+		        $("#quoteitems1").html(data);
+		        $("#itemsmodal").modal();
+		    });
+	}
+	
+	function viewitems2(itemid)
+	{
+		var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;		
+		$("#quoteitemdetails").html('loading ...');
+
+		$.ajax({
+			type:"post",
+			url: serviceurl,
+		}).done(function(data){
+			//$("#itemsmodal").hide();
+			$("#quoteitems1").css({display: "none"});
+			$("#quoteitemdetails").html(data);
+			$("#quoteitemdetails").css({display: "block"});
+			$("#quoteitemdetailsm").css({display: "block"});
+			$("#quoteitemdetailsm").removeClass("hide");
+			//$("#quoteitemdetailsm").modal();
+		});
+	}
+	
+	function closepop()
+	{
+		$("#quoteitemdetails").html('');
+		$("#quoteitemdetails").css({display: "none"});
+		$("#quoteitemdetailsm").css({display: "none"});
+		$("#quoteitems1").css({display: "block"});
+		//$("#itemsmodal").modal();
+	}
+	
+	function jq( myid ) {
+	 
+	    return "." + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
+	 
+	}
 
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
@@ -216,6 +258,11 @@ function jq( myid ) {
                     <form class="form-inline" action="<?php echo site_url('admin/quote/invoices') ?>" method="post">
                         Invoice#: <input type="text" name="searchinvoicenum" value="<?php echo @$_POST['searchinvoicenum'] ?>"/>
                             &nbsp;&nbsp;
+                        Select By Date of : <select id="datefilter" name="datefilter" >
+                        				 <option <?php if(isset($_POST['datefilter']) && $_POST['datefilter'] =='receiveddate') { echo ' selected ="selected" '; } ?> value="receiveddate">Received On</option>
+                        				 <option <?php if(isset($_POST['datefilter']) && $_POST['datefilter'] =='datedue') { echo ' selected ="selected" '; } ?> value="datedue">Due On</option>
+                        				 <option <?php if(isset($_POST['datefilter']) && $_POST['datefilter'] =='paymentdate') { echo ' selected ="selected" '; } ?> value="paymentdate">Paid On</option>
+                        			  </select>    
                         From: <input type="text" name="searchfrom" value="<?php if(isset($_POST['searchfrom'])) echo @$_POST['searchfrom']; else echo date('m/d/Y', strtotime("now -30 days") ) ?>" class="datefield" style="width: 70px;"/>
                         &nbsp;&nbsp;
                         To: <input type="text" name="searchto" value="<?php if(isset($_POST['searchto'])) echo @$_POST['searchto']; else echo date('m/d/Y'); ?>" class="datefield" style="width: 70px;"/>
@@ -321,6 +368,9 @@ function jq( myid ) {
                     			$item->totalprice = $item->totalprice + (($item->totalprice*$item->penalty_percent/100)*$item->penaltycount);
                     		}
                     		
+                    		if(@$taxpercent)
+                    			$item->totalprice = $item->totalprice + ($item->totalprice*$taxpercent/100);
+                    		
                     		?>
                     		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
  elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
@@ -406,11 +456,7 @@ function jq( myid ) {
                     		foreach($aginginvoices as $ainvoice){
 								  
                     			if($ainvoice->paymentstatus=='Unpaid' || $ainvoice->paymentstatus=='Requested Payment')
-                    			{  
-                    				if(@$taxpercent)
-                    				$ainvoice->totalprice = $ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100);
-                    				else 
-                    				$ainvoice->totalprice = $ainvoice->totalprice;
+                    			{  				
                     				
                     				if(@$ainvoice->discount_percent){
 
@@ -421,6 +467,9 @@ function jq( myid ) {
 
                     					$ainvoice->totalprice = $ainvoice->totalprice + (($ainvoice->totalprice*$ainvoice->penalty_percent/100)*$ainvoice->penaltycount);
                     				}
+                    				
+                    				if(@$taxpercent)
+                    				$ainvoice->totalprice = $ainvoice->totalprice + ($ainvoice->totalprice*$taxpercent/100);     				
                     				
                     				$datediff = strtotime($ainvoice->datedue) - time();
                     				$datediff = abs(floor($datediff/(60*60*24)));
@@ -468,7 +517,7 @@ function jq( myid ) {
 			    	</tr>
 				    	<?php //$totalallprice=""; 
 				    	foreach($report->items as $item) {
-				    		if($item->invoicenum==$report->invoicenum){
+				    		if($item->invoicenum==$report->invoicenum) {
 				    		if($item->potype == "Contract" )
 				    		$amount = $item->ea;
 				    		else 
@@ -489,11 +538,10 @@ function jq( myid ) {
 				    	
 				    	<tr>
 				    		<td><?php echo $item->companyname;?></td>
-				    		<td><?php echo $item->ponum;?></td>
-				    		<td>
-				    		<?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemcode;?></a> <?php } else { echo $item->itemcode; }?>
+				    		<td><a href="javascript:void(0)" onclick="viewitems('<?php echo $item->quoteid;?>')"><?php echo $item->ponum;?></a></td>
+				    		<td><a href="javascript:void(0)" onclick="viewitems2('<?php echo $item->itemid;?>')"><?php echo $item->itemcode;?>	</a>			    		
 				    		</td>
-				    		<td><?php echo $item->itemname;?></td>
+				    		<td><?php if($item->IsMyItem == 0) { ?>  <a href="<?php echo site_url("site/item/".$item->itemurl);?>" target="_blank"> <?php echo $item->itemname;?></a> <?php } else { echo $item->itemname; } ?> </td>
 				    		<td><?php echo $img_name;?></td>
 				    		<td><?php echo $item->unit;?></td>
 				    		<td><?php echo ($item->invoice_type != "fullpaid")?$item->quantity:$item->aiquantity;?>
@@ -679,5 +727,25 @@ function jq( myid ) {
             </div>
         </form>
 	</div>
-
 </div>
+<div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+        		
+        	</div>
+        	<div class="modal-body" id="quoteitemdetails">
+        	</div>            
+   </div>
+   
+   <div id="itemsmodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+            	<h3>Items<span id="minpriceitemcode"></span></h3>
+        	</div>
+        	<div class="modal-body" id="quoteitems1">
+        	
+        	</div>
+            
+   </div>

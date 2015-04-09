@@ -55,18 +55,20 @@ class itemcode_model extends Model {
         if($pa && $pa!='1')    
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL OR i.purchasingadmin = '1')  ";   
             
-        //$where .= " AND ai.purchasingadmin='$pa'";
-        $sql = "SELECT i.*, MAX(IFNULL(a.awardedon,o.purchasedate)) awardedon, sum(ai.totalprice) totalpurchase
+       
+        $sql = "SELECT i.*, if(IFNULL(o.project,q.pid)='".$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(o.project,q.pid) AS project
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
                 LEFT JOIN $ta a ON ai.award=a.id AND ai.purchasingadmin='$pa'
+                LEFT JOIN ".$this->db->dbprefix('quote') ." q ON q.id = a.quote
                 LEFT JOIN ".$this->db->dbprefix('orderdetails') ." od ON i.id=od.itemid 
 				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
                 $where
                 GROUP BY i.id
                 ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
-     
+    //echo '<pre>',$sql;die;
+  
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
@@ -101,9 +103,18 @@ class itemcode_model extends Model {
 				}
                 $item->totalpoprice = 0;
                 $item->qty = 0;
+                
                 if ($item->poitems)
                     foreach ($item->poitems as $po) {
-                        $item->totalpoprice += $po->totalprice;
+                    	
+                    	if($item->project == $this->session->userdata('managedprojectdetails')->id)
+                    	{
+                        	$item->totalpoprice += $po->totalprice;
+                    	}
+                    	else 
+                    	{
+                    		$item->totalpoprice +=0;
+                    	}
                         $item->qty += $po->quantity;
                     }
 				$item->qty += $orderQty;
@@ -119,8 +130,16 @@ class itemcode_model extends Model {
                  if ($query2->result()) {
             		$result2 = $query2->result();
                 	if(isset($result2[0]->totalprice2)){
-                		$item->totalpoprice += $result2[0]->totalprice2;
-                		$item->ordershipping = $result2[0]->shipping;
+                		if($item->project == $this->session->userdata('managedprojectdetails')->id)
+                    	{
+	                		$item->totalpoprice += $result2[0]->totalprice2;
+	                		$item->ordershipping = $result2[0]->shipping;
+	                    }
+	                    else 
+	                    {	                    	
+	                		$item->totalpoprice += 0;
+	                		$item->ordershipping = 0;
+	                    }
                 	}
                  }
 
