@@ -55,8 +55,10 @@ class itemcode_model extends Model {
         if($pa && $pa!='1')    
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL OR i.purchasingadmin = '1')  ";   
             
-       
-        $sql = "SELECT i.*, if(IFNULL(o.project,q.pid)='".$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(o.project,q.pid) AS project
+       if(@$_POST['isfavorite'])
+            $where .= " AND i.isfavorite = '{$_POST['isfavorite']}'";
+            
+        $sql = "SELECT i.*, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(o.project,q.pid) AS project
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
@@ -107,7 +109,7 @@ class itemcode_model extends Model {
                 if ($item->poitems)
                     foreach ($item->poitems as $po) {
                     	
-                    	if($item->project == $this->session->userdata('managedprojectdetails')->id)
+                    	if($item->project == @$this->session->userdata('managedprojectdetails')->id)
                     	{
                         	$item->totalpoprice += $po->totalprice;
                     	}
@@ -130,7 +132,7 @@ class itemcode_model extends Model {
                  if ($query2->result()) {
             		$result2 = $query2->result();
                 	if(isset($result2[0]->totalprice2)){
-                		if($item->project == $this->session->userdata('managedprojectdetails')->id)
+                		if($item->project == @$this->session->userdata('managedprojectdetails')->id)
                     	{
 	                		$item->totalpoprice += $result2[0]->totalprice2;
 	                		$item->ordershipping = $result2[0]->shipping;

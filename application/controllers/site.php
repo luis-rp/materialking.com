@@ -1081,7 +1081,7 @@ class site extends CI_Controller
         $this->data2['types'] = $this->db->get('type')->result();
         return $this->data2;
     }
-    public function items ($categroyurl="")
+    public function items ($categroyurl="",$curpage="")
     {
     	
     	if(!@$_POST['category']){
@@ -1089,14 +1089,18 @@ class site extends CI_Controller
     		 if(@$catid->id)
     		 $_POST['category'] = $catid->id;
     	}
-    	if($this->session->userdata('currentpage') != '')
+    	/*if($this->session->userdata('currentpage') != '')
     	{
     		$_POST['pagenum'] = $this->session->userdata('currentpage');
-    	}
+    	}*/
         $limit = 18;
+        
+        if($curpage!='')
+        $_POST['pagenum'] = $curpage-1;
+        
         $this->items_model->set_keyword(false);
         $items = $this->items_model->find_item();
-        $this->data['totalcount'] = $items->totalresult;
+        $this->data['totalcount'] = $items->totalresult;       
         $this->data['currentpage'] = $_POST['pagenum'] + 1;
         $this->data['totalpages'] = ceil($this->data['totalcount'] / $limit);
         $this->data['submiturl'] = 'site/items';
@@ -1104,10 +1108,10 @@ class site extends CI_Controller
         $this->data['pagingfields'] = $_POST;
         $this->data['page_titile'] = "Items List";
                
-        if($this->session->userdata('currentpage') != $_POST['pagenum'])
+        /*if($this->session->userdata('currentpage') != $_POST['pagenum'])
         {
         	$this->session->set_userdata('currentpage',$_POST['pagenum']);
-        }	
+        }*/	
      
         $this->data['items'] = array();
         $items = $items->items;

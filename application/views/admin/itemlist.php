@@ -221,7 +221,37 @@
 		$("#quoteitemdetailsm").css({display: "none"});		
 	}
 	
+    function addtofavorites(itemid)
+    {
+    	var itemcodeurl = '<?php echo base_url()?>admin/itemcode/addtofavorites/'+ itemid;
+		
+		$.ajax({
+			type:"post",
+			url: itemcodeurl,
+		}).done(function(data){			
+			alert('Item added in Favorites list.');
+			location.reload();
+		});
+    }
     
+    function removefromfavorites(itemid)
+    {
+    	var itemcodeurl = '<?php echo base_url()?>admin/itemcode/removefromfavorites/'+ itemid;
+		
+		$.ajax({
+			type:"post",
+			url: itemcodeurl,
+		}).done(function(data){			
+			alert('Item removed from Favorites list.');
+			location.reload();
+		});
+    }
+    
+    function setViewFavorite(val)
+    {
+    	$("#isfavorite").val(val);
+    	$("#frmItemcode").submit();
+    }
  </script>
 <style type="text/css">
     .box { padding-bottom: 0; }
@@ -261,13 +291,17 @@
                         <div>
                             <?php echo $addlink;
                             echo '&nbsp;' . $addcatlink;
-                            echo '&nbsp;' . $addsubcatlink; ?>
-                          
+                            echo '&nbsp;' . $addsubcatlink;
+                           
+                             ?>
+                            
+                          <input type="button" class="btn btn-green" name="btnviewfavorite" id="btnviewfavorite" value="View Favorites" onclick="setViewFavorite(1);"> 
                             <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
 
                             		<table style="border:0px !important;float:left;">
-                            		<form method="post" action="<?php echo site_url('admin/itemcode');?>">
+                            		 <form id="frmItemcode" method="post" action="<?php echo site_url('admin/itemcode');?>">
+                            		<input type="hidden" name="isfavorite" id="isfavorite" value="0">
                             		<tr><td  style="border:0px !important;">Category:</td>
                             		<td style="border:0px !important;"> 
                             		<select id="searchcategory" name="searchcategory" style="width: 200px;">

@@ -1838,7 +1838,7 @@ class Dashboard extends CI_Controller
 				$this->email->to($list);
 		        $subject = 'Invitation';		        		
 		        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
-	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invits You.";	
+	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invites You.";	
 			    $loaderEmail = new My_Loader();
 			    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
 		        $this->email->subject($subject);

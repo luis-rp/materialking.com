@@ -306,12 +306,21 @@ class itemcode extends CI_Controller
         
         $count = count($totalrows);
         $items = array();
+        $link = '';
         //echo '<pre>##',print_r($count);die;
         if ($count >= 1 && $itemcodes != '')
         {
             foreach ($itemcodes as $itemcode)
             {
-            	$itemcode->itemcode = '<a href="javascript:void(0)" onclick="viewitems2('.$itemcode->id.');">'.$itemcode->itemcode.'</a>'; 
+            	if($itemcode->isfavorite != 1)
+            	{
+            		$link = '<a href="javascript:void(0)" onclick="addtofavorites('.$itemcode->id.');"> Add To Favorites </a>';
+            	}
+            	else 
+            	{
+            		$link = '<a href="javascript:void(0)" onclick="removefromfavorites('.$itemcode->id.');"> Remove From Favorites </a>';
+            	}
+            	$itemcode->itemcode = '<a href="javascript:void(0)" onclick="viewitems2('.$itemcode->id.');">'.$itemcode->itemcode.'</a> <br> '.$link; 
             	
             	if($itemcode->awardedon)
             	$itemcode->awardedon = date("m/d/Y", strtotime($itemcode->awardedon));
@@ -391,7 +400,7 @@ class itemcode extends CI_Controller
         $data['heading'] = 'Item Code Management';
         $data['table'] = $this->table->generate();
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
-        $data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';
+        $data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';      
         $data['addsubcatlink'] = false;
 
         //uksort($array, 'strcasecmp');
@@ -2842,5 +2851,16 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		die;
 	}
 	
+	function addtofavorites($itemid)
+	{
+		$updateArr = array('isfavorite'=>1);
+		$this->db->update('item',$updateArr,array('id'=>$itemid));
+	}
+
+	function removefromfavorites($itemid)
+	{
+		$updateArr = array('isfavorite'=>0);
+		$this->db->update('item',$updateArr,array('id'=>$itemid));
+	}	
 }
 ?>

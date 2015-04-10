@@ -14,6 +14,8 @@
 <?php echo '<script>var manufacturerupdateurl="'.site_url('inventory/updatemanufacturer').'";</script>'?>
 <?php echo '<script>var itempriceupdateurl="'.site_url('inventory/updateitemprice').'";</script>'?>
 <?php echo '<script>var minqtyupdateurl="'.site_url('inventory/updateminqty').'";</script>'?>
+<?php echo '<script>var showbidpricehistoryurl ="' . site_url('inventory/showbidpricehistory') . '";</script>' ?>
+
 
 <?php if(@$tiers->tier1) echo "<script>var tier1=".$tiers->tier1."</script>";?>
 <?php if(@$tiers->tier2)  echo "<script>var tier2=".$tiers->tier2."</script>";?>
@@ -578,6 +580,25 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
             $("#historymodal").modal();
         });
     }
+    
+    function showbidhistory(itemid,imgname)
+    {
+    	
+    	$("#itemcode").html('');
+        $.ajax({
+            type:"post",
+            url: showbidpricehistoryurl,
+            data: "itemid="+itemid
+        }).done(function(data){    
+        	
+        	var arr = data.split('*#*#$');        	
+            $("#pricehistory1").html(arr[0]);
+            $("#itemcode1").html(arr[1]);
+            $("#orderpricehistory1").html(arr[2]);          
+            $("#itemimagelogo1").html('<img style="margin-top:-2em ;  max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');          
+            $("#historymodal1").modal();
+        });
+    }
 
 //-->
 </script>
@@ -757,7 +778,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<?php if($q->attachment){?>
 							    			<a href="<?php echo site_url('uploads/item/'.$q->attachment);?>" target="_blank">View</a>
 							    		<?php }?>
-							    		
+							    		<br>
+                                                <a href="javascript: void(0);" onclick="showbidhistory('<?php echo @$q->itemid ?>','<?php echo $imgName;?>');"><i class="icon icon-search"></i>Company Price History</a>
 							    		</td>
 							    		<td>&nbsp;</td>
 							    		<td><?php echo $originalitems[$q->itemid]->quantity;?></td>
@@ -1233,4 +1255,22 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
     </div>
     <!-- /.modal-dialog -->
   </div> 
-  	  
+ </div> 	  
+<div id="historymodal1" aria-hidden="true" aria-labelledby="myModalLabel2" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+	<div class="modal-dialog" style="width:70%">
+	  <div class="modal-content">
+	    <div class="modal-header">
+	        <h4><span id='itemcode1'></span> - Bid History 
+	        <button aria-hidden="true" onclick="$('#historymodal1').modal('hide')" class="close" type="button">x</button>
+	        <!--<h3><span id="historycompanyname"></span> - Bid History </h3>-->
+	          <div id="itemimagelogo1"></div>
+	          </h4>
+             <br>
+	    </div>
+	    <div class="modal-body" id="pricehistory1" style="height:200px;overflow-y:auto;">
+	    </div>
+	    <div class="modal-body" id="orderpricehistory1" style="height:200px;overflow-y:auto;">
+	    </div>
+	 </div> 
+  </div>
+</div> 

@@ -204,7 +204,9 @@ $(document).ready(function(){
 		  		$sn = 1;
 		  ?>
 		      <div class="control-group">
-			    <div class="controls"><strong>PO #:<?php echo $quote->ponum; ?>
+			    <div class="controls">
+			    <h3 class="box-header">
+			    <strong>PO #:<?php echo $quote->ponum; ?>
 			      &nbsp; &nbsp; 
 			      Company:   <?php echo $bid->companyname;?> &nbsp; &nbsp;
 			      Submitted:  <?php echo date('m/d/Y', strtotime($bid->submitdate));?>&nbsp; 
@@ -219,7 +221,7 @@ $(document).ready(function(){
 				    <span class="label label-pink">Draft</span>
 				  <?php }?>
 			      <br/><br/>
-			  
+			  </h3>
 			  <div class="control-group">
 				    <table class="table table-bordered">
 				    	<tr>
@@ -277,6 +279,36 @@ $(document).ready(function(){
 				    		<td><?php echo $q->costcode;?></td>
 				    		<td><?php echo $q->notes;?></td>
 				    		<td><?php echo $q->postatus;?></td>
+				    	</tr>
+				    	<?php }?>
+				    	
+				    	<?php
+				    		$alltotal = round($alltotal,2);
+							$taxtotal = $alltotal * $config['taxpercent'] / 100;
+				    		$taxtotal = round($taxtotal,2);
+							$grandtotal = $alltotal + $taxtotal;
+				    		$grandtotal = round($grandtotal,2);
+							$diff = $alltotal - $minimum['totalprice'];
+
+				    	?>
+				    	<tr>
+				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Subtotal: </td>
+				    		<td colspan="5"><?php if($diff=='0'){echo '<span class="label label-success">';}?>$ <?php echo number_format($alltotal,2);?><?php if($diff=='0'){echo '</span>';}?></td>
+				    		<td <?php if($diff==0){ echo 'class="minimum"';}?>><?php echo ($diff==0?'<span class="label label-success">'.$diff==0?'Lowest Subtotal':$diff.'</span>':($diff<0?'- $':'+ $'.$diff));?></td>
+				    		<td>&nbsp;</td>
+				    	</tr>
+				    	<tr>
+				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Tax: </td>
+				    		<td colspan="7">$ <?php echo number_format($taxtotal,2);?></td>
+				    	</tr>
+				    	<tr>
+				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Total: </td>
+				    		<td colspan="7">$ <span class="total-value"><?php echo number_format($grandtotal,2);?></span></td>
+				    	</tr>
+				    	<?php if(!$isawarded){?>
+				    	<tr>
+				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Lowest Price Possible: </td>
+				    		<td colspan="7">$ <span class="mintotal"></span></td>
 				    	</tr>
 				    	<?php }?>
 				    </table>

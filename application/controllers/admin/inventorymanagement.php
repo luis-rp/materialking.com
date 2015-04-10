@@ -357,7 +357,7 @@ class inventorymanagement extends CI_Controller
  			$qryresult = $qry->row();*/
 						
  				
-			if($existing->quantity>=$existing->maxstock)
+			if($existing->quantity>=$existing->maxstock && $existing->maxstock!="")
 			echo 1;
 			else
 			echo 0;

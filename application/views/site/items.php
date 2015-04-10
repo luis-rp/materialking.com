@@ -518,7 +518,7 @@ function getpodate()
                                 <?php }  ?>
                         </div>
                     </div>
-
+					<input type="hidden" id="curpage" value="<?php echo @$currentpage;?>"/>
                     <div class="pagination pagination-centered">
                         <?php $this->view('site/paging'); ?>
                     </div><?php } ?>

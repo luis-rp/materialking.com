@@ -642,7 +642,7 @@ class quote extends CI_Controller
     function duplicate()
     {
         $post = $this->input->post();
-
+      
         if (!$post)
             die;
         if (!$post['id'])
@@ -655,7 +655,7 @@ class quote extends CI_Controller
             redirect('admin/dashboard', 'refresh');
         }
         $quoteitems = $this->quote_model->getitems($post['id']);
-
+       
         $quote['ponum'] = $post['ponum'];
         //$quote['potype'] = $post['potype'];
         unset($quote['id']);
@@ -667,7 +667,10 @@ class quote extends CI_Controller
                 $item = (array) $item;
                 $item['quote'] = $quoteid;
                 unset($item['id']);                
-                unset($item['increment']);
+                unset($item['increment']);            
+                unset($item['title']);
+                unset($item['item_img']); 
+                unset($item['category']);          
                 $this->quote_model->db->insert('quoteitem', $item);
             }
         $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Purchase Order Duplicated Successfully</div></div>');
@@ -1172,11 +1175,14 @@ class quote extends CI_Controller
 					
                     $data['email_body_content'] = "";
                     
-                    if(isset($limitcompany)){
-                    if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password']){
-                    	
-                    	$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
-                    }
+                    if(isset($limitcompany))
+                    {
+                    	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
+                    	{                  		
+                    		$data['email_body_content'] .= " You were Invited By: <br>Contact Name :{$this->session->userdata('fullname')}  <br> Company Name :{$this->session->userdata('companyname')} <br> Address :{$this->session->userdata('address')} <br /><br />";
+                    			
+                    		$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+                    	}
                     }
                     
 				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
@@ -12116,7 +12122,7 @@ $loaderEmail = new My_Loader();
     		$this->db->group_by("companyemail");
     		$nonnetcompanies = $this->db->get('quoteitem_companies')->result();*/
     		
-    		$noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid in (".$companyitemimplode.")";           
+    		$noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid in (".$companyitemimplode.") group by qc.companyemail";           
     		$nonnetcompanies = $this->db->query($noncomp)->result();
     		
     		if($nonnetcompanies){

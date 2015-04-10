@@ -164,9 +164,22 @@
                                                 	<a href="<?php echo site_url('quote/rejectquote/'.@$bidorquoteid.'/'.$usebidorquote);?>">Reject </a> &nbsp;
                                                 	<a href="<?php echo site_url('quote/removequote/'.$inv->quotedetails->id);?>">Remove </a>
                                              <?php }
-                                                if($inv->status == 'Completed')
+                                             if($inv->status == 'Completed')
                                                 {?>                                            
-		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>		                                  <?php } ?>        
+		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>		                                  <?php } ?>     
+		                                                
+		                                        <?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
+                                                		<?php if($inv->quotedetails->potype=='Bid'){?>
+                                                    	<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
+    										    			<span class="label label-success">CHECK YOUR SCORE</span>
+    										    		</a>
+    										    		<?php }elseif($inv->quotedetails->potype=='Direct'){?>
+                                                    	<a href="<?php echo site_url('quote/direct/'.$inv->invitation);?>">
+    										    			<span class="label label-success">CHECK YOUR SCORE</span>
+    										    		</a>
+    										    		<?php }?>
+										    		<?php }  ?>      
+		                                                   
                                                 </td>
                                             </tr>
                                           <?php } ?>

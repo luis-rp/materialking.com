@@ -225,13 +225,9 @@ function preloadoptions(fromid)
 							<span class="label label-important">No Past Due Invoices</span>
 						<?php } ?>
 
-							<div class="notification-messages">
+							<div class="notification-messages" style="background-color:#fff;">
 								<div class="message-wrapper" style="height:auto !important;">
 									<div class="heading">
-										&nbsp;
-                                  </div>
-                                  
-                                  <div class="description">
 										<table class="table">
 											<?php if(isset($invoices) && count($invoices)>0) { ?>
 											  <tr>
@@ -252,6 +248,10 @@ function preloadoptions(fromid)
 											  </tr>					
 										<?php } }?>										
 									</table>
+                                  </div>
+                                  
+                                  <div class="description">
+										&nbsp;
 									</div>
                                   
 								</div>

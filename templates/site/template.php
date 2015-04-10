@@ -87,6 +87,16 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                     if (data == 'Success')
                     {
                         $("#loginmodal").modal('hide');
+                        //window.location = window.location.href+"/ /"+$('#curpage').val();
+                        var yourUrl = window.location.href;
+                        var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+                        var parts = parse_url.exec( yourUrl );
+                        console.log(parts);
+                        if(parts[5].contains("site/items")){                        	
+                        	window.location = window.location.href+"/ /"+$('#curpage').val();
+                        }else if(parts[5].contains("site/items/")){                        	
+                        	window.location = window.location.href+"/"+$('#curpage').val();
+                        }else
                         window.location = window.location;
                     }
                     else
@@ -470,7 +480,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
    <div class="modal hide fade" id="loginmodal" style="width:30% !important;left:50% !important;">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h3>Login As Purchasing Admin123</h3>
+    <h3>Login As Purchasing Admin</h3>
     </div>
     <div class="modal-body">
    
