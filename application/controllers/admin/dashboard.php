@@ -1926,7 +1926,8 @@ class Dashboard extends CI_Controller
 			        $this->email->initialize($config);
 			        $this->email->from($emailfrom);
 					$this->email->to($_POST['email']);
-			        $subject = 'Account Detail & Invitation';		        		
+			        //$subject = 'Account Detail & Invitation';	
+			        $subject = "Invitation from '{$company->companyname}' E-BID Network.";		        		
 			        $data['email_body_title'] = "Dear,&nbsp;{$_POST['cname']}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
 		        	$data['email_body_content'] = "The Company '{$company->companyname}' invites you to join their purchasing network today.<br />
 		        	 Your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	

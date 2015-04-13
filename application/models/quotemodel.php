@@ -337,6 +337,7 @@ class Quotemodel extends Model
 		$this->db->order_by("podate", "asc");
 		$quotes = $this->db->get('quote')->result();
 
+		$totalDueQty = 0;
 		$count = count ($quotes);
 		$items = array();
 		if ($count >= 1)
@@ -359,6 +360,7 @@ class Quotemodel extends Model
 								$item->ponum = $quote->ponum;
 								$item->duequantity = $item->quantity - $item->received;
 
+								$totalDueQty += $item->quantity - $item->received;
 								$item->etalog = $this->db->where('company',$company)
 								->where('quote',$quote->id)
 								->where('itemid',$item->itemid)
@@ -389,6 +391,7 @@ class Quotemodel extends Model
 					}
 				}
 			}
+			$this->session->set_userdata('backorderQtyDue',$totalDueQty);	
 		}
 		return $items;
 	}
@@ -1021,7 +1024,7 @@ class Quotemodel extends Model
 	{		
 		$this->db->order_by("podate", "asc");
 		$quotes = $this->db->get('quote')->result();
-
+		$totalQtyDue = 0;
 		$count = count ($quotes);
 		$items = array();
 		if ($count >= 1)
@@ -1038,6 +1041,7 @@ class Quotemodel extends Model
 					if($awardeditems  && $this->checkitemdue($awarded->id))
 					{	$olddate="";
 						$qtydue= 0;
+						
 						foreach($awardeditems as $item)
 						{			
 							if($item->daterequested){					
@@ -1058,16 +1062,16 @@ class Quotemodel extends Model
 									$items[$quote->ponum]['datereqested'] = $item->daterequested;										
 								}
 								$qtydue += ($item->quantity-$item->received);
+								$totalQtyDue += ($item->quantity-$item->received);
 								$items[$quote->ponum]['quantitydue'] = $qtydue;
-							}
-							
+								
+							}							
 							}	
-										
 						}
-
 					}
 				}
 			}
+			$this->session->set_userdata('forthcomingQtyDue',$totalQtyDue);	
 		}
 		return $items;
 	}

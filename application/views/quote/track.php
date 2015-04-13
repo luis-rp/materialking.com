@@ -313,7 +313,15 @@ tr.still-due td
         
          <div>
                 <?php
-
+				$invoicearrayofnum = array();
+				if($invoices){
+					
+					foreach($invoices as $i)
+				    {
+				    	$invoicearrayofnum[] = $i->invoicenum;
+				    }
+					
+				}
                 if(!empty($errorLog))
                 {
                     ?>
@@ -337,7 +345,7 @@ tr.still-due td
                                     <td><?php echo $error->error;?></td>
                                     <td><?php echo $error->itemcode;?></td>
                                     <td><?php echo $error->quantity;?></td>
-                                    <td><a href="javascript:void(0);" onclick="invoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $quote->id; ?>);"><?php echo $error->invoicenum;?></a></td>
+                                    <td><?php if(in_array($error->invoicenum."-Error",$invoicearrayofnum)) {?><a href="javascript:void(0);" onclick="invoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $quote->id; ?>);"><?php echo $error->invoicenum;?></a><?php } else echo $error->invoicenum; ?> </td>
                                     <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
                         <?php

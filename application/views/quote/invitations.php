@@ -174,8 +174,7 @@
     										    			<span class="label label-success">CHECK YOUR SCORE</span>
     										    		</a>
     										    		<?php }elseif($inv->quotedetails->potype=='Direct'){?>
-                                                    	<a href="<?php echo site_url('quote/direct/'.$inv->invitation);?>">
-    										    			<span class="label label-success">CHECK YOUR SCORE</span>
+                                                    	<a href="<?php echo site_url('quote/direct/'.$inv->invitation);?>">    			
     										    		</a>
     										    		<?php }?>
 										    		<?php }  ?>      

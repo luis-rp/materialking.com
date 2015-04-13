@@ -340,13 +340,13 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 	  	  
 	  	<li class="<?php if($menu=='backtracks'){echo 'active';}?>"> 
 	  		<a href="<?php echo site_url('quote/backtracks');?>"> <i class="fa fa-random1"></i>
-	  			<span class="title">Manage Back Orders</span>
+	  			<span class="title">Manage Back Orders &nbsp;  <font color="Red">(<?php echo @$this->session->userdata('backorderQtyDue');?>)</font></span>
 	  		</a>
 	  	</li>
 	  
 	 	<li class="<?php if($menu=='forthcomings'){echo 'active';}?>"> 
 	 		<a href="<?php echo site_url('quote/forthcomings');?>"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>&nbsp;&nbsp;
-	 			<span class="title">Forthcoming PO's</span>
+	 			<span class="title">Forthcoming PO's &nbsp;  <font color="Red">(<?php echo @$this->session->userdata('forthcomingQtyDue');?>)</font></span>
 	 		</a>
 	 	</li>
 	  

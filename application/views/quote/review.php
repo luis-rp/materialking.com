@@ -644,8 +644,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 								    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
 								    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
 								    		
-								    		$itemCode1 = "'".$itemCode."'";
-								    		$itemName1 = "'".$itemName."'";
+								    		$itemCode1 = '"'.htmlentities($itemCode).'"';
+								    		$itemName1 = '"'.htmlentities($itemName).'"';
 								    		 if(isset($q->orgitem->item_img) && $q->orgitem->item_img!= "" && file_exists("./uploads/item/".$q->orgitem->item_img)) 
 								    		{
 								    			$imgName = site_url('uploads/item/'.$q->orgitem->item_img);  
@@ -734,8 +734,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
 							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
 							    		
-							    		$itemCode1 = "'".$itemCode."'";
-							    		$itemName1 = "'".$itemName."'";
+							    		$itemCode1 = '"'.htmlentities($itemCode).'"';
+							    		$itemName1 = '"'.htmlentities($itemName).'"';
 							    		
 							    		if(@$q->priceset == 0){ ?><a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',

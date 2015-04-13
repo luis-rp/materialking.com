@@ -58,7 +58,7 @@ class itemcode_model extends Model {
        if(@$_POST['isfavorite'])
             $where .= " AND i.isfavorite = '{$_POST['isfavorite']}'";
             
-        $sql = "SELECT i.*, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(o.project,q.pid) AS project
+        $sql = "SELECT i.*, if(IFNULL(group_concat(distinct(o.project)),group_concat(distinct(q.pid)))='".@$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(group_concat(distinct(o.project)),group_concat(distinct(q.pid))) AS project
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
@@ -1107,7 +1107,7 @@ class itemcode_model extends Model {
 
 	function getstoredorderitems($itemid)
 	{
-		$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate
+		/*$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate
 			   	FROM
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c,
@@ -1117,7 +1117,17 @@ class itemcode_model extends Model {
 				m.company=c.id AND m.itemid='$itemid' 
 				AND od.itemid = m.itemid AND o.purchasingadmin = m.purchasingadmin
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				GROUP By c.id";
+				GROUP By c.id";*/
+		
+		$sql = "SELECT c.id as company, c.title companyname,o.id,o.ordernumber, DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate, od.itemid as itemid, od.price  
+			   	FROM 								
+				" . $this->db->dbprefix('order') . " o,
+				" . $this->db->dbprefix('orderdetails') . " od,  
+				" . $this->db->dbprefix('company') . " c 
+				WHERE o.id = od.orderid AND 
+				od.itemid='$itemid' AND od.company = c.id  AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				GROUP By c.id"; 
+		
         //echo '<pre>', $sql; 
         $query = $this->db->query($sql);
         if ($query->num_rows > 0) {
@@ -1125,7 +1135,7 @@ class itemcode_model extends Model {
             $ret = array();
             foreach ($result as $item) {
                 $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
-                $this->db->where('company', $item->company);
+                $this->db->where('company', $item->company); 
                 $this->db->where('status', 'Active');
                 if ($this->db->get('network')->result()) {
                     $ret[] = $item;

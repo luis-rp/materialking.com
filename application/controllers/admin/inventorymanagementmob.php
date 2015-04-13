@@ -68,7 +68,7 @@ class inventorymanagementmob extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <br> <img src="http://i.imgur.com/yOadS1c.png" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
+	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <br> <img src="http://i.imgur.com/yOadS1c.png" alt="Minus" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
 				<br><br>
 	        	<input type="button" style="text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	

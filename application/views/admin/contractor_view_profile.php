@@ -76,7 +76,7 @@
 		    },
 		    dataType : "json"
 		});
-	 		
+	 			
 	   $("#editMember").modal();
 	   });
 	   		
@@ -396,12 +396,6 @@
 					</div>
 				</div>
 
-				<div class="control-group">
-					<label class="control-label" for="twitter">Twitter</label>
-					<div class="controls">
-						<input type="text" class="span4" name="twitter" id="twitter" value="<?php echo $contractor->twitter;?>">
-					</div>
-				</div> 
 				                                   		
 			    <div class="control-group">
 				    <label class="control-label"></label>

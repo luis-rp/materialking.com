@@ -73,7 +73,7 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = '<input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
+	        	$row->manage = '<input style="width:40px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" alt="Minus" style="width:25px;height:25px;" act="add" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="12" height="12" /> 
 				<a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagement/qty_adjust/' . @$row->itemid . '"><span class="icon-2x icon-file"></span></a> &nbsp;
 	        	<a class="view" target="blank" href="' . base_url() . 'admin/inventorymanagementmob/qty_adjust/' . @$row->itemid . '"><img style= "margin-top:-20px;" width="25px" height="25px" src="'.site_url('templates/admin/images/mobile_icon.jpg').'"/></a>
 	        	
@@ -394,7 +394,7 @@ class inventorymanagement extends CI_Controller
 	        	$clickfunc = "";
 	        	if($readonly =="")
 	        	$clickfunc = ' onclick="reduceval('.$row->itemid.');"';      	
-	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
+	        	$row->manage = ' <input style="width:50px;" readonly type="text" name="adjustqty" id="adjustqty'.@$row->itemid.'" value="'.@$row->qtyonhand.'" > <img src="http://i.imgur.com/yOadS1c.png" alt="Minus" act="add" style="width:25px;height:25px;" class="adjust'.@$row->itemid.'" '.$clickfunc.' width="15" height="15" /> 
 				&nbsp; &nbsp; &nbsp;
 	        	<input type="button" style="text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';
 	        	

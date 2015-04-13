@@ -293,9 +293,9 @@ $(document).ready(function(){
 				    	?>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Subtotal: </td>
-				    		<td colspan="5"><?php if($diff=='0'){echo '<span class="label label-success">';}?>$ <?php echo number_format($alltotal,2);?><?php if($diff=='0'){echo '</span>';}?></td>
-				    		<td <?php if($diff==0){ echo 'class="minimum"';}?>><?php echo ($diff==0?'<span class="label label-success">'.$diff==0?'Lowest Subtotal':$diff.'</span>':($diff<0?'- $':'+ $'.$diff));?></td>
-				    		<td>&nbsp;</td>
+				    		<td colspan="7"><?php if($diff=='0'){echo '<span class="label label-success">';}?>$ <?php echo number_format($alltotal,2);?><?php if($diff=='0'){echo '</span>';}?></td>
+				    		<!--<td <?php if($diff==0){ echo 'class="minimum"';}?>><?php echo ($diff==0?'<span class="label label-success">'.$diff==0?'Lowest Subtotal':$diff.'</span>':($diff<0?'- $':'+ $'.$diff));?></td>
+				    		<td>&nbsp;</td>-->
 				    	</tr>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Tax: </td>
@@ -305,12 +305,12 @@ $(document).ready(function(){
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Total: </td>
 				    		<td colspan="7">$ <span class="total-value"><?php echo number_format($grandtotal,2);?></span></td>
 				    	</tr>
-				    	<?php if(!$isawarded){?>
+				    	<!--<?php if(!$isawarded){?>
 				    	<tr>
 				    		<td colspan="<?php echo $isawarded?7:8;?>" style="text-align:right">Lowest Price Possible: </td>
 				    		<td colspan="7">$ <span class="mintotal"></span></td>
 				    	</tr>
-				    	<?php }?>
+				    	<?php }?>-->
 				    </table>
 
 				    <?php 

@@ -220,7 +220,12 @@ class items_model extends Model {
         {
             $subcategories = $this->getSubCategores($item->id,true);
             //$hasitems = $this->db->where_in('category',$subcategories)->where('instore','1')->get('item')->result();
-            $hasitems = $this->db->where_in('category',$subcategories)->get('item')->result();
+            //$hasitems = $this->db->where_in('category',$subcategories)->get('item')->result();
+            $hasitems = $this->db->where_in('category',$subcategories)
+            			->where('purchasingadmin','1')
+            			->or_where('purchasingadmin','NULL')
+            			->or_where('purchasingadmin',$this->session->userdata('id'))
+            			->get('item')->result();
             
             if(!$hasitems)
                 continue;
@@ -888,9 +893,10 @@ class items_model extends Model {
         	}
         }
         if ($where)
-           $where = " WHERE " . implode(' AND ', $where) . " ";
+           $where = " AND " . implode(' AND ', $where) . " ";
         
-            $query = "SELECT itemcode, itemname,item_img FROM ".$this->db->dbprefix('item').' i '. $where;
+            $query = "SELECT itemcode, itemname,item_img FROM ".$this->db->dbprefix('item').' i where 1=1 
+            AND purchasingadmin ='.$this->session->userdata('id').''. $where;
         	$result = $this->db->query($query)->result();
         $items = array();
 		//echo "<pre>",print_r($result);  die;

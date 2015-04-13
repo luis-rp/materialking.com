@@ -1111,7 +1111,7 @@ function closepop()
         		</table>
         		<?php }?>
         		<hr/>
-                <?php if ($awarded->invoices) { ?>
+                <?php $invoicearrayofnum = array(); if ($awarded->invoices) { ?>
                 <div class="control-group">
                     <div class="controls">
                          <h3 class="box-header">
@@ -1131,9 +1131,11 @@ function closepop()
                                 <?php
 								$f_total=0;
                                 $p_total=0;
-                                $u_total=0;
+                                $u_total=0;                                
                                 foreach ($awarded->invoices as $invoice) {
-
+									
+                                	$invoicearrayofnum[] = $invoice->invoicenum;
+                                	
                                 	if(@$invoice->discount_percent){
 
                                 		$invoice->totalprice = $invoice->totalprice - ($invoice->totalprice*$invoice->discount_percent/100);
@@ -1400,7 +1402,9 @@ function closepop()
                                     <td><?php echo $error->error;?></td>
                                     <td><?php echo $error->itemcode;?></td>
                                     <td><?php echo $error->quantity;?></td>
-                                    <td><a href="javascript:void(0);" onclick="showInvoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $awarded->quote; ?>);"><?php echo $error->invoicenum;?></a></td>
+                                    <td><?php if(in_array($error->invoicenum."-Error",$invoicearrayofnum)) {?> <a href="javascript:void(0);" onclick="showInvoice('<?php echo $error->invoicenum."-Error"; ?>',<?php echo $awarded->quote; ?>);"><?php echo $error->invoicenum;?></a>
+                                    <?php } else echo $error->invoicenum; ?> 
+                                    </td>
                                     <td><?php echo (isset($error->date) && $error->date!="" && $error->date!="0000-00-00" && $error->date!="1969-12-31")?date("m/d/Y",  strtotime($error->date)):"";?></td>
                                 </tr>
                         <?php

@@ -35,7 +35,20 @@ $(document).ready(function(){
 	$('.date').datepicker();
         $('.expire_date').datepicker();
 	$('.substituterow').hide();
+	
+	$('.subtotcls').change(setsubtotal);   
+	
 });
+
+function setsubtotal(){
+    var subtot = 0;    
+	$('.subtotcls').each(function(i,v){
+		
+		subtot = subtot + parseFloat(v.value);
+		
+	});
+	$('#subtotal').val(subtot);
+    }
 
 function onover()
 {
@@ -368,7 +381,7 @@ function setcompanypriceprompt(val,companyid,itemid,quote,purchasingadmin){
 		}).done(function(data){
 						
 			alert(data);			
-			
+			$('#totalprice'+itemid).val(val*$('#quantity'+itemid).val());
 		});
 		}
 	}
@@ -598,8 +611,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
             $("#itemimagelogo1").html('<img style="margin-top:-2em ;  max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='+imgname+'>');          
             $("#historymodal1").modal();
         });
-    }
-
+    }   
+    
 //-->
 </script>
 
@@ -753,8 +766,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 										$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
 							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
 							    		
-							    		$itemCode1 = "'".$itemCode."'";
-							    		$itemName1 = "'".$itemName."'";
+							    		$itemCode1 = '"'.htmlentities($itemCode).'"';
+							    		$itemName1 = '"'.htmlentities($itemName).'"';
 										?>
 							    		<!--<a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
@@ -833,8 +846,8 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		$itemCode = (@$q->companyitem->itemcode) ? (@$q->companyitem->itemcode) : (@$q->itemcode);
 							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
 							    		
-							    		$itemCode1 = "'".$itemCode."'";
-							    		$itemName1 = "'".$itemName."'";
+							    		$itemCode1 = '"'.htmlentities($itemCode).'"';
+							    		$itemName1 = '"'.htmlentities($itemName).'"';
 																	    		
 							    		if(@$q->priceset == 0)
 							    		{ ?><a href="javascript:void(0)" 
@@ -857,7 +870,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<?php }?>
 							    		</td>
 							    		<td>	
-											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
+											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm subtotcls" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
 											
 							    		</td>
 							    		
@@ -916,8 +929,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<td style="text-align:right;">
 							    		<span><strong>SubTotal : </strong></span>
 							    		</td>
-							    		<td>
-							    		<?php if(isset($distot) && $distot!="") { echo "$".number_format($distot,2); } ?> 
+							    		<td><input type="text" id="subtotal" value="<?php if(isset($distot) && $distot!="") { echo round($distot,2); } ?>" /> 
 							    		</td>
 							    		<td style="text-align:right;">
 											<span><strong>Total : </strong></span>

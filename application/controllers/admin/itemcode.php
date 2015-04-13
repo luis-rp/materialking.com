@@ -2191,7 +2191,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             if ($companyavgpricefordays == null)
                 $trendstring .= 'Item not awarded to this company.';
 
-
+            
             $ret = $trendstring;
             $ret .= '<table class="table table-bordered">';
             $ret .= '<tr><th>Date</th><th>Status</th><th>PO#</th><th>Trend</th><th>Qty.</th><th>Price</th></tr>';
@@ -2205,7 +2205,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                     $trend = 'good';
                 if ($avgforpricedays == null)
                     $trend = 'NO DATA';
-                $ret .= '<tr><td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quoted . '</td><td>' . $item->ponum . '</td><td width="64"><img src="' . site_url('templates/admin/images/'.$trend.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $item->ea .
+                $ret .= '<tr><td>' . date('m/d/Y',strtotime($item->date)) . '</td><td>' . $item->quoted . '</td><td><a href="'.site_url('admin/quote/track/'.$item->quote).'">'. $item->ponum . '</a></td><td width="64"><img src="' . site_url('templates/admin/images/'.$trend.'.png') . '" width="64"/></td><td>' . $item->quantity . '</td><td>' . $item->ea .
                  '</td></tr>';
             }
             $ret .= '</table>';
@@ -2220,7 +2220,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $company = $_POST['companyid'];
         $itemid = $_POST['itemid'];
 		$ret = '';
-        $sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,o.purchasedate as date,od.status,od.quantity,od.price
+        /*$sql = "SELECT c.title companyname,o.id,o.ordernumber, m.*,o.purchasedate as date,od.status,od.quantity,od.price
 			   	FROM
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c,
@@ -2230,8 +2230,17 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				m.company=c.id AND m.itemid='$itemid' 
 				AND od.itemid = m.itemid AND o.purchasingadmin = m.purchasingadmin
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				GROUP By c.id";*/       
+        
+        $sql = "SELECT c.id as company, od.itemid as itemid, od.price, c.title companyname,o.id,o.ordernumber, o.purchasedate as date,od.status,od.quantity,od.price
+			   	FROM 								
+				" . $this->db->dbprefix('order') . " o,
+				" . $this->db->dbprefix('orderdetails') . " od,
+				" . $this->db->dbprefix('company') . " c 
+				WHERE
+				od.itemid='$itemid' AND od.company = c.id AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				GROUP By c.id";
-       
+        
         $query = $this->db->query($sql);
         $itemnamesql = "SELECT * FROM " . $this->db->dbprefix('item') . " i WHERE i.id='$itemid'";
         $itemqry = $this->db->query($itemnamesql);
@@ -2402,9 +2411,18 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 		 	 $imgName = site_url('uploads/item/big.png'); 
          }
          
+         if($item->isfavorite != 1)
+    	{
+    		$favoriteslink = '<a style="float:right;" href="javascript:void(0)" onclick="addtofavorites('.$item->id.');"> Add To Favorites </a>';
+    	}
+    	else 
+    	{
+    		$favoriteslink = '<a style="float:right;" href="javascript:void(0)" onclick="removefromfavorites('.$item->id.');"> Remove From Favorites </a>';
+    	}
         $data['itemavgprice'] = $trendstring;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
+        $data['favoriteslink'] = $favoriteslink;
         $data['heading'] = 'Item Code Detail for '.@$item->itemcode;
         $data['message'] = '';
         $data['action'] = site_url('admin/itemcode/updateitemcode');

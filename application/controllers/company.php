@@ -275,6 +275,8 @@ class Company extends CI_Controller {
 			$this->input->set_cookie("userid", $check->id,time()+3600);
 			$this->input->set_cookie("logintype", 'company',time()+3600);*/
 
+			$forthcoming = $this->quotemodel->getforthcomings($check->id);
+			$bcks = $this->quotemodel->getBacktracks($check->id);
             redirect('dashboard');
         } else {
             $data['message'] = 'Invalid Login';
@@ -1277,7 +1279,7 @@ class Company extends CI_Controller {
        
 		}
 
-        $message = 'Network connection settings updated for purchasing companies.';
+        $message = 'Network connection settings updated for purchasing companies.&nbsp;&nbsp; <a href="'.site_url('company/invoicecycle').'"> Please Set Up Users Invoice Cycle.</a>';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $message . '</div></div></div>');
         redirect('company/networkconnections');
     }
@@ -2460,16 +2462,23 @@ class Company extends CI_Controller {
 			$admin->pro=$this->db->get_where('project',array('purchasingadmin'=>$pa))->result();
 			$admin->quo=$this->db->get_where('quote',array('purchasingadmin'=>$pa,'potype'=>'Bid'))->result();				  
 			$admin->directquo=$this->db->get_where('quote',array('purchasingadmin'=>$pa,'potype'=>'Direct'))->result();
+			$sumofpurchase="SELECT SUM(totalprice) AS Total FROM ".$this->db->dbprefix('awarditem')." WHERE purchasingadmin='".$pa."'";
+			$tot=$this->db->query($sumofpurchase)->row();
+			$admin->sumoftotalpurchase=$tot->Total;
 			     	
 			if($admin->quo)
 			{
 			   foreach($admin->quo as $quot)
-				{							
+				{
+					
 				   if($this->quote_model->getawardedbid($quot->id))
 				   $awarded++;							
 				}
 			    $admin->awar = $awarded;
+			   
 			}
+			
+		
 			    		    
 		    $query = "SELECT
 		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))

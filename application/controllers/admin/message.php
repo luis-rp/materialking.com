@@ -276,6 +276,28 @@ class message extends CI_Controller
             $insertarrayrec['invoice_type'] = "error";  
 			$this->db->insert('received',$insertarrayrec);
             
+			
+			$stockarray = array();
+			
+			$this->db->where('itemid',$item->itemid);
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+			if(@$this->session->userdata('managedprojectdetails')->id)
+			{
+				$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+			}
+			$existing = $this->db->get('inventory')->row();
+			if($existing)
+			{
+				$stockarray['quantity'] = $existing->quantity - $quantities[$i];
+				$this->db->where('itemid',$item->itemid);
+				$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+				if(@$this->session->userdata('managedprojectdetails')->id)
+				{
+					$this->db->where('project',$this->session->userdata('managedprojectdetails')->id);
+				}
+				$this->db->update('inventory',$stockarray);
+			}
+			
 			$this->db->where('id',$item->id);			
 			$awardeditem = $this->db->get('awarditem')->row();
 			if($awardeditem){

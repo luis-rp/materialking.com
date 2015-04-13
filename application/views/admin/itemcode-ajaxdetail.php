@@ -60,12 +60,49 @@
 	
         window.open(url,'amazonlookup','width=1200,height=800,menubar=no,scrollbars=yes');
     }
+    
+     function addtofavorites(itemid)
+    {
+    	var itemcodeurl = '<?php echo base_url()?>admin/itemcode/addtofavorites/'+ itemid;
+		
+		$.ajax({
+			type:"post",
+			url: itemcodeurl,
+		}).done(function(data){			
+			alert('Item added in Favorites list.');
+			location.reload();
+		});
+    }
+    
+    function removefromfavorites(itemid)
+    {
+    	var itemcodeurl = '<?php echo base_url()?>admin/itemcode/removefromfavorites/'+ itemid;
+		
+		$.ajax({
+			type:"post",
+			url: itemcodeurl,
+		}).done(function(data){			
+			alert('Item removed from Favorites list.');
+			location.reload();
+		});
+    }
+    
     //-->
 </script>
 
 
 <section class="row-fluid">
-  	<span><span style="font-weight:bold;text-align:center;margin-left:175px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;margin-left:215px;" src='<?php echo $imgName; ?>'>
+  	<span><span style="font-weight:bold;text-align:center;margin-left:175px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> 
+  	<table style="border-collapse:collapse;background:white;"> 
+	  	<tr>
+	  		<td style="border: none;">
+	  			<img style="max-height: 120px; padding: 0px;width:80px; height:80px;margin-left:160px;" src='<?php echo $imgName; ?>'>
+	  		</td>
+	  		<td style="border: none;">
+	  			<?php if(isset($favoriteslink) && $favoriteslink!='') { echo $favoriteslink;} ?>
+	  		</td> 
+	  	</tr>
+  	</table>
     <h3 class="box-header" style="width:100%" ><?php echo $heading; ?> </h3>    
     </span>
     <div class="box">
@@ -175,7 +212,7 @@
                                             <input type="text" class="span12" id="price<?php echo $m->company; ?>" name="price<?php echo $m->company; ?>" value="<?php echo $m->price; ?>" required/>
                                         </div>
                                     </td>
-                                    <td><?php echo $m->substitute ? 'Substitute [' . $m->itemname . ']' : '-' ?></td>
+                                    <td><?php echo @$m->substitute ? 'Substitute [' . $m->itemname . ']' : '-' ?></td>
                                     <td>
                                         <a href="javascript: void(0);" onclick="showorderhistory('<?php echo $m->company ?>','<?php echo $m->itemid ?>','<?php echo $m->companyname ?>','<?php echo $imgName; ?>')"><i class="icon icon-search"></i></a>
                                     </td>
