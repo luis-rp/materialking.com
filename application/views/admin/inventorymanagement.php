@@ -4,6 +4,7 @@
 <?php echo '<script>var updatemaxstockurl="'.site_url('admin/inventorymanagement/updatemaxstock').'";</script>'?>
 <?php echo '<script>var updatereorderqtyurl="'.site_url('admin/inventorymanagement/updatereorderqty').'";</script>'?>
 <?php echo '<script>var updateadjustedqtyurl="'.site_url('admin/inventorymanagement/updateadjustedqty').'";</script>'?>
+<?php echo '<script>var addqtytoinventoryurl="'.site_url('admin/itemcode/addqtytoinventory').'";</script>'?>
 <script type="text/javascript">
 
 function reduceval(itemid){
@@ -105,8 +106,41 @@ function updatereorderqty(itemid,qty)
 		$("#quoteitemdetails").css({display: "none"});
 		$("#quoteitemdetailsm").css({display: "none"});		
 	}
+	
+	
+	function addtoinventory(id){
+		
+		$('#invitemid').val(id);
+		$('#addinventorymodal').modal();		
+	}
     
     
+	function saveitemtoinventory(){
+		
+		if($('#invquantity').val()<=0)
+			alert("Please enter value greater than zero");
+		else{
+			var data = "itemid="+$('#invitemid').val()+"&quantity="+$('#invquantity').val();
+			$.ajax({
+    		type:"post",
+    		data: data,
+    		url: addqtytoinventoryurl
+    	}).done(function(data){
+    		if(data){
+    			
+    			alert(data);    		
+    			var itemid = $('#invitemid').val();	 
+    			var newvalue = parseFloat($('#valueonhand'+itemid).val()) + parseFloat($('#valueonhand'+itemid).val()/$('#qtyonhand'+itemid).val()*$('#invquantity').val());
+    			var newqty = parseInt($('#invquantity').val()) + parseInt($('#qtyonhand'+itemid).val());
+    			$('#qtyonhand'+itemid).val(newqty);
+    			$('#adjustqty'+itemid).val(newqty);
+    			$('#valueonhand'+itemid).val(newvalue);
+    		}
+    	});
+			
+		}
+	}
+	
 </script>
 <html>
 <body>
@@ -207,6 +241,21 @@ function updatereorderqty(itemid,qty)
             
         </div>
 
+        
+<div id="addinventorymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+
+    <div class="modal-header">
+        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+        <h4>Add Quantity to Inventory</h4>
+    </div>
+    <div class="modal-body">
+    <input type="text" name="invquantity" id="invquantity"/>
+    <input type="hidden" name="invitemid" id="invitemid"/>
+    <input type="button" value="save" onclick="saveitemtoinventory();"/>
+    </div>
+
+</div>
+        
 
 
 </body>

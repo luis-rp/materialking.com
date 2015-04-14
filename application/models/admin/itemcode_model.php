@@ -58,7 +58,8 @@ class itemcode_model extends Model {
        if(@$_POST['isfavorite'])
             $where .= " AND i.isfavorite = '{$_POST['isfavorite']}'";
             
-        $sql = "SELECT i.*, if(IFNULL(group_concat(distinct(o.project)),group_concat(distinct(q.pid)))='".@$this->session->userdata('managedprojectdetails')->id."', MAX(IFNULL(a.awardedon,o.purchasedate)),'') awardedon, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL(group_concat(distinct(o.project)),group_concat(distinct(q.pid))) AS project
+        $sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),''), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),'')) AS awardedon
+, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct o.project),group_concat(distinct q.pid)),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct q.pid),group_concat(distinct o.project))) AS project
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
@@ -66,7 +67,7 @@ class itemcode_model extends Model {
                 LEFT JOIN ".$this->db->dbprefix('quote') ." q ON q.id = a.quote
                 LEFT JOIN ".$this->db->dbprefix('orderdetails') ." od ON i.id=od.itemid 
 				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
-                $where
+                $where 
                 GROUP BY i.id
                 ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
     //echo '<pre>',$sql;die;
@@ -74,6 +75,7 @@ class itemcode_model extends Model {
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
+         //   echo '<pre>',print_r($result);die;
             $ret = array();
             $where1 = "";
             if(@$this->session->userdata('managedprojectdetails')->id)

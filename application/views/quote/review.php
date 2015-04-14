@@ -30,7 +30,30 @@ $.noConflict();
 
 $(document).ready(function(){
 $('.date').datepicker();
+
+$('.subtotcls').change(setsubtotal);   
+$('#subtotal').change(setfinaltotal);   
+
 });
+
+
+function setsubtotal(){
+	var subtot = 0;
+	$('.subtotcls').each(function(i,v){
+
+		subtot = subtot + parseFloat(v.value);
+
+	});
+	$('#subtotal').val(subtot);
+}
+
+function setfinaltotal(){
+
+	var tot = parseFloat($('#subtotal').val()) + parseFloat($('#subtotal').val()*<?php echo @$taxpercent/100; ?>);
+
+	$('#finaltotal').val(tot)
+}
+
 
 function selectall(sel)
 {
@@ -64,7 +87,10 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 		    
 		    var priceidarr = $("#hiddenpriceid").val();
 			var uniid = priceidarr.split("ea");
-			calculatetotalprice(uniid[1]);		    
+			calculatetotalprice(uniid[1]);	    
+			$('#'+$("#hiddenpriceid").val()).trigger("change");
+			$('.subtotcls').trigger('change');
+		    $('#subtotal').trigger('change');
 	}
 }
 
@@ -268,6 +294,9 @@ function calculatetotalprice(id)
 	var eaid = 'ea'+id;
 	var totalpriceid = 'totalprice'+id;
 	document.getElementById(totalpriceid).value = document.getElementById(eaid).value * document.getElementById(quantityid).value;
+	
+	$('.subtotcls').trigger('change');
+	$('#subtotal').trigger('change');
 }
 
 
@@ -346,7 +375,9 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote,id){
             $("#companypricemodal").modal('hide');		
             $("#ea"+id).val(val);						
 			alert(data);			
-			
+			$("#ea"+id).trigger("change");
+			$('.subtotcls').trigger('change');
+            $('#subtotal').trigger('change');
 		});
 		}
 	}
@@ -637,7 +668,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    	
 							    	<form id="olditemform"  method="post" action="<?php echo site_url('quote/reviewpo'); ?>" enctype="multipart/form-data"> 
 								  	<input type="hidden" name="invitation" value="<?php echo $invitation;?>"/>
-									<?php foreach($quoteitems as $q){//print_r($q);?>
+									<?php $distot=0; foreach($quoteitems as $q){ $distot += $q->totalprice; //print_r($q);?>
 							    	<tr>
 							    		<td>
 								    		<?php echo $q->itemname;
@@ -756,7 +787,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<?php }?>
 							    		</td>
 							    		<td>	
-											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
+											<input type="text" id="totalprice<?php echo $q->id;?>" class="price highlight nonzero nopad width50 input-sm subtotcls" name="totalprice<?php echo $q->id;?>" value="<?php echo $q->totalprice;?>" onkeypress="return allowonlydigits(event,'ea<?php echo $q->id;?>', 'eaerrmsg2<?php echo $q->id;?>')" ondrop="return false;" onpaste="return false;" /> <br/> &nbsp;<span id="eaerrmsg2<?php echo $q->id;?>"/>
 							    		</td>
 							    		
 							    		<td>
@@ -780,11 +811,26 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<td>
 											Quote#
 							    		</td>
-							    		<td colspan="7">							    		
+							    		<td colspan="3">							    		
 										<?php $sub=strtoupper($this->session->userdata('company')->title); $subst=substr($sub,0,4); $fstr=$subst."Q";?>
 											<input type="text" name="quotenum" value="<?php if(isset($revisionno) && isset($quotenum) && $quotenum!="") { $quotearr = explode(".",$bid->quotenum); echo $quotearr[0]."."; printf('%03d',($revisionno)); } elseif(isset($quotenum) && $quotenum!="") { echo $quotenum; } else { echo $fstr;   printf('%06d',($invid)); echo ".000"; } ?>"/>		
 												
-							    		</td>							    		
+							    		</td>
+							    		
+							    		<td style="text-align:right;">
+							    		<span><strong>SubTotal : </strong></span>
+							    		</td>
+							    		<td><input type="text" id="subtotal" readonly value="<?php if(isset($distot) && $distot!="") { echo round($distot,2); } ?>" /> 
+							    		</td>
+							    		<td style="text-align:right;">
+											<span><strong>Total : </strong></span>
+							    		</td>
+							    		<td><input type="text" id="finaltotal" readonly value="<?php if(isset($distot) && $distot!="") { 
+												$distotwithtax = $distot + ($distot * @$taxpercent/100);
+												echo round($distotwithtax,2); } ?>" />
+											 
+							    		</td>							    			
+							    								    		
 							    	</tr>
 							    	<tr>
 							    		<td>

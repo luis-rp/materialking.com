@@ -79,7 +79,7 @@ class inventorymanagement extends CI_Controller
 	        	
 	        	<input type="button" style="display:none;text-align:center;" id="save'.@$row->itemid.'" onclick="updateadjustedqty('.$row->itemid.','.$row->ea.');" value="save"/> ';      	
 	        	
-	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" >';
+	        	$row->qtyonhand = '<input style="width:50px;" type="text" name="qtyonhand" id="qtyonhand'.@$row->itemid.'" readonly value="'.@$row->qtyonhand.'" > <br> <a href="javascript:void(0)" onclick="addtoinventory('.@$row->itemid.')" >ADD QTY</a> ';
 	        	
 	        	$row->valueonhand = round($row->valueonhand,2);
 	        	

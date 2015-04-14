@@ -34,21 +34,29 @@ $(document).ready(function(){
 	$('input[type="checkbox"]').checkbox();
 	$('.date').datepicker();
         $('.expire_date').datepicker();
-	$('.substituterow').hide();
+	$('.substituterow').hide();	
 	
 	$('.subtotcls').change(setsubtotal);   
-	
+	$('#subtotal').change(setfinaltotal);   
 });
 
 function setsubtotal(){
-    var subtot = 0;    
+	var subtot = 0;
 	$('.subtotcls').each(function(i,v){
-		
+
 		subtot = subtot + parseFloat(v.value);
-		
+
 	});
 	$('#subtotal').val(subtot);
-    }
+}
+
+function setfinaltotal(){
+
+	var tot = parseFloat($('#subtotal').val()) + parseFloat($('#subtotal').val()*<?php echo @$taxpercent/100; ?>);
+
+	$('#finaltotal').val(tot)
+}
+    
 
 function onover()
 {
@@ -74,6 +82,8 @@ function calculatetotalprice(id)
 	var eaid = 'ea'+id;
 	var totalpriceid = 'totalprice'+id;
 	document.getElementById(totalpriceid).value = document.getElementById(eaid).value * document.getElementById(quantityid).value;
+	$('.subtotcls').trigger('change');
+	$('#subtotal').trigger('change');
 }
 
 function s_calculatetotalprice(id)
@@ -176,8 +186,10 @@ function setitemtier(tierlevel, tierprice, itemid,purchasingadmin){
 		    });
 		    
 		    $('#'+$("#hiddenpriceid").val()).val(tierprice);
-		    
+		    $('#'+$("#hiddenpriceid").val()).trigger("change");
 		    $('#'+$("#hiddennotesid").val()).html(notes);
+		    $('.subtotcls').trigger('change');
+		    $('#subtotal').trigger('change');
 	}
 }
 
@@ -439,7 +451,10 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote,id){
 			url: setcompanypriceurl
 		}).done(function(data){
             $("#companypricemodal").modal('hide');	           
-            $("#ea"+id).val(val);					
+            $("#ea"+id).val(val);		
+            $("#ea"+id).trigger("change");			
+            $('.subtotcls').trigger('change');
+            $('#subtotal').trigger('change');
 			alert(data);			
 			
 		});
@@ -929,15 +944,15 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		<td style="text-align:right;">
 							    		<span><strong>SubTotal : </strong></span>
 							    		</td>
-							    		<td><input type="text" id="subtotal" value="<?php if(isset($distot) && $distot!="") { echo round($distot,2); } ?>" /> 
+							    		<td><input type="text" id="subtotal" readonly value="<?php if(isset($distot) && $distot!="") { echo round($distot,2); } ?>" /> 
 							    		</td>
 							    		<td style="text-align:right;">
 											<span><strong>Total : </strong></span>
 							    		</td>
-							    		<td>
-											<?php if(isset($distot) && $distot!="") { 
+							    		<td><input type="text" id="finaltotal" readonly value="<?php if(isset($distot) && $distot!="") { 
 												$distotwithtax = $distot + ($distot * $taxpercent/100);
-												echo "$".number_format($distotwithtax,2); } ?> 
+												echo round($distotwithtax,2); } ?>" />
+											 
 							    		</td>
 							    		<td colspan="2">
 											&nbsp;

@@ -45,7 +45,8 @@ $per .='%';
 ?>
 
 <style>
-.tableoverflow{ margin:0px; padding:0px; width:100%; overflow-x:scroll}
+.tableoverflow{ margin:0px; padding:0px; width:400px; overflow-x:scroll}
+
 </style>
 <?php echo '<script type="text/javascript">var senderrorurl = "' . site_url('admin/message/senderror/' . $quote->id) . '";</script>'; ?>
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jquery-ui.js"></script>
@@ -589,7 +590,7 @@ function closepop()
 </script>
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
-<?php //var_dump($awarded); exit;  ?>
+
     <div class="box">
         <div class="span12">
             <a class="btn btn-green" href="javascript:void(0)" onclick="history.back();">&lt;&lt; Back</a>
@@ -617,37 +618,7 @@ function closepop()
                         Submitted:  <?php echo date('m/d/Y', strtotime($awarded->awardedon)); ?>
                     </strong><div class="clock"></div>
                     <div style="clear:both;"></div>
-                    <?php /* $greaterseconds = ""; $seconds="";  foreach ($awarded->items as $q) {
-                    	 if(($q->quantity - $q->received) >0)
-                    	$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
-                    	else {
-                    		$greaterreceived = "";
-                    		foreach ($awarded->invoices as $invoice) {
-                    			foreach ($invoice->items as $item) {
-                    				if($item->awarditem==$q->id){
-                    					$receiveddate = $item->receiveddate;
-                    					if($greaterreceived!=""){
-                    						if(strtotime($greaterreceived)<strtotime($receiveddate))
-                    						$greaterreceived = $receiveddate;
-                    					}else
-                    					$greaterreceived = $receiveddate;
-                    				}
-                    			}
-                    		}
-                    		//echo "g=".$greaterreceived."-G";
-                    		$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
-                    	}
-                    	if($greaterseconds!=""){
-                    		if($greaterseconds<$seconds)
-                    		$greaterseconds = $seconds;
-                    	}else
-                    	$greaterseconds = $seconds;
-						}
-						$days    = floor($greaterseconds / 86400);
-                    	$hours   = floor(($greaterseconds - ($days * 86400)) / 3600);
-                    	$minutes = floor(($greaterseconds - ($days * 86400) - ($hours * 3600))/60);
-                    	$seconds = floor(($greaterseconds - ($days * 86400) - ($hours * 3600) - ($minutes*60))); */ ?>
-                    	<!-- <span style="margin-left:300px;">&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php //  echo $days." d"." ".$hours." h".$minutes." m"; ?></strong></span> -->
+                    
                     <?php if (0) { ?>
                         &nbsp;  &nbsp;
                         <form action="<?php echo site_url('admin/quote/changestatus/' . $quote->id); ?>" method="post" class="form-horizontal">
@@ -672,152 +643,166 @@ function closepop()
                 </div>
             </div>
             <br/>
-            <div class="control-group" style="overflow-x:auto;">
-             <div class="tableoverflow">
-                <table class="table table-bordered" style="table-layout:fixed;word-wrap:break-word;width:150%;">
+            <div class="control-group">
+            
+                <table class="table table-bordered" style="table-layout: fixed;">
                     <tr>
-                        <th width="100px">Company</th>
-                        <th width="120px">Item Code</th>
-                        <th width="150px">Item Name</th>
-                        <th width="100px">Item Progress</th>
-                        <th width="100px">Qty.</th>
-                        <th width="100px">Unit</th>
-                        <th width="100px">Price EA</th>
-                        <th width="100px">Total Price</th>
-                        <th width="100px">Date Requested</th>
-                        <th width="120px">Cost Code</th>
-                        <th width="100px">Notes</th>
-                        <th width="100px">Still Due</th>
-                        <th width="150px">History</th>
-                        <?php if ($awarded->status == 'incomplete') { ?>
-                        <th width="120px">Received Qty.</th>
-                        <th width="150px">Invoice #</th>
-                        <th width="100px">Date Received</th>
-                        <th width="100px">Complete<br/><input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
-                        <th width="150px">Error</th>
-                        <?php } ?>
-                    </tr>
-                        <?php if ($awarded->status == 'incomplete') { ?>
-                        <form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
-                            <input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
-                            <input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
-                        <?php } ?>
-					    <?php
-						$counter_kk = 1;
-						$billcnt = 0;
-						$alltotal = 0; $cnt = count($awarded->items); 
-						$prevbillitems = "";
-						$currentbillitems = "";
-						$itemdatearr = array();
-						
-						foreach ($awarded->items as $q) {
-						
-						$itemdatearr[$q->itemid] = $q->daterequested;		
-							
-						if($currentbillitems=="")						
-						$currentbillitems = $q->id;
-						else 
-						$currentbillitems .= ",".$q->id;
-						
-						$counter_kk++;
-						?>
-					    <?php $alltotal+=$q->totalprice; ?>
+                    	<td>
+                    		<div>
+	                    		<table style="table-layout: fixed;">
+	                    			<tr>
+		                        		<th width="100px">Company</th>
+		                        		<th width="100px">Item Code</th>
+		                        		<th width="100px">Item Name</th>
+		                        	</tr>
+		                        	<?php foreach ($awarded->items as $q) { ?>
+		                        	<tr>
+		                        		<td><?php echo @$q->companydetails->title; ?></td>
+                                		<td><a href="javascript:void(0)" onclick="viewitems2('<?php echo $q->itemid; ?>');"><?php echo $q->itemcode; ?></a>
+                               		 	<br>
+                                 		<?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) { ?>
+                                   		<img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
+                                		<?php } else { ?>
+                                    	<img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
+                                		<?php } ?></td>
+                                		<td><?php echo $q->itemname; ?></td>
+		                        	</tr>
+		                        	<?php } ?>
+	                        	</table>
+                        	</div>
+                    	</td> 
+                    <td>
+                    	<div style="margin:0px; padding:0px; width:100%; overflow-x:scroll;">
+	                    	<table style="table-layout: fixed;width:1700px;">
+	                    		<tr>   
+			                        <th width="100px">Item Progress</th>
+			                        <th width="100px">Qty.</th>
+			                        <th width="100px">Unit</th>
+			                        <th width="100px">Price EA</th>
+			                        <th width="100px">Total Price</th>
+			                        <th width="160px">Date Requested</th>
+			                        <th width="120px">Cost Code</th>
+			                        <th width="100px">Notes</th>
+			                        <th width="100px">Still Due</th>
+			                        <th width="150px">History</th>
+			                        <?php if ($awarded->status == 'incomplete') { ?>
+			                        <th width="120px">Received Qty.</th>
+			                        <th width="150px">Invoice #</th>
+			                        <th width="100px">Date Received</th>
+			                        <th width="100px">Complete&nbsp;<input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
+			                        <th width="150px">Error</th>
+			                        <?php } ?>
+			                   </tr>
+			                   <?php if ($awarded->status == 'incomplete') { ?>
+                        			<form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
+                           		 	<input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
+                            		<input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
+                        		<?php }
+								$counter_kk = 1;
+								$billcnt = 0;
+								$alltotal = 0; $cnt = count($awarded->items); 
+								$prevbillitems = "";
+								$currentbillitems = "";
+								$itemdatearr = array();
+								
+								foreach ($awarded->items as $q) 
+								{								
+									$itemdatearr[$q->itemid] = $q->daterequested;											
+										if($currentbillitems=="")						
+											$currentbillitems = $q->id;
+										else 
+											$currentbillitems .= ",".$q->id;
+								
+									$counter_kk++;
+								 	$alltotal+=$q->totalprice; ?>
                             <tr>
-                                <td><?php echo @$q->companydetails->title; ?></td>
-                                <td><a href="javascript:void(0)" onclick="viewitems2('<?php echo $q->itemid; ?>');"><?php echo $q->itemcode; ?></a>
-                                <br>
-                                 <?php if(isset($q->item_img) && $q->item_img!= "" && file_exists("./uploads/item/".$q->item_img)) 
-					    		{ ?>
-                                   <img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/'.$q->item_img) ?>" alt="<?php echo $q->item_img;?>">
-                                <?php } else { ?>
-                                    <img style="max-height: 100px;max-width: 75px;" height="120" width="120" src="<?php echo site_url('uploads/item/big.png') ?>" alt="">
-                                <?php } ?>
-                                
-                                </td>
-                                <td><?php echo $q->itemname; ?></td>
-                                <td class="dis_td"><div id="topLoader<?php echo $counter_kk;?>">
-      <?php
-      //$q->quantity;//100%
-      if(@$q->quantity)
-    	$new_pr_value = (($q->received * 100) / $q->quantity)/100;
-      else 
-      $new_pr_value = 0;	
-   //   $new_pr_value = ($q->received/100) *10; ?>
-       <script>
-        $(function() {
-          var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : false, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
-              $topLoader.setValue(Math.round(<?php echo $q->received;?>));
-            }});
-          var topLoaderRunning = false;
-          $("#animateButton").click(function() {
-            if (topLoaderRunning) {
-              return;
-            }
-            topLoaderRunning = true;
-            $topLoader.setProgress(0);
-            $topLoader.setValue('0kb');
-            var kb = 0;
-            var totalKb = 999;
-            var animateFunc = function() {
-              kb += 17;
-              $topLoader.setProgress(kb / totalKb);
-              $topLoader.setValue(kb.toString() + 'kb');
-              if (kb < totalKb) {
-                setTimeout(animateFunc, 25);
-              } else {
-                topLoaderRunning = false;
-              }
-            }
-            setTimeout(animateFunc, 25);
-          });
-        });
-      </script>
-    </div></td>
+                                <td class="dis_td">
+                                	<div id="topLoader<?php echo $counter_kk;?>">
+      								<?php  
+								      if(@$q->quantity)
+								    	$new_pr_value = (($q->received * 100) / $q->quantity)/100;
+								      else 
+								      $new_pr_value = 0; ?>
+								      
+								       <script>
+								        $(function() {
+								          var $topLoader = $("#topLoader<?php echo $counter_kk; ?>").percentageLoader({width: 80, height: 80, controllable : false, progress : <?php echo $new_pr_value; ?>, onProgressUpdate : function(val) {
+								              $topLoader.setValue(Math.round(<?php echo $q->received;?>));
+								            }});
+								          var topLoaderRunning = false;
+								          $("#animateButton").click(function() {
+								            if (topLoaderRunning) {
+								              return;
+								            }
+								            topLoaderRunning = true;
+								            $topLoader.setProgress(0);
+								            $topLoader.setValue('0kb');
+								            var kb = 0;
+								            var totalKb = 999;
+								            var animateFunc = function() {
+								              kb += 17;
+								              $topLoader.setProgress(kb / totalKb);
+								              $topLoader.setValue(kb.toString() + 'kb');
+								              if (kb < totalKb) {
+								                setTimeout(animateFunc, 25);
+								              } else {
+								                topLoaderRunning = false;
+								              }
+								            }
+								            setTimeout(animateFunc, 25);
+								          });
+								        });
+								      </script>
+								     </div>
+   								</td>
+   								
                                 <td>
                                 <?php echo $q->quantity; ?>
                                 <?php if($q->received != '0.00' && $q->received != ''){?>
                                 <br/><i class="icon icon-ok btn-green"> <?php echo $q->received;?></i>
                                 <?php }?>
                                 </td>
+                                
                                 <td><?php echo $q->unit; ?></td>
+                                
                                 <td>$ <?php echo $q->ea; ?></td>
+                                
                                 <td>$ <?php echo $q->totalprice; ?>
                                 <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addtobill('<?php echo @$quote->id;?>','<?php echo $q->id; ?>','<?php if (array_key_exists($q->company, $billitemdata) && isset($billitemdata[$q->company][$q->award]) ){ if(in_array(@$q->itemid,$billitemdata[$q->company][$q->award])){ echo "1"; }else echo "0"; } else echo "0"; ?>')" >+ Add to bill</a></span><br><?php if (array_key_exists($q->company, $billitemdata) && isset($billitemdata[$q->company][$q->award]) ){ if(in_array(@$q->itemid,$billitemdata[$q->company][$q->award])){ echo "Already Billed"; $billcnt++; if($prevbillitems=="") $prevbillitems = $q->id; else $prevbillitems .= ",".$q->id;  } } ?>
                                  <span style="display:none;" id="<?php echo 'rem'.$q->id;?>"><a href="javascript:void(0)" onclick="removeitem('<?php echo $q->id;?>','<?php echo $quote->id;?>')">- Remove</a></span>
                                 </td>
+                                
                                 <td><?php echo $q->daterequested;?><br/>
                                 
                                 <?php $greaterreceived = ""; 
 									foreach ($awarded->invoices as $invoice) {
-										//$i=0;$myarr[$i]=array();
 										foreach ($invoice->items as $item) {
-											
 											if($item->awarditem==$q->id){
 												$receiveddate = $item->receiveddate;
 												if($greaterreceived!=""){
 													if(strtotime($greaterreceived)<strtotime($receiveddate))
 													$greaterreceived = $receiveddate;
-												}else
-												$greaterreceived = $receiveddate;
-												
-										    }
-										    //$myarr[$i]['itemidi']=$item->itemid;
-										    //$i++;
-									   } 
-									   												
-									} 
+																		}else
+												$greaterreceived = $receiveddate;												
+										    	}
+										    } 
+									   	} 
                                    
-                               echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp; <!-- <a href="<?php // echo site_url('admin/quote/sendautolateemail') . '/' . $quote->id; ?>">Email</a> --> <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->received)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
- <?php if(date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s')) { if(($q->quantity - $q->received)!=0) { echo "*Item Past Due";} } ?></td>
+                               echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp;  <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->received)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
+ 								<?php if(date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s')) { if(($q->quantity - $q->received)!=0) { echo "*Item Past Due";} } ?></td>
+ 								
                                 <td><?php echo $q->costcode; ?></td>
+                                
                                 <td><?php echo $q->notes; ?></td>
+                                
                                 <td><span id="due<?php echo $q->id; ?>"><?php if(($q->received) < 0) echo $q->quantity; else echo $q->quantity - $q->received;?></span>
                                <br><?php if($q->quantity - $q->received!=0){                              
                                 echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s'))?"PAST DUE":""; } ?></td>
+                                
                                 <td><?php if($q->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $q->id?>').modal();">
 							    				<i class="icon"></i><p style="padding-left:36px;">View</p>
 							    			</a>
-						<?php } $seconds = "";
+									<?php } $seconds = "";
 								if(($q->quantity - $q->received) >0)
 								$seconds = strtotime(date('Y-m-d H:i:s')) - strtotime($awarded->awardedon);
 								elseif ($q->quantity=="")
@@ -836,38 +821,40 @@ function closepop()
 										    }
 									   }
 									}
-									//echo "g=".$greaterreceived."-G";
+									
 									$seconds = strtotime($greaterreceived) - strtotime($awarded->awardedon);
 								}
 	                            $days    = floor($seconds / 86400);
 								$hours   = floor(($seconds - ($days * 86400)) / 3600);
 								$minutes = floor(($seconds - ($days * 86400) - ($hours * 3600))/60);
 								$seconds = floor(($seconds - ($days * 86400) - ($hours * 3600) - ($minutes*60)));?>
-								<strong> <?php //echo $days." d"." ".$hours." h".$minutes." m";  ?></strong>
-					<div style="height:40px;width:160px;">
-							<strong><p style="font-size:15px;">&nbsp;&nbsp;D&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;M</p></strong>
-                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
-                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $days ?></p>
-                    	</div>
-                    	<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
-                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
-                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $hours ?></p>
-                   		</div>
-                   		<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
-                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
-                   			<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $minutes ?></p>
-                    	</div>
-                    	<div style="clear:left;"></div>
-                    </div>
+							
+									<div style="height:40px;width:160px;">
+											<strong><p style="font-size:15px;">&nbsp;&nbsp;D&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;M</p></strong>
+				                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+				                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $days ?></p>
+				                    	</div>
+				                    	<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
+				                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+				                    		<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $hours ?></p>
+				                   		</div>
+				                   		<p style="font-size:25px;font-weight:bold;float:left;margin-left:4px;">:</p>
+				                    	<div style="height:28px;width:25px;background-color:#000000;border-radius:5px;margin-left:4px;float:left;box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
+				                   			<p style="text-align:center;font-weight:bold;font-size:15px;color:#FFFFFF;font-family:'Helvetica Neue', Helvetica, sans-serif; padding-top:4px;"><?php echo $minutes ?></p>
+				                    	</div>
+				                    	<div style="clear:left;"></div>
+				                    </div>
                     			<?php if(@$q->pendingshipments){?>
                                 <br/><?php echo $q->pendingshipments;?> Pending Acknowledgement
                                 <?php }?>
 								</td>
+								
                                 <?php if ($awarded->status == 'incomplete') { ?>
                                     <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>                                    	
                                     </td>
+                                    
                                     <td>
                                     <?php $isupfrontinvoice = 0; 
                                                if($awarded->invoices) { foreach($awarded->invoices as $i){
@@ -888,6 +875,7 @@ function closepop()
                                               value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$awarded->id; ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?>
                                                onchange="defaultinvoicenum('<?php echo $q->id; ?>');" style="width:100%;"/>
                                     </td>
+                                    
                                     <td>
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
                                                <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" ';
@@ -895,11 +883,13 @@ function closepop()
                                                value="<?php if(@$q->datereceived) echo date("m/d/Y",strtotime($q->datereceived)); //if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
                                                data-date-format="mm/dd/yyyy"/>
                                     </td>
+                                    
                                     <td>
                                         <?php if ($q->quantity > $q->received) { ?>
                                             <input type="checkbox" id="select<?php echo $q->id ?>" value="<?php echo $q->id ?>" class="select-for-complete" />
                                         <?php } ?>
                                     </td>
+                                    
                                     <td>
                                         <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:100%;">
                                             <option value=''>No Error</option>
@@ -909,21 +899,25 @@ function closepop()
                                             <option value='<?php echo $q->id ?>-Revise Received Qty'>Revise Received Qty</option>
                                         </select>
                                     </td>
-                            <?php } ?>
+                                    
+                            		<?php } ?>
                             </tr>
                         <?php  }  ?>
-                        <?php if ($awarded->status == 'incomplete') { ?>
-                            <tr>
-                                <td colspan="<?php echo $awarded->status == 'incomplete' ? 11 : 7//14:10; ?>" style="text-align:right"></td>
-                                <td colspan="3"><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
-                                <td>&nbsp;</td>
-                                <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete"></td>
-                                <td><input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
+	                        </table>
+                        </div>
+                    </td> 
+                   </tr>
+                                   
+                      <?php if ($awarded->status == 'incomplete') { ?>
+                            <tr>                              
+                                <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
+                                <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete">&nbsp;
+                                <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
                         </form>
-                    <?php } ?>
-                    <?php
-                    //echo "<pre>",print_r($awarded->invoices);
+                    <?php } 
+                  
+                   
                     if($awarded->invoices){
                     	foreach ($awarded->invoices as $invoice) {
 							if(@$invoice->invoice_type == "error"){ 
@@ -935,26 +929,32 @@ function closepop()
                     $grandtotal = $alltotal + $taxtotal;
                     ?>
                     <tr>
-                        <td colspan="6" style="text-align:right">Subtotal: </td>
-                        <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">$ <?php echo round($alltotal, 2); ?></td>
+                        <td style="text-align:right">Subtotal: </td>
+                        <td>$ <?php echo round($alltotal, 2); ?></td>
                     </tr>
                     <tr>
-                        <td colspan="6" style="text-align:right">Tax: </td>
-                        <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">$ <?php echo round($taxtotal, 2); ?></td>
+                        <td style="text-align:right">Tax: </td>
+                        <td>$ <?php echo round($taxtotal, 2); ?></td>
                     </tr>
                     <tr>
-                        <td colspan="6" style="text-align:right">Total: </td>
-                        <td colspan="<?php echo $awarded->status == 'incomplete' ? 10 : 5; ?>">
-                        <table><tr><td>$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> <span style="color:red;"><a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>','<?php echo htmlspecialchars(addslashes($prevbillitems));?>','<?php echo @$billcnt;?>','<?php  echo htmlspecialchars(addslashes($currentbillitems)); ?>')" >+ Add all items to bill</a></span> <br> <?php if(@$billcnt == $cnt) { echo "All items already Billed"; } ?>   <span style="display:none;" id="<?php echo 'rem'.$quote->id;?>"><a href="javascript:void(0)" onclick="removeallitems('<?php echo $quote->id;?>')">- Remove All</a></span> </td>
+                        <td style="text-align:right">Total: </td>
                         <td>
-                        <span style="align:right;" id="billwindow"></span>
-                        </td></tr></table>
-                        
-                        </td>
+                        	$ <?php echo round($grandtotal, 2); ?> &nbsp; <br> 
+                        	<span style="color:red;">
+                        		<a href="javascript:void(0)" onclick="addalltobill('<?php echo @$quote->id;?>','<?php echo @$cnt;?>','<?php echo htmlspecialchars(addslashes($prevbillitems));?>','<?php echo @$billcnt;?>','<?php  echo htmlspecialchars(addslashes($currentbillitems)); ?>')" >+ Add all items to bill</a>
+                        	</span> 
+                        	<br> <?php if(@$billcnt == $cnt) { echo "All items already Billed"; } ?>   
+                        	<span style="display:none;" id="<?php echo 'rem'.$quote->id;?>">
+                        		<a href="javascript:void(0)" onclick="removeallitems('<?php echo $quote->id;?>')">- Remove All</a>
+                        	</span> 
+                        	<br/>
+                        		<span style="align:right;" id="billwindow"></span>
+                        			                 
+                       </td>
                     </tr>
-                </table>
-               </div>
-            </div>
+			</table>                        
+          </div>
+          
             <?php
             if (@$shipments)
             {
