@@ -7,6 +7,12 @@
 <?php echo '<script>var addqtytoinventoryurl="'.site_url('admin/itemcode/addqtytoinventory').'";</script>'?>
 <script type="text/javascript">
 
+$(document).ready(function(){
+	<?php if(!@$items) { ?>	
+    	$("#MyGridDiv").css("display","none");		
+    <?php } ?>
+});
+
 function reduceval(itemid){
 	var value = parseInt($('#adjustqty'+itemid).val());	
 	if(value > 0){
@@ -141,9 +147,11 @@ function updatereorderqty(itemid,qty)
 		}
 	}
 	
+	
 </script>
 <html>
 <body>
+<?php //echo '<pre>DDDDDd',print_r($items);die;?>
 <section class="row-fluid">
     <h3 class="box-header" style="display:inline;" ><span id="step1"><?php echo $heading; ?></span>   
     &nbsp;&nbsp;
@@ -155,12 +163,12 @@ function updatereorderqty(itemid,qty)
             <?php echo $this->session->flashdata('message'); ?>
 
             <div class="datagrid-example">
-                <div style="height:600px;width:100%;margin-bottom:20px;">
-                    <table id="MyGrid" class="table table-bordered datagrid">
+                <div id="MyGridDiv" style="height:600px;width:100%;margin-bottom:20px;">
+                    <table id="MyGridNew" class="table table-bordered datagrid">
                         <thead>
                             <tr>
                                 <th>
-                        <div>
+                        	<div>
                            
                             <div class="datagrid-header-right">
 
@@ -223,10 +231,12 @@ function updatereorderqty(itemid,qty)
                         </tr>
                         </tfoot>
                     </table>
+                     
                 </div>
             </div>
         </div>
     </div>
+    <?php if(!@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No items currently in inventory. Please visit the <a href="'.site_url('admin/itemcode').'">Item Management Module</a> to manually add items and qty to inventory. Otherwise, inventory will be automatically populated based on your order history, beginning from your first order. </div></div>'; ?>
 </section>
 
 

@@ -65,7 +65,7 @@ $.noConflict();
 		</div>		
 	   <div id="container">
 		<?php 
-		    	if($allawardeditems)
+		    	if(@$allawardeditems)
 		    	{
 		    ?>
 		<div class="row">

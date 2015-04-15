@@ -686,6 +686,12 @@ function checkNewRowData()
 		cancelitem();
 	}
 }
+
+function addCostcode()
+{
+   var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
+   $("#ponum").val(costcodeprefix);
+}
 </script>
 
 <style>
@@ -726,7 +732,23 @@ function checkNewRowData()
 		   <?php echo @$message; ?>
 		   <br/>
 		   <a class="btn btn-primary" href="<?php echo site_url('admin/quote/index/'.$pid);?>">&lt;&lt; Back</a>
-		   <br/>
+		   <div class="control-group">
+			    <div class="controlss"> <?php if($iscostcodeprefix == 0) { ?>
+		   		&nbsp;&nbsp;	Use Cost Code Prefix:
+                 <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
+					   <option value="">Select</option>
+					   <?php 
+					   if(isset($costcodesresult) && count($costcodesresult) >0)
+					   {
+					   		foreach ($costcodesresult as $key=>$val)
+					   		{ ?>
+					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
+				<?php		}
+					   } ?>
+				  </select>
+			<?php } ?>	  
+		    </div>
+		   </div>
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
 		   <input type="hidden" name="quoteCnt" id="quoteCnt" value="<?php echo count($quoteitems);?>">       
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
@@ -737,7 +759,7 @@ function checkNewRowData()
 		    
 		    <div class="control-group">
 			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
-			      <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" value="<?php echo $this->validation->ponum; ?>" required>
+			      <input type="text" id="ponum" name="ponum" style="width: 21%" class="input small" value="<?php echo $this->validation->ponum; ?>" required>
 			      
 			      &nbsp; &nbsp;
 			      &nbsp; &nbsp; 

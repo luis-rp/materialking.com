@@ -431,7 +431,7 @@ function upload_attachment(receivedid,invoicenum)
                     			$totalpaid+= str_replace( ',', '', $item->totalprice);
                     		}
 
-                    		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Requested Payment')
+                    		if($item->paymentstatus=='Unpaid' || $item->paymentstatus=='Credit' || $item->paymentstatus=='Requested Payment')
                     		{
                     			$item->totalprice = str_replace( ',', '', $item->totalprice );
                     			$totalunpaid+= $item->totalprice;
@@ -455,7 +455,7 @@ function upload_attachment(receivedid,invoicenum)
                     		
                     		foreach($aginginvoices as $ainvoice){
 								  
-                    			if($ainvoice->paymentstatus=='Unpaid' || $ainvoice->paymentstatus=='Requested Payment')
+                    			if($ainvoice->paymentstatus=='Unpaid' || $ainvoice->paymentstatus=='Credit' || $ainvoice->paymentstatus=='Requested Payment')
                     			{  				
                     				
                     				if(@$ainvoice->discount_percent){

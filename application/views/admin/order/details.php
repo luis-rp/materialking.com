@@ -39,7 +39,7 @@ function paycc(ptype,company, amount)
 	$("#paymodal").modal();
 }
 
-function updateorderitemrecvd(orderitemid){
+function updateorderitemrecvd(orderitemid, quantity,itemid){
 	var received = 0;
 	if($('#isreceived'+orderitemid).is(':checked'))
 		received = 1;
@@ -47,13 +47,38 @@ function updateorderitemrecvd(orderitemid){
 		$.ajax({
             type:"post",
             url: updateorderitemreceivedurl,
-            data: "isreceived="+received+"&id="+orderitemid 
+            data: "isreceived="+received+"&id="+orderitemid+"&quantity="+quantity+"&itemid="+itemid  
         }).done(function(data){    
         	
         	if(data==1)
         	alert('item received status updated successfully!');
         	
         });
+}
+
+function viewitems2(itemid)
+{
+	var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
+	//alert(quoteid);
+	$("#quoteitemdetails").html('loading ...');
+
+	$.ajax({
+		type:"post",
+		url: serviceurl,
+	}).done(function(data){			
+		$("#quoteitemdetails").html(data);
+		$("#quoteitemdetails").css({display: "block"});
+		$("#quoteitemdetailsm").css({display: "block"});
+		$("#quoteitemdetailsm").removeClass("hide");
+		//$("#quoteitemdetailsm").modal();
+	});
+}
+
+function closepop()
+{
+	$("#quoteitemdetails").html('');
+	$("#quoteitemdetails").css({display: "none"});
+	$("#quoteitemdetailsm").css({display: "none"});
 }
 
 </script>
@@ -96,6 +121,7 @@ function updateorderitemrecvd(orderitemid){
 				    	$i = 0;
 				    	$gtotal = 0;
 				    	$imgName = '';
+				    	//echo '<pre>',print_r($orderitems);die;
 				    	foreach($orderitems as $item)
 				    	{
 				    		 if (isset($item->itemdetails->item_img) && file_exists('./uploads/item/' . $item->itemdetails->item_img)) 
@@ -112,14 +138,14 @@ function updateorderitemrecvd(orderitemid){
 				    		$i++;
 				      ?>
                         <tr>
-                            <td><?php echo $item->itemdetails->itemname;?></td>                          
+                            <td><a href="javascript:void(0)" onclick="viewitems2('<?php echo $item->itemdetails->itemid; ?>');"> <?php echo $item->itemdetails->itemname;?> </a></td>                                    
                             <td><?php echo $item->quantity;?></td>
                             <td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
                             <td><?php echo $item->companyName;?></td>
                             <td>$<?php echo $item->price;?></td>
                             <td>$<?php echo number_format($total,2);?></td>
                             <td><?php if($item->status=="Void") echo "Declined"; else echo $item->status;?></td>
-                            <td><input type="checkbox" onchange="updateorderitemrecvd(<?php echo $item->id;?>);" id="isreceived<?php echo $item->id;?>" <?php if($item->isreceived==1) echo "checked";?>/></td>
+                            <td><input type="checkbox" onchange="updateorderitemrecvd('<?php echo $item->id;?>','<?php echo $item->quantity;?>','<?php echo $item->itemid;?>');" id="isreceived<?php echo $item->id;?>" <?php if($item->isreceived==1) echo "checked";?>/></td>
                         </tr>
                       <?php } ?>
                       <?php 
@@ -331,7 +357,8 @@ Send Message:
  								$getshipping = $this->db->query($sql)->result();
  							
 							//$totamount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2);
- 				    		$totamount = number_format($item->amount + $getshipping[0]->shipping ,2);?> 
+ 				    		//$totamount = number_format($item->amount + $getshipping[0]->shipping ,2); 
+ 				    		$totamount = number_format($item->amount,2);?> 
                         <tr>
                             <td><?php echo $item->transferid;?></td>
                             <td><?php echo $item->companyname;?></td>
@@ -481,4 +508,14 @@ Send Message:
         </form>
 	</div>
     
+</div>
+ <div id="quoteitemdetailsm" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+        	
+            <div class="modal-header">
+        		<input style="float:right;margin-top:2px;" type="button" id="cls" name="cls" class="btn btn-green" value="close" onclick="closepop();" />
+        		
+        	</div>
+        	<div class="modal-body" id="quoteitemdetails">
+        	</div>
+            
 </div>

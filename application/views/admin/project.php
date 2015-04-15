@@ -20,6 +20,12 @@ $('body').on('keydown', '#title', function(e) {
 //-->
 </script>
 
+<style type="text/css">
+.error
+{
+	color:red;
+}
+</style>
         <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
         
 <section class="row-fluid" >
@@ -34,7 +40,7 @@ $('body').on('keydown', '#title', function(e) {
     <br/>
     
     <div class="control-group">
-	    <label class="control-label">Project Name *</label>
+	    <label class="control-label">Project Name <span style="color:red;"> *</span></label>
 	    <div class="controls">
 	      <input type="text" id="title" name="title" class="span4" value="<?php echo $this->validation->title; ?>">
 	      <?php echo $this->validation->title_error;?>
@@ -50,7 +56,7 @@ $('body').on('keydown', '#title', function(e) {
     </div>
     
     <div class="control-group">
-	    <label class="control-label">Address</label>
+	    <label class="control-label">Address <span style="color:red;"> *</span></label>
 	    <div class="controls">
 	      <textarea id="address" class="span7" rows="6" name="address" ><?php echo $this->validation->address; ?></textarea>
 	      <?php echo $this->validation->address_error;?>
@@ -58,7 +64,7 @@ $('body').on('keydown', '#title', function(e) {
     </div>
     
     <div class="control-group">
-	    <label class="control-label">Start Date *</label>
+	    <label class="control-label">Start Date  <span style="color:red;"> *</span></label>
 	    <div class="controls">
 	      <input type="text" id="startdate" name="startdate" class="span3" 
 	      data-date-format="mm/dd/yyyy"

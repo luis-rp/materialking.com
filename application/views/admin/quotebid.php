@@ -672,8 +672,12 @@ function showselectimage(){
 	$("#imgselect").html(imagehtml);	
 	$("#imgselectpos2").html(imagehtml);	
 }
-	
-	
+
+function addCostcode()
+{
+   var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
+   $("#ponum").val(costcodeprefix);
+}	
 </script>
 
 <style>
@@ -685,7 +689,7 @@ function showselectimage(){
 	padding-right: 10px;
 }
 </style>
-
+<?php // echo '<pre>',print_r($costcodesresult);die;?>
 <section class="row-fluid">
 	<h3 class="box-header"><?php echo $heading;?>  &nbsp;&nbsp;<!--<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/quote/bids/';?>">View Bids</a> - &nbsp;<a style="font-size:12px;font-weight:normal;" target="_blank" href="<?php echo site_url().'admin/message/messages/';?>">View Messages</a>--> </h3>
 	<div class="box">
@@ -694,7 +698,25 @@ function showselectimage(){
 		   <?php echo @$message; ?>
 		   <br/>
 		   <a class="btn btn-primary" href="<?php echo site_url('admin/quote/index/'.$pid);?>">&lt;&lt; Back</a>
-		   <br/>
+		   <br>
+		  
+		   <div class="control-group">
+			    <div class="controlss"> <?php if($iscostcodeprefix == 0) { ?>
+		   		&nbsp;&nbsp;	Use Cost Code Prefix:
+                 <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
+					   <option value="">Select</option>
+					   <?php 
+					   if(isset($costcodesresult) && count($costcodesresult) >0)
+					   {
+					   		foreach ($costcodesresult as $key=>$val)
+					   		{ ?>
+					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
+				<?php		}
+					   } ?>
+				  </select>
+			<?php } ?>	  
+		    </div>
+		   </div>  
 		   <form id="mainform" class="form-horizontal" method="post" action="<?php echo $action; ?>"> 
 		   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/> 
 		   <input type="hidden" name="pid" id="pid" value="<?php echo $pid;?>"/>
@@ -706,11 +728,11 @@ function showselectimage(){
 		   <input type="hidden" id="suna" name="suna" value=""/>
 		   <input type="hidden" id="una" name="una" value=""/>
 		   <input type="hidden" id="nonnetworkuser" name="nonnetworkuser" value=""/>
-		   <br/>
+		  
 		    
 		    <div class="control-group">
 			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
-                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" value="<?php echo $this->validation->ponum; ?>" required>
+                  <input type="text" id="ponum" name="ponum" style="width: 21%" class="input small" value="<?php echo $this->validation->ponum; ?>" required>
 			      
 			      &nbsp; &nbsp; 
 			      <?php if(0){?>

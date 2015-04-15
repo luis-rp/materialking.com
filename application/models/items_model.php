@@ -896,7 +896,7 @@ class items_model extends Model {
            $where = " AND " . implode(' AND ', $where) . " ";
         
             $query = "SELECT itemcode, itemname,item_img FROM ".$this->db->dbprefix('item').' i where 1=1 
-            AND purchasingadmin ='.$this->session->userdata('id').''. $where;
+            AND (purchasingadmin ='.$this->session->userdata('id').' OR purchasingadmin =1 Or purchasingadmin = null ) '. $where;
         	$result = $this->db->query($query)->result();
         $items = array();
 		//echo "<pre>",print_r($result);  die;

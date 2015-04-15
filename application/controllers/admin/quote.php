@@ -699,6 +699,11 @@ class quote extends CI_Controller
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();  
 
+ 		$costcodesql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' ";
+ 		$data['costcodesresult'] = $this->db->query($costcodesql)->result();  
+ 		
+ 		$data['iscostcodeprefix'] = 0 ;
+ 		//echo '<pre>',print_r($data);die;
         if ($this->session->userdata('defaultdeliverydate'))
             $this->validation->deliverydate = $this->session->userdata('defaultdeliverydate');
         $this->validation->potype = $potype;
@@ -761,6 +766,10 @@ class quote extends CI_Controller
             redirect('admin/dashboard', 'refresh');
         }
 
+        $pid = $this->session->userdata('managedprojectdetails')->id;
+        $costcodesql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' ";
+ 		$data['costcodesresult'] = $this->db->query($costcodesql)->result();  
+ 		$data['iscostcodeprefix'] = 1 ;
         $data['quote'] = $item;
         $this->validation->id = $id;
         $this->validation->pid = $data['pid'] = $item->pid;
@@ -1149,7 +1158,15 @@ class quote extends CI_Controller
                 } 
 
             }
-			
+			$sumofpurchase="SELECT SUM(totalprice) AS Total FROM ".$this->db->dbprefix('awarditem')." WHERE purchasingadmin='".$this->session->userdata('id')."'";
+			$tot=$this->db->query($sumofpurchase)->row();
+			if(isset($tot) && $tot!="")
+			{
+				$totalaccountspend='$'.number_format($tot->Total,2);
+			}
+			else {
+				$totalaccountspend='$0';
+			}
                        
             if ($invitees)
             {
@@ -1169,23 +1186,27 @@ class quote extends CI_Controller
                     );
 
                     $this->quote_model->db->insert('invitation', $insertarray);
-
                     $link = base_url() . 'home/quote/' . $key;
-                    $data['email_body_title']= "Dear " . $c->title;
-					
+                    $loginlink = "";
+                    $data['email_body_title']= "Dear, " .$c->title;					
                     $data['email_body_content'] = "";
-                    
+                   
                     if(isset($limitcompany))
                     {
                     	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
                     	{                  		
-                    		$data['email_body_content'] .= " You were Invited By: <br>Contact Name :{$this->session->userdata('fullname')}  <br> Company Name :{$this->session->userdata('companyname')} <br> Address :{$this->session->userdata('address')} <br /><br />";
-                    			
-                    		$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+                    		$data['email_body_content'] .= " You have received an invitation to join ({$this->session->userdata('companyname')}) procurement network.<br />Your Invitation is from user '{$this->session->userdata('fullname')}'.<br /><br />The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network today.<br /><br />The Company '{$this->session->userdata('companyname')}' Details : <br /><strong>Contact Name : {$this->session->userdata('fullname')} <br> Address : {$this->session->userdata('address')} <br />Total Account Spend : {$totalaccountspend}</strong><br /><br />Your login details are as Follow<br /> <strong>Username : {$limitcompany[$c->id]['username']}  <br> Password : {$limitcompany[$c->id]['password']} </strong><br><br> ";
+                    		 $loginlink = base_url() . 'company/login/' . $this->session->userdata('id');
                     	}
-                    }
-                    
-				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " :  <br><br>
+                    }                   
+				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " ";
+				  	
+				  	if(isset($loginlink) && $loginlink!="")
+		  			{
+		  				$data['email_body_content'] .= "or <a href='$loginlink' target='blank'>click here</a> to login.";
+		  			}
+				  	
+				  	$data['email_body_content'] .= "<br /><br />
 				    <a href='$link' target='blank'>$link</a>.<br><br/>
 				    Please find the details below:<br/><br/>
 		  	        $emailitems
@@ -1906,7 +1927,6 @@ class quote extends CI_Controller
     function assignpo()
     {
         $post = $this->input->post();
-		//echo "<pre>",print_r($post); die;
         if (!$post)
             die;
         $quote = $this->quote_model->get_quotes_by_id($post['id']);
@@ -2080,23 +2100,25 @@ class quote extends CI_Controller
             );
 
             $this->quote_model->db->insert('invitation', $insertarray);
-
             $link = base_url() . 'quote/direct/' . $key;
-
-            $data['email_body_title'] = "Dear " . $c->title ;
-            
+            $data['email_body_title'] = "Dear " . $c->title ;            
             $data['email_body_content'] = "";
-            
-            if(isset($limitcompany)){
-            	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password']){
-
-            		$data['email_body_content'] .= " Your Account is created successfully, Please note your login details: <br> <br> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+            $loginlink="";
+            if(isset($limitcompany))
+            {
+            	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
+            	{
+            		$data['email_body_content'] .= "The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network. <br />Your login Details: <br /> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
+            		$loginlink = base_url() . 'company/login/' . $this->session->userdata('id');
             	}
             }           
-            
-
-		  		$data['email_body_content'] .= "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):  <br><br>
-		    <a href='$link' target='blank'>$link</a><br><br>
+          
+		  	$data['email_body_content'] .= "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):";
+		  	if(isset($loginlink) && $loginlink!="")
+		  	{
+		  		$data['email_body_content'] .= "or <a href='$loginlink' target='blank'>click here</a> to login.";
+		  	}
+		    $data['email_body_content'] .= "<br /><br /><a href='$link' target='blank'>$link</a><br><br>
 		    The PO Details are:<br><br>
 		    $emailitems
 		    ";
@@ -2560,7 +2582,8 @@ class quote extends CI_Controller
 				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
 				$insertarray['ismanual'] = @$_POST['ismanual'.$key]?@$_POST['ismanual'.$key]:0;
 				$insertarray['notes'] = @$_POST['s_notes'.$key]?@$_POST['s_notes'.$key]:'';
-				$insertarray['itemid'] = $key;
+				//$insertarray['itemid'] = $key;
+				//$insertarray['itemid'] = "";
 				
 				if(!@$_POST['nobid'.$key])
 				{

@@ -229,7 +229,12 @@ class Company extends CI_Controller {
         redirect('dashboard');
     }
 
-    function login() {
+    function login($id="") {
+    	if(isset($id) && $id!="")
+    	{
+    		$userdata=$this->db->get_where('users',array('id'=>$id))->row();
+    	  	$data['sms'] = "You were invited by (".$userdata->fullname.") to join ".$userdata->companyname." e-procurement network";
+    	}
         $data['message'] = '';
         $this->load->template('../../templates/front/register', $data);
         $this->load->view('company/login', $data);
@@ -2585,8 +2590,12 @@ class Company extends CI_Controller {
 	         { 
 	            $arr = array('purchasingadmin' => $admin, 'company' => $company->id);
 	            $this->db->where($arr);
-	            $this->db->delete('invoice_cycle');
-	            
+	            $result = $this->db->get('invoice_cycle');
+	            if($result){
+	            	$arr = array('purchasingadmin' => $admin, 'company' => $company->id);
+	            	$this->db->where($arr);
+	            	$this->db->delete('invoice_cycle');
+	            }
 	            if($_POST['discount_percent'][$admin])
 	            $arr['discount_percent'] = $_POST['discount_percent'][$admin];
 	            
@@ -2594,10 +2603,10 @@ class Company extends CI_Controller {
 	            
 	            if($_POST['duedate'][$admin])
 	            {
-	            	$arr['duedate'] = date('Y-m-d', strtotime($_POST['duedate'][$admin]));
-	            	$arr = array('purchasingadmin' => $admin, 'company' => $company->id);
-	            	$this->db->where($arr);
+	            	$arrs = array('purchasingadmin' => $admin, 'company' => $company->id);	            	           	
+	            	$this->db->where($arrs);
 	            	$this->db->update('purchasingtier',array('creditonly'=>'0'));
+	            	$arr['duedate'] = date('Y-m-d', strtotime($_POST['duedate'][$admin]));
 	            }
 	            
 	            if($_POST['term'][$admin])

@@ -1,7 +1,8 @@
 <div class="container">
   <div class="row login-container animated fadeInUp">  
         <div class="col-md-7 col-md-offset-2 tiles white no-padding">
-		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10"> 
+		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10">
+		 <p><strong><?php if(isset($sms)) echo $sms;?></strong></p> 
 		 <h2 class="normal">Welcome To EZPZP</h2>
           <h2 class="normal">Login To Your Account</h2>
           <p class="p-b-20 general">Enter Your Username and Password 
@@ -10,13 +11,13 @@
           <?php if($message){?>
           		<div class="alert alert-error col-md-11">
                   <button data-dismiss="alert" class="close"></button>
-                  <?php echo $message;?>
+                  <?php  echo $message; ?>
                 </div>
                 <p>&nbsp;</p><br/>
-          <?php }?>
+          <?php  }?>
         </div>
         
-        <?php echo $this->session->flashdata('message'); ?>
+        <?php if(!isset($sms)) { echo $this->session->flashdata('message'); }?>
         
 		<div class="tiles grey p-t-20 p-b-20 text-black">
 			  <form id="frm_login" name="frm_login" class="animated fadeIn" method="post" action="<?php echo site_url('company/checklogin');?>">

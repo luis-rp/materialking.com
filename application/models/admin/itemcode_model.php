@@ -392,9 +392,9 @@ class itemcode_model extends Model {
             $result = $query->result();
             $ret = array();
             foreach ($result as $item) {
-                $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+                /*$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
                 $this->db->where('company', $item->company);
-                if ($this->db->get('network')->result()) {
+                if ($this->db->get('network')->result()) {*/
                 	
                 	$wherecode = "";	
                 	if(@$this->session->userdata('managedprojectdetails')->id){
@@ -487,7 +487,7 @@ class itemcode_model extends Model {
                 	
                 	
                     $ret[] = $item;
-                }
+               // }
             }
             
             return $ret;
@@ -537,25 +537,28 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c,
 				" . $this->db->dbprefix('quoteitem') . " qi,
-				" . $this->db->dbprefix('quote') . " q
+				" . $this->db->dbprefix('quote') . " q,
+				" . $this->db->dbprefix('awarditem') . " ai
 				WHERE
 				m.company=c.id AND m.itemid='$itemid' 
 				AND qi.itemid = m.itemid AND qi.purchasingadmin = m.purchasingadmin
 				AND q.id = qi.quote AND qi.purchasingadmin = m.purchasingadmin
+				AND ai.company = c.id
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
+				AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
 				GROUP By c.id";
-        //echo '<pre>', $sql; 
+      //  echo '<pre>', $sql; 
         $query = $this->db->query($sql);
         if ($query->num_rows > 0) {
             $result = $query->result();
             $ret = array();
             foreach ($result as $item) {
-                $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+               /* $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
                 $this->db->where('company', $item->company);
                 $this->db->where('status', 'Active');
-                if ($this->db->get('network')->result()) {
+                if ($this->db->get('network')->result()) {*/
                     $ret[] = $item;
-                }
+               // }
             }
             return $ret;
         }

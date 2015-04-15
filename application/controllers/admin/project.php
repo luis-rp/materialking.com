@@ -200,6 +200,7 @@ class project extends CI_Controller
 	function _set_rules()
 	{
 		$rules ['title'] = 'trim|required';
+		$rules ['address'] = 'trim|required';
 
 		$this->validation->set_rules ( $rules );
 

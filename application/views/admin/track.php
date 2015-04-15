@@ -600,7 +600,7 @@ function closepop()
             <?php echo @$message; ?>
             <div class="control-group">
                 <div class="controls">
-                        <?php if ($awarded->status == 'incomplete') { ?>
+                        <?php // if ($awarded->status == 'incomplete') { ?>
                         <div class="pull-right">
                             Mark completed for All items of:
                             <select id="combocompany" onchange="selectbycompany();">
@@ -610,7 +610,7 @@ function closepop()
                                     <?php } ?>
                             </select>
                         </div>
-                        <?php } ?>
+                        <?php // } ?>
                     <span class="label label-pink"><?php echo $awarded->status; ?></span>
                     <strong>
                         PO #:<?php echo $quote->ponum; ?>
@@ -685,19 +685,19 @@ function closepop()
 			                        <th width="100px">Notes</th>
 			                        <th width="100px">Still Due</th>
 			                        <th width="150px">History</th>
-			                        <?php if ($awarded->status == 'incomplete') { ?>
+			                        <?php // if ($awarded->status == 'incomplete') { ?>
 			                        <th width="120px">Received Qty.</th>
 			                        <th width="150px">Invoice #</th>
 			                        <th width="100px">Date Received</th>
 			                        <th width="100px">Complete&nbsp;<input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
 			                        <th width="150px">Error</th>
-			                        <?php } ?>
+			                        <?php // } ?>
 			                   </tr>
-			                   <?php if ($awarded->status == 'incomplete') { ?>
+			                   <?php // if ($awarded->status == 'incomplete') { ?>
                         			<form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
                            		 	<input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             		<input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
-                        		<?php }
+                        		<?php // }
 								$counter_kk = 1;
 								$billcnt = 0;
 								$alltotal = 0; $cnt = count($awarded->items); 
@@ -849,8 +849,8 @@ function closepop()
                                 <?php }?>
 								</td>
 								
-                                <?php if ($awarded->status == 'incomplete') { ?>
-                                    <td><input type="text" <?php if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
+                                <?php // if ($awarded->status == 'incomplete') { ?>
+                                    <td><input type="text" <?php // if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>                                    	
                                     </td>
@@ -870,16 +870,16 @@ function closepop()
 
                                     } }?>
                                         <input type="text" id="invoicenum<?php echo $q->id; ?>" name="invoicenum<?php echo $q->id; ?>"
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10"';
-                                               else echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
+                                               <?php // if ($q->quantity - $q->received == 0) echo 'readonly class="span10"'; else 
+                                    				echo 'class="span10 invoicenum" onchange="defaultinvoicenum(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
                                               value="<?php // if(@$isupfrontinvoice==1) echo "paid-in-full-already".$awarded->id; ?>" <?php // if(@$isupfrontinvoice==1) echo "readonly"; ?>
                                                onchange="defaultinvoicenum('<?php echo $q->id; ?>');" style="width:100%;"/>
                                     </td>
                                     
                                     <td>
                                         <input type="text" id="receiveddate<?php echo $q->id; ?>" name="receiveddate<?php echo $q->id; ?>"
-                                               <?php if ($q->quantity - $q->received == 0) echo 'readonly class="span10" ';
-                                               else echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
+                                               <?php // if ($q->quantity - $q->received == 0) echo 'readonly class="span10" '; else 
+                                    				echo ' class="span10 datefield receiveddate" onchange="defaultreceiveddate(\''.$q->id.'\',\''.$cnt.'\');"'; ?>
                                                value="<?php if(@$q->datereceived) echo date("m/d/Y",strtotime($q->datereceived)); //if ($this->session->userdata('defaultreceiveddate')) echo $this->session->userdata('defaultreceiveddate'); ?>"
                                                data-date-format="mm/dd/yyyy"/>
                                     </td>
@@ -900,7 +900,7 @@ function closepop()
                                         </select>
                                     </td>
                                     
-                            		<?php } ?>
+                            		<?php // } ?>
                             </tr>
                         <?php  }  ?>
 	                        </table>
@@ -908,23 +908,15 @@ function closepop()
                     </td> 
                    </tr>
                                    
-                      <?php if ($awarded->status == 'incomplete') { ?>
+                      <?php // if ($awarded->status == 'incomplete') { ?>
                             <tr>                              
                                 <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete">&nbsp;
                                 <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
                             </tr>
                         </form>
-                    <?php } 
-                  
-                   
-                    if($awarded->invoices){
-                    	foreach ($awarded->invoices as $invoice) {
-							if(@$invoice->invoice_type == "error"){ 
-								$alltotal = $alltotal + $invoice->totalprice;
-							}	
-                    	}
-                    }
+                    <?php // }                 
+                    
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;
                     ?>
@@ -1164,7 +1156,7 @@ function closepop()
                                     </td>
                                 </tr>
                                  <?php
-                                if(@$invoice->invoice_type != "error"){ 
+                               
                                 $f1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                 $f_total +=$f1_total;
                                 if($invoice->paymentstatus=='Paid')
@@ -1172,12 +1164,17 @@ function closepop()
                                    $p1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                    $p_total +=$p1_total;
                                 }
-                                 if($invoice->paymentstatus=='Unpaid')
+                                if($invoice->paymentstatus=='Unpaid')
                                 {
                                 	 $u1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
                                      $u_total +=$u1_total;
                                 }
+                                if($invoice->paymentstatus=='Credit')
+                                {
+                                	 $u1_total=$invoice->totalprice+$invoice->totalprice * $config['taxpercent'] / 100;
+                                     $u_total +=$u1_total;
                                 }
+                                
                                 } ?>
                                <tr><td style="text-align:right;">Total:</td><td><?php echo "$ ".number_format($f_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
                                 <tr><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".number_format($p_total ,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>

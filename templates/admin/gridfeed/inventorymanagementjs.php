@@ -98,7 +98,7 @@ $(document).ready(function () {
     	delay: 250
     });
     
-    $('#MyGrid').datagrid({
+    $('#MyGridNew').datagrid({
     	dataSource: dataSource,
     	stretchHeight: true
     });

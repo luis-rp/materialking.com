@@ -186,7 +186,7 @@ tr.still-due td
 
                                 <tbody>
     				              <?php
-    						    	$i = 0;
+    						    	$i = 0; $remaining =0;
     						    	//echo '<pre>',print_r($awarditems);die;
     						    	foreach($awarditems as $ai)
     						    	{
@@ -256,7 +256,7 @@ tr.still-due td
                                         	<?php }?>
                                         </td>
                                     </tr>
-                                  <?php } ?>
+                                  <?php $remaining += (@$ai->quantity - @$ai->received);  } ?>
                                 </tbody>
                             </table>
                     </div>
@@ -274,7 +274,7 @@ tr.still-due td
 			<input type="hidden" name="purchasingadmin" value="<?php echo $quote->purchasingadmin;?>">
 			<input type="file" name="filename">
 			<br/>
-			<input type="submit" class="btn btn-primary" value="Send Shipment"/>
+			<?php if(@$remaining>0){ ?><input type="submit" class="btn btn-primary" value="Send Shipment"/><?php } ?>
                     </div>
                  </div>
              </div>

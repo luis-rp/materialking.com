@@ -314,44 +314,21 @@ class Register extends CI_Controller
 			die;
 		if(!@$_POST['regkey'])
 			die('Wrong access');
-		$errormessage = '';
-		
-			$completeaddress="";
-            if($_POST['street'])
-            {
-            	$completeaddress.=$_POST['street'].",";
-            }
-            if($_POST['city'])
-            {
-            	$completeaddress.=$_POST['city'].",";
-            }
-            if($_POST['state'])
-            {
-            	$completeaddress.=$_POST['state'].",";
-            }
-            if($_POST['zip'])
-            {
-            	$completeaddress.=$_POST['zip'];
-            }
-
-        $_POST['address'] = $completeaddress;
-        $_POST['category'] = $_POST['category'];
-		
+		$errormessage = '';    
+        $_POST['category'] = $_POST['category'];		
 		$regkey = $_POST['regkey'];
 		$this->db->where('regkey',$regkey);
 		$u = $this->db->get('users')->row();
 		
-		if(!preg_match("/^([0-9]{5})(-[0-9]{4})?$/i",$_POST['zip']))
-		{
-			$errormessage="Please Enter valid(5 or 5-4) combination of Zip Code";
-		}		
+		
 		$coreemail = $u->email;
 		$coreemailids = $u->id;
 		if(!$u)
 		{
 			$errormessage = 'Invalid Key.';
 		}
-		if(!@$_POST['username']||!@$_POST['password']||!@$_POST['repassword']||!@$_POST['city'] || !@$_POST['state'])
+		//if(!@$_POST['username']||!@$_POST['password']||!@$_POST['repassword']||!@$_POST['city'] || !@$_POST['state'])
+		if(!@$_POST['username']||!@$_POST['password']||!@$_POST['repassword'])
 		{
 			$errormessage = 'Please Fill up all the fields.';
 		}
@@ -396,10 +373,36 @@ class Register extends CI_Controller
     		$geocode = file_get_contents(
             "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
             $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
+            {
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
+            }
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
+            {
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
+            }
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
+            {
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
+            }
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
+            {
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
+            }
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
             
             $_POST['user_lat'] = @$output->results[0]->geometry->location->lat;
             $_POST['user_lng'] = @$output->results[0]->geometry->location->lng;
 		}
+		
 		$this->db->where('regkey',$regkey);
 		$this->db->update('users',$_POST);
 		
@@ -426,9 +429,7 @@ class Register extends CI_Controller
 		$settings = (array)$this->settings_model->get_setting_by_id (1);
 		$settings['purchasingadmin'] = $u->id;
 		$settings['adminemail'] = $u->email;
-		
-		//$this->db->insert('settings',$settings);
-		
+				
 		$data = array(
 				'purchasingadmin' => $u->id ,
 				'adminemail' => $u->email ,

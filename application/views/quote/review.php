@@ -386,6 +386,7 @@ function setcompanypriceprompt2(companyid,itemid,purchasingadmin,quote,id){
 
 function checkprice(){
 	var is_price_correct = 1;
+	var ispending = 1;
 	$(".statusradio").each(function(){		
 		var radio_id = $(this).attr('name');		
 		radio_id = radio_id.replace('[', '');
@@ -401,8 +402,15 @@ function checkprice(){
 				return false;
 			}
 		}
+		
+		if(cur_value=="Pending"){
+			alert("Please Either Reject or Accept Items before Saving P.O");
+			ispending=0;
+			return false;
+		}
+		
 	});
-	if(is_price_correct==1)
+	if(is_price_correct==1 && ispending==1)
 		$("#olditemform").submit();
 }
 
