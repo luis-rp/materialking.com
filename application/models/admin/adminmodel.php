@@ -183,12 +183,15 @@ class adminmodel extends Model
 	
 	function update() 
 	{
-		
-		
 		$options = $this->input->post();
 		if(@$options['password'])
 			$options['password'] = md5($options['password']);
 		unset($options['_wysihtml5_mode']);
+		if($this->session->userdata('usertype_id') != 1)
+		{
+			unset($options['status']);
+			unset($options['profile']);
+		}
 		$id = $options['id'];
 		//print_r($options);die;
 		/*

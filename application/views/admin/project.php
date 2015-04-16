@@ -1,3 +1,8 @@
+  
+
+
+
+
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -18,6 +23,14 @@ $('body').on('keydown', '#title', function(e) {
   
 });
 //-->
+
+function checkEnter(event)
+{ 
+	if (event.keyCode == 13) 
+   {
+       return false;
+    }
+}
 </script>
 
 <style type="text/css">
@@ -26,7 +39,11 @@ $('body').on('keydown', '#title', function(e) {
 	color:red;
 }
 </style>
-        <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+       
+<script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
+<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script> 
+
         
 <section class="row-fluid" >
 	<h3 class="box-header"><?php echo $heading; ?></h3>
@@ -56,12 +73,48 @@ $('body').on('keydown', '#title', function(e) {
     </div>
     
     <div class="control-group">
-	    <label class="control-label">Address <span style="color:red;"> *</span></label>
+	    <label class="control-label">Address</label>
 	    <div class="controls">
-	      <textarea id="address" class="span7" rows="6" name="address" ><?php echo $this->validation->address; ?></textarea>
+	     <span style="font-weight:bold;">Start typing an address and select from the dropdown.</span><br />                
+          <input type="text" class="span7" id="address" name="address" autocomplete="off" onkeydown="return checkEnter(event);" > 	   
 	      <?php echo $this->validation->address_error;?>
 	    </div>
     </div>
+    
+     <?php if(isset($this->validation->projectlat) && $this->validation->projectlat!="")
+         {
+         	$lat=$this->validation->projectlat;
+         }
+         else 
+         {
+         	$lat=34.167139;
+         }
+         
+         if(isset($this->validation->projectlang) && $this->validation->projectlang!="")
+         {
+         	$lang=$this->validation->projectlang;
+         }
+         else 
+         {
+         	$lang=-118.434677;
+         } ?>
+    
+    <div id="map-container">
+		<div id="map-canvas"></div>
+        
+							<script>
+                                $('#map-canvas').locationpicker({
+                                location: {latitude:<?php echo $lat; ?>, longitude:<?php echo $lang; ?>},	
+                                radius: 600,
+                                inputBinding: {
+                                    latitudeInput: $('#latitude'),
+                                    longitudeInput: $('#longitude'),
+                                    locationNameInput: $('#address')        
+                                },
+                                enableAutocomplete: true,                              
+                                });
+							</script>     
+                   </div>
     
     <div class="control-group">
 	    <label class="control-label">Start Date  <span style="color:red;"> *</span></label>

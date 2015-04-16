@@ -46,7 +46,9 @@ class project_model extends Model
 			'description'=>$this->input->post('description'),
 			'address'=>$this->input->post('address'),
 			'startdate'=>$this->input->post('startdate'),
-			'creation_date' => date('Y-m-d')
+			'creation_date' => date('Y-m-d'),
+			'projectlat'=>$_POST['projectlat'],
+			'projectlang'=>$_POST['projectlang']
 		);
 		$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 		$this->db->insert('project', $options);
@@ -58,9 +60,11 @@ class project_model extends Model
 	{
 		$options = array(
 			'title'=>$this->input->post('title'),
-			'description'=>$this->input->post('description'),
+			'description'=>$this->input->post('description'), 
 			'address'=>$this->input->post('address'),
-			'startdate'=>$this->input->post('startdate')
+			'startdate'=>$this->input->post('startdate'),
+			'projectlat'=>$_POST['projectlat'],
+			'projectlang'=>$_POST['projectlang']
 		);
 		
 		$this->db->where('id', $this->input->post('id'));

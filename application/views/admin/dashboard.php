@@ -3,7 +3,12 @@
 .gm-style img { max-width: 20%; }
 .gm-style label { width: auto; display: inline; }
 </style>-->
-
+<!-- Added below style for displaying the map zoom control properly -->
+<style>
+.gmnoprint img {
+    max-width: none; 
+}
+</style>
 <?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <?php if($this->session->userdata('managedprojectdetails')){?>
@@ -26,9 +31,14 @@
 
 
 		 var d_pie = [];
-		  <?php $i=0; foreach($costcodesjson as $cj){?>
+		  <?php $i=0; 
+		  if(@$costcodesjson){
+		  foreach($costcodesjson as $cj)
+		  {?>
 		  d_pie[<?php echo $i;?>]= [ "<?php echo $cj->label;?>",  <?php echo $cj->data;?> ];
-		  <?php $i++;}?>
+		  <?php $i++;} } else { ?>
+		   d_pie[0]= [ "No Pie Chart Data Available For This Project",  <?php echo "10";?> ];
+		  <?php }?>
 
 		    $('#chart_pie').highcharts({
 		        chart: {
@@ -409,17 +419,18 @@
 			<?php if($this->session->userdata('managedprojectdetails')){?>    	
 	    	<div class="well span11" style="width:75% !important;">
 	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
-			    		<?php if(@$costcodesjson){?>
+			    		<?php //if(@$costcodesjson){?>
 			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
 					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
 						    </div>
 			    		
 			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
-			    		<?php } else {?>		
+			    		<!--<?php //} else {?>		
 			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
-			    			<img src="<?php echo base_url(); ?>templates/admin/images/nopie.png"/>
+			    			<img src="<?php echo base_url(); ?>templates/admin/images/3d_pie_chart.jpg"/>
+			    			<!--<img src="<?php echo base_url(); ?>templates/admin/images/Free-Pie-Chart-PSD-Template.jpg"/>3d_pie_chart-->
 			    			</div>            
-	    				<?php }?>    		 		
+	    				<?php //}?>   		
 	    	</div>
 			<?php }else{?>	
 			<div class="well span11" style="width:75% !important;">			
@@ -439,13 +450,13 @@
 				<table class="table table-bordered stat">
 	   			<tr>
 	   			<td>1.</td>
-	   			<td>Number of Project</td>
+	   			<td>Number of Projects</td>
 	   			<td><span class="badge badge-blue"><?php echo count($projects);?></span> </td>
 	   			</tr>
 
 	   			<tr>
 	   			<td>2.</td>
-	   			<td>Number of Cost Code</td>
+	   			<td>Number of Cost Codes</td>
 	   			<td><span class="badge"><?php echo count($costcodes);?></span> </td>
 	   			</tr>
 
@@ -487,7 +498,7 @@
 	   			<?php if($this->session->userdata('usertype_id') == 1){?>
 	   			<tr>
 	   			<td>6.</td>
-	   			<td>Number of Companies:</td>
+	   			<td>Number of Companies</td>
 	   			<td><span class="badge badge-info"> <?php echo count($companies);?></span></td>
 	   			</tr>
 	   			<?php }?>

@@ -56,9 +56,25 @@ class Admin extends CI_Controller {
 		$this->table->set_empty ( "&nbsp;" );
 		$this->table->set_heading ( 'ID', 'Full Name', 'Login Type','Position', 'User Name','Email','Company Name', 'Created Date', 'Last Logged', 'Profile','Status', 'Actions' );
 		$i = 0 + $offset;
+		
+		
 		if(isset($adminusers)) {
 		foreach ($adminusers as $adminuser)
 		{
+			if($this->session->userdata('usertype_id')=='1')
+			{
+			$on=anchor ('admin/admin/profileoff/' . $adminuser->id,'<span class="icon-2x icon-remove-sign"></span>',array ('class' => 'disapprove'));
+			$off=anchor ( 'admin/admin/profileon/' . $adminuser->id, '<span class="icon-2x icon-ok"></span>', array ('class' => 'approve'));
+			$Active=anchor ('admin/admin/deactivate/' .$adminuser->id,'<span class="icon-2x icon-remove-sign"></span>',array ('class' => 'disapprove'));
+			$Inactive=anchor ( 'admin/admin/activate/' . $adminuser->id, '<span class="icon-2x icon-ok"></span>', array ('class' => 'approve' ) );
+			}
+			else 
+			{
+			$on='';
+			$off='';
+			$Active='';			
+			$Inactive='';
+			}
 				$this->table->add_row ( ++ $i,
 			    $adminuser->fullname,
 			    $adminuser->userType,
@@ -68,21 +84,8 @@ class Admin extends CI_Controller {
 			    $adminuser->companyname,
 				$adminuser->created_date?date("m/d/Y h:i A", strtotime($adminuser->created_date)):'',
 				$adminuser->last_logged_date?date("m/d/Y h:i A", strtotime( $adminuser->last_logged_date)):'',
-			    $adminuser->profile == '1'
-			    ?
-			    'On&nbsp;&nbsp;'
-			    .anchor ('admin/admin/profileoff/' . $adminuser->id,'<span class="icon-2x icon-remove-sign"></span>',array ('class' => 'disapprove' ) )
-			    :
-			    'Off&nbsp;&nbsp;'
-			    .anchor ( 'admin/admin/profileon/' . $adminuser->id, '<span class="icon-2x icon-ok"></span>', array ('class' => 'approve' ) ),
-			    $adminuser->status == '1'
-			    ?
-			    'Active&nbsp;&nbsp;'
-			    .anchor ('admin/admin/deactivate/' . $adminuser->id,'<span class="icon-2x icon-remove-sign"></span>',array ('class' => 'disapprove' ) )
-			    :
-			    'Inactive&nbsp;&nbsp;'
-			    .anchor ( 'admin/admin/activate/' . $adminuser->id, '<span class="icon-2x icon-ok"></span>', array ('class' => 'approve' ) )
-			    ,
+			    $adminuser->profile == '1'?'On&nbsp;&nbsp;'.$on:'Off&nbsp;&nbsp;'.$off,
+			    $adminuser->status == '1'?'Active&nbsp;&nbsp;'.$Active:'Inactive&nbsp;&nbsp;'.$Inactive,
 			    anchor ('admin/admin/update/' . $adminuser->id, '<span class="icon-2x icon-edit"></span>', array ('class' => 'update' ) )
 			    . ' ' .
 			    anchor ('admin/admin/changepwd/' . $adminuser->id, '<span class="icon-2x icon-key"></span>', array ('class' => 'update' ) )
@@ -166,12 +169,12 @@ class Admin extends CI_Controller {
 	}
 
 	function addAdminuser()
-	{
-		
+	{		
 		if($this->session->userdata('usertype_id')==3)
 		{
 			redirect('admin/dashboard', 'refresh');
 		}
+		
 		$data ['message'] = '';
 		$data ['userarrays'] = $this->adminmodel->getUserType ();
 		$data ['title'] = 'Add New Admin User';
@@ -180,48 +183,43 @@ class Admin extends CI_Controller {
 		$this->_set_fields ();
 		$this->_set_rules ();
 
-		if ($this->validation->run () == FALSE) {
-			$data ['message'] = '';
+		if ($this->validation->run () == FALSE) 
+		{
+			$data ['message'] = 'Please Fill Correct data';
 			$this->load->view ( 'admin/adminEdit', $data );
-		} else {
+		} 
+		else 
+		{
 			$extName = $this->adminmodel->getAdminuserName ( $this->input->post ('username') );
 
-			if ($extName == $this->input->post ('username')) {
+			if ($extName == $this->input->post ('username')) 
+			{
 				$data ['message'] = '<div class="already">Username Already Exists.</div>';
 				$this->load->view ('admin/adminEdit', $data);
-			} else {
-							
-				$created_date = date ( "Y-m-d h:i:s" );
-                //$geoloc = $this->company_model->getLatLong( $this->input->post ( 'address' ));
-
+			} 
+			else 
+			{						
+				$created_date = date ( "Y-m-d h:i:s" );     
 				$id = $this->adminmodel->save();
 				$this->validation->id = $id;
-			//	if($this->session->userdata('usertype_id')==2)			{
-					$settings = (array)$this->settings_model->get_current_settings ();
-				    $this->load->library('email');
-				    $config['charset'] = 'utf-8';
-				    $config['mailtype'] = 'html';
-				    $this->email->initialize($config);
-					//$this->email->clear(true);
-			        $this->email->from($settings['adminemail'], "Administrator");
-			        $this->email->to($_POST['email']);
-			        $link = '<a href="'.site_url('admin').'">Login</a>';
-			        $data['email_body_title'] = "Dear ".$_POST['fullname'];
-/*$data['email_body_content'] = "Your account is created with following details <br/><br/>*/
-$data['email_body_content'] = "(".$this->session->userdata('fullname').") Has created an account for you at materialking.com, you now have to access your account using your username and password below. <br/><br/>
-Username: {$_POST['username']}<br/><br/>
-Password: {$_POST['password']}<br/><br/>
-You can login from:<br/><br/>
-$link";
-
-$loaderEmail = new My_Loader();
-			$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-		    $this->email->subject("EZPZ-P Account Created");
-	        $this->email->message($send_body);
-	        $this->email->set_mailtype("html");
-	        //echo "<pre>"; print_r($this->email); die;
-	        $this->email->send();
-				//}
+				$settings = (array)$this->settings_model->get_current_settings ();
+				$this->load->library('email');
+				$config['charset'] = 'utf-8';
+				$config['mailtype'] = 'html';
+				$this->email->initialize($config);
+			    $this->email->from($settings['adminemail'], "Administrator");
+			    $this->email->to($_POST['email']);
+			    $link = '<a href="'.site_url('admin').'">Login</a>';
+			    $data['email_body_title'] = "Dear ".$_POST['fullname'];
+				$data['email_body_content'] = "(".$this->session->userdata('fullname').") Has created an account for you at materialking.com, 
+				you now have to access your account using your username and password below. <br/><br/>
+				Username: {$_POST['username']}<br/><br/>Password: {$_POST['password']}<br/><br/>You can login from:<br/><br/>$link";
+				$loaderEmail = new My_Loader();
+				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+			    $this->email->subject("EZPZ-P Account Created");
+		        $this->email->message($send_body);
+		        $this->email->set_mailtype("html");
+		        $this->email->send();				
 				$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">User Added Successfully</div></div>');
 				redirect ( 'admin/admin/index/', 'refresh' );
 			}
@@ -473,8 +471,11 @@ $loaderEmail = new My_Loader();
 	{
 		$rules ['username'] = 'trim|required';
 		$rules ['email'] = 'trim|required';
+		if($this->session->userdata('usertype_id') == 1) 
+		{
 		$rules ['status'] = 'trim|required';
 		$rules ['profile'] = 'trim|required';
+		}
 		$rules ['fullname'] = 'trim|required';
 		$rules ['position'] = 'trim';
 

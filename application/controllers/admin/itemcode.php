@@ -425,6 +425,15 @@ class itemcode extends CI_Controller
 		{
 			$data['searchQuery'] = $_POST['searchQuery'];
 		}
+		
+		if(isset($_POST['isfavorite']) && $_POST['isfavorite'] != '')
+		{
+			$data['isfavorite'] = $_POST['isfavorite'];
+		}
+		else 
+		{
+			$data['isfavorite'] = 0;
+		}
         $this->load->view('admin/itemlist', $data);
     }
 
@@ -2871,14 +2880,34 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 	
 	function addtofavorites($itemid)
 	{
-		$updateArr = array('isfavorite'=>1);
-		$this->db->update('item',$updateArr,array('id'=>$itemid));
+		$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+		$this->db->where('itemid',$itemid);
+		$result = $this->db->get('favoriteitem')->row();
+		
+	
+		if(count($result) > 0 && $result->isfavorite == 0)
+		{
+			$updateArr = array('isfavorite'=> 1);
+			$this->db->update('favoriteitem',$updateArr,array('itemid'=>$itemid,'purchasingadmin'=> $this->session->userdata('purchasingadmin')));
+		} 
+		else 
+		{	
+			$insertArr = array(
+								'itemid'=> $itemid,
+								'isfavorite'=> 1,
+								'purchasingadmin'=> $this->session->userdata('purchasingadmin'),
+								'project'=> $this->session->userdata('managedprojectdetails')->id,
+							  );
+	
+			//$updateArr = array('isfavorite'=>1);
+			$this->db->insert('favoriteitem',$insertArr);
+		}
 	}
 
 	function removefromfavorites($itemid)
 	{
 		$updateArr = array('isfavorite'=>0);
-		$this->db->update('item',$updateArr,array('id'=>$itemid));
+		$this->db->update('favoriteitem',$updateArr,array('itemid'=>$itemid,'purchasingadmin'=> $this->session->userdata('purchasingadmin')));
 	}	
 }
 ?>

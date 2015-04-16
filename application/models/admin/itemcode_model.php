@@ -56,10 +56,10 @@ class itemcode_model extends Model {
             $where .= " AND (i.purchasingadmin='{$pa}' OR i.purchasingadmin is NULL OR i.purchasingadmin = '1')  ";   
             
        if(@$_POST['isfavorite'])
-            $where .= " AND i.isfavorite = '{$_POST['isfavorite']}'";
+            $where .= " AND fi.isfavorite = '{$_POST['isfavorite']}'";
             
         $sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),''), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),'')) AS awardedon
-, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct o.project),group_concat(distinct q.pid)),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct q.pid),group_concat(distinct o.project))) AS project
+, if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct o.project),group_concat(distinct q.pid)),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct q.pid),group_concat(distinct o.project))) AS project,fi.isfavorite
                 FROM
                 $ti i
                 LEFT JOIN $tai ai ON i.id=ai.itemid
@@ -67,10 +67,11 @@ class itemcode_model extends Model {
                 LEFT JOIN ".$this->db->dbprefix('quote') ." q ON q.id = a.quote
                 LEFT JOIN ".$this->db->dbprefix('orderdetails') ." od ON i.id=od.itemid 
 				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
+				LEFT JOIN ".$this->db->dbprefix('favoriteitem') ." fi ON fi.itemid = i.id AND fi.purchasingadmin='$pa' 
                 $where 
                 GROUP BY i.id
                 ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
-    //echo '<pre>',$sql;die;
+   // echo '<pre>',$sql;die;
   
         $query = $this->db->query($sql);
         if ($query->result()) {
@@ -1167,7 +1168,18 @@ class itemcode_model extends Model {
             $ret->tierprices = $this->gettierprices($id);
             $ret->soitems = $this->getstoredorderitems($id);
 
-
+            $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+			$this->db->where('itemid',$id);
+			$result = $this->db->get('favoriteitem')->row();
+		
+			if(count($result) > 0)
+			{
+				$ret->isfavorite = $result->isfavorite;
+			}
+			else 
+			{
+				$ret->isfavorite = 0;
+			}
             // LAST QUOTED DATE
             $lastsql = "SELECT a.awardedon lastdate
 				FROM " . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a

@@ -115,6 +115,15 @@ class project extends CI_Controller
 
 		$this->_set_fields ();
 		$this->_set_rules ();
+		
+		if($_POST['address'])
+		{
+    		$geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);            
+            $_POST['projectlat'] = @$output->results[0]->geometry->location->lat;
+            $_POST['projectlang'] = @$output->results[0]->geometry->location->lng;
+		}
 
 		if ($this->validation->run () == FALSE)
 		{
@@ -144,6 +153,8 @@ class project extends CI_Controller
 		$this->validation->description = $item->description;
 		$this->validation->address = $item->address;
 		$this->validation->startdate = $item->startdate;
+		$this->validation->projectlat = $item->projectlat;
+		$this->validation->projectlang = $item->projectlang;
 
 		$data ['heading'] = 'Update Project Item';
 		$data ['message'] = '';
@@ -160,6 +171,14 @@ class project extends CI_Controller
 		$this->_set_rules ();
 
 		$itemid = $this->input->post ('id');
+		if($_POST['address'])
+		{
+    		$geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);            
+            $_POST['projectlat'] = @$output->results[0]->geometry->location->lat;
+            $_POST['projectlang'] = @$output->results[0]->geometry->location->lng;
+		}
 
 		if ($this->validation->run () == FALSE)
 		{
@@ -193,6 +212,8 @@ class project extends CI_Controller
 		$fields ['title'] = 'title';
 		$fields ['description'] = 'description';
 		$fields ['address'] = 'address';
+		$fields ['projectlat'] = 'projectlat';
+		$fields ['projectlang'] = 'projectlang';
 		$fields ['startdate'] = 'startdate';
 		$this->validation->set_fields ($fields);
 	}

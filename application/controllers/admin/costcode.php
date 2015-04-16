@@ -328,6 +328,9 @@ class costcode extends CI_Controller {
             		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
 				}
             	
+				if($this->session->userdata('usertype_id')>1)
+						$wherecode .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
+				
             	// Code for getting discount/Penalty per invoice
 					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 
@@ -735,6 +738,9 @@ class costcode extends CI_Controller {
             		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
 				}
                  
+				if($this->session->userdata('usertype_id')>1)
+						$wherecode .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
+				
                  // Code for getting discount/Penalty per invoice
 					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 
@@ -879,6 +885,9 @@ class costcode extends CI_Controller {
             		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
 				 } 
             	
+				 if($this->session->userdata('usertype_id')>1)
+						$wherecode .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
+				 
             	 // Code for getting discount/Penalty per invoice
 					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 

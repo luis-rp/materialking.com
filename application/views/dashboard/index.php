@@ -340,16 +340,16 @@ function preloadoptions(fromid)
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
 		       <div>
-		        	<p><?php echo "Total Number of Project&nbsp;".count(@$u->projects);?></p>
+		        	<p><?php echo "Total Number of Projects&nbsp;:".count(@$u->projects);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$u->directquotes);?></p>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;:".count(@$u->directquotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$u->quotes);?></p>
+		        	<p><?php echo "Total Number of Quotes&nbsp;:".count(@$u->quotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$u->awarded;?></p>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;:".@$u->awarded;?></p>
 		        </div>  
 	        </div>	  
         </div>       
@@ -387,16 +387,16 @@ function preloadoptions(fromid)
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
 		       <div>
-		        	<p><?php echo "Total Number of Project&nbsp;".count(@$u->projects);?></p>
+		        	<p><?php echo "Total Number of Projects&nbsp;:".count(@$u->projects);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$u->directquotes);?></p>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;:".count(@$u->directquotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$u->quotes);?></p>
+		        	<p><?php echo "Total Number of Quotes&nbsp;:".count(@$u->quotes);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$u->awarded;?></p>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;:".@$u->awarded;?></p>
 		        </div>  
 	        </div>	  
         </div>       

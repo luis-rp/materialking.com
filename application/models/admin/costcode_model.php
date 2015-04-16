@@ -74,9 +74,19 @@ class costcode_model extends Model
 				$item->totalspent = $query->row ('totalcost');
 				/****/
 				
+				$wheresql2 = "";
+				
+				if($this->session->userdata('usertype_id')>1)
+				$wheresql2 .= " AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+
+				if(@$_POST['projectfilter'])
+				$wheresql2 .= " AND o.project ='{$_POST['projectfilter']}'";
+				elseif (@$item->project)
+				$wheresql2 .= " AND o.project ='{$item->project}'";
+				
 						$sql2 = "SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
-					WHERE cc.id =  ".$item->id."
+					WHERE cc.id =  ".$item->id." {$wheresql2} 
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
@@ -85,16 +95,13 @@ class costcode_model extends Model
 							
 							$sql2 = "SELECT SUM( od.price) sumT, o.shipping 
 					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
-					WHERE cc.id =  ".$item->id."
+					WHERE cc.id =  ".$item->id." {$wheresql2} 
 					AND o.costcode = cc.id
 					AND o.id = od.orderid
 					GROUP BY o.costcode";
 							
-					}
+					}				
 						
-					if(@$_POST['projectfilter'])
-					$sql2 .= " AND o.project ='{$_POST['projectfilter']}'";	
-					
 						$query2 = $this->db->query ($sql2);
 						
 						if($query2->result()){

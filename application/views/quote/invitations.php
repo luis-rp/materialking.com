@@ -166,9 +166,14 @@
                                              <?php }
                                              if($inv->status == 'Completed')
                                                 {?>                                            
-		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>		                                  <?php } ?>     
-		                                                
-		                                        <?php if($inv->status == 'New'||$inv->status == 'Processing'){?>
+		                                                <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>		                                  <?php }      
+		                                        
+		                                       if($inv->status == 'PO Closed - 0 items won')
+                                                {  ?>     
+                                                	     <a href="<?php echo site_url('quote/archivequote/'.$inv->quotedetails->id);?>">Archive </a>     
+                                          <?php }
+                                                        
+		                                        if($inv->status == 'New'||$inv->status == 'Processing'){?>
                                                 		<?php if($inv->quotedetails->potype=='Bid'){?>
                                                     	<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
     										    			<span class="label label-success">CHECK YOUR SCORE</span>

@@ -295,7 +295,8 @@
                            
                              ?>
                             
-                          <input type="button" class="btn btn-green" name="btnviewfavorite" id="btnviewfavorite" value="View Favorites" onclick="setViewFavorite(1);"> 
+                          <input type="button" class="btn btn-green" name="btnviewfavorite" id="btnviewfavorite" value="View Favorites" onclick="setViewFavorite(1);"  style="font-weight:bold"> 
+                          <?php if($isfavorite && $isfavorite == 1) { ?> <a href="<?php echo site_url('admin/itemcode');?>" class="btn btn-green"> Back </a> <?php } ?>
                             <?php if($this->session->userdata('usertype_id') != 2) { ?> <button type="button" class="btn btn-green " id="btndel">Delete Selected Items</button> <?php } ?>
                             <div class="datagrid-header-right">
 

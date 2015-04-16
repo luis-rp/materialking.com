@@ -131,11 +131,13 @@ function checkpwd(pwd)
 				                         <!-- <input type="text" class="span4" name="accountnumber" value="<?php //echo $bankaccount->accountnumber;?>" required>-->
 				                          
 				                           <input type="text" class="span4" id="disableaccountnumber"  name="disableaccountnumber" 
-												value="<?php if(isset($accstr)) { echo $accstr; } ?>" required
-												<?php if(isset($accstr)) { ?> disabled <?php } ?>>
+												value="<?php if(isset($accstr)) { echo $accstr; } ?>" required 
+												<?php if(isset($accstr)) { ?> disabled <?php } ?>
+												onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" >
 				                          
 				                         <input type="text"  id="enableaccountnumber" class="span4" name="enableaccountnumber" style="display:none;"
-				                          		value="<?php if(isset($bankaccount->accountnumber)) { echo $bankaccount->accountnumber; } ?>">
+				                          		value="<?php if(isset($bankaccount->accountnumber)) { echo $bankaccount->accountnumber; } ?>"
+				                          		onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" >
 				                          
 				                        </div>
 				                      </div>
@@ -149,10 +151,12 @@ function checkpwd(pwd)
 				                          
 				                           <input type="text" class="span4" id="disableroutingnumber" name="disableroutingnumber" 
 				                          		 value="<?php if(isset($routstr)) {  echo $routstr;} ?>" required
-				                          		 <?php if(isset($routstr)) { ?> disabled <?php } ?>>
+				                          		 <?php if(isset($routstr)) { ?> disabled <?php } ?>
+				                          		 onkeyup="this.value=this.value.replace(/[^0-9]/g,'');" >
 				                                             			                          
 				                           <input type="text" class="span4" id="enableroutingnumber" name="enableroutingnumber"  style="display:none;"
-				                                  value="<?php if(isset($bankaccount->routingnumber)) {  echo $bankaccount->routingnumber; } ?>">
+				                                  value="<?php if(isset($bankaccount->routingnumber)) {  echo $bankaccount->routingnumber; } ?>"
+				                                  onkeyup="this.value=this.value.replace(/[^0-9]/g,'');">
 				                        </div>
 				                      </div>
                     				<!--</div>-->

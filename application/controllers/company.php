@@ -2456,10 +2456,16 @@ class Company extends CI_Controller {
 			";
   
         $admins = $this->db->query($sql)->result();
-        $data['admins'] = array();
+        $data['admins'] = array();        
         foreach($admins as $admin)
         {
-        	 
+        	$due = 0; 
+        	$ordtotal = 0;
+        	$order = array();
+        	$ordertype = array();
+        	$orderdate = array();
+        	$ordertotal = array();
+        	$orderdue = array();
             $pa = $admin->purchasingadmin;
 		    $settings = $this->settings_model->get_setting_by_admin($pa);
 		   		    
@@ -2485,29 +2491,76 @@ class Company extends CI_Controller {
 			
 		
 			    		    
-		    $query = "SELECT
+		    /*$query = "SELECT
 		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
 		    			totalunpaid FROM
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
-						AND ai.purchasingadmin='$pa'";
+						AND ai.purchasingadmin='$pa'";*/
+		    
+		    $query = "SELECT q.ponum, q.podate, q.potype, if((r.paymentstatus!='Paid' || r.paymentstatus!='Credit'),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)),0) totalunpaid, (SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)) total 
+		    			 FROM		    			
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a, ".$this->db->dbprefix('quote')." q 
+						WHERE r.awarditem=ai.id AND ai.award = a.id AND q.id = a.quote AND r.paymentstatus!='Paid' AND ai.company='".$company->id."' AND ai.purchasingadmin='$pa' group by q.id ";
+		    
 		   
-		    $due = $this->db->query($query)->row()->totalunpaid;
-		    $due = round($due,2);
-		   
-		    $query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    //$due = $this->db->query($query)->row()->totalunpaid;
+		    
+		    $quoteresult = $this->db->query($query)->result();
+		    
+		    if($quoteresult){
+		    	
+		    	foreach($quoteresult as $quoter){
+		    		
+		    		if($quoter->totalunpaid>0){
+		    		$due += $quoter->totalunpaid;
+		    		$ordtotal = $quoter->total;
+		    		$order[] = $quoter->ponum;
+		    		$ordertype[] = $quoter->potype;
+		    		$orderdate[] = $quoter->podate;
+		    		$ordertotal[] = $ordtotal;
+		    		$orderdue[] = $quoter->totalunpaid;
+		    		}
+		    	}		    			    	
+		    	
+		    }
+		    /*$query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.status!='Void' AND od.accepted!=-1
-                AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";
+                AND o.purchasingadmin='$pa' AND od.company='".$company->id."'";*/		    
 		    
-		    $manualdue = $this->db->query($query)->row()->orderdue;
-		    $manualdue = round($manualdue,2);
-		    $due += $manualdue;
-		    $admin->amountdue = $due;
+		    $oquery = "SELECT o.ordernumber, o.purchasedate, if((od.paymentstatus!='Paid'),(SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)),0) totalunpaid, (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100)) total      	
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.status!='Void' AND od.accepted!=-1
+                AND o.purchasingadmin='$pa' AND od.company='".$company->id."' Group by o.id ";
+		    
+		    //$manualdue = $this->db->query($query)->row()->orderdue;
+		    $oresult = $this->db->query($oquery)->result();
+		    if($oresult){
+		    	
+		    	foreach($oresult as $ord){
+		    		
+		    		if($ord->totalunpaid>0){
+		    		$due += $ord->totalunpaid;		    		
+		    		$order[] = $ord->ordernumber;
+		    		$ordertype[] = "Store Order";
+		    		$orderdate[] = $ord->purchasedate;
+		    		$ordertotal[] = $ord->total;
+		    		$orderdue[] = $ord->totalunpaid;
+		    		}
+		    	}
+		    }		     
+		    
+		    $admin->order = $order;
+		    $admin->ordertype = $ordertype;
+		    $admin->orderdate = $orderdate;
+		    $admin->amountdue = round($due,2);		   
+		    $admin->amountduetotal = $orderdue;
+		    $admin->amounttotal = $ordertotal;		    
             $data['admins'][]=$admin;
             
-        } 
+        } // echo "<pre>",print_r($data['admins']); die;
         $data['tier'] = $tier;
         $this->load->view('company/networkconnections', $data);       	
     }

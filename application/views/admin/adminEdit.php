@@ -220,7 +220,7 @@ function ValidateForm(){
     </div>
     <?php }?>
 
-    <?php if($this->session->userdata('usertype_id') < 3){?>
+    <?php if($this->session->userdata('usertype_id') < 2){?>
     <div class="control-group">
     <label class="control-label">Status</label>
     <div class="controls">
@@ -233,7 +233,7 @@ function ValidateForm(){
     <input type="hidden" name="status" value="<?php $this->validation->status;?>"/>
     <?php } ?>
     
-    <?php if($this->session->userdata('usertype_id') < 3){?>
+    <?php if($this->session->userdata('usertype_id') < 2){?>
     <div class="control-group">
     <label class="control-label">Profile</label>
     <div class="controls">

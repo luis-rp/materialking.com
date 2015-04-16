@@ -37,6 +37,11 @@ function preloadoptions(fromid)
      }
 
 
+function showdueorders(userid)
+	 {	 	
+    	$("#ordermodal"+userid).modal();   	   
+     }     
+     
 
 </script>
     <div class="content">  
@@ -122,8 +127,7 @@ function preloadoptions(fromid)
 								<td><p <?php if($admin->creditonly==1) { ?>style="display:none;"<?php } ?>>
 									<?php echo $admin->creditlimit;?></p><?php if($admin->creditonly==1) { ?><span style="color:red;">Only Account</span><?php } ?>
 								</td>								
-								<td>
-									<?php echo $admin->amountdue;?>
+								<td><a href="javascript:void(0)" onclick="showdueorders('<?php echo htmlentities($admin->purchasingadmin)?>');"><?php echo $admin->amountdue;?></a>									
 								</td>
 								<td>					
 <input type="checkbox" name="creditonly[<?php echo $admin->purchasingadmin;?>]" <?php if($admin->creditonly==1) {?> checked="CHECKED" <?php } ?> />
@@ -171,19 +175,19 @@ function preloadoptions(fromid)
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
 		       <div>
-		        	<p><?php echo "Total Number of Project&nbsp;".count(@$admin->pro);?></p>
+		        	<p><?php echo "Total Number of Projects&nbsp;:".count(@$admin->pro);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Direct Orders&nbsp;".count(@$admin->directquo);?></p>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;:".count(@$admin->directquo);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Quotes&nbsp;".count(@$admin->quo);?></p>
+		        	<p><?php echo "Total Number of Quotes&nbsp;:".count(@$admin->quo);?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;".@$admin->awar;?></p>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;:".@$admin->awar;?></p>
 		        </div>  
 		          <div>
-		        	<p><?php echo "Total Account Spend "; echo "$".@$admin->sumoftotalpurchase; ?></p>
+		        	<p><?php echo "Total Account Spend &nbsp;:"; echo "$".@$admin->sumoftotalpurchase; ?></p>
 		        </div>  
 	        </div>	  
         </div>       
@@ -195,3 +199,62 @@ function preloadoptions(fromid)
     </div>
   </div>
   <?php $oldfrommid=$admin->purchasingadmin; $i++; } //die;?> 
+  
+  
+  
+  
+  
+  
+     <?php if($admins) foreach ($admins as $admin){ ?>
+ <div id="ordermodal<?php echo $admin->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left">Due Orders</h4>                 
+        </div>
+        
+        <div class="modal-body">   
+        	 <?php if($admin->order){ ?>          
+	        <table id="datatable" class="table no-more-tables general">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:10%">Order Type</th>
+                                                <th style="width:10%">Order#</th>
+                                                <th style="width:10%">Date</th>
+                                                <th style="width:10%">Value</th>
+                                                <th style="width:10%">Paid</th>
+                                                <th style="width:15%">Due</th>                                                
+                                            </tr>
+                                        </thead> 
+                                        <tbody>                                        
+                                        
+                                        <?php if($admin->order){
+                                        	$j=0;
+                                        	foreach($admin->order as $ord){?>
+                                        		<tr>
+                                        		<td><?php echo @$admin->ordertype[$j];?></td>
+                                        		<td><?php echo @$ord;?></td>
+                                        		<td><?php echo @$admin->orderdate[$j];?></td>
+                                        		<td><?php echo round(@$admin->amounttotal[$j],2);?></td>
+                                        		<td><?php echo round((@$admin->amounttotal[$j] - @$admin->amountduetotal[$j]),2);?></td>
+                                        		<td><?php echo round(@$admin->amountduetotal[$j],2);?></td>
+                                        		</tr>
+                                        	<?php $j++; }
+                                        	
+                                        }else echo "No Orders found";  ?>
+                                        
+                                        </tbody>
+                                        </table>           
+               <?php }else echo "No Orders found";  ?>                         
+        </div>       
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+        
+      </div>   
+    </div>
+  </div>
+  <?php  } ?> 
+  
