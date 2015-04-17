@@ -932,7 +932,7 @@ class quote_model extends Model {
                 . " $search GROUP BY invoicenum";
 
   //echo '<pre>',$query;die;     
-         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue,r.id as receivedid,r.attachmentname,r.sharewithsupplier,r.attachment, ai.award 
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,
@@ -1074,7 +1074,7 @@ class quote_model extends Model {
                 $managedprojectdetails_id_sql
                 . " $search GROUP BY invoicenum";
                 
-         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice, receiveddate, 
+         $contractquery = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice, receiveddate, 
         			r.status, r.paymentstatus, r.paymenttype, r.paymentdate, r.refnum,  r.datedue
 				   FROM 
 				   " . $this->db->dbprefix('received') . " r,

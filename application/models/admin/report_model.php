@@ -68,7 +68,7 @@ class report_model extends Model
  		//echo '<pre>'.$datesql;die;
  		$contractsql = "SELECT distinct(receiveddate) receiveddate, invoicenum,  ai.company, ai.purchasingadmin,  r.datedue, r.paymentstatus, r.paymentdate, 
  						SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
- 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ),2) totalprice
+ 						ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ),2) totalprice
 					   FROM 
 					   ".$this->db->dbprefix('received')." r,
 					   ".$this->db->dbprefix('awarditem')." ai,
@@ -113,19 +113,16 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity,i.url as itemurl,i.item_img,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.id as itemid    
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,r.quantity/100)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes , q.id as quoteid, ai.quantity as aiquantity,'' as itemurl,'' as item_img,0 as IsMyItem,'' as itemid    
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('users')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q,
-					  ".$this->db->dbprefix('item')." i	
-					  LEFT JOIN pms_category pc ON pc.id = i.category				 		
+					  ".$this->db->dbprefix('quote')." q	 		
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  ai.itemid = i.id AND
 					  a.quote=q.id AND q.potype = 'Contract' $filter ";
 			if(@$sepdate->receiveddate)
 			$itemcontractsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
@@ -310,19 +307,16 @@ class report_model extends Model
 			
 			$itemcontractsql = "SELECT 
 						r.*, ai.itemcode, c.companyname companyname, q.ponum, q.potype, a.awardedon,
-						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,i.url as itemurl,if(pc.catname='My Item Codes',1,0) as IsMyItem,i.item_img ,i.id as itemid,q.id as quoteid 
+						ai.itemname, (ai.ea * if(r.invoice_type='fullpaid',ai.quantity/100,if(r.invoice_type='alreadypay',0,1)) ) as ea, ai.unit, ai.daterequested, ai.costcode, ai.notes, ai.quantity aiquantity,'' as itemurl,'' as IsMyItem,'' asitem_img ,'' as itemid,q.id as quoteid 
 					  FROM 
 					  ".$this->db->dbprefix('received')." r, 
 					  ".$this->db->dbprefix('awarditem')." ai,
 					  ".$this->db->dbprefix('users')." c,
 					  ".$this->db->dbprefix('award')." a,
-					  ".$this->db->dbprefix('quote')." q,
-					  ".$this->db->dbprefix('item')." i
-					  LEFT JOIN pms_category pc ON pc.id = i.category	
+					  ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id AND 
 					  ai.company=c.id AND
 					  ai.award=a.id AND
-					  ai.itemid=i.id AND
 					  a.quote=q.id AND q.potype = 'Contract'  $filter ";
 					  
 			if(@$sepdate->receiveddate)

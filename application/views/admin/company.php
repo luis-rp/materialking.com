@@ -1,3 +1,6 @@
+<script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
+<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script> 
+
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -8,22 +11,21 @@ $(document).ready(function(){
 //-->
 </script>
 
-<script type="text/javascript">
-
-    function IsValidZip(zip) {
-        var isValid = /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip);
-        if (!isValid){
-       alert('Invalid Zip Format. Please Enter XXXXX or XXXXX-XXXX Format');
-      document.getElementById("zip").value = "";
-    }
-    }
-</script>
 
 <script>
   $(document).ready(function()
   {
     $("#password").val("");
   });
+  
+  	   
+function checkEnter(event)
+{ 
+	if (event.keyCode == 13) 
+   {
+       return false;
+    }
+}
 </script>
 
 <section class="row-fluid">
@@ -85,38 +87,44 @@ $(document).ready(function(){
 	    </div>
     </div>
 
+    <?php if(isset($this->validation->com_lat) && $this->validation->com_lat!="") {
+				         	$lat=$this->validation->com_lat;
+				         }
+				         else {
+				         	$lat=34.167139;
+				         }
+				         
+				         if(isset($this->validation->com_lng) && $this->validation->com_lng!="") {
+				         	$lang=$this->validation->com_lng;
+				         }
+				         else {
+				         	$lang=-118.434677;
+				         } ?>
    <div class="control-group">
-	    <label class="control-label">Street Address*</label>
+	    <label class="control-label">Address</label>
 	    <div class="controls">
-	      <textarea id="street" class="span5" rows="6" name="street" required><?php echo $this->validation->street; ?></textarea>
-	      <?php echo $this->validation->address_error;?>
+	      
+	      	<span>Start typing an address and select from the dropdown.</span> <br />               
+              <input type="text" id="address" name="address" class="span5"  autocomplete="off" onkeydown="return checkEnter(event);" >            					<div id="map-container">
+						 <div id="map-canvas"></div>
+
+							<script>
+                                $('#map-canvas').locationpicker({
+                                location: {latitude:<?php echo $lat; ?>, longitude:<?php echo $lang; ?>},	
+                                radius: 600,
+                                inputBinding: {
+                                    latitudeInput: $('#latitude'),
+                                    longitudeInput: $('#longitude'),
+                                    locationNameInput: $('#address')        
+                                },
+                                enableAutocomplete: true,                              
+                                });
+							</script>     
+                   </div>         
 	    </div>
+	    <?php echo $this->validation->address_error;?>
     </div>
 
-    <div class="control-group">
-	    <label class="control-label">City*</label>
-	    <div class="controls">
-<input type="text" id="city" name="city" class="span4" value="<?php if(isset($this->validation->city)) echo $this->validation->city; else echo ''; ?>" required>
-	    </div>
-    </div>
-
-    <div class="control-group">
-        <label class="control-label" >State*</label>
-           <select name="state" id="state" required  style="margin-left: 19px;">
-            <?php foreach ($company as $com) { $fetchstate=$com->state; } ?>
-	            <?php foreach($states as $st){ ?>
-                  <option value='<?php echo $st->state_abbr;?>'<?php if(isset($fetchstate)){if($fetchstate == $st->state_abbr){echo 'SELECTED';}}?>><?php echo $st->state_name;?></option>
-                <?php  } ?>
-
-           </select>
-     </div>
-   
-    <div class="control-group">
-	    <label class="control-label">Zip*</label>
-	    <div class="controls">
-	<input type="text" id="zip" name="zip" class="span4" value="<?php if(isset($this->validation->zip)) echo $this->validation->zip; else echo ''; ?>" onchange="IsValidZip(this.form.zip.value)" required>
-	    </div>
-    </div>
 
     <div class="control-group">
 	    <label class="control-label">Type:</label>

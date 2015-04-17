@@ -648,6 +648,7 @@ class Quote extends CI_Controller
 		}
 		
 		$data['invid'] = $invitation->id;
+		$data['menuhide'] = 1;
 		$this->load->view('quote/review',$data);
 	}
 	
@@ -1137,7 +1138,7 @@ class Quote extends CI_Controller
 		
 		$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->where_in('itemid',$itemarr)->get()->result();
 		}
-		
+		$data['menuhide'] = 1;
 		if($print)
 		{
 			$this->load->template ( '../../templates/front/blank', $data);

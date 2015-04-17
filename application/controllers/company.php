@@ -44,7 +44,6 @@ class Company extends CI_Controller {
     {
         $this->load->template('../../templates/front/register');
         $data['states'] = $this->db->get('state')->result();
-
         $this->load->view('company/register',$data);
     }
 
@@ -61,27 +60,42 @@ class Company extends CI_Controller {
                 $errormessage = "Email '{$_POST['primaryemail']}' already exists.";
             }
         }
-
-        $completeaddress="";
-            if($_POST['street'])
+        
+        if($_POST['address'])
+		{
+    		$geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
             {
-            	$completeaddress.=$_POST['street'].",";
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
             }
-            if($_POST['city'])
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
             {
-            	$completeaddress.=$_POST['city'].",";
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
             }
-            if($_POST['state'])
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
             {
-            	$completeaddress.=$_POST['state'].",";
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
             }
-            if($_POST['zip'])
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
             {
-            	$completeaddress.=$_POST['zip'];
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
             }
-
-        $_POST['address'] = $completeaddress;
-
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
+            
+            $_POST['com_lat'] = @$output->results[0]->geometry->location->lat;
+            $_POST['com_lng'] = @$output->results[0]->geometry->location->lng;
+		}
+       
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');
             redirect('company/register');
@@ -92,7 +106,6 @@ class Company extends CI_Controller {
         $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
         $_POST['regkey'] = $key;
         $_POST['id']= $itemid;
-      //  echo '<pre>',print_r($_POST);die;
         $this->db->insert('company', $_POST);
        
         $this->sendRegistrationEmail($itemid, $key);
@@ -655,26 +668,44 @@ class Company extends CI_Controller {
             		}
             	}
             }
-         	$completeaddress="";
-            if($_POST['street'])
+         	
+            
+             if($this->input->post('address'))
+        {
+           
+            
+            $geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+           
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
             {
-            	$completeaddress.=$_POST['street'].",";
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
             }
-            if($_POST['city'])
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
             {
-            	$completeaddress.=$_POST['city'].",";
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
             }
-            if($_POST['state'])
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
             {
-            	$completeaddress.=$_POST['state'].",";
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
             }
-            if($_POST['zip'])
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
             {
-            	$completeaddress.=$_POST['zip'];
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
             }
-
-        $_POST['address'] = $completeaddress;
-
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
+            
+            
+        }
 
         if ($errormessage) {
             $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-error"><button data-dismiss="alert" class="close"></button><div class="msgBox">' . $errormessage . '</div></div></div>');

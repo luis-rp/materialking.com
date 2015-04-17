@@ -41,7 +41,6 @@ class contractor_profile extends CI_Controller
             redirect("admin/login/index");
         $contractor = $this->db->where('id',$contractorid)->get('users')->row();
         $data['contractor']=$contractor;
-        $data['states'] = $this->db->get('state')->result();
 		$data['contractorimages']=$this->db->get_where('Contractor_Images',array('contractor'=>$contractor->id))->result();
 		$data['contractorgallery']=$this->db->get_where('Contractor_Gallery',array('contractor'=>$contractor->id))->result();
 		$data['contractorfiles']=$this->db->get_where('Contractor_Files',array('contractor'=>$contractor->id))->result();
@@ -89,25 +88,7 @@ class contractor_profile extends CI_Controller
 			$_POST['password']=md5($_POST['password']);
 		}
 		
-			$completeaddress="";
-            if($_POST['street'])
-            {
-            	$completeaddress.=$_POST['street'].",";
-            }
-            if($_POST['city'])
-            {
-            	$completeaddress.=$_POST['city'].",";
-            }
-            if($_POST['state'])
-            {
-            	$completeaddress.=$_POST['state'].",";
-            }
-            if($_POST['zip'])
-            {
-            	$completeaddress.=$_POST['zip'];
-            }
-
-        $_POST['address'] = $completeaddress;
+			
         
         if($this->input->post('address'))
         {
@@ -117,6 +98,38 @@ class contractor_profile extends CI_Controller
                 $_POST['user_lat'] = $geoloc->lat;
                 $_POST['user_lng'] = $geoloc->long;              
             }
+            
+            $geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+           
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
+            {
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
+            }
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
+            {
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
+            }
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
+            {
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
+            }
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
+            {
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
+            }
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
+            
+            
         }
 
 		
@@ -286,9 +299,7 @@ class contractor_profile extends CI_Controller
 		  	Company Name : ".@$_POST['companyname']."<br/>
 		  	Email : ".@$_POST['Email']."<br/>
 		  	Full Name : ".@$_POST['fullname']."<br/>
-		  	City : ".@$_POST['city']."<br/>
-		  	Zip : ".@$_POST['zip']."<br/>
-		  	Street : ".@$_POST['street']."<br/>
+		  	Address : ".@$_POST['address']."<br/>
 		  	Phone : ".@$_POST['phone']."<br/>
 		  	Fax : ".@$_POST['fax']."<br/>
 		    Your Profile URL :  <a href='$link' target='blank'>$link</a>";

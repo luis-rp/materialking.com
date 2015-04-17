@@ -377,7 +377,7 @@
           <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="javascript:void(0)" onclick="preloadoptions();">Invite Supplier</a>
+          <a href="javascript:void(0)"  data-toggle="modal" data-target="#smodal" >Invite Supplier</a>
           </div>
           
           
@@ -553,7 +553,7 @@
 		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a><br><br>
 				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
-				<a class="btn btn-green"  href="javascript:void(0)" onclick="preloadoptions();">Invite Your Supplier</a>
+				<input type="button" value="Invite Your Supplier" class="btn btn-green" data-toggle="modal" data-target="#smodal">
 		<?php } ?>	
 			<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>				
 				<?php if(@$this->session->userdata('managedprojectdetails')){?>

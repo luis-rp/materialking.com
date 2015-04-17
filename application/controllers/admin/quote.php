@@ -2582,7 +2582,7 @@ class quote extends CI_Controller
 				$insertarray['purchasingadmin'] = $invitation->purchasingadmin;
 				$insertarray['ismanual'] = @$_POST['ismanual'.$key]?@$_POST['ismanual'.$key]:0;
 				$insertarray['notes'] = @$_POST['s_notes'.$key]?@$_POST['s_notes'.$key]:'';
-				//$insertarray['itemid'] = $key;
+				$insertarray['itemid'] = -$key;
 				//$insertarray['itemid'] = "";
 				
 				if(!@$_POST['nobid'.$key])
@@ -6043,11 +6043,12 @@ class quote extends CI_Controller
 		}
 
 		$shipments = $this->db->select('shipment.*, quoteitem.itemname')
-		             ->from('shipment')->join('quoteitem','shipment.itemid=quoteitem.id')
+		             ->from('shipment')->join('quoteitem','shipment.quote=quoteitem.quote')
 		             ->where('shipment.quote',$qid)
+		             ->group_by('shipment.id')
 		             ->get()->result();
 
-		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('quoteitem')." i WHERE s.itemid=i.id and s.quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
+		$shipmentsquery = "SELECT sum(s.quantity) as quantity, GROUP_CONCAT(s.invoicenum) as invoicenum, s.awarditem, i.itemname FROM " . $this->db->dbprefix('shipment') . " s, ".$this->db->dbprefix('quoteitem')." i WHERE s.itemid=-i.id and s.quote='{$qid}' and s.accepted = 0 GROUP BY s.company";
         $shipments2 = $this->db->query($shipmentsquery)->result();
 
 		if($awarded){

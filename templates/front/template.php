@@ -282,7 +282,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 </div>
 
 <div class="page-container row"> 
-  <div class="page-sidebar" id="main-menu"> 
+  <div class="page-sidebar <?php echo (@$menuhide==1)?'mini':'';?>" id="main-menu"> 
    <div class="user-info-wrapper">	
     <?php if(0){?>
 	<div class="profile-wrapper">
@@ -428,7 +428,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
 	<div class="clearfix"></div>
   </div>
  
-  <div class="page-content"> 
+  <div class="page-content <?php echo (@$menuhide==1)?'condensed':'';?>"> 
     <div class="clearfix"></div>
      <?php echo $content; ?>
 	

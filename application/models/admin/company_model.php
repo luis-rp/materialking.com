@@ -68,27 +68,41 @@ class company_model extends Model {
 
     function SaveCompany()
     {
-    	$completeaddress="";
-    	if($_POST['street'])
-    	{
-    		$completeaddress.=$_POST['street'].",";
-    	}
-    	if($_POST['city'])
-    	{
-    		$completeaddress.=$_POST['city'].",";
-    	}
-    	if($_POST['state'])
-    	{
-    		$completeaddress.=$_POST['state'].",";
-    	}
-    	if($_POST['zip'])
-    	{
-    		$completeaddress.=$_POST['zip'];
-    	}
+    	if($_POST['address'])
+        {         
+            $geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+           
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
+            {
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
+            }
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
+            {
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
+            }
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
+            {
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
+            }
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
+            {
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
+            }
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
+        }
     	
 
     	$_POST['regdate'] = date('Y-m-d');
-    	$_POST['address'] = $completeaddress;
 		
         $address = ($this->input->post('address'));
         if($address)
@@ -137,37 +151,50 @@ class company_model extends Model {
 
     // updating pricing column
     function updateCompany($id)
-    {
-        //
-        //$address = ($this->input->post('address')) ? $this->input->post('address') : $this->input->post('contact');
-        $completeaddress="";
-        if($_POST['street'])
-        {
-        	$completeaddress.=$_POST['street'].",";
+    {     
+        
+        if($_POST['address'])
+        {         
+            $geocode = file_get_contents(
+            "http://maps.google.com/maps/api/geocode/json?address=" . urlencode(str_replace("\n", ", ", $_POST['address'])) . "&sensor=false");
+            $output = json_decode($geocode);
+            $_POST['street']="";
+            $_POST['city']="";
+            $_POST['state']="";
+            $_POST['zip']="";
+            
+           
+            if(isset($output->results[0]->address_components[0]->long_name) && $output->results[0]->address_components[0]->long_name)           
+            {
+            	$_POST['street']=$output->results[0]->address_components[0]->long_name;
+            }
+            if(isset($output->results[0]->address_components[1]->long_name) && $output->results[0]->address_components[1]->long_name)           
+            {
+            	$_POST['street'] .=" ".$output->results[0]->address_components[1]->long_name;
+            }
+            if(isset($output->results[0]->address_components[3]->long_name) && $output->results[0]->address_components[3]->long_name)           
+            {
+            	$_POST['city'] =$output->results[0]->address_components[3]->long_name;
+            }
+            if(isset($output->results[0]->address_components[5]->long_name) && $output->results[0]->address_components[5]->long_name)           
+            {
+            	$_POST['state'] =$output->results[0]->address_components[5]->long_name;
+            }
+            if(isset($output->results[0]->address_components[7]->long_name) && $output->results[0]->address_components[7]->long_name)           
+            {
+            	$_POST['zip'] =$output->results[0]->address_components[7]->long_name;
+            }
         }
-        if($_POST['city'])
-        {
-        	$completeaddress.=$_POST['city'].",";
-        }
-        if($_POST['state'])
-        {
-        	$completeaddress.=$_POST['state'].",";
-        }
-        if($_POST['zip'])
-        {
-        	$completeaddress.=$_POST['zip'];
-        }
-
-        $_POST['address'] = $completeaddress;
-
-        $options = $this->input->post();
+        
         $address = ($this->input->post('address'));
-        if($address)
+         $options = $this->input->post();
+         if($address)
         {
             $geoloc = $this->getLatLong($address);
             $options['com_lat'] = @$geoloc['lat'];
             $options['com_lng'] = @$geoloc['lng'];
         }
+        
 
         if($options['password'])
         {
