@@ -2,6 +2,7 @@
 <?php echo '<script type="text/javascript">var getcustomerdataurl = "' . site_url('admin/quote/getcustomerdata') . '";</script>'; ?>
 <?php echo '<script type="text/javascript">var previewbillurl ="'.site_url('admin/quote/previewbill').'";</script>'?>
 <?php echo '<script>var insertserviceandlabor="'.site_url('admin/itemcode/insertserviceandlabor').'";</script>'?>
+<?php echo '<script type="text/javascript">var ordercloseurl="'.site_url('admin/quote/orderclose/'.$quote->id).'";</script>'?>
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.dis_td').attr('disabled','disabled');
@@ -586,7 +587,26 @@ function closepop()
 	$("#quoteitemdetails").css({display: "none"});
 	$("#quoteitemdetailsm").css({display: "none"});
 }
-	
+
+
+function closeorder()
+{
+	if (confirm('Are you sure you want to close the order?'))
+	{
+		var orderclose = "orderclose=1";
+
+		$.ajax({
+			type: "post",
+			data: orderclose,
+			url: ordercloseurl
+		}).done(function(data) {			
+			window.location = window.location;
+		});
+
+	}
+
+}
+
 </script>
 <section class="row-fluid">
     <h3 class="box-header"><span class="badge badge-warning"><?php echo $quote->potype == 'Direct' ? 'Direct' : 'Via Quote'; ?></span> <?php echo @$heading; ?></h3>
@@ -600,7 +620,7 @@ function closepop()
             <?php echo @$message; ?>
             <div class="control-group">
                 <div class="controls">
-                        <?php // if ($awarded->status == 'incomplete') { ?>
+                        <?php if ($quote->orderclose==0) { ?>
                         <div class="pull-right">
                             Mark completed for All items of:
                             <select id="combocompany" onchange="selectbycompany();">
@@ -610,7 +630,7 @@ function closepop()
                                     <?php } ?>
                             </select>
                         </div>
-                        <?php // } ?>
+                        <?php } ?>
                     <span class="label label-pink"><?php echo $awarded->status; ?></span>
                     <strong>
                         PO #:<?php echo $quote->ponum; ?>
@@ -685,19 +705,19 @@ function closepop()
 			                        <th width="100px">Notes</th>
 			                        <th width="100px">Still Due</th>
 			                        <th width="150px">History</th>
-			                        <?php // if ($awarded->status == 'incomplete') { ?>
+			                        <?php if ($quote->orderclose==0) { ?>
 			                        <th width="120px">Received Qty.</th>
 			                        <th width="150px">Invoice #</th>
 			                        <th width="100px">Date Received</th>
 			                        <th width="100px">Complete&nbsp;<input type="checkbox" id="selectall" onclick="$('.select-for-complete').prop('checked', this.checked);"></th>
 			                        <th width="150px">Error</th>
-			                        <?php // } ?>
+			                        <?php } ?>
 			                   </tr>
-			                   <?php // if ($awarded->status == 'incomplete') { ?>
+			                   <?php if ($quote->orderclose==0) { ?>
                         			<form id="trackform" class="form-horizontal" method="post" action="<?php echo base_url(); ?>admin/quote/savetrack/<?php echo $quote->id; ?>">
                            		 	<input type="hidden" id="makedefaultinvoicenum" name="makedefaultinvoicenum"/>
                             		<input type="hidden" id="makedefaultreceiveddate" name="makedefaultreceiveddate"/>
-                        		<?php // }
+                        		<?php }
 								$counter_kk = 1;
 								$billcnt = 0;
 								$alltotal = 0; $cnt = count($awarded->items); 
@@ -849,7 +869,7 @@ function closepop()
                                 <?php }?>
 								</td>
 								
-                                <?php // if ($awarded->status == 'incomplete') { ?>
+                                <?php if ($quote->orderclose==0) { ?>
                                     <td><input type="text" <?php // if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
                                     	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
                                     	<input type="hidden" name="comments" id="comments" value=""/>                                    	
@@ -897,10 +917,11 @@ function closepop()
                                             <option value='<?php echo $q->id ?>-Quantity Discrepancy'>Quantity Discrepancy</option>
                                             <option value='<?php echo $q->id ?>-Revise PO Qty'>Revise PO Qty</option>
                                             <option value='<?php echo $q->id ?>-Revise Received Qty'>Revise Received Qty</option>
+                                            <option value='<?php echo $q->id ?>-Wrong Item Damage Other'>Wrong Item Damage Other</option>
                                         </select>
                                     </td>
                                     
-                            		<?php // } ?>
+                            		<?php } ?>
                             </tr>
                         <?php  }  ?>
 	                        </table>
@@ -908,14 +929,15 @@ function closepop()
                     </td> 
                    </tr>
                                    
-                      <?php // if ($awarded->status == 'incomplete') { ?>
+                      <?php if ($quote->orderclose==0) { ?>
                             <tr>                              
                                 <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete">&nbsp;
-                                <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error"></td>
+                                <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error">
+                                <input type="button" class="btn btn-primary btn-small" onclick="closeorder();" value="No Errors/Close Order"></td>
                             </tr>
                         </form>
-                    <?php // }                 
+                    <?php }                 
                     
                     $taxtotal = $alltotal * $config['taxpercent'] / 100;
                     $grandtotal = $alltotal + $taxtotal;

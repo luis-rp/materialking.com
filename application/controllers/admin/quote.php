@@ -280,9 +280,9 @@ class quote extends CI_Controller
                             . ' ' .
                             anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
                     ;
-                } else {
+                } else {  if (!$quote->awardedbid) {
                     $quote->actions .= anchor('admin/quote/delete/' . $quote->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
-                    ;
+                    ;}
                      if($quote->potype !='Direct' && empty($quote->awardedbid))
                     $quote->actions .= anchor ('admin/quote/update/' . $quote->id,'<span class="icon-2x icon-edit"></span>',array ('class' => 'update' ) );
                 }
@@ -2101,30 +2101,27 @@ class quote extends CI_Controller
 
             $this->quote_model->db->insert('invitation', $insertarray);
             $link = base_url() . 'quote/direct/' . $key;
-            $data['email_body_title'] = "Dear " . $c->title ;            
+            $data['email_body_title'] = "Dear " . $c->title."," ;            
             $data['email_body_content'] = "";
-            $loginlink="";
+            $loginlink="";           
             if(isset($limitcompany))
             {
             	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
             	{
-            		$data['email_body_content'] .= "The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network. <br />Your login Details: <br /> Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']} <br><br> ";
             		$loginlink = base_url() . 'company/login/' . $this->session->userdata('id');
+            		$data['email_body_content'] .= "The <i>{$this->session->userdata('companyname')}</i>  sent you a Purchase Order. <br />Please View the Details Below : <br /> <strong>Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']}</strong><br /><br /> Please <a href='$loginlink' target='blank'>Click Here</a> to login with your login Details provided to approve the Purchase order and join <i>{$this->session->userdata('companyname')}</i> e-procurement network as a vendor.<br /><br />  ";           		
             	}
-            }           
-          
-		  	$data['email_body_content'] .= "Please click on following link to review the purchase order(PO# " . $quote->ponum . "):";
-		  	if(isset($loginlink) && $loginlink!="")
-		  	{
-		  		$data['email_body_content'] .= "or <a href='$loginlink' target='blank'>click here</a> to login.";
-		  	}
-		    $data['email_body_content'] .= "<br /><br /><a href='$link' target='blank'>$link</a><br><br>
-		    The PO Details are:<br><br>
-		    $emailitems
-		    ";
-		  		$loaderEmail = new My_Loader();
+            } 
+            else 
+            {
+            	$data['email_body_content'] .= "You have been sent a Purchase Order from <strong>{$this->session->userdata('fullname')}</strong> of <strong>{$this->session->userdata('companyname')}</strong>.<br />Please click on following link to review the purchase order <strong>PO# " . $quote->ponum . "</strong>.";
+            	 $data['email_body_content'] .= "<br /><br /><a href='$link' target='blank'>$link</a><br /><br />";
+            }
+            
+            $data['email_body_content'] .= "The PO Details are:<br><br>	$emailitems";
+            
+		  	$loaderEmail = new My_Loader();
             $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
-            //$this->load->model('admin/settings_model');
             $settings = (array) $this->settings_model->get_current_settings();
             $this->load->library('email');
             $config['charset'] = 'utf-8';
@@ -2132,8 +2129,7 @@ class quote extends CI_Controller
             $this->email->initialize($config);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
-            $this->email->subject('Request for Quote Proposal (PO# ' . $quote->ponum.')');
-           
+            $this->email->subject('Request for Quote Proposal (PO# ' . $quote->ponum.')');        
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
@@ -6746,7 +6742,7 @@ $loaderEmail = new My_Loader();
 					    		<th width="8%">Verification</th>
 					    		<th width="10%">Cost Code</th>
 					    	</tr>';
-        
+       
         foreach ($awarded->items as $item)
         {
             $received[$item->id] = (array) $item;
@@ -6826,6 +6822,24 @@ $loaderEmail = new My_Loader();
                 		 }else*/                		
                 			$this->quote_model->db->insert('received', $insertarray);
                 			
+                			
+                			// Shipment entry for directly accepted quantities
+
+                			$shiparr = array();
+                			$shiparr['quantity'] = @$received[$item->id]['received'];
+                			$shiparr['invoicenum'] = trim(@$_POST['invoicenum' . @$key]);
+                			$shiparr['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                			$shiparr['quote'] = $quoteid;
+                			$shiparr['company'] = $item->company;
+                			$shiparr['awarditem'] = $item->id;
+                			$shiparr['itemid'] = $item->itemid;
+                			$shiparr['shipdate'] = date('Y-m-d');
+                			$shiparr['accepted'] = 1;
+                			//print_r($arr);
+                			$this->db->insert('shipment',$shiparr);
+                			
+                			
+                			 // Stock Inventory Entry for items
                 			$stockarray = array();
                 			$stockarray['quantity'] = (@$ship->quantity)?$ship->quantity:0;            			
                 			
@@ -6878,12 +6892,14 @@ $loaderEmail = new My_Loader();
                 		{
                 			$credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
                 			$credits[$item->company]['items'][]=$insertarray;
+                			$credits[$item->company]['item_img'] = $item->item_img;
                 		}
                 		else
                 		{
                 			$credits[$item->company] = array();
                 			$credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
                 			$credits[$item->company]['items'] = array($insertarray);
+                			$credits[$item->company]['item_img'] = $item->item_img;
                 		}
 
                 	}
@@ -6940,6 +6956,24 @@ $loaderEmail = new My_Loader();
                              
                 $this->quote_model->db->insert('received', $insertarray);              
 
+                
+                // Shipment entry for directly accepted quantities
+                
+                $shiparr = array();
+	            $shiparr['quantity'] = @$received[$item->id]['received'];
+	            $shiparr['invoicenum'] = trim(@$_POST['invoicenum' . @$key]);
+	            $shiparr['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+	            $shiparr['quote'] = $quoteid;
+	            $shiparr['company'] = $item->company;
+	            $shiparr['awarditem'] = $item->id;
+	            $shiparr['itemid'] = $item->itemid;
+	            $shiparr['shipdate'] = date('Y-m-d');
+	            $shiparr['accepted'] = 1;
+	            //print_r($arr);
+	            $this->db->insert('shipment',$shiparr);
+                
+                // Stock Inventory Entry for items
+                
                 $stockarray = array();
                 $stockarray['quantity'] = ($received[$item->id]['received'])?$received[$item->id]['received']:0;
 
@@ -6992,12 +7026,14 @@ $loaderEmail = new My_Loader();
                 {
                     $credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
                     $credits[$item->company]['items'][]=$insertarray;
+                    $credits[$item->company]['item_img'] = $item->item_img;
                 }
                 else
                 {
                     $credits[$item->company] = array();
                     $credits[$item->company]['amount'] = $insertarray['quantity'] * $insertarray['ea'];
                     $credits[$item->company]['items'] = array($insertarray);
+                    $credits[$item->company]['item_img'] = $item->item_img;
                 }
 
               }
@@ -7680,6 +7716,7 @@ $loaderEmail = new My_Loader();
         $config = array_merge($config, $this->config->config);
         $data['email_body_title'] = "";
         $data['email_body_content'] = "";
+      
         foreach($credits as $cid=>$credit)
         {
             $amount = $credit['amount'];
@@ -7702,40 +7739,43 @@ $loaderEmail = new My_Loader();
                 $data['email_body_title'] = "Credit amount of ".$cpa->fullname.",".$cpa->companyname." has been deducted by $".$tamount."<br>";
                 $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname."is $".$ramount."<br><br>";
                 $data['email_body_content'] .= "Find the details below:<br/><br/>";
-                $data['email_body_content'] .= "<table>";
-                $data['email_body_content'] .= "<tr><td>Name</td><td>Price</td><td>Quantity</td><td>Total</td></tr>";
+                $data['email_body_content'] .= "<table border='1' width='100%'>";
+                $data['email_body_content'] .= "<tr><td><strong> Item Image</strong></td><td><strong>Name</strong></td><td><strong>Price</strong></td><td><strong>Quantity</strong></td><td><strong>Total</strong></td></tr>";
                 $totalamount = 0;
                 foreach($items as $item)
                 {
+                	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+		    		 { 
+		             	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='65' width='65' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+		             } 
+		             else 
+		             { 
+		             	$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' height='65' width='65' src='".site_url('uploads/item/big.png')."'>";
+		             } 		
                     $amount = $item['quantity'] * $item['ea'];
                     $totalamount += $amount;
                     $data['email_body_content'] .= "<tr>
+                    				<td>{$img_name}</td>
                     				<td>{$item['itemname']}</td>
                     				<td>{$item['ea']}</td>
                     				<td>{$item['quantity']}</td>
-                    				<td>".$amount."</td>
+                    				<td> $".round($amount,2)."</td>
                     			</tr>";
                 }
                 $tax = $totalamount * $config['taxpercent'] / 100;
                 $totalamountwithtax = $totalamount + $tax;
-                $totalamountwithtax = number_format($totalamountwithtax,2);
+                $totalamountwithtax = round($totalamountwithtax,2);
                 $data['email_body_content'] .= "<tr>
-                				<td>Total</td>
-                				<td></td>
-                				<td></td>
-                				<td>".$totalamount."</td>
+                				<td colspan='4'>Total</td>                				
+                				<td style='text-align:right'>$ ".round($totalamount,2)."</td>
                 			</tr>";
                 $data['email_body_content'] .= "<tr>
-                				<td>Tax</td>
-                				<td></td>
-                				<td></td>
-                				<td>".number_format($tax)."</td>
+                				<td colspan='4'>Tax</td>
+                				<td style='text-align:right'>$ ".round($tax,2)."</td>
                 			</tr>";
                 $data['email_body_content'] .= "<tr>
-                				<td>Total</td>
-                				<td></td>
-                				<td></td>
-                				<td>".$totalamountwithtax."</td>
+                				<td colspan='4'>Total</td>
+                				<td style='text-align:right'>$ ".$totalamountwithtax."</td>
                 			</tr>";
 
                 $data['email_body_content'] .= "</table>";
@@ -12164,6 +12204,21 @@ $loaderEmail = new My_Loader();
 				echo $html;
     		}
     	}
+    }
+    
+    
+    function orderclose($quote){
+    	
+    	if (!$_POST)
+    	die;
+    	
+    	if(@$quote)
+    	{
+    		$updateArr = array('orderclose'=>$_POST['orderclose']);
+    		$where = array('id'=>$quote);
+	    	$this->db->update('quote',$updateArr,$where);
+    	}
+    	
     }
     
 }

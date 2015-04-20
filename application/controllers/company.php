@@ -119,7 +119,7 @@ class Company extends CI_Controller {
 
         $link = base_url() . 'company/complete/' . $key;
         $data['email_body_title'] = "Dear " . $c->title ;
-	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
+	  	$data['email_body_content'] = "Please click the following activation link to complete your registration. <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -925,7 +925,7 @@ class Company extends CI_Controller {
 
         $link = base_url() . 'company/change/' . $key;
         $data['email_body_title']  = "Dear " . $c->title ;
-	  	$data['email_body_content']  = "Please click following link to change your password:  <br><br>
+	  	$data['email_body_content']  = "Please click the following link to change your password:  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -1044,7 +1044,7 @@ class Company extends CI_Controller {
 
         $link = base_url() . 'company/complete/' . $key;
         $data['email_body_title'] = "Dear " . $c->title ;
-	  	$data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
+	  	$data['email_body_content'] = "Please click the following activation link to complete your registration. <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -2593,6 +2593,7 @@ class Company extends CI_Controller {
             
         } // echo "<pre>",print_r($data['admins']); die;
         $data['tier'] = $tier;
+        $data['menuhide'] = 1;
         $this->load->view('company/networkconnections', $data);       	
     }
     

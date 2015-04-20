@@ -71,6 +71,7 @@ class Inventory extends CI_Controller
 		$data['company'] = $this->db->get('company')->row();	
 		
 		//$data['masterdefaults'] = $this->db->order_by('itemid')->select('md.*,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id', 'left')->get()->result();
+		$data['menuhide'] = 1;
 		$this->load->view('inventory/items',$data);
 	}
 	
@@ -1227,7 +1228,7 @@ class Inventory extends CI_Controller
         
         if(count($orderresult) > 0)
         {
-        	$ret1 .= '<br><br> <center><h4>Purchase Order History<h4></center>';
+        	$ret1 .= '<br><br> <center><h4>Store Order History<h4></center>';
             $ret1 .= '<table class="table table-bordered">';
             $ret1 .= '<tr><th>Company</th><th>Order #</th><th>Date</th><th>Qty.</th><th>Price</th></tr>';
             
@@ -1242,7 +1243,7 @@ class Inventory extends CI_Controller
         else 
         {
         	$ret1 .= '<br><br>';
-        	$ret1 .= 'No Purchase Order History Found.';
+        	$ret1 .= 'No Store Order History Found.';
         	//echo ''.'*#*#$'.$itemname.'*#*#$'.$ret1;
         }
         echo $ret.'*#*#$'.$itemname.'*#*#$'.$ret1;

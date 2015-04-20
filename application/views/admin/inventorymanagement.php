@@ -141,6 +141,7 @@ function updatereorderqty(itemid,qty)
     			$('#qtyonhand'+itemid).val(newqty);
     			$('#adjustqty'+itemid).val(newqty);
     			$('#valueonhand'+itemid).val(newvalue);
+    			$('#addinventorymodal').modal('hide');
     		}
     	});
 			

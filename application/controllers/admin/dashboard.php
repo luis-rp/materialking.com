@@ -1,1086 +1,1962 @@
+<?php
+class Dashboard extends CI_Controller
+{
+	function Dashboard() {
+		parent::__construct ();
 
-<!--<style>
-.gm-style img { max-width: 20%; }
-.gm-style label { width: auto; display: inline; }
-</style>-->
-<!-- Added below style for displaying the map zoom control properly -->
-<style>
-.gmnoprint img {
-    max-width: none; 
-}
-</style>
-<?php echo '<script>var readnotifyurl="'.site_url('dashboard/readnotification').'";</script>'?>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<?php if($this->session->userdata('managedprojectdetails')){?>
-    
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/app.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/sparkline/jquery.sparkline.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.resize.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.time.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/flot/jquery.flot.pie.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/plugins/easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+		$this->load->helper('url');
+		$this->load->library('session');
+		if(!$this->session->userdata('id'))
+		{
+			redirect ( 'admin/login/index');
+		}
+		$data ['title'] = 'Statistics';
+		$this->load->dbforge();
+		$this->load = new My_Loader();
+		$this->load->library ( array ('table', 'session'));
+		$this->load->model('homemodel', '', TRUE);
+		$this->load->model('admin/statmodel');
+		$this->load->model('admin/quote_model');
+		$this->load->model('admin/project_model');
+		$this->load->model('admin/settings_model');
+		//$this->load->helper('timezone');
+		//date_default_timezone_set(bd_time());
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['pagetour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['settingtour']=$setting[0]->tour;
+		$data['pagetour']=$setting[0]->pagetour;
+		$data['timezone']=$setting[0]->timezone;
+		}
+		$data['pendingbids'] = $this->quote_model->getpendingbids();
+		$this->load->template ( '../../templates/admin/template', $data);
+	}
+
+
+	function export()
+	{
+
+		$id = $this->session->userdata('id');
+		if(!$id)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		$mp = $this->session->userdata('managedprojectdetails');
+		$data['projects']  = $this->statmodel->getProjects();
+		$data['companies'] = $this->db->get('company')->result();
+		if($this->session->userdata('usertype_id')>1)
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+		if($mp)
+			$this->db->where('project',$mp->id);
+		$data['costcodes'] = $this->db->get('costcode')->result();
+
+		$data['itemcodes'] = $this->db->get('item')->result();
+
+		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
+		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
+		$invited = 0;
+		$pending = 0;
+		$awarded = 0;
+		if($data['quotes'])
+		foreach($data['quotes'] as $quote)
+		{
+			if($this->quote_model->getinvited($quote->id))
+				$invited++;
+			if($this->quote_model->getpendingbids($quote->id))
+				$pending++;
+			if($this->quote_model->getawardedbid($quote->id))
+				$awarded++;
+		}
+
+		$data['invited'] = $invited;
+		$data['pending'] = $pending;
+		$data['awarded'] = $awarded;
+
+		$data['networkjoinedcompanies'] = array();
+		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+			WHERE c.id=n.company AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		$query = $this->db->query($sql);
+		$netcomps = $query->result();
+		$settings = $this->settings_model->get_current_settings();
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+
+
+		foreach($netcomps as $nc)
+		{
+			$pa = $this->session->userdata('purchasingadmin');
+			$this->db->where('purchasingadmin',$pa);
+			$this->db->where('company',$nc->id);
+			$tier = $this->db->get('purchasingtier')->row();
+			if($tier)
+			{
+				$nc->credit = $tier->creditlimit;
+				$nc->totalcredit = $tier->totalcredit;
+			}
+			else
+			{
+				$nc->credit = '';
+				$nc->totalcredit = '';
+			}
+			$query = "SELECT
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
+							AND ai.purchasingadmin='$pa'";
+			//echo $query.'<br>';
+			$nc->due = $this->db->query($query)->row()->totalunpaid;
+			$nc->due = round($nc->due,2);
+			//echo $nc->due.' - ';
+			$query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+	                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+	                AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
+			$manualdue = $this->db->query($query)->row()->orderdue;
+			$manualdue = round($manualdue,2);
+			//echo $manualdue.' <br/> ';
+			$nc->due += $manualdue;
+
+			$data['networkjoinedcompanies'][] = $nc;
+		}
+
+		if($this->session->userdata('managedprojectdetails'))
+		{
+
+			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
+            	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
+            	GROUP by label";
+			$codes = $this->db->query($query)->result();
+			$costcodesjson = array();
+			foreach($codes as $c)
+			{
+				if($c->data)
+				{
+					/**************
+					 * Luis
+					*/
+					if ($this->session->userdata('usertype_id') > 1)
+						$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+					else
+						$where = "";
+
+					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+					$taxrate = $this->db->query($cquery)->row();
+
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
+							".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.code =  '".$c->label."'
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+					$queryOrder = $this->db->query($sqlOrders);
+					if($queryOrder->result()){
+
+
+						$totalOrder = $queryOrder->row();
+						$c->data += $totalOrder->sumT;
+					}
+					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					/*********/
+					$c->label = $c->label . ' - $'.$c->data;
+					$costcodesjson[]=$c;
+				}
+			}
+
+			$data['costcodesjson'] = $costcodesjson;
+		}
+
+
+		//===============================================================================
+
+
+
+
+
+
+
+		$report_title = 'Project Statistics';
+		$header[] = array('Report type' , $report_title , '' , '' , '' , '' , '' , '' );
+
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('Project Title' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );
+
+		}
+		else
+		{
+
+			$projects_arr = array();
+			foreach($data['projects'] as $prj)
+			{
+
+				$projects_arr[] =  $prj->title;
+			}
+
+
+
+			$projects_string = implode(", ",$projects_arr);
+
+			$header[] = array('Project Title' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );
+
+		}
+
+
+
+
+
+
+
+
+
+
+		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
+
+
+		//---------------------------------------------------------------------------
+
+
+		$header[] = array('Number of Project' , 'Number of Cost Code' , 'Number of Item Codes' , 'Total Number of Direct Orders' , 'Total Number of Quotes' , 'Total Number of Quotes Requested' , 'Total Number of Quotes Pending' , 'Total Number of Awarded Quotes' );
+
+
+		$companies = '';
+		if($this->session->userdata('usertype_id') == 1)
+		{
+			//$companies = count($data['companies']);
+		}
+
+		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded']);
+
+
+		//--------------------------
+
+		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
+		{
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+
+			$header[] = array('Company' , 'Credit Limit' , 'Credit Remaining' , 'Amount Due' , '' , '' , '' , '');
+
+			foreach($data['networkjoinedcompanies'] as $njc)
+			{
+				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' );
+			}
+		}
+
+		createXls('Statistics', $header);
+		die();
+
+		//===============================================================================
+
+	}
+
+	//Dashboard PDF
+	function dashboard_pdf()
+	{
+
+		$id = $this->session->userdata('id');
+		if(!$id)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		$mp = $this->session->userdata('managedprojectdetails');
+		$data['projects']  = $this->statmodel->getProjects();
+		$data['companies'] = $this->db->get('company')->result();
+		if($this->session->userdata('usertype_id')>1)
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+		if($mp)
+			$this->db->where('project',$mp->id);
+		$data['costcodes'] = $this->db->get('costcode')->result();
+
+		$data['itemcodes'] = $this->db->get('item')->result();
+
+		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
+		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
+		$invited = 0;
+		$pending = 0;
+		$awarded = 0;
+		if($data['quotes'])
+		foreach($data['quotes'] as $quote)
+		{
+			if($this->quote_model->getinvited($quote->id))
+				$invited++;
+			if($this->quote_model->getpendingbids($quote->id))
+				$pending++;
+			if($this->quote_model->getawardedbid($quote->id))
+				$awarded++;
+		}
+
+		$data['invited'] = $invited;
+		$data['pending'] = $pending;
+		$data['awarded'] = $awarded;
+
+		$data['networkjoinedcompanies'] = array();
+		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+			WHERE c.id=n.company AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		$query = $this->db->query($sql);
+		$netcomps = $query->result();
+		$settings = $this->settings_model->get_current_settings();
+		$id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+
+
+		foreach($netcomps as $nc)
+		{
+			$pa = $this->session->userdata('purchasingadmin');
+			$this->db->where('purchasingadmin',$pa);
+			$this->db->where('company',$nc->id);
+			$tier = $this->db->get('purchasingtier')->row();
+			if($tier)
+			{
+				$nc->credit = $tier->creditlimit;
+				$nc->totalcredit = $tier->totalcredit;
+			}
+			else
+			{
+				$nc->credit = '';
+				$nc->totalcredit = '';
+			}
+			$query = "SELECT
+		    			(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * ".$settings->taxpercent." / 100))
+		    			totalunpaid FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
+							AND ai.purchasingadmin='$pa'";
+			//echo $query.'<br>';
+			$nc->due = $this->db->query($query)->row()->totalunpaid;
+			$nc->due = round($nc->due,2);
+			//echo $nc->due.' - ';
+			$query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+	                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+	                AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
+			$manualdue = $this->db->query($query)->row()->orderdue;
+			$manualdue = round($manualdue,2);
+			//echo $manualdue.' <br/> ';
+			$nc->due += $manualdue;
+
+			$data['networkjoinedcompanies'][] = $nc;
+		}
+
+		if($this->session->userdata('managedprojectdetails'))
+		{
+
+			$query = "SELECT ai.costcode label, sum(ai.quantity*ai.ea) data FROM pms_awarditem ai, pms_award a, pms_quote q
+            	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
+            	GROUP by label";
+			$codes = $this->db->query($query)->result();
+			$costcodesjson = array();
+			foreach($codes as $c)
+			{
+				if($c->data)
+				{
+					/**************
+					 * Luis
+					*/
+					if ($this->session->userdata('usertype_id') > 1)
+						$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+					else
+						$where = "";
+
+					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+					$taxrate = $this->db->query($cquery)->row();
+
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
+							".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.code =  '".$c->label."'
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+					$queryOrder = $this->db->query($sqlOrders);
+					if($queryOrder->result()){
+
+
+						$totalOrder = $queryOrder->row();
+						$c->data += $totalOrder->sumT;
+					}
+					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					/*********/
+					$c->label = $c->label . ' - $'.$c->data;
+					$costcodesjson[]=$c;
+				}
+			}
+
+			$data['costcodesjson'] = $costcodesjson;
+		}
+
+
+		//===============================================================================
+
+
+
+
+
+
+
+		$report_title = 'Project Statistics';
+		$header[] = array('Report type:' , $report_title , '' , '' , '' , '' , '' , '' );
+
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$header[] = array('<b>Project Title</b>' , $this->session->userdata('managedprojectdetails')->title , '' , '' , '' , '' , '' , '' );
+
+		}
+		else
+		{
+
+			$projects_arr = array();
+			foreach($data['projects'] as $prj)
+			{
+
+				$projects_arr[] =  $prj->title;
+			}
+
+
+
+			$projects_string = implode(", ",$projects_arr);
+
+			$header[] = array('<b>Project Title</b>' , 'All projects('.$projects_string.')' , '' , '' , '' , '' , '' , '' );
+
+		}
+
+
+
+
+
+
+
+
+
+
+		$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
+
+
+		//---------------------------------------------------------------------------
+
+
+		$header[] = array('<b>Number of Project</b>' , '<b>Number of Cost Code</b>' , '<b>Number of Item Codes</b>' , '<b>Total Number of Direct Orders</b>' , '<b>Total Number of Quotes</b>' , '<b>Total Number of Quotes Requested</b>' , '<b>Total Number of Quotes Pending</b>' , '<b>Total Number of Awarded Quotes</b>' );
+
+
+		$companies = '';
+		if($this->session->userdata('usertype_id') == 1)
+		{
+			//$companies = count($data['companies']);
+		}
+
+		$header[] = array(count($data['projects']),  count($data['costcodes']) ,  count($data['itemcodes']) , count($data['directquotes']) ,count($data['quotes']) ,$data['invited'] ,$data['pending'] ,$data['awarded']);
+
+
+		//--------------------------
+
+		if($this->session->userdata('usertype_id') == 2 && isset($data['networkjoinedcompanies']) && $data['networkjoinedcompanies'] != '')
+		{
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' );
+			$header[] = array('' , '' , '' , '' , '' , '' , '' , '' , '');
+
+			$header[] = array('<b>Company</b>' , '<b>Credit Limit</b>' , '<b>Credit Remaining</b>' , '<b>Amount Due</b>' , '' , '' , '' , '');
+
+			foreach($data['networkjoinedcompanies'] as $njc)
+			{
+				$header[] = array($njc->title , $njc->totalcredit ,  $njc->credit, $njc->due , '' , '' , '' , '' );
+			}
+		}
+
+
+		$headername = "PROJECT STATISTICS";
+    	createOtherPDF('Statistics', $header,$headername);
+    	die();
+
+		//===============================================================================
+
+	}
+
+
+
+	function index() {
 	
-	<script src="http://code.highcharts.com/highcharts.js"></script>
-	<script src="http://code.highcharts.com/highcharts-3d.js"></script>
-	<script src="http://code.highcharts.com/modules/exporting.js"></script>
-	<script>
-	$(document).ready(function(){
+		ini_set('display_errors', 1); error_reporting(E_ALL ^ E_NOTICE);
+		$config = $this->settings_model->get_current_settings ();
+		$Totalawardedtotal = 0;
+		//echo '<pre>';print_r($data);die;
+		$id = $this->session->userdata('id');
+		if(!$id)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		
+		$data['newcontractnotifications'] = $this->quote_model->getnewcontractnotifications();
+		// echo "<pre>",print_r($data['newcontractnotifications']); die;
+		$mp = $this->session->userdata('managedprojectdetails');
+		$data['projects']  = $this->statmodel->getProjects();
+		$data['companies'] = $this->db->get('company')->result();
+		if($this->session->userdata('usertype_id')>1)
+			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+	    if($mp)
+	        $this->db->where('project',$mp->id);
+		$data['costcodes'] = $this->db->get('costcode')->result();
+
+		$data['itemcodes'] = $this->db->get('item')->result();
+
+		$data['quotes'] = $this->quote_model->get_quotes('dashboard',$mp?$mp->id:'');
+		$data['directquotes'] = $this->quote_model->get_Direct_Quotes('dashboard',$mp?$mp->id:'');
+		$invited = 0;
+		$pending = 0;
+		$awarded = 0;
+		$completed = 0;
+		$allbids = 0;
+		if($data['quotes'])
+		foreach($data['quotes'] as $quote)
+		{
+			if($this->quote_model->getinvited($quote->id))
+				$invited++;
+			if($this->quote_model->getpendingbids($quote->id))
+				$pending++;
+			if($this->quote_model->getawardedbid($quote->id))
+				$awarded++;
+			if($this->quote_model->getcompletedbids($quote->id))
+				$completed++;	
+			if($this->quote_model->getbids($quote->id))
+				$allbids++;		
+		}
+
+		$data['invited'] = $invited;
+		$data['pending'] = $pending;
+		$data['awarded'] = $awarded;
+		$data['allBids'] = 		 $allbids;
+		$data['completedBids'] = $completed;
+		$data['awardedbids'] =   $awarded;
+		$data['pendingbids'] =   $this->quote_model->getpendingbids();
+
+		//$data['allcompanies'] = $this->db->where('username !=', '')->get('company')->result();
 
 
-		 var d_pie = [];
-		  <?php $i=0; 
-		  if(@$costcodesjson){
-		  foreach($costcodesjson as $cj)
-		  {?>
-		  d_pie[<?php echo $i;?>]= [ "<?php echo $cj->label;?>",  <?php echo $cj->data;?> ];
-		  <?php $i++;} } else { ?>
-		   d_pie[0]= [ "No Pie Chart Data Available For This Project",  <?php echo "10";?> ];
-		  <?php }?>
+		$data['networkjoinedcompanies'] = array();
+		$sql = "SELECT c.*, acceptedon FROM ".$this->db->dbprefix('company')." c, ".$this->db->dbprefix('network')." n
+			WHERE c.id=n.company AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+		$query = $this->db->query($sql);
+		$netcomps = $query->result();
+	    $settings = $this->settings_model->get_current_settings();
+	    $id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
 
-		    $('#chart_pie').highcharts({
-		        chart: {
-		            type: 'pie',
-		            options3d: {
-						enabled: true,
-		                alpha: 45,
-		                beta: 0
-		            }
-		        },
-		        title: {
-		            text: ''
-		        },
-		        tooltip: {
-		            pointFormat: '<b>{point.percentage:.1f}%</b>'
-		        },
-		        plotOptions: {
-		            pie: {
-		                allowPointSelect: true,
-		                cursor: 'pointer',
-		                depth: 35,
-		                dataLabels: {
-		                    enabled: true,
-		                    format: '{point.name}'
-		                }
-		            }
-		        },
-		        series:  [{
-		            type: 'pie',
-		            name: '',
-		            data: d_pie
-		        }]
-
-		    });
-
-	/*	 $.plot("#chart_pie", d_pie, $.extend(true, {}, Plugins.getFlotDefaults(), {
-		  series: {
-		   pie: {
-		    show: true,
-		    radius: 1,
-		    label: {
-		     show: true
+		foreach($netcomps as $nc)
+		{
+		    $pa = $this->session->userdata('purchasingadmin');
+		    $this->db->where('purchasingadmin',$pa);
+		    $this->db->where('company',$nc->id);
+		    $tier = $this->db->get('purchasingtier')->row();
+		    if($tier)
+		    {
+		        $nc->credit = $tier->creditlimit;
+		        $nc->totalcredit = $tier->totalcredit;
 		    }
-		   }
-		  },
-		  grid: {
-		   hoverable: true
-		  },
-		  tooltip: true,
-		  tooltipOpts: {
-		   content: '%p.0%, %s', // show percentages, rounding to 2 decimal places
-		   shifts: {
-		    x: 20,
-		    y: 0
-		   }
-		  }
-		 }));
-*/
+		    else
+		    {
+		        $nc->credit = '';
+		        $nc->totalcredit = '';
+		    }
+		    echo "<pre>",$query = "SELECT
+		    		 IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))	
+		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received), (((SUM(ai.quantity)-SUM(ai.received)) * ai.ea) + ((SUM(ai.quantity)-SUM(ai.received)) * ai.ea)  * ".$settings->taxpercent."/100) as totalCommitted 
+		    			FROM
+		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
+						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
+						AND ai.purchasingadmin='$pa'"; die;
+		   
+		    $ncresult = $this->db->query($query)->row();
+		    $nc->due = $ncresult->totalunpaid;
+		    $nc->totalCommitted = $ncresult->totalCommitted;
+		    
+		    						                // Code for getting discount/Penalty
+                if(@$ncresult->company && @$ncresult->purchasingadmin){
 
-	});
-	</script>
+                	$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $ncresult->company . "'
+				and purchasingadmin = '". $ncresult->purchasingadmin ."'";
+                	//echo $sql;
+                	$resultinvoicecycle = $this->db->query($sql)->row();
 
-<?php }?>
+                	$ncresult->penalty_percent = 0;
+                	$ncresult->penaltycount = 0;
+                	$ncresult->discount_percent =0;
 
+                	if($resultinvoicecycle){
+					
+                		if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
 
-		<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> -->
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=true"></script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.min.js"></script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>templates/site/assets/js/gmap3.infobox.min.js"></script>
-		<link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/realia-blue.css" type="text/css" id="color-variant-default">
-
-<link href='<?php echo base_url(); ?>templates/admin/css/fullcalendar.css' rel='stylesheet' />
-<script src='<?php echo base_url(); ?>templates/admin/js/jquery-ui.js'></script>
-<script src='<?php echo base_url(); ?>templates/admin/js/fullcalendar.js'></script>
-<link href="http://materialking.com/templates/admin/css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
-
-<script>
-	
-	$(document).ready(function() {
-	
-		$('#calendar').fullCalendar({
-			editable: false,
-			events: "<?php echo base_url(); ?>admin/quote/jsonlist",
-
-			eventDrop: function(event, delta) {
-				alert(event.title + ' was moved ' + delta + ' days\n' +
-					'(should probably update your database)');
-			},
-
-			loading: function(bool) {
-				if (bool) $('#loading').show();
-				else $('#loading').hide();
-			}
-
-		});
-
-
-		$('#calendarevent').fullCalendar({
-			editable: false,
-			events: "<?php echo base_url(); ?>admin/event/jsonlist",
-
-			eventDrop: function(event, delta) {
-				//alert(event.title + ' was moved ' + delta + ' days\n' + '(should probably update your database)');
-			},
-
-			loading: function(bool) {
-				if (bool) $('#loadingevent').show();
-				else $('#loadingevent').hide();
-			}
-
-		});
-
-	});
-
-	
-	function changeproject(){
-	 		
-		$("#form-selector").submit();
+                			if(@$ncresult->datedue){
 		
-	}
-	
-	
-	function gotoproject(project){
-		
-		$("#pid").val(project);
-		$("#form-selector").submit();
-	}
-	
-</script>
+                				if(@$ncresult->paymentstatus == "Paid" && @$ncresult->paymentdate){
+                					$oDate = $ncresult->paymentdate;
+                					$now = strtotime($ncresult->paymentdate);
+                				}else {
+                					$oDate = date('Y-m-d');
+                					$now = time();
+                				}
 
-<style>
-	#loading {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-		}
+                				$d1 = strtotime($ncresult->datedue);
+                				$d2 = strtotime($oDate);
+                				$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+                				if(is_int($datediff) && $datediff > 0) {
 
-	#calendar {
-		width: 100%;
-		}
+                					$ncresult->penalty_percent = $resultinvoicecycle->penalty_percent;
+                					$ncresult->penaltycount = $datediff;
 
-	#loadingevent {
-		position: absolute;
-		top: 5px;
-		right: 5px;
-	}
+                				}else{
 
-	#calendarevent {
-		width: 100%;
-		}
+                					$discountdate = $resultinvoicecycle->discountdate;
+                					if(@$discountdate){
 
-</style>
+                						if ($now < strtotime($discountdate)) {
+                							$ncresult->discount_percent = $resultinvoicecycle->discount_percent;
+                						}
+                					}
+                				}
+                			}
 
- <script type="text/javascript">
-	 $(document).ready(function(){
-	 	
-	 InitMap();
-	 	
- tour4 = new Tour({
-	  steps: [
-	  {
-	    element: "#step1",
-	    title: "Step 1",
-	    content: "Welcome to the on-page tour for Dashboard"
-	  },
+                		}
+                	}
 
-
-	]
-	});
-
-	$("#activatetour").click(function(e){
-		  e.preventDefault();
-			$("#tourcontrols").remove();
-			tour4.restart();
-			// Initialize the tour
-			tour4.init();
-			start();
-		});
-	 });
-		$('#canceltour').live('click',endTour);
-	 function start(){
-		  
-			// Start the tour
-				tour4.start();
-			 }
-	 function endTour(){
-
-		 $("#tourcontrols").remove();
-		 tour4.end();
-			}
-			
-
-	function InitMap() {
-        google.maps.event.addDomListener(window, 'load', LoadMap);
-    }		
-			
-			
-        function LoadMap() {
-        var locations = new Array(
-            <?php echo $latlongs; ?>
-        );
-        var markers = new Array();
-        var mapOptions = {
-            center: new google.maps.LatLng(<?php echo $mapcenter; ?>),
-            zoom: 9,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            scrollwheel: false
-        };
-
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-
-        <?php foreach ($popups as $k => $popup) { ?>
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(<?php echo $k; ?>),
-            map: map,
-            icon: 'http://html.realia.byaviators.com/assets/img/marker-transparent.png'
-        });
-
-        var myOptions = {
-            content: '<?php echo $popup; ?>',
-            disableAutoPan: false,
-            maxWidth: 0,
-            pixelOffset: new google.maps.Size(-146, -190),
-            zIndex: 100,
-            closeBoxMargin: "",
-            closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
-            infoBoxClearance: new google.maps.Size(1, 1),
-            boxStyle: { 
-                background: "#fff"
-                ,opacity: 1
-               },
-            position: new google.maps.LatLng(location[0], location[1]),
-            isHidden: false,
-            pane: "floatPane",
-            enableEventPropagation: false
-        };
-        marker.infobox = new InfoBox(myOptions);
-        marker.infobox.isOpen = false;
-
-        var myOptions = {
-            draggable: true,
-            content: '<div class="marker"><div class="marker-inner"></div></div>',
-            disableAutoPan: true,
-            closeBoxURL: "",
-            pixelOffset: new google.maps.Size(-21, -58),
-            position: new google.maps.LatLng(location[0], location[1]),
-            isHidden: false,
-            // pane: "mapPane",
-            enableEventPropagation: true
-        };
-        marker.marker = new InfoBox(myOptions);
-        marker.marker.open(map, marker);
-        markers.push(marker);
-
-        google.maps.event.addListener(marker, "click", function(e) {
-            var curMarker = this;
-
-            $.each(markers, function(index, marker) {
-                // if marker is not the clicked marker, close the marker
-                if (marker !== curMarker) {
-                    marker.infobox.close();
-                    marker.infobox.isOpen = false;
                 }
-            });
+		    
+                
+                if(@$ncresult->discount_percent){
+                	$nc->due = $nc->due - ($nc->due*$ncresult->discount_percent/100);
+                }
 
-            if (curMarker.infobox.isOpen === false) {
-                curMarker.infobox.open(map, this);
-                curMarker.infobox.isOpen = true;
-                map.panTo(curMarker.getPosition());
-            } else {
-                curMarker.infobox.close();
-                curMarker.infobox.isOpen = false;
+                if(@$nc->penalty_percent){
+                	$nc->due = $nc->due + (($nc->due*$ncresult->penalty_percent/100)*$ncresult->penaltycount);
+                }
+                
+		    //echo $nc->due.' - ';
+		    $query = "SELECT IF(IFNULL(od.quantity,0)=0, (ROUND(SUM(od.price),2) + (ROUND(SUM(od.price),2) * o.taxpercent / 100)), (ROUND(SUM(od.quantity * od.price),2) + (ROUND(SUM(od.quantity * od.price),2) * o.taxpercent / 100)) ) + Sum(od.shipping)   
+		    	orderdue
+                FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
+                WHERE od.orderid=o.id AND o.type='Manual' AND od.paymentstatus!='Paid' AND od.accepted!=-1
+                AND o.purchasingadmin='$pa' AND od.company='".$nc->id."'";
+		    $manualdue = $this->db->query($query)->row()->orderdue;
+		    $manualdue = $manualdue;
+		    //echo $manualdue.' <br/> ';
+		    $nc->due += $manualdue;
+
+		    $data['networkjoinedcompanies'][] = $nc;
+		}
+
+		if($this->session->userdata('managedprojectdetails'))
+		{
+
+			$query = "SELECT ai.costcode label, IF(IFNULL(ai.quantity,0)=0, sum(ai.ea), sum(ai.quantity*ai.ea) ) data FROM pms_awarditem ai, pms_award a, pms_quote q
+            	WHERE ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id."
+            	GROUP by label";
+			log_message('debug',var_export($query,true));
+			$codes = $this->db->query($query)->result();
+			$codearr = array();
+			foreach($codes as $code2)
+			$codearr[] = $code2->label;
+
+			$where2 = "";
+
+			if(count($codearr)>0){
+				$codestr = "'" .implode("', '", $codearr) . "'";
+				$where2 = "AND code not in ({$codestr})";
+			}
+
+			$sql ="SELECT *	FROM ".$this->db->dbprefix('costcode')." WHERE 1=1 {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
+
+			if($this->session->userdata('usertype_id')>1)
+			{
+				$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')."
+			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where2} AND project=".$this->session->userdata('managedprojectdetails')->id;
+			}
+
+		$query = $this->db->query ($sql);
+		$cnt = count($codearr);
+		if ($query->result ())
+		{
+			$result = $query->result();
+			$ret = array();
+			foreach($result as $item)
+			{
+
+			$query2 = "SELECT cc.code label, SUM( od.price * od.quantity ) data, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+			
+			if($item->forcontract==1){
+				
+				$query2 = "SELECT cc.code label, SUM( od.price) data, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od WHERE cc.id =  ".$item->id."
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+			}
+			
+			$result = $this->db->query($query2)->result();
+			//echo "<pre>",print_r($result); die;
+			if(isset($result[0])){
+			  if (!isset($codes[$cnt]))
+    			$codes[$cnt] = new stdClass();
+			$codes[$cnt]->label = $result[0]->label;
+			$codes[$cnt]->data = $result[0]->data;
+			$codes[$cnt]->shipping = $result[0]->shipping;
+			$codes[$cnt]->type = "new";
+			$cnt++;
+			}
+
+			}
+		}
+
+			$costcodesjson = array();
+			foreach($codes as $c)
+			{
+				if($c->data)
+				{
+					/**************
+					 * Luis
+					*/
+					// Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id AND q.pid=".$this->session->userdata('managedprojectdetails')->id." AND ai.costcode='".$c->label."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$items = $invoicequery->result();
+                    
+        			if($items){
+
+        				foreach ($items as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$invoice->penalty_percent = 0;
+        						$invoice->penaltycount = 0;
+        						$invoice->discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+
+        											if ($now < strtotime($discountdate)) {
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$c->data = $c->data - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$c->data = $c->data + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+        			 
+					if ($this->session->userdata('usertype_id') > 1)
+					$where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+					else
+					$where = "";
+
+					$cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+					$taxrate = $this->db->query($cquery)->row();
+
+					$sqlOrders ="SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc,
+							".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.code =  '".$c->label."' and o.project='".$this->session->userdata('managedprojectdetails')->id."'
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+					$queryOrder = $this->db->query($sqlOrders);
+					if($queryOrder->result() && (!isset($c->type))){
+
+							$totalOrder = $queryOrder->row();
+							$c->data += $totalOrder->sumT;
+							$c->shipping = $totalOrder->shipping;
+					}
+					$c->data = round( ($c->data + ($c->data*($taxrate->taxrate/100) ) ),2);
+					if(@$c->shipping)
+					$c->data = round( ($c->data + $c->shipping ),2);					
+					
+					/*********/
+					$c->label = $c->label . ' - $'.$c->data;
+					$costcodesjson[]=$c;
+				}
+			}
+			/*
+			$costcodesjson = json_encode($costcodesjson);
+			$costcodesjson = str_replace('"label"', 'label', $costcodesjson);
+			$costcodesjson = str_replace('"data"', 'data', $costcodesjson);
+			$costcodesjson = str_replace('data:"', 'data:', $costcodesjson);
+			$costcodesjson = str_replace('"}', '}', $costcodesjson);
+			*/
+			//print_r($costcodesjson);die;
+			$data['costcodesjson'] = $costcodesjson;
+		}
+
+		$invoices = $this->quote_model->getinvoices();
+		//$invoicespay = $this->quote_model->getpaymentrequestedorders($this->session->userdata('purchasingadmin'));
+
+		/*$bcks = $this->quote_model->getBacktracks($this->session->userdata('purchasingadmin'));
+		$backtracks = array();
+		foreach($bcks as $bck)
+		{
+			$backtracks[]=$bck;
+		}*/
+		$this->load->model('admin/backtrack_model');
+		if(isset($mp->id))
+		$quotes = $this->backtrack_model->get_quoteswithoutprj ($mp->id);
+		else
+		$quotes = $this->backtrack_model->get_quoteswithoutprj ();
+		//echo "<pre>",print_r($quotes);
+		if(isset($quotes[0]))
+		$count = count ($quotes[0]);
+		else
+		$count = 0;
+		$items = array();
+		$companyarr = array();
+		if ($count >= 1)
+		{
+			foreach ($quotes[0] as $quote)
+			{
+				$awarded = $this->quote_model->getawardedbid($quote->id);
+				
+				$items[$quote->ponum]['quote'] = $quote;
+				if($awarded)
+				{
+					$bids = $this->quote_model->getbids($quote->id);
+
+					        $maximum = array();
+					        $minimum = array();
+					        foreach ($bids as $bid) {
+
+					        	$totalprice = 0;
+					        	foreach ($bid->items as $item) {
+
+					        		if ($this->session->userdata('usertype_id') == 1) {
+					        			$this->db->where('id', $item->itemid);
+					        			$companyitem = $this->db->get('item')->row();
+					        			if ($companyitem) {
+					        				$item->itemcode = $companyitem->itemcode;
+					        				$item->itemname = $companyitem->itemname;
+					        			}
+					        		}
+
+					        		$totalprice += $item->totalprice;
+					        		$key = $item->itemcode;
+					        		if (!isset($minimum[$key])) {
+					        			$minimum[$key] = $item->ea;
+					        			$maximum[$key] = $item->totalprice;
+					        		} elseif ($minimum[$key] > $item->ea) {
+					        			$minimum[$key] = $item->ea;
+					        		} else if ($maximum[$key] < $item->totalprice) {
+					        			$maximum[$key] = $item->totalprice;
+					        		}
+					        	}
+					        	if (!isset($minimum['totalprice']))
+					        	$minimum['totalprice'] = $totalprice;
+					        	elseif ($minimum['totalprice'] > $totalprice)
+					        	$minimum['totalprice'] = $totalprice;
+					        }
+
+					$awardedtotal = 0;
+					if(@$awarded->items)
+					foreach($awarded->items as $ai)
+					{
+						$awardeditemcompany[]=$ai->itemcode . $ai->company;
+						if($ai->quantity==0 || $ai->quantity =="")
+						$awardedtotal+=$ai->ea;
+						else
+						$awardedtotal+=$ai->quantity * $ai->ea;
+					}
+					$awardedtotal = round($awardedtotal,2);
+					$awardedtax = $awardedtotal * $config->taxpercent / 100;
+					$awardedtax = round($awardedtax,2);
+					$awardedtotalwithtax = $awardedtotal + $awardedtax;
+					$awardedtotalwithtax = round($awardedtotalwithtax,2);
+					$highTotal = round(array_sum($maximum),2);
+					$totalsaved =0;
+				
+					if($highTotal > $awardedtotal){ 
+						$totalsaved = ($highTotal + (($highTotal)*$config->taxpercent/100)) - $awardedtotalwithtax;
+					}
+					$Totalawardedtotal += $totalsaved;
+                 
+					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
+					{
+						foreach($awarded->items as $item)
+						{
+							if(date('Y-m-d', strtotime( $item->daterequested)) < date('Y-m-d')) {
+						    $checkcompany = true;
+						    $checkitemname = true;
+
+						    if(@$_POST['searchcompany'])
+						    {
+						        $checkcompany = $item->company == @$_POST['searchcompany'];
+						    }
+
+						    if(@$_POST['searchitem'])
+						    {
+						        if(strpos($item->itemname, @$_POST['searchitem'])!== FALSE)
+						        {
+						            $checkitemname = true;
+						        }
+						        else
+						        {
+						            $checkitemname = false;
+						        }
+						    }
+
+							$pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                             $item->pendingshipments=$pendingshipments;
+
+							if($item->received < $item->quantity && $checkcompany && $checkitemname)
+							{
+								$item->companyname = @$item->companydetails->title;
+								if(!$item->companyname)
+									$item->companyname = '&nbsp;';
+								$item->ponum = $quote->ponum;
+								$item->duequantity = $item->quantity - $item->received;
+								if(!isset($items[$quote->ponum]['items']))
+									$items[$quote->ponum]['items'] = array();
+								$items[$quote->ponum]['items'][]=$item;
+
+							}
+						  }
+						}
+
+					}
+				}
+			}
+
+
+    		if($this->session->userdata('usertype_id')==3)
+    		{
+    			
+    			$data['backtracks'] = array();
+    			foreach($items as $item)
+    			{
+    			    $this->db->where('quote',$item['quote']->id);
+    			    $this->db->where('userid',$this->session->userdata('id'));
+    			    $check = $this->db->get('quoteuser')->row();
+    			    if($check)
+    			    {
+    			        $data['backtracks'][]=$item;
+    			        $data['backtracksCnt'] = 0;
+    			    }
+    			}
+    		}
+    		else
+    		{
+		        $data['backtracks'] = $items;
+		        $data['backtracksCnt'] = 0;
+    		}
+		}
+
+		//echo "<pre>",print_r($data['backtracks']); die;
+
+		$data['Totalawardedtotal'] = $Totalawardedtotal;
+		$messagesql = "SELECT m.* FROM
+		".$this->db->dbprefix('message')." m WHERE m.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and m.isread=0 and m.senton between DATE_SUB(now(), INTERVAL 1 WEEK) AND now();  ";
+
+		$msgs = $this->db->query($messagesql)->result();
+
+
+		$wherequote = "";
+		$wherequote = "and creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+
+		$quotesql = "SELECT q.* FROM
+		".$this->db->dbprefix('quote')." q WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and q.isread=0 {$wherequote} ";
+
+		$newquotes = $this->db->query($quotesql)->result();
+
+
+		$whereawardquote = "";
+		$whereawardquote = "and a.awardedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
+
+		$awarquotesql = "SELECT q.*,a.awardedon, a.id as awardid FROM
+		".$this->db->dbprefix('quote')." q join ".$this->db->dbprefix('award')." a on q.id = a.quote and q.purchasingadmin = a.purchasingadmin WHERE q.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and a.isread=0 {$whereawardquote} group by a.quote";
+
+		$awardquotes = $this->db->query($awarquotesql)->result();
+
+
+
+		$wherecostcode = "";
+		$wherecostcode .= "and c.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+
+		$costcodesql = "SELECT c.*, p.title FROM
+		".$this->db->dbprefix('costcode')." c left join ".$this->db->dbprefix('project')." p on c.project = p.id  WHERE c.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and c.isread=0 {$wherecostcode} ";
+
+		$newcostcodes = $this->db->query($costcodesql)->result();
+
+
+
+		$whereproject = "";
+		$whereproject = "and p.creation_date between DATE_SUB(curdate(), INTERVAL 1 WEEK) AND curdate()";
+
+		$projectsql = "SELECT p.title, p.creation_date, p.id FROM
+		".$this->db->dbprefix('project')." p WHERE p.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and p.isread=0 {$whereproject} ";
+
+		$newprojects = $this->db->query($projectsql)->result();
+
+
+		$whereusers = "";
+		$whereusers = "and created_date between DATE_SUB(now(), INTERVAL 1 WEEK) AND now() and  purchasingadmin='{$this->session->userdata('purchasingadmin')}' and u.isread=0 ";
+
+		$userssql = "SELECT username, created_date, id FROM
+		".$this->db->dbprefix('users')." u WHERE 1=1 AND isdeleted='0' {$whereusers} ";
+
+		$users = $this->db->query($userssql)->result();
+
+
+		$wherenetwork = "";
+		$wherenetwork = "and n.acceptedon between DATE_SUB(now(), INTERVAL 1 WEEK) AND now()";
+
+		$networksql = "SELECT n.*, c.title FROM
+		".$this->db->dbprefix('network')." n left join ".$this->db->dbprefix('company')." c on n.company = c.id  WHERE n.purchasingadmin='{$this->session->userdata('purchasingadmin')}' and n.isread=0 {$wherenetwork} ";
+
+		$networks = $this->db->query($networksql)->result();
+
+		
+		if($invoices)
+		{
+			$invoiceCntr = 0;
+			foreach ($invoices as $invoice)
+			{
+	            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
+	            {
+	            	$invoiceCntr++;
+	            }
+			}
+            $data['invoices'] = $invoices;
+            $data['invoiceCntr'] = $invoiceCntr;
+		}		
+		/*if($invoicespay)
+		$data['invoicespay'] = $invoicespay;
+		if($backtracks)
+		$data['backorders'] = $backtracks;*/
+		if($msgs)
+		$data['msgs'] = $msgs;
+		if($newquotes)
+		$data['newquotes'] = $newquotes;
+		if($awardquotes)
+		$data['awardquotes'] = $awardquotes;
+		if($newcostcodes)
+		$data['newcostcodes'] = $newcostcodes;
+		if($newprojects)
+		$data['newprojects'] = $newprojects;
+		if($users)
+		$data['users'] = $users;
+		if($networks)
+		$data['networks'] = $networks;
+		if(empty($setting))
+		$data['settingtour']=$setting;
+		else
+		$data['settingtour']=$setting[0]->tour;
+
+		$data['viewname'] = 'dashboard';
+		
+		
+		/*$details = get_my_address();
+		$center = $details->loc;
+		$this->data['my_location'] = get_my_location($details);
+		$geo_coords = explode(",", $center);
+		$search = new stdClass();
+		$search->distance = 100000;
+		$search->current_lat = $geo_coords[0];
+		$search->current_lon = $geo_coords[1];*/
+		//echo "<pre>",print_r($this->session->userdata); die;
+		$search = new stdClass();
+		if(@$this->session->userdata('user_lat'))
+			$search->current_lat = $this->session->userdata('user_lat');
+		else 
+			$search->current_lat = "33.956419";	
+		if(@$this->session->userdata('user_lng'))
+			$search->current_lon = $this->session->userdata('user_lng');
+		else 
+			$search->current_lon = "-118.442232";
+				
+		$search->earths_radius = 6371;
+		$use_supplier_position = false;
+		$this->homemodel->set_search_criteria($search);
+
+		$location = $this->input->post('location');
+
+		//$lat = $this->input->post('lat');
+		//$lng = $this->input->post('lng');
+		if ($location)
+		{
+			$return = get_geo_from_address($location);
+			if($return)
+			{
+				$center = "{$return->lat}, {$return->long}";
+				$search->current_lat = $return->lat;
+				$search->current_lon = $return->long;
+				$this->homemodel->set_search_criteria($search);
+			}
+		}
+		$this->homemodel->set_distance(240);
+		$query_suppliers = $this->homemodel->get_nearest_suppliers();
+		//echo "<pre>",print_r($query_suppliers); die;
+		if (! $query_suppliers->totalresult)
+		{
+			$this->homemodel->set_distance(15000);
+			$query_suppliers = $this->homemodel->get_nearest_suppliers($ignore_location = true);
+			$this->homemodel->set_distance(240);
+			//$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " suppliers";
+		}
+		/*else
+		{
+		$this->data['found_records'] = "Found " . $query_suppliers->totalresult . " nearest suppliers";
+		}*/
+
+		//$data['suppliers']=$this->db->get('company')->result();
+		//echo "<pre>",print_r($query_suppliers); die;
+		/*if($_POST['suppliersearch']){
+			echo "<pre>",print_r($_POST['types']); die;
+		}*/
+		$data['suppliers']=$query_suppliers->suppliers;
+		$i=0;
+		foreach($data['suppliers'] as $supplier)
+		{
+			$mpid=$this->session->userdata('managedprojectdetails')->id;
+			$adid=$this->session->userdata('purchasingadmin');
+			$where="";
+			if(@$_POST['types'])
+			 {			 	
+				$typestr = implode(",",$_POST['types']);
+				$present=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
+				if(empty($present))
+				{					
+					$this->db->insert('industryfilter',array('purchasingadmin'=>$adid,'filter'=>$typestr,'proid'=>$mpid));					
+				}
+				else 
+				{
+					$this->db->where('purchasingadmin',$adid);
+					$this->db->where('proid',$mpid);
+					$this->db->update('industryfilter',array('filter'=>$typestr));					
+				}
+				
+				
+				$data['filterdata']=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
+				$where = " and ct.typeid in ({$typestr}) ";
+			 }
+			else 
+			{
+			   if(isset($_POST['suppliersearch']))
+			    {
+			       $this->db->where('purchasingadmin',$adid);
+			       $this->db->where('proid',$mpid);
+			       $this->db->update('industryfilter',array('filter'=>""));
+			    }	
+			   
+			  $data['filterdata']=$this->db->get_where('industryfilter',array('purchasingadmin'=>$adid,'proid'=>$mpid))->row();
+			   		if(isset($data['filterdata']->filter) && $data['filterdata']->filter!="")
+			   		{
+						$where = " and ct.typeid in ({$data['filterdata']->filter}) ";
+			   		}
+			   		else 
+			   		{ 
+			   			$where="";
+			   		}
+			}
+			
+		   $sql = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' {$where} GROUP BY ct.companyid";
+			$filterindustries=$this->db->query($sql)->row();
+			$data['suppliers'][$i]->industry = $filterindustries->industry;
+			
+			if(@$_POST['types'])
+			  {
+				if(!$filterindustries)
+				  {					
+					unset($data['suppliers'][$i]);
+				  }
+				else
+				  {
+					$sql2 = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+				    $data['industry']=$this->db->query($sql2)->row();
+				    $data['suppliers'][$i]->industry = $data['industry']->industry;
+				   }
+			  }
+			else 
+			  {
+				if(!$filterindustries)
+				 {					
+				   unset($data['suppliers'][$i]);
+				 }
+				 else
+				 {
+					$sql2 = "SELECT GROUP_CONCAT(t.title) as industry FROM " . $this->db->dbprefix('type') . " t, ".$this->db->dbprefix('companytype')." ct WHERE t.id=ct.typeid and ct.companyid='{$supplier->id}' and t.category = 'Industry' GROUP BY ct.companyid";
+					$data['industry']=$this->db->query($sql2)->row();
+					$data['suppliers'][$i]->industry = $data['industry']->industry;
+				 }				
+			}
+			$i++;
+		} 
+		
+		
+		$data['invitesuppliers']=$query_suppliers->suppliers;
+		$i=0;
+		foreach($data['invitesuppliers'] as $supplier)
+		 {
+		   $sql = "SELECT c.*,s.send FROM " . $this->db->dbprefix('company') . " c left join ".$this->db->dbprefix('supplierinvitation') . " s on  c.id = s.company WHERE c.id='{$supplier->id}' GROUP BY c.id" ;   
+		  
+		  $data['invitesuppliers'][$i]=$this->db->query($sql)->row();			  
+		  $i++;
+		 }	
+		 
+		//$data['promembers'] = $this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();
+		 $data['mainuser'] = $this->db->get_where('users',array('id'=>$this->session->userdata('purchasingadmin')))->row();
+		   $mpid=$this->session->userdata('managedprojectdetails')->id;
+		   	
+		  /* $sql ="SELECT u.username,u.position,q.ponum,p.title FROM ".$this->db->dbprefix('users')." u, ".$this->db->dbprefix('quoteuser')." qu,".$this->db->dbprefix('quote')." q,
+							".$this->db->dbprefix('project')." p
+					WHERE u.purchasingadmin =  '".$this->session->userdata('purchasingadmin')."'
+					AND qu.userid = u.id
+					AND q.id = qu.quote
+					AND p.id = '".$mpid."' AND q.pid = p.id GROUP BY p.title";
+		  $data['promembers'] = $this->db->query($sql)->result();*/
+		//$this->db->group_by("username");   
+		$data['promembers']=$this->db->get_where('users',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')))->result();
+			
+					
+		$this->db->order_by('title','asc'); 			
+		$data['types'] = $this->db->get('type')->result(); 
+				
+		$latlongs = array();
+    	$popups = array();
+    	if(!empty($data['projects'])){
+    		foreach($data['projects'] as $project){
+				
+    			$project->address = str_replace("\n", ", ", $project->address);
+    			//$project->address = str_replace(" ",",", $project->address);
+    			$geocode = file_get_contents(
+    			"http://maps.google.com/maps/api/geocode/json?address=" . urlencode($project->address) . "&sensor=false");
+    			$output = json_decode($geocode);
+
+    			if($output->status == 'OK'){ // Check if address is available or not
+    				$lat = $output->results[0]->geometry->location->lat;
+    				$lon =  $output->results[0]->geometry->location->lng;
+    				$latlongs[] = "[$lat, $lon]";
+
+    				$popups["$lat, $lon"] = '<div class="infobox"><div class="title">' . $project->title .
+    				'</div><div class="area">'.$project->description.'</div> <p><div class="btn btn-primary arrow-right"><a href="#" onclick="gotoproject('.$project->id.');" >Go To Project</a></div></p> </div>';
+
+    			}
+
+    		}
+
+    	}
+    	
+    	//$details = get_my_address();    	
+    	if(@$this->session->userdata('user_lat') && @$this->session->userdata('user_lng'))
+			$center = $this->session->userdata('user_lat').",".$this->session->userdata('user_lng');
+		else 
+			$center = "33.956419,-118.442232";			
+    	
+    	//$center = $details->loc;
+    	//$center = "56, 38";
+    	//var_dump($details);die;
+    	//$data['my_location'] = get_my_location($details);  	    	
+    	$data['mapcenter'] = $center;
+    	$data['latlongs'] = $latlongs?implode(',', $latlongs):'0,0';
+    	$data['popups'] = $popups;
+    	
+    	if(@$this->session->userdata('message')!=""){    				
+    		$data['messageemailinv'] = '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$this->session->userdata('message').'</div></div><div class="errordiv">';
+    		$this->session->unset_userdata('message');
+    	}
+    	
+    	$uri_segment = 4;
+		$offset = $this->uri->segment ($uri_segment);
+		$quotes = $this->backtrack_model->get_quotes ();
+		
+		$count = count ($quotes);
+		$isBackorder = 0;
+		$qtyDue = 0;
+		$pastdueqtys = array(); // Used for storing all past due (Backorder) quantities, and comparing inventory items with this array to mark past due
+		$receiveqty = 0;
+		$items = array();
+		$companyarr = array();
+		if ($count >= 1) 
+		{	
+			foreach ($quotes as $quote) 
+			{
+				$awarded = $this->quote_model->getawardedbid($quote->id);
+				$items[$quote->ponum]['quote'] = $quote;
+				if($awarded)
+				{
+					if($awarded->items && $this->backtrack_model->checkReceivedPartially($awarded->id))
+					{
+						$isBackorder = 1;
+						foreach($awarded->items as $item)
+						{
+						    $checkcompany = true;
+						    $checkitemname = true;
+						    
+						    if(@$_POST['searchcompany'])
+						    {
+						        $checkcompany = $item->company == @$_POST['searchcompany'];
+						    }
+						    
+						    if(@$_POST['searchitem'])
+						    {
+						        if(strpos($item->itemname, @$_POST['searchitem'])!== FALSE)
+						        {
+						            $checkitemname = true;
+						        }
+						        else
+						        {
+						            $checkitemname = false;
+						        }
+						    }
+						    
+					        if($item->company){
+					       // $companyarr[] = $item->company;	
+						    $item->etalog = $this->db->where('company',$item->company)
+                            			->where('quote',$quote->id)
+                            			->where('itemid',$item->itemid)
+                            			->get('etalog')->result();
+					        }
+					        
+					        $item->quotedaterequested = $this->db->select('daterequested')
+					        ->where('purchasingadmin',$item->purchasingadmin)
+					        ->where('quote',$quote->id)
+					        ->where('itemid',$item->itemid)
+					        ->get('quoteitem')->row();
+					        
+					        
+					        $pendingshipments = $this->db->select('SUM(quantity) pendingshipments')
+			                        ->from('shipment')
+			                        ->where('quote',$quote->id)->where('company',$item->company)
+			                        ->where('itemid',$item->itemid)->where('accepted',0)
+			                        ->get()->row()->pendingshipments;
+                             $item->pendingshipments=$pendingshipments;
+					        
+							if($item->received < $item->quantity && $checkcompany && $checkitemname)
+							{
+								
+								$item->duequantity = $item->quantity - $item->received;
+								$qtyDue += $item->duequantity;		
+								$pastdueqtys[] = $item->itemid;						
+							}
+						}
+						
+					}
+				}
+			}
+		}
+		//$data['qtyDue'] = $qtyDue;
+		$this->session->set_userdata('qtyDue', $qtyDue);
+		$this->session->set_userdata('pastdueqtys',$pastdueqtys);
+		if($this->session->userdata('managedprojectdetails')->id != '')
+		{
+			$projectid = $this->session->userdata('managedprojectdetails')->id;
+		}
+		else 
+		{
+			$projectid = '';
+		}
+		
+		$pendingshipmentquotes = $this->quote_model->get_pendingshipment_quotes('',$projectid);
+		$newCount = count($pendingshipmentquotes);
+		
+		 if ($newCount >= 1) {
+			
+            foreach ($pendingshipmentquotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
+            	$shipments = array();
+                $quote->invitations = $this->quote_model->getInvitedquote($quote->id);
+                $quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
+                $quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
+                
+                $quoteponum = $quote->ponum;
+                $quote->pricerank = '-';
+                if (!$quote->awardedbid)
+                    $quote->pricerank = '-';
+                elseif (!@$quote->awardedbid->items)
+                    $quote->pricerank = '-';
+               
+                else {
+                	
+                	if(@$quote->awardedbid->quotedetails->potype == "Contract")
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+                    else 
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+					
+                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
+                    {
+                    	if ($quote->awardedbid->pricerank == 'great')
+                    	$quote->pricerank = 4;
+                    	elseif ($quote->awardedbid->pricerank == 'good')
+                    	$quote->pricerank = 3;
+                    	elseif ($quote->awardedbid->pricerank == 'fair')
+                    	$quote->pricerank = 2;
+                    	else
+                    	$quote->pricerank = 1;
+                    	
+	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
+	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
+                	}                	
+                }
+                
+                $quote->podate = $quote->podate ? $quote->podate : '';
+                $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
+               
+                if ($quote->status == 'AWARDED') {
+
+                	$shipmentsquery = "SELECT s.*, qi.itemname FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) where s.quote='{$quote->id}' and s.accepted = 0";
+        			$shipments = $this->db->query($shipmentsquery)->result();
+
+                	if($shipments)
+                	  {  
+                		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
+                		   {               	
+                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
+                	       }
+                        else 
+                           {
+                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance <a id="hrefa_'.$quote->id.'" href="javascript:void(0)" onclick="previewshipment('.$quote->id.');">Preview Shipment</a><img height="15px;" width="15px;" id="imageholder_'.$quote->id.'" src="'.site_url('templates/admin/css/icons/plus.gif').'" >';
+                           }
+                           
+                           $receiveqty += $quote->receiveqty;
+                          
+                	  }
+                }
             }
-        });
-        <?php } ?>
+		 }
+		$this->session->set_userdata('receiveqty',$receiveqty);  
+		$this->load->view ('admin/dashboard', $data);
+	}
 
+	function closequote($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('quote',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closeaward($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('award',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closecostcode($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('costcode',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closeproject($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('project',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closeusers($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('users',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closenetwork($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('network',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function closemessage($id)
+	{
+		$this->db->where('id',$id);
+		$this->db->update('message',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+
+	function acceptreq($id)
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		$this->db->where('id',$id);
+		$this->db->where('totype','users');
+		$this->db->where('toid',$this->session->userdata('id'));
+		$this->db->where('status','Pending');
+		$row = $this->db->get('joinrequest')->row();
+		if($row)
+		{
+			$this->db->where('id',$id);
+			$this->db->where('totype','users');
+			$this->db->where('toid',$this->session->userdata('id'));
+			$this->db->where('status','Pending');
+			$this->db->update('joinrequest',array('status'=>'Accepted'));
+
+			$insert = array();
+			$insert['company'] = $row->fromid;
+			$insert['purchasingadmin'] = $this->session->userdata('id');
+			$insert['request'] = $row->id;
+			$insert['acceptedon'] = date('Y-m-d H:i:s');
+			$insert['status'] = 'Active';
+			$this->db->insert('network',$insert);
+		}
+		redirect('admin/dashboard');
+	}
+
+	function rejectreq($id)
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		$this->db->where('id',$id);
+		$this->db->where('totype','users');
+		$this->db->where('toid',$this->session->userdata('id'));
+		$this->db->where('status','Pending');
+		$row = $this->db->get('joinrequest')->row();
+		if($row)
+		{
+			$this->db->where('id',$id);
+			$this->db->where('totype','users');
+			$this->db->where('toid',$this->session->userdata('id'));
+			$this->db->where('status','Pending');
+			$this->db->update('joinrequest',array('status'=>'Rejected'));
+		}
+		redirect('admin/dashboard');
+	}
+
+	function payall()
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		if(!@$_POST['company'])
+		{
+			redirect ( 'admin/dashboard');
+			die;
+		}
+		$company = $_POST['company'];
+		$pa = $this->session->userdata('purchasingadmin');
+		$query = "UPDATE ".$this->db->dbprefix('received')." r SET paymentstatus='Paid'
+				  WHERE r.awarditem IN (SELECT id FROM ".$this->db->dbprefix('awarditem')." WHERE company='$company')
+				";
+		//echo $query;
+		$this->db->query($query);
+	    $this->session->set_flashdata('message', 'Company due paid successfully');
+		redirect('admin/dashboard');
+
+	}
+
+	function project()
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+		if($this->input->post('pid') != 0)
+		{
+
+			$pid = $this->input->post('pid');
+			$temp['managedproject'] = $pid;
+			$temp['managedprojectdetails'] = $this->project_model->get_projects_by_id($pid);
+			$this->session->set_userdata($temp);
+		    redirect('admin/dashboard');
+		    die;
+			if($this->session->userdata('usertype_id')<3)
+			{
+				redirect('admin/quote/index/'.$this->input->post('pid'));
+			}
+			else
+			{
+				redirect('admin/purchaseuser/quotes');
+			}
+		}
+		else
+		{
+			$this->session->unset_userdata("managedproject");
+			$this->session->unset_userdata("managedprojectdetails");
+			$this->session->unset_userdata("qtyDue");
+			$this->session->unset_userdata("receiveqty");
+			redirect('admin/dashboard');
+		}
+	}
+
+	function application()
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+	    $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+	    $appl = $this->db->get('application')->row();
+	    if(!$appl)
+	    {
+	        $this->db->insert('application',array('purchasingadmin'=>$this->session->userdata('purchasingadmin')));
+    	    $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+    	    $appl = $this->db->get('application')->row();
+	    }
+	    $sql = "SELECT * FROM ".$this->db->dbprefix('applicationattachment')." WHERE purchasingadmin=".$this->session->userdata('purchasingadmin');
+	    $qry = $this->db->query($sql);
+	    $attachmentData = $qry->result_array();
+	    $data['attachmentdata'] = $attachmentData;
+	    $data['appl'] = $appl;
+	    $this->load->view ('admin/application', $data);
+	}
+
+	function saveappl()
+	{
+		$userid = $this->session->userdata('id');
+		if(!$userid)
+		{
+			redirect ( 'admin/login/index');
+			die;
+		}
+
+		if(isset($_FILES['UploadFile']['name']))
+		{
+	        $count=0;
+	        foreach ($_FILES['UploadFile']['name'] as $filename)
+	        {
+	            if(isset($_FILES['UploadFile']['tmp_name'][$count]))
+				if(is_uploaded_file($_FILES['UploadFile']['tmp_name'][$count]))
+				{
+					$ext = end(explode('.', $_FILES['UploadFile']['name'][$count]));
+					$nfn = md5(uniqid().date('YmdHi')).'.'.$ext;
+					if(move_uploaded_file($_FILES['UploadFile']['tmp_name'][$count], "uploads/attachments/".$nfn))
+					{
+						$savedata = array('purchasingadmin'=>$this->session->userdata('purchasingadmin'),
+										  'attachmentname'=>$nfn,
+										  'attachmentpath'=> "uploads/attachments/"
+										 );
+
+						$this->db->insert('applicationattachment',$savedata);
+					}
+					 $count=$count + 1;
+				}
+	        }
+		}
+	    $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+	    $_POST['aboutyourcompany'] = @$_POST['aboutyourcompany']?implode(', ', $_POST['aboutyourcompany']):'';
+	    $this->db->update('application', $_POST);
+	    $this->session->set_flashdata('message', '<div class="alert alert-success fade in"><button event="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>Form saved successfully.</div>');
+		redirect('admin/dashboard/application');
+	}
+
+	function tago($time)
+    {
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $lengths = array("60","60","24","7","4.35","12","10");
+
+        $now = time();
+        $difference     = $now - $time;
+        $tense         = "ago";
+
+        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+         $difference /= $lengths[$j];
+        }
+        $difference = round($difference);
+
+        if($difference != 1) {
+         $periods[$j].= "s";
+        }
+        return "$difference $periods[$j] ago ";
     }
     
-    
-	function readnotification(id)
+    function close($id)
 	{
-				$.ajax({
-					type:"post",
-					url: readnotifyurl,
-					data: "id="+id
-				}).done(function(data){
-					//alert(data);
-				});
-				return true;
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('id',$id);
+		$this->db->where('company',$company);
+		$this->db->update('notification',array('isread'=>1));
+		redirect('admin/quote/contractbids');
 	}
-
-	 function preloadoptions()
+	
+	 function allclear()
 	 {
-	 	$.noConflict();
-    	$("#smodal").modal();   	   
-     }
- </script>
-<div class="container" style="margin-top:10em;">&nbsp;</div>
-<?php if(isset($settingtour) && $settingtour==1) { ?>
-<div id="tourcontrols" class="tourcontrols" style="right: 30px;">
-<p>First time here?</p>
-<span class="button" id="activatetour">Start the tour</span>
-<span class="closeX" id="canceltour"></span>
-<?php  } ?>
-<?php $mp = $this->session->userdata('managedprojectdetails');?>
-
-</div>
-
-
-
-
-
-
-<div>
-<section class="row-fluid" style="margin:0px auto; padding:0px; width:93.4%;">
-<?php echo @$messageemailinv;?>
-<h3 class="box-header" style="display:inline; width:98.4%">
-				<span id="step1" >Your Dashboard</span>
-				&nbsp;
-                <?php echo $this->session->flashdata('message'); ?>                
-				<?php if($this->session->userdata('usertype_id') == 2){?>
-				<a class="btn btn-primary pull-right" href="<?php echo site_url('site/items');?>"><strong>Go to store</strong></a>&nbsp;&nbsp;
-				<span class="pull-right" style="width: 5px;">&nbsp;</span>
-				<a class="btn btn-primary pull-right" href="<?php echo site_url('admin/dashboard/application');?>"><strong>Your Credit Application</strong></a>
-				<?php } ?>
-			</h3>
-            </section>
-            </div>
-           
-	<div class="box">
-		<div class="span12">
-		<?php if(!$this->session->userdata('managedprojectdetails')){?>
-       <div style="text-align:center;">
-       <?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>
-          <a href="<?php echo site_url('admin/project/add');?>" target="_blank">Add New Project</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="<?php echo site_url('admin/costcode/add');?>" target="_blank">Add New Cost Code</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="<?php echo site_url('admin/admin/add');?>" target="_blank">Add New Employee</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a href="javascript:void(0)"  data-toggle="modal" data-target="#smodal" >Invite Supplier</a>
-          </div>
-          
-          
-          
-          
-          
-          
-          <?php } } ?>
-			<div class="well">
-				<form class="form-horizontal" action="<?php echo base_url()?>admin/dashboard/project" method="post" id="form-selector">
-					<div class="control-group">
-						<label for="inputEmail" class="control-label">
-						<strong>Select Your Project</strong>
-						</label>
-						<div class="controls" style="text-align:left;">
-							<select name="pid" id="pid" onchange="changeproject();">
-								<option value="0">Company Dashboard</option>
-								<?php foreach($projects as $p){?>
-								<option value="<?php echo $p->id;?>" <?php if(@$mp->id==$p->id){echo 'SELECTED';}?>>
-								    <?php echo $p->title?>
-								</option>
-								<?php }?>
-							</select>
-							<?php if($this->session->userdata('managedprojectdetails')){?>
-							<span class="pull-right">
-    						<strong>
-    						Current Project: <?php echo $this->session->userdata('managedprojectdetails')->title;?>
-    						</strong>
-    						</span>
-							<?php }?>
-						</div>
-					</div>
-
-				</form>
-									
-		
-			</div>
-			
-			<?php if($this->session->userdata('managedprojectdetails')){?>    	
-	    	<div class="well span11" style="width:75% !important;">
-	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
-			    		<?php //if(@$costcodesjson){?>
-			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
-					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
-						    </div>
-			    		
-			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
-			    		<!--<?php //} else {?>		
-			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
-			    			<img src="<?php echo base_url(); ?>templates/admin/images/3d_pie_chart.jpg"/>
-			    			<!--<img src="<?php echo base_url(); ?>templates/admin/images/Free-Pie-Chart-PSD-Template.jpg"/>3d_pie_chart-->
-			    			</div>            
-	    				<?php //}?>   		
-	    	</div>
-			<?php }else{?>	
-			<div class="well span11" style="width:75% !important;">			
-				<h3 class="box-header" style="width:97.5%;">My Project Map</h3>
-			    <div class="map-wrapper" style="float:left;width:100%;height:400px;">
-					<div class="map">
-	            	<div id="map" style="height:400px;width:100%;" class="map-inner" ></div>
-	           		</div>
-				</div>
-			</div>
-			<?php } ?>
-			
-			</div>			
-			<br/>
-			<div class="well span6" id="step2">            
-				<h3 class="box-header" style=" width:94.5%">Statistics</h3>
-				<table class="table table-bordered stat">
-	   			<tr>
-	   			<td>1.</td>
-	   			<td>Number of Projects</td>
-	   			<td><span class="badge badge-blue"><?php echo count($projects);?></span> </td>
-	   			</tr>
-
-	   			<tr>
-	   			<td>2.</td>
-	   			<td>Number of Cost Codes</td>
-	   			<td><span class="badge"><?php echo count($costcodes);?></span> </td>
-	   			</tr>
-
-	   			<!--  <tr>
-	   			<td>3.</td>
-	   			<td>Number of Item Codes</td>
-	   			<td><span class="badge"> echo count($itemcodes);</span></td>
-	   			</tr>-->
-
-	   			<tr>
-	   			<td>3.</td>
-	   			<td>Total Number of Direct Orders</td>
-	   			<td><span class="badge"><?php echo count($directquotes);?></span></td>
-	   			</tr>
-
-	   			<tr>
-	   			<td>4.</td>
-	   			<td>Total Number of Quotes</td>
-	   			<td><span class="badge badge-warning"> <?php echo count($quotes);?></span></td>
-	   			</tr>
-
-	   			<!--  <tr>
-	   			<td>6.</td>
-	   			<td>Total Number of Quotes Requested</td>
-	   			<td><span class="badge badge-warning"> echo $invited;</span></td>
-	   			</tr>-->
-
-	   			<!--  <tr>
-	   			<td>7.</td>
-	   			<td>Total Number of Quotes Pending</td>
-	   			<td><span class="badge badge-red"> echo $pending;</span></td>
-	   			</tr>-->
-
-	   			<tr>
-	   			<td>5.</td>
-	   			<td>Total Number of Awarded Quotes</td>
-	   			<td><span class="badge badge-green"><?php echo $awarded;?></span></td>
-	   			</tr>
-	   			<?php if($this->session->userdata('usertype_id') == 1){?>
-	   			<tr>
-	   			<td>6.</td>
-	   			<td>Number of Companies</td>
-	   			<td><span class="badge badge-info"> <?php echo count($companies);?></span></td>
-	   			</tr>
-	   			<?php }?>
-	    		</table>
-             
-
-				<?php if($this->session->userdata('usertype_id') == 2){?>
-			
-	    		<h3 class="box-header" style="width:94.5%">Companies in Your Network</h3>
-	    		<?php if(!$networkjoinedcompanies){?>
-					<span class="label label-important">No companies have joined your network.</span>
-				<?php }else{?>
-					<table class="table table-bordered stat">
-					<tr>
-						<th>Company</th>
-						<th>Credit Limit</th>
-						<th>Credit Remaining</th>
-						<th>Amount Due</th>
-					</tr>
-					<?php foreach($networkjoinedcompanies as $njc){?>
-						<tr>
-							<td style="word-break:break-all;">
-								<strong><?php echo $njc->title;?></strong>
-							</td>
-							<td style="word-break:break-all;">
-								<strong><?php echo ($njc->totalcredit!="" && $njc->totalcredit!=0)?number_format($njc->totalcredit,2):'0.00';?></strong>
-							</td>
-							<td style="word-break:break-all;">
-								<strong><?php echo ($njc->credit!="" && $njc->credit!=0)?number_format($njc->credit,2):'0.00'; ?></strong>
-							</td>
-							<td style="word-break:break-all;">
-								<strong><?php echo number_format($njc->due,2);?></strong>
-							</td>
-							<?php if(0){?>
-							<td style="word-break:break-all;">
-								<?php if($njc->due && $njc->due!='0.00'){?>
-								<form method="post" action="<?php echo site_url('admin/dashboard/payall');?>">
-									<input type="hidden" name="company" value="<?php echo $njc->id?>"/>
-									<input type="submit" value="Pay" class="btn btn-primary"/>
-								</form>
-								<?php }?>
-							</td>
-							<?php }?>
-						</tr>
-					<?php }?>
-					</table>
-				<?php } ?>
-					<br>
-    				<a class="btn btn-green" href="<?php echo site_url('site/suppliers')?>">Browse Suppliers</a>
-				<?php } ?>
-			
-		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>
-				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/export')?>">Export Statistics</a><br><br>
-				<a class="btn btn-green" href="<?php echo site_url('admin/dashboard/dashboard_pdf')?>">View PDF</a>&nbsp;
-				<input type="button" value="Invite Your Supplier" class="btn btn-green" data-toggle="modal" data-target="#smodal">
-		<?php } ?>	
-			<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>				
-				<?php if(@$this->session->userdata('managedprojectdetails')){?>
-				<br><br>
-				     <h3 class="box-header" style="width:94.5%">Filter Recommended Suppliers</h3>
-				     <p><strong>What type of work will be performed on this job?</strong></p>
-			    	 <form method="post" action="<?php echo site_url('admin/dashboard');?>">
-						<table class="table table-bordered">
-						<?php $fd=explode(",",$filterdata->filter); ?>
-						<tr><td><?php foreach($types as $type) if($type->category=='Industry'){?>
-  <input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php if(@$fd) { if(in_array($type->id,$fd)) echo 'checked="checked"'; else echo ''; } ?>>
-			      		<?php echo $type->title;?><br/><?php }?></td></tr>	
-			      		<tr><td><input type="submit" name="suppliersearch" id="suppliersearch" value="Filter Suppliers"></td></tr>									
-					<?php if(@$this->session->userdata('address')) echo "<tr><td><h4>Jobsite Address:".$this->session->userdata('managedprojectdetails')->address." </h4></td></tr>"; ?>	 
-					</table>
-					</form>
-		 		
-			   <?php } } ?>	
-				<br><br>
-		<?php	 if($this->session->userdata('usertype_id') != 3) {	 ?>		
-				<h3 class="box-header" style="width:94.5%">Recommended Suppliers</h3>
-				
-				<table class="table table-bordered">
-				<tr><th>Supplier Name</th><th>Location</th><th>Industry</th><th>View-Apply</th></tr>
-				 <?php if(count($suppliers)>0){ foreach ($suppliers as $supplier) { ?>
-				<tr>
-				<td style="word-break:break-all;"><?php echo $supplier->title; ?></td>
-				<td style="word-break:break-all;"> <?php if (isset($supplier->city) && isset($supplier->state)) {  
-					  echo $supplier->city.",&nbsp;".$supplier->state; } else { echo $supplier->address; } ?>
-                </td>
-				<td style="word-break:break-all;"><?php echo $supplier->industry; ?></td>
-				<td style="word-break:break-all;"><a href="<?php echo site_url('site/supplier/' . $supplier->username); ?>" target="_blank">View-Apply</a></td>
-				</tr>
-				  <?php } } else{ ?>
-				  <?php echo "<tr><td colspan='4'><b>No Suppliers Found</b></td></tr>"; } ?>
-				</table>
-				
-			<?php } ?>	
-			
-			
-			
-			<?php if($this->session->userdata('managedprojectdetails')){?>
-			<?php if(isset($promembers)) {?>
-	    	
-	    	  <table class="table table-bordered">
-				<caption><strong>Project Team Members<strong>&nbsp;&nbsp;			
-				<a href="<?php echo base_url(); ?>admin/admin/index" target="_blank">Manage Users</a></caption>	
-				<tr><th>Username</th><th>Position</th></tr>
-				<!--<tr>
-				<td><?php echo $mainuser->username; ?></td>
-				<td><?php echo $mainuser->position; ?></td>
-				</tr>-->
-				 <?php foreach ($promembers as $promember) { ?>
-				<tr>
-				<td style="word-break:break-all;"><?php echo $promember->username; ?></td>
-				<td style="word-break:break-all;"><?php echo $promember->position; ?></td>
-				</tr>
-				  <?php } ?>
-				</table>
-	    	
-			<?php } }?>					
-		</div>		
-	    	<?php if(!$this->session->userdata('managedprojectdetails')){?>
-	    	
-
-			<div  class="span10" style="margin-left:1%;">
-		
-
-			<div class="span4" style=" margin-top:15px; width:100%;" >
-					<h3 class=" box-header" >Activity Feed</h3>
-					
-					 <div>
-					  <div class="tiles-body">
-						<div class="controller">
-							<a class="reload" href="javascript:;"></a>
-							<a class="remove" href="javascript:;"></a>
-						</div>
-				<!--		<div class="tiles-title">
-					<?php if($newcontractnotifications[0]->notify_type=='contract')  echo "Contract Notifications"; else echo " Contract Notifications"?>&nbsp;&nbsp;									<?php if($newcontractnotifications){?>
-							 <a class="remove" href="<?php echo site_url('admin/dashboard/allclear');?>">Clear Notifications</a>	
-						<?php }?>				
-						</div>	
-							 
-						<?php if(!$newcontractnotifications){?>
-							<span class="label label-important">No New Contract Notifications</span>
-						<?php }?>
-						<?php foreach($newcontractnotifications as $newnote){?>
-
-						<div class="date pull-right">
-								<a class="remove" href="<?php echo site_url('admin/dashboard/close/'.$newnote->id);?>">X</a>
-						  </div>
-							<a href="<?php echo $newnote->link?>" onclick="return readnotification('<?php echo $newnote->id?>');">
-							<div class="notification-messages <?php echo $newnote->class;?>" onclick="return readnotification('<?php echo $newnote->id?>');">
-								<div class="user-profile">
-									<img width="35" height="35" data-src-retina="<?php echo base_url();?>templates/front/assets/img/alert.png" data-src="<?php echo base_url();?>templates/front/assets/img/alert.png" alt="" src="<?php echo base_url();?>templates/front/assets/img/alert.png">
-								</div>
-								<div class="message-wrapper">
-									<div class="heading">
-										<?php echo $newnote->message;?>
-									</div>
-									<div class="description">
-										<?php echo $newnote->submessage;?> / <?php echo $newnote->tago;?>
-									</div>
-								</div>
-							</div>
-							</a>
-						<?php }?>
-					</div></div>-->
-					
-					
-					<?php if(isset($msgs)){ ?>
-					<h5>Recent Messages&nbsp;&nbsp;
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallmessage');?>">Clear Messages</a>
-					</h5>
-					
-					<table cellpadding="3" class="table table-bordered stat">
-					  <tr>
-						  <td>Message</td>
-						  <td>From</td>
-						  <td>To</td>
-						  <td>Sent On</td>
-						  <td>&nbsp;</td>
-					  </tr>
-				     <?php foreach($msgs as $msg) { ?>
-					  <tr>
-						  <td><?php echo $msg->message; ?></td>
-						  <td><?php echo $msg->from; ?></td>
-						  <td><?php echo $msg->to; ?></td>
-						  <td><?php $datetime = strtotime($msg->senton); echo date("m/d/Y", $datetime);?></td>
-						  <td style="text-align:right;">
-						  <a class="remove" href="<?php echo site_url('admin/dashboard/closemessage/'.$msg->id);?>">X</a>
-						  </td>
-					  </tr>
-                     <?php } ?>
-				 </table>
-				<?php } ?>
-				
-				
-				
-				
-			<?php if(isset($newquotes) && count($newquotes) > 0) { ?>
-				<h5>Recent Quotes Sent&nbsp;&nbsp;<?php if(isset($newquotes)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallquote');?>">Clear Recent Quotes Sent</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($newquotes)) { //echo "<pre>"; print_r($newquotes); die; ?>
-					  <tr>
-					  <td>Quote</td>
-					  <td>Status</td>
-					  <td>Sent On</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($newquotes as $quote) {?>
-
-					  <tr>
-					  <td><?php echo $quote->ponum; ?></td>
-					  <td><?php
-					 	$quote->invitations = $this->quote_model->getInvitedquote($quote->id);
-                		$quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
-                		$quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
-					  
-	    				$quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS'))); echo $quote->status; ?></td>
-					  <td><?php $datetime = strtotime($quote->creation_date); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closequote/'.$quote->id);?>">X</a></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Quotes Found</td></tr>
-				<?php } ?>
-				</table>
-				<?php } ?>
-
-				<?php if(isset($awardquotes) && count($awardquotes) > 0) { ?> 
-				<h5>Recent Quotes Awarded&nbsp;&nbsp;<?php if(isset($awardquotes)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallaward');?>">Clear Recent Quotes Awarded</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($awardquotes)) { ?>
-					  <tr>
-					  <td>Quote</td>
-					  <td>Awarded On</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($awardquotes as $awardquote) { ?>
-
-					  <tr>
-					  <td><?php echo $awardquote->ponum; ?></td>
-					  <td><?php $datetime = strtotime($awardquote->awardedon); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeaward/'.$awardquote->awardid);?>">X</a></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Awarded Quotes Found</td></tr>
-				<?php } ?>
-				</table>
-			<?php } ?>
-
-			<?php if(isset($newcostcodes) && count($newcostcodes) > 0) { ?>
-				<h5>Recent Cost Codes Created&nbsp;&nbsp;<?php if(isset($newcostcodes)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallcostcode');?>">Clear Recent Cost Codes Created</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($newcostcodes)) { ?>
-					  <tr>
-					  <td>CostCode</td>
-					  <td>Project</td>
-					  <td>Creation Date</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php  foreach($newcostcodes as $costcode) { ?>
-
-					  <tr>
-					  <td><?php echo $costcode->code; ?></td>
-					  <td><?php echo $costcode->title; ?></td>
-					  <td><?php $datetime = strtotime($costcode->creation_date); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closecostcode/'.$costcode->id);?>">X</a></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Cost Codes Created</td></tr>
-				<?php } ?>
-				</table>
-			<?php } ?>
-
-			<?php if(isset($newprojects) && count($newprojects) > 0) { ?>
-				<h5>Recent Projects Created&nbsp;&nbsp;<?php if(isset($newprojects)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallproject');?>">Clear Recent Projects Created</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($newprojects)) { ?>
-					  <tr>
-					  <td>Project</td>
-					  <td>Creation Date</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($newprojects as $project) { ?>
-
-					  <tr>
-					  <td><?php echo $project->title; ?></td>
-					  <td><?php $datetime = strtotime($project->creation_date); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closeproject/'.$project->id);?>">X</a></td>
-					  </tr>
-
-				<?php } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Projects Created</td></tr>
-				<?php } ?>
-				</table>
-				<?php } ?>
-
-
-				<?php if(isset($users)) { ?>
-					<h5>Recent Users Created&nbsp;&nbsp;
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallusers');?>">Clear Recent Users Created</a></h5>
-					<table cellpadding="3" class="table table-bordered stat">				
-					  <tr>
-						  <td>User</td>
-						  <td>Creation Date</td>
-						  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($users as $user) { ?>
-
-					  <tr>
-						  <td><?php echo $user->username; ?></td>
-						  <td><?php $datetime = strtotime($user->created_date); echo date("m/d/Y", $datetime);?></td>
-						  <td style="text-align:right;">
-						 <a class="remove" href="<?php echo site_url('admin/dashboard/closeusers/'.$user->id);?>">X</a></td>
-					  </tr>			
-				<?php }  ?>			
-				</table>
-              <?php } ?>
-
-				<?php if(isset($networks) && count($networks) > 0) { ?>
-				<h5>Recent Network Connections&nbsp;&nbsp;<?php if(isset($networks)) { ?>
-					<a class="remove" href="<?php echo site_url('admin/dashboard/closeallnetwork');?>">Clear Recent Network Connections</a><?php } ?></h5>
-					<table cellpadding="3" class="table table-bordered stat">
-					<?php if(isset($networks)) { ?>
-					  <tr>
-					  <td>Company</td>
-					  <td>Accepted On</td>
-					  <td>&nbsp;</td>
-					  </tr>
-				<?php foreach($networks as $network) 
-				{	
-					if($network->title != '')
-					{ ?>                   
-					  <tr>
-					  <td><?php echo $network->title; ?></td>
-					  <td><?php $datetime = strtotime($network->acceptedon); echo date("m/d/Y", $datetime);?></td>
-					  <td style="text-align:right;"><a class="remove" href="<?php echo site_url('admin/dashboard/closenetwork/'.$network->id);?>">X</a></td>
-					  </tr>
-
-				<?php } } ?>
-				<?php } else { ?>
-				<tr><td>No Recent Networks Created</td></tr>
-				<?php } ?>
-				</table>
-				<?php } ?>
-
-				</div>
-		</div>
-
-			
-		
-			 <?php if($this->session->userdata('usertype_id') != 3) 
-			         {	
-			         	if(isset($invoices)) { 
-			         		if(isset($invoiceCntr) && $invoiceCntr != 0) { ?>	
-			    <div  class="span12">
-                <div class="span3"  style="width:45%;" >
-					<h3 class=" box-header" style="width:94.5%">Overdue Invoices & Payment Requests</h3>					
-					<table cellpadding="3" class="table table-bordered stat">
-					
-					
-					  <tr>
-					  <td>Invoice</td>
-					  <td>Due Date</td>
-					  <td>Payment Status</td>
-                      <td>Verification</td>
-					  </tr>
-				<?php foreach ($invoices as $invoice)
-            if($invoice->invoicenum && $invoice->quote->purchasingadmin == $this->session->userdata('purchasingadmin') && ($invoice->paymentstatus!="Paid" || $invoice->status!="Verified") && date('Y-m-d', strtotime( $invoice->datedue)) < date('Y-m-d')  && $invoice->datedue)
-            { ?>
-					  <tr>
-					  <td><?php	if($invoice->quote->potype=='Contract') { ?>
-                      	<a href="<?php echo site_url('admin/quote/contract_invoice/'.$invoice->invoicenum.'/'.$invoice->quote->id)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a>
-					  <?php  } else { ?>
-					   	<a href="<?php echo site_url('admin/quote/invoice/'.$invoice->invoicenum.'/'.$invoice->quote->id)?>" target="_blank"><?php echo $invoice->invoicenum; ?></a><?php } ?></td>
-					  <td><?php if($invoice->datedue) { $datetime = strtotime($invoice->datedue); echo date("m/d/Y", $datetime); }?></td>
-					   <td><?php echo $invoice->paymentstatus;?><br>
-                      <?php //if($i->paymentstatus=='Paid') { $olddate=strtotime($invoice->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
-                      <td><?php echo $invoice->status;?></td>
-					  </tr>
-
-				<?php } ?>
-				</table>
-				</div>
-			<?php } } } ?>	
-				
-
-				
-		<?php  if(isset($backtracks)) { 
-			
-				if(isset($backtracksCnt) && @$backtracksCnt != '')
-				{ ?>
-    			<div class="span3" style="width:45%;" >
-					<h3 class=" box-header" style="width:94.5%">Overdue Backorders</h3>
-					<table cellpadding="3" class="table table-bordered stat">
-					
-					 
-				<?php $i=0; foreach($backtracks as $backtrack) { ?>
-					<?php if(isset($backtrack['items'])) { ?>
-					<table class="table table-bordered">
-					<tr><td colspan="6"><h5><?php echo $backtrack['quote']->ponum;?><h5></td></tr>
-			    	<tr>
-			    		<th width="170">Item Code</th>
-			    		<th width="200">Item Name</th>
-			    		<th width="200">Company</th>
-			    		<th width="60">Due Qty.</th>
-			    		<th width="50">Unit</th>
-			    		<th width="75">ETA</th>			    		
-			    	</tr>
-			    	
-					<?php foreach($backtrack['items'] as $item)
-			    			{?>
-			    	<tr>
-			    		<td><?php echo $item->itemcode;?></td>
-			    		<td><?php echo $item->itemname;?></td>
-			    		<td><?php echo $item->companyname;?></td>
-			    		<td><?php echo $item->duequantity;?></td>
-			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo $item->daterequested;?></td>			    			    				
-			    	</tr>
-			    	<?php }?>
-			    	</table>	
-			    	<?php if(isset($item->pendingshipments) && ($item->pendingshipments!="")) {?>
-                       <p style="text-align:right;">*Note&nbsp;<?php echo $item->pendingshipments;?>&nbsp;Pending Acknowledgement</p>
-                 <?php  } ?>
-			    <?php $i++; } ?>					  
-
-				<?php } ?>
-				
-				<?php if($i== 0) { ?>
-				<tr><td>No Overdue Backorders Found</td></tr>
-				<?php } ?>		
-				</table>
-				</div>
-             <?php } }
-             
-             if($msgs == '' &&  $newquotes == '' &&  $awardquotes == '' &&  $newcostcodes == '' &&  $newprojects == '' &&  $users == '' &&  $networks == '' &&  $invoiceCntr == 0 && $backtracksCnt == '')
-             { ?>
-             	<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Recent Activity.</div></div>	
-             		
-       <?php }
-               ?>
-				
-				
-				
-				
-				
-		<!-- <div   class="well span3">
-		<div class="tiles-title extrabox"  style="float:left; width:100%">
-					<h3 class=" box-header" style=" width:94.5%">PO Calendar</h3>
-
-		<section class="row-fluid">
-			<div class="box">
-				<div class="span12">
+	 	$company = $this->session->userdata('purchasingadmin');
+        $this->db->where('notify_type','contract');
+		$this->db->where('company',$company);	
+		$this->db->update('notification',array('isread'=>1));
+		redirect('admin/quote/contractbids');
+	 }
+	 
+	 function closeallmessage()
+	   {
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);	
+		$this->db->update('message',array('isread'=>1));
+		redirect('admin/dashboard');
+	   }
 	
-					<div id='loading' style='display:none'>Loading...</div>
-					<div id='calendar'></div>
-
-				</div>
-    		</div>
-		</section>
-		 </div>
-	 </div>	-->
+	function closeallquote()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		//echo "<pre>"; print_r($company); die;
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('quote',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallaward()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('award',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallcostcode()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('costcode',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallproject()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('project',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallusers()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('users',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function closeallnetwork()
+	{
+		$company = $this->session->userdata('purchasingadmin');
+		$this->db->where('purchasingadmin',$company);
+		$this->db->update('network',array('isread'=>1));
+		redirect('admin/dashboard');
+	}
+	
+	function supplier_invitation()
+	{		
+		$id = $this->session->userdata('id');
+		$company=$this->db->get_where('users',array('id'=>$id))->row();
+		if(isset($_POST['check']))
+		{
+			$list=array();
+			foreach ($_POST['check'] as $check)
+			{
+			$supplier=$this->db->get_where('company',array('id'=>$check))->row();	
+			$supplier->primaryemail;
+			$option=array('purchasingadmin'=>$id,'company'=>$check,'send'=>'1','sup_email'=>$supplier->primaryemail); 	
+			$this->db->insert('supplierinvitation',$option);
+			$list[]=$supplier->primaryemail;			  		        			
+			}			
+			    $this->load->library('email');
+		        $config['charset'] = 'utf-8';
+		        $config['mailtype'] = 'html';	        			
+		        $this->email->initialize($config);
+		        $this->email->from($company->email);
+		        //$list = array('one@example.com', 'two@example.com', 'three@example.com');
+				$this->email->to($list);
+		        $subject = 'Invitation';		        		
+		        $data['email_body_title'] = "Dear,<br>You have Invitation From Purchasing User '{$company->fullname}'.";
+	        	$data['email_body_content'] = "The Purchaser user Company '{$company->companyname}' Invites You.";	
+			    $loaderEmail = new My_Loader();
+			    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
+		        $this->email->subject($subject);
+		        $this->email->message($send_body);	
+		        $this->email->set_mailtype("html");
+		        $this->email->send();
+		        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Invitation Send Successfully.</div></div><div class="errordiv">');	
+		}
+	
+		redirect('admin/dashboard');
 		
-
-		<!-- <div   class="well span3">
-		<div class="tiles-title extrabox"  style="float:left;margin-left:0px; width:100%">
-		
-
+	}
+	
+	
+	function supplier_email_invitation()
+	{		
+		if($_POST)
+		{		
+			$id = $this->session->userdata('purchasingadmin');
+			$company=$this->db->get_where('users',array('id'=>$id))->row();       
+			$supplyemail=$this->db->get_where('company',array('primaryemail'=>$_POST['email']))->row();
+			$supplytitle=$this->db->get_where('company',array('title'=>$_POST['ctitle']))->row();
+			$settings = (array)$this->settings_model->get_current_settings ();
+						
+			if(!empty($supplytitle))
+			{ 	
+			$this->session->set_userdata('message','Company Name Already Exists');						  							       					
+			}			       
+			else 
+			{
+			      if(!empty($supplyemail))
+			      { 	
+			      $this->session->set_userdata('message','Email Already Exists');						       	 
+				  }
+			      else
+			      {			       	
+			      	$this->db->insert('systemusers', array('parent_id'=>''));
+					$lastid = $this->db->insert_id();
+			        $password = $this->getRandomPassword();
+			        $username = str_replace(' ', '-', strtolower($_POST['ctitle']));     
+			                                                            	               	
+            		$limitedcompany = array(
+            		   'id'=>$lastid,
+            		   'primaryemail' => $_POST['email'],  	
+            		   'title' => $_POST['ctitle'],
+            		   'contact' => $_POST['cname'],
+                       'regkey' => '',
+                       'username' => $username,
+                       'pwd' => md5($password),
+                       'password' => md5($password),
+                       'company_type' => '3',
+                       'regdate' => date('Y-m-d')                       
+                    );
+                    $this->db->insert('company', $limitedcompany);
+            		             		             		       		
+            		$insert = array();
+            		$insert['company'] = $lastid;
+            		$insert['purchasingadmin'] = $id;            		
+            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		$insert['status'] = 'Active';
+            		$this->db->insert('network',$insert);
+            		           		
+            		$pinsert = array();
+            		$pinsert['company'] = $lastid;
+            		$pinsert['purchasingadmin'] = $id;            		
+            		$pinsert['creditonly'] = '1';
+            		$this->db->insert('purchasingtier',$pinsert);
+            		           		
+            		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['email']); 	
+					$this->db->insert('supplierinvitation',$option);
 					
-				<section class="row-fluid">
-					<h3 class="box-header">Event Calendar</h3>
-
-					<div class="box">
-    					<div class="span12">
-
-    						<div id='loadingevent' style='display:none'>Loading...</div>
-    						<div id='calendarevent'></div>
-
-    					</div>
-    				</div>
-				</section>
-
-
-				</div>
-		<?php //making error dashboard}?>
-			</div> -->
-
-			<?php }?>	
-							
-				
-				
-			<?php // }?>
-			</div>
-			<?php // }?>
-			
-		</div>
-
-		
-
-	</div>
+					$emailfrom="";
+					if(@$company->email && $company->email!="")
+					{
+						$emailfrom=$company->email;
+					}
+					else 
+					{
+						$emailfrom=$settings['adminemail'];
+					}
+										  		
+            		$this->load->library('email');
+			        $config['charset'] = 'utf-8';
+			        $config['mailtype'] = 'html';	        			
+			        $this->email->initialize($config);
+			        $this->email->from($emailfrom);
+					$this->email->to($_POST['email']);
+			        //$subject = 'Account Detail & Invitation';	
+			        $subject = "Invitation from '{$company->companyname}' E-BID Network.";		        		
+			        $data['email_body_title'] = "Dear,&nbsp;{$_POST['cname']}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
+		        	$data['email_body_content'] = "The Company '{$company->companyname}' invites you to join their purchasing network today.<br />
+		        	 Your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
+				    $loaderEmail = new My_Loader();
+				    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
+			        $this->email->subject($subject);
+			        $this->email->message($send_body);	
+			        $this->email->set_mailtype("html");
+			        //echo "<pre>"; print_r($this->email); die;			      
+			        $this->email->send();
+			        $this->session->set_userdata('message', 'Invitation Sent via Email Successfully');	    
+			        }		       
+		      }	
+		}	      
+		      redirect('admin/dashboard');	
+	}
 	
-   <div id="smodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog">
-      <div class="modal-content">
-       
-        <div class="modal-header">
-          <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-          <h4 class="semi-bold" id="myModalLabel">Email Invitation</h4>     
-        </div>
-        
-        <div class="modal-body"> 
-        <!-- <form  action="<?php echo base_url()?>admin/dashboard/supplier_invitation" method="post">
-      <table class="table table-bordered  col-lg-10">
-	  		<tr>
-	  			<td><strong>Supplier Company Name</strong></td>
-	  			<td><strong> Contact Name</strong></td>
-	  			<td><strong>Email</strong></td>
-	  			<td><strong>Action</strong></td>
-	  		</tr>
-	  		 <?php foreach ($invitesuppliers as $supplier) { ?>   
-	  		<tr>
-	  			<td> <?php echo $supplier->title;?></td>
-	  			<td><?php echo $supplier->contact;?></td>
-	  			<td><?php echo $supplier->primaryemail;?></td>
-	  			<td><?php if($supplier->send!=1) { ?><input type="checkbox"  name="check[]" value="<?php echo $supplier->id;?>"><?php } else { echo "Already Sent Invitation.";} ?></td>
-	  		</tr>
-	  		  <?php } ?>
-	  		
-	  	</table> -->
-	  <!--	<br><input type="submit" value="Send Invitation" class="btn btn-primary"/>
-	  	</form><br>-->
-	  	
-	  	
-	        <form class="form" action="<?php echo base_url()?>admin/dashboard/supplier_email_invitation" method="post">
-			  
-	         <div class="form-group">
-			   <label class="sr-only" for="ctitle">Company Name</label>
-			    <input type="text" class="form-control" id="ctitle" name="ctitle" required style="width:80%;">			   
-			  </div> 
-	        
-			   <div class="form-group">
-			   <label class="sr-only" for="cname">Contact Name</label>
-			    <input type="text" class="form-control" id="cname" name="cname" required style="width:80%;">			  
-			  </div> 
-			  
-			  <div class="form-group">
-			   <label class="sr-only" for="email">Email</label>
-			    <input type="email" class="form-control" id="email" name="email" required style="width:80%;">		  
-			  </div> 
-			  
-			   <div class="form-group">		  
-			    <button type="submit" class="btn btn-primary">Send Invitation</button>
-			  </div> 
-			  
-			</form>
+	function getRandomPassword()
+		{
+		    $acceptablePasswordChars ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		    $randomPassword = "";
 		
-        </div>       
-              
-        <div class="modal-footer">
-          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-  </div>
- 
-  </div>
-  </div>
-   
-	
-</section>
-
-
-
-
-
+		    for($i = 0; $i < 8; $i++)
+		    {
+		        $randomPassword .= substr($acceptablePasswordChars, rand(0, strlen($acceptablePasswordChars) - 1), 1);  
+		    }
+		    return $randomPassword; 
+		}	
+}
+?>

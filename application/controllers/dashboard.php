@@ -130,7 +130,7 @@ class Dashboard extends CI_Controller
 						JOIN ".$this->db->dbprefix('award')." a ON a.quote = qe.quoteid
 						JOIN ".$this->db->dbprefix('awarditem')." ai ON a.id = ai.award
 						AND qe.companyid= ai.company
-						WHERE qe.companyid=".$company->id;
+						WHERE qe.isread=0 AND qe.companyid=".$company->id;
 
 		$logQry = $this->db->query($errorLogSql);
 		$logDetails = $logQry->result_array();
@@ -334,5 +334,13 @@ class Dashboard extends CI_Controller
       $this->db->delete('network', array('purchasingadmin' => $pid,'company'=>$cid));
       $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Company Deleted Successfully From Your Network.</div></div>');
       redirect('dashboard');
+	}
+	
+	function errorlogclose($id)
+	{
+		$company = $this->session->userdata('company');
+		$this->db->where('id',$id);
+		$this->db->update('quote_errorlog',array('isread'=>1));
+		redirect('dashboard');
 	}
 }

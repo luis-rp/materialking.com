@@ -175,19 +175,19 @@ function showdueorders(userid)
         	<hr style="height:2px;border-width:0;color:green;background-color:green">
 	        <div style="margin-left:90px;">      
 		       <div>
-		        	<p><?php echo "Total Number of Projects&nbsp;:".count(@$admin->pro);?></p>
+		        	<p><?php echo "Total Number of Projects&nbsp;:"; echo @$admin->pro?"&nbsp;".count(@$admin->pro):"&nbsp;0";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Direct Orders&nbsp;:".count(@$admin->directquo);?></p>
+		        	<p><?php echo "Total Number of Direct Orders&nbsp;:"; echo @$admin->directquo?"&nbsp;".count(@$admin->directquo):"&nbsp;0";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Quotes&nbsp;:".count(@$admin->quo);?></p>
+		        	<p><?php echo "Total Number of Quotes&nbsp;:"; echo @$admin->quo?"&nbsp;".count(@$admin->quo):"&nbsp;0";?></p>
 		        </div> 
 		        <div>
-		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;:".@$admin->awar;?></p>
+		        	<p><?php echo "Total Number of Awarded Quotes&nbsp;:"; echo @$admin->awar?"&nbsp;".@$admin->awar:"&nbsp;0";?></p>
 		        </div>  
 		          <div>
-		        	<p><?php echo "Total Account Spend &nbsp;:"; echo "$".@$admin->sumoftotalpurchase; ?></p>
+		        	<p><?php echo "Total Account Spend &nbsp;:"; echo @$admin->sumoftotalpurchase?"&nbsp;$".$admin->sumoftotalpurchase:"&nbsp;$ 0"; ?></p>
 		        </div>  
 	        </div>	  
         </div>       

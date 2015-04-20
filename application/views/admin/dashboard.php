@@ -505,7 +505,8 @@
 	    		</table>
              
 
-				<?php if($this->session->userdata('usertype_id') == 2){?>
+				<?php //echo '<pre>',print_r($networkjoinedcompanies);die;
+				 if($this->session->userdata('usertype_id') == 2){?>
 			
 	    		<h3 class="box-header" style="width:94.5%">Companies in Your Network</h3>
 	    		<?php if(!$networkjoinedcompanies){?>
@@ -517,6 +518,7 @@
 						<th>Credit Limit</th>
 						<th>Credit Remaining</th>
 						<th>Amount Due</th>
+						<th>Committed</th>
 					</tr>
 					<?php foreach($networkjoinedcompanies as $njc){?>
 						<tr>
@@ -531,6 +533,9 @@
 							</td>
 							<td style="word-break:break-all;">
 								<strong><?php echo number_format($njc->due,2);?></strong>
+							</td>
+							<td style="word-break:break-all;">
+								<strong><?php echo round($njc->totalCommitted,2);?></strong>
 							</td>
 							<?php if(0){?>
 							<td style="word-break:break-all;">

@@ -16,6 +16,7 @@
         	var arr = data.split('*#*#$');        	
             $("#pricehistory").html(arr[0]);
             $("#itemcode").html(arr[1]);
+            $("#totalpoamt").html(arr[2]);
             $("#itemimage").html('<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:right;margin-top:-3em;" src='+imgname+'>');
             $("#historycompanyname").html(companyname);
             $("#historymodal").modal();
@@ -92,7 +93,8 @@
 
 
 <section class="row-fluid">
-  	<span><span style="font-weight:bold;text-align:center;margin-left:175px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> 
+  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> 
+  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> <?php if(@$totalPoAmtstring) echo $totalPoAmtstring; else echo '';?> </span> 
   	<table style="border-collapse:collapse;background:white;"> 
 	  	<tr>
 	  		<td style="border: none;">
@@ -234,6 +236,7 @@
 
     <div class="modal-header">
         <h4><span id='itemcode'></span></h4>
+        <span id='totalpoamt'></span>
         <button aria-hidden="true" onclick="$('#historymodal').modal('hide')" class="close" type="button">x</button>
         <h4>Price History - <span id="historycompanyname"></span>
         <span id="itemimage"></span>

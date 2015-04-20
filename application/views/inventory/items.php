@@ -1339,8 +1339,7 @@ function setitemsmanufacturer(manufacturerid){
           </div> 
         
      <?php  foreach($manufacturers as $mf){ $count=0; ?>     
-         <div class="row form-row">
-            <div class="col-md-3">
+                 
              <?php
              $cquery = "SELECT m.*
 					    FROM ".$this->db->dbprefix('item')." i join 
@@ -1350,15 +1349,16 @@ function setitemsmanufacturer(manufacturerid){
              
              if($hasitems){
              	$count = count($hasitems);
-             }
-             
-             echo $mf->title." (".$count.")";?>
+             ?>
+              <div class="row form-row">   
+             <div class="col-md-3">
+            <?php  echo $mf->title." (".$count.")";?>
             </div>            
              <div class="col-md-2">              
               <span>&nbsp;&nbsp;<input type="checkbox" class="checkmanufacturercls" name="checkmanufacturer<?php echo $mf->id;?>" id="checkmanufacturer<?php echo $mf->id;?>" <?php if(@$mf->applied_to_items==1) echo 'checked'; ?>  value="<?php echo $mf->id;?>" onclick="setitemsmanufacturer('<?php echo $mf->id;?>')"></span>
             </div>            
           </div>      
-           <?php } ?>
+           <?php } } ?>
         </div>
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>

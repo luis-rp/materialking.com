@@ -13,7 +13,7 @@ function showreport(billnum,i)
 {	
 	if($('a','td#billdetailid_'+i).text() == "Expand"){
 		$('a','td#billdetailid_'+i).text('Collapse');
-		$(jq("reportdiv"+billnum)).css('display','block');
+		$(jq("reportdiv"+billnum)).css('display','');
 		$("#billitemdetailsrow").css('display','');
 	}else{
 		$('a','td#billdetailid_'+i).text('Expand');
@@ -152,7 +152,21 @@ function jq( myid ) {
 			$subtotal1 = 0;
 			$finaltotal = 0;
 			$finaltotal1 = 0;
-			
+		
+			$serviceItemTax1 = 0;
+			$finaltot1 = 0 ;
+			$totPrice1 = 0 ;
+			if(isset($billservicedetails) && @$billservicedetails != '')
+			{
+				foreach ($billservicedetails as $key1=>$v)
+				{ 
+					($v['quantity'] == '' || $v['quantity'] == 0) ? $qty = 1 : $qty =  $v['quantity'];           
+                	$totPrice1 = $v['price'] * $qty;      	                		
+                	$serviceItemTax1 += $totPrice1 + ($totPrice1 * ($v['tax']/100));	
+				}
+			} 
+		
+				
 			foreach ($billItemdetails as $k=>$value)
 			{  
 				$markuptotalpercent = (isset($value['markuptotalpercent']) && $value['markuptotalpercent'] != '') ? $value['markuptotalpercent'] : 0;
@@ -177,7 +191,7 @@ function jq( myid ) {
 		  } 		 
 		     $subtotal = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     $finaltotal = $subtotal + (@$totalprice*@$settings->taxrate/100);
-		     
+		     $finaltot1 = $serviceItemTax1 + $finaltotal; 
     	?>
     	<tr> 
 					<td id="billdetailid_<?php echo $billinfo[0]['billid'];?>"><?php if(isset($billinfo[0]['billname']) && $billinfo[0]['billname'] != '') { echo $billinfo[0]['billname']; } else { echo ''; } ?> 
@@ -186,7 +200,7 @@ function jq( myid ) {
 					</td>					
 					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['billedon']));?> </td>
 					<td><?php echo date('m/d/Y', strtotime($billinfo[0]['customerduedate']));?> </td>
-					<td style="padding-left:5; text-align:right;">$<?php echo number_format($totalprice,2);?> </td>
+					<td style="padding-left:5; text-align:right;">$<?php echo number_format($finaltot1,2);?> </td>
 					<!---->
 					<!--<td><?php //echo $value['costcode'];?> </td>-->
 			    </tr>

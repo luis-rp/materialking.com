@@ -1,176 +1,307 @@
-<script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
-<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script> 
+<?php
 
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-	$('#intro').wysihtml5();
-	$('#content').wysihtml5();
-	$('#companydate').datepicker();
-});
-//-->
-</script>
+class company extends CI_Controller {
 
+    private $limit = 10;
 
-<script>
-  $(document).ready(function()
-  {
-    $("#password").val("");
-  });
-  
-  	   
-function checkEnter(event)
-{ 
-	if (event.keyCode == 13) 
-   {
-       return false;
+    function company() {
+        parent::__construct();
+        $this->load->library('session');
+        if (!$this->session->userdata('id')) {
+            redirect('admin/login/index', 'refresh');
+        }
+        if ($this->session->userdata('usertype_id') == 3) {
+            redirect('admin/dashboard', 'refresh');
+        }
+        $this->load->dbforge();
+        $this->load->library('form_validation');
+        $this->load->library(array('table', 'validation', 'session'));
+        $this->load->helper('form', 'url');
+        $this->load->model('admin/company_model');
+        $this->load->model('admin/settings_model');
+        $id = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($id);
+		if(empty($setting)){
+		$data['settingtour']=$setting;
+		$data['timezone']='America/Los_Angeles';
+		}else{
+		$data['timezone']=$setting[0]->tour;
+		$data['timezone']=$setting[0]->timezone;
+		}
+        $this->load->model('admin/quote_model');
+        $data['pendingbids'] = $this->quote_model->getpendingbids();
+        $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
+        $data ['title'] = "Administrator";
+        $this->load = new My_Loader();
+        $this->load->template('../../templates/admin/template', $data);
     }
+
+    function index($offset = 0) {
+        $uri_segment = 4;
+        $offset = $this->uri->segment($uri_segment);
+        $companys = $this->company_model->get_companys($this->limit, $offset);
+        //print_r($companys);die;
+        $this->load->library('pagination');
+        $config ['base_url'] = site_url('admin/company/index');
+        $config ['total_rows'] = $this->company_model->total_company();
+        $config ['per_page'] = $this->limit;
+        $config ['uri_segment'] = $uri_segment;
+
+        $this->pagination->initialize($config);
+        $data ['pagination'] = $this->pagination->create_links();
+        $this->load->library('table');
+        $this->table->set_empty("&nbsp;");
+        $this->table->set_heading('ID', 'Name', 'Email', 'Actions');
+        $i = 0 + $offset;
+
+        $count = count($companys);
+        $items = array();
+        if ($count >= 1) {
+            foreach ($companys as $company) {
+                $company->actions = anchor('admin/company/update/' . $company->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
+                        . ' ' .
+                        anchor('admin/company/delete/' . $company->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
+                ;
+                if ($company->poitems)
+                    $company->actions .= ' ' . anchor('admin/company/poitems/' . $company->id, '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
+                    ;
+                $items[] = $company;
+            }
+
+            $data['items'] = $items;
+            $data['jsfile'] = 'companyjs.php';
+        }
+        else {
+            $this->data['message'] = 'No Records';
+        }
+        $data ['addlink'] = '';
+        $data ['heading'] = 'Company Management';
+        $data ['table'] = $this->table->generate();
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company/add">Add Company</a>';
+
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
+        $this->load->view('admin/datagrid', $data);
+    }
+
+    function poitems($id) {
+        $poitems = $this->company_model->getpoitems($id);
+        //print_r($poitems);die;
+        $count = count($poitems);
+        $items = array();
+        if ($count >= 1) {
+            foreach ($poitems as $row) {
+                $awarded = $this->quote_model->getawardedbid($row->quote);
+                $row->totalamount = "$ " . $row->totalamount;
+                $row->status = strtoupper($awarded->status);
+                $row->actions = $row->status == 'COMPLETE' ? '' :
+                        anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></span>', array('class' => 'update'))
+                ;
+                $items[] = $row;
+            }
+
+            $data['items'] = $items;
+        } else {
+            $this->data['message'] = 'No Items';
+        }
+        $data['jsfile'] = 'companyitemjs.php';
+        $data ['addlink'] = '';
+        $data ['heading'] = "PO items";
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/company">&lt;&lt; Back</a>';
+
+        $uid = $this->session->userdata('id');
+		$setting=$this->settings_model->getalldata($uid);
+		if($setting){
+			$data['settingtour']=$setting[0]->tour;
+		}
+
+        $this->load->view('admin/datagrid', $data);
+    }
+
+    function add() {
+        $this->_set_fields();
+        $data ['heading'] = 'Add New Company';
+        $data ['message'] = '';
+        $data ['action'] = site_url('admin/company/add_company');
+        $data['types'] = $this->db->get('type')->result();
+        $data['states'] = $this->db->get('state')->result();
+         
+        $this->load->view('admin/company', $data);
+    }
+
+    function add_company() {
+        $data ['heading'] = 'Add New Company';
+        $data ['action'] = site_url('admin/company/add_company');
+
+        $this->_set_fields();
+        $this->_set_rules();
+
+        if ($this->validation->run() == FALSE) {
+            $data ['message'] = $this->validation->error_string;
+            $data['types'] = $this->db->get('type')->result();
+           
+            $this->load->view('admin/company', $data);
+        } else {
+        	$pwd = "";
+            $key = md5(uniqid($_POST['title']) . '-' . date('YmdHisu'));
+            $_POST['regkey'] = $key;
+            $itemid = $this->company_model->SaveCompany();
+            $company = $this->db->get_where('company',array('id'=>$itemid))->row();
+            $settings = (array)$this->settings_model->get_current_settings ();
+            $settings['defaultemail'] ? $mail=$settings['defaultemail'] : $mail=$settings['adminemail'];
+            $this->load->library('email');
+            $this->email->clear(true);
+            $this->email->from($mail, "Administrator");
+            $this->email->to($company->primaryemail);
+            $company->pwd1?$pwd=$company->pwd1:$pwd=$company->password;
+            $body = "Dear " . $company->contact . ",<br><br>
+		 Your Company Account Has been created by Administrator.<br><br>Check The Details Below:<br><br>
+		 Company Name : ".$company->title."
+		<br/>
+		Username : ".$company->username."
+		<br/>
+		Password : ".$pwd."
+		<br><br>";
+
+            $this->email->subject("Your Account Has been Created Successfully by Administrator.");
+            $this->email->message($body);
+            $this->email->set_mailtype("html");
+            $this->email->send();
+            $this->sendRegistrationEmail($itemid, $key);
+            $this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Company Added Successfully</div></div>');
+            redirect('admin/company');
+        }
+    }
+
+    function update($id) {
+        $this->_set_fields();
+        $item = $this->company_model->get_companys_by_id($id);
+        $this->validation->id = $id;
+        $this->validation->title = $item->title;
+        $this->validation->primaryemail = $item->primaryemail;
+        $this->validation->username = $item->username;
+        $this->validation->email = $item->email;
+        $this->validation->contact = $item->contact;
+        $this->validation->address = $item->address;
+        $this->validation->com_lat = $item->com_lat;
+        $this->validation->com_lng = $item->com_lng;
+        $this->validation->pwd = $item->pwd;
+        $this->validation->company_type = $item->company_type;
+        $types = $this->db->get('type')->result();
+        $data['types'] = array();
+        foreach ($types as $type) {
+            $this->db->where('companyid', $id);
+            $this->db->where('typeid', $type->id);
+            if ($this->db->get('companytype')->result()) {
+                $type->checked = true;
+            } else {
+                $type->checked = false;
+            }
+            $data['types'][] = $type;
+        }
+        $data ['heading'] = 'Update Company Item';
+        $data ['message'] = '';
+        $data ['action'] = site_url('admin/company/updatecompany');
+        $query = $this->db->get_where('company', array('id' => $id));
+        $data['company'] = $query->result();
+        $data['states'] = $this->db->get('state')->result();
+        $this->load->view('admin/company', $data);
+    }
+
+    function updatecompany()
+    {
+    	
+        $data ['heading'] = 'Update Company Item';
+        $data ['action'] = site_url('message/updatecompany');
+        $this->_set_fields();
+        $this->_set_rules();
+
+        $itemid = $this->input->post('id');
+
+        if ($this->validation->run() == FALSE) {
+            $data ['message'] = $this->validation->error_string;
+            $data ['action'] = site_url('admin/company/updatecompany');
+            $types = $this->db->get('type')->result();
+            $data['types'] = array();
+            foreach ($types as $type) {
+                $this->db->where('companyid', $itemid);
+                $this->db->where('typeid', $type->id);
+                if ($this->db->get('companytype')->result()) {
+                    $type->checked = true;
+                } else {
+                    $type->checked = false;
+                }
+                $data['types'][] = $type;
+            }
+            $query = $this->db->get_where('company', array('id' => $id));
+            $data['company'] = $query->result();
+          
+            $this->load->view('admin/company', $data);
+        } else {
+            $this->company_model->updateCompany($itemid);
+            $data ['message'] = '<div class="success">Company has been updated.</div>';
+            redirect('admin/company/update/' . $itemid);
+            //redirect('admin/company/index');
+        }
+    }
+
+    function delete($id) {
+        $this->company_model->remove_company($id);
+        redirect('admin/company', 'refresh');
+    }
+
+    function _set_fields() {
+        $fields ['id'] = 'id';
+        $fields ['title'] = 'title';
+        $fields ['email'] = 'email';
+        $fields ['contact'] = 'contact';
+        $fields ['address'] = 'address';
+        $fields ['password'] = 'password';
+        $fields ['primaryemail'] = 'primaryemail';
+        $fields ['company_type'] = 'company_type';
+        $this->validation->set_fields($fields);
+    }
+
+    function _set_rules() {
+        $rules ['title'] = 'trim|required';
+        $rules ['primaryemail'] = 'trim|required';
+        $rules ['password']='trim';
+        $rules ['contact'] = 'trim|required';
+
+        $this->validation->set_rules($rules);
+
+        $this->validation->set_message('required', '* required');
+        $this->validation->set_error_delimiters('<div class="error">', '</div>');
+    }
+
+    function sendRegistrationEmail($id, $key) {
+        $c = $this->company_model->get_companys_by_id($id);
+
+        $link = base_url() . 'company/complete/' . $key;
+        	$data['email_body_title'] = "Dear " . $c->title ;
+	  		$data['email_body_content'] = "Please click the following activation link to complete your registration.<br><br>
+	    <a href='$link' target='blank'>$link</a>";
+	  		$loaderEmail = new My_Loader();
+        $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
+        $settings = (array) $this->settings_model->get_current_settings();
+        $this->load->library('email');
+        $config['charset'] = 'utf-8';
+        $config['mailtype'] = 'html';
+        $this->email->initialize($config);
+        $this->email->from($settings['adminemail'], "Administrator");
+
+        $this->email->to($c->title . ',' . $c->email);
+
+        $this->email->subject('Request to Join the Network.');
+        $this->email->message($send_body);
+        $this->email->set_mailtype("html");
+        $this->email->send();
+    }
+
 }
-</script>
 
-<section class="row-fluid">
-	<h3 class="box-header"><?php echo $heading; ?></h3>
-	<div class="box">
-	<div class="span12">
-
-	<?php echo $message; ?>
-
-   <form class="form-horizontal" method="post" action="<?php echo $action; ?>">
-   <input type="hidden" name="id" value="<?php echo $this->validation->id;?>"/>
-    <br/>
-
-    <div class="control-group">
-    <label class="control-label">Company Name*</label>
-    <div class="controls">
-      <input type="text" id="title" name="title" class="span4" value="<?php echo $this->validation->title; ?>" required>
-      <?php echo $this->validation->title_error;?>
-    </div>
-    </div>
-
-    <div class="control-group">
-    <label class="control-label">Primary Email*</label>
-    <div class="controls">
-      <input type="text" id="primaryemail" name="primaryemail" class="span4" value="<?php echo $this->validation->primaryemail; ?>" required>
-      <?php echo $this->validation->primaryemail_error;?>
-    </div>
-    </div>
-
-    <div class="control-group">
-	    <label class="control-label">Username*</label>
-	    <div class="controls">
-	      <input type="text" id="username" name="username" class="span4" value="<?php if(isset($this->validation->username)) echo $this->validation->username; else echo ''; ?>" required>
-	    </div>
-    </div>
-
-    <div class="control-group">
-	    <label class="control-label">Password</label>
-	    <div class="controls">
-	      <input type="password" id="password" name="password" class="span4">
-	      <?php if($this->session->userdata('usertype_id') == 1){?>Existing password: <?php if(isset($this->validation->pwd)) echo $this->validation->pwd; else echo '';?>
-	      <br/><?php }?>(Enter to change)
-	    </div>
-    </div>
-    <?php if(0){?>
-    <div class="control-group">
-    <label class="control-label">Other Emails</label>
-    <div class="controls">
-       <textarea id="email" class="span4" rows="4" name="email" ><?php echo $this->validation->email; ?></textarea>
-      <?php echo $this->validation->email_error;?>
-    </div>
-    </div>
-    <?php }?>
-    <div class="control-group">
-	    <label class="control-label">Contact</label>
-	    <div class="controls">
-	      <input type="text" id="contact" name="contact" class="span4" value="<?php echo $this->validation->contact; ?>">
-	      <?php echo $this->validation->contact_error;?>
-	    </div>
-    </div>
-
-    <?php if(isset($this->validation->com_lat) && $this->validation->com_lat!="") {
-				         	$lat=$this->validation->com_lat;
-				         }
-				         else {
-				         	$lat=34.167139;
-				         }
-				         
-				         if(isset($this->validation->com_lng) && $this->validation->com_lng!="") {
-				         	$lang=$this->validation->com_lng;
-				         }
-				         else {
-				         	$lang=-118.434677;
-				         } ?>
-   <div class="control-group">
-	    <label class="control-label">Address</label>
-	    <div class="controls">
-	      
-	      	<span>Start typing an address and select from the dropdown.</span> <br />               
-              <input type="text" id="address" name="address" class="span5"  autocomplete="off" onkeydown="return checkEnter(event);" >            					<div id="map-container">
-						 <div id="map-canvas"></div>
-
-							<script>
-                                $('#map-canvas').locationpicker({
-                                location: {latitude:<?php echo $lat; ?>, longitude:<?php echo $lang; ?>},	
-                                radius: 600,
-                                inputBinding: {
-                                    latitudeInput: $('#latitude'),
-                                    longitudeInput: $('#longitude'),
-                                    locationNameInput: $('#address')        
-                                },
-                                enableAutocomplete: true,                              
-                                });
-							</script>     
-                   </div>         
-	    </div>
-	    <?php echo $this->validation->address_error;?>
-    </div>
-
-
-    <div class="control-group">
-	    <label class="control-label">Type:</label>
-	    <div class="controls">
-	      <table class="table table-bordered span6">
-	      	<tr>
-	      		<th class="span6">Industry</th>
-	      		<th class="span6">Manufacturer</th>
-	      	</tr>
-	      	<tr valign="top">
-	      		<td>
-	      			<?php foreach($types as $type) if($type->category=='Industry'){?>
-	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo @$type->checked?'checked="checked"':'';?>>
-	      			<?php echo $type->title;?>
-	      			<br/>
-	      			<?php }?>
-	      		</td>
-	      		<td>
-	      			<?php foreach($types as $type) if($type->category=='Manufacturer'){?>
-	      			<input name="types[]" type="checkbox" value="<?php echo $type->id;?>" <?php echo @$type->checked?'checked="checked"':'';?>>
-	      			<?php echo $type->title;?>
-	      			<br/>
-	      			<?php }?>
-	      		</td>
-	      	</tr>
-	      </table>
-	    </div>
-    </div>
-    
-    <div class="control-group">
-    <label class="control-label">Make it Premium</label>
-    <div class="controls">
-     <input type="checkbox" name="company_type" value="<?php echo $this->validation->company_type; ?>"
-    <?php echo @$this->validation->company_type==1?'checked="checked"':'';?>>
-    </div>
-    </div>
-
-    <div class="control-group">
-    <label class="control-label">&nbsp;</label>
-    <div class="controls">
-     <input type="submit" class="btn btn-primary" value="Update Company List"/>
-    </div>
-    </div>
-
-  </form>
-
-    </div>
-    </div>
-</section>
+?>

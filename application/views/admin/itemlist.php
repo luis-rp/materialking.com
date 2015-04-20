@@ -188,7 +188,7 @@
     		if(data){
     			
     			alert(data);
-    			
+    			$('#addinventorymodal').modal('hide');
     		}
     	});
 			

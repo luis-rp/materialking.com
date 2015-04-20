@@ -378,6 +378,7 @@ class Quote extends CI_Controller
 		$data['purchasingadmins'] = $this->db->get()->result();
 		$data['company'] = $company;
 		$data['invitations'] = $invitations;
+		$data['menuhide'] = 1;
 		$this->load->view('quote/invitations',$data);
 	}
 	
@@ -2975,7 +2976,7 @@ or edit your quote.</div></div></div>');
 		if($message){
 			$data['messagekey'] = $message->messagekey;
 		}
-		
+		$data['menuhide'] = 1;
 		$this->load->view('quote/items',$data);
 	}
 	
@@ -3444,7 +3445,7 @@ or edit your quote.</div></div></div>');
 		//for export link
 		$data['quoteid'] = $quoteid;
 		$data['award']   = $award;
-								
+		$data['menuhide'] = 1;						
 		$this->load->view('quote/track',$data);
 	}
 	
@@ -3645,7 +3646,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$this->db->where('usertype_id',2);
 		$this->db->from('users')->join('network',"users.id=network.purchasingadmin")->where('network.company',$company->id);
 		$data['purchasingadmins'] = $this->db->get()->result();
-		
+		$data['menuhide'] = 1;
 		$this->load->view('quote/invoices',$data);
 	}
 	
@@ -3804,6 +3805,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$data['project'] = $project;
 		$data['invoice'] = $invoice;
 		$data['heading'] = "Invoice Details";
+		$data['menuhide'] = 1;
 		$this->load->view ('quote/invoice', $data);
 			
 	}

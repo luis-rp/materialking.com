@@ -5,7 +5,7 @@
 		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10"> 
           <h2 class="normal">Change Password</h2>
           <p class="p-b-20 general"><span class="text-success semi-bold">Dear <?php echo $company->title;?></span><br/>
-          Please provide your passwords.</p>
+          Please create your new password below.</p>
 		  
         </div>
         <?php echo $this->session->flashdata('message'); ?>

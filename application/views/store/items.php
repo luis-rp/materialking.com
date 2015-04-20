@@ -477,9 +477,9 @@ $( document ).tooltip();
 					<?php } 	?>
 					</span>
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
-	                &nbsp;&nbsp;&nbsp;    <a href="<?php echo site_url('store/items/'.$company->username);?>">
+	                &nbsp;&nbsp;&nbsp;   <?php if($norecords =="") { ?> <a href="<?php echo site_url('store/items/'.$company->username);?>">
 	        				Back to Store Home
-	        			</a>
+	        			</a><?php } ?>
         			</h3>
                     <br/>
 

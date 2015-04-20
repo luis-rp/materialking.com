@@ -533,6 +533,12 @@ class itemcode_model extends Model {
 
     function getminimumprices($itemid)
     {
+    	$whr = "";
+    	if(@$this->session->userdata('managedprojectdetails')->id)
+    	{
+    		$whr .= " AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'";
+    	}
+    	
         $sql = "SELECT c.title companyname,q.id,q.ponum, m.*
 			   	FROM
 				" . $this->db->dbprefix('minprice') . " m,
@@ -546,7 +552,7 @@ class itemcode_model extends Model {
 				AND q.id = qi.quote AND qi.purchasingadmin = m.purchasingadmin
 				AND ai.company = c.id
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
-				AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
+				$whr
 				GROUP By c.id";
       //  echo '<pre>', $sql; 
         $query = $this->db->query($sql);

@@ -5,7 +5,7 @@
 		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10"> 
           <h2 class="normal">Resend Activation</h2>
           <p class="p-b-20 general">
-          Please provide your email to get activation link.
+          Please provide your email to receive your activation link.
           </p>
 		  
         </div>

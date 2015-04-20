@@ -93,6 +93,7 @@ class report extends CI_Controller
         
 		$data ['addlink'] = '';
 		$data ['heading'] = 'Report';
+		$data['menuhide'] = 1;
 		$this->load->view ('company/report', $data);
 	}
 	

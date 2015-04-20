@@ -87,8 +87,36 @@ function preloadoptions(fromid)
 									value="<?php echo @$admin->penalty_percent;?>" />									
 								</td>
 								
-								<td><input  class="form-control daterequested" type="text" name="duedate[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo (@$admin->duedate=='0000-00-00'||@$admin->duedate=='')?'':date('m/d/Y',strtotime(@$admin->duedate));?>" data-date-format="mm/dd/yyyy" />									
+								<td><!--<input  class="form-control daterequested" type="text" name="duedate[<?php echo $admin->purchasingadmin;?>]" 
+									value="<?php echo (@$admin->duedate=='0000-00-00'||@$admin->duedate=='')?'':date('m/d/Y',strtotime(@$admin->duedate));?>" data-date-format="mm/dd/yyyy" />					-->	
+									<?php   $dayOfMonth = '';
+											$selectDay = '';
+											if(@$admin->duedate && $admin->duedate != '' && $admin->duedate != '0000-00-00')
+											{
+												$dueDateArr = explode('-',$admin->duedate);
+												
+												if(@$dueDateArr && $dueDateArr[2] !='')
+												{
+													$dayOfMonth = $dueDateArr[2];
+												}
+											}
+										?>
+									<select id="" name="duedate[<?php echo $admin->purchasingadmin;?>]"	class="form-control">
+									<option value="">Select</option>
+									<?php for($i=1;$i<=31;$i++) 
+										  { 
+										  	if($dayOfMonth == $i)
+										  	{
+										  		$selectDay = ' selected ';
+										  	}
+										  	else 
+										  	{
+										  		$selectDay = '';
+										  	}
+										  	?>
+										<option value="<?php echo date('m').'/'.$i.'/'.date('Y');?>"  <?php echo $selectDay;?> ><?php echo $i;?></option>
+									<?php	} ?>
+									</select>		
 								</td>
 														
 								<td>																

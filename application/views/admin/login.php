@@ -324,7 +324,7 @@
 				<a class="btn btn-primary btn-block" href="<?php echo site_url('site/items');?>">Go to Store</a>
 			</fieldset>
 		<?php echo form_close(); ?>
-		<div class="social">
+		<!--<div class="social">
 			<p>...or sign in with</p>
 
 			<a href="dashboard.html" title="" tabindex="5" class="twitter">
@@ -338,7 +338,7 @@
 			<a href="dashboard.html" title="" tabindex="7" class="google">
 				<i class="icon-google-plus"></i>
 			</a>
-		</div>
+		</div>-->
 	</section>
 
 </body>

@@ -131,7 +131,7 @@ function preloadoptions(fromid)
 						<?php foreach($logDetails as $key=>$errorLog){ ?>
 
 						<div class="date pull-right">
-								<a class="remove" href="<?php if(isset($errorLog->id)) echo site_url('dashboard/close/'.$errorLog->id); else echo '';?>">X</a>
+								<a class="remove" href="<?php if(isset($errorLog['id'])) echo site_url('dashboard/errorlogclose/'.$errorLog['id']); else echo '';?>">X</a>
 						  </div>
 
 							<a href="<?php echo site_url('quote/track/'.$errorLog['quoteid'].'/'.$errorLog['award']);?>" onclick="return readnotification('<?php echo $errorLog['id']?>');">

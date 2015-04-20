@@ -5,9 +5,9 @@
 		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10"> 
           <h2 class="normal">Complete Your Registration!</h2>
           <p class="p-b-20 general"><span class="text-success semi-bold">Dear <?php echo $company->title;?></span><br/>
-              Please fill up below form to complete your registration.
+              Please fill out the below form to complete your registration.
               <br/>
-              Once you complete you get access on the supplier dashboard.
+              Once you submit this information, you will be taken to your sales dashboard.
           </p>
 		  
         </div>

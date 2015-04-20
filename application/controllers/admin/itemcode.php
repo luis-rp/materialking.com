@@ -2138,7 +2138,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     {
         $company = $_POST['companyid'];
         $itemid = $_POST['itemid'];
-
+		$totalPOAmt = 0;
+        $totalPOString = '';
         $sql1 = "SELECT ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode
 			   	FROM
 				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
@@ -2180,7 +2181,27 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND b.company='$company'
 				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 			";
-            //die($sqlavg);
+            
+            if ($this->session->userdata('usertype_id') > 1)
+	        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('id');
+	        else
+	        $wheretax = "";
+        
+            $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$wheretax." ";
+        	$taxrate = $this->db->query($cquery)->row();
+
+        	$poitems = $this->itemcode_model->getpoitems($itemid);
+            
+         	if(isset($poitems[0]->totalprice) && $poitems[0]->totalprice != '')
+         	{
+         		if(@$taxrate->taxrate)
+         		{
+    				$totalPOAmt = $poitems[0]->totalprice + ($poitems[0]->totalprice*$taxrate->taxrate/100);    				
+    			}
+         	}
+         	
+         	$totalPOString .= 'Total Purchased Amount From Supplier: $'. round($totalPOAmt,2);
+         	
             $itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
             $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
             $companyavgpricefordays = number_format($companyavgpricefordays, 2);
@@ -2218,7 +2239,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                  '</td></tr>';
             }
             $ret .= '</table>';
-            echo $ret.'*#*#$'.$itemname;
+            echo $ret.'*#*#$'.$itemname.'*#*#$'.$totalPOString;
         }
         die();
     }
@@ -2385,15 +2406,33 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['poitems'] = '';
         $trend = '';
         $trendstring = '';
+        $totalPOAmt = 0;
         if (! empty($item))
         {
             $data['minprices'] = $item->minprices;
             $data['poitems'] = $item->poitems;
             $data['soitems'] = $item->soitems;
-           // echo '<pre>',print_r($data['soitems']);
+
+			if ($this->session->userdata('usertype_id') > 1)
+	        $wheretax = " and s.purchasingadmin = ".$this->session->userdata('id');
+	        else
+	        $wheretax = "";
+        
+            $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$wheretax." ";
+        	$taxrate = $this->db->query($cquery)->row();
+        
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
+         //   $poitems = $this->itemcode_model->getpoitems($item->id);
             
+         	if(isset($item->poitems[0]->totalprice) && $item->poitems[0]->totalprice != '')
+         	{
+         		if(@$taxrate->taxrate)
+         		{
+    				$totalPOAmt = $item->poitems[0]->totalprice + ($item->poitems[0]->totalprice*$taxrate->taxrate/100);    				
+    			}
+         	}
+         
             if(@$totalminprice)
             $totalminprice = round($totalminprice,2);
             if(@$daysavgprice)
@@ -2410,6 +2449,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
                 $trend = 'NO DATA';
                 
             $trendstring = 'Item AVG. Price : $ '. $avgforpricedays.'<br/>';
+            $totalPoAmtstring = 'Total Purchased Amount : $ '. round($totalPOAmt,2).'<br/>';
         }
         if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
 		 { 
@@ -2429,6 +2469,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     		$favoriteslink = '<a style="float:right;" href="javascript:void(0)" onclick="removefromfavorites('.$item->id.');"> Remove From Favorites </a>';
     	}
         $data['itemavgprice'] = $trendstring;
+        $data['totalPoAmtstring'] = $totalPoAmtstring;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
         $data['favoriteslink'] = $favoriteslink;

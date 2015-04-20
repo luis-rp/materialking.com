@@ -23,6 +23,7 @@ class subscriber extends CI_Controller
 			}else{
 				$data = array("cid"=>$cid);
 			}
+			
 			$this->db->insert("newsletter_subscribers",$data);
 			$lastid = $this->db->insert_id();
 			
@@ -39,13 +40,12 @@ class subscriber extends CI_Controller
 			if($this->input->post("email")){
 				$this->email->from($supplier->primaryemail);
 				$this->email->to($this->input->post("email"));
-				$data['email_body_title'] = "";
-				$data['email_body_content'] = 'You have successfully subscribed to '.$supplier->title.' newsletter';
+				$data['email_body_title']= "Dear, " .$this->input->post("name");	
+				$data['email_body_content'] = 'You have started Following '.$supplier->title.'.<br /> You are subscribed to '.$supplier->title.' e-newsletter';
 				$loaderEmail = new My_Loader();
 				$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
 				$this->email->subject('Welcome to '.$supplier->title.' Newsletter');
 				$this->email->message($send_body);
-			
 				$this->email->send();
 			}
 			redirect('site/supplier/'.$supplier->username);

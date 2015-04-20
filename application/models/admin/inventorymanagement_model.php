@@ -25,7 +25,7 @@ class inventorymanagement_model extends Model
 				".$this->db->dbprefix('quote')." q
 				JOIN ".$this->db->dbprefix('award')." a ON a.quote = q.id 
 				LEFT JOIN ".$this->db->dbprefix('awarditem')." aw ON aw.award = a.id	
-				LEFT JOIN ".$this->db->dbprefix('item')." i ON aw.itemid = i.id				
+				JOIN ".$this->db->dbprefix('item')." i ON aw.itemid = i.id				
 				WHERE 1=1 AND q.purchasingadmin='".$this->session->userdata('purchasingadmin')."'  {$where} GROUP by aw.itemid ";		
  		 		
  		if($this->session->userdata('managedprojectdetails') != '')

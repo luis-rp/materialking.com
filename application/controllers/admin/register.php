@@ -165,7 +165,7 @@ class Register extends CI_Controller
 	    $this->load->helper('file');
 	    
 	    $data['email_body_title'] ="Dear ".$user->companyname;
-	    $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>		 
+	    $data['email_body_content'] = "Please click the following activation link to complete your registration.  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
 	    	
 	   /* $image =  "/home/materialking/public_html/templates/site/assets/img/logo.png";
@@ -201,7 +201,7 @@ class Register extends CI_Controller
 		$data['logoExt'] = get_mime_by_extension($image);
 		$data['logo'] = base64_encode(file_get_contents($image));*/
 		$data['email_body_title'] ="Dear Username";
-		$data['email_body_content'] = "lease click following link to complete your registration:  <br><br>
+		$data['email_body_content'] = "Please click the following activation link to complete your registration.  <br><br>
 	    <a href='#' target='blank'>Link</a>";
 		$loaderEmail = new My_Loader();
 		$send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -266,7 +266,7 @@ class Register extends CI_Controller
 
     	$link = site_url('admin/register/complete/'.$key);
     	 $data['email_body_title'] = "Dear ".$user->companyname;
-	  	 $data['email_body_content'] = "Please click following link to complete your registration:  <br><br>
+	  	 $data['email_body_content'] = "Please click the following activation link to complete your registration.  <br><br>
 	    <a href='$link' target='blank'>$link</a>";
 	  	 $loaderEmail = new My_Loader();
 	  	 $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
@@ -532,7 +532,7 @@ class Register extends CI_Controller
 		
 		$link = base_url().'admin/register/change/'.$key;
 	      $data['email_body_title'] = "Dear ".$user->fullname; 
-	  	  $data['email_body_content'] = "Please click following link to change your password:  <br><br>		 
+	  	  $data['email_body_content'] = "Please click the following link to change your password:  <br><br>		 
 	    <a href='$link' target='blank'>$link</a>";
 	  	  $loaderEmail = new My_Loader();
 	    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);

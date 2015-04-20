@@ -1,13 +1,27 @@
-<?php //print_r($states);die;?>
+<script src="<?php echo base_url();?>templates/admin/js/jquery.js"></script>
+<script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
+<script src="<?php echo base_url(); ?>templates/front/js/locationpicker.jquery.js" type="text/javascript"></script>
+
+
+<script>
+ function checkEnter(event)
+{ 
+	if (event.keyCode == 13) 
+   {
+       return false;
+    }
+}
+</script>
+
 <div class="container">
   <div class="row login-container animated fadeInUp">  
         <div class="col-md-7 col-md-offset-2 tiles white no-padding">
 		 <div class="p-t-30 p-l-40 p-b-20 xs-p-t-10 xs-p-l-10 xs-p-b-10"> 
-          <h2 class="normal">Create New Account!</h2>
+          <h2 class="normal">Create Your New Account!</h2>
           <p class="p-b-20 general">
-              Please fill up below form to create a new account. 
+              Please fill out the below form to create your new account. 
               <br/>
-              Once you complete you get a link to provided email to activate your account.
+              Once you complete the below form, you will receive an activation link in your email account.
           </p>
 		  <p class="p-b-20 general"><a href="<?php echo site_url('company/resend');?>">Resend Activation Link?</a></p>
         </div>
@@ -31,12 +45,9 @@
                        <input name="contact" id="contact" type="text" class="form-control" required>
                       </div>
                       
-                      <div class="col-md-6 col-sm-6">
-                       <label class="form-label text-success semi-bold general">Street Address*</label>
-                       <input name="street" id="street" type="text"  class="form-control" required>
-                      </div>
+                     
                       
-                      <?php if(1){?>
+                      <!--<?php if(1){?>
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">City*</label>
                        <input name="city" id="city" type="text" class="form-control" required>
@@ -56,17 +67,44 @@
                        <input name="zip" id="zip" type="text" class="form-control" required>
                       </div>
                       
-                      <?php }?>
+                      <?php }?>-->
+                      
+                      
                       
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">Phone*</label>
                        <input name="phone" id="phone" type="text" class="form-control" required>
                       </div>
                       
+                      <div class="col-md-6 col-sm-6">
+                       <label class="form-label text-success semi-bold general">Address</label>
+                      <input type="text" id="address" name="address" class="form-control"  autocomplete="off" onkeydown="return checkEnter(event);" > 
+                      </div>
+                      
+           				<div id="map-container" style="display:none;">
+						 <div id="map-canvas"></div>
+
+							<script>
+                                $('#map-canvas').locationpicker({
+                                location: {latitude:34.167139, longitude:-118.434677},	
+                                radius: 600,
+                                inputBinding: {
+                                    latitudeInput: $('#latitude'),
+                                    longitudeInput: $('#longitude'),
+                                    locationNameInput: $('#address')        
+                                },
+                                enableAutocomplete: true,                              
+                                });
+							</script> 
+							
+                        </div>
+                      
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">Fax</label>
                        <input name="fax" id="fax" type="text" class="form-control">
                       </div>
+                      
+                     
                       
                       <div class="col-md-6 col-sm-6">
                        <label class="form-label general">&nbsp;</label>
