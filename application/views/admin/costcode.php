@@ -88,6 +88,14 @@ function changeproject(catid){
     </div>
     
     <div class="control-group">
+    <label class="control-label">Cost Code <span style="color:red;font-weight:bold;"> * </span>:</label>
+    <div class="controls">
+      <input type="text" id="code" name="code" class="span3" value="<?php echo $this->validation->code; ?>">
+      <?php echo $this->validation->code_error;?>
+    </div>
+    </div>
+    
+    <div class="control-group">
     <label class="control-label">Select Project</label>
     <div class="controls">
       <select id="project" name="project" onchange="changeparent(this.value);">
@@ -98,14 +106,6 @@ function changeproject(catid){
       	<?php }?>
 	  </select>
       <?php echo $this->validation->parent_error;?>
-    </div>
-    </div>
-    
-    <div class="control-group">
-    <label class="control-label">Cost Code <span style="color:red;font-weight:bold;"> * </span>:</label>
-    <div class="controls">
-      <input type="text" id="code" name="code" class="span3" value="<?php echo $this->validation->code; ?>">
-      <?php echo $this->validation->code_error;?>
     </div>
     </div>
     

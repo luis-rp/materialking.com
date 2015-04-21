@@ -688,7 +688,10 @@ class quote extends CI_Controller
 
     function add($pid, $potype = "Bid")
     {
+    	$this->load->model('admin/costcode_model');
+    	
         $this->_set_fields();
+        $this->_set_fields1();
         $data['pid'] = $pid;
         $data['potype'] = $potype;
         $data ['heading'] = $potype == "Bid" ? 'Add New Quote' : ($potype == "Direct"?"Add New Purchase Order":"Add New Contract Quote");
@@ -700,8 +703,18 @@ class quote extends CI_Controller
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();  
 
  		$costcodesql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' ";
- 		$data['costcodesresult'] = $this->db->query($costcodesql)->result();  
- 		
+ 		$data['costcodesresult'] = $this->db->query($costcodesql)->result(); 
+ 		 
+ 		if ($this->session->userdata('usertype_id') > 1)
+            $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+        $data['projects'] = $this->db->get('project')->result();
+        
+        if(isset($_POST['parentfilter']) && $_POST['parentfilter']=="")
+        {
+        	$_POST['parentfilter']=0;
+        }
+        $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
+        
  		$data['iscostcodeprefix'] = 0 ;
  		//echo '<pre>',print_r($data);die;
         if ($this->session->userdata('defaultdeliverydate'))
@@ -717,6 +730,7 @@ class quote extends CI_Controller
 
     function add_quote($pid, $potype = "Bid")
     {
+    	$this->load->model('admin/costcode_model');
         if (!@$data)
             $data = array();
         $data = array_merge($data, $_POST);
@@ -729,7 +743,21 @@ class quote extends CI_Controller
         $this->validation->potype = $potype;       
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();  
-
+ 		
+ 		$costcodesql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' ";
+ 		$data['costcodesresult'] = $this->db->query($costcodesql)->result(); 
+ 		
+ 		if ($this->session->userdata('usertype_id') > 1)
+            $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+        $data['projects'] = $this->db->get('project')->result();
+        
+        if(isset($_POST['parentfilter']) && $_POST['parentfilter']=="")
+        {
+        	$_POST['parentfilter']=0;
+        }
+        $data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
+        
+		$data['iscostcodeprefix'] = 0 ;
         $this->_set_fields();
         $this->_set_rules();
         if ($this->validation->run() == FALSE) {
@@ -959,7 +987,7 @@ class quote extends CI_Controller
         $data['costcodes'] = $this->db->where('project',$pid)->get('costcode')->result();
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
-
+		$data['iscostcodeprefix'] = 1 ;
         if ($this->validation->run() == FALSE) {
             $data['quoteitems'] = $this->quote_model->getitems($itemid);
             $data['companylist'] = $this->quote_model->getcompanylist();
@@ -1194,21 +1222,16 @@ class quote extends CI_Controller
                     if(isset($limitcompany))
                     {
                     	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
-                    	{                  		
-                    		$data['email_body_content'] .= " You have received an invitation to join ({$this->session->userdata('companyname')}) procurement network.<br />Your Invitation is from user '{$this->session->userdata('fullname')}'.<br /><br />The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network today.<br /><br />The Company '{$this->session->userdata('companyname')}' Details : <br /><strong>Contact Name : {$this->session->userdata('fullname')} <br> Address : {$this->session->userdata('address')} <br />Total Account Spend : {$totalaccountspend}</strong><br /><br />Your login details are as Follow<br /> <strong>Username : {$limitcompany[$c->id]['username']}  <br> Password : {$limitcompany[$c->id]['password']} </strong><br><br> ";
-                    		 $loginlink = base_url() . 'company/login/' . $this->session->userdata('id');
+                    	{ 
+                    		$loginlink = base_url() . 'company/login/' . $this->session->userdata('id');                 		
+                    		$data['email_body_content'] .= " You have received an invitation to join ({$this->session->userdata('companyname')}) procurement network.<br />Your Invitation is from user '{$this->session->userdata('fullname')}'.<br /><br />The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network today.<br /><br />The Company '{$this->session->userdata('companyname')}' Details : <br /><strong>Contact Name : {$this->session->userdata('fullname')} <br> Address : {$this->session->userdata('address')} <br />Total Account Spend : {$totalaccountspend}</strong><br /><br />Your login details are as Follow<br /> <strong>Username : {$limitcompany[$c->id]['username']}  <br> Password : {$limitcompany[$c->id]['password']} </strong><br><br><a href='$loginlink' target='blank'>click here</a> to login.<br /><br />After Login, you can click the below link for direct access to quote #". $this->input->post('ponum') . "<br /> <a href='$link' target='blank'>$link</a> ";
                     	}
-                    }                   
-				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . " ";
-				  	
-				  	if(isset($loginlink) && $loginlink!="")
-		  			{
-		  				$data['email_body_content'] .= "or <a href='$loginlink' target='blank'>click here</a> to login.";
-		  			}
-				  	
-				  	$data['email_body_content'] .= "<br /><br />
-				    <a href='$link' target='blank'>$link</a>.<br><br/>
-				    Please find the details below:<br/><br/>
+                    } 
+                    else 
+                    {                  
+				  	$data['email_body_content'] .= "Please click following link for the quote PO# " . $this->input->post('ponum') . "<br /> <a href='$link' target='blank'>$link</a> ";
+                    }				  	
+				  	$data['email_body_content'] .= "<br><br/>Please find the details below:<br/><br/>
 		  	        $emailitems
 				   <br><br>Thank You,<br>(".$this->session->userdata('companyname').")<br>";
 				  	$loaderEmail = new My_Loader();
@@ -6879,6 +6902,7 @@ $loaderEmail = new My_Loader();
                 		$insertarray['daterequested'] = $item->daterequested;
                 		$insertarray['unit'] = $item->unit;
                 		$insertarray['ea'] = $item->ea;
+                		$insertarray['item_img'] = $item->item_img;
 
                 		if (!isset($invoices[$inv])) {
                 			$invoices[$inv] = array();
@@ -7006,13 +7030,14 @@ $loaderEmail = new My_Loader();
                 	$this->db->insert('inventory',$stockarray);
                 }
                 
-
+              
                 $insertarray['id'] = $item->id;
                 $insertarray['itemname'] = $item->itemname;
                 $insertarray['companyname'] = $item->companyname;
                 $insertarray['daterequested'] = $item->daterequested;
                 $insertarray['unit'] = $item->unit;
                 $insertarray['ea'] = $item->ea;
+                $insertarray['item_img'] = $item->item_img;
 
                 if (!isset($invoices[$_POST['invoicenum' . $key]])) {
                     $invoices[$_POST['invoicenum' . $key]] = array();
@@ -7022,6 +7047,8 @@ $loaderEmail = new My_Loader();
                 } else {
                     $invoices[$_POST['invoicenum' . $key]]['items'][] = $insertarray;
                 }
+               
+                
                 if(isset($credits[$item->company]))
                 {
                     $credits[$item->company]['amount'] += $insertarray['quantity'] * $insertarray['ea'];
@@ -7075,7 +7102,7 @@ $loaderEmail = new My_Loader();
        // $company = $this->company_model->get_companys_by_id($cid);
       // echo '<pre>',print_r($awarded);die;
         foreach ($invoices as $invoice)
-        {
+        { 
             $pdfhtml = '
 				<strong>Invoice #: ' . $invoice['invoicenum'] . '</strong><br/>
 				<table width="100%" cellspacing="2" cellpadding="2">
@@ -7202,9 +7229,14 @@ $loaderEmail = new My_Loader();
 				  ';
             $totalprice = 0;
             $i = 0;
-       //     echo '<pre>',print_r($invoice);
             foreach ($invoice['items'] as $invoiceitem) {
-                $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];
+                $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];   
+               if(isset($invoiceitem['item_img']) && $invoiceitem['item_img']!= "" && file_exists("./uploads/item/".$invoiceitem['item_img'])) { 
+             		$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='75' width='75' src='". site_url('uploads/item/'.$invoiceitem['item_img'])."' alt='".$invoiceitem['item_img']."'>";
+             } else { 
+             		$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' height='75' width='75' src='".site_url('uploads/item/big.png')."'>";
+             } 	
+                
                 $pdfhtml.='<tr nobr="true">
 				    <td style="border: 1px solid #000000;">' . ++$i . '</td>
 				    <td style="border: 1px solid #000000;">' . @$img_name . '</td>
@@ -7218,7 +7250,7 @@ $loaderEmail = new My_Loader();
 				    <td align="right" style="border: 1px solid #000000;">$ ' . $invoiceitem['ea'] * $received[$invoiceitem['id']]['received'] . '</td>
 				  </tr>
 				  ';
-            }
+            } 
             $taxtotal = $totalprice * $config['taxpercent'] / 100;
             $grandtotal = $totalprice + $taxtotal;
 
@@ -7244,7 +7276,7 @@ $loaderEmail = new My_Loader();
             </tr></table>
             ';
 
-//echo '<pre>',print_r($pdfhtml);die;
+          
             if (!class_exists('TCPDF')) {
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
             	require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
@@ -7300,7 +7332,7 @@ $loaderEmail = new My_Loader();
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
- 	
+            //$this->email->to('tushar1717@gmail.com');
             $this->email->subject('Invoice for PO#:' . $quote->ponum);           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
@@ -7892,11 +7924,19 @@ $loaderEmail = new My_Loader();
         }
         $project = $this->project_model->get_projects_by_id($quote->pid);
 
-        // notification to purchasing user
+       // notification to purchasing user
+        
+        $toemail = array();
+        $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu WHERE qu.userid=u.id 
+        AND qu.quote=" . $quote->id;
+        $purchaseusers = $this->db->query($sql)->result();
+        foreach ($purchaseusers as $pu) {
+            $toemail[] = $pu->email;
+        }
+        
+        if(count($toemail) > 0){
         $data['email_body_title']  = "Dear Admin";
-
-		$data['email_body_content'] ="This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.
-		    ";
+		$data['email_body_content'] ="This email is to notify PO# {$quote->ponum} that is assigned to you is awarded.";
 		$loaderEmail = new My_Loader();
         $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);
         $settings = (array) $this->settings_model->get_current_settings();
@@ -7904,22 +7944,13 @@ $loaderEmail = new My_Loader();
         $config['charset'] = 'utf-8';
         $config['mailtype'] = 'html';
         $this->email->initialize($config);
-        $this->email->from($settings['adminemail'], "Administrator");
-
-        $toemail = array();
-        $sql = "SELECT u.email FROM " . $this->db->dbprefix('users') . " u, " . $this->db->dbprefix('quoteuser') . " qu
-        		WHERE qu.userid=u.id AND qu.quote=" . $quote->id;
-        $purchaseusers = $this->db->query($sql)->result();
-        foreach ($purchaseusers as $pu) {
-            $toemail[] = $pu->email;
-        }
+        $this->email->from($settings['adminemail'], "Administrator");      
         $this->email->to(implode(',' , $toemail));
-        //$this->email->to($settings['adminemail'] . ',' . $c->email);
-
         $this->email->subject('Award PO notification for PO# ' . $quote->ponum);
         $this->email->message($send_body);
         $this->email->set_mailtype("html");
         $this->email->send();
+        }
 
         //print_r($awarded);die;
         $companies = array();
@@ -12221,6 +12252,41 @@ $loaderEmail = new My_Loader();
     	
     }
     
+    function addnewcostcode()
+    {
+    	if(isset($_POST) && $_POST != '')
+    	{
+	    	$options = array(
+				'code'=>$this->input->post('code'),
+				'cost'=>$this->input->post('cost'),
+				'parent'=>$this->input->post('parent'),
+				'project'=>$this->input->post('project'),
+				'creation_date' => date('Y-m-d')
+			);
+			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+			$this->db->insert('costcode', $options);
+    	}		
+    	
+    	redirect($_SERVER['HTTP_REFERER'], 'refresh');
+    }
+    
+     function _set_fields1() {
+        $fields ['id'] = 'id';
+        $fields ['code'] = 'code';
+        $fields ['cost'] = 'cost';       
+        $fields ['parent'] = 'Parent';
+        $fields ['project'] = 'Project';
+        $this->validation->set_fields($fields);
+    }
+
+    function _set_rules1() {
+        $rules ['code'] = 'trim|required';
+        $rules ['cost'] = 'trim|required|numeric';
+
+        $this->validation->set_rules($rules);
+        $this->validation->set_message('required', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Please fill all mandatory fields.</div></div>');
+        $this->validation->set_error_delimiters('<div class="error">', '</div>');
+    }
 }
 
 ?>

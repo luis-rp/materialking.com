@@ -2082,6 +2082,7 @@ class Quote extends CI_Controller
 						$insertarray[$k] = $_POST[$postkey];
 					}
 				}
+				$item->costcode = rawurldecode($item->costcode);
 				$item = (array)$item;
 				$insertarray['substitute'] = @$_POST['substitute'.$key]?@$_POST['substitute'.$key]:0;
 				$insertarray['totalprice'] = $insertarray['quantity'] * $insertarray['ea'];

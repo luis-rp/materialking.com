@@ -2470,6 +2470,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	}
         $data['itemavgprice'] = $trendstring;
         $data['totalPoAmtstring'] = $totalPoAmtstring;
+        $data['qtyonhand'] = @$item->qtyonhand;
+        $data['qtyonpo'] = @$item->qtyonpo;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
         $data['favoriteslink'] = $favoriteslink;

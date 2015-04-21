@@ -377,7 +377,7 @@ class itemcode_model extends Model {
         $mp = $this->session->userdata('managedprojectdetails');
         if($mp)
             $projectwhere = " AND q.pid='".$mp->id."'";
-        $sql = "SELECT ai.*, c.title companyname, q.ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  newreceived
+        $sql = "SELECT ai.*, c.title companyname, q.ponum, a.awardedon, a.quote,IFNULL(ai.received,0) as  newreceived, SUM(ai.quantity - ai.received) as qtyonpo 
 			   	FROM
 				" . $this->db->dbprefix('awarditem') . " ai, " . $this->db->dbprefix('award') . " a,
 				" . $this->db->dbprefix('quote') . " q, " . $this->db->dbprefix('company') . " c
@@ -398,10 +398,22 @@ class itemcode_model extends Model {
                 if ($this->db->get('network')->result()) {*/
                 	
                 	$wherecode = "";	
+                	$whereproject = "";
+                	$item->qtyonhand = 0;
                 	if(@$this->session->userdata('managedprojectdetails')->id){
             			$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+            			$whereproject .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;
 				 	}
-                		            	
+                		         
+				 	// Code for getting quantity on hand
+				 	$inventorysql = "select quantity from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$itemid;
+				 	$sqlq = $this->db->query($inventorysql);
+				 	$qryinvresult = $sqlq->row();
+
+				 	if($qryinvresult){
+				 		$item->qtyonhand = $qryinvresult->quantity;
+				 	}
+				 	   	
             	 // Code for getting discount/Penalty per invoice
 					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
 			 FROM 
@@ -544,17 +556,15 @@ class itemcode_model extends Model {
 				" . $this->db->dbprefix('minprice') . " m,
 				" . $this->db->dbprefix('company') . " c,
 				" . $this->db->dbprefix('quoteitem') . " qi,
-				" . $this->db->dbprefix('quote') . " q,
-				" . $this->db->dbprefix('awarditem') . " ai
+				" . $this->db->dbprefix('quote') . " q 
 				WHERE
 				m.company=c.id AND m.itemid='$itemid' 
 				AND qi.itemid = m.itemid AND qi.purchasingadmin = m.purchasingadmin
 				AND q.id = qi.quote AND qi.purchasingadmin = m.purchasingadmin
-				AND ai.company = c.id
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				$whr
 				GROUP By c.id";
-      //  echo '<pre>', $sql; 
+       // echo '<pre>', $sql;  die;
         $query = $this->db->query($sql);
         if ($query->num_rows > 0) {
             $result = $query->result();

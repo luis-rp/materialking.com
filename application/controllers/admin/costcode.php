@@ -277,6 +277,9 @@ class costcode extends CI_Controller {
     function index($offset = 0)
     {
         $uri_segment = 4;
+        $appendStr = '';
+        $parentId = 0;
+        
         $offset = $this->uri->segment($uri_segment);
         $mp = $this->session->userdata('managedprojectdetails');
         if(!@$_POST['projectfilter'] && @$mp->id)
@@ -474,6 +477,15 @@ class costcode extends CI_Controller {
                     $costcode->status = 'Bad';
                     $costcode->status = "<img src='".site_url('templates/admin/images/bad.png')."'/>";
                 }
+                $parentId = $costcode->id;
+             //   echo $parentId.'===='. $costcode->id.'-->'.$costcode->parent. '<br>';
+              //  $appendStr = '';
+                if($parentId == $costcode->id && $costcode->parent != 0)
+                {
+                	$appendStr .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+                	$costcode->code = $appendStr.$costcode->code;
+                }
+                
                 $items[] = $costcode;
             }
 
@@ -506,7 +518,7 @@ class costcode extends CI_Controller {
 		if($setting){
 			$data['settingtour']=$setting[0]->tour;
 		}
-
+//die;
         $this->load->view('admin/costcodelist', $data);
     }
 

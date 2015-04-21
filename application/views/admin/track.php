@@ -914,10 +914,10 @@ function closeorder()
                                         <select id="error<?php echo $q->id ?>" class="select-for-error" style="font-size:11px; width:100%;">
                                             <option value=''>No Error</option>
                                             <option value='<?php echo $q->id ?>-Wrong Item Sent'>Wrong Item Sent</option>
-                                            <option value='<?php echo $q->id ?>-Quantity Discrepancy'>Quantity Discrepancy</option>
-                                            <option value='<?php echo $q->id ?>-Revise PO Qty'>Revise PO Qty</option>
-                                            <option value='<?php echo $q->id ?>-Revise Received Qty'>Revise Received Qty</option>
-                                            <option value='<?php echo $q->id ?>-Wrong Item Damage Other'>Wrong Item Damage Other</option>
+                                            <option value='<?php echo $q->id ?>-Damaged Item'>Damaged Item</option>
+                                            <option value='<?php echo $q->id ?>-Other Error'>Other Error</option>
+                                            <!--<option value='<?php echo $q->id ?>-Revise Received Qty'>Revise Received Qty</option>
+                                            <option value='<?php echo $q->id ?>-Wrong Item Damage Other'>Wrong Item Damage Other</option>-->
                                         </select>
                                     </td>
                                     
@@ -931,10 +931,14 @@ function closeorder()
                                    
                       <?php if ($quote->orderclose==0) { ?>
                             <tr>                              
-                                <td><input type="submit" value="Update" class="btn btn-primary btn-small"/></td>
+                                <td>&nbsp;</td>
                                 <td><input type="button" class="btn btn-primary btn-small" onclick="completeselected();" value="Complete">&nbsp;
-                                <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error">
-                                <input type="button" class="btn btn-primary btn-small" onclick="closeorder();" value="No Errors/Close Order"></td>
+                                <input type="button" class="btn btn-primary btn-small" onclick="showErrorModal();" value="Error">&nbsp;
+                                <?php  if ($awarded->status == 'complete') {?>
+                                <input type="button" class="btn btn-primary btn-small" onclick="closeorder();" value="No Errors/Close Order">
+                                <?php } ?>&nbsp;
+                                <input type="submit" value="Update" class="btn btn-primary btn-small"/>
+                                </td>
                             </tr>
                         </form>
                     <?php }                 

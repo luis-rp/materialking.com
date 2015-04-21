@@ -188,6 +188,8 @@ tr.still-due td
     				              <?php
     						    	$i = 0; $remaining =0;
     						    	//echo '<pre>',print_r($awarditems);die;
+    						    	$subtot=0;
+    						    	$totwithtax=0;
     						    	foreach($awarditems as $ai)
     						    	{
     						    		$i++;
@@ -211,8 +213,7 @@ tr.still-due td
                                         <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->quantity;?></td>
                                         <td class="v-align-middle" style="word-break:break-all;"><?php echo $ai->unit;?></td>
                                         <td class="v-align-middle" style="word-break:break-all;">$<?php echo $ai->ea;?></td>
-                                        <td class="v-align-middle" style="word-break:break-all;">$<?php // echo round($ai->quantity * $ai->ea,2); 
-								    		echo round($ai->totalprice,2); ?></td>
+                                        <td class="v-align-middle" style="word-break:break-all;">$<?php echo round($ai->totalprice,2); ?></td>
                                         <td class="v-align-middle" style="word-break:break-all;">
                                         <?php echo $ai->daterequested;
                                               $orgdate=date('Y-m-d', strtotime( $ai->daterequested));
@@ -256,7 +257,23 @@ tr.still-due td
                                         	<?php }?>
                                         </td>
                                     </tr>
-                                  <?php $remaining += (@$ai->quantity - @$ai->received);  } ?>
+                                  <?php $remaining += (@$ai->quantity - @$ai->received);  
+                                  $subtot +=($ai->quantity*$ai->ea);
+    						    	$totwithtax +=$ai->totalprice;} ?>
+                                  <tr>
+                                  <td colspan="5" style="text-align:right;">
+                                  SubTotal : 
+                                  </td>
+                                   <td style="text-align:left;">
+                                   <?php if($subtot!=""){  echo "$".number_format($subtot,2);} ?>
+                                  </td>
+                                  <td style="text-align:right;">
+                                  Total : 
+                                  </td>
+                                  <td colspan="5" style="text-align:left;">
+                                   <?php if($totwithtax!=""){  echo "$".number_format($totwithtax,2);} ?>
+                                  </td>
+                                  </tr>
                                 </tbody>
                             </table>
                     </div>

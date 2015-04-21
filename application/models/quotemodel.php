@@ -255,7 +255,7 @@ class Quotemodel extends Model
 
 	function getdraftitemswithdefaultitemcode($quote,$company)
 	{
-		$sql = "SELECT bi.*, i.itemcode as defaultitemcode, i.itemname as defaultitemname FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b, ".$this->db->dbprefix('item')." i 
+		$sql = "SELECT bi.*, i.itemcode as defaultitemcode, i.itemname as defaultitemname,i.item_img FROM ".$this->db->dbprefix('biditem')." bi, ".$this->db->dbprefix('bid')." b, ".$this->db->dbprefix('item')." i 
 			   WHERE bi.bid=b.id AND bi.itemid = i.id AND b.quote='$quote' AND b.company='$company'
 		 	   ";
 		$query = $this->db->query ($sql);
@@ -466,9 +466,9 @@ class Quotemodel extends Model
 		if ($query->result ())
 		{
 			foreach($query->result () as $item)
-				if($item->received>0)
-					return true;
-				if( (date('Y-m-d H:i:s', strtotime( @$item->daterequested."23:59:59")) < date('Y-m-d H:i:s')) && @$item->received==0 )
+				/*if($item->received>0)
+					return true;*/
+				if( (date('Y-m-d H:i:s', strtotime( @$item->daterequested."23:59:59")) < date('Y-m-d H:i:s')) && (@$item->received==0 || $item->received>0)  )
 					return true;	
 		}
 		return false;

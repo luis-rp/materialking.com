@@ -535,7 +535,7 @@
 								<strong><?php echo number_format($njc->due,2);?></strong>
 							</td>
 							<td style="word-break:break-all;">
-								<strong><?php echo round($njc->totalCommitted,2);?></strong>
+								<strong><?php echo number_format($njc->totalCommitted,2);?></strong>
 							</td>
 							<?php if(0){?>
 							<td style="word-break:break-all;">

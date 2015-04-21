@@ -10,6 +10,8 @@
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/jquery-ui.js"></script>
 <script src="<?php echo base_url();?>templates/admin/js/jquery.ui.autocomplete.html.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+<?php echo '<script type="text/javascript">var getprojectfromcostcodeurl ="'.site_url('admin/costcode/getprojectfromcostcode').'";</script>'?>
+<?php echo '<script type="text/javascript">var getcostcodefromprojecturl ="'.site_url('admin/costcode/getcostcodefromproject').'";</script>'?>
 
 <!-- <script src="<?php echo base_url();?>templates/admin/js/jqBootstrapValidation.js"></script> -->
 
@@ -690,8 +692,76 @@ function checkNewRowData()
 function addCostcode()
 {
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
-   $("#ponum").val(costcodeprefix);
+   
+   if($( "#costcodeprefix option:selected" ).val() !='')
+   {
+   		$("#ponum").val(costcodeprefix);
+   }			
+   else
+   {
+   		$("#ponum").val('');
+   }	
 }
+
+function addNewCostcode()
+{
+	$("#addnewcostcode").css('display','block');
+}
+
+function changeparent(projectid){
+	$. ajax ({
+		
+					type: "POST",					
+					data: {"projectid" : projectid},
+					url: getcostcodefromprojecturl,
+					success: function (data) {
+						if(data){
+							$('#changecost').hide();
+							$('#changeajaxcost').show();
+							$('#changeajaxcosttr').html(data);
+							$('#parent').empty();		
+							$('#parent').append( new Option("Top Parent","") ); 				
+							$('#parent').append(data);														
+							$('#parent').val('');
+						} else 
+						{
+							$('#changecost').hide();
+							$('#changeajaxcost').show();
+							$('#changeajaxcosttr').html("<p>No Cost Code is Present</p>");
+							$('#parent').empty();		
+							$('#parent').append( new Option("Top Parent","") ); 				
+							$('#parent').append(data);														
+							$('#parent').val('');
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+}
+
+function changeproject(catid){
+	$. ajax ({
+		
+					type: "POST",					
+					data: {"catid" : catid},
+					url: getprojectfromcostcodeurl,
+					success: function (data) {
+						if(data){							
+							$('#project').empty();		
+						//	$('#project').append( new Option("Select Project","") ); 				
+							$('#project').append(data);														
+							$('#project').val('');
+						}
+					},
+					error: function(x,y,z){
+						alert('An error has occurred:\n' + x + '\n' + y + '\n' + z);
+					}
+				});
+	
+}
+
 </script>
 
 <style>
@@ -745,6 +815,7 @@ function addCostcode()
 					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
 				<?php		}
 					   } ?>
+					   <option value="" onclick="addNewCostcode();">Add New Cost-Code</option>
 				  </select>
 			<?php } ?>	  
 		    </div>
@@ -784,7 +855,7 @@ function addCostcode()
 			      <input type="text" id="podate" name="podate" class="input small span2 daterequested"
 			      	value="<?php echo $this->validation->podate; ?>" data-date-format="mm/dd/yyyy">
 			      	&nbsp; &nbsp; &nbsp; &nbsp; 
-			     Bid Due Date: &nbsp; &nbsp; 
+			     Approval Due Date: &nbsp; &nbsp; 
 			      <input type="text" id="duedate" name="duedate" class="input small span2"
 			      	value="<?php echo $this->validation->duedate; ?>" data-date-format="mm/dd/yyyy">
 			      <input name="add" type="button" class="btn btn-primary" value="Save &amp; Continue" onclick="$('#mainform').submit();"/>
@@ -1290,3 +1361,51 @@ function addCostcode()
     </div>
     <!-- /.modal-dialog -->
   </div>
+  
+<div id="addnewcostcode" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+<form name="frmnewcostcode" id="frmnewcostcode" action="<?php echo site_url('admin/quote/addnewcostcode');?>" method="post" >
+   <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button aria-hidden="true" data-dismiss="modal" class="close" type="button" onclick="$('#addnewcostcode').hide();">x</button>
+          <i class="icon-credit-card icon-7x"></i>
+          <h4 style="text-align:center;" class="semi-bold" id="myModalLabel">
+          	Add New Cost Code          
+          </h4>         
+        </div>
+  <div class="modal-body" id="addnewcostcodebody">        
+    <div class="control-group">
+    <label class="control-label" style="width:40%">Cost Code <span style="color:red;font-weight:bold;"> * </span>:</label>   
+      <input type="text" id="code" name="code" class="span3" value="" required>   
+    </div>
+    
+    <div class="control-group">
+    <label class="control-label" style="width:40%">Select Project : </label>
+      <select id="project" name="project" onchange="changeparent(this.value);">
+      	<?php foreach($projects as $p){?>
+      	<option value="<?php echo $p->id;?>" <?php if(isset($parents)) { if($p->id==$parents){?>selected<?php } } ?>>
+      		<?php echo $p->title;?>
+      	</option>
+      	<?php }?>
+	  </select>    
+    </div>
+    
+    <div class="control-group">
+    <label class="control-label" style="width:40%">Budget: <span style="color:red;font-weight:bold;"> * </span></label>
+      $ <input type="text" required id="cost" name="cost" class="span2" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'');" value="">
+    </div>
+    
+    <div class="control-group">
+    <label class="control-label" style="width:40%">Select Parent: </label>
+      <select id="parent" name="parent" onchange="changeproject(this.value);">
+      	<option value="0">Top Parent</option>
+      	<?php  echo $parentcombooptions;?>
+	  </select>
+    </div>
+</div>          
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="submit">Save</button>
+        </div>
+     
+   </form>
+</div>
