@@ -171,8 +171,10 @@ class reportmodel extends Model
 
                 					$discountdate = $resultinvoicecycle->discountdate;
                 					if(@$discountdate){
-
-                						if ($now < strtotime($discountdate)) {
+                						$exploded = explode("-",@$sepdate->datedue);
+                						$exploded[2] = $discountdate;
+                						$discountdt = implode("-",$exploded);
+                						if ($now < strtotime($discountdt)) {                						
                 							$sepdate->discount_percent = $resultinvoicecycle->discount_percent;
                 						}
                 					}

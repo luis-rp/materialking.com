@@ -580,7 +580,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     				$row->totalprice = round($row->totalprice + ($row->totalprice*$taxrate->taxrate/100),2);    				
     			}
     			$row->totalprice = "$ " . $row->totalprice;
-    			$row->status = strtoupper($awarded->status);
+    			$row->status = strtoupper(@$awarded->status);
     			$row->itemstatus = strtoupper($status);
                 //$row->status = strtoupper($awarded->status);
                 $row->postatus = strtoupper($status);
@@ -2471,7 +2471,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         $data['itemavgprice'] = $trendstring;
         $data['totalPoAmtstring'] = $totalPoAmtstring;
         $data['qtyonhand'] = @$item->qtyonhand;
-        $data['qtyonpo'] = @$item->qtyonpo;
+        $data['qtyonpo'] = (@$item->qtyonpo)?$item->qtyonpo:0;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;
         $data['favoriteslink'] = $favoriteslink;

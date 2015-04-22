@@ -773,8 +773,10 @@ class Quotemodel extends Model
 
         					$discountdate = $resultinvoicecycle->discountdate;
         					if(@$discountdate){
-        						
-        						if ($now < strtotime($discountdate)) {
+        						$exploded = explode("-",@$invoice->datedue);
+        						$exploded[2] = $discountdate;
+        						$discountdt = implode("-",$exploded);
+        						if ($now < strtotime($discountdt)) {        						
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
         						}
         					}
@@ -929,10 +931,13 @@ class Quotemodel extends Model
         				}else{
 
         					$discountdate = $resultinvoicecycle->discountdate;
-        					if(@$discountdate){        						
-        						if ($now < strtotime($discountdate)) {
+        					if(@$discountdate){    
+        						$exploded = explode("-",@$invoice->datedue);
+        						$exploded[2] = $discountdate;
+        						$discountdt = implode("-",$exploded);
+        						if ($now < strtotime($discountdt)) {        						
         							$invoice->discount_percent = $resultinvoicecycle->discount_percent;
-        							$invoice->discount_date = $resultinvoicecycle->discountdate;
+        							$invoice->discount_date = date('m/d/Y', strtotime($discountdt));
         						}
         					}
         				}

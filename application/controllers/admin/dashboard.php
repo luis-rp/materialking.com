@@ -567,11 +567,11 @@ class Dashboard extends CI_Controller
 		        $nc->totalcredit = '';
 		    }
 		  $query = " SELECT SUM(totalunpaid) as totalunpaid,company, purchasingadmin, datedue, paymentstatus, paymentdate ,SUM(received) as received,SUM(totalCommitted) as totalCommitted FROM( SELECT
-		    		 IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))	
+		    		IF(r.paymentstatus!='Paid', (IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))),0) 	
 		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF(IFNULL((ai.quantity-ai.received),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))) as totalCommitted 
 		    			FROM
-		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai
-						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$nc->id."'
+		    			".$this->db->dbprefix('awarditem')." ai left join ".$this->db->dbprefix('received')." r 
+						on r.awarditem=ai.id WHERE ai.company='".$nc->id."'
 						AND ai.purchasingadmin='$pa' GROUP BY ai.id) qry";
 		 //  die;
 		    $ncresult = $this->db->query($query)->row();
@@ -616,8 +616,10 @@ class Dashboard extends CI_Controller
 
                 					$discountdate = $resultinvoicecycle->discountdate;
                 					if(@$discountdate){
-
-                						if ($now < strtotime($discountdate)) {
+                						$exploded = explode("-",@$ncresult->datedue);                						
+                						$exploded[2] = $discountdate;
+                						$discountdt = implode("-",$exploded);
+                						if ($now < strtotime($discountdt)) {
                 							$ncresult->discount_percent = $resultinvoicecycle->discount_percent;
                 						}
                 					}
@@ -782,8 +784,10 @@ class Dashboard extends CI_Controller
 
         										$discountdate = $resultinvoicecycle->discountdate;
         										if(@$discountdate){
-
-        											if ($now < strtotime($discountdate)) {
+        											$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) {        											
         												$discount_percent = $resultinvoicecycle->discount_percent;
         											}
         										}

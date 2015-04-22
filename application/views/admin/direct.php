@@ -762,6 +762,23 @@ function changeproject(catid){
 	
 }
 
+function namevalidation(name,id)
+{
+   if(!(/^(?:[A-Z]+ )+[A-Z]+$/i.test(name))) 
+    	{ 
+    		alert("Name contains atleast First Name and Last Name. No special characters allowed."); 
+    		if(id==0)
+    		{
+    			var nameid="addsupplyusername";	
+    		}
+    		else
+    		{
+    			var nameid="addsupplyusername"+id;
+    		}   		
+    		document.getElementById(nameid).value = "";
+    		return false; 
+    	} 
+}
 </script>
 
 <style>
@@ -988,7 +1005,7 @@ function changeproject(catid){
                           
                         <div class="controls">
 					    	<label class="control-label" for="addsupplyusername">Contact Name</label>
-                            <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>"  value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->contact;?>" style="width:50%;">
+                            <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>"  value="<?php if($q->id == @$nccomp->quoteitemid) echo @$nccomp->contact;?>" style="width:50%;" onchange="namevalidation(this.value,<?php echo $q->id;?>);">
                         </div> 
                           
                        <div class="controls">
@@ -1006,7 +1023,7 @@ function changeproject(catid){
                			 
                		  <div class="controls">
 					       <label class="control-label" for="addsupplyusername">Contact Name</label>
-                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;">
+                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;" onchange="namevalidation(this.value,<?php echo $q->id;?>);">
                       </div> 
                			 
                		   <div class="controls">
@@ -1025,7 +1042,7 @@ function changeproject(catid){
                			 
                		  <div class="controls">
 					       <label class="control-label" for="addsupplyusername">Contact Name</label>
-                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;">
+                           <input type="text" name="addsupplyusername<?php echo $q->id;?>" id="addsupplyusername<?php echo $q->id;?>" style="width:50%;" onchange="namevalidation(this.value,<?php echo $q->id;?>);">
                       </div> 
                			 
                		  <div class="controls">
@@ -1130,7 +1147,7 @@ function changeproject(catid){
                               
                                  <div class="controls">
 					    	     <label class="control-label" for="addsupplyusername">Contact Name</label>
-                                 <input type="text" name="addsupplyusername" id="addsupplyusername" style="width:50%;">
+                                 <input type="text" name="addsupplyusername" id="addsupplyusername" style="width:50%;" onchange="namevalidation(this.value,0);">
                                   </div> 
                                   
                                  <div class="controls">

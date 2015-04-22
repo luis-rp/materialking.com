@@ -2698,7 +2698,7 @@ class Company extends CI_Controller {
 	            	$arr['term'] = $_POST['term'][$admin]; 	    
 	            //echo $_POST['discountdate'][$admin]; die;	 
 	            if($_POST['discountdate'][$admin])
-	            	$arr['discountdate'] = date('Y-m-d', strtotime($_POST['discountdate'][$admin])); 	     
+	            	$arr['discountdate'] = @$_POST['discountdate'][$admin]; 	     
 				
 	           // if($_POST['discount_percent'][$admin] == '21.00')
 				//echo "<pre>",print_r($arr); die;

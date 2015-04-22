@@ -79,8 +79,26 @@ function preloadoptions(fromid)
 									value="<?php echo @$admin->discount_percent;?>" />								
 								</td>
 								
-								<td><input  class="form-control daterequested" type="text" name="discountdate[<?php echo $admin->purchasingadmin;?>]" 
-									value="<?php echo (@$admin->discountdate=='0000-00-00'||@$admin->discountdate=='')?'':date('m/d/Y',strtotime(@$admin->discountdate));?>" data-date-format="mm/dd/yyyy" />									
+								<td><!-- <input  class="form-control daterequested" type="text" name="discountdate[<?php echo $admin->purchasingadmin;?>]" 
+									value="<?php echo (@$admin->discountdate=='0000-00-00'||@$admin->discountdate=='')?'':date('m/d/Y',strtotime(@$admin->discountdate));?>" data-date-format="mm/dd/yyyy" /> -->		
+								
+								<select id="" name="discountdate[<?php echo $admin->purchasingadmin;?>]"	class="form-control">
+									<option value="">Select</option>
+									<?php for($i=1;$i<=31;$i++) 
+										  { 
+										  	if(@$admin->discountdate == $i)
+										  	{
+										  		$selectDay = ' selected ';
+										  	}
+										  	else 
+										  	{
+										  		$selectDay = '';
+										  	}
+										  	?>
+										<option value="<?php echo $i;?>"  <?php echo $selectDay;?> ><?php echo $i;?></option>
+									<?php	} ?>
+									</select>
+															
 								</td>
 								
 								<td><input  class="form-control" type="text" name="penalty_percent[<?php echo $admin->purchasingadmin;?>]" 

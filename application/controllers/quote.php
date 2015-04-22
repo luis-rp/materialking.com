@@ -294,6 +294,8 @@ class Quote extends CI_Controller
 				$this->db->where('award',$awarded->id);
 				$this->db->where('company',$company->id);
 				$items = $this->db->get('awarditem')->result();
+				
+			
 				foreach($items as $i)
 				{
 					if($i->received < $i->quantity)
@@ -302,6 +304,8 @@ class Quote extends CI_Controller
 						$allawarded = false;
 					if($i->received > 0)
 						$noitemsgiven = false;
+						
+					$inv->totalvalue += $i->totalprice;	
 				}
 				
 				if(!$noitemsgiven)
@@ -354,12 +358,14 @@ class Quote extends CI_Controller
 				$inv->status = 'Processing';
 				$inv->progress = 40;
 				$inv->mark = "progress-bar-warning";
+				$inv->totalvalue = 0;	
 			}
 			else
 			{
 				$inv->status = 'New';
 				$inv->progress = 20;
 				$inv->mark = "progress-bar-danger";
+				$inv->totalvalue = 0;	
 			}
 			
 			if(!@$_POST['searchstatus'])

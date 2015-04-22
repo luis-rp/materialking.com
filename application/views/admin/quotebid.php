@@ -977,6 +977,17 @@ function cancelitem()
 	
 	$("#newitemrow").css('display','none');
 }
+
+
+function namevalidation(name)
+{
+   if(!(/^(?:[A-Z]+ )+[A-Z]+$/i.test(name))) 
+    	{ 
+    		alert("Name contains atleast First Name and Last Name. No special characters allowed."); 
+    		document.getElementById("supplyusername").value = "";
+    		return false; 
+    	} 
+}
 </script>
                      <hr/>
 		  <?php if($this->validation->id && !$awarded){?>
@@ -1280,7 +1291,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
     					    	<?php if(!$companylist){?>
     					    	No suppliers in your network.
     					    	<br/>
-    					    	<a href="<?php echo site_url('site/suppliers')?>">
+    					    	<a href="<?php echo site_url('site/suppliers')?>" target="_blank">
     					    		Find Suppliers
     					    	</a>
     					    	<?php }?>
@@ -1313,7 +1324,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                               
                                  <div class="controls">
 					    	     <label class="control-label" for="supplyusername">Contact Name</label>
-                                 <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;">
+                                <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;" onchange="namevalidation(this.value);">
                                   </div> 
                                   
                                  <div class="controls">
@@ -1339,7 +1350,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                               
                                  <div class="controls">
 					    	     <label class="control-label" for="supplyusername">Contact Name</label>
-                                 <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;">
+                                <input type="text" name="supplyusername[]" id="supplyusername" style="width:80%;" onchange="namevalidation(this.value);">
                                   </div> 
                                   
                                  <div class="controls">
@@ -1376,7 +1387,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 					     <?php  }?>
 					     
 					    
-					    <label class="control-label"><strong>Request quote to Non Network Existing Users</strong></label>
+					    <label class="control-label"><strong>Request a quote from other local suppliers. Click here to reveal local suppliers near you.</strong></label>
 					      <hr/>
                              <div>
                                   Local results Only&nbsp;&nbsp;<input type="checkbox" name="localresult" id="localresult" onchange="toggleradius();">

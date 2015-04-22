@@ -11,6 +11,16 @@
        return false;
     }
 }
+
+function namevalidation(name)
+{
+   if(!(/^(?:[A-Z]+ )+[A-Z]+$/i.test(name))) 
+    	{ 
+    		alert("Name contains atleast First Name and Last Name. No special characters allowed."); 
+    		document.getElementById("contact").value = "";
+    		return false; 
+    	} 
+}
 </script>
 
 <div class="container">
@@ -42,7 +52,7 @@
                       
                        <div class="col-md-6 col-sm-6">
                        <label class="form-label text-success semi-bold general">Contact Name *</label>
-                       <input name="contact" id="contact" type="text" class="form-control" required>
+                       <input name="contact" id="contact" type="text" class="form-control" required onchange="namevalidation(this.value);">
                       </div>
                       
                      

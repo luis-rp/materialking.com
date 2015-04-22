@@ -862,13 +862,13 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 							    		$itemName = (@$q->companyitem->itemname) ? (@$q->companyitem->itemname) : (@$q->itemname);
 							    		
 							    		$itemCode1 = '"'.htmlentities($itemCode).'"';
-							    		$itemName1 = '"'.htmlentities($itemName).'"';
+							    		//$itemName1 = '"'.htmlentities($itemName).'"';
 																	    		
 							    		if(@$q->priceset == 0)
 							    		{ ?><a href="javascript:void(0)" 
 							    			onclick="updateitem(<?php echo html_escape("'$q->id', '$q->itemid',
 							    		".$itemCode1.",
-							    		".$itemName1.",
+							    		'".html_escape($itemName)."',
 							    		'".htmlentities(@$q->companyitem->ea)."',
 							    		'".html_escape(@$q->orgitem->itemname)."'");?>,'<?php echo $imgName;?>')">
 							    			*Set List Price

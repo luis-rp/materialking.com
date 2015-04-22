@@ -199,6 +199,81 @@ class costcode_model extends Model
 		return $temp;
 	}
 	
+	function listcategorylevel($projectid='',$parent_id = 0, $level = 0, $selected = '')
+	{
+	//	echo '<pre>',print_r($this->session->userdata('managedprojectdetails'));
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$pid=$this->session->userdata('managedprojectdetails')->id;
+		}
+		static $temp = '';
+		static $lvl = "";
+		# retrieve all children of $parent
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
+		$where = "";
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$where = 'and project = '.@$pid;			
+		}
+		else 
+		{
+			if($projectid=="" || $projectid=='0')
+			{ //echo "elseif-";
+				$where = "";
+			}
+			else 
+			{ //echo "elseelse-";
+				$where = 'and project = '.$projectid;
+			}
+			
+		}
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
+		/*
+		$where = "";	
+		if($projectid!="")
+		$where = 'and project = '.$projectid;*/
+		
+		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' {$where} ORDER BY code ASC";
+		
+		if($this->session->userdata('usertype_id')>1)
+		{
+			$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')." 
+			WHERE parent = '{$parent_id}' AND purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where} 
+			ORDER BY code ASC";
+		}
+		
+  		$result = $this->db->query($sql)->result();			
+		# display each child
+		if($result)	
+		foreach($result as $row)
+		{
+			$row = (array)$row;
+			if($row['parent'] == 0){				
+				$opt_style = "style = \"BACKGROUND-COLOR: #EEEEEE;COLOR: #136C99;FONT-SIZE: 11px;FONT-WEIGHT: bold;\"";
+			}else{
+				$opt_style = "";
+			}
+			if($row['id'] == $selected){
+				$is_selected = 'selected="selected"';
+			}else{
+				$is_selected = "";
+			}
+			$lvl[$row['id']] = $level;
+			$separator = str_repeat("&raquo;&nbsp;", $level);
+			$temp .= "\t<option value=\"{$row['id']}\" {$opt_style} {$is_selected}> {$separator} {$row['code']}</option>\r\n";						
+			if($projectid!="")
+			$this->listcategorylevel($projectid,$row['id'], $level + 1, $selected);	
+			else 
+			$this->listcategorylevel('',$row['id'], $level + 1, $selected);		
+		} 
+		return $lvl;
+	}
 	
 	function listHeirarchicalComboPro($catid='',$parent_id = 0, $level = 0, $selected = ''){
 		static $temp = '';

@@ -101,6 +101,7 @@
                                             <tr>
                                                 <th style="width:10%">PO#</th>
                                                 <th style="width:10%">Quote Ref#</th>
+                                                <th style="width:10%">Total Value</th>
                                                 <th style="width:10%">Date Received</th>
                                                 <th style="width:10%">Date Sent</th>
                                                 <th style="width:10%">Status</th>
@@ -129,6 +130,7 @@
                                                 <?php }?>
                                                 </td>
                                                 <td class="v-align-middle"><?php echo $inv->quotenum;?></td>
+                                                <td class="v-align-middle">$ <?php echo @$inv->totalvalue;?></td>
                                                 <td class="v-align-middle"><?php echo date('m/d/Y',strtotime($inv->senton));?></td>
                                                 <td class="v-align-middle"><?php if(isset($inv->submitdate)) echo date('m/d/Y',strtotime($inv->submitdate));?></td>
                                                 <td class="v-align-middle"><?php echo $inv->status;?></td>
@@ -175,9 +177,12 @@
                                                         
 		                                        if($inv->status == 'New'||$inv->status == 'Processing'){?>
                                                 		<?php if($inv->quotedetails->potype=='Bid'){?>
-                                                    	<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
+                                                    	
+                                                    	<?php if($inv->status != 'New'){ ?>
+                                                    		<a href="<?php echo site_url('quote/invitation/'.$inv->invitation);?>">
     										    			<span class="label label-success">CHECK YOUR SCORE</span>
     										    		</a>
+    										    		<?php } ?>
     										    		<?php }elseif($inv->quotedetails->potype=='Direct'){?>
                                                     	<a href="<?php echo site_url('quote/direct/'.$inv->invitation);?>">    			
     										    		</a>

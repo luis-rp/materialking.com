@@ -7232,9 +7232,9 @@ $loaderEmail = new My_Loader();
             foreach ($invoice['items'] as $invoiceitem) {
                 $totalprice += $invoiceitem['ea'] * $invoiceitem['quantity'];   
                if(isset($invoiceitem['item_img']) && $invoiceitem['item_img']!= "" && file_exists("./uploads/item/".$invoiceitem['item_img'])) { 
-             		$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='75' width='75' src='". site_url('uploads/item/'.$invoiceitem['item_img'])."' alt='".$invoiceitem['item_img']."'>";
+             		$img_name = '<img style="max-height: 120px;max-width: 100px; padding: 5px;" height="75" width="75" src="'. site_url('uploads/item/'.$invoiceitem['item_img']).'" alt="'.$invoiceitem['item_img'].'">';
              } else { 
-             		$img_name = "<img style='max-height: 120px;max-width: 100px;  padding: 5px;' height='75' width='75' src='".site_url('uploads/item/big.png')."'>";
+             		$img_name = '<img style="max-height: 120px;max-width: 100px;  padding: 5px;" height="75" width="75" src="'.site_url('uploads/item/big.png').'">';
              } 	
                 
                 $pdfhtml.='<tr nobr="true">
@@ -7332,7 +7332,7 @@ $loaderEmail = new My_Loader();
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
-            //$this->email->to('tushar1717@gmail.com');
+            $this->email->to('tushar1717@gmail.com');
             $this->email->subject('Invoice for PO#:' . $quote->ponum);           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");

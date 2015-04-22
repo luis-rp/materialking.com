@@ -121,6 +121,7 @@ class adminmodel extends Model
 		$this->db->insert('systemusers', array('parent_id'=>$this->session->userdata('purchasingadmin')));
 		$id = $this->db->insert_id ();
 		$options['id']=$id;	
+		$options['status']=1;
 		$this->db->insert ( 'users', $options );
 		
 		/*$insert = array();

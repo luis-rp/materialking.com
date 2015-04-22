@@ -324,6 +324,7 @@ class costcode extends CI_Controller {
         $count = count($costcodes);
         $items = array();
         if ($count >= 1) {
+        	$level = $this->costcode_model->listcategorylevel('0', 0, 0,@$_POST['parentfilter']);
             foreach ($costcodes as $costcode) {
             	
             	$wherecode = "";
@@ -388,8 +389,10 @@ class costcode extends CI_Controller {
 
         										$discountdate = $resultinvoicecycle->discountdate;
         										if(@$discountdate){
-
-        											if ($now < strtotime($discountdate)) {
+													$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) {         											
         												$discount_percent = $resultinvoicecycle->discount_percent;
         											}
         										}
@@ -477,18 +480,14 @@ class costcode extends CI_Controller {
                     $costcode->status = 'Bad';
                     $costcode->status = "<img src='".site_url('templates/admin/images/bad.png')."'/>";
                 }
-                $parentId = $costcode->id;
-             //   echo $parentId.'===='. $costcode->id.'-->'.$costcode->parent. '<br>';
-              //  $appendStr = '';
-                if($parentId == $costcode->id && $costcode->parent != 0)
-                {
-                	$appendStr .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-                	$costcode->code = $appendStr.$costcode->code;
-                }
-                
+               
+            	$appendStr = str_repeat('&raquo;&nbsp;',$level[$costcode->id]);
+            	$costcode->code = $appendStr.$costcode->code;
+             
+                $costcode->level = $level[$costcode->id];
                 $items[] = $costcode;
-            }
-
+            } 
+			$this->aasort($items, 'level');	
             $data['items'] = $items;
             $data['jsfile'] = 'costcodejs.php';
         }
@@ -522,7 +521,24 @@ class costcode extends CI_Controller {
         $this->load->view('admin/costcodelist', $data);
     }
 
+	function aasort (&$array, $key)
+	{
+	    $sorter=array();
+	    $ret=array();
+	    reset($array);
+	    foreach ($array as $ii => $va)
+	    {
+	        $sorter[$ii]=$va->$key;
+	    }
+	    $sortflag = 14;//SORT_NATURAL ^ SORT_FLAG_CASE;
 
+	    asort($sorter, $sortflag );
+	    foreach ($sorter as $ii => $va)
+	    {
+	        $ret[$ii]=$array[$ii];
+	    }
+	    $array=$ret;
+	}
 
     function export($costcode)
     {
@@ -807,8 +823,10 @@ class costcode extends CI_Controller {
 
         										$discountdate = $resultinvoicecycle->discountdate;
         										if(@$discountdate){
-
-        											if ($now < strtotime($discountdate)) {
+													$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) {         											
         												$discount_percent = $resultinvoicecycle->discount_percent;
         											}
         										}
@@ -954,8 +972,10 @@ class costcode extends CI_Controller {
 
         										$discountdate = $resultinvoicecycle->discountdate;
         										if(@$discountdate){
-
-        											if ($now < strtotime($discountdate)) {
+													$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) { 	        											
         												$discount_percent = $resultinvoicecycle->discount_percent;
         											}
         										}

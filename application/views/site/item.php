@@ -251,7 +251,8 @@ $( document ).tooltip();
 		$("#qtypricebox").html('');
 		$("#itemnamebox").html('');
        	$("#hiddenprice").val(price);
-       	$("#ftqtypricebox").html("Price "+unit+" : $"+ price);
+       	$("#ftqtypricebox").html("Price "+unit+" :");
+       	$("#ftqtypriceunitbox").html("$"+ price);
         $("#cartprice").modal();
         var selected = "";
         $("#itemnamebox").html(itemcode+"  /  "+itemname);
@@ -430,7 +431,14 @@ $( document ).tooltip();
     			if(data){
 
     				if(data!="norecord")
-    				$("#hiddenprice").val(data);
+    				{
+    					$("#hiddenprice").val(data);
+    					$("#ftqtypriceunitbox").html("$"+ data);
+    				}
+    				else
+    				{
+    					$("#ftqtypriceunitbox").html("$"+ price);
+    				}
     			}
     		});
     	//}
@@ -1673,6 +1681,7 @@ var amzn_assoc_height = "90";
 
         <div id="cartsavediv"></div>
 		 <div id="ftqtypricebox"></div>	
+		 <span id="ftqtypriceunitbox"></span>	
         </div>
         <div class="modal-footer">
           <input type="hidden" name="hiddenprice" id="hiddenprice" />

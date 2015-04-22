@@ -218,7 +218,7 @@ class itemcode_model extends Model {
 	      }
 	      
 	        $peis="";                   
-	     	$qry =  $this->db->query("select * from ". $this->db->dbprefix('category') ." where parent_id IN('{$parent_cat_id}')");
+	     	$qry =  $this->db->query("select * from ". $this->db->dbprefix('category') ." where parent_id IN('{$parent_cat_id}') ORDER BY sequenceno");
 	     	$res = $qry->result();
 	        $selected = '';
 	        
@@ -400,6 +400,7 @@ class itemcode_model extends Model {
                 	$wherecode = "";	
                 	$whereproject = "";
                 	$item->qtyonhand = 0;
+                	$item->qtyonpo = 0;
                 	if(@$this->session->userdata('managedprojectdetails')->id){
             			$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
             			$whereproject .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;
@@ -468,8 +469,10 @@ class itemcode_model extends Model {
 
         										$discountdate = $resultinvoicecycle->discountdate;
         										if(@$discountdate){
-
-        											if ($now < strtotime($discountdate)) {
+        											$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) {        											
         												$discount_percent = $resultinvoicecycle->discount_percent;
         											}
         										}

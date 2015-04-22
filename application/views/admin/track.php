@@ -871,7 +871,8 @@ function closeorder()
 								
                                 <?php if ($quote->orderclose==0) { ?>
                                     <td><input type="text" <?php // if ($q->quantity - $q->received == 0) echo 'readonly'; ?> class="span10 receivedqty"
-                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/>
+                                    	name="received<?php echo $q->id; ?>" id="received<?php echo $q->id; ?>" value="" onkeyup="this.value=this.value.replace(/[^0-9]/g,'');"/><br>&nbsp;&nbsp;&nbsp;
+                                    of&nbsp;<?php if(($q->received) < 0) echo $q->quantity; else echo $q->quantity - $q->received;?>&nbsp;DUE
                                     	<input type="hidden" name="comments" id="comments" value=""/>                                    	
                                     </td>
                                     
