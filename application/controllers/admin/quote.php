@@ -43,6 +43,10 @@ class quote extends CI_Controller
         $this->load->model('admin/company_model');
         $this->load->model('admin/itemcode_model');
         $this->load = new My_Loader();
+        
+        $receiveqty = $this->quote_model->gettotalreceivedshipqty();
+		$this->session->set_userdata('receiveqty',$receiveqty);  
+        
         $this->load->template('../../templates/admin/template', $data);
     }
 
@@ -7332,7 +7336,7 @@ $loaderEmail = new My_Loader();
             $this->email->clear(true);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($toemail);
-            $this->email->to('tushar1717@gmail.com');
+            //$this->email->to('tushar1717@gmail.com');
             $this->email->subject('Invoice for PO#:' . $quote->ponum);           
             $this->email->message($send_body);
             $this->email->set_mailtype("html");

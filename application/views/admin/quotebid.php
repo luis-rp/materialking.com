@@ -680,7 +680,12 @@ function showselectimage(){
 function addCostcode()
 {
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
-   
+   if(costcodeprefix == "Add New Cost-Code")
+   {
+   	$("#addnewcostcode").css('display','block');
+   }
+   else
+   {
    if($( "#costcodeprefix option:selected" ).val() !='')
    {
    		$("#ponum").val(costcodeprefix);
@@ -689,12 +694,13 @@ function addCostcode()
    {
    		$("#ponum").val('');
    }
+   }
 }
 
-function addNewCostcode()
+/*function addNewCostcode()
 {
 	$("#addnewcostcode").css('display','block');
-}
+}*/
 
 function changeparent(projectid){
 	$. ajax ({
@@ -784,7 +790,7 @@ function changeproject(catid){
 					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
 				<?php		}
 					   } ?>
-					   <option value="" onclick="addNewCostcode();">Add New Cost-Code</option>
+					   <option  value=" ">Add New Cost-Code</option>
 				  </select>
 			<?php } ?>	  
 		    </div>

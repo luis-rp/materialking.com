@@ -37,6 +37,10 @@ class costcode extends CI_Controller {
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data ['title'] = "Administrator";
+        
+        $receiveqty = $this->quote_model->gettotalreceivedshipqty();
+		$this->session->set_userdata('receiveqty',$receiveqty);  
+        
         $this->load = new My_Loader();
         $this->load->template('../../templates/admin/template', $data);
     }
@@ -290,7 +294,9 @@ class costcode extends CI_Controller {
         if(@$_POST['projectfilter'] == "viewall")
         $_POST['projectfilter'] = "";
         
-        $costcodes = $this->costcode_model->get_costcodes($this->limit, $offset);
+        $parent = 0;
+        
+        $costcodes = $this->costcode_model->get_costcodes($this->limit, $offset,$parent);
 
         $this->load->library('pagination');
         $config ['base_url'] = site_url('admin/costcode/index');
@@ -324,7 +330,7 @@ class costcode extends CI_Controller {
         $count = count($costcodes);
         $items = array();
         if ($count >= 1) {
-        	$level = $this->costcode_model->listcategorylevel('0', 0, 0,@$_POST['parentfilter']);
+        //	$level = $this->costcode_model->listcategorylevel('0', 0, 0,@$_POST['parentfilter']);
             foreach ($costcodes as $costcode) {
             	
             	$wherecode = "";
@@ -481,20 +487,35 @@ class costcode extends CI_Controller {
                     $costcode->status = "<img src='".site_url('templates/admin/images/bad.png')."'/>";
                 }
                
-            	$appendStr = str_repeat('&raquo;&nbsp;',$level[$costcode->id]);
-            	$costcode->code = $appendStr.$costcode->code;
-             
-                $costcode->level = $level[$costcode->id];
+               $csql ="SELECT code,id,parent
+						FROM
+						".$this->db->dbprefix('costcode')." 
+						WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'  AND parent = '{$costcode->id}'";
+               
+               $qry = $this->db->query($csql);
+               $res = $qry->result();
+              
+               if(count($res) > 0)
+               {
+               	 	$costcode->code = $costcode->code .'&nbsp;&nbsp;&nbsp;&nbsp;<a  id="isexpand_'.$costcode->id.'" href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
+               }
+               else 
+               {
+	            	//$appendStr = str_repeat('&raquo;&nbsp;',$level[$costcode->id]);
+	            	$costcode->code = $costcode->code;
+               }
+              //  $costcode->level = $level[$costcode->id];
                 $items[] = $costcode;
             } 
-			$this->aasort($items, 'level');	
+		//	$this->aasort($items, 'level');	
             $data['items'] = $items;
             $data['jsfile'] = 'costcodejs.php';
-        }
+        } 
         else {
             $data['items'] = array();
             $this->data['message'] = 'No Records';
         }
+       
         if(isset($_POST['parentfilter']) && $_POST['parentfilter']=="")
         {
         	$_POST['parentfilter']=0;
@@ -521,6 +542,253 @@ class costcode extends CI_Controller {
         $this->load->view('admin/costcodelist', $data);
     }
 
+    function getchildcostcode()
+    {
+    	$str = '';
+    	$isprogressBar = '';
+    	$isestimate = '';
+    	$totalspend = '';
+    	$imgName = '';
+    	$uri_segment = 4;
+        $offset = $this->uri->segment($uri_segment);
+    	
+    	$costcodes = $this->costcode_model->get_costcodes($this->limit, $offset,$_POST['parent']);
+    	
+    	if ($this->session->userdata('usertype_id') > 1)
+        $where = " and s.purchasingadmin = ".$this->session->userdata('purchasingadmin');
+        else
+        $where = "";
+
+        $cquery = "SELECT taxrate FROM ".$this->db->dbprefix('settings')." s WHERE 1=1".$where." ";
+        $taxrate = $this->db->query($cquery)->row();
+        if(isset($taxrate) && $taxrate!="")
+        {
+        $data['taxrate'] = $taxrate;
+        }
+        else 
+        {
+         $data['taxrate'] = "";	
+        }
+
+        $count = count($costcodes);
+        $items = array();
+        if ($count >= 1) {
+        //	$level = $this->costcode_model->listcategorylevel('0', 0, 0,@$_POST['parentfilter']);
+            foreach ($costcodes as $costcode) {
+            	
+            	$wherecode = "";
+            	if(@$this->session->userdata('managedprojectdetails')->id){
+            		$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+				}
+            	
+				if($this->session->userdata('usertype_id')>1)
+						$wherecode .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
+				
+            	// Code for getting discount/Penalty per invoice
+					$query = "SELECT invoicenum, ai.company, ai.purchasingadmin, ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice , r.paymentdate, r.datedue, r.paymentstatus 
+			 FROM 
+				   " . $this->db->dbprefix('received') . " r,
+				   " . $this->db->dbprefix('awarditem') . " ai,				   
+				   " . $this->db->dbprefix('award') . " a,
+				   " . $this->db->dbprefix('quote') . " q WHERE r.awarditem=ai.id AND ai.award=a.id AND a.quote=q.id {$wherecode} AND ai.costcode='".$costcode->code."' GROUP by invoicenum";		
+					
+					$invoicequery = $this->db->query($query);
+        			$itemsinv = $invoicequery->result();
+                    
+        			if($itemsinv){
+
+        				foreach ($itemsinv as $invoice) {
+
+
+        					
+        					if(@$invoice->company && @$invoice->purchasingadmin){
+
+        						$sql = "SELECT duedate, term, penalty_percent, discount_percent, discountdate FROM " .$this->db->dbprefix('invoice_cycle') . " where company='" . $invoice->company . "'
+				and purchasingadmin = '". $invoice->purchasingadmin ."'";
+        						//echo $sql;
+        						$resultinvoicecycle = $this->db->query($sql)->row();
+
+        						$penalty_percent = 0;
+        						$penaltycount = 0;
+        						$discount_percent =0;
+
+        						if($resultinvoicecycle){
+
+        							if((@$resultinvoicecycle->penalty_percent || @$resultinvoicecycle->discount_percent) ){
+
+        								if(@$invoice->datedue){
+
+        									if(@$invoice->paymentstatus == "Paid" && @$invoice->paymentdate){
+        										$oDate = $invoice->paymentdate;
+        										$now = strtotime($invoice->paymentdate);
+        									}else {
+        										$oDate = date('Y-m-d');
+        										$now = time();
+        									}
+
+        									$d1 = strtotime($invoice->datedue);
+        									$d2 = strtotime($oDate);
+        									$datediff =  (date('Y', $d2) - date('Y', $d1))*12 + (date('m', $d2) - date('m', $d1));
+        									if(is_int($datediff) && $datediff > 0) {
+
+        										$penalty_percent = $resultinvoicecycle->penalty_percent;
+        										$penaltycount = $datediff;
+
+        									}else{
+
+        										$discountdate = $resultinvoicecycle->discountdate;
+        										if(@$discountdate){
+													$exploded = explode("-",@$invoice->datedue);
+        											$exploded[2] = $discountdate;
+        											$discountdt = implode("-",$exploded);
+        											if ($now < strtotime($discountdt)) {         											
+        												$discount_percent = $resultinvoicecycle->discount_percent;
+        											}
+        										}
+        									}
+        									
+        									
+        									if(@$discount_percent){
+
+        										$costcode->totalspent = $costcode->totalspent - ($invoice->totalprice*$discount_percent/100);
+        									}
+
+        									if(@$penalty_percent){
+
+        										$costcode->totalspent = $costcode->totalspent + (($invoice->totalprice*$penalty_percent/100)*@$penaltycount);
+        									}
+        									
+        								}
+
+        							}
+        						}
+
+        					}
+
+        				}
+
+        			}      			
+        			// Code for getting discount/Penalty Ends
+        			 
+            	
+            	
+                $costcode->actions = anchor('admin/costcode/update/' . $costcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update'))
+                        . ' ' .
+                        anchor('admin/costcode/delete/' . $costcode->id, '<span class="icon-2x icon-trash"></span>', array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"))
+                ;
+                if ($costcode->totalspent != '-' && $costcode->cost > 0)
+                {
+                    if ($costcode->totalspent / $costcode->cost > 1)
+                    {
+                        //$per = '100%';
+                        $per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
+                        $costcode->budget = '<div class="progress progress-red progress-striped active">
+									      <div style="width: 100%;" class="bar">' . $per . '</div>
+									     </div>';
+                    }
+                    else
+                    {
+                        $per = number_format(( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100)) / $costcode->cost) * 100, 2) . '%';
+                        $costcode->budget = '<div class="progress progress-blue progress-striped active">
+									      <div style="width: ' . $per . ';" class="bar">' . $per . '</div>
+									     </div>';
+                    }
+                }
+                else
+                {
+                    $per = 0;
+                    $costcode->budget = '';
+                }
+                $costcode->budgetper = $per;
+                $costcode->cost = "$ " . $costcode->cost;
+                if ($costcode->totalspent != '-') {
+                	$costcode->code = trim($costcode->code);
+                    $costcode->totalspent = $costcode->totalspent;
+                    $costcode->actions .= ' ' .
+                            anchor('admin/costcode/items/' . str_replace('%2F', '/', urlencode(urlencode($costcode->code))).'/'. str_replace('%2F', '/', urlencode(urlencode($costcode->project))), '<span class="icon-2x icon-search"></span>', array('class' => 'view'))
+                    ;
+                }
+                $costcode->manualprogress = $costcode->manualprogress ? $costcode->manualprogress : 0;
+                //$costcode->manualprogress = number_format($costcode->manualprogress,2);
+                $costcode->manualprogressbar = "<input id='progress" . $costcode->id . "'  class='slider1' style='width:200px;'
+											 data-slider-id='progress" . $costcode->id . "' type='text'
+											 data-slider-min='0' value='" . $costcode->manualprogress . "'
+											 data-slider-max='100' data-slider-step='1'
+											 data-slider-value='" . $costcode->manualprogress . "'/>&nbsp;&nbsp;
+											 <span id='progresslabel" . $costcode->id . "'>" . $costcode->manualprogress . "%</span>";
+                $per = str_replace('%', '', $per);
+                if ($per <= $costcode->manualprogress || $costcode->estimate==1)
+                {
+                	
+                    $costcode->status = 'Good';
+                    $costcode->status = "<img src='".site_url('templates/admin/images/ok.gif')."'/>";
+                	
+                }
+                else
+                {
+                    $costcode->status = 'Bad';
+                    $costcode->status = "<img src='".site_url('templates/admin/images/bad.png')."'/>";
+                }
+               
+               $csql ="SELECT code,id,parent
+						FROM
+						".$this->db->dbprefix('costcode')." 
+						WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'  AND parent = '{$costcode->id}'";
+               
+               $qry = $this->db->query($csql);
+               $res = $qry->result();
+              
+               if(count($res) > 0)
+               {
+               	 	$costcode->code = '&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code .'&nbsp;&nbsp;&nbsp;&nbsp;<a id="isexpand_'.$costcode->id.'"  href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
+               }
+               else 
+               {
+	            	$costcode->code = '&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code;
+               }               
+          
+          	 if (isset($costcode->costcode_image) && $costcode->costcode_image != '' && file_exists('./uploads/costcodeimages/' . $costcode->costcode_image)) 
+			 { 
+			 	 $imgName = '<img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src="'.site_url('uploads/costcodeimages/'.$costcode->costcode_image).'">'; 
+			 } 
+			$shipping = 0;
+			if(isset($costcode->shipping)) 
+			{
+				$shipping = $costcode->shipping; 
+				$totalspend =  "$ ".round( ($costcode->totalspent + $costcode->totalspent*($taxrate->taxrate/100) + $shipping),2 );
+			}
+			if(@$costcode->estimate ==1) { $isestimate = "yes"; } else { $isestimate = "no"; }
+			if(@$costcode->estimate!=1) { $isprogressBar =  $costcode->manualprogressbar; } else { $isprogressBar = ""; }
+			
+				$str .='<tr id="costcode_'.$costcode->id.'" class="clscostcode_'.$costcode->parent.'">
+						<input type="hidden" id="budget'.$costcode->id.'" value="'.$costcode->budgetper.'"/>
+						<td>'.$costcode->code.'</td>
+						<td>'.$imgName.'</td>
+						<td>'.$costcode->cost.'</td>
+						<td><span class="total-spent">'.$totalspend.'</span></td>
+		              	<td id="lastpbar">'.$costcode->budget.'</td>
+		              	<td id="progress'.$costcode->id.'">              	 	
+			              	<span class="task-progress" style="display: none;">            	
+			              	'.$costcode->manualprogress.'
+			              	</span>
+			              	<span class="turnoff-estcost" style="display: none;">            	
+			              	'.$isestimate.'
+			              	</span>
+			              	'.$isprogressBar.'
+			            </td>
+		              	<td id="status'.$costcode->id.'">'.$costcode->status.'</td>
+		              	<td>'.$costcode->actions.'</td>
+						</tr>';		 
+            } 
+        } 
+        else
+        {
+            $str = '';
+        }
+       
+    	echo $str; die;
+    }
+    
 	function aasort (&$array, $key)
 	{
 	    $sorter=array();
@@ -1140,10 +1408,10 @@ class costcode extends CI_Controller {
         
         if($this->session->userdata('managedprojectdetails')) 
         {
-        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' AND project='".$mp->id."'";         }
+        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' AND project='".$mp->id."' ORDER BY code";         }
         else 
         {
-        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+        $sql ="SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."' ORDER BY code";
         }
         $data['costcodesdata'] = $this->db->query ($sql)->result();
         

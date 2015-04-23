@@ -18,13 +18,14 @@
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
 
-  <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="<?php echo base_url();?>templates/admin/js/bootstrap-slider.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/data.js"></script>
 <script src="http://code.highcharts.com/modules/drilldown.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/slider.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
 <?php echo '<script type="text/javascript">var updateprogressurl = "'.site_url('admin/costcode/updateprogress/').'";</script>';?>
+<?php echo '<script type="text/javascript">var getchildcostcodeurl = "'.site_url('admin/costcode/getchildcostcode/').'";</script>';?>
 
 <script>
 $(document).ready(function(){
@@ -99,6 +100,68 @@ function endTour(){
 	 $("#tourcontrols").remove();
 	 tour6.end();
 		}
+		
+function getchildcostcode(obj,parentid,costcodeid)
+{	
+	if($("#isexpand_"+costcodeid).text() == 'Expand')
+	{
+		$.ajax({
+		      type:"post",
+		      data: 'parent='+parentid,
+		      url: getchildcostcodeurl
+		    }).done(function(data)
+		    {
+			   //$('#costcode_'+costcodeid).append(data);
+			   
+			   $('#costcode_'+costcodeid).eq(0).after(data);
+			   $('.slider1').slider({value:0});
+			   $(".slider1").on('slideStop', function(slideEvt) {
+					if(confirm('Do you want to change the value?'))
+					{
+						id=this.id;
+						id=id.replace('progress','');
+						v=slideEvt.value;
+						d = "id="+id+"&manualprogress="+v;
+						//alert(d);
+						$.ajax({
+						      type:"post",
+						      data: d,
+						      url: updateprogressurl
+						    }).done(function(data){
+							   $("#progresslabel"+id).html(v+'%');
+							   var b = $("#budget"+id).val().replace('%','');
+							   $("#progress"+id +" .tooltip-inner").text(v);
+			
+							   if(b<=v)
+								   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/ok.gif');?>'/>");
+							   else
+								   $("#status"+id).html("<img src='<?php echo site_url('templates/admin/images/bad.png');?>'/>");
+							   location.reload();   
+						    });
+					}
+					else
+					{
+						var v = $("#progresslabel"+id).html().replace('%','');
+						//$("#progress"+id).attr('data-slider-value',v);
+						$("#progress"+id).val(v);
+						$("#progress"+id +" .tooltip-inner").text(v);
+					}
+					return false;
+				});
+		    });
+		    
+		    
+		 $("#isexpand_"+costcodeid).text('Collapse');  
+	}
+	else
+	{
+		//if($("#isexpand_"+costcodeid).text() == 'Collapse')
+		$(".clscostcode_"+parentid).hide();
+		$("#isexpand_"+costcodeid).text('Expand');  
+	}
+		
+	
+}
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -160,7 +223,7 @@ function endTour(){
 				
               	?>
               <input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
-              <tr>
+              <tr id='costcode_<?php echo $item->id;?>' class="clscostcode_<?php echo $item->parent;?>">
               	<td><span class='cost-code'><?php echo $item->code?></span></td>
               	<td><?php if($imgName != '') { ?> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'> <?php } ?></td>
               	<td><?php echo $item->cost?></td>

@@ -7,24 +7,39 @@ class costcode_model extends Model
 	}
 	
 
- 	function get_costcodes($limit=0,$offset=0)
+ 	function get_costcodes($limit=0,$offset=0,$parent = '')
  	{		
+ 		$whr = '';
 	    if ($offset == 0) {
 			$newoffset = 0;
 		} else {
 			$newoffset = $offset;
 		}
 		
+		if(!@$_POST['parentfilter'])
+		{
+			if($parent == 0)
+			{
+				$whr .= ' AND parent = "'.$parent.'"';
+			}
+			else 
+			{
+				
+				$whr .= ' AND parent = "'.$parent.'"';
+			}
+		}
+				
 		$sql ="SELECT *
 		FROM
-		".$this->db->dbprefix('costcode')." WHERE 1=1 ";
+		".$this->db->dbprefix('costcode')." WHERE 1=1 {$whr}";
+		
 		
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT *
 			FROM
 			".$this->db->dbprefix('costcode')." 
-			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'  {$whr}";
 		}
 		if(@$_POST['parentfilter'])
 		{

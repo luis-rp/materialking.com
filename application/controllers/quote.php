@@ -2996,13 +2996,20 @@ or edit your quote.</div></div></div>');
 		$quote = $this->quotemodel->getquotebyid($quoteid);
 		$awarded = $this->quotemodel->getawardedbid($quoteid);
 		$items = $this->quotemodel->getawardeditems($awarded->id, $company->id);
-		
 		$this->db->where('id',$quote->pid);
 		$project = $this->db->get('project')->row();
 		
 		$company = (array)$company;
 		$this->db->where('id',$quote->purchasingadmin);
         $cpa = $this->db->get('users')->row();
+        if($quote->subject==0)
+        {
+        	$quote->subject="No Subject";
+        }
+        else 
+        {
+        	$quote->subject=$quote->subject;
+        }
 		$pdfhtml = '<table width="100%" cellspacing="2" cellpadding="2">
 			  <tr>
 			    <td width="33%" align="left" valign="top">
@@ -3133,6 +3140,7 @@ or edit your quote.</div></div></div>');
 			  <thead>
 			  <tr>
 			    <th bgcolor="#000033"><font color="#FFFFFF">Item No</font></th>
+			    <th bgcolor="#000033"><font color="#FFFFFF">Image</font></th>
 			    <th bgcolor="#000033"><font color="#FFFFFF">Description</font></th>
 			    <th bgcolor="#000033"><font color="#FFFFFF">Date Requested</font></th>
 			    <th bgcolor="#000033"><font color="#FFFFFF">Quantity</font></th>
@@ -3157,8 +3165,19 @@ or edit your quote.</div></div></div>');
 					if($companyitem->itemname)
 					$item->itemname = $companyitem->itemname;
 				}
+				
+			 if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+    		 { 
+             	$img_name = '<img style="max-height: 120px;max-width: 100px; padding: 5px;" height="75" width="75" src="'. site_url('uploads/item/'.$item->item_img).'" alt="'.$item->item_img.'">';
+             } 
+             else 
+             { 
+             	$img_name = '<img style="max-height:120px;max-width:100px;padding:5px;" height="75" width="75" src="'.site_url('uploads/item/big.png').'">';
+             } 		
+                         					
 				$pdfhtml.='<tr nobr="true">
 				    <td style="border: 1px solid #000000;">'.++$i.'</td>
+				    <td style="border: 1px solid #000000;">' .$img_name. '</td>
 				    <td style="border: 1px solid #000000;">'.htmlentities($item->itemname).'</td>
 				    <td style="border: 1px solid #000000;">'.($item->willcall?'For Pickup/Will Call':$item->daterequested).'</td>
 				    <td style="border: 1px solid #000000;">'.$item->quantity.'</td>
@@ -3167,6 +3186,8 @@ or edit your quote.</div></div></div>');
 				    <td align="right" style="border: 1px solid #000000;">$ '.$item->totalprice.'</td>
 				  </tr>
 				  ';
+				
+				
 				$totalprice += $item->totalprice;
 			}
 			$config = (array)$this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
@@ -3202,10 +3223,11 @@ or edit your quote.</div></div></div>');
 			    <td align="right">$ '.number_format($grandtotal,2).'</td>
 			  </tr>
 			</table>';
-		//die($pdfhtml);
+			
+		
 		if (!class_exists('TCPDF')) {
-			require_once($config['base_dir'].'application/libraries/tcpdf/config/lang/eng.php');
-			require_once($config['base_dir'].'application/libraries/tcpdf/tcpdf.php');
+			require_once($config['base_dir'] . 'application/libraries/tcpdf/config/lang/eng.php');
+			require_once($config['base_dir'] . 'application/libraries/tcpdf/tcpdf.php');
 		}
     	$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     	
@@ -3230,11 +3252,12 @@ or edit your quote.</div></div></div>');
     	
     	$pdf->SetFont('helvetica', '', 8, '', true);
     	$pdf->writeHTML($pdfhtml, true, 0, true, true);
-    	//$pdf->AddPage();
     	
     	$pdf->lastPage();
     	$pdfname = 'awarded.pdf';
-    	$pdf->Output($pdfname, 'd');
+    	$pdf->Output($pdfname, 'D');
+    	
+    	
 	}
 	
 	function track($quoteid,$award='')

@@ -38,6 +38,10 @@ class itemcode extends CI_Controller
         $data['pendingbids'] = $this->quote_model->getpendingbids();
         $this->form_validation->set_error_delimiters('<div class="red">', '</div>');
         $data['title'] = "Administrator";
+        
+        $receiveqty = $this->quote_model->gettotalreceivedshipqty();
+		$this->session->set_userdata('receiveqty',$receiveqty);  
+        
         $this->load = new My_Loader();
         $this->load->template('../../templates/admin/template', $data);
     }
@@ -341,7 +345,10 @@ class itemcode extends CI_Controller
                 {
                      $itemcode->actions = anchor('admin/itemcode/update_useritem/' . $itemcode->id, '<span class="icon-2x icon-edit"></span>', array('class' => 'update')) . ' ' . anchor(
                 'admin/itemcode/delete/' . $itemcode->id, '<span class="icon-2x icon-trash"></span>',
-                array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));                    
+                array('class' => 'delete', 'onclick' => "return confirm('Are you sure want to Delete this Records?')"));     
+                
+                $itemcode->actions .= '<a href="javascript:void(0)" onclick="updateitem('.$itemcode->id.')"><span class="icon-2x icon-list-alt"></span></a>';
+                               
                 }
                 
                 

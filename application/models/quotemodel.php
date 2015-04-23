@@ -217,8 +217,9 @@ class Quotemodel extends Model
 	function getawardeditems($award,$company)
 	{
 		//$this->db->reset();
-		$this->db->where(array('award'=>$award, 'company'=>$company));
-		$query = $this->db->get('awarditem');
+		$query=$this->db->select('awarditem.*')->select('item.item_img')->from('awarditem')->where(array('award'=>$award, 'company'=>$company))->join('item','awarditem.itemid=item.id','LEFT')->get();
+		/*$this->db->where(array('award'=>$award, 'company'=>$company));
+		$query = $this->db->get('awarditem');*/
 		if($query->num_rows>0)
 		{
 			return $query->result();

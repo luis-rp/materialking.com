@@ -30,6 +30,10 @@ class Order extends CI_Controller
 		$data['pendingbids'] = $this->quote_model->getpendingbids();
 		$this->form_validation->set_error_delimiters ('<div class="red">', '</div>');
 		$data ['title'] = "Administrator";
+		
+		$receiveqty = $this->quote_model->gettotalreceivedshipqty();
+		$this->session->set_userdata('receiveqty',$receiveqty);  
+		
 		$this->load = new My_Loader();
 		$this->load->template ( '../../templates/admin/template', $data);
 	}

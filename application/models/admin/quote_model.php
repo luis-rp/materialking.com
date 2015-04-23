@@ -2311,6 +2311,88 @@ class quote_model extends Model {
 
 		return $items;
 	}
+	
+	
+	
+	function gettotalreceivedshipqty(){
+		
+		if($this->session->userdata('managedprojectdetails')->id != '')
+		{
+			$projectid = $this->session->userdata('managedprojectdetails')->id;
+		}
+		else 
+		{
+			$projectid = '';
+		}
+		
+		$pendingshipmentquotes = $this->get_pendingshipment_quotes('',$projectid);
+		$newCount = count($pendingshipmentquotes);
+		$receiveqty = 0;
+		 if ($newCount >= 1) {
+			
+            foreach ($pendingshipmentquotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
+            	$shipments = array();
+                $quote->invitations = $this->getInvitedquote($quote->id);
+                $quote->pendingbids = $this->getbidsquote($quote->id);
+                $quote->awardedbid = $this->getawardedbidquote($quote->id);
+                
+                $quoteponum = $quote->ponum;
+                $quote->pricerank = '-';
+                if (!$quote->awardedbid)
+                    $quote->pricerank = '-';
+                elseif (!@$quote->awardedbid->items)
+                    $quote->pricerank = '-';
+               
+                else {
+                	
+                	if(@$quote->awardedbid->quotedetails->potype == "Contract")
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+                    else 
+                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
+					
+                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
+                    {
+                    	if ($quote->awardedbid->pricerank == 'great')
+                    	$quote->pricerank = 4;
+                    	elseif ($quote->awardedbid->pricerank == 'good')
+                    	$quote->pricerank = 3;
+                    	elseif ($quote->awardedbid->pricerank == 'fair')
+                    	$quote->pricerank = 2;
+                    	else
+                    	$quote->pricerank = 1;
+                    	
+	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
+	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
+                	}                	
+                }
+                
+                $quote->podate = $quote->podate ? $quote->podate : '';
+                $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
+               
+                if ($quote->status == 'AWARDED') {
+
+                	$shipmentsquery = "SELECT s.*, qi.itemname FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) where s.quote='{$quote->id}' and s.accepted = 0";
+        			$shipments = $this->db->query($shipmentsquery)->result();
+
+                	if($shipments)
+                	  {  
+                		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
+                		   {               	
+                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
+                	       }
+                        else 
+                           {
+                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance <a id="hrefa_'.$quote->id.'" href="javascript:void(0)" onclick="previewshipment('.$quote->id.');">Preview Shipment</a><img height="15px;" width="15px;" id="imageholder_'.$quote->id.'" src="'.site_url('templates/admin/css/icons/plus.gif').'" >';
+                           }
+                           
+                           $receiveqty += $quote->receiveqty;
+                          
+                	  }
+                }
+            }
+		 }		
+		return $receiveqty;
+	}
 
     // End
 }

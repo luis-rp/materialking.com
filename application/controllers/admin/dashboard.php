@@ -568,7 +568,7 @@ class Dashboard extends CI_Controller
 		    }
 		  $query = " SELECT SUM(totalunpaid) as totalunpaid,company, purchasingadmin, datedue, paymentstatus, paymentdate ,SUM(received) as received,SUM(totalCommitted) as totalCommitted FROM( SELECT
 		    		IF(r.paymentstatus!='Paid', (IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))),0) 	
-		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF(IFNULL((ai.quantity-ai.received),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))) as totalCommitted 
+		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF(IFNULL((ai.quantity),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))) as totalCommitted 
 		    			FROM
 		    			".$this->db->dbprefix('awarditem')." ai left join ".$this->db->dbprefix('received')." r 
 						on r.awarditem=ai.id WHERE ai.company='".$nc->id."'
@@ -1342,8 +1342,7 @@ class Dashboard extends CI_Controller
 		$count = count ($quotes);
 		$isBackorder = 0;
 		$qtyDue = 0;
-		$pastdueqtys = array(); // Used for storing all past due (Backorder) quantities, and comparing inventory items with this array to mark past due
-		$receiveqty = 0;
+		$pastdueqtys = array(); // Used for storing all past due (Backorder) quantities, and comparing inventory items with this array to mark past due		
 		$items = array();
 		$companyarr = array();
 		if ($count >= 1) 
@@ -1417,81 +1416,8 @@ class Dashboard extends CI_Controller
 		//$data['qtyDue'] = $qtyDue;
 		$this->session->set_userdata('qtyDue', $qtyDue);
 		$this->session->set_userdata('pastdueqtys',$pastdueqtys);
-		if($this->session->userdata('managedprojectdetails')->id != '')
-		{
-			$projectid = $this->session->userdata('managedprojectdetails')->id;
-		}
-		else 
-		{
-			$projectid = '';
-		}
-		
-		$pendingshipmentquotes = $this->quote_model->get_pendingshipment_quotes('',$projectid);
-		$newCount = count($pendingshipmentquotes);
-		
-		 if ($newCount >= 1) {
-			
-            foreach ($pendingshipmentquotes as $quote) { //echo $quod = $this->quote_model->getbidsjag($quote->id);exit;
-            	$shipments = array();
-                $quote->invitations = $this->quote_model->getInvitedquote($quote->id);
-                $quote->pendingbids = $this->quote_model->getbidsquote($quote->id);
-                $quote->awardedbid = $this->quote_model->getawardedbidquote($quote->id);
-                
-                $quoteponum = $quote->ponum;
-                $quote->pricerank = '-';
-                if (!$quote->awardedbid)
-                    $quote->pricerank = '-';
-                elseif (!@$quote->awardedbid->items)
-                    $quote->pricerank = '-';
-               
-                else {
-                	
-                	if(@$quote->awardedbid->quotedetails->potype == "Contract")
-                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewcontractitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
-                    else 
-                    	$quote->ponum = '<a href="javascript:void(0)" onclick="viewitems(\'' . $quote->id . '\')">' . $quote->ponum . '</a>';
-					
-                    if($quote->awardedbid->pricerank && (@$quote->awardedbid->quotedetails->potype != "Contract"))
-                    {
-                    	if ($quote->awardedbid->pricerank == 'great')
-                    	$quote->pricerank = 4;
-                    	elseif ($quote->awardedbid->pricerank == 'good')
-                    	$quote->pricerank = 3;
-                    	elseif ($quote->awardedbid->pricerank == 'fair')
-                    	$quote->pricerank = 2;
-                    	else
-                    	$quote->pricerank = 1;
-                    	
-	                    $quote->pricerank = '<div class="fixedrating" data-average="'.$quote->pricerank.'" data-id="'.$quote->id.'"></div>';
-	                    //$quote->pricerank = '<img src="'.site_url('templates/admin/images/rank'.$quote->pricerank.'.png').'"/>';
-                	}                	
-                }
-                
-                $quote->podate = $quote->podate ? $quote->podate : '';
-                $quote->status = $quote->awardedbid ? 'AWARDED' : ($quote->pendingbids ? 'PENDING AWARD' : ($quote->invitations ? 'NO BIDS' : ($quote->potype == 'Direct' ? '-' : 'NO INVITATIONS')));
-               
-                if ($quote->status == 'AWARDED') {
 
-                	$shipmentsquery = "SELECT s.*, qi.itemname FROM " . $this->db->dbprefix('shipment') . " s left join ".$this->db->dbprefix('quoteitem')." qi on (s.itemid=qi.itemid and s.quote=qi.quote) where s.quote='{$quote->id}' and s.accepted = 0";
-        			$shipments = $this->db->query($shipmentsquery)->result();
-
-                	if($shipments)
-                	  {  
-                		if(@$quote->awardedbid->quotedetails->potype == "Contract") 
-                		   {               	
-                            $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Billing(s) Pending Acceptance'; 
-                	       }
-                        else 
-                           {
-                    	    $quote->status = $quote->status . ' - ' . strtoupper($quote->awardedbid->status).'<br> *Shipment(s) Pending Acceptance <a id="hrefa_'.$quote->id.'" href="javascript:void(0)" onclick="previewshipment('.$quote->id.');">Preview Shipment</a><img height="15px;" width="15px;" id="imageholder_'.$quote->id.'" src="'.site_url('templates/admin/css/icons/plus.gif').'" >';
-                           }
-                           
-                           $receiveqty += $quote->receiveqty;
-                          
-                	  }
-                }
-            }
-		 }
+		$receiveqty = $this->quote_model->gettotalreceivedshipqty();
 		$this->session->set_userdata('receiveqty',$receiveqty);  
 		$this->load->view ('admin/dashboard', $data);
 	}

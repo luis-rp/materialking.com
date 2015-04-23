@@ -212,7 +212,7 @@ function showdueorders(userid)
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
           <i class="icon-credit-card icon-7x"></i>
-          <h4 class="semi-bold" id="myModalLabel" style="text-align:left">Due Orders</h4>                 
+          <h4 class="semi-bold" id="myModalLabel" style="text-align:left">Due Invoices</h4>                 
         </div>
         
         <div class="modal-body">   
@@ -243,11 +243,11 @@ function showdueorders(userid)
                                         		</tr>
                                         	<?php $j++; }
                                         	
-                                        }else echo "No Orders found";  ?>
+                                        }else echo "No Invoices Found.";  ?>
                                         
                                         </tbody>
                                         </table>           
-               <?php }else echo "No Orders found";  ?>                         
+               <?php }else echo "No Invoices Found.";  ?>                         
         </div>       
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
