@@ -36,7 +36,7 @@ $(document).ready(function(){
 	//$('#content').wysihtml5();
 	$('#deliverydate').datepicker();
 	$('#podate').datepicker();
-	$('#duedate').datepicker();
+	$('#duedate').datepicker({ minDate: 0 });	
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();
 	//$('.price').priceFormat({prefix: '$ ', centsSeparator: '.',thousandsSeparator: ','});
@@ -668,7 +668,8 @@ function showspanimage(image,itemid){
 }	
 
 
-function showselectimage(){	
+function showselectimage()
+{	
 	$("#imgselect").html('');	
 	$("#imgselectpos2").html('');
 	var imagehtml = '<img src="'+$('#catiditem :selected').attr('title')+'" width="64"/>';	
@@ -676,24 +677,27 @@ function showselectimage(){
 	$("#imgselectpos2").html(imagehtml);	
 }
 
-
 function addCostcode()
 {
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
+   var newValue = $( "#costcodeprefix option:selected" ).html().replace(/\»/g, '');
+   var newValue1 = newValue.replace("&nbsp;"," "); 
+   
    if(costcodeprefix == "Add New Cost-Code")
    {
-   	$("#addnewcostcode").css('display','block');
-   }
-   else
-   {
-   if($( "#costcodeprefix option:selected" ).val() !='')
-   {
-   		$("#ponum").val(costcodeprefix);
-   }		
-   else
-   {
+   		$("#addnewcostcode").css('display','block');
    		$("#ponum").val('');
    }
+   else
+   {
+	   if($( "#costcodeprefix option:selected" ).val() !='')
+	   {
+	   		$("#ponum").val(newValue1);
+	   }		
+	   else
+	   {
+	   		$("#ponum").val('');
+	   }
    }
 }
 
@@ -782,14 +786,7 @@ function changeproject(catid){
 		   		&nbsp;&nbsp;	Use Cost Code Prefix:
                  <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
 					   <option value="">Select</option>
-					   <?php 
-					   if(isset($costcodesresult) && count($costcodesresult) >0)
-					   {
-					   		foreach ($costcodesresult as $key=>$val)
-					   		{ ?>
-					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
-				<?php		}
-					   } ?>
+					  		<?php echo $parentcombooptions;?>
 					   <option  value=" ">Add New Cost-Code</option>
 				  </select>
 			<?php } ?>	  
@@ -1511,7 +1508,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
                     </div>
         </div>
         
-<div id="addnewcostcode" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+<div id="addnewcostcode" class="modal hide" style="width:500px;height:550px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 <form name="frmnewcostcode" id="frmnewcostcode" action="<?php echo site_url('admin/quote/addnewcostcode');?>" method="post" >
    <div class="modal-dialog">
       <div class="modal-content">
@@ -1551,6 +1548,12 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
       	<?php  echo $parentcombooptions;?>
 	  </select>
     </div>
+    
+    <div class="control-group">
+    <label class="control-label">Turn Off Estimated Cost:</label>   
+       <input type="checkbox" name="estimate" id="estimate" />    
+    </div>
+    
 </div>          
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="submit">Save</button>

@@ -22,6 +22,7 @@
 			$("#quoteitemdetailsm").css({display: "block"});
 			$("#quoteitemdetailsm").removeClass("hide");
 			//$("#quoteitemdetailsm").modal();
+			$("#itemsmodal").modal('hide');
 		});
 	}
 	

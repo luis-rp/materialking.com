@@ -33,7 +33,7 @@ $(document).ready(function(){
 	//$('#content').wysihtml5();
 	$('#deliverydate').datepicker();
 	$('#podate').datepicker();
-	$('#duedate').datepicker();
+	$('#duedate').datepicker({ minDate: 0 });	
 	$('#startdate').datepicker();
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();

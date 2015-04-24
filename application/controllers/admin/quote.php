@@ -41,7 +41,8 @@ class quote extends CI_Controller
         $data['config'] = (array) $this->settings_model->get_current_settings();
         $this->load->model('admin/project_model');
         $this->load->model('admin/company_model');
-        $this->load->model('admin/itemcode_model');
+        $this->load->model('admin/itemcode_model');        
+    	$this->load->model('admin/costcode_model');
         $this->load = new My_Loader();
         
         $receiveqty = $this->quote_model->gettotalreceivedshipqty();
@@ -692,8 +693,6 @@ class quote extends CI_Controller
 
     function add($pid, $potype = "Bid")
     {
-    	$this->load->model('admin/costcode_model');
-    	
         $this->_set_fields();
         $this->_set_fields1();
         $data['pid'] = $pid;
@@ -734,7 +733,6 @@ class quote extends CI_Controller
 
     function add_quote($pid, $potype = "Bid")
     {
-    	$this->load->model('admin/costcode_model');
         if (!@$data)
             $data = array();
         $data = array_merge($data, $_POST);
@@ -831,6 +829,7 @@ class quote extends CI_Controller
        	$sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$item->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
 		
+ 		$data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
         $data['purchasercategories'] = $this->quote_model->getallCategories();		
         $data['purchasercategories1'] = $this->db->get('contractcategory')->result();	
         $this->db->where('quote', $id);
@@ -12258,14 +12257,21 @@ $loaderEmail = new My_Loader();
     
     function addnewcostcode()
     {
+    	$estimate="";
     	if(isset($_POST) && $_POST != '')
     	{
+			if(@$_POST['estimate'] == "on")
+    			$estimate = 1;
+    		else 
+    			$estimate = 0;
+    		
 	    	$options = array(
 				'code'=>$this->input->post('code'),
 				'cost'=>$this->input->post('cost'),
 				'parent'=>$this->input->post('parent'),
 				'project'=>$this->input->post('project'),
-				'creation_date' => date('Y-m-d')
+				'creation_date' => date('Y-m-d'),
+				'estimate' => $estimate
 			);
 			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 			$this->db->insert('costcode', $options);

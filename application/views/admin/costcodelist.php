@@ -27,6 +27,31 @@
 <?php echo '<script type="text/javascript">var updateprogressurl = "'.site_url('admin/costcode/updateprogress/').'";</script>';?>
 <?php echo '<script type="text/javascript">var getchildcostcodeurl = "'.site_url('admin/costcode/getchildcostcode/').'";</script>';?>
 
+<link rel="stylesheet" type="text/css" href="<?php echo base_url();?>templates/front/assets/plugins/data-tables/DT_bootstrap.css">
+<script type="text/javascript" language="javascript" src="<?php echo base_url();?>templates/front/assets/plugins/data-tables/jquery.dataTables.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready( function() {
+
+	$('#datatable').dataTable( {
+		"aaSorting": [],
+		"sPaginationType": "full_numbers",
+		"aoColumns": [
+		        		null,
+		        		{ "bSortable": false},
+		        		null,
+		        		null,
+		        		{ "bSortable": false},
+        		{ "bSortable": false},
+        		{ "bSortable": false},
+        		{ "bSortable": false}
+
+			]
+		} );
+	 $('.dataTables_length').hide();
+});
+</script>
+
 <script>
 $(document).ready(function(){
 	$('.slider').slider({value:0});
@@ -85,7 +110,10 @@ $(document).ready(function(){
 				start();
 			});
 		$('#canceltour').live('click',endTour);
+	
 });
+
+
 function setprogress(id)
 {
 
@@ -162,6 +190,12 @@ function getchildcostcode(obj,parentid,costcodeid)
 		
 	
 }
+
+function filterdata(parentid)
+{
+	document.getElementsByName("parentfilter")[0].value = parentid;
+	$("#frmcostcode").submit();
+}
 </script>
  <?php if(isset($settingtour) && $settingtour==1) { ?>
 <div id="tourcontrols" class="tourcontrols" style="right: 30px;">
@@ -183,7 +217,7 @@ function getchildcostcode(obj,parentid,costcodeid)
                 	
                 	<br/><br/>
 	                <div class="datagrid-header-right">
-						<form class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">
+						<form id="frmcostcode" class="form-inline" action="<?php echo site_url('admin/costcode');?>" method="post">
 							Filter by parent:
 							<select name="parentfilter" onchange="this.form.submit()">
 								<option value="">View All</option>
@@ -201,8 +235,9 @@ function getchildcostcode(obj,parentid,costcodeid)
 						</form>
 					</div>
                 </div>
-            <?php if($items){?>
+            <?php  if($items){?>
             <table id="datatable" class="table table-bordered datagrid">
+            <thead>
               <tr>
               	<th width="18%">Code</th>
               	<th width="8%">Image</th>
@@ -213,7 +248,9 @@ function getchildcostcode(obj,parentid,costcodeid)
               	<th width="5%">Status</th>
               	<th width="8%">Actions</th>
               </tr>
-              <?php foreach($items as $item)
+              </thead>
+              <?php 
+              foreach($items as $item)
               {
               	$imgName = '';
               	 if (isset($item->costcode_image) && $item->costcode_image != '' && file_exists('./uploads/costcodeimages/' . $item->costcode_image)) 
@@ -224,7 +261,7 @@ function getchildcostcode(obj,parentid,costcodeid)
               	?>
               <input type="hidden" id="budget<?php echo $item->id;?>" value="<?php echo $item->budgetper;?>"/>
               <tr id='costcode_<?php echo $item->id;?>' class="clscostcode_<?php echo $item->parent;?>">
-              	<td><span class='cost-code'><?php echo $item->code?></span></td>
+              	<td><span class='cost-code' style="display:none;"><?php echo $item->codeforgraph?></span><?php echo $item->code;?></td>
               	<td><?php if($imgName != '') { ?> <img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'> <?php } ?></td>
               	<td><?php echo $item->cost?></td>
               	<td><span class='total-spent'><?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate->taxrate/100) + $shipping),2 ); ?></span></td>
@@ -249,6 +286,21 @@ function getchildcostcode(obj,parentid,costcodeid)
               <?php }?>
             </table>
             <?php }?>
+            
+            
+             <?php foreach($itemsofgraph as $item)
+              {?>
+             
+              	<input type="hidden" class="cost-code-graph" value="<?php echo $item->code;?>" />
+              	
+              	<input type="hidden" class="total-spent-graph" value="<?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate->taxrate/100) + $shipping),2 ); ?>" />              	              
+              	
+              	<input type="hidden" class="task-progress-graph" value="<?php  echo $item->manualprogress; ?>" />
+              	
+              	<input type="hidden" class="turnoff-estcost-graph" value="<?php  if(@$item->estimate ==1) { echo "yes"; } else { echo "no"; } ?>" />        	        	
+              <?php }?>
+            
+            
                <?php if($items){?>
             <div id="container-highchart" class="span4" style="min-width: 200px ;height: 500px; margin: 0 auto; width:100%"></div><?php } ?>
 		   <script type="text/javascript">
@@ -259,10 +311,10 @@ function getchildcostcode(obj,parentid,costcodeid)
                var cc = new Array;
                var ser = new Array;
 
-               $(".total-spent").each(function(index){ spent.push( parseFloat($( this ).text().slice(1) ));});
-               $(".task-progress").each(function(index){ prog.push(parseInt($( this ).text()) );});
-               $(".turnoff-estcost").each(function(index){ turnoff.push($( this ).text().trim());});
-               $(".cost-code").each(function(index){ cc.push($( this ).text() );});
+               $(".total-spent-graph").each(function(index){ spent.push( parseFloat($( this ).val().slice(1) ));});
+               $(".task-progress-graph").each(function(index){ prog.push(parseInt($( this ).val()) );});
+               $(".turnoff-estcost-graph").each(function(index){ turnoff.push($( this ).val().trim());});
+               $(".cost-code-graph").each(function(index){ cc.push($( this ).val() );});
           	  for(var index=0;index<prog.length;index++){
               	  if(prog[index]==0)
               		prog[index] = parseFloat(spent[index] * 100 );

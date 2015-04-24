@@ -22,7 +22,7 @@ $(document).ready(function() {
 	//$('#content').wysihtml5();
 	$('#deliverydate').datepicker();
 	$('#podate').datepicker();
-	$('#duedate').datepicker();
+	$('#duedate').datepicker({ minDate: 0 });	
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();
 	//$('html, body').animate({scrollTop:$(document).height()}, 'slow');
@@ -692,20 +692,25 @@ function checkNewRowData()
 function addCostcode()
 {
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
+   var newValue = $( "#costcodeprefix option:selected" ).html().replace(/\»/g, '');
+   var newValue1 = newValue.replace("&nbsp;",""); 
    
-   if($( "#costcodeprefix option:selected" ).val() !='')
+   if(costcodeprefix == "Add New Cost-Code")
    {
-   		$("#ponum").val(costcodeprefix);
-   }			
+   		$("#addnewcostcode").css('display','block');
+   		$("#ponum").val('');
+   }
    else
    {
-   		$("#ponum").val('');
-   }	
-}
-
-function addNewCostcode()
-{
-	$("#addnewcostcode").css('display','block');
+	   if($( "#costcodeprefix option:selected" ).val() !='')
+	   {
+	   		$("#ponum").val(newValue1);
+	   }		
+	   else
+	   {
+	   		$("#ponum").val('');
+	   }
+   }
 }
 
 function changeparent(projectid){
@@ -824,14 +829,7 @@ function namevalidation(name,id)
 		   		&nbsp;&nbsp;	Use Cost Code Prefix:
                  <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
 					   <option value="">Select</option>
-					   <?php 
-					   if(isset($costcodesresult) && count($costcodesresult) >0)
-					   {
-					   		foreach ($costcodesresult as $key=>$val)
-					   		{ ?>
-					   				<option value="<?php echo $val->code;?>"><?php echo $val->code;?></option>	
-				<?php		}
-					   } ?>
+					  	<?php echo $parentcombooptions;?>
 					   <option value="" onclick="addNewCostcode();">Add New Cost-Code</option>
 				  </select>
 			<?php } ?>	  
@@ -1379,7 +1377,7 @@ function namevalidation(name,id)
     <!-- /.modal-dialog -->
   </div>
   
-<div id="addnewcostcode" class="modal hide" style="width:500px;height:500px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
+<div id="addnewcostcode" class="modal hide" style="width:500px;height:550px;"  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
 <form name="frmnewcostcode" id="frmnewcostcode" action="<?php echo site_url('admin/quote/addnewcostcode');?>" method="post" >
    <div class="modal-dialog">
       <div class="modal-content">
@@ -1419,6 +1417,12 @@ function namevalidation(name,id)
       	<?php  echo $parentcombooptions;?>
 	  </select>
     </div>
+    
+    <div class="control-group">
+    <label class="control-label">Turn Off Estimated Cost:</label>   
+       <input type="checkbox" name="estimate" id="estimate" />    
+    </div>
+    
 </div>          
         <div class="modal-footer">
           <button data-dismiss="modal" class="btn btn-default" type="submit">Save</button>

@@ -141,6 +141,142 @@ class costcode_model extends Model
 		}
 	}
 	
+	
+	function get_costcodesforgraph($limit=0,$offset=0,$parent = '')
+ 	{		
+ 		$whr = '';
+	    if ($offset == 0) {
+			$newoffset = 0;
+		} else {
+			$newoffset = $offset;
+		}
+		
+		/*if(!@$_POST['parentfilter'])
+		{
+			if($parent == 0)
+			{
+				$whr .= ' AND parent = "'.$parent.'"';
+			}
+			else 
+			{
+				
+				$whr .= ' AND parent = "'.$parent.'"';
+			}
+		}*/
+				
+		$sql ="SELECT *
+		FROM
+		".$this->db->dbprefix('costcode')." WHERE 1=1 {$whr}";
+		
+		
+		if($this->session->userdata('usertype_id')>1)
+		{
+			$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')." 
+			WHERE purchasingadmin='".$this->session->userdata('purchasingadmin')."'  {$whr}";
+		}
+		if(@$_POST['parentfilter'])
+		{
+			$sql .= " AND parent='{$_POST['parentfilter']}'";
+		}
+		if(@$_POST['projectfilter'])
+		{
+			$sql .= " AND project='{$_POST['projectfilter']}'";
+		}
+		$sql .=" ORDER BY code ASC";
+		$query = $this->db->query($sql);
+		if ($query->result ()) 
+		{
+			$result = $query->result ();
+			$ret = array();
+			foreach($result as $item)
+			{
+				$sql ="SELECT SUM(ai.quantity*ai.ea) totalcost
+				FROM
+				".$this->db->dbprefix('awarditem')." ai, 
+				".$this->db->dbprefix('award')." a,  
+				".$this->db->dbprefix('quote')." q 
+				WHERE
+				ai.award=a.id AND ai.costcode='".$item->code."' and a.quote=q.id ";
+				
+				if($item->forcontract==1){
+					
+				$sql ="SELECT SUM(ai.ea) totalcost
+				FROM
+				".$this->db->dbprefix('awarditem')." ai, 
+				".$this->db->dbprefix('award')." a,  
+				".$this->db->dbprefix('quote')." q 
+				WHERE
+				ai.award=a.id AND ai.costcode='".$item->code."' and a.quote=q.id ";
+					
+				}
+				
+				if($this->session->userdata('usertype_id')>1)
+					$sql .= " AND ai.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+				
+				if(@$_POST['projectfilter'])
+					$sql .= " AND q.pid ='{$_POST['projectfilter']}'";	
+				elseif (@$item->project)					
+					$sql .= " AND q.pid ='{$item->project}'";	
+						
+				$query = $this->db->query ($sql);
+				$item->totalspent = $query->row ('totalcost');
+				/****/
+				
+				$wheresql2 = "";
+				
+				if($this->session->userdata('usertype_id')>1)
+				$wheresql2 .= " AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."'";
+
+				if(@$_POST['projectfilter'])
+				$wheresql2 .= " AND o.project ='{$_POST['projectfilter']}'";
+				elseif (@$item->project)
+				$wheresql2 .= " AND o.project ='{$item->project}'";
+				
+						$sql2 = "SELECT SUM( od.price * od.quantity ) sumT, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.id =  ".$item->id." {$wheresql2} 
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+						
+					if($item->forcontract==1){
+							
+							$sql2 = "SELECT SUM( od.price) sumT, o.shipping 
+					FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('costcode')." cc, ".$this->db->dbprefix('orderdetails')." od
+					WHERE cc.id =  ".$item->id." {$wheresql2} 
+					AND o.costcode = cc.id
+					AND o.id = od.orderid
+					GROUP BY o.costcode";
+							
+					}				
+						
+						$query2 = $this->db->query ($sql2);
+						
+						if($query2->result()){
+								
+								
+							$totalOrder = $query2->row();
+							$item->totalspent += $totalOrder->sumT;
+							$item->shipping = $totalOrder->shipping;
+						}
+					
+				/****/
+				if($item->totalspent == null)
+					$item->totalspent = '-';
+				$ret[] = $item;
+			}
+			//print_r($ret);die;
+			return $ret;
+		} 
+		else 
+		{
+			return null;
+		}
+	}
+	
+	
 	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = '')
 	{
 	//	echo '<pre>',print_r($this->session->userdata('managedprojectdetails'));

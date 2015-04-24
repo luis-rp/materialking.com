@@ -294,6 +294,10 @@ class costcode extends CI_Controller {
         if(@$_POST['projectfilter'] == "viewall")
         $_POST['projectfilter'] = "";
         
+        $parent = '';
+        
+        $costcodesforgraph = $this->costcode_model->get_costcodesforgraph($this->limit, $offset,$parent);
+        
         $parent = 0;
         
         $costcodes = $this->costcode_model->get_costcodes($this->limit, $offset,$parent);
@@ -329,9 +333,10 @@ class costcode extends CI_Controller {
 
         $count = count($costcodes);
         $items = array();
+        $itemsofgraph = array();
         if ($count >= 1) {
         //	$level = $this->costcode_model->listcategorylevel('0', 0, 0,@$_POST['parentfilter']);
-            foreach ($costcodes as $costcode) {
+            foreach ($costcodesforgraph as $costcode) {
             	
             	$wherecode = "";
             	if(@$this->session->userdata('managedprojectdetails')->id){
@@ -497,22 +502,33 @@ class costcode extends CI_Controller {
               
                if(count($res) > 0)
                {
-               	 	$costcode->code = $costcode->code .'&nbsp;&nbsp;&nbsp;&nbsp;<a  id="isexpand_'.$costcode->id.'" href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
+               		$costcode->codeforgraph = $costcode->code;
+               	 	$costcode->code = '<a href="#" onclick="filterdata('.$res[0]->parent.')">'. $costcode->code .'</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  id="isexpand_'.$costcode->id.'" href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
                }
                else 
                {
-	            	//$appendStr = str_repeat('&raquo;&nbsp;',$level[$costcode->id]);
-	            	$costcode->code = $costcode->code;
+               		$costcode->codeforgraph = $costcode->code;
+	            	$costcode->code = $costcode->code;	            	
                }
               //  $costcode->level = $level[$costcode->id];
-                $items[] = $costcode;
+              
+              foreach($costcodes as $ccodes){
+
+              	if($costcode->id == $ccodes->id)
+              	$items[] = $costcode;
+
+              }
+              
+              $itemsofgraph[] = $costcode;
+              
             } 
-		//	$this->aasort($items, 'level');	
             $data['items'] = $items;
+            $data['itemsofgraph'] = $itemsofgraph;
             $data['jsfile'] = 'costcodejs.php';
         } 
         else {
             $data['items'] = array();
+            $data['itemsofgraph'] = array();
             $this->data['message'] = 'No Records';
         }
        
@@ -525,8 +541,7 @@ class costcode extends CI_Controller {
         if ($this->session->userdata('usertype_id') > 1)
             $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
         $data['projects'] = $this->db->get('project')->result();
-        //print_r($data['projects']);die;
-
+        
         $data ['addlink'] = '';
         $data ['heading'] = 'Cost Code Management';
         $data ['table'] = $this->table->generate();
@@ -538,7 +553,8 @@ class costcode extends CI_Controller {
 		if($setting){
 			$data['settingtour']=$setting[0]->tour;
 		}
-//die;
+
+		
         $this->load->view('admin/costcodelist', $data);
     }
 
@@ -740,11 +756,13 @@ class costcode extends CI_Controller {
               
                if(count($res) > 0)
                {
+               		$costcode->codeforgraph = '&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code .'&nbsp;&nbsp;&nbsp;&nbsp;';
                	 	$costcode->code = '&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code .'&nbsp;&nbsp;&nbsp;&nbsp;<a id="isexpand_'.$costcode->id.'"  href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
                }
                else 
                {
 	            	$costcode->code = '&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code;
+	            	$costcode->codeforgraph = '&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'. $costcode->code;
                }               
           
           	 if (isset($costcode->costcode_image) && $costcode->costcode_image != '' && file_exists('./uploads/costcodeimages/' . $costcode->costcode_image)) 
@@ -762,7 +780,7 @@ class costcode extends CI_Controller {
 			
 				$str .='<tr id="costcode_'.$costcode->id.'" class="clscostcode_'.$costcode->parent.'">
 						<input type="hidden" id="budget'.$costcode->id.'" value="'.$costcode->budgetper.'"/>
-						<td>'.$costcode->code.'</td>
+						<td>'.$costcode->code.'<span class="cost-code" style="display:none;">"'. $costcode->codeforgraph.'"</span></td>
 						<td>'.$imgName.'</td>
 						<td>'.$costcode->cost.'</td>
 						<td><span class="total-spent">'.$totalspend.'</span></td>
