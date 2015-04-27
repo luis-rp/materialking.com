@@ -3059,7 +3059,8 @@ class site extends CI_Controller
 			$this->db->insert('bill_payment_history',$insertArr);
 		}
         	
-        $this->session->set_flashdata('billid',$billid);       
+        $this->session->set_flashdata('billid',$billid); 
+        $this->load->template('../../templates/front/register');      
 		$this->load->view('site/customerbill',$data);
 	}
 	

@@ -21,10 +21,12 @@ $.noConflict();
  <?php echo '<script>var datedueurl="' . site_url('quote/invoicedatedue') . '";</script>' ?>
 <script type="text/javascript" charset="utf-8">
 	$(document).ready( function() {
+		$('.daterequested').datepicker({ autoclose: true });
 		$('#datatable').dataTable( {
 			"sPaginationType": "full_numbers",
 			"bPaginate":false,
 			"aoColumns": [
+					null,
 					null,
 					null,
 					null,
@@ -45,7 +47,7 @@ $.noConflict();
 	 	alert('gfgf');
 	 });*/
 	 
-	 $('.daterequested').datepicker({ autoclose: true });
+	 
 	})
 	function invoice(invoicenum,invoicequote)
 	{
@@ -114,7 +116,9 @@ tr.still-due td
 {
 	color: #990000;
 }
+
 </style>
+
 
 <form id="invoiceform" method="post" action="<?php echo site_url('quote/invoice');?>">
 	<input type="hidden" id="invoicenum" name="invoicenum"/>
@@ -165,22 +169,22 @@ tr.still-due td
                         <div class="progress progress-striped active progress-large">
     				    	<div class="progress-bar progress-bar-success" style="width: <?php echo $quote->progress;?>%;" data-percentage="<?php echo $quote->progress;?>%">PO Progress: <?php echo $quote->progress;?>%</div>
     					</div>
-
-    						<table id="datatable" class="table no-more-tables general">
+                          <div style="margin:0px; padding:0px; width:100%; overflow-x:scroll;">
+    						<table id="datatable" class="table no-more-tables general" style="table-layout: fixed;width:1440px;">
                                 <thead>
                                     <tr>
-                                        <th width="12%">Item Code/Name</th>
-                                        <th width="12%">Item Image</th>
-                                        <th width="6%">Qty.</th>
-                                        <th width="6%">Unit</th>
-                                        <th width="6%">Price</th>
-                                        <th width="6%">Total</th>
-                                        <th width="6%">Requested</th>
-                                        <th width="12%">Notes</th>
-                                        <th width="6%">Shipped</th>
-                                        <th width="6%">Due</th>
-                                        <th width="8%">Ship Qty</th>
-                                        <th width="14%">Ref#</th>
+                                        <th width="120px">Item Code/Name</th>
+                                        <th width="120px">Item Image</th>
+                                        <th width="120px">Qty.</th>
+                                        <th width="120px">Unit</th>
+                                        <th width="120px">Price</th>
+                                        <th width="120px">Total</th>
+                                        <th width="120px">Requested</th>
+                                        <th width="120px">Notes</th>
+                                        <th width="120px">Shipped</th>
+                                        <th width="120px">Due</th>
+                                        <th width="120px">Ship Qty</th>
+                                        <th width="120px">Ref#</th>
                                     </tr>
                                 </thead>
 
@@ -276,6 +280,7 @@ tr.still-due td
                                   </tr>
                                 </tbody>
                             </table>
+                            </div>
                     </div>
                 </div>
             </div>

@@ -415,48 +415,15 @@ class Register extends CI_Controller
         $insert['creation_date'] = date('Y-m-d');
         $this->db->insert('project',$insert);
         $lastid = $this->db->insert_id();
-            		           		
-        $pinsert1 = array();
-        $pinsert1['project'] = $lastid;
-        $pinsert1['purchasingadmin'] = $u->id;            		
-        $pinsert1['code'] = 'Backflow Preventers';
-        $pinsert1['cost'] = '0';
-        $pinsert1['cdetail'] = 'Backflow Preventers';
-        $pinsert1['costcode_image'] = 'bfp.jpg';
-        $pinsert1['creation_date'] = date('Y-m-d');
-        $this->db->insert('costcode',$pinsert1);
-        
-        $pinsert2 = array();
-        $pinsert2['project'] = $lastid;
-        $pinsert2['purchasingadmin'] = $u->id;            		
-        $pinsert2['code'] = 'Bathroom Hardware';
-        $pinsert2['cost'] = '0';
-        $pinsert2['cdetail'] = 'Bathroom Hardware';
-        $pinsert2['costcode_image'] = 'bhard.jpeg';
-        $pinsert2['creation_date'] = date('Y-m-d');
-        $this->db->insert('costcode',$pinsert2);
-        
-        $pinsert3 = array();
-        $pinsert3['project'] = $lastid;
-        $pinsert3['purchasingadmin'] = $u->id;            		
-        $pinsert3['code'] = 'Ceiling Tile & Insulation';
-        $pinsert3['cost'] = '0';
-        $pinsert3['cdetail'] = 'Ceiling Tile & Insulation';
-        $pinsert3['costcode_image'] = 'cti.jpg';
-        $pinsert3['creation_date'] = date('Y-m-d');
-        $this->db->insert('costcode',$pinsert3);
-        
-        $pinsert4 = array();
-        $pinsert4['project'] = $lastid;
-        $pinsert4['purchasingadmin'] = $u->id;            		
-        $pinsert4['code'] = 'Dielectric Unions';
-        $pinsert4['cost'] = '1500';
-        $pinsert4['cdetail'] = 'Dielectric Unions';
-        $pinsert4['costcode_image'] = 'dielectric.jpeg';
-        $pinsert4['creation_date'] = date('Y-m-d');
-        $this->db->insert('costcode',$pinsert4);
-        
-								
+            		           	
+        $DefaultCostcode=$this->db->get('DefaultCostcode')->result();
+       
+        if(count($DefaultCostcode) > 0) {
+        	foreach ($DefaultCostcode as $DC) {  
+        		 $this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DC->code,'cost'=>$DC->cost,'cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+        	}
+        }
+        								
 		$settings = (array)$this->settings_model->get_setting_by_id (1);
 		$settings['purchasingadmin'] = $u->id;
 		$settings['adminemail'] = $u->email;

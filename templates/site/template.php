@@ -92,9 +92,9 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
                         var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
                         var parts = parse_url.exec( yourUrl );
                         console.log(parts);
-                        if(parts[5].contains("site/items")){                        	
+                        if(parts[5].indexOf("site/items")>0){                        	
                         	window.location = window.location.href+"/ /"+$('#curpage').val();
-                        }else if(parts[5].contains("site/items/")){                        	
+                        }else if(parts[5].indexOf("site/items/")>0){                        	
                         	window.location = window.location.href+"/"+$('#curpage').val();
                         }else
                         window.location = window.location;

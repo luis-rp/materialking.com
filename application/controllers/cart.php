@@ -804,6 +804,16 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
  		
  		foreach($cart as $item)
 		{
+			$isnetwork=$this->db->get_where('network',array('company'=>$item['company'],'purchasingadmin'=>$this->session->userdata('id')))->row();
+			if(empty($isnetwork))
+			{
+					$insert = array();
+            		$insert['company'] = $item['company'];
+	            	$insert['purchasingadmin'] = $this->session->userdata('id');            		
+	            	$insert['acceptedon'] = date('Y-m-d H:i:s');
+	            	$insert['status'] = 'Active';
+	            	$this->db->insert('network',$insert); 
+			}
 			$this->db->where('itemid',$item['itemid']);
 			$this->db->where('company',$item['company']);
 			$this->db->where('type','Supplier');

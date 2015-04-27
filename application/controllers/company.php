@@ -2449,7 +2449,7 @@ class Company extends CI_Controller {
 			$_SESSION['comet_user_email']=$check->email;
 			$_SESSION['userid']=$check->id;
 			$_SESSION['logintype']='customer';
-
+           
             redirect('site/customerbill');
         } else {
             $data['message'] = 'Invalid Login';
@@ -2497,6 +2497,8 @@ class Company extends CI_Controller {
         	$orderdate = array();
         	$ordertotal = array();
         	$orderdue = array();
+        	$orderinvnum = array(); 
+              	
             $pa = $admin->purchasingadmin;
 		    $settings = $this->settings_model->get_setting_by_admin($pa);
 		   		    
@@ -2529,7 +2531,7 @@ class Company extends CI_Controller {
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
 						AND ai.purchasingadmin='$pa'";*/
 		    
-		    $query = "SELECT q.ponum, q.podate, q.potype, if((r.paymentstatus!='Paid' || r.paymentstatus!='Credit'),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)),0) totalunpaid, (SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)) total 
+		     $query = "SELECT q.ponum, q.podate, q.potype, r.invoicenum, if((r.paymentstatus!='Paid' || r.paymentstatus!='Credit'),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)),0) totalunpaid, (SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)) total 
 		    			 FROM		    			
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a, ".$this->db->dbprefix('quote')." q 
 						WHERE r.awarditem=ai.id AND ai.award = a.id AND q.id = a.quote AND r.paymentstatus!='Paid' AND ai.company='".$company->id."' AND ai.purchasingadmin='$pa' group by q.id ";
@@ -2538,11 +2540,10 @@ class Company extends CI_Controller {
 		    //$due = $this->db->query($query)->row()->totalunpaid;
 		    
 		    $quoteresult = $this->db->query($query)->result();
-		    
+		  
 		    if($quoteresult){
 		    	
-		    	foreach($quoteresult as $quoter){
-		    		
+		    	foreach($quoteresult as $quoter){		    		
 		    		if($quoter->totalunpaid>0){
 		    		$due += $quoter->totalunpaid;
 		    		$ordtotal = $quoter->total;
@@ -2551,10 +2552,12 @@ class Company extends CI_Controller {
 		    		$orderdate[] = $quoter->podate;
 		    		$ordertotal[] = $ordtotal;
 		    		$orderdue[] = $quoter->totalunpaid;
+		    		$orderinvnum[] = $quoter->invoicenum;
 		    		}
 		    	}		    			    	
 		    	
 		    }
+		   
 		    /*$query = "SELECT (SUM(od.quantity * od.price) + (SUM(od.quantity * od.price) * o.taxpercent / 100))
 		    	orderdue
                 FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
@@ -2566,8 +2569,9 @@ class Company extends CI_Controller {
                 WHERE od.orderid=o.id AND o.type='Manual' AND od.status!='Void' AND od.accepted!=-1
                 AND o.purchasingadmin='$pa' AND od.company='".$company->id."' Group by o.id ";
 		    
-		    //$manualdue = $this->db->query($query)->row()->orderdue;
+		   
 		    $oresult = $this->db->query($oquery)->result();
+		     
 		    if($oresult){
 		    	
 		    	foreach($oresult as $ord){
@@ -2582,16 +2586,17 @@ class Company extends CI_Controller {
 		    		}
 		    	}
 		    }		     
-		    
-		    $admin->order = $order;
+		     
+		    $admin->order = $order;		  
 		    $admin->ordertype = $ordertype;
 		    $admin->orderdate = $orderdate;
 		    $admin->amountdue = round($due,2);		   
 		    $admin->amountduetotal = $orderdue;
-		    $admin->amounttotal = $ordertotal;		    
+		    $admin->amounttotal = $ordertotal;	
+		   	$admin->orderinvnum = 	$orderinvnum;   
             $data['admins'][]=$admin;
             
-        } // echo "<pre>",print_r($data['admins']); die;
+        }
         $data['tier'] = $tier;
         $data['menuhide'] = 1;
         $this->load->view('company/networkconnections', $data);       	

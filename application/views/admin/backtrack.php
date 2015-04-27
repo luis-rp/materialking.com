@@ -182,7 +182,12 @@
                                         <?php }?>
 						</td>
 			    		<td><?php echo $item->unit;?></td>
-			    		<td><?php echo $item->daterequested;?></td>
+			    		<td><?php echo $item->daterequested;
+			    		if(date('Y-m-d H:i:s', strtotime( $item->daterequested."23:59:59")) < date('Y-m-d H:i:s')){
+			    			$datediff = strtotime($item->daterequested."23:59:59") - time();
+			    			echo "<br>",$datediff = abs(floor($datediff/(60*60*24)))."Days Late";
+			    		}?>
+			    		</td>
 			    		<td><?php echo $item->costcode;?></td>
 			    		<td><?php echo $item->notes;?></td>
 			    		<td>&nbsp;<?php if($item->etalog){?><a href="javascript:void(0)" onclick="$('#etalogmodal<?php echo $item->id?>').modal();">

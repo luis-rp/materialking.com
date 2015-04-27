@@ -16,6 +16,13 @@
 		}
 
 		.adminflare > div { margin-bottom: 20px; }
+		
+		
+		.dataTables_filter {
+  		margin-right: 100px;
+    	margin-top: -75px;
+		}
+		
 	</style>
 
 <script src="<?php echo base_url(); ?>templates/admin/js/bootstrap-tour.min.js" type="text/javascript"></script>
@@ -288,16 +295,16 @@ function filterdata(parentid)
             <?php }?>
             
             
-             <?php foreach($itemsofgraph as $item)
+             <?php foreach($itemsofgraph as $itemgraph)
               {?>
              
-              	<input type="hidden" class="cost-code-graph" value="<?php echo $item->code;?>" />
+              	<input type="hidden" class='cost-code-graph' value="<?php echo $itemgraph->codeforgraph;?>">
               	
-              	<input type="hidden" class="total-spent-graph" value="<?php $shipping = 0; if(isset($item->shipping)) $shipping = $item->shipping; echo "$ ".round( ($item->totalspent + $item->totalspent*($taxrate->taxrate/100) + $shipping),2 ); ?>" />              	              
+              	<input type="hidden" class='total-spent-graph' value="<?php $shipping1 = 0; if(isset($itemgraph->shipping)) $shipping1 = $itemgraph->shipping; echo "$ ".round( ($itemgraph->totalspent + $itemgraph->totalspent*($taxrate->taxrate/100) + $shipping1),2 ); ?>" >              	              
               	
-              	<input type="hidden" class="task-progress-graph" value="<?php  echo $item->manualprogress; ?>" />
+              	<input type="hidden" class='task-progress-graph' value="<?php  echo $itemgraph->manualprogress; ?>" >
               	
-              	<input type="hidden" class="turnoff-estcost-graph" value="<?php  if(@$item->estimate ==1) { echo "yes"; } else { echo "no"; } ?>" />        	        	
+              	<input type="hidden" class='turnoff-estcost-graph' value="<?php  if(@$itemgraph->estimate ==1) { echo "yes"; } else { echo "no"; } ?>" >        	        	
               <?php }?>
             
             

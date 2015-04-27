@@ -3318,7 +3318,7 @@ or edit your quote.</div></div></div>');
 			$sql = "SELECT item_img FROM " . $this->db->dbprefix('item') . " WHERE id=".$ai->itemid;
 			$itemRes = $this->db->query($sql)->result();
 			
-			if(isset($itemRes) && $itemRes != '')
+			if(isset($itemRes) && $itemRes != '' && @$itemRes[0]->item_img)
 			{
 				$ai->item_img = $itemRes[0]->item_img;
 			}

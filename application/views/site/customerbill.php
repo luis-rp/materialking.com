@@ -50,12 +50,14 @@ function jq( myid ) {
 <style>
 .headtd {color:white;text-align:center;}
 .othertd {text-align:center;}
+.no-top{background-color:white !important;}
 </style>
 <div id="content">
     <div class="container">
         <div id="main">
             <div class="row">
                 <div class="span12">
+                <div><a class="btn btn-link" href="<?php echo base_url(); ?>">Home</a></div>
                 	<h3 class="titlebox" style="padding:0px 0px 0px 8px;text-align:center;"><strong>Customer Bill Details</strong></h3>
                     	<div class="properties-rows">
                         	<div class="row">
@@ -142,6 +144,7 @@ function jq( myid ) {
 			{  
 				$markuptotalpercent = (isset($value['markuptotalpercent']) && $value['markuptotalpercent'] != '') ? $value['markuptotalpercent'] : 0;
 				$totalprice += $value['quantity'] * $value['ea']; 
+			
 				$subtotal1 = $totalprice + ($totalprice * $markuptotalpercent/100);
 		     	$finaltotal1 = $subtotal1 + (@$subtotal1*@$settings->taxrate/100);
 					 
@@ -212,7 +215,7 @@ function jq( myid ) {
 			
 		</tr>	
 	<?php	
-			$totalprice = 0;	
+			
 			
 			foreach ($billItemdetails as $k=>$value)
 			{
@@ -248,16 +251,16 @@ function jq( myid ) {
 	    <div style="padding-left:70%;">
 	    <table class="table table-striped">
 	      <tr>
-		    <th style="text-align:right;">Markup Total (<?php echo $markuptotalpercent.'%'?>) : </th>
+		    <td style="text-align:right;font-weight:bold;">Markup Total (<?php echo $markuptotalpercent.'%'?>) : </td>
 		    <td style="text-align:left;">$<?php echo number_format(($totalprice * $markuptotalpercent/100),2); ?></td>	
 		  </tr>
 		  <tr>
-		    <th style="text-align:right;">Subtotal : </th>
+		    <td style="text-align:right;font-weight:bold;">Subtotal : </td>
 		    <td style="text-align:left;">$<?php echo number_format($subtotal,2); ?></td>
 		    		
 	       </tr>
 	       <tr>   	
-		    <th style="text-align:right;">Tax : </th>		
+		    <td style="text-align:right;font-weight:bold;">Tax : </td>		
 		    <td style="text-align:left;">$<?php echo number_format(($totalprice*$settings->taxrate/100),2); ?></td>
 	       </tr>
 	       <?php 
@@ -273,17 +276,17 @@ function jq( myid ) {
 					 ?>
 					
 					 <tr>   	
-				    	<th style="text-align:right;"><?php echo $v['servicelaboritems'];?> : </th>
+				    	<td style="text-align:right;font-weight:bold;"><?php echo $v['servicelaboritems'];?> : </td>
 				    	<td style="text-align:left;">$<?php echo number_format($v['price'],2);?></td>
 				    	
 				    </tr>
 				    <tr> 
-				   		 <th style="text-align:right;">Qty : </th>  					    	
+				   		 <td style="text-align:right;font-weight:bold;">Qty : </td>  					    	
 				    	<td style="text-align:left;"><?php echo $qty;?></td>
 				    	
 				    </tr>
 				    <tr>   	
-				    	<th style="text-align:right;">Tax &nbsp; (<?php echo number_format($v['tax'],2);?> % ) : </th> 
+				    	<td style="text-align:right;font-weight:bold;">Tax &nbsp; (<?php echo number_format($v['tax'],2);?> % ) : </td> 
 				    	<td style="text-align:left;">$<?php echo $totPrice * ($v['tax']/100); ?></td>
 				    </tr>
 <?php 			$serviceItemTax += $totPrice + ($totPrice * ($v['tax']/100));	}
@@ -292,7 +295,7 @@ function jq( myid ) {
 			  $amouttopay = $finaltot - $amountpaid; 	
 			?>	
 			 <tr>   	
-		    	<th style="text-align:right;">Total : </th>
+		    	<td style="text-align:right;font-weight:bold;">Total : </td>
 		    	<td style="text-align:left;">$<?php echo number_format($finaltot,2); ?></td>
 	         </tr>       
 	      </table> 

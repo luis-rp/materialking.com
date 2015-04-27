@@ -384,7 +384,7 @@ class itemcode_model extends Model {
 				WHERE
 				ai.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "' AND
 				ai.award=a.id AND a.quote=q.id AND ai.company=c.id AND ai.itemid='$itemid'
-				$projectwhere
+				$projectwhere group by ai.id 
 				ORDER BY a.awardedon DESC
 				";
         //echo $sql;
@@ -400,7 +400,8 @@ class itemcode_model extends Model {
                 	$wherecode = "";	
                 	$whereproject = "";
                 	$item->qtyonhand = 0;
-                	$item->qtyonpo = 0;
+                	if($item->qtyonpo =="")
+                		$item->qtyonpo = 0;
                 	if(@$this->session->userdata('managedprojectdetails')->id){
             			$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
             			$whereproject .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;

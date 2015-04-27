@@ -236,7 +236,7 @@ function submitForm(val,invoicequote)
 			    				$amount = $amount + (($amount*$report->penalty_percent/100)*$report->penaltycount);
 			    			}
 			    	
-			    			$amount = round($amount + ($amount*$item->taxpercent/100),2);
+			    			$amount = $amount + ($amount*$item->taxpercent/100);
 			    					
 			    			$totalallprice += $amount;
 

@@ -432,7 +432,7 @@ function shownotice(newval,oldval,id){
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
-                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php printf ("%6.2f",$item->totalprice); ?></td>
+                    			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo round($item->totalprice,2); // printf ("%6.2f",$item->totalprice); ?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>

@@ -235,14 +235,15 @@ class Order extends CI_Controller
  			
  			if(@$_POST['searchbykeyword'] && @$_POST['searchbykeyword'])
  			{
- 				$filter .=  " AND (o.ordernumber LIKE '%".trim($_POST['searchbykeyword'])."%' OR c.title LIKE '%".trim($_POST['searchbykeyword'])."%')" ;
+ 				$filter .=  " AND (o.ordernumber LIKE '%".trim($_POST['searchbykeyword'])."%' OR c.title LIKE '%".trim($_POST['searchbykeyword'])."%' OR u.companyname like '%".trim($_POST['searchbykeyword'])."%' )" ;
  			}
 		}
  		
 		$sql = "SELECT DISTINCT(o.id), o.ordernumber, o.purchasedate, o.purchasingadmin, o.type, o.txnid, o.email, od.accepted, od.paymentstatus, sum(od.price*od.quantity) amount, o.taxpercent, od.status  
-				FROM ".$this->db->dbprefix('order')." o, ".$this->db->dbprefix('orderdetails')." od
-				JOIN ".$this->db->dbprefix('company')." c ON c.id = od.company
-				WHERE o.id=od.orderid AND od.company=".$company->id." 
+				FROM ".$this->db->dbprefix('order')." o LEFT JOIN ".$this->db->dbprefix('orderdetails')." od on o.id=od.orderid 
+				JOIN ".$this->db->dbprefix('company')." c ON c.id = od.company 
+				LEFT JOIN pms_users u ON o.purchasingadmin = u.id 
+				WHERE  od.company=".$company->id." 
 				$search $filter 
 				GROUP BY od.orderid 		
 				ORDER BY o.purchasedate DESC";
@@ -842,19 +843,36 @@ class Order extends CI_Controller
 		$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');
-
-			$paddr="";
-			if(isset($_POST['pickup']) && $_POST['pickup']=='on')
-			{
-				$data['email_body_content'] = "Pickup Address:".$_POST['pickupaddress']."<br>";
-				$paddr="Pickup Address:".$_POST['pickupaddress'];
+			$FM="";
+			$data['email_body_content']="";
+			$data['email_body_title'] ="";
+			if($_POST['message']!=""){
+				$data['email_body_title'] .= $_POST['message'];				
+				$FM .= $_POST['message'];
+				if(isset($_POST['pickup']) && $_POST['pickup']=='on'){
+				$FM .= "&nbsp;Pickup Address:".$_POST['pickupaddress'];	
+				$data['email_body_content'] .= "&nbsp;Pickup Address:".$_POST['pickupaddress']."<br>";
+				}
+				if(isset($_POST['paymentrequest']) && $_POST['paymentrequest']=='1') {
+				$FM .="&nbsp;Payment Requested";
+				$data['email_body_content'] .= "&nbsp;Payment Requested<br />";
+				}
 			}
-			else 
-			{
-				$data['email_body_content'] = "";
+			else {
+				if(isset($_POST['pickup']) && $_POST['pickup']=='on'){
+				$FM .= "Pickup Address:".$_POST['pickupaddress'];
+				$data['email_body_content'] .= "&nbsp;Pickup Address:".$_POST['pickupaddress']."<br />";	
+				}
+				if(isset($_POST['paymentrequest']) && $_POST['paymentrequest']=='1') {
+				$FM .="&nbsp;Payment Requested<br>";
+				$data['email_body_title'] .= "Payment Requested";					
+				}
+				else 
+				{
+					$data['email_body_title'] .= "Details";		
+				}
 			}
-
-		$data['email_body_title'] = $_POST['message'];
+			
 		$order = $this->db->where('id',$id)->get('order')->row();
 		$orderdetails = $this->db->where('orderid',$id)->where('company',$company->id)->get('orderdetails')->result();
 	    $orderitems = array();
@@ -888,6 +906,7 @@ class Order extends CI_Controller
 		$this->email->initialize($config);
 		$this->email->from($company->primaryemail);
 		$this->email->to($_POST['to']);
+		//$this->email->to('pawan.patil@xecomit.com');
 		$subject = '';
 		if(@$_POST['paymentrequest'])
 		    $subject = 'PAYMENT REQUEST ';
@@ -895,8 +914,7 @@ class Order extends CI_Controller
 		$this->email->message($send_body);	
 		$this->email->set_mailtype("html");
 		$this->email->reply_to($company->primaryemail);
-		$this->email->send();
-		
+		$this->email->send();		
 		$om = array();
 		$om['orderid'] = $id;
 		$om['fromtype'] = 'company';
@@ -912,13 +930,15 @@ class Order extends CI_Controller
 		}
 		$om['paymentrequest'] = @$_POST['paymentrequest'];
 		$om['subject'] = $_POST['subject'];
-		if($paddr!=""){
-		$om['message'] = $paddr.",".$_POST['message'];
+		$om['message']="";
+		if($FM!=""){
+		$om['message'] .= $FM."&nbsp;";
 		}
 		else 
 		{
-			$om['message'] = $_POST['message'];
+			$om['message'] .= "Message Send";
 		}
+		 		
 		$om['senton'] = date('Y-m-d');
 		$this->db->insert('ordermessage',$om);
 		

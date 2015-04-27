@@ -201,11 +201,11 @@ function showdueorders(userid)
   <?php $oldfrommid=$admin->purchasingadmin; $i++; } //die;?> 
   
   
+ 
   
   
   
-  
-     <?php if($admins) foreach ($admins as $admin){ ?>
+     <?php if($admins) foreach ($admins as $admin){  ?>
  <div id="ordermodal<?php echo $admin->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -219,6 +219,11 @@ function showdueorders(userid)
         	 <?php if($admin->order){ ?>          
 	        <table id="datatable" class="table no-more-tables general">
                                         <thead>
+                                        <tr>
+                                        <td colspan="6">
+                                         <?php if(count($admin->orderinvnum) > 0){ echo "<strong>Invoices : </strong>".$invname=implode(",",$admin->orderinvnum);} ?>
+                                        </td>
+                                        </tr>
                                             <tr>
                                                 <th style="width:10%">Order Type</th>
                                                 <th style="width:10%">Order#</th>

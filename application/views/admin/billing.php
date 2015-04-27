@@ -425,7 +425,7 @@ function changeduedate(count,invoicenum,datedue)
                     			
                     			$datediff = strtotime($item->customerduedate) - time();
      							$datediff = abs(floor($datediff/(60*60*24)));
-                    			if($item->customerduedate>=date('Y-m-d')){                    			
+                    			if($item->customerduedate>date('Y-m-d')){                    			
                     				$future[] = ($item->totaldue);
                     			}elseif($datediff>=1 && $datediff<=30){ 
                     				$current[] = ($item->totaldue);
