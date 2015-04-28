@@ -864,7 +864,6 @@ class Quote extends CI_Controller
         		WHERE pt.purchasingadmin='".$quote->purchasingadmin."' AND pt.company='" . $company->id . "'
 			";
         $data['patier'] = @$this->db->query($sql)->row()->tier;
-		
 		$quoteitems = $this->quotemodel->getquoteitems($quote->id);
 		$data['proname']=$this->db->get_where('project',array('id'=>$quote->pid))->row()->title;
 		//print_r($quoteitems);die;
@@ -872,11 +871,18 @@ class Quote extends CI_Controller
 		$company = $this->quotemodel->getcompanybyid($invitation->company);
 		$draftitems = $this->quotemodel->getdraftitems($quote->id,$invitation->company);
 		
-		$sql = "SELECT tier
+		$sql = "SELECT tier,creditonly
 				FROM ".$this->db->dbprefix('purchasingtier')." pt 
 				WHERE pt.company='".$company->id."' AND pt.purchasingadmin='".$quote->purchasingadmin."'
 			";
 		$tier = $this->db->query($sql)->row();
+		
+		$bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
+		$data['largesms']=0;	
+	    if(@$bankaccount->bankname=="" && @$bankaccount->routingnumber=="" && @$bankaccount->accountnumber=="" && @$tier->creditonly == 1){
+		    $data['largesms']=1;
+		    }
+		
 		if(@$tier->tier)
 		{
 			$tier = $tier->tier;

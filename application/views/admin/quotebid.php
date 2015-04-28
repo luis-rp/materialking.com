@@ -34,8 +34,8 @@
 $(document).ready(function(){
 	//$('#intro').wysihtml5();
 	//$('#content').wysihtml5();
-	$('#deliverydate').datepicker();
-	$('#podate').datepicker();
+	$('#deliverydate').datepicker({ minDate: 0 });
+	$('#podate').datepicker({ minDate: 0 });
 	$('#duedate').datepicker({ minDate: 0 });	
 	$('.daterequested').datepicker();
 	//$('textarea').autosize();
@@ -1092,12 +1092,13 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		</td>
 		    		<td>
 		    			<select id="costcode<?php echo $q->id;?>" name="costcode<?php echo $q->id;?>" class="costcode" onchange="defaultcostcode(this.value)" style="width:150px;">
-		    				<?php foreach($costcodes as $costcode){?>
+		    				<!--<?php foreach($costcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($q->costcode==$costcode->code){echo 'SELECTED';}?>>
 		    				<?php echo $costcode->code;?>
 		    				</option>
-		    				<?php }?>
+		    				<?php }?>-->
+		    				<?php echo $parentcombooptionsforquote; ?>
 		    			</select>
 		    		</td>
 		    		<td><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="height:130px;width:95%;"><?php echo $q->notes;?></textarea></td>
@@ -1161,12 +1162,13 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    		</td>
 		    		<td>
 		    			<select id="costcode" name="costcode" class="costcode" onchange="defaultcostcode(this.value)" style="width:150px;">
-		    				<?php foreach($costcodes as $costcode){?>
+		    				<!--<?php foreach($costcodes as $costcode){?>
 		    				<option value="<?php echo $costcode->code;?>" 
 		    				<?php if($this->session->userdata('defaultcostcode')==$costcode->code){echo 'SELECTED';}?>>
 		    				<?php echo $costcode->code;?>
 		    				</option>
-		    				<?php }?>
+		    				<?php }?>-->
+		    				<?php echo $parentcombooptionsforquote; ?>
 		    			</select>
 		    			
 		    		</td>

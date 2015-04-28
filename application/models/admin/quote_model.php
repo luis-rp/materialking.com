@@ -2316,7 +2316,7 @@ class quote_model extends Model {
 	
 	function gettotalreceivedshipqty(){
 		
-		if($this->session->userdata('managedprojectdetails')->id != '')
+		if(@$this->session->userdata('managedprojectdetails')->id != '')
 		{
 			$projectid = $this->session->userdata('managedprojectdetails')->id;
 		}

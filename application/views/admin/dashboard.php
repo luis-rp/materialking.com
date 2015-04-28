@@ -429,7 +429,7 @@
 			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">
 			    			<img src="<?php echo base_url(); ?>templates/admin/images/3d_pie_chart.jpg"/>
 			    			<!--<img src="<?php echo base_url(); ?>templates/admin/images/Free-Pie-Chart-PSD-Template.jpg"/>3d_pie_chart-->
-			    			</div>            
+			    		       
 	    				<?php //}?>   		
 	    	</div>
 			<?php }else{?>	

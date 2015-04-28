@@ -378,7 +378,7 @@ class quote extends CI_Controller
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '">Add Quote</a>&nbsp;';
         $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>&nbsp;';
-        $data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
+        //$data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
         $mess= $this->session->flashdata('message');
         if(isset($mess) && $this->session->flashdata('message')!=""){
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');
@@ -829,7 +829,18 @@ class quote extends CI_Controller
        	$sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$item->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
 		
- 		$data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
+ 		if(count($data['quoteitems']) > 0)
+ 		{
+	 		foreach ($data['quoteitems'] as $key=>$val)
+	 		{
+	 			$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$val->costcode}");
+	 		}
+ 		}
+ 		else 
+ 		{
+ 			$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, 0);
+ 		}
+ 		//	echo '<pre>',print_r($data['quoteitems']);die;
         $data['purchasercategories'] = $this->quote_model->getallCategories();		
         $data['purchasercategories1'] = $this->db->get('contractcategory')->result();	
         $this->db->where('quote', $id);
@@ -990,9 +1001,14 @@ class quote extends CI_Controller
         $data['costcodes'] = $this->db->where('project',$pid)->get('costcode')->result();
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
+ 		
 		$data['iscostcodeprefix'] = 1 ;
         if ($this->validation->run() == FALSE) {
             $data['quoteitems'] = $this->quote_model->getitems($itemid);
+            foreach ($data['quoteitems'] as $key=>$val)
+	 		{
+	 			$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$val->costcode}");
+	 		}
             $data['companylist'] = $this->quote_model->getcompanylist();
             $data['pid'] = $this->input->post('pid');
             $data ['action'] = site_url('admin/quote/updatequote');
@@ -1033,6 +1049,8 @@ class quote extends CI_Controller
     		$priceea="";  		
     		foreach($quoteitems as $q)
     		{
+		 		$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$q->costcode}");
+		 	
     			if($q->ea > 0){ $priceea=$q->ea; } else { $priceea='RFQ';}
     			
     			if ($q->item_img && file_exists('./uploads/item/' . $q->item_img)) 
@@ -10586,7 +10604,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         $data ['table'] = $this->table->generate();
         $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '">Add Quote</a>&nbsp;';
         $data ['addlink'].= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Direct">Add Purchase Order</a>&nbsp;';
-        $data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
+        //$data ['addlink'] .= '<a class="btn btn-green" href="' . base_url() . 'admin/quote/add/' . $pid . '/Contract">Add Contract Quote</a>&nbsp;';
         $mess= $this->session->flashdata('message');
         if(isset($mess) && $this->session->flashdata('message')!=""){
         	$this->session->set_flashdata('message', '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Permissions assigned.</div></div>');

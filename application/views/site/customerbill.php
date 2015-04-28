@@ -1,4 +1,4 @@
-
+<script src="<?php echo base_url(); ?>templates/site/assets/js/creditcard.js"></script>
 <script type="text/javascript">
 function loadbillitems(obj)
 {
@@ -42,10 +42,30 @@ function paycc(ptype,idnumber)
 }
 
 
-    
 function jq( myid ) { 
     return "." + myid.replace( /(:|\.|\[|\])/g, "\\$1" ); 
 }
+
+	function validatecc()
+	{		  
+	  cn = $("#card").val();
+	  ct =  $("#creditcardtypes").val();
+	  //alert(cn+'-'+ct);return false;
+	  if (!checkCreditCard (cn,ct)) {
+		alert (ccErrors[ccErrorNo]);
+		return false;
+	  }
+
+	  cvc = $("#cvc").val();	  	  
+	  if(cvc.length != 3 || isNaN(cvc))
+	  {
+		  alert('Wrong cvc code');
+		  return false;
+	  }
+		
+	  return true;
+	}
+
 </script>
 <style>
 .headtd {color:white;text-align:center;}
@@ -316,14 +336,16 @@ function jq( myid ) {
 </div>
 
 
-<div id="paymodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-    	<h3>
+<div id="paymodal" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
     	Pay by credit card
 		<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-		</h3>
-	</div>
-	<div class="modal-body" id="quoteitems">
+		</h3>  
+        </div>
+        <div class="modal-body" id="quoteitems">
         <form method="post" action="<?php echo site_url('site/paybillbycc/');?>" onsubmit="return validatecc();">
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
 	        <input type="hidden" id="ccpayinvoiceamount" name="amount" value="<?php echo round($amouttopay,2);?>"/>
@@ -390,7 +412,12 @@ function jq( myid ) {
                 <input type="submit" class="btn btn-primary arrow-right" value="Process">
             </div>
         </form>
-	</div>
-
-</div>
-
+	</div>          
+        <div class="modal-footer">
+          <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>

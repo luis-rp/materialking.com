@@ -145,6 +145,7 @@ class Dashboard extends CI_Controller
 			
 		$sms="";
 	    $basic=$this->db->get_where('company',array('id'=>$company->id))->row();
+	    //echo "<pre>"; print_r($basic); die;
 	    $bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
 	
 	    if(@$bankaccount->bankname=="" && @$bankaccount->routingnumber=="" && @$bankaccount->accountnumber=="")
@@ -158,7 +159,7 @@ class Dashboard extends CI_Controller
 	    	
 	    $data['ctitle']=$this->db->select('u.companyname')->from('users u')->join('network n','u.id=n.purchasingadmin')->where('n.company',$company->id)->get()->row();
 	    
-	    if(@$basic->contact!="" && @$basic->address!="" && @$basic->city!="" && @$basic->state!="" && @$basic->zip!="" && @$basic->address!="")
+	    if(@$basic->address!="")
 	    {	
 	    	$this->load->view('dashboard/index',$data);
 	    }

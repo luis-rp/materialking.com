@@ -568,7 +568,7 @@ class Dashboard extends CI_Controller
 		    }
 		  $query = " SELECT SUM(totalunpaid) as totalunpaid,company, purchasingadmin, datedue, paymentstatus, paymentdate ,SUM(received) as received,SUM(totalCommitted) as totalCommitted FROM( SELECT
 		    		IF(r.paymentstatus!='Paid', (IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))),0) 	
-		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF(IFNULL((ai.quantity),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))) as totalCommitted 
+		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF(r.paymentstatus!='Paid', IF(IFNULL((ai.quantity),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))),0) as totalCommitted 
 		    			FROM
 		    			".$this->db->dbprefix('awarditem')." ai left join ".$this->db->dbprefix('received')." r 
 						on r.awarditem=ai.id WHERE ai.company='".$nc->id."'
@@ -1794,6 +1794,15 @@ class Dashboard extends CI_Controller
 			$supplyemail=$this->db->get_where('company',array('primaryemail'=>$_POST['email']))->row();
 			$supplytitle=$this->db->get_where('company',array('title'=>$_POST['ctitle']))->row();
 			$settings = (array)$this->settings_model->get_current_settings ();
+			$sumofpurchase="SELECT SUM(totalprice) AS Total FROM ".$this->db->dbprefix('awarditem')." WHERE purchasingadmin='".$id."'";
+			$tot=$this->db->query($sumofpurchase)->row();
+			if(isset($tot) && $tot!="")
+			{
+				$totalaccountspend='$'.number_format($tot->Total,2);
+			}
+			else {
+				$totalaccountspend='$0';
+			}
 						
 			if(!empty($supplytitle))
 			{ 	
@@ -1858,17 +1867,16 @@ class Dashboard extends CI_Controller
 			        $this->email->initialize($config);
 			        $this->email->from($emailfrom);
 					$this->email->to($_POST['email']);
-			        //$subject = 'Account Detail & Invitation';	
+					//$this->email->to('pawan.patil@xecomit.com');
 			        $subject = "Invitation from '{$company->companyname}' E-BID Network.";		        		
-			        $data['email_body_title'] = "Dear,&nbsp;{$_POST['cname']}<br>You have received an invitation to join ({$company->companyname}) procurement network.<br /> Your Invitation is from user '{$company->fullname}'.";
-		        	$data['email_body_content'] = "The Company '{$company->companyname}' invites you to join their purchasing network today.<br />
-		        	 Your login details are as Follow: <br /> Username :{$username}  <br> Password :{$password} <br><br>";	
+			        $data['email_body_title']= "Dear, " .$_POST['cname'];
+			        $loginlink = base_url() . 'company/login/';  
+			        $data['email_body_content'] = " You have received an invitation to join ({$company->companyname}) procurement network.<br />Your Invitation is from user '{$company->fullname}'.<br /><br />The Company '{$company->companyname}' invites you to join their e-procurement network today.<br /><br />The Company '{$company->companyname}' Details : <br /><strong>Contact Name : {$company->fullname} <br> Address : {$company->address} <br />Total Account Spend : {$totalaccountspend}</strong><br /><br />Your login details are as Follow<br /> <strong>Username : {$username}  <br> Password : {$password} </strong><br><br><a href='$loginlink' target='blank'>click here</a> to login.<br /><br />";			       			       
 				    $loaderEmail = new My_Loader();
 				    $send_body = $loaderEmail->view("email_templates/template",$data,TRUE);				     
 			        $this->email->subject($subject);
 			        $this->email->message($send_body);	
-			        $this->email->set_mailtype("html");
-			        //echo "<pre>"; print_r($this->email); die;			      
+			        $this->email->set_mailtype("html");	      
 			        $this->email->send();
 			        $this->session->set_userdata('message', 'Invitation Sent via Email Successfully');	    
 			        }		       

@@ -279,7 +279,7 @@
     </h3>
     <div class="box">
         <div class="span12">
-
+          <?php if(@$message){echo '<div class="alert alert-block alert-danger fade in"><button type="button" class="close close-sm" data-dismiss="alert"><i class="icon-remove"></i></button>'.$message.'</div>';}?>
             <?php echo $this->session->flashdata('message'); ?>
 
             <div class="datagrid-example">

@@ -248,7 +248,7 @@ function invoice(invoicenum,invoicequote)
 									    							$totalpaid+= $gtotal;
 									    							}
 
-									    						if($i->paymentstatus=='Unpaid' || $i->paymentstatus=='Requested Payment')
+									    						if($i->paymentstatus=='Unpaid' || $i->paymentstatus=='Requested Payment' || $i->paymentstatus=='Credit')
 									    							{
 									    							$totalunpaid+= $gtotal;
 									    							}

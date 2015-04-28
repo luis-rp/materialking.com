@@ -401,7 +401,7 @@ class itemcode extends CI_Controller
         }
         else
         {
-            $this->data['message'] = 'No Records';
+            $data['message'] = 'No Records';
         }
         $data['addlink'] = '';
         $data['heading'] = 'Item Code Management';
@@ -409,10 +409,6 @@ class itemcode extends CI_Controller
         $data['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/itemcode/add">Add Item Code</a>';
         $data['addcatlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/catcode/addcat">Add Category</a>';      
         $data['addsubcatlink'] = false;
-
-        //uksort($array, 'strcasecmp');
-
-       // $data['categories'] = $this->itemcode_model->getcategories(); ;
         $data['categories'] = $this->itemcode_model->get_all_sub_cats('0', '','',@$_POST['searchcategory']);
 
         if ($this->session->userdata('usertype_id') == 2)
@@ -2477,7 +2473,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     	}
         $data['itemavgprice'] = $trendstring;
         $data['totalPoAmtstring'] = $totalPoAmtstring;
-        $data['qtyonhand'] = @$item->qtyonhand;
+        $data['qtyonhand'] = (@$item->qtyonhand)?$item->qtyonhand:0;
         $data['qtyonpo'] = (@$item->qtyonpo)?$item->qtyonpo:0;
         $data['imgName'] = $imgName;
         $data['itempricetrend'] = $trend;

@@ -207,7 +207,7 @@ function showdueorders(userid)
   
      <?php if($admins) foreach ($admins as $admin){  ?>
  <div id="ordermodal<?php echo $admin->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:800px;">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -219,18 +219,16 @@ function showdueorders(userid)
         	 <?php if($admin->order){ ?>          
 	        <table id="datatable" class="table no-more-tables general">
                                         <thead>
-                                        <tr>
-                                        <td colspan="6">
-                                         <?php if(count($admin->orderinvnum) > 0){ echo "<strong>Invoices : </strong>".$invname=implode(",",$admin->orderinvnum);} ?>
-                                        </td>
-                                        </tr>
+                                        
                                             <tr>
-                                                <th style="width:10%">Order Type</th>
-                                                <th style="width:10%">Order#</th>
-                                                <th style="width:10%">Date</th>
-                                                <th style="width:10%">Value</th>
-                                                <th style="width:10%">Paid</th>
-                                                <th style="width:15%">Due</th>                                                
+                                                <th style="width:8%">Order Type</th>
+                                                <th style="width:8%">Order#</th>
+                                                <th style="width:8%">PO Date</th>
+                                                <th style="width:8%">Value</th>
+                                                <th style="width:8%">Paid</th>
+                                                <th style="width:12%">Due</th> 
+                                                <th style="width:13%">Invoice</th> 
+                                                <th style="width:13%">Invoice Due Date</th>                                          
                                             </tr>
                                         </thead> 
                                         <tbody>                                        
@@ -245,6 +243,8 @@ function showdueorders(userid)
                                         		<td><?php echo round(@$admin->amounttotal[$j],2);?></td>
                                         		<td><?php echo round((@$admin->amounttotal[$j] - @$admin->amountduetotal[$j]),2);?></td>
                                         		<td><?php echo round(@$admin->amountduetotal[$j],2);?></td>
+                                        		<td><?php echo @$admin->orderinvnum[$j];?></td>
+                                        		<td><?php echo date("m/d/Y", strtotime(@$admin->orderduedate[$j]));?></td>
                                         		</tr>
                                         	<?php $j++; }
                                         	
