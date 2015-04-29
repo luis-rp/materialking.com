@@ -413,16 +413,32 @@ class Register extends CI_Controller
         $insert['address'] = $_POST['address'];
         $insert['startdate'] = date('Y-m-d');
         $insert['creation_date'] = date('Y-m-d');
+        $insert['defaultadded'] ='1';
         $this->db->insert('project',$insert);
         $lastid = $this->db->insert_id();
             		           	
         $DefaultCostcode=$this->db->get('DefaultCostcode')->result();
        
+       /* $sqlquery="SELECT * FROM ".$this->db->dbprefix('costcode')." ORDER BY id DESC LIMIT 1";
+        $tc=$this->db->query($sqlquery)->row();
+        $costid=($tc->id+1);*/
+        $i=0;
+        $costid=0;
+        $ll=222;
         if(count($DefaultCostcode) > 0) {
-        	foreach ($DefaultCostcode as $DC) {  
-        		 $this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DC->code,'cost'=>$DC->cost,'cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+        	foreach ($DefaultCostcode as $DC) { 
+        		$ll=$DC->parent-$ll;
+        		if($DC->parent!=0){ $D= $ll;} else { $D=$DC->parent;}
+        		 $this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DC->code,'cost'=>'500','cdetail'=>$DC->cdetail,'parent'=>$D,'costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+        		 if($i==0){
+        		 $lastcostcodeid = $this->db->insert_id();
+        		 $newlastcostcodeid=$lastcostcodeid+$ll;
+        		 $this->db->where('id',$lastcostcodeid);
+        		 $this->db->update('costcode',array('parent'=>$newlastcostcodeid));}
+        		 $ll=$lastcostcodeid;
+        		 $i++;
         	}
-        }
+        }	
         								
 		$settings = (array)$this->settings_model->get_setting_by_id (1);
 		$settings['purchasingadmin'] = $u->id;

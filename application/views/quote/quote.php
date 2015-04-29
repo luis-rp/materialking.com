@@ -979,7 +979,7 @@ function setmasteroption(id,itemid,manufacturerid,partnum,itemname,listprice,min
 												       <a href="<?php echo site_url('uploads/quotefile/'.$file);?>" target="_blank">View File</a>&nbsp;
 												  <?php } } } ?>											
 							    		</td>
-							    		<td colspan="5"><?php if(@$largesms==1) { ?><span>This user is currently set to Credit Card only Status And Your Bank Account Settings are not set up. Please <a href="<?php echo site_url('company/bankaccount'); ?>" target="_blank" > Click Here. </a> to set up Your Bank Account Settings. <a href="<?php echo site_url('company/bankaccount'); ?>" target="_blank"> Click Here. </a> to set up Users billing terms to allow purchasing on their account.</span> <?php } ?></td>
+							    		<td colspan="5"><?php if(@$largesms==1) { ?><span>This user is currently set to Credit Card only Status And Your Bank Account Settings are not set up. Please <a href="<?php echo site_url('company/bankaccount'); ?>" target="_blank" > Click Here. </a> to set up Your Bank Account Settings. <a href="<?php echo site_url('company/invoicecycle'); ?>" target="_blank"> Click Here. </a> to set up Users billing terms to allow purchasing on their account.</span> <?php } ?></td>
 							    	</tr>								    	
                                     <tr>
                                     <td> Expire Date</td>

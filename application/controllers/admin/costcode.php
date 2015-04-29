@@ -1607,6 +1607,37 @@ class costcode extends CI_Controller {
 
     	echo json_encode($costcodes);
     }
+    
+    function DefaultImport()
+    {
+    	$data ['message'] = '';
+        $data ['heading'] = 'Default Costcode List';
+        $prodata=$this->db->get_where('project',array('id'=>$this->session->userdata('managedprojectdetails')->id))->row();
+        if(@$prodata->defaultadded == 0){
+        $data ['addlink'] = '<a class="btn btn-green" href="' . base_url() . 'admin/costcode/AddDefaultImport/'.$this->session->userdata('managedprojectdetails')->id.'" id="step10">Apply These Default Cost Code For '.$this->session->userdata('managedprojectdetails')->title.' project.</a>'; }
+        $sql ="SELECT * FROM ".$this->db->dbprefix('DefaultCostcode')." ORDER BY code";       
+        $data['defaultcostcodesdata'] = $this->db->query ($sql)->result();        
+        $this->load->view('admin/defaultcostcode', $data);
+    	
+    }
+    
+    function AddDefaultImport($id)
+    {
+    	$data ['message'] = '';
+    	$DefaultCostcode=$this->db->get('DefaultCostcode')->result();   		    	    		
+    	foreach ($DefaultCostcode as $DC) { 
+        		 $this->db->insert('costcode',array('project'=>$id,'purchasingadmin'=>$this->session->userdata('id'),'code'=>$DC->code,'cost'=>'500','cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+        	} 
+        $data ['message']="These Default Cost Codes are set For this project."; 
+        $this->db->where('id',$id);
+        $this->db->update('project',array('defaultadded'=>'1'));		
+    	
+        $data ['heading'] = 'Default Costcode List';
+        $prodata=$this->db->get_where('project',array('id'=>$id))->row();
+        $sql ="SELECT * FROM ".$this->db->dbprefix('DefaultCostcode')." ORDER BY code";       
+        $data['defaultcostcodesdata'] = $this->db->query ($sql)->result();        
+        $this->load->view('admin/defaultcostcode', $data);    	
+    }
 
 }
 

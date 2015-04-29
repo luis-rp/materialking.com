@@ -426,17 +426,31 @@ class cart extends CI_Controller
 		}
 		
 		$totalprice = 0;
+		$tempcopany = "";
+		$companycount=0;
 		foreach($cart as $ci)
 		{
+			if(@$ci['company']!=$tempcopany)
+			$companycount++;
 			$totalprice+= $ci['quantity'] * $ci['price'];
+			
+			$tempcopany = $ci['company'];
 		}
  		$settings = $this->settings_model->get_current_settings();
 		
 		 $tax = number_format($totalprice*$settings->taxpercent/100,2);
  		 $gtotal = number_format($totalprice,2);
  		 $totalshipping = number_format($_POST['itemshipping'],2);
-					
-		$totalprice = $totalprice+ $totalshipping+ $tax;
+		
+ 		  // 3% materialking comission on subtotal			
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		$comission = ($totalprice*$comissionper['comission']/100);
+ 		 
+ 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee			
+		$totalprice = $totalprice+ $totalshipping+ $tax + $comission + ($companycount*0.25) + 0.3;
+		// Adding 2.9% constant processing fee for each suppplier transaction.	
+		for($i=0;$i<$companycount;$i++)
+		$totalprice += ($totalprice*2.9/100);
 	    $totalprice = number_format($totalprice,2);
 		
 		@session_start();
@@ -568,7 +582,7 @@ class cart extends CI_Controller
 			foreach($companiesamount as $caid=>$amount)
 			{
 			    $amount = $amount + $amount*$settings->taxpercent/100;
-				$amount=$amount-.55-($amount*2.9/100);
+				//$amount=$amount-.55-($amount*2.9/100);
 			    $amount = round($amount,2);
 			    $bankaccount = $this->db->where('company',$caid)->get('bankaccount')->row();
 			    $company = $this->db->where('id',$caid)->get('company')->row();

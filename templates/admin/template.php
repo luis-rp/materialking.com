@@ -554,89 +554,92 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
 						  <?php if ($mp) { ?>
     <li id="step3"   class=" powertour-tooltip lp-dropdown <?php if ($menu == 'message' || $menu == 'project' ||  $menu == 'catcode' || $menu == 'contractcatcode' || $menu == 'receive' || $menu == 'billings' || $menu == 'admin' || $menu == 'costcode' || $menu == 'event' || $menu == 'itemcode' || $menu == 'company' || $menu== 'contractor_profile') { echo 'active'; } ?>"  >
 						    <a href="#" class="lp-dropdown-toggle" id="pages-dropdown"><span class="icon-edit"></span>Manage</a>
-                               <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown"  >
+                               <ul class="lp-dropdown-menu simple" data-dropdown-owner="pages-dropdown">
+                                
+                               
+                                <li <?php if ($menu == 'admin' && $function == 'set_bank_purchaser') { ?>class="active"<?php } ?>>
+                  <a tabindex="-1" href="<?php echo base_url(); ?>admin/admin/set_bank_purchaser"><i class="icon-picture"></i>&nbsp;&nbsp;Bank Account</a>
+                                </li>
+                                
+                                <?php if ($this->session->userdata('usertype_id') == 1) { ?>                               
+                                  <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
+	                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
+	                                </li>
+	                            <?php } ?>    
+                                
+                                <?php if ($this->session->userdata('usertype_id') == 1) { ?>
+                                 	 <li <?php if ($menu == 'company') { ?>class="active"<?php } ?>>
+	                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
+	                                </li>
+	                             <?php } ?>
 
-                            	<li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">
-                                	<a href="<?php echo base_url(); ?>admin/project" >
-                                    	<i class="icon-check"></i>
-                                    	Projects
-                                	</a>
-                            	</li>
-
-                                <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?> id="step9">
+	                             <?php if ($this->session->userdata('usertype_id') == 1) { ?>	                                
+	                                 <li <?php if ($menu == 'contractcatcode') { ?>class="active"<?php } ?>>
+	             <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractcatcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Contract Category</a>
+	                                </li>
+	                            <?php } ?>
+	                            
+	                             <li <?php if ($menu == 'costcode') { ?>class="active"<?php } ?> id="step9">
                                     <a tabindex="-1" href="<?php echo base_url(); ?>admin/costcode"><i class="icon-money"></i>&nbsp;&nbsp;Cost Codes</a>
                                 </li>
-                                <?php if ($this->session->userdata('usertype_id') == 1) { ?>
-                                <!-- <li <?php if ($menu == 'manufacturer') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/manufacturer"><i class="icon-check"></i>&nbsp;&nbsp;Manufacturers</a>
-                                </li> -->
-                                <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-check"></i>&nbsp;&nbsp;Items</a>
-                                </li>
-                                <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
-                                </li>
-                                <li <?php if ($menu == 'company') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/company"><i class="icon-ok"></i>&nbsp;&nbsp;Companies</a>
-                                </li>
-                                                             
-                                <li <?php if ($menu == 'catcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
-                                </li>
-                                 <li <?php if ($menu == 'contractcatcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractcatcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Contract Category</a>
-                                </li>
-                                <li <?php if ($menu == 'type') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>
-                                </li>
-                                <li <?php if ($menu == 'banner') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/banner"><i class="icon-picture"></i>&nbsp;&nbsp;Banner</a>
+	                                
+	                             <?php if ($this->session->userdata('usertype_id') == 1) { ?>	                                
+	                                 <li <?php if ($menu == 'catcode') { ?>class="active"<?php } ?>>
+	                              <a tabindex="-1" href="<?php echo base_url(); ?>admin/catcode"><i class="icon-folder-open"></i>&nbsp;&nbsp;Category</a>
+	                                </li>
+	                           <?php } ?>
+	                           
+	                           <li <?php if ($menu == 'event') { ?>class="active"<?php } ?>>
+                                	<a href="<?php echo base_url(); ?>admin/event">
+                                		<i class="icon-user"></i>
+                                		&nbsp;&nbsp;Events
+                                	</a>
+                            	</li>
+	                                
+	                           <?php if ($this->session->userdata('usertype_id') == 1) { ?>	                                
+	                                 <li <?php if ($menu == 'type') { ?>class="active"<?php } ?>>
+	                           <a tabindex="-1" href="<?php echo base_url(); ?>admin/type"><i class="icon-check"></i>&nbsp;&nbsp;Industry/Manufacturer</a>
+	                                </li>	                                                            
+                               <?php } ?>
+                               
+                               
+                                <li <?php if ($menu == 'inventorymanagement') { ?>class="active"<?php } ?>>
+             <a tabindex="-1" href="<?php echo base_url(); ?>admin/inventorymanagement"><i class="icon-picture"></i>&nbsp;&nbsp;Inventory Management</a>
                                 </li>
                                 
-                               <!-- <li <?php if ($menu == 'manage_network') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/manage_network"><i class="icon-th-list"></i>&nbsp;&nbsp;Manage Network Connection</a>
-                                </li>-->
-                                <?php } else { ?>
-                                <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-briefcase"></i>&nbsp;&nbsp;Items</a>
-                                </li>
-                                <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
-                                </li>
-                                
-                                  <li <?php if ($menu == 'contractor_profile') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractor_profile"><i class="icon-ok"></i>&nbsp;&nbsp;Profile</a>
-                                </li>
-                                <?php } ?>
-
-                                <?php if ($this->session->userdata('usertype_id') == 2) { ?>
+                                  <li <?php if ($menu == 'itemcode') { ?>class="active"<?php } ?>>
+	                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/itemcode"><i class="icon-check"></i>&nbsp;&nbsp;Items</a>
+	                              </li>
+	                              
+	                           <li <?php if ($menu == 'admin' && $function == 'index') { ?>class="active"<?php } ?>>
+                                	<a href="<?php echo base_url(); ?>admin/admin/index">
+                                		<i class="icon-user"></i>
+                                		&nbsp;&nbsp;Manage Users
+                                	</a>
+                            	</li>   
+	                              
+	                           <?php if ($this->session->userdata('usertype_id') == 2) { ?>
                                     <li <?php if ($menu == 'message') { ?>class="active"<?php } ?>>
                                         <a href="<?php echo site_url('admin/message/messages/') ?>">
-                                            <i class="icon-envelope"></i>&nbsp;&nbsp; Messages
+                                            <i class="icon-envelope"></i>&nbsp;&nbsp;Messages
                                         </a>
                                     </li>
                                 <?php } ?>
-
-                            	<li <?php if ($menu == 'admin' && $function == 'index') { ?>class="active"<?php } ?>>
-                                	<a href="<?php echo base_url(); ?>admin/admin/index">
-                                		<i class="icon-user"></i>
-                                		Manage Users
-                                	</a>
+                                
+                                 <?php if ($this->session->userdata('usertype_id') != 1) { ?>	                                
+	                                 <li <?php if ($menu == 'contractor_profile') { ?>class="active"<?php } ?>>
+	                             <a tabindex="-1" href="<?php echo base_url(); ?>admin/contractor_profile"><i class="icon-ok"></i>&nbsp;&nbsp;Profile</a>
+	                                </li>
+	                                
+                                <?php } ?>                               
+                                                              	                                
+	                            <li <?php if ($menu == 'project') { ?>class="active"<?php } ?> id="step4">
+                                	<a href="<?php echo base_url(); ?>admin/project" ><i class="icon-check"></i>&nbsp;&nbsp;Projects</a>
                             	</li>
-
-                            	<li <?php if ($menu == 'event') { ?>class="active"<?php } ?>>
-                                	<a href="<?php echo base_url(); ?>admin/event">
-                                		<i class="icon-user"></i>
-                                		Events
-                                	</a>
-                            	</li>
-                            	
-                            	 <li <?php if ($menu == 'admin' && $function == 'set_bank_purchaser') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/admin/set_bank_purchaser"><i class="icon-picture"></i>&nbsp;&nbsp;Bank Account</a>
-                                </li>
-                                <li <?php if ($menu == 'inventorymanagement') { ?>class="active"<?php } ?>>
-                                    <a tabindex="-1" href="<?php echo base_url(); ?>admin/inventorymanagement"><i class="icon-picture"></i>&nbsp;&nbsp;Inventory Management</a>
-                                </li>
+                                
+                                 <li <?php if ($menu == 'serviceandlaboritems') { ?>class="active"<?php } ?>>
+	      <a tabindex="-1" href="<?php echo base_url(); ?>admin/serviceandlaboritems"><i class="icon-briefcase"></i>&nbsp;&nbsp;Service & Labor Items</a>
+	                              </li>	                                                               
                             </ul>
                         </li>
 
@@ -691,9 +694,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
                         
-                       <!-- <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
+                        <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
-                        </li>  -->             
+                        </li>              
                         
                           <?php } } else { ?>
                             <?php if ($mp) { ?>

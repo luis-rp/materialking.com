@@ -201,22 +201,22 @@ function submitForm(val,invoicequote)
     			  		    <?php //echo $report->totalprice - $report->totalpaid;?>
     			  		</span>
     			  </div>-->
-
-			    <table id="datatable" class="table no-more-tables general" style="table-layout:fixed;width:100%;word-break:break-all;">
+                 <div style="margin:0px; padding:0px; width:100%; overflow-x:scroll;">
+			    <table id="datatable" class="table no-more-tables general" style="table-layout:fixed;width:2000px;word-break:break-all;">
 			    	<tr>
-			    		<th width="8%">Company</th>
-			    		<th width="8%">Project</th>
-			    		<th width="8%">PO#</th>
-			    		<th width="8%">Item Code</th>
-			    		<th width="8%">Item Name</th>
-			    		<th width="6%">Unit</th>
-			    		<th width="6%">Qty.</th>
-			    		<th width="6%">EA</th>
-			    		<th width="6%">Total</th>
-			    		<th width="8%">Payment</th>
-			    		<th width="8%">Verification</th>
-			    		<th width="10%">Notes</th>
-			    		<th width="8%">Invoice#</th>
+			    		<th width="150px">Company</th>
+			    		<th width="150px">Project</th>
+			    		<th width="150px">PO#</th>
+			    		<th width="150px">Item Code</th>
+			    		<th width="150px">Item Name</th>
+			    		<th width="150px">Unit</th>
+			    		<th width="150px">Qty.</th>
+			    		<th width="150px">EA</th>
+			    		<th width="150px">Total</th>
+			    		<th width="150px">Payment</th>
+			    		<th width="150px">Verification</th>
+			    		<th width="150px">Notes</th>
+			    		<th width="150px">Invoice#</th>
 			    	</tr>
 			    	<?php
 
@@ -302,6 +302,7 @@ function submitForm(val,invoicequote)
     		   			echo '<script>$("#totalremaining'.$i.'").html("'.round($totalremaining,2).'");</script>';
 			    	?>
 		      </table>
+		      </div>
 		      <br/>
 		      <br/>
 	    	<?php

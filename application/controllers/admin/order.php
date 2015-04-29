@@ -1260,11 +1260,22 @@ function orders_export()
 		$config = (array)$this->settings_model->get_current_settings();
 		$config = array_merge($config, $this->config->config);
 		
+		 // 3% materialking comission on subtotal					
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		 $comission = ($_POST['subtotal']*$comissionper['comission']/100);
+ 		 
+		 $totalprice = 0;
+ 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee			
+		$totalprice = $_POST['amount'] + $comission + 0.25 + 0.3;
+		
+		// Adding 2.9% constant processing fee for each suppplier transaction.			
+		$totalprice += ($totalprice*2.9/100);
+		
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount']) * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)

@@ -92,11 +92,27 @@ class settings_model extends Model
           	'pagetour'=>$this->input->post('pagetour'),
           	'timezone'=>$this->input->post('timezone'),
           	'logo'=>"",
-          	'miles'=>$miles
+          	'miles'=>$miles,
+          	'comission'=>$this->input->post('comission'),
 		);
 
 		$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
 		$this->db->update('settings', $options);
+	}	
+    	
+	function get_current_comission()
+ 	{ 	   
+		$sql ="SELECT comission FROM
+		".$this->db->dbprefix('settings')." s JOIN ".$this->db->dbprefix('users')." u ON s.purchasingadmin=u.id 
+		WHERE u.usertype_id=1 AND u.isdeleted=0"; 
+
+		$query = $this->db->query ($sql);
+		if($query->num_rows>0)
+		{
+			$ret = $query->row();			
+	        return $ret;
+		}
+		return NULL;
 	}
 }
 ?>

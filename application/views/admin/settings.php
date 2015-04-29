@@ -72,6 +72,14 @@
                    <?php echo @$this->validation->error_miles; ?>
                </div>
       </div>
+      
+      <div class="control-group">
+	    <label class="control-label" for="taxrate">Commission Percent *</label>
+	    <div class="controls">
+	    	 <input type="text" id="comission" name="comission" class="span2" value="<?php echo $this->validation->comission;?>"> %
+	     	<?php echo @$this->validation->error_comission; ?>
+	    </div>
+    </div>
      <?php } ?>              
 
     <div class="control-group">

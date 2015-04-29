@@ -38,6 +38,7 @@ class Settings extends CI_Controller
 		$data = $this->settings_model->get_current_settings ();
 		$this->validation->id = 1;
 		$this->validation->taxrate = $data->taxrate;
+		$this->validation->comission = $data->comission;
 		$this->validation->adminemail = $data->adminemail;
 		$this->validation->pricedays = $data->pricedays;
 		$this->validation->pricepercent = $data->pricepercent;
@@ -53,6 +54,8 @@ class Settings extends CI_Controller
 	{
 		$fields ['id'] = 'id';
 		$fields ['taxrate'] = 'taxrate';
+		if($this->session->userdata('usertype_id')=='1') {
+		$fields ['comission'] = 'comission';}
 		$fields ['adminemail']= 'adminemail';
 		$fields ['pricedays'] = 'pricedays';
 		$fields ['pricepercent']= 'pricepercent';
@@ -65,6 +68,8 @@ class Settings extends CI_Controller
 	function _set_rules()
 	{
 		$rules ['taxrate'] = 'trim|required';
+		if($this->session->userdata('usertype_id')=='1') {
+		$rules ['comission'] = 'trim|required';}
 		$rules ['adminemail']= 'trim|required';
 		$rules ['pricedays'] = 'trim|required';
 		$rules ['pricepercent']= 'trim';

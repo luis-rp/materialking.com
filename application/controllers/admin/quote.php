@@ -6657,11 +6657,26 @@ class quote extends CI_Controller
 		$config = (array)$this->settings_model->get_current_settings();
 		$config = array_merge($config, $this->config->config);
 
+		// To find the subtotal from (total with tax)
+		
+		$subtotal = round($_POST['amount']/(($config['taxpercent']/100) + 1),2 );
+		
+		// 3% materialking comission on subtotal					 
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		 $comission = ($subtotal*$comissionper['comission']/100);
+ 		 
+ 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee	
+ 		$totalprice = 0; 		
+		$totalprice = $_POST['amount'] + $comission + 0.25 + 0.3;
+		
+		// Adding 2.9% constant processing fee for each suppplier transaction.			
+		$totalprice += ($totalprice*2.9/100);	   
+		
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
 		//$myCard = array('number' => '4242424242424242', 'exp_month' => 5, 'exp_year' => 2015);
 		$myCard = array('number' => $_POST['card'], 'exp_month' => $_POST['month'], 'exp_year' => $_POST['year']);
-		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount'],2) * 100, 'currency' => 'usd' ));
+		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
 		if(@$chargeobj->paid)
@@ -11446,7 +11461,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$config = array_merge($config, $this->config->config);
 		$totalprice = 0;
 		$currentpa = $this->session->userdata('site_loggedin')->id;
-		
+		$tempcopany = "";
+		$companycount=0;
 		foreach($bids as $bid)
         {        	
         	$this->db->where('company', $bid->company);
@@ -11457,12 +11473,27 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
             {
             	if($item->postatus=='Accepted' && (@$creditonly==1)){                
             	$totalprice+= $item->quantity * $item->ea;
+            		if(@$bid->company!=$tempcopany){
+						$companycount++;
+						$tempcopany = $bid->company;
+            		}	
             	}
             	
             }
         }    
 		$tax = number_format($totalprice*$config['taxpercent']/100,2);
-		$totalprice = $totalprice+$tax;
+		
+		// 3% materialking comission on subtotal					
+ 		$comissionper = (array)$this->settings_model->get_current_comission();
+		$comission = ($totalprice*$comissionper['comission']/100);
+		  
+ 		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee	
+ 		$totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.3;		
+		
+		// Adding 2.9% constant processing fee for each suppplier transaction.		
+		for($i=0;$i<$companycount;$i++)
+		$totalprice += ($totalprice*2.9/100);			
+		
 		$totalprice = number_format($totalprice,2);
 		
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
@@ -11537,7 +11568,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			->get()->row();
 					
 			$amount = $amount + $amount*$config['taxpercent']/100;
-			$amount=$amount-.55-($amount*2.9/100);
+			//$amount=$amount-.55-($amount*2.9/100);
 			$amount = round($amount,2);							
 			
 			$currentpa = $this->session->userdata('site_loggedin')->id;
@@ -11690,7 +11721,17 @@ $loaderEmail = new My_Loader();
 		} 		
 		
 		 $tax = number_format($totalprice*$config['taxpercent']/100,2);
- 		 $totalprice = $totalprice+$tax;
+		 
+		 // 3% materialking comission on subtotal
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		$comission = ($totalprice*$comissionper['comission']/100);
+
+		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
+		 $totalprice = $totalprice+$tax+ $comission + 0.25 + 0.3;
+
+		 // Adding 2.9% constant processing fee for each suppplier transaction.		 
+		 $totalprice += ($totalprice*2.9/100);		 
+ 		 
  		 $totalprice = number_format($totalprice,2);
 		
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
@@ -11766,7 +11807,7 @@ $loaderEmail = new My_Loader();
 			->get()->row();
 			
 			$amount = $amount + $amount*$config['taxpercent']/100;
-			$amount=$amount-.55-($amount*2.9/100);
+			//$amount=$amount-.55-($amount*2.9/100);
 			$amount = round($amount,2);
 						
 			$bankaccount = $this->db->where('company',$company->id)->get('bankaccount')->row();
@@ -11910,18 +11951,38 @@ $loaderEmail = new My_Loader();
 
 		$totalprice = 0;
 		$currentpa = $this->session->userdata('site_loggedin')->id;
+		$companycount = 0;
+		$tempcopany = "";
 		
 		foreach ($items as $item) {			
 			
 			$this->db->where('company', $item->company);
 			$this->db->where('purchasingadmin', $currentpa);
 			$creditonly = @$this->db->get('purchasingtier')->row()->creditonly;
-			if(@$creditonly==1)
-			$totalprice+= $item->quantity * $item->ea;
+			if(@$creditonly==1){
+				$totalprice+= $item->quantity * $item->ea;
+				
+				if(@$item->company!=$tempcopany){
+					$companycount++;
+					$tempcopany = $item->company;
+				}
+				
+			}
 		} 		
 		
 		 $tax = number_format($totalprice*$config['taxpercent']/100,2);
- 		 $totalprice = $totalprice+$tax;
+		 
+		 // 3% materialking comission on subtotal
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		 $comission = ($totalprice*$comissionper['comission']/100);
+
+		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
+		 $totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.3;
+
+		 // Adding 2.9% constant processing fee for each suppplier transaction.
+		 for($i=0;$i<$companycount;$i++)
+		 $totalprice += ($totalprice*2.9/100);		 
+ 		
  		 $totalprice = number_format($totalprice,2);
 		
 		
@@ -11995,7 +12056,7 @@ $loaderEmail = new My_Loader();
 			->get()->row();
 			
 			$amount = $amount + $amount*$config['taxpercent']/100;
-			$amount=$amount-.55-($amount*2.9/100);
+			//$amount=$amount-.55-($amount*2.9/100);
 			$amount = round($amount,2);
 			
 			$currentpa = $this->session->userdata('site_loggedin')->id;
