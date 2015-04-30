@@ -2302,6 +2302,7 @@ class Quote extends CI_Controller
 		$data['purchasingadmins'] = $this->db->get()->result();
 		$data['company'] = $company;
 		$data['backtracks'] = $backtracks;
+		$data['menuhide'] = 1;
 		$this->load->view('quote/backtracks',$data);
 	}
 	

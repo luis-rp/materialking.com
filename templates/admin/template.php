@@ -694,9 +694,9 @@ if ($this->session->userdata('usertype_id') == 3 && $menu == 'quote' && !in_arra
                         	<a href="<?php echo base_url(); ?>admin/settings"><span class="icon-cog"></span>App Settings</a>
                         </li>
                         
-                        <li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
+                        <!--<li <?php if ($menu == 'contractbids') { ?>class="active"<?php } ?>>
                         	<a href="<?php echo base_url(); ?>admin/quote/contractbids"><span class="icon-cog"></span>Contract Bids</a>
-                        </li>              
+                        </li>  -->            
                         
                           <?php } } else { ?>
                             <?php if ($mp) { ?>

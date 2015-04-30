@@ -477,19 +477,19 @@ $( document ).tooltip();
 					<?php } 	?>
 					</span>
                     <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
-	                &nbsp;&nbsp;&nbsp;   <?php if($norecords =="") { ?> <a href="<?php echo site_url('store/items/'.$company->username);?>">
+	                &nbsp;&nbsp;&nbsp;   <?php if($norecords =="") { if($company->company_type !='3'){ ?> <a href="<?php echo site_url('store/items/'.$company->username);?>">
 	        				Back to Store Home
-	        			</a><?php } ?>
+	        			</a><?php } } ?>
         			</h3>
                     <br/>
 
-                	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>
+                	<div class="breadcrumb-pms"><?php echo @$breadcrumb;?></div>              	
                 	<br/>
-                	<?php echo @$norecords; if($company->company_type=='3'){ echo "<br/><p style='color:red;'>Store is Under Construction. Supplier has not set up an online Store.</p>"; }?>
+                	<?php echo @$norecords; if($company->company_type =='3'){ echo "<br/><p style='color:red;'>Store is Under Construction. Supplier has not set up an online Store.</p>"; }?>
 
                     <div class="properties-rows"><?php //echo "<pre>Status-"; print_r($supplier->joinstatus); die;?>
                       <div class="row">
-                        <?php if($status==1) { foreach ($inventory as $item) if ($item->ea) {  ?>
+                        <?php if($status==1) { if($company->company_type !='3') { foreach ($inventory as $item) if ($item->ea) {  ?>
                         <div class="property span9 PlumbingSupply">
                         <?php if(isset($item->itemcode)) { 
                         $count=strlen($item->itemcode); if($count<=20){ ?>
@@ -616,7 +616,7 @@ $( document ).tooltip();
                                 </div>
                             </div>
                         </div>
-                        <?php } } else { ?>
+                        <?php } } } else { ?>
                         <div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a>
                         <div class="msgBox">This Store is locked and available to registered members only.<br />Please Join or Login to access (<?php echo $company->title;?>) store.</div></div>
                         

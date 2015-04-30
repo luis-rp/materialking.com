@@ -200,11 +200,6 @@ function showdueorders(userid)
   </div>
   <?php $oldfrommid=$admin->purchasingadmin; $i++; } //die;?> 
   
-  
- 
-  
-  
-  
      <?php if($admins) foreach ($admins as $admin){  ?>
  <div id="ordermodal<?php echo $admin->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
     <div class="modal-dialog" style="width:800px;">
@@ -244,7 +239,7 @@ function showdueorders(userid)
                                         		<td><?php echo round((@$admin->amounttotal[$j] - @$admin->amountduetotal[$j]),2);?></td>
                                         		<td><?php echo round(@$admin->amountduetotal[$j],2);?></td>
                                         		<td><?php echo @$admin->orderinvnum[$j];?></td>
-                                        		<td><?php echo date("m/d/Y", strtotime(@$admin->orderduedate[$j]));?></td>
+                                        		<td><?php if(@$admin->orderduedate[$j]) { echo date("m/d/Y", strtotime($admin->orderduedate[$j]));}?></td>
                                         		</tr>
                                         	<?php $j++; }
                                         	

@@ -251,7 +251,7 @@ class quote extends CI_Controller
                     		$quote->subtotal += @$awditems->totalprice;
                     	}
                     	if(@$usersettings['taxpercent'])
-                    	$quote->total = round($quote->subtotal + (@$usersettings['taxpercent']*$quote->subtotal/100),2);
+                    	$quote->total = ''.round($quote->subtotal + (@$usersettings['taxpercent']*$quote->subtotal/100),2);
                 }
                 //$quote->awardedcompany = $quote->awardedbid?$quote->awardedbid->companyname:'-';
                 $quote->podate = $quote->podate ? $quote->podate : '';
@@ -4564,7 +4564,10 @@ class quote extends CI_Controller
 		}
 		//-------------
 		
-		
+		// 3% materialking comission on subtotal					 
+		 $comissionper = (array)$this->settings_model->get_current_comission();		
+		 $data['comissionper'] = $comissionper['comission'];
+		 
         $this->load->view('admin/invoices', $data);
     }
 
@@ -6656,21 +6659,9 @@ class quote extends CI_Controller
 		ini_set('max_execution_time', 300);
 		$config = (array)$this->settings_model->get_current_settings();
 		$config = array_merge($config, $this->config->config);
-
-		// To find the subtotal from (total with tax)
 		
-		$subtotal = round($_POST['amount']/(($config['taxpercent']/100) + 1),2 );
-		
-		// 3% materialking comission on subtotal					 
-		 $comissionper = (array)$this->settings_model->get_current_comission();
-		 $comission = ($subtotal*$comissionper['comission']/100);
- 		 
- 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee	
- 		$totalprice = 0; 		
-		$totalprice = $_POST['amount'] + $comission + 0.25 + 0.3;
-		
-		// Adding 2.9% constant processing fee for each suppplier transaction.			
-		$totalprice += ($totalprice*2.9/100);	   
+		$totalprice = $_POST['amount'];
+		$supplieramount = $_POST['supplieramount']; 
 		
 		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
 		Stripe::setApiKey($config['STRIPE_API_KEY']);
@@ -6699,7 +6690,7 @@ class quote extends CI_Controller
               $obj = json_decode($recObj);
               $_POST['amount'] = round($_POST['amount'],2);
               $transferObj = Stripe_Transfer::create(array(
-                  "amount" => $_POST['amount'] * 100,
+                  "amount" => $supplieramount * 100,
                   "currency" => "usd",
                   "recipient" => $obj->id,
                   "description" => "Transfer for ".$company->primaryemail )

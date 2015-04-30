@@ -1014,19 +1014,20 @@ $( document ).tooltip();
                             <div class="newbox">
 								
                             <?php if($inventory) { ?>
-                            <table id="datatable newtable" class="table table-bordered smallfont " style="width:100%;word-break: break-all;">
+                            <div style="margin:0px; padding:0px; width:100%; overflow-x:scroll;">
+                            <table id="datatable newtable" class="table table-bordered smallfont" style="table-layout:fixed;width:1500px;word-break: break-all;">
                             	<thead>
                                 <tr>
-                                    <th width="11%">Supplier</th>
-                                    <th width="11%">Code</th>
-                                    <th width="12%">Item</th>
-                                    <th width="10%">Manuf.</th>
-                                    <th width="10%">Part#</th>
-                                    <th width="8%">Price</th>
-                                    <th width="8%">Stock</th>
-                                    <th width="12%">Address</th>
-                                    <th width="8%">Dist(mi)</th>
-                                    <th width="12%">Buy</th>
+                                 	<th width="150px">Buy</th>
+                                    <th width="150px">Supplier</th>
+                                    <th width="150px">Code</th>
+                                    <th width="150px">Item</th>
+                                    <th width="150px">Manuf.</th>
+                                    <th width="150px">Part#</th>
+                                    <th width="150px">Price</th>
+                                    <th width="150px">Stock</th>
+                                    <th width="150px">Address</th>
+                                    <th width="150px">Dist(mi)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -1039,6 +1040,29 @@ $( document ).tooltip();
                                         $price = $inv->ea;
                                 ?>
                                 <tr>
+                                
+                                	<td style="padding:0px;word-break:break-all;" align="center">
+                                        <?php if($inv->price){?>
+                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
+                                       <?php }
+                                       else {	
+                                       	if($this->session->userdata('site_loggedin')) {?>
+                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
+                                            <i class="icon icon-plus"></i>
+                                        </a>
+                                        
+                                        <br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
+                                        <?php } elseif(@$inv->companydetails->availprice!=1) { ?>
+                                        	
+                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
+                                            <i class="icon icon-plus"></i>
+                                        </a>
+                                        
+                                        <br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
+                                        	
+                                      <?php  } }?>
+                                    </td>
+                                    
                                     <td style="padding:0px;word-break:break-all;"><a href="<?php echo site_url('site/supplier/'.@$inv->companydetails->username);?>"><?php echo @$inv->companydetails->title . $inv->joinstatus; ?></a> 
                                     <br>
                                      <?php  if (@$inv->companydetails->company_type==1) 
@@ -1094,31 +1118,12 @@ $( document ).tooltip();
 	                                   }?>
                                     <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
-                                    <td style="padding:0px;word-break:break-all;" align="center">
-                                        <?php if($inv->price){?>
-                                        	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
-                                       <?php }
-                                       else {	
-                                       	if($this->session->userdata('site_loggedin')) {?>
-                                    	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
-                                            <i class="icon icon-plus"></i>
-                                        </a>
-                                        
-                                        <br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
-                                        <?php } elseif(@$inv->companydetails->availprice!=1) { ?>
-                                        	
-                                        	<a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName; ?>',<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $inv->ea; ?>, <?php echo $inv->minqty; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'1',<?php echo (isset($inv->deal))?$inv->deal:1; ?>)">
-                                            <i class="icon icon-plus"></i>
-                                        </a>
-                                        
-                                        <br><?php if(count($inv->hasdiscount)!=0) echo "Volume Discount.";?>
-                                        	
-                                      <?php  } }?>
-                                    </td>
+                                    
                                 </tr>
                                 <?php } } }   ?>
                                 </tbody>
                             </table>
+                            </div>
                             <?php } ?>
 </div>
                         <?php if($amazon){ ?>

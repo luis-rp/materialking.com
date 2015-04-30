@@ -117,7 +117,7 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready( function() {
 });
-function paycc(ptype,idnumber,amount)
+function paycc(ptype,idnumber,amount, processhandling)
 {
 	if(confirm("Do You really want to Change The Payment Type?")){
 		if(ptype != 'Credit Card')
@@ -127,8 +127,9 @@ function paycc(ptype,idnumber,amount)
 		$('#invoice_paymenttype_' + idnumber + " option:first-child").attr("selected", true);
 		var invoicenumber = $('#invoicenumber_' + idnumber).val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
-		$("#ccpayinvoiceamount").val(amount);
-		$("#ccpayamountshow").html(amount);
+		$("#ccpayinvoiceamount").val(processhandling);
+		$("#supplieramount").val(amount);
+		$("#ccpayamountshow").html(processhandling+"( Including Processing & Handling Fee of $"+((processhandling-amount)*1).toFixed(2)+")");
 		$("#paymodal").modal();
 	}else {
 	var hidepaytype = $('#hiddenpaytype' + idnumber).val();
@@ -357,6 +358,9 @@ function upload_attachment(receivedid,invoicenum)
                     		foreach($items as $item){ $i++;
                     		 
                     		//$item->totalprice = (float) str_replace(',', '', $item->totalprice);
+                    		
+                    		$processhandling = 0;
+                    		$paysubtotal = 0;
                     		                   		
                     		if(@$item->discount_percent){
                     			
@@ -368,10 +372,23 @@ function upload_attachment(receivedid,invoicenum)
                     			$item->totalprice = $item->totalprice + (($item->totalprice*$item->penalty_percent/100)*$item->penaltycount);
                     		}
                     		
-                    		if(@$taxpercent)
-                    			$item->totalprice = $item->totalprice + ($item->totalprice*$taxpercent/100);
+                    		$paysubtotal = $item->totalprice;
                     		
-                    		?>
+                    		if(@$taxpercent)
+                    		$item->totalprice = $item->totalprice + ($item->totalprice*$taxpercent/100);                    			
+
+                    		// 3% materialking comission on subtotal
+                    		
+                    		$comission = ($paysubtotal*$comissionper/100);
+
+                    		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
+                    		
+                    		$processhandling = $item->totalprice + $comission + 0.25 + 0.3;
+
+                    		// Adding 2.9% constant processing fee for each suppplier transaction.
+							$processhandling += ($processhandling*2.9/100);	   ?>
+                    		
+                    		
                     		<tr style="background-color:<?php if($item->paymentstatus=='Paid' && $item->status=='Verified') { echo "#ADEBAD"; } elseif($item->paymentstatus=='Unpaid' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; } elseif($item->paymentstatus=='Paid' && $item->status=='Pending') { echo "#FFDB99";} elseif($item->paymentstatus=='Unpaid'  && $item->status=='Pending'){ echo "pink";} 
  elseif($item->paymentstatus=='Requested Payment' && $item->status=='Pending' && strtotime(date('m/d/Y')) > strtotime(date("m/d/Y", strtotime($item->datedue)))) { echo "#FF8080"; }?>">
                     			<td><a href="<?php echo site_url('admin/quote/track').'/'.@$item->quote->id; ?>" > <?php echo $item->ponum;?> </a></td>
@@ -391,7 +408,7 @@ function upload_attachment(receivedid,invoicenum)
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
                     				<?php if($item->status != 'Verified'){?>
-                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo round($item->totalprice,2); ?>');">
+                    				<select id="invoice_paymenttype_<?php echo $i;?>" required onchange="paycc(this.value,<?php echo $i;?>,'<?php echo round($item->totalprice,2); ?>','<?php echo round($processhandling,2); ?>');">
                     				<option value="">Select Payment Type</option>
                     				<?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                     				<option <?php echo $item->paymenttype=='Credit Card'?'SELECTED':'';?> value="Credit Card">Credit Card</option>
@@ -664,6 +681,7 @@ function upload_attachment(receivedid,invoicenum)
         <form method="post" action="<?php echo site_url('admin/quote/payinvoicebycc/');?>" onsubmit="return validatecc();">
 	        <input type="hidden" id="ccpayinvoicenumber" name="invoicenum"/>
 	        <input type="hidden" id="ccpayinvoiceamount" name="amount"/>
+	        <input type="hidden" id="supplieramount" name="supplieramount"/>
             <div class="control-group">
                 <label class="control-label" for="card">
                    Total Amount to pay
