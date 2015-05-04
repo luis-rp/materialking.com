@@ -1020,10 +1020,10 @@ $( document ).tooltip();
                                 <tr>
                                  	<th width="150px">Buy</th>
                                     <th width="150px">Supplier</th>
+                                    <th width="150px">Price</th>
                                     <th width="150px">Code</th>
                                     <th width="150px">Item</th>
                                     <th width="150px">Manuf.</th>
-                                    <th width="150px">Part#</th>
                                     <th width="150px">Price</th>
                                     <th width="150px">Stock</th>
                                     <th width="150px">Address</th>
@@ -1071,10 +1071,6 @@ $( document ).tooltip();
 				                    <?php } ?>
                                     
                                     </td>
-                                    <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
-                                    <td style="padding:0px;word-break:break-all;"><?php echo $inv->itemname ?> </td>
-                                    <td  style="padding:0px;word-break:break-all;"><?php echo $inv->manufacturername ?> </td>
-                                    <td  style="padding:0px;word-break:break-all;"class="tinyfont"><?php echo $inv->partnum ?> </td>
                                     <td style="padding:0px;word-break:break-all;">
                                              	
                                   <?php   	
@@ -1103,6 +1099,10 @@ $( document ).tooltip();
                                   ?>  	                                    	
                                     	<br>Min.Order:<?php echo $inv->minqty;?>
                                     </td>
+                                    <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
+                                    <td style="padding:0px;word-break:break-all;"><?php echo $inv->itemname ?> </td>
+                                    <td  style="padding:0px;word-break:break-all;"><?php echo $inv->manufacturername ?> </td>
+                                    <td  style="padding:0px;word-break:break-all;"class="tinyfont"><?php echo $inv->partnum ?> </td>
                                     <td style="padding:0px;word-break:break-all;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?><br>

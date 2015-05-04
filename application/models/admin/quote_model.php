@@ -1434,7 +1434,7 @@ class quote_model extends Model {
 				  WHERE r.awarditem=ai.id AND r.awarditem = s.awarditem AND r.invoicenum = s.invoicenum AND ai.company=c.id AND ai.award=a.id AND a.quote='{$invoicequote}'
 				  AND r.invoicenum='{$invoicenum}'
 				  ";*/
-        
+        // This is my Code
          $itemsql = "SELECT 
 					r.*,ai.itemid, ai.itemcode, c.title companyname, r.datedue,
 					ai.itemname, ai.ea, ai.unit, ai.daterequested, ai.costcode, ai.notes,c.id as companyid,ai.award, s.shipdate, ai.quantity as aiquantity    
@@ -1446,11 +1446,10 @@ class quote_model extends Model {
 				    LEFT JOIN " . $this->db->dbprefix('company') . " c ON ai.company=c.id
 				  WHERE  a.quote='{$invoicequote}'
 				  AND r.invoicenum='{$invoicenum}'
-				  ";
+				  GROUP BY ai.itemid";
 
         //echo $itemsql;
         $invoiceitems = $this->db->query($itemsql)->result();
-
         $invoice->items = array();
         foreach ($invoiceitems as $invoiceitem) {
             $this->db->where('id', $invoiceitem->itemid);

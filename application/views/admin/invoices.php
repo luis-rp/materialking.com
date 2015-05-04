@@ -399,7 +399,9 @@ function upload_attachment(receivedid,invoicenum)
                     			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
                     			</td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>                                
-                    			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?>
+                    			<td>
+       <?php $newduedate=""; if(@$item->receiveddate){ $newduedate=@$item->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }
+                    	if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo date("m/d/Y", strtotime($newduedate));}?>
                     			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
                     			</td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".round($item->totalprice,2);?>
@@ -453,19 +455,7 @@ function upload_attachment(receivedid,invoicenum)
                     			$item->totalprice = str_replace( ',', '', $item->totalprice );
                     			$totalunpaid+= $item->totalprice;
                     			
-                    			/*$datediff = strtotime($item->datedue) - time();
-     							$datediff = abs(floor($datediff/(60*60*24)));
-                    			if($item->datedue>=date('Y-m-d')){                    			
-                    				$future[] = $item->totalprice;
-                    			}elseif($datediff>=1 && $datediff<=30){ 
-                    				$current[] = $item->totalprice;
-                    			}elseif($datediff>=31 && $datediff<=60){ 
-                    				$daysold60[] = $item->totalprice;
-                    			}elseif($datediff>=61 && $datediff<=90){ 
-                    				$daysold90[] = $item->totalprice;
-                    			}elseif($datediff>=91 && $datediff<=120){ 
-                    				$daysold120[] = $item->totalprice;
-                    			}*/
+                    			
                     		}
 
                     		}

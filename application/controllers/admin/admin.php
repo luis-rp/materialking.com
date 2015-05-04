@@ -527,27 +527,29 @@ class Admin extends CI_Controller {
             redirect('admin/login');
           
          if(isset($_POST['disableaccountnumber']) && $_POST['disableaccountnumber']!=""){
+         	unset($_POST['enableaccountnumber']);
         	$accountnumber=$_POST['disableaccountnumber'];
         	
         }
               
          if(isset($_POST['enableaccountnumber']) && $_POST['enableaccountnumber']!=""){
+         	unset($_POST['disableaccountnumber']);
         	$accountnumber=$_POST['enableaccountnumber'];
         	
         }
         
          if(isset($_POST['disableroutingnumber']) && $_POST['disableroutingnumber']!=""){
+         	unset($_POST['enableroutingnumber']);
         	$routingnumber=$_POST['disableroutingnumber'];
         	
         }
         
          if(isset($_POST['enableroutingnumber']) && $_POST['enableroutingnumber']!=""){
+         	unset($_POST['disableroutingnumber']);
         	$routingnumber=$_POST['enableroutingnumber'];
         	
         }    
-            
-        
-        //$this->db->where('purchasingadmin',$id)->update('purchaserbank',$_POST);
+         
          $this->db->where('purchasingadmin',$id)->update('purchaserbank',array('bankname'=>$_POST['bankname'],'accountnumber'=>$accountnumber,'routingnumber'=>$routingnumber));
         $message = 'Bank Account settings updated.';
         $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-info"><button data-dismiss="alert" class="close">X</button><div class="msgBox">' . $message . '</div></div></div>');

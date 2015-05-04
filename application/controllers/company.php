@@ -242,10 +242,10 @@ class Company extends CI_Controller {
         redirect('dashboard');
     }
 
-    function login($id="") {
-    	if(isset($id) && $id!="")
+    function login($uname="") {
+    	if(isset($uname) && $uname!="")
     	{
-    		$userdata=$this->db->get_where('users',array('id'=>$id))->row();
+    		$userdata=$this->db->get_where('users',array('username'=>$uname))->row();
     	  	$data['sms'] = "You were invited by (".$userdata->fullname.") to join ".$userdata->companyname." e-procurement network";
     	}
         $data['message'] = '';
@@ -1345,21 +1345,25 @@ class Company extends CI_Controller {
             redirect('company/login');
         
         if(isset($_POST['disableaccountnumber']) && $_POST['disableaccountnumber']!=""){
+        	unset($_POST['enableaccountnumber']);
         	$accountnumber=$_POST['disableaccountnumber'];
         	
         }
               
          if(isset($_POST['enableaccountnumber']) && $_POST['enableaccountnumber']!=""){
+         	unset($_POST['disableaccountnumber']);
         	$accountnumber=$_POST['enableaccountnumber'];
         	
         }
         
          if(isset($_POST['disableroutingnumber']) && $_POST['disableroutingnumber']!=""){
+         	unset($_POST['enableroutingnumber']);
         	$routingnumber=$_POST['disableroutingnumber'];
         	
         }
         
          if(isset($_POST['enableroutingnumber']) && $_POST['enableroutingnumber']!=""){
+         	unset($_POST['disableroutingnumber']);
         	$routingnumber=$_POST['enableroutingnumber'];
         	
         }    

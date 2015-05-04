@@ -282,7 +282,9 @@ function shownotice(newval,oldval,id){
                 $totalprice = 0;
                 $i = 0;
                 $alreadypay = 0;
+                //echo "<pre>"; print_r($invoice->items); die;
                 foreach ($invoice->items as $invoiceitem) {
+                	
                     $invoiceitem = (array) $invoiceitem;
                     $totalprice += $invoiceitem['ea'] * (($invoiceitem['invoice_type'] != "fullpaid")? (($invoiceitem['invoice_type'] == "alreadypay")?0:$invoiceitem['quantity']):$invoiceitem['aiquantity']);
                     
@@ -430,8 +432,9 @@ function shownotice(newval,oldval,id){
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
-                    			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>
-                    			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?></td>
+                    			<?php $newduedate=""; if(@$item->receiveddate){ $newduedate=@$item->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }?>
+                    			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } 
+                    			else{ echo date("m/d/Y", strtotime($newduedate));}?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo round($item->totalprice,2); // printf ("%6.2f",$item->totalprice); ?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;
@@ -475,9 +478,7 @@ function shownotice(newval,oldval,id){
                     		}
 
                     		}?>
-                    		<!-- <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total:</td><td><?php echo "$ ".round($finaltotal,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Paid:</td><td><?php echo "$ ".round($totalpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-                    		<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style="text-align:right;">Total Due:</td><td><?php echo "$ ".round($totalunpaid,2);?></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>-->
+                    	
                     	</tbody>
                     </table>
                     

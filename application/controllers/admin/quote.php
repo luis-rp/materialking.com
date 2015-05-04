@@ -1244,7 +1244,7 @@ class quote extends CI_Controller
                     {
                     	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
                     	{ 
-                    		$loginlink = base_url() . 'company/login/' . $this->session->userdata('id');                 		
+                    		$loginlink = base_url() . 'company/login/' . $this->session->userdata('username');                           		
                     		$data['email_body_content'] .= " You have received an invitation to join ({$this->session->userdata('companyname')}) procurement network.<br />Your Invitation is from user '{$this->session->userdata('fullname')}'.<br /><br />The Company '{$this->session->userdata('companyname')}' invites you to join their e-procurement network today.<br /><br />The Company '{$this->session->userdata('companyname')}' Details : <br /><strong>Contact Name : {$this->session->userdata('fullname')} <br> Address : {$this->session->userdata('address')} <br />Total Account Spend : {$totalaccountspend}</strong><br /><br />Your login details are as Follow<br /> <strong>Username : {$limitcompany[$c->id]['username']}  <br> Password : {$limitcompany[$c->id]['password']} </strong><br><br><a href='$loginlink' target='blank'>click here</a> to login.<br /><br />After Login, you can click the below link for direct access to quote #". $this->input->post('ponum') . "<br /> <a href='$link' target='blank'>$link</a> ";
                     	}
                     } 
