@@ -1024,7 +1024,7 @@ $( document ).tooltip();
                                     <th width="150px">Code</th>
                                     <th width="150px">Item</th>
                                     <th width="150px">Manuf.</th>
-                                    <th width="150px">Price</th>
+                                    <th width="150px">Part#</th>
                                     <th width="150px">Stock</th>
                                     <th width="150px">Address</th>
                                     <th width="150px">Dist(mi)</th>
@@ -1042,6 +1042,12 @@ $( document ).tooltip();
                                 <tr>
                                 
                                 	<td style="padding:0px;word-break:break-all;" align="center">
+                                	<?php if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) { ?>                                       
+	                                    <?php $imgName = site_url('uploads/item/'.$item->item_img); ?>
+	                                <?php } else { ?>	                                    
+	                                        <?php $imgName = site_url('uploads/item/big.png'); 
+	                                   }?>
+                                	
                                         <?php if($inv->price){?>
                                         	<img style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" title="<?php if(isset($item->featuredsupplierdetails->phone)) echo $item->featuredsupplierdetails->phone; ?>"/><br/>Call for Price
                                        <?php }
@@ -1100,10 +1106,10 @@ $( document ).tooltip();
                                     	<br>Min.Order:<?php echo $inv->minqty;?>
                                     </td>
                                     <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo $inv->itemcode ?> </td>
-                                    <td style="padding:0px;word-break:break-all;"><?php echo $inv->itemname ?> </td>
+                                    <td style="padding:0px;"><?php echo $inv->itemname ?> </td>
                                     <td  style="padding:0px;word-break:break-all;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;word-break:break-all;"class="tinyfont"><?php echo $inv->partnum ?> </td>
-                                    <td style="padding:0px;word-break:break-all;">
+                                    <td style="padding:0px; word-break: keep-all;">
                                     <?php echo $inv->instock ? 'Yes' : 'No'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?><br>
                                     <?php echo $inv->backorder ? 'Backorder' : ''; ?><br>
@@ -1111,12 +1117,8 @@ $( document ).tooltip();
                                     
 
                                     </td>
-                                   <?php if ($item->item_img && file_exists('./uploads/item/' . $item->item_img)) { ?>                                       
-	                                    <?php $imgName = site_url('uploads/item/'.$item->item_img); ?>
-	                                <?php } else { ?>	                                    
-	                                        <?php $imgName = site_url('uploads/item/big.png'); 
-	                                   }?>
-                                    <td style="padding:0px;word-break:break-all;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
+                                   
+                                    <td style="padding:0px;word-break:keep-all;" class="tinyfont"><?php echo nl2br(@$inv->companydetails->address); ?> </td>
                                     <td><?php echo @$inv->dist ? number_format($inv->dist, 2) : ' '; ?></td>
                                     
                                 </tr>

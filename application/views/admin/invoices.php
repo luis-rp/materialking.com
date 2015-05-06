@@ -400,8 +400,8 @@ function upload_attachment(receivedid,invoicenum)
                     			</td>
                     			<?php //if(isset($item->quote->duedate) && $item->quote->duedate!="") { echo $item->quote->duedate; } else echo "";?>                                
                     			<td>
-       <?php $newduedate=""; if(@$item->receiveddate){ $newduedate=@$item->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }
-                    	if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo date("m/d/Y", strtotime($newduedate));}?>
+       <?php 
+                    	if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } else{ echo "No Date Set";}?>
                     			 &nbsp; <?php if (strpos(@$item->invoicenum,'paid-in-full-already') !== false) {  echo '<br>*Pre-Paid-Order'; }?>
                     			</td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo "$".round($item->totalprice,2);?>

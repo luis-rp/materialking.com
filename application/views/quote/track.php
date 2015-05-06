@@ -475,8 +475,7 @@ tr.still-due td
 	                  	<?php }?>
 					</td>
 					<td><?php 
-		$newduedate=""; if(@$i->receiveddate){ $newduedate=$i->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }
-					if($i->paymentstatus!='Credit'){?><input type="text" class="span daterequested highlight" id="daterequested<?php echo $i->invoicenum;?>" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo date('m/d/Y',strtotime($newduedate)); }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /><?php } ?>
+					if($i->paymentstatus!='Credit'){?><input type="text" class="span daterequested highlight" id="daterequested<?php echo $i->invoicenum;?>" name="daterequested" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); }else{ echo "No Date Set"; }?>" data-date-format="mm/dd/yyyy" onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)" /><?php } ?>
 					 <input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />				
 					</td>
 				</tr>

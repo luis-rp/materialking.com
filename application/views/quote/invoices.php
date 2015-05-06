@@ -231,7 +231,7 @@ function invoice(invoicenum,invoicequote)
                                                 			<?php if($i->paymentstatus=='Paid') { $olddate=strtotime($i->paymentdate); $newdate = date('m/d/Y', $olddate); echo $newdate; }?></td>
                                                 			<td style="padding: 10px 4px !important;"><?php echo $i->status;?></td>
                                                 			<td style="padding: 10px 4px !important;">
-      <?php $newduedate=""; if(@$i->receiveddate){ $newduedate=$i->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }?>                                       			<input type="text" id="daterequested<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{ echo date("m/d/Y", strtotime($newduedate));} ?>" class="date" style="width:90px;"
+                                    			<input type="text" id="daterequested<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date("m/d/Y", strtotime($i->datedue)); }else{ echo "No Date Set";} ?>" class="date" style="width:90px;"
                                                 			data-date-format="mm/dd/yyyy" readonly
                                                 			onchange="changeduedate('<?php echo $i->invoicenum;?>',this.value)"/>
                                                 			<input type="hidden" id="originaldate<?php echo $i->invoicenum;?>" value="<?php if($i->datedue){ echo date('m/d/Y',strtotime($i->datedue)); } ?>" />

@@ -629,13 +629,13 @@ class Quotemodel extends Model
         	if(@$_POST['searchfrom'])
 			{
 				$fromdate = date('Y-m-d', strtotime($_POST['searchfrom']));
-				$searches[] = " ( date(datedue) >= '$fromdate' ) ";
+				$searches[] = " ( date(datedue) >= '$fromdate' OR date(datedue) is NULL ) ";
 				//$searches[] = " ( date(receiveddate) >= '$fromdate' ) ";
 			}
 			if(@$_POST['searchto'])
 			{
 				$todate = date('Y-m-d', strtotime($_POST['searchto']));
-				$searches[] = " ( date(datedue) <= '$todate' ) ";
+				$searches[] = " ( date(datedue) <= '$todate' OR date(datedue) is NULL ) ";
 				//$searches[] = " ( date(receiveddate) <= '$todate' ) ";
 			} 		 
         	
@@ -654,7 +654,7 @@ class Quotemodel extends Model
 			  if($_POST['searchstatus'] == "pastdue")
                {
                	$toda = date('Y-m-d', strtotime(date('m/d/Y')));
-            	$searches[] = " ( date(datedue) <= '$toda' ) ";
+            	$searches[] = " ( date(datedue) <= '$toda' OR date(datedue) is NULL ) ";
             	//echo "<pre>"; print_r($searches); die;
                 } else 
                 {          

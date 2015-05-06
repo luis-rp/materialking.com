@@ -476,10 +476,11 @@ $( document ).tooltip();
 					</a>
 					<?php } 	?>
 					</span>
-                    <h3 class="titlebox" style="padding:0px 0px 0px 8px"><a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a>
-	                &nbsp;&nbsp;&nbsp;   <?php if($norecords =="") { if($company->company_type !='3'){ ?> <a href="<?php echo site_url('store/items/'.$company->username);?>">
-	        				Back to Store Home
-	        			</a><?php } } ?>
+                    <h3 class="titlebox" style="padding:0px 0px 0px 8px">
+                    	<a href="<?php echo site_url('site/supplier/'.$company->username);?>">Back to Profile</a> &nbsp;&nbsp;&nbsp;
+	                  	<?php if(@$norecords =="" && @$company->company_type !=3 && @$currentpage!=1) { ?> 
+	                  		<a href="<?php echo site_url('store/items/'.$company->username);?>">Back to Store Home</a>
+	                  	<?php }  ?>
         			</h3>
                     <br/>
 

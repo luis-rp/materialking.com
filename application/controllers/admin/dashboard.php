@@ -1791,8 +1791,8 @@ class Dashboard extends CI_Controller
 		{		
 			$id = $this->session->userdata('purchasingadmin');
 			$company=$this->db->get_where('users',array('id'=>$id))->row();       
-			$supplyemail=$this->db->get_where('company',array('primaryemail'=>$_POST['email']))->row();
-			$supplytitle=$this->db->get_where('company',array('title'=>$_POST['ctitle']))->row();
+			$supplytitle=$this->db->get_where('company',array('title'=>$_POST['ctitle'],'isdeleted'=>'0'))->row();
+			$supplyemail=$this->db->get_where('company',array('primaryemail'=>$_POST['email'],'isdeleted'=>'0'))->row();			
 			$settings = (array)$this->settings_model->get_current_settings ();
 			$sumofpurchase="SELECT SUM(totalprice) AS Total FROM ".$this->db->dbprefix('awarditem')." WHERE purchasingadmin='".$id."'";
 			$tot=$this->db->query($sumofpurchase)->row();
@@ -1803,16 +1803,42 @@ class Dashboard extends CI_Controller
 			else {
 				$totalaccountspend='$0';
 			}
-						
+				
 			if(!empty($supplytitle))
-			{ 	
-			$this->session->set_userdata('message','Company Name Already Exists');						  							       					
+			{ 
+				$isinnetwork=$this->db->get_where('network',array('company'=>$supplytitle->id,'purchasingadmin'=>$id))->row();
+				if(!empty($isinnetwork)){
+				$this->session->set_userdata('message','Company Name Already Exists');		
+				}	
+				else {
+				$insert = array();
+            	$insert['company'] = $supplytitle->id;
+            	$insert['purchasingadmin'] = $id;            		
+            	$insert['acceptedon'] = date('Y-m-d H:i:s');
+            	$insert['status'] = 'Active';
+            	$this->db->insert('network',$insert);	
+				$this->session->set_userdata('message','Company Name Already Exists, Connection Request Sent');	
+			     }					  							       					
 			}			       
 			else 
 			{
+				
 			      if(!empty($supplyemail))
-			      { 	
-			      $this->session->set_userdata('message','Email Already Exists');						       	 
+			      { 
+			      	$isinnetwork1=$this->db->get_where('network',array('company'=>$supplyemail->id,'purchasingadmin'=>$id))->row();
+					if(!empty($isinnetwork1)){
+				 	$this->session->set_userdata('message','Email Already Exists');	
+					}	
+					else {
+					$insert = array();
+            		$insert['company'] = $supplyemail->id;
+            		$insert['purchasingadmin'] = $id;            		
+            		$insert['acceptedon'] = date('Y-m-d H:i:s');
+            		$insert['status'] = 'Active';
+            		$this->db->insert('network',$insert);	
+					$this->session->set_userdata('message','Email Already Exists, Connection Request Sent');	
+			     	}			
+			     					       	 
 				  }
 			      else
 			      {			       	

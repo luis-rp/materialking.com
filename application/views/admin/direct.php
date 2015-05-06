@@ -694,6 +694,7 @@ function addCostcode()
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();
    var newValue = $( "#costcodeprefix option:selected" ).html().replace(/\»/g, '');
    var newValue1 = newValue.replace("&nbsp;",""); 
+   var newValue2 = newValue1.trim();
    
    if(costcodeprefix == "Add New Cost-Code")
    {
@@ -704,7 +705,7 @@ function addCostcode()
    {
 	   if($( "#costcodeprefix option:selected" ).val() !='')
 	   {
-	   		$("#ponum").val(newValue1);
+	   		$("#ponum").val(newValue2);
 	   }		
 	   else
 	   {

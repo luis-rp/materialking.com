@@ -56,8 +56,10 @@
 </style>
 
 <script>
-$(document).ready(function(){
+var comparr = new Array;
+$(document).ready(function(){	
 	$('.selection-item').click(function(){
+		comparr.length = 0;
 		refreshtotal();
 	});
 	var mintotal = refreshtotal();
@@ -65,6 +67,7 @@ $(document).ready(function(){
 });
 function refreshtotal()
 {
+	
 	var total = 0;
 	var cctotal = 0;
 	$('.selection-item:checked').each(function(obj) {
@@ -72,11 +75,12 @@ function refreshtotal()
 		var quantityid = selectionid.replace('selection','quantity');
 		var eaid = selectionid.replace('selection','ea');
 		var creditonlyval = selectionid.replace('selection','creditonly');
+		var selectedcompanyval = selectionid.replace('selection','selectedcompany');
 		
 		var quantity = Number($("#"+quantityid).val());
 		var ea = Number($("#"+eaid).html());
 		var creditonly = $("#"+creditonlyval).val();
-		
+		comparr.push($('#'+selectedcompanyval).val());
 		if(creditonly==1)
 		cctotal += quantity*ea;
 		
@@ -102,7 +106,7 @@ function refreshtotal()
     $("#selectedcctotal").val(ccgrandtotal);
     return grandtotal;
 }
-function awardbidbyid(bidid,grandtotal,creditonly)
+function awardbidbyid(bidid,grandtotal,creditonly,companyid)
 {
 	$("#itemids").val('');
 	$("#awardbid").val(bidid);
@@ -123,11 +127,15 @@ function awardbidbyid(bidid,grandtotal,creditonly)
 		$('#awardbtn').css('display','block');
 	}
 	$("#grandtotal").val(grandtotal);
+	comparr.length = 0; 
+	comparr.push(companyid);
 	$("#awardmodal").modal();
 }
 
 function awardbiditems()
 {
+	comparr.length = 0; 
+	refreshtotal();
 	var total = parseInt($('#selectedtotal').html());
 	if(total==0)
 	{
@@ -251,8 +259,17 @@ function validatecc()
 
 
 function paycc(bankaccounarr, bankcnt)
-{			
-	   if(bankcnt>0){
+{		
+	   var bankcreditset = 0;		
+	   console.log(comparr);
+	   if(bankcnt>0) {
+	   <?php foreach($bankaccarray as  $bkey=>$bnkarr){?>
+	     
+	   	 if(comparr.indexOf('<?php echo $bkey; ?>')>-1)
+	   	 bankcreditset = bankcreditset+1; 	   	
+		<?php } ?> }
+				
+	   if(bankcreditset>0){
 	   		alert(" You can't proceed. These Supplier/s have not set their bank account details: "+bankaccounarr);	
 	   }else{
 		
@@ -597,7 +614,9 @@ $(function() {
 				    		</td>
 				    		<td><?php echo $q->itemname;?></td>
 				    		<td><img style="max-height: 120px; padding: 0px;width:80px; height:80px;float:left;" src='<?php echo $imgName;?>'></td>
-				    		<td><?php if(@$bid->companyname && $bid->companyname != '') echo $bid->companyname; else echo '';?></td>
+				    		<td><?php if(@$bid->companyname && $bid->companyname != '') echo $bid->companyname; else echo '';?>
+				    		<input type="hidden" id="selectedcompany<?php echo $q->id;?>" value="<?php if(@$bid->company) echo $bid->company; else echo '';?>" />
+				    		</td>
 				    		<td><input class="span12" type="text" id="quantity<?php echo $q->id;?>" value="<?php echo $q->quantity;?>" onblur="updateqty('<?php echo $q->id;?>')" <?php if($isawarded){echo 'readonly';}?>></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php echo $q->minprice;?></td>
@@ -685,7 +704,7 @@ $(function() {
 				    <?php if(!$isawarded){?>
 				    <div align="right">
 					    <form method="post" action="<?php echo site_url('admin/quote/awardbid')?>">
-					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>','<?php echo $bid->creditonly;?>')" class="btn btn-primary"/>
+					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>','<?php echo $bid->creditonly;?>','<?php echo $bid->company;?>')" class="btn btn-primary"/>
 					    </form>
 				    </div>
 				    <?php }?>

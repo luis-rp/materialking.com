@@ -2536,7 +2536,7 @@ class Company extends CI_Controller {
 						WHERE r.awarditem=ai.id AND r.paymentstatus!='Paid' AND ai.company='".$company->id."'
 						AND ai.purchasingadmin='$pa'";*/
 		    
-		     $query = "SELECT q.ponum, q.podate, q.potype, r.invoicenum, if((r.paymentstatus!='Paid' || r.paymentstatus!='Credit'),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)),0) totalunpaid, (SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)) total, r.datedue  
+		     $query = "SELECT q.ponum, q.podate, q.potype, group_concat(r.invoicenum) invoicenum , if((r.paymentstatus!='Paid' || r.paymentstatus!='Credit'),(SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)),0) totalunpaid, (SUM(r.quantity*ai.ea) + (SUM(r.quantity*ai.ea) * 9.00 / 100)) total, r.datedue  
 		    			 FROM		    			
 		    			".$this->db->dbprefix('received')." r, ".$this->db->dbprefix('awarditem')." ai, ".$this->db->dbprefix('award')." a, ".$this->db->dbprefix('quote')." q 
 						WHERE r.awarditem=ai.id AND ai.award = a.id AND q.id = a.quote AND r.paymentstatus!='Paid' AND ai.company='".$company->id."' AND ai.purchasingadmin='$pa' group by q.id ";

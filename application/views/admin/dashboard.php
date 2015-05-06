@@ -167,6 +167,16 @@
 		$("#form-selector").submit();
 	}
 	
+	function namevalidation(name)
+{
+   if(!(/^(?:[A-Z]+ )+[A-Z]+$/i.test(name))) 
+    	{ 
+    		alert("Name contains atleast First Name and Last Name. No special characters allowed."); 
+    		document.getElementById("cname").value = "";
+    		return false; 
+    	} 
+}
+	
 </script>
 
 <style>
@@ -1054,7 +1064,7 @@
 	        
 			   <div class="form-group">
 			   <label class="sr-only" for="cname">Contact Name</label>
-			    <input type="text" class="form-control" id="cname" name="cname" required style="width:80%;">			  
+			    <input type="text" class="form-control" id="cname" name="cname" required style="width:80%;" onchange="namevalidation(this.value);">			  
 			  </div> 
 			  
 			  <div class="form-group">

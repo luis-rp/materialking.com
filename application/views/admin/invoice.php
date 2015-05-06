@@ -432,9 +432,9 @@ function shownotice(newval,oldval,id){
                     			<td><?php echo $item->ponum;?></td>
                     			<td id="invoicenumber_<?php echo $i;?>"><?php echo $item->invoicenum;?></td>
                     			<td><?php echo date('m/d/Y', strtotime($item->receiveddate));?></td>
-                    			<?php $newduedate=""; if(@$item->receiveddate){ $newduedate=@$item->receiveddate." + 30 days"; }else { $newduedate="now + 30 days"; }?>
+                    		
                     			<td><?php if($item->datedue) { echo date("m/d/Y", strtotime($item->datedue));  } 
-                    			else{ echo date("m/d/Y", strtotime($newduedate));}?></td>
+                    			else{ echo "No Date Set";}?></td>
                     			<td id="invoice_paymentamount_<?php echo $i;?>"><?php echo round($item->totalprice,2); // printf ("%6.2f",$item->totalprice); ?></td>
                     			<td>
                     				<span id="paymentstatus<?php echo $i;?>"><?php echo $item->paymentstatus;?></span>&nbsp;

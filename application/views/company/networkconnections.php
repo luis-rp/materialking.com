@@ -202,7 +202,7 @@ function showdueorders(userid)
   
      <?php if($admins) foreach ($admins as $admin){  ?>
  <div id="ordermodal<?php echo $admin->purchasingadmin;?>" aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal fade" style="display: none;">
-    <div class="modal-dialog" style="width:800px;">
+    <div class="modal-dialog" style="width:100%;">
       <div class="modal-content">
         <div class="modal-header">
           <button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
@@ -212,7 +212,7 @@ function showdueorders(userid)
         
         <div class="modal-body">   
         	 <?php if($admin->order){ ?>          
-	        <table id="datatable" class="table no-more-tables general">
+	        <table id="datatable" style="width:85%;" class="table no-more-tables general">
                                         <thead>
                                         
                                             <tr>
