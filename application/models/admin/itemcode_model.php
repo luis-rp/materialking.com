@@ -58,7 +58,7 @@ class itemcode_model extends Model {
        if(@$_POST['isfavorite'])
             $where .= " AND fi.isfavorite = '{$_POST['isfavorite']}'";
             
-        $sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),''), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),'')) AS awardedon
+        $sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),NULL), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),NULL)) AS awardedon
 , if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct o.project),group_concat(distinct q.pid)),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct q.pid),group_concat(distinct o.project))) AS project,fi.isfavorite
                 FROM
                 $ti i
@@ -1145,7 +1145,7 @@ class itemcode_model extends Model {
 				AND m.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				GROUP By c.id";*/
 		
-		$sql = "SELECT c.id as company, c.title companyname,o.id,o.ordernumber, DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate, od.itemid as itemid, od.price  
+		$sql = "SELECT c.id as company, c.title companyname,o.id,o.ordernumber, DATE_FORMAT(o.purchasedate,'%m/%d/%Y') as purchasedate, od.itemid as itemid, od.price, o.shipping, if(od.isreceived<>1,od.quantity,0) as qtyonpo    
 			   	FROM 								
 				" . $this->db->dbprefix('order') . " o,
 				" . $this->db->dbprefix('orderdetails') . " od,  
@@ -1160,12 +1160,32 @@ class itemcode_model extends Model {
             $result = $query->result();
             $ret = array();
             foreach ($result as $item) {
-                $this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
+                /*$this->db->where('purchasingadmin', $this->session->userdata('purchasingadmin'));
                 $this->db->where('company', $item->company); 
                 $this->db->where('status', 'Active');
-                if ($this->db->get('network')->result()) {
+                if ($this->db->get('network')->result()) {*/
+                
+                	$wherecode = "";	
+                	$whereproject = "";
+                	$item->qtyonhand = 0;
+                	if($item->qtyonpo =="")
+                		$item->qtyonpo = 0;
+                	if(@$this->session->userdata('managedprojectdetails')->id){
+            			$wherecode = "AND q.pid=".$this->session->userdata('managedprojectdetails')->id;
+            			$whereproject .= " AND i.project = ".$this->session->userdata('managedprojectdetails')->id;
+				 	}
+                		         
+				 	// Code for getting quantity on hand
+				 	$inventorysql = "select quantity from ".$this->db->dbprefix('inventory')." i WHERE 1=1 AND i.purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$whereproject} AND i.itemid = ".$itemid;
+				 	$sqlq = $this->db->query($inventorysql);
+				 	$qryinvresult = $sqlq->row();
+
+				 	if($qryinvresult){
+				 		$item->qtyonhand = $qryinvresult->quantity;
+				 	}
+                
                     $ret[] = $item;
-                }
+                //}
             }
             return $ret;
         }

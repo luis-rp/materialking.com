@@ -9,6 +9,17 @@
 	    return false;
 	 }
 
+	 function filtercategorystoreurl(id,caturl)
+	 {	 	
+	    $("#formcategory").val(id);
+	    var a = $("#categorysearchform").attr('action');		
+		$("#categorysearchform").attr('action', a+"/0/"+caturl);		
+	    document.forms['categorysearchform'].submit();
+	    //setTimeout("doPost()", 10);
+	    return false;
+	 }
+	 
+	 
 	 function doPost()
 	 {
 	    document.forms['categorysearchform'].submit();

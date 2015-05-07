@@ -21,8 +21,15 @@ class Store extends CI_Controller
 	{
 	}
 	
-	public function items($username, $manufacturer='')
+	public function items($username, $manufacturer='',$categroyurl="")
 	{
+		
+		if(!@$_POST['category']){
+    		 $catid = $this->items_model->getcategoryid_fromurl(urldecode($categroyurl));
+    		 if(@$catid->id)
+    		 $_POST['category'] = $catid->id;
+    	}
+		
 		$this->load->library('image_lib');
 		if(isset($_POST['searchbreadcrumbcategory']))
 		$_POST['category'] = $_POST['searchbreadcrumbcategory'];

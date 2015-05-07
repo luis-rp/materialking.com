@@ -1278,6 +1278,8 @@ function orders_export()
 		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
+		$comptransfer = true;
+		$redirectmsg = "";
 		if(@$chargeobj->paid)
 		{
 		    $bankaccount = $this->db->where('company',$_POST['company'])->get('bankaccount')->row();
@@ -1290,8 +1292,9 @@ function orders_export()
 	          			'account_number' => $bankaccount->accountnumber
 	          );
 
+	          try{
               $recObj = Stripe_Recipient::create(array(
-              "name" => $company->title, 
+              "name" => $company->contact, 
               "type" => "individual",
               "email" => $company->primaryemail,
               "bank_account" => $recbankInfo)
@@ -1306,7 +1309,16 @@ function orders_export()
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
-                      
+              
+	          }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }
+
+			  if($comptransfer == true){    
               $transfer = array();
               $transfer['orderid'] = $_POST['orderid'];
               $transfer['purchasingadmin'] = $this->session->userdata('purchasignadmin');
@@ -1345,8 +1357,10 @@ with the transfer#{$tobj->id}.
               $this->email->message($send_body);	
               $this->email->set_mailtype("html");
               $this->email->send();
+              $redirectmsg .= "Invoice paid successfully.";              
               
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Invoice paid successfully.</div></div>');
+			}
+              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');
         	}
 		}
 		redirect('admin/order/details/' . $_POST['orderid']);

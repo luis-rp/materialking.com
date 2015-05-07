@@ -398,7 +398,7 @@ $( document ).tooltip();
     <div class="container">
         <div id="main">
             <div class="row">
-            
+            <?php  if($company->company_type !='3'){ ?>
             <div class="location control-group">	
             
 				<form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('store/items/'.$company->username);?>">
@@ -417,7 +417,7 @@ $( document ).tooltip();
                  </form>
                              
              </div>
-            
+            <?php } ?>
             <form id="categorysearchform2" action="<?php echo base_url('store/items/'.$company->username);?>" method="post">
                     <input type="hidden" id="searchbreadcrumbcategory" name="searchbreadcrumbcategory" />
             </form>
@@ -622,10 +622,11 @@ $( document ).tooltip();
                         <div class="msgBox">This Store is locked and available to registered members only.<br />Please Join or Login to access (<?php echo $company->title;?>) store.</div></div>
                         
                         <?php }?>
+                          <?php  if($company->company_type !='3'){ ?>
                         <div class="pagination pagination-centered">
                             <?php $this->view('site/paging'); ?>
                         </div>
-
+                        <?php } ?>
                     	</div>
                     </div>
 

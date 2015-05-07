@@ -95,8 +95,8 @@
 <section class="row-fluid">
   	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> <?php if(@$itemavgprice) echo $itemavgprice; else echo '';?> </span> 
   	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> <?php if(@$totalPoAmtstring) echo $totalPoAmtstring; else echo '';?> </span> 
-  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> Qty. on Hand: <?php if(@$poitems) echo $poitems[0]->qtyonhand; else echo 0;?> </span><br>
-  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> Qty. on P.O: <?php if(@$poitems) echo $poitems[0]->qtyonpo; else echo 0;?> </span>
+  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> Qty. on Hand: <?php if((@$poitems[0]->qtyonhand+@$soitems[0]->qtyonhand)!="") echo @$poitems[0]->qtyonhand+@$soitems[0]->qtyonhand; else echo 0;?> </span><br>
+  	<span><span style="font-weight:bold;text-align:center;margin-left:155px;"> Qty. on P.O: <?php if((@$poitems[0]->qtyonpo+@$soitems[0]->qtyonpo)!="") echo @$poitems[0]->qtyonpo+@$soitems[0]->qtyonpo; else echo 0;?> </span>
   	<table style="border-collapse:collapse;background:white;"> 
 	  	<tr>
 	  		<td style="border: none;">

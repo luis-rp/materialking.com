@@ -122,7 +122,7 @@ class Storemodel extends Model
             if(!$hasitems)
                 continue;
             
-            $ret .= '<ul><li onclick="filtercategorystore('.$item->id.')"><a href="#">'.$item->catname.'</a></li></ul>';    
+            $ret .= '<ul><li onclick=\'filtercategorystoreurl('.$item->id.',"'.$item->categoryurl.'")\'><a href="#">'.$item->catname.'</a></li></ul>';    
         }
         
         

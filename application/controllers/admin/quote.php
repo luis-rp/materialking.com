@@ -788,6 +788,7 @@ class quote extends CI_Controller
 
     function update($id)
     {
+    	
         $this->_set_fields();
         $config = (array) $this->settings_model->get_current_settings();
 
@@ -795,8 +796,18 @@ class quote extends CI_Controller
         if ($this->session->userdata('usertype_id') == 2 && $item->purchasingadmin != $this->session->userdata('id')) {
             redirect('admin/dashboard', 'refresh');
         }
-
-        $pid = $this->session->userdata('managedprojectdetails')->id;
+        
+        $ppid="";
+        $q=$this->db->get_where('quote',array('id'=>$id))->row()->pid;
+               
+        if(isset($this->session->userdata('managedprojectdetails')->id))  {      
+        $ppid = $this->session->userdata('managedprojectdetails')->id;}
+        
+        if($ppid!="") {
+        	$pid=$ppid; }
+        else {
+        	$pid=$q; }
+          
         $costcodesql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$pid."' ";
  		$data['costcodesresult'] = $this->db->query($costcodesql)->result();  
  		$data['iscostcodeprefix'] = 1 ;
@@ -6670,6 +6681,8 @@ class quote extends CI_Controller
 		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($totalprice,2) * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
+		$redirectmsg = "";
+		$comptransfer = true;
 		if(@$chargeobj->paid)
 		{
 			if($bankaccount && @$bankaccount->routingnumber && @$bankaccount->accountnumber)
@@ -6679,9 +6692,10 @@ class quote extends CI_Controller
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
-
+				
+	          try{
               $recObj = Stripe_Recipient::create(array(
-              "name" => $company->title,
+              "name" => $company->contact,
               "type" => "individual",
               "email" => $company->primaryemail,
               "bank_account" => $recbankInfo)
@@ -6696,6 +6710,16 @@ class quote extends CI_Controller
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
+              
+              }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }
+			  
+              if($comptransfer == true){
               $update = array(
                           'paymentstatus'=>'Paid',
                           'status'=>'Pending',
@@ -6744,8 +6768,9 @@ $loaderEmail = new My_Loader();
               $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
-
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Invoice paid successfully.</div></div>');
+              $redirectmsg .= "Invoice paid successfully.";
+              }
+              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');
         	}
 		}
 		redirect('admin/quote/invoices');
@@ -6865,6 +6890,13 @@ $loaderEmail = new My_Loader();
                 			}
                 		}
                 		
+                		if(@$insertarray['datedue'] == ""){
+                			
+                			$invoicereceiveddate = $_POST['receiveddate' . $key];	                			
+                			
+                			$insertarray['datedue'] = date("Y-m-d", strtotime("$invoicereceiveddate+1 month"));
+                		
+                		}
                 		 /*if (strpos(@$inv,'paid-in-full-already') !== false) {                		 	
                 		 	 $this->db->where('invoicenum', $inv);
                 		 	 $this->db->where('awarditem', $item->id);
@@ -6989,6 +7021,14 @@ $loaderEmail = new My_Loader();
                 	}
                 }/*else 
 				$insertarray['datedue'] = $_POST['datedue' . $key];*/
+                
+                if(@$insertarray['datedue'] == ""){
+
+                	$invoicereceiveddate = $_POST['receiveddate' . $key];
+
+                	$insertarray['datedue'] = date("Y-m-d", strtotime("$invoicereceiveddate+1 month"));
+
+                }
                 
                 $paymentstatus = 'Unpaid';
                 $status = 'Pending';
@@ -7448,6 +7488,15 @@ $loaderEmail = new My_Loader();
                 		$insertarray['receiveddate'] = $this->mysql_date($_POST['receiveddate' . $key]);                		
                 		
                 		$insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                		
+                		if(@$insertarray['datedue'] == ""){
+
+                			$invoicereceiveddate = $_POST['receiveddate' . $key];
+
+                			$insertarray['datedue'] = date("Y-m-d", strtotime("$invoicereceiveddate+1 month"));
+
+                		}
+                		
                 		$this->quote_model->db->insert('received', $insertarray);
 
                 		$insertarray['id'] = $item->id;
@@ -7483,6 +7532,15 @@ $loaderEmail = new My_Loader();
 
                 $insertarray = array('awarditem' => $item->id, 'quantity' => $received[$item->id]['received'], 'invoicenum' => trim($_POST['invoicenum' . $key]), 'receiveddate' => $this->mysql_date($_POST['receiveddate' . $key]));
                 $insertarray['purchasingadmin'] = $this->session->userdata('purchasingadmin');
+                
+                if(@$insertarray['datedue'] == ""){
+
+                	$invoicereceiveddate = $_POST['receiveddate' . $key];
+
+                	$insertarray['datedue'] = date("Y-m-d", strtotime("$invoicereceiveddate+1 month"));
+
+                }
+                
                 $this->quote_model->db->insert('received', $insertarray);
 
 
@@ -7945,6 +8003,7 @@ $loaderEmail = new My_Loader();
     function sendawardemail($quoteid,$paystatus="")
     {
         $awarded = $this->quote_model->getawardedbid($quoteid);
+        if(@$awarded->quotedetails){
         $quote = $awarded->quotedetails;
         if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
             redirect('admin/dashboard', 'refresh');
@@ -8327,6 +8386,8 @@ $loaderEmail = new My_Loader();
             $notification['purchasingadmin'] = $this->session->userdata('purchasingadmin');
             $this->db->insert('notification', $notification);
         }
+        
+       } 
     }
     
     
@@ -11551,9 +11612,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                 }
             }
         }
-        
+        $redirectmsg = "";
         foreach($companiesamount as $caid=>$amount){     
-             
+             $comptransfer = true;
              $company = $this->db->select('company.*')->from('company')			
 			->where('company.id',$caid)
 			->get()->row();
@@ -11571,6 +11632,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			if(!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber)
 			{
 				$this->session->set_flashdata('message', '<div class="alert alert-error"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bank account missing for credit card payment.</div></div>');
+				$comptransfer = false;
 				redirect('admin/quote/bids/'.$_POST['invoicenum']);
 			}
 			
@@ -11582,9 +11644,9 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
-
+			  try {	
               $recObj = Stripe_Recipient::create(array(
-              "name" => $company->title,
+              "name" => $company->contact,
               "type" => "individual",
               "email" => $company->primaryemail,
               "bank_account" => $recbankInfo)
@@ -11599,8 +11661,14 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
-                           
-              
+			  }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }
+			  if($comptransfer==true){              
               foreach($ararditemarr[$caid] as $awarditemid){
               $update = array(
                           'purchasingadmin' => $this->session->userdata('purchasingadmin'),
@@ -11664,13 +11732,22 @@ $loaderEmail = new My_Loader();
               $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
-
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
+			  $redirectmsg .= "Payment done successfully & Bid awarded to the company {$company->title} &nbsp; &nbsp;";	              
+			  }else{
+			  	
+			  	$this->db->where('id',$awardid);
+                $this->db->delete('award');
+                $this->db->where('award',$awardid);
+                $this->db->delete('awarditem');
+			  	
+			  }
         	}
              
 		  } 
         }      
 		
+        $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');
+        
         	$this->quote_model->db->where('quote', $_POST['invoicenum']);
             $this->quote_model->db->update('bid', array('complete' => 'Yes'));
             $this->sendawardemail($_POST['invoicenum'],'fullpaid');
@@ -11792,7 +11869,9 @@ $loaderEmail = new My_Loader();
             $ararditemarr[$bid->company][] = $awarditemid;
             
         }
+            $redirectmsg = "";
            foreach($companiesamount as $caid=>$amount){ 
+           	$comptransfer = true;
             $company = $this->db->select('company.*')->from('company')			
 			->where('company.id',$caid)
 			->get()->row();
@@ -11822,16 +11901,17 @@ $loaderEmail = new My_Loader();
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
-
+			  
+	          try{	
               $recObj = Stripe_Recipient::create(array(
-              "name" => $company->title,
+              "name" => $company->contact,
               "type" => "individual",
               "email" => $company->primaryemail,
               "bank_account" => $recbankInfo)
               );
 
               $obj = json_decode($recObj);
-             
+              
               $transferObj = Stripe_Transfer::create(array(
                   "amount" => $amount * 100,
                   "currency" => "usd",
@@ -11839,9 +11919,18 @@ $loaderEmail = new My_Loader();
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
-                           
+              
+	          }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }             
               //echo $_POST['invoicenum'];
-              //print_r($update);die;            
+              //print_r($update);die;           
+              if($comptransfer==true){
+               
               foreach($ararditemarr[$caid] as $awarditemid){
               $update = array(
                           'purchasingadmin' => $this->session->userdata('purchasingadmin'),
@@ -11905,14 +11994,26 @@ $loaderEmail = new My_Loader();
               $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
-
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
+              
+              $redirectmsg .= "Payment done successfully & Bid awarded to the company {$company->title} \n ";	  
+              
+			  }else{
+			  	
+			  	$this->db->where('id',$awardid);
+                $this->db->delete('award');
+                $this->db->where('award',$awardid);
+                $this->db->delete('awarditem');
+			  	
+			  }
 			}
         	}
             
             
             
         }
+        
+        $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');
+        
         $this->quote_model->db->where('quote', $_POST['invoicenum']);
         $this->quote_model->db->update('bid', array('complete' => 'Yes'));
         $this->sendawardemail($_POST['invoicenum'],'fullpaid');
@@ -12040,8 +12141,11 @@ $loaderEmail = new My_Loader();
 				$ararditemarr[$item['company']] =   $ararditemarr[$item['company']].",".$awarditemid;*/
 				
 				$ararditemarr[$item['company']][] = $awarditemid;
-       		}		
+       		}
+       		
+       		$comptransfer = true;		
        		foreach($companiesamount as $caid=>$amount){
+       		$redirectmsg = "";	
        		$company = $this->db->select('company.*')->from('company')			
 			->where('company.id',$caid)
 			->get()->row();
@@ -12070,9 +12174,10 @@ $loaderEmail = new My_Loader();
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
-
+			
+	          try{	
               $recObj = Stripe_Recipient::create(array(
-              "name" => $company->title,
+              "name" => $company->contact,
               "type" => "individual",
               "email" => $company->primaryemail,
               "bank_account" => $recbankInfo)
@@ -12087,10 +12192,16 @@ $loaderEmail = new My_Loader();
                   "description" => "Transfer for ".$company->primaryemail )
               );
               $tobj = json_decode($transferObj);
-                           
+	          }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }                
               //echo $_POST['invoicenum'];
               //print_r($update);die;            
-              
+              if($comptransfer==true){
               foreach($ararditemarr[$caid] as $awarditemid){
               $update = array(
                           'purchasingadmin' => $this->session->userdata('purchasingadmin'),
@@ -12155,11 +12266,23 @@ $loaderEmail = new My_Loader();
               $this->email->set_mailtype("html");
               $this->email->send();
 
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the company</div></div>');
-        	} 		
+               $redirectmsg .= "Payment done successfully & Bid awarded to the company {$company->title} \n ";	  
+              
+			  }else{
+			  	
+			  	$this->db->where('id',$awardid);
+                $this->db->delete('award');
+                $this->db->where('award',$awardid);
+                $this->db->delete('awarditem');
+			  	
+			  }        	
+        	
+			} 		
        		
 			}	
        	}
+       	
+       	 $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');
        	
        	$this->quote_model->db->where('quote', $_POST['invoicenum']);
        	$this->quote_model->db->update('bid', array('complete' => 'Yes'));
@@ -12198,8 +12321,7 @@ $loaderEmail = new My_Loader();
 		        $this->db->where('id',$quote->awardedbid->id)->update('award',array('pricerank'=>$quote->pricerank));
 
         	}
-        }
-        $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Payment done successfully & Bid awarded to the selected supplier(s).</div></div>');
+        }        
         redirect('admin/quote/index/' . $quote->pid);
     
     	

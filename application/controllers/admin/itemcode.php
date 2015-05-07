@@ -2427,7 +2427,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
          //   $poitems = $this->itemcode_model->getpoitems($item->id);
-            
+            //echo "<pre>",print_r($item->soitems); die;
          	if(isset($item->poitems[0]->totalprice) && $item->poitems[0]->totalprice != '')
          	{
          		if(@$taxrate->taxrate)
@@ -2436,6 +2436,20 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			}
          	}
          
+         	if(isset($item->soitems[0]->price) && $item->soitems[0]->price != '')
+         	{
+         		if(@$taxrate->taxrate)
+         		{
+    				$totalPOAmt += $item->soitems[0]->price + ($item->soitems[0]->price*$taxrate->taxrate/100);    				
+    			}
+    			
+    			if(@$item->soitems[0]->shipping)
+         		{
+    				$totalPOAmt += $item->soitems[0]->shipping;    				
+    			}
+         	}
+         	
+         	
             if(@$totalminprice)
             $totalminprice = round($totalminprice,2);
             if(@$daysavgprice)

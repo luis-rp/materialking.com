@@ -274,6 +274,15 @@ class message extends CI_Controller
             $insertarrayrec['paymentstatus'] = "Credit";
             $insertarrayrec['receiveddate'] = (isset($dates[$i]) && $dates[$i]!="")?date("Y-m-d",  strtotime($dates[$i])):"";  
             $insertarrayrec['invoice_type'] = "error";  
+            
+            if(@$insertarray['datedue'] == ""){
+
+            	$invoicereceiveddate = $_POST['receiveddate' . $key];
+
+            	$insertarray['datedue'] = date("Y-m-d", strtotime("$invoicereceiveddate+1 month"));
+
+            }
+                
 			$this->db->insert('received',$insertarrayrec);
             
 			

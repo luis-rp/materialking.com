@@ -3106,6 +3106,8 @@ class site extends CI_Controller
 		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => round($_POST['amount'] * 100), 'currency' => 'usd' ));
 		//echo "<pre>",print_r($charge); die;
 		$chargeobj = json_decode($charge);
+		$comptransfer = true;
+		$redirectmsg = "";
 		if(@$chargeobj->paid)
 		{
 			
@@ -3120,6 +3122,8 @@ class site extends CI_Controller
 	          			'routing_number' => $bankaccount->routingnumber,
 	          			'account_number' => $bankaccount->accountnumber
 	          );
+	          
+	          try{
               $recObj = Stripe_Recipient::create(array(
               "name" => $user->fullname,
               "type" => "individual",
@@ -3135,8 +3139,15 @@ class site extends CI_Controller
                   "description" => "Transfer for ".$user->email )
               );
               $tobj = json_decode($transferObj);
+	          }catch (Exception $e) {
+			  	
+			  	$body = $e->getJsonBody();
+          		$err  = $body['error'];
+          		$redirectmsg .= " Error in payment transfer to user ".$user->companyname." (Description:".$err['message'].") &nbsp; \n ";
+			  	$comptransfer = false;
+			  }
               
-              
+			  if($comptransfer == true){
               $billarray = array();
               $billarray['status'] = "Verified";
               $billarray['paymentstatus'] = "Paid";
@@ -3174,7 +3185,12 @@ $loaderEmail = new My_Loader();
               $this->email->message($send_body);
               $this->email->set_mailtype("html");
               $this->email->send();
-              $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Bill paid successfully.</div></div>');
+              $redirectmsg .= "Bill paid successfully.";
+              
+			}
+			
+			 $this->session->set_flashdata('message', '<div class="alert alert-sucess"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">'.$redirectmsg.'</div></div>');			 
+			
         	}
 		}
 		redirect('site/customerbill');

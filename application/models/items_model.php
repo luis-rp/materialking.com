@@ -306,13 +306,13 @@ class items_model extends Model {
             if ($submenus) 
             {
             	$count="<font color='red'>".number_format(count($hasitems))."</font>";
-                $ret .= "<li style='width:300px;'><a href='#' onclick='return filtercategory1(".$item->id.");'><b>" . $item->catname."(".$count.")</b></a>";
+                $ret .= "<li style='width:300px;'><a href='#' onclick=\"return filtercategorystoreurl(".$item->id.",'".$item->categoryurl."');\"><b>" . $item->catname."(".$count.")</b></a>";
                 $ret .= $this->getStoreCategoryMenu($supplier,$item->id); // here is the recursion
             }
             else
             {
                $count="<font color='red'>".number_format(count($hasitems))."</font>";	
-               $ret .= "<li style='width:300px;'><a href='#' onclick='return filtercategory1(".$item->id.");'><span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")</span></a>";
+               $ret .= "<li style='width:300px;'><a href='#' onclick=\"return filtercategorystoreurl(".$item->id.",'".$item->categoryurl."');\"><span style='white-space:pre-wrap;'>" . $item->catname."(".$count.")</span></a>";
             }
             $ret .= "</li>";
         }
@@ -611,6 +611,8 @@ class items_model extends Model {
         $limit = 18;
         $return = new stdClass();
         if (!isset($_POST['pagenum']))
+            $_POST['pagenum'] = 0;
+        if($_POST['pagenum']=='-1')
             $_POST['pagenum'] = 0;
         $start = $_POST['pagenum'] * $limit;
         $where = array();

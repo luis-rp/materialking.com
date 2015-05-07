@@ -577,10 +577,14 @@ class cart extends CI_Controller
 			{
 			    $this->db->insert('notification',$notification);
 			}
-			$this->removeallcart();
+			$this->removeallcart();		
+			
+			$redirectmsg = "";
+			
 			//divide payment to companies
 			foreach($companiesamount as $caid=>$amount)
 			{
+				$comptransfer = true;
 			    $amount = $amount + $amount*$settings->taxpercent/100;
 				//$amount=$amount-.55-($amount*2.9/100);
 			    $amount = round($amount,2);
@@ -595,8 +599,9 @@ class cart extends CI_Controller
 			          			'account_number' => $bankaccount->accountnumber
 			          );
   
+			          try{
                       $recObj = Stripe_Recipient::create(array(
-                      "name" => $company->title, 
+                      "name" => $company->contact, 
                       "type" => "individual",
                       "email" => $company->primaryemail,
                       "bank_account" => $recbankInfo)
@@ -614,6 +619,15 @@ class cart extends CI_Controller
                       //print_r($transferObj);
                       $tobj = json_decode($transferObj);
                       
+			          }catch (Exception $e) {
+
+			          	$body = $e->getJsonBody();
+			          	$err  = $body['error'];
+			          	$redirectmsg .= " Error in payment transfer to company ".$company->title." (Description:".$err['message'].") &nbsp; \n ";
+			          	$comptransfer = false;
+			          }
+                      
+			          if($comptransfer == true){
                       $insert = array();
                       $insert['orderid'] = $oid;
                       $insert['purchasingadmin'] = @$this->session->userdata('site_loggedin')->id;
@@ -631,10 +645,11 @@ $ {$amount} has been transfered to your bank account for order#{$ordernumber}, w
                       $transferbody.= "<br><a href='".site_url('order/details/'.$oid)."' target='_blank'>View Order</a>"; 		
                       $subject = "Payment Details from ezpzp";
                       $this->sendEmail($transferbody,$company->primaryemail, $subject, $company->title);
+			          }                      
 			    }
 			}
 			
-			$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber.'<br/>Transaction id is: '.$order['txnid'];
+			$data['message'] = 'Order Placed Successfully, order#: '.$ordernumber.'<br/>Transaction id is: '.$order['txnid']." \n {$redirectmsg} ";
 			$data['messagenotification'] = '<div class="alert alert-success"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">Order Summary has been emailed.</div></div>';
 			$data['status'] = 'Success';
 			$data['cart']=array();
