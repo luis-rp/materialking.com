@@ -247,6 +247,15 @@ class report_model extends Model
 		{
 			$filter .= " AND r.purchasingadmin='".$this->session->userdata('purchasingadmin')."' ";
 		}
+		
+		$where1="";
+		if(isset($this->session->userdata('managedprojectdetails')->id))
+		{
+			$where1="AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'";
+		}
+		else {
+			$where1="";
+		}
  		
  		$datesql = "SELECT distinct(receiveddate) receiveddate, invoicenum, SUM(if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ) totalquantity,
  					ROUND(SUM(ai.ea * if(r.invoice_type='fullpaid',ai.quantity,if(r.invoice_type='alreadypay',0,r.quantity)) ),2) totalprice
@@ -256,8 +265,7 @@ class report_model extends Model
 					   ".$this->db->dbprefix('award')." a,
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
-					  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract'  
-					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
+					  AND ai.award=a.id AND a.quote=q.id AND q.potype <> 'Contract' $where1 
 					  $filter
 					  GROUP BY receiveddate";
  		
@@ -271,8 +279,7 @@ class report_model extends Model
 					   ".$this->db->dbprefix('award')." a,
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
-					  AND ai.award=a.id AND a.quote=q.id AND q.potype = 'Contract'  
-					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."'
+					  AND ai.award=a.id AND a.quote=q.id AND q.potype = 'Contract'  $where1 
 					  $filter
 					  GROUP BY receiveddate";
  		
@@ -343,7 +350,7 @@ class report_model extends Model
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
-					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype <> 'Contract' 
+					$where1 AND q.potype <> 'Contract' 
 					  AND r.paymentstatus='Paid'";
  		    if(@$sepdate->receiveddate)
 			$datepaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";
@@ -361,7 +368,7 @@ class report_model extends Model
 					   ".$this->db->dbprefix('quote')." q
 					  WHERE r.awarditem=ai.id
 					  AND ai.award=a.id AND a.quote=q.id 
-					  AND q.pid='".$this->session->userdata('managedprojectdetails')->id."' AND q.potype = 'Contract' 
+					 $where1 AND q.potype = 'Contract' 
 					  AND r.paymentstatus='Paid'";
  		    if(@$sepdate->receiveddate)
 			$datecontractpaidsql .= " AND  r.receiveddate='{$sepdate->receiveddate}'";

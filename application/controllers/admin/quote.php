@@ -7847,12 +7847,12 @@ $loaderEmail = new My_Loader();
             {
                 $this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
                 $this->db->where('company',$cid);
-                $this->db->update('purchasingtier',array('creditlimit'=>$tier->creditlimit-$amount));
+                $this->db->update('purchasingtier',array('creditlimit'=>$tier->creditlimit-($amount+$tax)));
                 $company = $this->company_model->get_companys_by_id($cid);
                 $tamount="";
                 $ramount="";
                 $tamount=$amount+$tax;
-                $ramount=$tier->creditlimit - $amount;
+                $ramount=$tier->creditlimit - ($amount+$tax);
                 $data['email_body_title'] = "Credit amount of ".$cpa->fullname.",".$cpa->companyname." has been deducted by $".$tamount."<br>";
                 $data['email_body_content'] = "Remaining available credit for ".$cpa->companyname."is $".$ramount."<br><br>";
                 $data['email_body_content'] .= "Find the details below:<br/><br/>";
@@ -7861,9 +7861,9 @@ $loaderEmail = new My_Loader();
                 $totalamount = 0;
                 foreach($items as $item)
                 {
-                	if(isset($item->item_img) && $item->item_img!= "" && file_exists("./uploads/item/".$item->item_img)) 
+                	if(isset($item['item_img']) && $item['item_img']!= "" && file_exists("./uploads/item/".$item['item_img'])) 
 		    		 { 
-		             	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='65' width='65' src='". site_url('uploads/item/'.$item->item_img)."' alt='".$item->item_img."'>";
+		             	$img_name = "<img style='max-height: 120px;max-width: 100px; padding: 5px;' height='65' width='65' src='". site_url('uploads/item/'.$item['item_img'])."' alt='".$item['item_img']."'>";
 		             } 
 		             else 
 		             { 

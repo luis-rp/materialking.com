@@ -15,6 +15,7 @@ class site extends CI_Controller
         $this->load->model('admin/banner_model', '', TRUE);
         $this->load->model('admin/itemcode_model', '', TRUE);
         $this->load->model('admin/catcode_model', '', TRUE);
+        $this->load->model('admin/costcode_model', '', TRUE);
         $this->load->model('admin/quote_model', '', TRUE);
         $this->load->model('event_model', '', TRUE);
 		$this->load->model ('items_model', '', TRUE);
@@ -963,7 +964,7 @@ class site extends CI_Controller
         }*/
         	
        
-        
+        $this->data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
         
         $this->load->view('site/items', $this->data);
     }
@@ -1223,6 +1224,7 @@ class site extends CI_Controller
         //echo '<pre>';print_r($data['categorymenu']);die;
         $this->data['page_title'] = "The Building & Construction Supply House Marketplace";
         $this->data['page_description'] = "The Building & Construction Supply House Marketplace";
+        $this->data['parentcombooptions'] = $this->costcode_model->listHeirarchicalCombo('0', 0, 0,0);
         $this->load->view('site/items', $this->data);
     }
     public function getCategoryImage($catID)

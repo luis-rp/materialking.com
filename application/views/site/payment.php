@@ -66,11 +66,8 @@ $(document).ready(function() {
             	<?php }?>
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
-            	    $tax = number_format($tax,2);
-            	    
-            	    $gtotal = number_format($gtotal,2);
-            	    
-            	    $totalwithtax = number_format($tax+$gtotal+$totalRates,2);
+            	        	    
+            	    $totalwithtax = $tax+$gtotal+$totalRates;
             	?>
             	<tr>
             		<td colspan="4" align="right">SubTotal</td>
@@ -79,16 +76,16 @@ $(document).ready(function() {
             	
             	<tr>
             		<td colspan="4" align="right">Tax</td>
-            		<td>$<?php echo $tax;?></td>
+            		<td>$<?php echo number_format($tax,2);?></td>
             	</tr>
             	
             	<tr>
             		<td colspan="4" align="right">Shipment rate</td>
-            		<td>$<?php echo $totalRates;?></td>
+            		<td>$<?php echo number_format($totalRates,2);?></td>
             	</tr>
             	<tr>
             		<td colspan="4" align="right">Total</td>
-            		<td>$<?php echo $totalwithtax;?></td>
+            		<td>$<?php echo number_format($totalwithtax,2);?></td>
             	</tr>
             </table>
             

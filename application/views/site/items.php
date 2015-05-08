@@ -251,7 +251,6 @@ function getpodate()
     	if(pid){
 
     		$('#addtoquotemodal').modal();
-    		//$('#additemproject').val('');
     		$('#addtoquotemodal').modal('hide');
     		$('#Addpomodal').modal();
     	}
@@ -290,6 +289,24 @@ function getpodate()
 		});
     }
     
+    function addCostcode()
+	{
+   		var costcodeprefix =$( "#costcodeprefix option:selected" ).text();  
+   		var newValue = $( "#costcodeprefix option:selected" ).html().replace(/\»/g, '');   
+   		var newValue1 = newValue.replace("&nbsp;"," "); 
+   		var newValue2 = newValue1.trim();
+ 
+	   	if($( "#costcodeprefix option:selected" ).val() !='')
+	   	{
+	   		$("#ponum").val(newValue2);
+	   	}		
+	  	 else
+	   	{
+	   		$("#ponum").val('');
+	   	}
+   }
+
+    
 </script>
 
 
@@ -298,7 +315,6 @@ function getpodate()
     <div class="container">
         <div id="main">
             <div class="row">
-             
                             <div class="location control-group" style="margin:0% 0% 0% 2.5%; width:97.5%;">
                             	
                             <form id="categorysearchform" name="categorysearchform" method="post" action="<?php echo base_url('site/items');?>">
@@ -833,31 +849,41 @@ function getpodate()
     
     
     <div id="Addpomodal" class="modal hide "  tabindex="-1" role="dialog" aria-labelledby="	myModalLabel" aria-hidden="true">
-
             <div class="modal-header">
-        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
-            <h3>Please Add Your P.O. Now</h3>
+	        	<button aria-hidden="true" data-dismiss="modal" class="close" type="button">x</button>
+	            <h3>Please Add Your P.O. Now</h3>
         	</div>
+        	
         	<div class="modal-body">
         	
         	<div class="control-group">
-			    <div class="controlss">PO # &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
-                  <input type="text" id="ponum" name="ponum" style="width: 20%" class="input small" >		</div>
+			    <div class="controlss"> Use Cost Code Prefix:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 	<select id="costcodeprefix" onchange="addCostcode()" class="input small" >
+					   	<option value="">Select</option>
+					  	<?php echo $parentcombooptions;?>					  
+				  	</select>			  
+		    	</div>
+		   </div>  
+        	
+        	
+        	<div class="control-group">
+			    <div class="controlss">PO # : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <input type="text" id="ponum" name="ponum"  class="input small" >
+                </div>
 		    </div>
-		    <br><br>		    
+		    
+		   	    
 		    <div class="control-group">
 			    <div class="controlss">
-			      Delivery or Pick-Up Date: &nbsp; &nbsp;
-			      <input type="text" id="deliverydate" name="deliverydate" class="input small span2" 
-			      	data-date-format="mm/dd/yyyy">			      
-			       &nbsp; &nbsp; <br><br>
-			      PO Date: &nbsp; &nbsp; 
-			      <input type="text" id="podate" name="podate" class="input small span2"
-			      	data-date-format="mm/dd/yyyy">
-			      	&nbsp; &nbsp; &nbsp; &nbsp; <br><br>
-			     Bid Due Date: &nbsp; &nbsp; 
-			      <input type="text" id="duedate" name="duedate" class="input small span2"
-			      data-date-format="mm/dd/yyyy">
+			      Delivery or Pick-Up Date: 
+			      <input type="text" id="deliverydate" name="deliverydate" class="input small" data-date-format="mm/dd/yyyy"><br><br>
+			      
+			      PO Date: &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;		      
+			      <input type="text" id="podate" name="podate" class="input small" data-date-format="mm/dd/yyyy"><br><br>
+
+			      Bid Due Date: &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			      <input type="text" id="duedate" name="duedate" class="input small" data-date-format="mm/dd/yyyy"><br /><br />
+			      
 			      <input name="add" type="button" class="btn btn-primary" value="Save" onclick="savepo();"/>
 			    </div>			   
 		    </div>

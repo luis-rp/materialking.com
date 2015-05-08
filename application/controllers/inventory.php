@@ -1171,7 +1171,7 @@ class Inventory extends CI_Controller
         $itemid = $_POST['itemid'];
         //$quoteid = $_POST['quoteid'];
 
-        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.podate as quotedate,aw.awardedon as awarddate,q.subject,u.companyname,a.quotenum
+        $sql = "SELECT ai.itemid,ai.quantity, ai.ea, q.ponum, a.quote, a.submitdate `date`, 'quoted',ai.itemcode,a.purchasingadmin ,ai.quantity,ai.ea,u.fullname,q.creation_date as quotedate,aw.awardedon as awarddate,q.subject,u.companyname,a.quotenum
 			   	FROM pms_bid a 
 			   	join pms_biditem ai  on ai.bid=a.id 
 			   	join pms_quote q on a.quote = q.id 

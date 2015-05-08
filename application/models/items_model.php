@@ -664,7 +664,7 @@ class items_model extends Model {
                 $where .= " WHERE ".$lookup;
             }
         }
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} ".$where ."  GROUP BY i.id ";
+        $query = "SELECT i.* , ic.categoryid FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} ".$where ."  GROUP BY i.id ";
         
         $return->totalresult = $this->db->query($query)->num_rows();
         
@@ -674,7 +674,7 @@ class items_model extends Model {
         	 $orderlookup = "order by fi desc";
         }
         
-        $query = "SELECT * FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} $where  GROUP BY i.id $orderlookup LIMIT $start, $limit";
+        $query = "SELECT i.* , ic.categoryid FROM " . $this->db->dbprefix('item') . " i left join " . $this->db->dbprefix('item_category') ." ic on i.id = ic.itemid {$leftmasterdefault} $where  GROUP BY i.id $orderlookup LIMIT $start, $limit";
         //echo $query;//die;
         $return->items = $this->db->query($query)->result();
         return $return;

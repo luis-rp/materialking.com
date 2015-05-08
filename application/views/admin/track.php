@@ -214,6 +214,7 @@ $per .='%';
         var selected = new Array();
         var quantities = new Array();
         var invoicenums = new Array();
+        var fieldchk = 0;
         var dates = new Array();
         $('.select-for-error').each(function()
         {
@@ -221,13 +222,17 @@ $per .='%';
             {
                 id = $(this).attr('id');
                 id = id.replace('error','');
+                if( ($('#received'+id).val()=="" || $('#received'+id).val()==0) || $('#invoicenum'+id).val() ==""){                	
+                	fieldchk = fieldchk+1;
+                	alert("Please Enter Quantity and Invoice before sending an error");
+                }                
                 selected.push($(this).val());
                 quantities.push($('#received'+id).val());
                 invoicenums.push($('#invoicenum'+id).val());
                 dates.push($('#receiveddate'+id).val());
             }
         });
-        if (selected.length > 0)
+        if (selected.length > 0 && fieldchk==0)
         {
             var errors = selected.join(',');
 			var d = "errors=" + errors+"&quantities="+quantities.join(',')+"&invoicenums="+invoicenums.join(',')+"&dates="+dates.join(',')+"&comments="+$('#comments').val();
