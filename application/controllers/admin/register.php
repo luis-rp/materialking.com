@@ -422,7 +422,7 @@ class Register extends CI_Controller
        /* $sqlquery="SELECT * FROM ".$this->db->dbprefix('costcode')." ORDER BY id DESC LIMIT 1";
         $tc=$this->db->query($sqlquery)->row();
         $costid=($tc->id+1);*/
-        $i=0;
+        /*$i=0;
         $costid=0;
         $ll=222;
         if(count($DefaultCostcode) > 0) {
@@ -438,7 +438,12 @@ class Register extends CI_Controller
         		 $ll=$lastcostcodeid;
         		 $i++;
         	}
-        }	
+        }*/
+        
+        foreach ($DefaultCostcode as $DC) { 
+        		 $this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DC->code,'cost'=>'500','cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+        	} 
+        	
         								
 		$settings = (array)$this->settings_model->get_setting_by_id (1);
 		$settings['purchasingadmin'] = $u->id;

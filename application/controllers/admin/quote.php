@@ -2163,8 +2163,8 @@ class quote extends CI_Controller
             {
             	if(count($limitcompany)>0 && @$limitcompany[$c->id]['username'] && @$limitcompany[$c->id]['password'])
             	{
-            		$loginlink = base_url() . 'company/login/' . $this->session->userdata('id');
-            		$data['email_body_content'] .= "The <i>{$this->session->userdata('companyname')}</i>  sent you a Purchase Order. <br />Please View the Details Below : <br /> <strong>Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']}</strong><br /><br /> Please <a href='$loginlink' target='blank'>Click Here</a> to login with your login Details provided to approve the Purchase order and join <i>{$this->session->userdata('companyname')}</i> e-procurement network as a vendor.<br /><br />  ";           		
+            		$loginlink = base_url() . 'company/login/' . $this->session->userdata('username');      
+            		$data['email_body_content'] .= "The Company <i>{$this->session->userdata('companyname')}</i>  sent you a Purchase Order, which requires your confirmation. <br />Please View the Details Below : <br /> <strong>Username :{$limitcompany[$c->id]['username']}  <br> Password :{$limitcompany[$c->id]['password']}</strong><br /><br /> Please <a href='$loginlink' target='blank'>Click Here</a> to login with your login Details provided to approve the Purchase order and join <i>{$this->session->userdata('companyname')}</i> e-procurement network as a vendor.<br /><br />  ";           		
             	}
             } 
             else 
@@ -2184,7 +2184,7 @@ class quote extends CI_Controller
             $this->email->initialize($config);
             $this->email->from($settings['adminemail'], "Administrator");
             $this->email->to($settings['adminemail'] . ',' . $c->primaryemail);
-            $this->email->subject('Request for Quote Proposal (PO# ' . $quote->ponum.')');        
+            $this->email->subject('Purchase Order Confirmation (PO# ' . $quote->ponum.')');        
             $this->email->message($send_body);
             $this->email->set_mailtype("html");
             $this->email->send();
@@ -3463,6 +3463,7 @@ class quote extends CI_Controller
        
         $bankaccarray = array();
         $creditaccarray = array();
+        $reject=0;
         foreach ($bids as $bid) {
 
             $totalprice = 0;
@@ -3482,6 +3483,12 @@ class quote extends CI_Controller
                 } else if ($maximum[$key] < $item->totalprice) {
                     $maximum[$key] = $item->totalprice;
                 }
+                
+                if($item->postatus == "Rejected")
+                $reject = 1;
+                else 
+                $reject = 0;
+                
             }
             if (!isset($minimum['totalprice']))
                 $minimum['totalprice'] = $totalprice;
@@ -3502,7 +3509,7 @@ class quote extends CI_Controller
 				$bankaccarray[$bid->company] = $bid->companyname;
 			}	
 			
-			if(@$creditresult->creditonly==1)
+			if(@$creditresult->creditonly==1 && $reject==0)
 			$creditaccarray[$bid->company] = $bid->companyname;
 
         }

@@ -78,6 +78,7 @@ class project_model extends Model
 		$delsql = array();
 		$delsql[] = "DELETE FROM ".$this->db->dbprefix('project')." WHERE id='$id'";
 		$delsql[] = "DELETE FROM ".$this->db->dbprefix('quote')." WHERE pid='$id'";
+		$delsql[] = "DELETE FROM ".$this->db->dbprefix('costcode')." WHERE project='$id'";
 		
 		$quotesql = "SELECT * FROM ".$this->db->dbprefix('quote')." WHERE pid='$id'";
 		$quotequery = $this->db->query ($quotesql);

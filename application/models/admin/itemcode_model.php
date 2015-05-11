@@ -58,7 +58,7 @@ class itemcode_model extends Model {
        if(@$_POST['isfavorite'])
             $where .= " AND fi.isfavorite = '{$_POST['isfavorite']}'";
             
-        $sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),NULL), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),NULL)) AS awardedon
+        /*$sql = "SELECT i.*, IFNULL(IF(group_concat(distinct q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',max(a.awardedon),NULL), IF(group_concat(distinct o.project)='".@$this->session->userdata('managedprojectdetails')->id."',max(o.purchasedate),NULL)) AS awardedon
 , if(IFNULL(o.project,q.pid)='".@$this->session->userdata('managedprojectdetails')->id."',sum(ai.totalprice),'') totalpurchase,IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct o.project),group_concat(distinct q.pid)),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',group_concat(distinct q.pid),group_concat(distinct o.project))) AS project,fi.isfavorite
                 FROM
                 $ti i
@@ -70,13 +70,28 @@ class itemcode_model extends Model {
 				LEFT JOIN ".$this->db->dbprefix('favoriteitem') ." fi ON fi.itemid = i.id AND fi.purchasingadmin='$pa' 
                 $where 
                 GROUP BY i.id
-                ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
+                ORDER BY awardedon DESC LIMIT $newoffset, $limit ";*/
+        
+        
+        $sql = "SELECT qry.id, GROUP_CONCAT(qry.project ,'') as project, qry.isfavorite, qry.itemcode, qry.ea, qry.purchasingadmin, qry.itemname,qry.unit, GROUP_CONCAT(qry.awardedon ,'') as awardedon, sum(qry.totalpurchase1+qry.totalpurchase2) totalpurchase from (SELECT i.*, IFNULL(IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',a.awardedon,NULL), IF((o.project)='".@$this->session->userdata('managedprojectdetails')->id."',o.purchasedate,NULL)) AS awardedon 
+, if(o.project='".@$this->session->userdata('managedprojectdetails')->id."',(od.quantity*od.price),0) totalpurchase1, if(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',ai.totalprice,0) totalpurchase2, IFNULL( IF(o.project='".@$this->session->userdata('managedprojectdetails')->id."',(o.project),null),IF(q.pid='".@$this->session->userdata('managedprojectdetails')->id."',(q.pid),null)) AS project,fi.isfavorite
+                FROM
+                $ti i
+                LEFT JOIN $tai ai ON i.id=ai.itemid
+                LEFT JOIN $ta a ON ai.award=a.id AND ai.purchasingadmin='$pa'
+                LEFT JOIN ".$this->db->dbprefix('quote') ." q ON q.id = a.quote
+                LEFT JOIN ".$this->db->dbprefix('orderdetails') ." od ON i.id=od.itemid 
+				LEFT JOIN ".$this->db->dbprefix('order') ." o ON od.orderid = o.id
+				LEFT JOIN ".$this->db->dbprefix('favoriteitem') ." fi ON fi.itemid = i.id AND fi.purchasingadmin='$pa' 
+                $where                 
+                ORDER BY awardedon ) qry GROUP BY id ORDER BY awardedon DESC LIMIT $newoffset, $limit ";
+        
    // echo '<pre>',$sql;die;
   
         $query = $this->db->query($sql);
         if ($query->result()) {
             $result = $query->result();
-         //   echo '<pre>',print_r($result);die;
+            //echo '<pre>',print_r($result);die;
             $ret = array();
             $where1 = "";
             if(@$this->session->userdata('managedprojectdetails')->id)

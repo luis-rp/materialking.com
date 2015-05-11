@@ -260,9 +260,24 @@ class cart extends CI_Controller
 		$data['cart']=array();
 		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		$dataitemshipping=0; $userinfoship = array();
+		
 		foreach($cart as $item)
 		{
 			//echo "<pre>"; print_r($item['quantity']);
+			if($this->session->userdata('site_loggedin')){				
+ $isnetwork=$this->db->get_where('network',array('company'=>$item['company'],'purchasingadmin'=>$this->session->userdata('site_loggedin')->id))->row();
+			
+				if(empty($isnetwork))
+				{
+					$insert = array();
+            		$insert['company'] = $item['company'];
+	            	$insert['purchasingadmin'] = $this->session->userdata('site_loggedin')->id;            		
+	            	$insert['acceptedon'] = date('Y-m-d H:i:s');
+	            	$insert['status'] = 'Active';
+	            	$this->db->insert('network',$insert); 
+				}			
+			}
+			
 			$this->db->where('itemid',$item['itemid']);
 			$this->db->where('company',$item['company']);
 			$this->db->where('type','Supplier');

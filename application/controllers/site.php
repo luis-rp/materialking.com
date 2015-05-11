@@ -433,6 +433,7 @@ class site extends CI_Controller
         }
         redirect(base_url('site/supplier/' . $id));
     }
+    
     public function supplier ($username=NULL)
     {
     	$this->load->helper('text');
@@ -1643,18 +1644,24 @@ class site extends CI_Controller
                     ->where('dealitem.dealdate >=',date('Y-m-d'))
                     ->get()
                     ->result();
-        //echo '<pre>';print_r($dealitems);//die;
+       
         $data['dealfeed'] = array();
         foreach($dealitems as $di)
         {
             if($di->dealactive)
-            {
-                if(!$di->image)
-                    $di->image="big.png";
-                    
+            {   
+            	$orgitem = $this->db->where('id',$di->itemid)->get('item')->row();     	
+                if(!$di->image){               	
+                	if($orgitem->item_img){              	
+                	$di->image=$orgitem->item_img;}
+                	else {
+                	 $di->image="big.png";	
+                	}                 
+                }
+                               
                 $di->companyusername = $this->db->where('id',$di->company)->get('company')->row()->username;
                 $di->companyname = $this->db->where('id',$di->company)->get('company')->row()->title;               
-                $orgitem = $this->db->where('id',$di->itemid)->get('item')->row();
+               
                 $dealitems3 = $this->db->get_where('dealitem',array('itemid'=>$di->itemid,'company'=>$di->company))->row()->qtyreqd;               
                 if(@$dealitems3 && $dealitems3!="")
 	                {

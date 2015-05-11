@@ -429,11 +429,11 @@
 			<?php if($this->session->userdata('managedprojectdetails')){?>    	
 	    	<div class="well span11" style="width:75% !important;">
 	 			 <h3 class="box-header">Cost Code Statistics for the Project '<?php echo $this->session->userdata('managedprojectdetails')->title;?>' </h3>	
-			    		<?php if(@$costcodesjson){?>
+			    		<?php if(@$costcodesjson){ if($Totalawardedtotal!=0) {?>
 			    			<div style="width:100%;border:2px solid silver;border-bottom:none;">
 					 			<span><strong>Total Project Savings:&nbsp;<?php echo "$".number_format($Totalawardedtotal,2); ?></strong><span></span>
 						    </div>
-			    		<?php } ?>	
+			    		<?php } } ?>	
 			    			<div id="chart_pie" style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">&nbsp;</div>
 			    		<!--<?php //} else {?>		
 			    			<div style="width:100%;height:auto;text-align:center;vertical-align:middle;border:2px solid silver;border-top:none;">

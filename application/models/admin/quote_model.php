@@ -1876,12 +1876,11 @@ class quote_model extends Model {
 
         $delsql = array();
         $delsql[] = "DELETE FROM " . $this->db->dbprefix('quote') . " WHERE id='$id'";
-
         $delsql[] = "DELETE FROM " . $this->db->dbprefix('quoteitem') . " WHERE quote='" . $id . "'";
         $delsql[] = "DELETE FROM " . $this->db->dbprefix('bid') . " WHERE quote='" . $id . "'";
         $delsql[] = "DELETE FROM " . $this->db->dbprefix('invitation') . " WHERE quote='" . $id . "'";
         $delsql[] = "DELETE FROM " . $this->db->dbprefix('award') . " WHERE quote='" . $id . "'";
-
+        $delsql[] = "DELETE FROM " . $this->db->dbprefix('notification') . " WHERE quote='" . $id . "'";
         $bidsql = "SELECT * FROM " . $this->db->dbprefix('bid') . " WHERE quote='" . $id . "'";
         $bidquery = $this->db->query($bidsql);
         $bids = $bidquery->result();

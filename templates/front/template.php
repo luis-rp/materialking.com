@@ -306,7 +306,7 @@ if(@$this->session->userdata('company')->username!=@$pagetour->username)
     	</li>
       
         <?php if(isset($pagetour)) { 
-        	if($pagetour->contact!="" && $pagetour->address!="" && $pagetour->city!="" && $pagetour->state!="" && $pagetour->zip!="") {?>
+        	if($pagetour->address!="") {?>
       
 	    <li class="<?php if($menu=='tier'){echo 'active';}?>"> 
 	    	<a href="<?php echo site_url('company/tier');?>"> <i class="fa fa-dollar1"></i>

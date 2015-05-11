@@ -567,7 +567,7 @@ class Dashboard extends CI_Controller
 		        $nc->totalcredit = '';
 		    }
 		  $query = " SELECT SUM(totalunpaid) as totalunpaid,company, purchasingadmin, datedue, paymentstatus, paymentdate ,SUM(received) as received,SUM(totalCommitted) as totalCommitted FROM( SELECT
-		    		IF( (r.paymentstatus!='Paid'  OR r.paymentstatus is null ), (IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))),0) 	
+		    		IF( (r.paymentstatus!='Paid'), (IF(IFNULL(r.quantity,0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM(r.quantity*ai.ea),2) + (ROUND(SUM(r.quantity*ai.ea),2) * ".$settings->taxpercent." / 100)))),0) 	
 		    			totalunpaid ,  ai.company, ai.purchasingadmin, r.datedue, r.paymentstatus, r.paymentdate ,SUM(ai.received) as received, IF( (r.paymentstatus!='Paid'  OR r.paymentstatus is null ) , IF(IFNULL((ai.quantity),0)=0,(ROUND(SUM(ai.ea),2) + (ROUND(SUM(ai.ea),2) * ".$settings->taxpercent." / 100)),(ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) + (ROUND(SUM((ai.quantity-ai.received)*ai.ea),2) * ".$settings->taxpercent." / 100))),0) as totalCommitted 
 		    			FROM
 		    			".$this->db->dbprefix('awarditem')." ai left join ".$this->db->dbprefix('received')." r 

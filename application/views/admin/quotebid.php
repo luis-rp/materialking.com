@@ -680,7 +680,8 @@ function showselectimage()
 function addCostcode()
 {
    var costcodeprefix =	$( "#costcodeprefix option:selected" ).text();  
-   var newValue = $( "#costcodeprefix option:selected" ).html().replace(/\»/g, '');   
+   //var newValue = $( "#costcodeprefix option:selected" ).text().replace(/\»/g, ''); 
+   var newValue = costcodeprefix.replace(/\»/g, ''); 
    var newValue1 = newValue.replace("&nbsp;"," "); 
    var newValue2 = newValue1.trim();
  

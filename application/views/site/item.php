@@ -1110,7 +1110,7 @@ $( document ).tooltip();
                                     <td  style="padding:0px;word-break:break-all;"><?php echo $inv->manufacturername ?> </td>
                                     <td  style="padding:0px;word-break:break-all;"class="tinyfont"><?php echo $inv->partnum ?> </td>
                                     <td style="padding:0px; word-break: keep-all;">
-                                    <?php echo $inv->instock ? 'Yes' : 'No'; ?>
+                                    <?php echo $inv->instock ? 'Yes' : 'Call For Availability 555-555-5555'; ?>
                                     <?php echo $inv->qtyavailable?'<br>Stock:'.$inv->qtyavailable:'';?><br>
                                     <?php echo $inv->backorder ? 'Backorder' : ''; ?><br>
                                     <?php echo $inv->shipfrom ? 'Ships From Manufacturer.' : ''; ?>
