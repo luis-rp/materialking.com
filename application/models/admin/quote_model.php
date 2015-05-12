@@ -1839,7 +1839,8 @@ class quote_model extends Model {
             'taxtotal' => $this->input->post('taxtotal'),
             'total' => $this->input->post('total'),
             'creation_date' => date('Y-m-d'),
-            'contracttype' => $this->input->post('contracttype')
+            'contracttype' => $this->input->post('contracttype'),
+            'defaultcostcode' => trim($this->input->post('defaultcosecodename'))
         );
         $options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
         //print_r($options);exit;

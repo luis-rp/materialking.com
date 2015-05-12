@@ -111,7 +111,7 @@ class adminmodel extends Model
 		//if($this->session->userdata('usertype_id') == 2)		
 			$options['purchasingadmin'] = $this->session->userdata('purchasingadmin');
 			$options['created_date'] = date ( "Y-m-d h:i:s" );
-			$options['companyname'] = $this->session->userdata('companyname');
+			//$options['companyname'] = $this->session->userdata('companyname');
 		//unset($options['_wysihtml5_mode']);
 		//if($this->session->userdata('usertype_id') == 2)
 			//$options['usertype_id'] = 3;

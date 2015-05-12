@@ -839,17 +839,18 @@ class quote extends CI_Controller
         $data['costcodes'] = $this->db->where('project',$item->pid)->get('costcode')->result();        
        	$sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$item->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();   
-		
+		$data['parentcombooptionsforquote'] = array();
  		if(count($data['quoteitems']) > 0)
  		{
 	 		foreach ($data['quoteitems'] as $key=>$val)
 	 		{
-	 			$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$val->costcode}");
+	 			$data['parentcombooptionsforquote'][$val->id] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$val->costcode}");
+	 			$data['parentcombooptionsforquote'][0] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$item->defaultcostcode}");
 	 		}
  		}
  		else 
  		{
- 			$data['parentcombooptionsforquote'] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, 0);
+ 			$data['parentcombooptionsforquote'][0] = $this->costcode_model->listHeirarchicalComboForQuote('0', 0, 0, "{$item->defaultcostcode}");
  		}
  		//	echo '<pre>',print_r($data['quoteitems']);die;
         $data['purchasercategories'] = $this->quote_model->getallCategories();		
@@ -3467,6 +3468,7 @@ class quote extends CI_Controller
         foreach ($bids as $bid) {
 
             $totalprice = 0;
+            if(count($bid->items)>0){
             foreach ($bid->items as $item) {
                 foreach ($quoteitems as $qi) {
                     if ($qi->itemcode == $item->itemcode) {
@@ -3489,6 +3491,8 @@ class quote extends CI_Controller
                 else 
                 $reject = 0;
                 
+            } }else{
+            	 $reject=1;
             }
             if (!isset($minimum['totalprice']))
                 $minimum['totalprice'] = $totalprice;
@@ -3504,7 +3508,7 @@ class quote extends CI_Controller
 	    		
 	    	$bankaccount = $this->db->where('company',$bid->company)->get('bankaccount')->row();
 	    	$creditresult = $this->db->where('company',$bid->company)->where('purchasingadmin',$quote->purchasingadmin)->get('purchasingtier')->row();
-			if((!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber) && (@$creditresult->creditonly==1) )
+			if((!$bankaccount || !@$bankaccount->routingnumber || !@$bankaccount->accountnumber) && (@$creditresult->creditonly==1 && $reject==0) )
 			{
 				$bankaccarray[$bid->company] = $bid->companyname;
 			}	
@@ -11470,11 +11474,41 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		$username = str_replace(' ', '-', strtolower($username));  
         $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.username='".$username."'";
         $query = $this->db->query($sql);
-        $cust = $query->row();
+        $cust = $query->row();  
+        $check=0; 
         if($cust)
-        echo 1;
+        { 
+        $isnetwork=$this->db->get_where('network',array('company'=>$cust->id,'purchasingadmin'=>$this->session->userdata('id')))->row();
+                			
+			if(empty($isnetwork))
+			{
+			$insert = array();
+	        $insert['company'] = $cust->id;
+		    $insert['purchasingadmin'] = $this->session->userdata('id');            		
+		    $insert['acceptedon'] = date('Y-m-d H:i:s');
+		    $insert['status'] = 'Active';
+		    $this->db->insert('network',$insert); 
+		    $check=1;
+			}	
+			
+        }
+        	
+        if($cust)
+        {
+        	if($check==1)
+        	{
+        	echo 2;
+        	}
+        	else 
+        	{
+        	 echo 1;	
+        	}
+        }
         else 
-        echo 0; die;
+        {
+        echo 0;
+        } 
+        die;
 		
 	}
 		

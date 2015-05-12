@@ -272,6 +272,23 @@ class Quote extends CI_Controller
     		$this->db->where('quote',$inv->quote);
     		$this->db->where('company',$company->id);
     		$bid = $this->db->get('bid')->row();
+    		if($bid){
+    		$bidit = $this->db->get_where('biditem',array('bid'=>$bid->id))->result();	
+    		
+    		$stat=0;
+            $statcount=count($bidit);
+            foreach ($bidit as $val){
+                 if($val->postatus=='Rejected'){
+                    $stat=$stat+1;}
+               }
+               if($stat==$statcount) {
+               $inv->rejectstatus=1;
+               }
+               else {
+               		$inv->rejectstatus=0;
+               }
+    		}
+    		
     		$inv->quotenum = @$bid->quotenum;
     		$inv->submitdate = @$bid->submitdate;
     		
@@ -589,18 +606,18 @@ class Quote extends CI_Controller
 			}
 			
 			if(!$draftitems){
-			    $item->ea = number_format($item->ea + ($item->ea * $tier/100),2);
+			    $item->ea = round($item->ea + ($item->ea * $tier/100),2);
 			}
 			$item->totalprice = $item->ea * $item->quantity;
 			$item->tiers = array();
-			$item->tiers['Tier0'] = number_format($price,2);
-			$item->tiers['Tier1'] = number_format($price + ($price * @$tiers->tier1/100),2);
+			$item->tiers['Tier0'] = round($price,2);
+			$item->tiers['Tier1'] = round($price + ($price * @$tiers->tier1/100),2);
 			//echo $item->tiers['Tier1'];echo '<br/>';
-			$item->tiers['Tier2'] = number_format($price + ($price * @$tiers->tier2/100),2);
+			$item->tiers['Tier2'] = round($price + ($price * @$tiers->tier2/100),2);
 			//echo $item->tiers['Tier2'];echo '<br/>';
-			$item->tiers['Tier3'] = number_format($price + ($price * @$tiers->tier3/100),2);
+			$item->tiers['Tier3'] = round($price + ($price * @$tiers->tier3/100),2);
 			//echo $item->tiers['Tier3'];echo '<br/>';
-			$item->tiers['Tier4'] = number_format($price + ($price * @$tiers->tier4/100),2);
+			$item->tiers['Tier4'] = round($price + ($price * @$tiers->tier4/100),2);
 			//echo $item->tiers['Tier4'];echo '<br/>';echo '<br/>';echo '<br/>';
 			
 			$this->db->where('company', $company->id);
@@ -4906,7 +4923,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	}
 	
 	 function rejectquote($bidid,$usebidorquote="Bid")
-    {    	
+    {
+    	
     	$company = $this->session->userdata('company');
 		if(!$company)
 			redirect('company/login');    	
@@ -4917,17 +4935,16 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 				$updateArray = array('postatus'=>'Rejected');
 				$where = array('bid'=>$bidid);
 				$this->db->update('biditem',$updateArray,$where);				
-			}elseif ($usebidorquote=="Quote"){
-				
+			}elseif ($usebidorquote=="Quote"){				
 				$quote = $this->quotemodel->getquotebyid($bidid);
-				//echo "<pre>",print_r($quote);
 	    		$quoteitems = $this->quotemodel->getquoteitems($bidid);	
 				$bidarray = array('quote'=>$quote->id,'company'=>$company->id,'submitdate'=>date('Y-m-d'));
     			$bidarray['quotenum'] = $quote->ponum;
-    			$bidarray['purchasingadmin'] = $quote->purchasingadmin;        		
+    			$bidarray['purchasingadmin'] = $quote->purchasingadmin;
+    			      		
     			$this->db->insert('bid',$bidarray);
     			$biddedid = $this->quotemodel->db->insert_id();
-				//echo "<pre>",print_r($quoteitems); 
+    			
 	            foreach($quoteitems as $item)
 	            {
 	            	if($company->id == $item->company){
@@ -4947,7 +4964,6 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 	            		$insertarray['willcall'] = $item['willcall'];
 	            		$insertarray['costcode'] = $item['costcode'];
 	            		$insertarray['notes'] = $item['notes'];
-	            		//echo "<pre>",print_r($insertarray); die;
 	            		$this->quotemodel->db->insert('biditem',$insertarray);
 	            	}
 						

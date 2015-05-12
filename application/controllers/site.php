@@ -1463,14 +1463,14 @@ class site extends CI_Controller
                     {
                         $tv = $tiers->$tier;
                         $initem->ea = $initem->ea + ($initem->ea * $tv / 100);
-                        $initem->ea = number_format($initem->ea, 2);
+                        $initem->ea = round($initem->ea,2);
                     }
                 }
                 
                 $resultprice = $this->db->select('p.price')->from('purchasingtier_item p')->join('company c','p.company=c.id')->where('p.purchasingadmin', $currentpa)->where('p.itemid', $initem->itemid)->where('c.isdeleted', 0)->where('p.company', $initem->company)->get()->row();
                 if($resultprice){
 						
-                	$initem->ea = number_format($resultprice->price, 2);	
+                	$initem->ea = round($resultprice->price, 2);	
                 	
                 }
                 

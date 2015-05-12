@@ -695,6 +695,7 @@ function addCostcode()
 	   if($( "#costcodeprefix option:selected" ).val() !='')
 	   {
 	   		$("#ponum").val(newValue2);
+	   		$('#defaultcosecodename').val(costcodeprefix);
 	   }		
 	   else
 	   {
@@ -786,7 +787,7 @@ function changeproject(catid){
 		   <div class="control-group">
 			    <div class="controlss"> <?php if($iscostcodeprefix == 0) { ?>
 		   		&nbsp;&nbsp;	Use Cost Code Prefix:
-                 <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
+                 <select id="costcodeprefix"  name="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
 					   <option value="">Select</option>
 					  		<?php echo $parentcombooptions;?>
 					   <option  value=" ">Add New Cost-Code</option>
@@ -805,6 +806,7 @@ function changeproject(catid){
 		   <input type="hidden" id="suna" name="suna" value=""/>
 		   <input type="hidden" id="una" name="una" value=""/>
 		   <input type="hidden" id="nonnetworkuser" name="nonnetworkuser" value=""/>
+		   <input type="hidden" name="defaultcosecodename" id="defaultcosecodename" />
 		  
 		    
 		    <div class="control-group">
@@ -1100,7 +1102,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    				<?php echo $costcode->code;?>
 		    				</option>
 		    				<?php }?>-->
-		    				<?php echo $parentcombooptionsforquote; ?>
+		    				<?php echo $parentcombooptionsforquote[$q->id]; ?>
 		    			</select>
 		    		</td>
 		    		<td><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="height:130px;width:95%;"><?php echo $q->notes;?></textarea></td>
@@ -1170,7 +1172,7 @@ onkeypress="return allowonlydigits(event,'quantity<?php echo $q->id;?>', 'eaerrm
 		    				<?php echo $costcode->code;?>
 		    				</option>
 		    				<?php }?>-->
-		    				<?php echo $parentcombooptionsforquote; ?>
+		    				<?php echo $parentcombooptionsforquote[0]; ?>
 		    			</select>
 		    			
 		    		</td>

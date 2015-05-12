@@ -612,11 +612,13 @@ function checkcompanyusername(id,value){
     			async: false,
     			data: "username="+value
     		}).done(function(data){
-    			if(data == 1){
-    				//$('#nonnetworkmessage').html("Username "+user+" already exists");    				
+    			if(data == 1){		
     				alert("Username "+value+" already exists"); 
     				$('#'+id).val('');  				 
-    			}    			    			
+    			} else if(data == 2) {
+    				alert("Username "+value+" already exists. Connection Request will be Sent");
+    				$('#'+id).val(''); 
+    			}
     		}); 
 }
 
@@ -707,6 +709,7 @@ function addCostcode()
 	   if($( "#costcodeprefix option:selected" ).val() !='')
 	   {
 	   		$("#ponum").val(newValue2);
+	   		$('#defaultcosecodename').val(costcodeprefix);
 	   }		
 	   else
 	   {
@@ -829,7 +832,7 @@ function namevalidation(name,id)
 		   <div class="control-group">
 			    <div class="controlss"> <?php if($iscostcodeprefix == 0) { ?>
 		   		&nbsp;&nbsp;	Use Cost Code Prefix:
-                 <select id="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
+                 <select id="costcodeprefix" name="costcodeprefix" onchange="addCostcode()" style="width:16.5%">
 					   <option value="">Select</option>
 					  	<?php echo $parentcombooptions;?>
 					   <option value="" onclick="addNewCostcode();">Add New Cost-Code</option>
@@ -843,6 +846,7 @@ function namevalidation(name,id)
 		   <input type="hidden" name="pid" id="pid" value="<?php echo $pid;?>"/>
 		   <input type="hidden" name="potype" value="<?php echo $this->validation->potype;?>"/>
 		   <input type="hidden" id="invitees" name="invitees" value=""/>
+		   <input type="hidden" name="defaultcosecodename" id="defaultcosecodename" />
 		   <br/>
 		    
 		    <div class="control-group">
@@ -975,7 +979,7 @@ function namevalidation(name,id)
 		    				</option>
 		    				<?php }?>-->
 		    				
-		    				<?php echo $parentcombooptionsforquote; ?>
+		    				<?php echo $parentcombooptionsforquote[$q->id]; ?>
 		    			</select>
 		    		</td>
 		    		<td><textarea id="notes<?php echo $q->id;?>" name="notes<?php echo $q->id;?>" style="width:95%;height:130px;"><?php echo $q->notes;?></textarea></td>
@@ -1112,7 +1116,7 @@ function namevalidation(name,id)
 		    				<?php echo $costcode->code;?>
 		    				</option>
 		    				<?php }?>-->
-		    				<?php echo $parentcombooptionsforquote; ?>
+		    				<?php echo $parentcombooptionsforquote[0]; ?>
 		    			</select>
 		    		</td>
 		    		<td><textarea id="notes" name="notes" style="width:95%;height:130px;"></textarea></td>

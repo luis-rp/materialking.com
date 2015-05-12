@@ -105,7 +105,8 @@ class items_model extends Model {
         
         $ret = "";  
         $retsub = "";  
-	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:99; float: inherit; position: absolute;' id='css3menu2'  >";        
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:99; float: inherit; position: absolute; height :100px !important;' id='css3menu2'  >";       
+	    
 	    
 	    foreach ($manufacturers as $man) 
         {
@@ -330,7 +331,8 @@ class items_model extends Model {
         
         $ret = "";  
         $retsub = "";  
-	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:99; float: inherit; position: absolute;' id='css3menu2' >";        
+	    $ret .= "<ul class='topmenu'  style='margin-top:-1em;z-index:99; float: inherit; position: absolute; height :100px !important;' id='css3menu2' >";  
+	         
 	    
 	    foreach ($manufacturers as $man) 
         {

@@ -117,7 +117,7 @@
 							             
 									    	$i = 0;
 									    	foreach($invitations as $inv)
-									    	{
+									    	{ 
 									    		$i++;
 									      ?>
                                             <tr>
@@ -152,6 +152,10 @@
 										    		</a>
 										    		<?php }?>
 										    		<span class="label label-important"><?php echo $inv->status?></span>
+										    		<?php if(@$inv->rejectstatus==1) { ?>
+										    		<br /><br /><span class="label label-important">Rejected</span>
+										    		<?php }?>
+										    		
 										    	</td>
                                                 <td class="v-align-middle">
                                                     <div class="progress progress-striped active progress-large">

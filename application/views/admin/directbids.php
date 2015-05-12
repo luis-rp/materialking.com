@@ -5,7 +5,6 @@
 	function viewitems(itemid)
 	{
     	var serviceurl = '<?php echo base_url()?>admin/itemcode/ajaxdetail/'+ itemid;
-    	//alert(serviceurl);
         $("#quoteitems").html('loading ...');
         $("#itemsmodal").modal();
             $.ajax({
@@ -242,9 +241,9 @@ $(document).ready(function(){
 				    	</tr>
 				    	<?php 
 				    	$alltotal=0; $allcctotal=0; foreach($bid->items as $q) if($q->itemcode){?>
-				    	<?php $alltotal += $q->quantity * $q->ea;?>
+				    	<?php if($q->postatus !='Rejected') { $alltotal += $q->quantity * $q->ea; }?>
 		    			<?php 
-		    				if($bid->creditonly==1){
+		    				if($bid->creditonly==1 && $q->postatus !='Rejected'){
 		    				$allcctotal += $q->quantity * $q->ea;
 		    				$creditstatus[] = "creditonly";
 		    				}
@@ -273,7 +272,7 @@ $(document).ready(function(){
 				    		<td><?php echo $q->quantity;?></td>
 				    		<td><?php echo $q->unit;?></td>
 				    		<td><?php echo $q->minprice;?></td>
-				    		<td>$ <span id="ea<?php echo $q->id;?>"><?php echo $q->ea;?></span></td>
+				    		<td>$ <span id="ea<?php echo $q->id;?>"><?php echo $q->ea;?></span><br /><span><?php echo $q->postatus; ?></span></td>
 				    		<td>$ <span id="itemtotal<?php echo $q->id;?>"><?php echo round($q->quantity * $q->ea,2);?></span></td>
 				    		<td><?php echo $q->daterequested;?></td>
 				    		<td><?php echo $q->costcode;?></td>

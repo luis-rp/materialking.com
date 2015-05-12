@@ -471,6 +471,7 @@ class Admin extends CI_Controller {
 	{
 		$rules ['username'] = 'trim|required';
 		$rules ['email'] = 'trim|required';
+		$rules ['companyname'] = 'trim|required';
 		if($this->session->userdata('usertype_id') == 1) 
 		{
 		$rules ['status'] = 'trim|required';

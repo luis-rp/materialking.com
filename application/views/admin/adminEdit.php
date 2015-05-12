@@ -183,6 +183,14 @@ function ValidateForm(){
 	<?php echo $this->validation->username_error; ?>
     </div>
     </div>
+    
+    <div class="control-group">
+    <label class="control-label" for="companyname">Company Name *</label>
+    <div class="controls">
+    <input type="text" name="companyname" class="span4" class="text" required value="<?php echo $this->validation->companyname; ?>"/>
+	<?php echo $this->validation->companyname_error; ?>
+    </div>
+    </div>
   
     
     <div class="control-group">

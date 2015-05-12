@@ -2148,7 +2148,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 				" . $this->db->dbprefix('biditem') . " ai, " . $this->db->dbprefix('bid') . " a,
 				" . $this->db->dbprefix('quote') . " q
 				WHERE
-				ai.bid=a.id AND a.quote=q.id AND ai.itemid='$itemid'
+				ai.bid=a.id AND ai.postatus <> 'Rejected' AND a.quote=q.id AND ai.itemid='$itemid'
 				AND a.company='$company' AND ai.itemid='$itemid'
 				AND a.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 				";
