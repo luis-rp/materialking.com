@@ -3443,7 +3443,7 @@ class quote extends CI_Controller
         $awarded = $this->quote_model->getawardedbid($qid);
         $quote = $this->quote_model->get_quotes_by_id($qid);
 
-        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('id')) {
+        if ($this->session->userdata('usertype_id') == 2 && $quote->purchasingadmin != $this->session->userdata('purchasingadmin')) {
             redirect('admin/dashboard', 'refresh');
         }
         //echo '<pre> bids ';print_r($awarded);echo '</pre>';//die;
@@ -5713,7 +5713,7 @@ class quote extends CI_Controller
         $awarded = $this->quote_model->getawardedbid($qid);
         if (!$awarded)
             redirect('admin/quote/bids/' . $qid);
-        if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('id')) {
+        if ($this->session->userdata('usertype_id') == 2 && $awarded->purchasingadmin != $this->session->userdata('purchasingadmin')) {
             redirect('admin/dashboard', 'refresh');
         }
         //echo '<pre>';print_r($awarded);die;

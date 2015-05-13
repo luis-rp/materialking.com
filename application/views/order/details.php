@@ -173,6 +173,55 @@ function pickupfun()
                      </div>
       			</div>
                 <?php }?>
+                
+                
+                <?php if($transfers) { ?>
+<section class="row-fluid">
+	<h3 class="box-header">Transfers for order# <?php echo $order->ordernumber?> <?php if(!is_null($order->project)){ echo "Order assigned to ".$order->prjName;}?></h3>
+	<div class="box">
+	  <div class="span12">
+			<div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">Transferid</th>
+                            <th style="width:20%">Company</th>
+                            <th style="width:10%">Amount</th>
+                            <th style="width:20%">Status</th>
+                        </tr>
+                    </thead>
+                    
+					<tbody>
+		              <?php
+				    	$i = 0;
+				    	foreach($transfers as $item)
+				    	{  
+				    		$i++;
+ 				    		  $sql = "SELECT shipping FROM 
+							   ".$this->db->dbprefix('orderdetails')." t
+							   WHERE orderid='$item->orderid' AND company=$item->company";
+ 								$getshipping = $this->db->query($sql)->result();
+ 							
+							//$totamount = number_format($item->amount + $order->shipping + ($item->amount * $order->taxpercent/100),2);
+ 				    		//$totamount = number_format($item->amount + $getshipping[0]->shipping ,2); 
+ 				    		$totamount = number_format($item->amount,2);?> 
+                        <tr>
+                            <td><?php echo $item->transferid;?></td>
+                            <td><?php echo $item->companyname;?></td>
+                            <td>$<?php echo $totamount;?></td>
+                            <td><?php echo ucfirst($item->status); ?></td>
+                        </tr>
+                      <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+ 
+      </div>
+    </div>
+</section>
+<?php }?>
+                
+                
                 <?php if($messages){?>
                 Earlier Messages
                 <table class="table table-bordered">

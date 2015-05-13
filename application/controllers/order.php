@@ -301,6 +301,40 @@ class Order extends CI_Controller
 			$order->purchaser->companyname = 'Guest';
 		}
 		
+		// Payment Transfer Details
+		$sql = "SELECT t.*, c.title companyname FROM 
+			   ".$this->db->dbprefix('transfer')." t, ".$this->db->dbprefix('company')." c
+			   WHERE t.orderid='$id' AND t.company=c.id";
+	   
+		$transfers = $this->db->query($sql)->result();
+		//print_r($transfers);die;
+		
+		foreach($transfers as $transfer)
+		{
+			if(@$this->session->userdata('site_loggedin'))
+			$config = (array)$this->settings_model->get_setting_by_admin ($this->session->userdata('site_loggedin')->id);
+			else
+			$config = array();
+			$config = array_merge($config, $this->config->config);
+    		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
+    		Stripe::setApiKey($config['STRIPE_API_KEY']);
+            try{
+            $info = Stripe_Transfer::retrieve($transfer->transferid);
+            }catch  (Exception $e) {
+            	
+            	$body = $e->getJsonBody();
+          		$err  = $body['error'];          		      	
+            }             
+            
+            if(!empty($info))
+            $this->db->where('id',$transfer->id)->update('transfer',array('status'=>$info['status']));    
+            
+            
+		}
+		
+		$data['transfers'] = $transfers;
+		
+		
 		$this->db->where('orderid',$id);
 		$this->db->where('company',$company->id);
 		$orderdetails = $this->db->get('orderdetails')->result();

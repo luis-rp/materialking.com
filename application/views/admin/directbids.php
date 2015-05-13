@@ -184,10 +184,24 @@ $(document).ready(function(){
 		   <?php }else{?>
 		   <div class="span12">
 		   <table><tr><td>
+		   <?php foreach($bids as $bid)
+		  			if($bid->items)
+		  				{ 
+		  					$biditemcount=count($bid->items);
+		  					$stat=0; 
+		  						foreach($bid->items as $q) { 
+		  							
+		  							if($q->postatus =='Rejected') { 
+		  								$stat=$stat+1; 
+		  							}
+		  						 } 
+		  				} ?>
+		  	<?php if(@$biditemcount!=@$stat) { ?>
 		   <form method="post" action="<?php echo site_url('admin/quote/confirmdirect');?>">
 		   	<input type="hidden" name="quote" value="<?php echo $quote->id;?>"/>
 		   	<input type="button" class="btn btn-primary" onclick="awardbiditems();" value="Confirm &amp; Proceed"/>
 		   </form>
+		   <?php } ?>
 		   </td><td>
 		   <?php if(@$companycount > 0){		   		   
 		   echo @$companycount." Company, Assigned to ".@$itemcount." item has not approved your P.O yet (current status is processing).<br> If you confirm and proceed now, the P.O will only include the items shown below and will be closed. <br> If you wish to issue the P.O with all items on your original order, please wait until all orders are approved from all vendors.";
@@ -199,7 +213,7 @@ $(document).ready(function(){
 		  <?php $creditstatus = array();
 		  	foreach($bids as $bid)
 		  	if($bid->items)
-		  	{
+		  	{ 
 		  		$sn = 1;
 		  ?>
 		      <div class="control-group">
@@ -409,7 +423,7 @@ $(document).ready(function(){
 			 
 			    <br/>
 			    <br/>
-		    <?php }?>
+		    <?php } ?>
 	    </div>
     </div>
 </section>

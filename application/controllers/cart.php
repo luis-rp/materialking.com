@@ -466,7 +466,7 @@ class cart extends CI_Controller
 		// Adding 2.9% constant processing fee for each suppplier transaction.	
 		for($i=0;$i<$companycount;$i++)
 		$totalprice += ($totalprice*2.9/100);
-	    $totalprice = number_format($totalprice,2);
+	    $totalprice = round($totalprice,2);
 		
 		@session_start();
 		$_SESSION['cart_shipping_vals']=$_POST['itemshipping'];
@@ -483,7 +483,7 @@ class cart extends CI_Controller
 		$charge = Stripe_Charge::create(array('card' => $myCard, 'amount' => $totalprice * 100, 'currency' => 'usd' ));
 		//echo $charge;
 		$chargeobj = json_decode($charge);
-		//echo '<pre>';print_r($chargeobj);
+		//echo '<pre>';print_r($chargeobj); die;
 
 		if(@$chargeobj->paid)
 		{
@@ -505,13 +505,15 @@ class cart extends CI_Controller
 			} 
 			$companies = array();
 			$companiesamount = array();
+			$companynames = array();
 			$getvendorship=explode(', ',$_REQUEST['shippingforvendors']);
 			foreach($cart as $ci)
 			{
 				if(!isset($companies[$ci['company']]))
 				{
 					$this->db->where('id',$ci['company']);
-					$cd = $this->db->get('company')->row();				
+					$cd = $this->db->get('company')->row();		
+					$companynames[] = $cd->title;		
 					$companies[$ci['company']]="<strong>Order Date:</strong>".date('Y-m-d')."<br><strong>Order Time:</strong>".date('H:i:s')."<br><strong>Payment Type:</strong>Credit Card.<br><strong>Payment Status:</strong>Paid<br><strong>Customer Name:</strong>".$_POST['name']."<br><strong>Customer Email:</strong>".$_POST['email'];
 					$companies[$ci['company']].= $this->orderpdf($ci['company'],true,'Credit Card');
 					$companies[$ci['company']].= "<br><a href='".site_url('order')."' target='_blank'>View Order</a>"; 
@@ -550,6 +552,23 @@ class cart extends CI_Controller
 			
 			$this->db->insert('order',$order);
 			$oid = $this->db->insert_id();
+			
+			$insertcharge = array();
+			$insertcharge['orderid'] = $oid;
+			$insertcharge['purchasingadmin'] = @$this->session->userdata('site_loggedin')->id;
+			$insertcharge['company'] = 0;
+			$insertcharge['amount'] = $totalprice;
+			$insertcharge['transferid'] = $chargeobj->id;
+			$insertcharge['transferdate'] = date('Y-m-d H:i');
+			$insertcharge['status'] = '';			
+			
+			if(count($companynames>0)){
+			
+				$insertcharge['companynames'] =	implode($companynames);	
+			}
+			
+			$this->db->insert('transfer',$insertcharge);
+			
 			$data['order'] = $ordernumber;
 			$notifications = array();
 			

@@ -1046,23 +1046,42 @@ function orders_export()
 		$this->db->where('orderid',$id);
 		$orderdetails = $this->db->get('orderdetails')->result();
 		
-		$transfers = $this->db->where('orderid',$id)->get('transfer')->result();
+		$transfers = $this->db->where('orderid',$id)->where('company',0)->get('transfer')->result();
 		//print_r($transfers);die;
 		foreach($transfers as $transfer)
 		{
     	    $config = $this->config->config;
     		require_once($config['base_dir'].'application/libraries/payment/Stripe.php');
     		Stripe::setApiKey($config['STRIPE_API_KEY']);
-            
+            try{
             $info = Stripe_Transfer::retrieve($transfer->transferid);
+            }catch  (Exception $e) {
+            	
+            	$body = $e->getJsonBody();
+          		$err  = $body['error'];          		      	
+            }             
+            
+            if(!empty($info))
             $this->db->where('id',$transfer->id)->update('transfer',array('status'=>$info['status']));
+            
+            try{
+            	$chargeinfo = Stripe_Charge::retrieve($transfer->transferid);
+            }catch  (Exception $e) {
+            	
+            	$body = $e->getJsonBody();
+          		$err  = $body['error'];          		       	
+            } 
+            
+            if(!empty($chargeinfo))
+            $this->db->where('id',$transfer->id)->update('transfer',array('status'=>$chargeinfo['status']));
+            
 		}
 		//print_r($transfers);die;
-		$sql = "SELECT t.*, c.title companyname FROM 
+		/*$sql = "SELECT t.*, c.title companyname FROM 
 			   ".$this->db->dbprefix('transfer')." t, ".$this->db->dbprefix('company')." c
 			   WHERE t.orderid='$id' AND t.company=c.id";
-	    //echo $sql;
-		$transfers = $this->db->query($sql)->result();
+	    echo $sql;
+		$transfers = $this->db->query($sql)->result();*/
 		//print_r($transfers);die;
 		$data['transfers'] = $transfers;
 		//print_r($transfers);
@@ -1318,6 +1337,24 @@ function orders_export()
 			  	$comptransfer = false;
 			  }
 
+			  
+			  $insertcharge = array();
+			  $insertcharge['orderid'] = $_POST['orderid'];
+			  $insertcharge['purchasingadmin'] = @$this->session->userdata('site_loggedin')->id;
+			  $insertcharge['company'] = 0;
+			  $insertcharge['amount'] = $totalprice;
+			  $insertcharge['transferid'] = $chargeobj->id;
+			  $insertcharge['transferdate'] = date('Y-m-d H:i');
+			  $insertcharge['status'] = '';
+
+			  if(@$company->title){
+
+			  	$insertcharge['companynames'] =	$company->title;
+			  }
+
+			  $this->db->insert('transfer',$insertcharge);
+			  
+			  
 			  if($comptransfer == true){    
               $transfer = array();
               $transfer['orderid'] = $_POST['orderid'];

@@ -3464,10 +3464,16 @@ or edit your quote.</div></div></div>');
 			$quote->mark = "progress-bar-success";
 		}
 		
-		$shipments = $this->db->select('shipment.*, item.itemname')
+		/*$shipments = $this->db->select('shipment.*, item.itemname')
 		             ->from('shipment')->join('item','shipment.itemid=item.id', 'left')
 		             ->where('quote',$quoteid)->where('company',$company->id)->group_by("shipment.itemid") 
+		             ->get()->result();*/
+		
+		$shipments = $this->db->select('shipment.*, item.itemname')
+		             ->from('shipment')->join('item','shipment.itemid=item.id', 'left')
+		             ->where('quote',$quoteid)->where('company',$company->id)
 		             ->get()->result();
+		
 	    $settings = $this->settings_model->get_setting_by_admin ($quote->purchasingadmin);
 		
 		$invs = $this->quotemodel->getinvoices($company->id);

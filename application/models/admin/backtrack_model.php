@@ -138,7 +138,7 @@ class backtrack_model extends Model
 			foreach($query->result () as $item)
 				/*if($item->received>0)
 					return true;*/
-				if( (date('Y-m-d H:i:s', strtotime( @$item->daterequested."23:59:59")) < date('Y-m-d H:i:s')) && @$item->received==0 )
+				if( (date('Y-m-d H:i:s', strtotime( @$item->daterequested."23:59:59")) < date('Y-m-d H:i:s')) && @($item->quantity-$item->received)>0 )
 					return true;	
 			
 		}

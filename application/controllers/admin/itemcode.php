@@ -1979,7 +1979,8 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         
         if (@$item->item_img && file_exists('./uploads/item/' . $item->item_img)) 
 		 { 
-		 	 $imgName = site_url('uploads/item/'.$item->item_img); 
+		 	 $itemimg = rawurlencode($item->item_img);
+		 	 $imgName = site_url('uploads/item/'.$itemimg); 
 		 } 
 		 else 
 		 { 
@@ -2173,7 +2174,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
             $result = $query->result();
 
             $avgforpricedays = $this->itemcode_model->getdaysmeanprice($itemid);
-            $avgforpricedays = number_format($avgforpricedays, 2);
+            $avgforpricedays = round($avgforpricedays, 2);
             $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('awarditem') . " ai,
             		" . $this->db->dbprefix('award') . " a
 				  WHERE ai.itemid='$itemid' AND ai.award=a.id AND ai.company='$company'
@@ -2181,7 +2182,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
 			";
             $sqlavg = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
             		" . $this->db->dbprefix('bid') . " b
-				  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND b.company='$company'
+				  WHERE bi.itemid='$itemid' AND bi.postatus <> 'Rejected' AND bi.bid=b.id AND b.company='$company'
 				  AND b.purchasingadmin='".$this->session->userdata('purchasingadmin')."'
 			";
             
@@ -2207,7 +2208,7 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
          	
             $itemname = 'Itemcode :'.(@$itemnameResult[0]['itemcode']) ? @$itemnameResult[0]['itemcode'] : '' ;
             $companyavgpricefordays = $this->db->query($sqlavg)->row()->avgprice;
-            $companyavgpricefordays = number_format($companyavgpricefordays, 2);
+            $companyavgpricefordays = round($companyavgpricefordays, 2);
             if ($companyavgpricefordays > $avgforpricedays)
                 $overalltrend = 'HIGH';
             elseif ($companyavgpricefordays < $avgforpricedays)
@@ -2425,7 +2426,9 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
         	$taxrate = $this->db->query($cquery)->row();
         
             $totalminprice = $this->itemcode_model->getlowestquoteprice($item->id);
+            $totalminorderprice = $this->itemcode_model->getlowestorderprice($item->id);
             $daysavgprice = $this->itemcode_model->getdaysmeanprice($item->id);
+            $daysavgorderprice = $this->itemcode_model->getdaysordermeanprice($item->id);
          //   $poitems = $this->itemcode_model->getpoitems($item->id);
             //echo "<pre>",print_r($item->soitems); die;
          	if(isset($item->poitems[0]->totalprice) && $item->poitems[0]->totalprice != '')
@@ -2449,11 +2452,33 @@ anchor('admin/quote/track/' . $row->quote, '<span class="icon-2x icon-search"></
     			}
          	}
          	
+         	if(@$totalminprice)
+            	$totalminprice = round($totalminprice,2);
          	
-            if(@$totalminprice)
-            $totalminprice = round($totalminprice,2);
+            if(@$totalminorderprice)
+            	$totalminprice = round($totalminorderprice,2);	
+            	
+         	if(@$totalminprice && @$totalminorderprice){
+            	if ($totalminprice<$totalminorderprice) {
+            		$totalminprice = round($totalminprice,2);
+            	}else 
+            		$totalminprice = round($totalminorderprice,2);
+         	}
+         	
+            
             if(@$daysavgprice)
             $daysavgprice = round($daysavgprice,2);
+            
+            if(@$daysavgorderprice)
+            	$daysavgprice = round($daysavgorderprice,2);
+            
+            if(@$daysavgprice && @$daysavgorderprice){
+            	if ($daysavgprice<$daysavgorderprice) {
+            		$daysavgprice = round($daysavgorderprice,2);
+            	}else 
+            		$daysavgprice = round($daysavgprice,2);
+         	}	
+            	
             
             $avgforpricedays = number_format($daysavgprice, 2);
             if ($daysavgprice > $totalminprice)

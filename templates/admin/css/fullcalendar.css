@@ -704,7 +704,7 @@ td.fc-widget-content
 }
 .tooltip
 {
-	height:120px !important;
+	height:auto !important;
 	margin-top:1em !important;
 	z-index:9999 !important;
 	opacity:40 !important;

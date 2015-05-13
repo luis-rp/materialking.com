@@ -26,7 +26,7 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready( function() {
 });
-function paycc(ptype,company, amount)
+function paycc(ptype,company, amount, subtotal)
 {
 	if(ptype != 'Credit Card')
 	{
@@ -35,6 +35,7 @@ function paycc(ptype,company, amount)
 	$('#paymenttype' + company + " option:first-child").attr("selected", true);
 	$("#ccpaycompany").val(company);
 	$("#ccpayamount").val(amount);
+	$("#ccpaysubtotal").val(subtotal);
 	$("#ccpayamountshow").html(amount);
 	$("#paymodal").modal();
 }
@@ -234,7 +235,7 @@ function closepop()
                             	<?php }else{echo $item->paymentstatus;}?>
                             </td>
                             <td>
-                                <select id="paymenttype<?php echo $item->id;?>" name="paymenttype" required onchange="paycc(this.value, <?php echo $item->id;?>, <?php echo $item->amount+$tax+$order->shipping;?>)">
+                                <select id="paymenttype<?php echo $item->id;?>" name="paymenttype" required onchange="paycc(this.value, <?php echo $item->id;?>, <?php echo $item->amount+$tax+$order->shipping;?>, <?php echo $item->amount;?>)">
                                     <option value="">Select Payment Type</option>
                                     <?php if($item->bankaccount && @$item->bankaccount->routingnumber && @$item->bankaccount->accountnumber){?>
                                     <option value="Credit Card">Credit Card</option>
@@ -361,7 +362,7 @@ Send Message:
  				    		$totamount = number_format($item->amount,2);?> 
                         <tr>
                             <td><?php echo $item->transferid;?></td>
-                            <td><?php echo $item->companyname;?></td>
+                            <td><?php echo $item->companynames;?></td>
                             <td>$<?php echo $totamount;?></td>
                             <td><?php echo ucfirst($item->status); ?></td>
                         </tr>
@@ -436,6 +437,7 @@ Send Message:
 	        <input type="hidden" name="orderid" value="<?php echo $order->id;?>"/>
 	        <input type="hidden" id="ccpaycompany" name="company" value=""/>
 	        <input type="hidden" id="ccpayamount" name="amount" value=""/>
+	        <input type="hidden" id="ccpaysubtotal" name="subtotal" value=""/>	        
             <div class="control-group">
                 <label class="control-label" for="card">
                    Total Amount to pay

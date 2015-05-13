@@ -1352,7 +1352,7 @@ class itemcode_model extends Model {
 
     function getlowestquoteprice($itemid, $potype = 'Bid') {
         //if($potype == 'Bid')
-        $sql = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . " WHERE itemid='$itemid' AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
+        $sql = "SELECT MIN(ea) minprice FROM " . $this->db->dbprefix('biditem') . " WHERE itemid='$itemid' AND postatus <> 'Rejected' AND purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
 
         //if($potype == 'Direct')
         //$sql = "SELECT MIN(ea) minprice FROM ".$this->db->dbprefix('biditem')." WHERE itemcode='$itemid'";
@@ -1368,7 +1368,7 @@ class itemcode_model extends Model {
 
         $sql = "SELECT AVG(ea) avgprice FROM " . $this->db->dbprefix('biditem') . " bi,
         		" . $this->db->dbprefix('bid') . " b
-			  WHERE bi.itemid='$itemid' AND bi.bid=b.id AND DATEDIFF(NOW(),b.submitdate) <=$pricedays
+			  WHERE bi.itemid='$itemid' AND bi.postatus <> 'Rejected' AND bi.bid=b.id AND DATEDIFF(NOW(),b.submitdate) <=$pricedays
               AND bi.purchasingadmin='" . $this->session->userdata('purchasingadmin') . "'";
         
         //echo $sql.'<br>';
@@ -1390,6 +1390,50 @@ class itemcode_model extends Model {
         return $row->avgprice;
     }
 
+    
+    function getlowestorderprice($itemid) {
+                
+        $orderSql = "SELECT MIN(od.price) minprice FROM pms_order o,
+		        			 pms_orderdetails od
+		        			 WHERE o.id=od.orderid
+		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."' 
+		        			 AND od.itemid={$itemid} ";
+                
+        $orderRes = $this->db->query($orderSql)->row();
+        
+        return $orderRes->minprice;
+    }
+    
+    
+    function getdaysordermeanprice($itemid) {
+    	
+        $pricedays = $this->db->get('settings')->row()->pricedays;
+        $orderSql = "SELECT AVG(od.price) avgprice FROM pms_order o,
+		        			 pms_orderdetails od
+		        			 WHERE o.id=od.orderid
+		        			 AND o.purchasingadmin='".$this->session->userdata('purchasingadmin')."' 
+		        			 AND DATEDIFF(NOW(),o.purchasedate) <={$pricedays} AND od.itemid={$itemid} ";
+                
+        $orderRes = $this->db->query($orderSql)->row();
+        
+        /*if(@$orderRes->avgprice<=0)
+        {
+        	$pa = $this->session->userdata('purchasingadmin');
+	        $sql = "select c.id companyid, c.title companyname, avg(ci.ea) avgprice
+					FROM " . $this->db->dbprefix('company') . " c,
+					" . $this->db->dbprefix('companyitem') . " ci,
+					" . $this->db->dbprefix('network') . " n
+					WHERE c.id=ci.company AND c.id=n.company AND
+					n.purchasingadmin='" . $pa . "'
+					AND ci.itemid='" . $itemid . "' AND c.isdeleted=0  AND n.status='Active' AND ci.ea != 0";
+	       
+	        $orderRes = $this->db->query($sql)->row();
+        }*/
+        return $orderRes->avgprice;
+    }
+
+    
+    
     function checkDuplicateCode($code, $edit_id = 0) {
         if ($edit_id > 0) {
             $this->db->where(array('id !=' => $edit_id, 'itemcode' => $code));

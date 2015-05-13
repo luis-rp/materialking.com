@@ -243,7 +243,7 @@ class Admin extends CI_Controller {
 
 		$adminuser = $this->adminmodel->get_by_id ( $id )->row ();
 		
-		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('id'))
+		if($this->session->userdata('usertype_id')==2 && $adminuser->purchasingadmin != $this->session->userdata('purchasingadmin'))
 		{
 			redirect('admin/dashboard', 'refresh');
 		}

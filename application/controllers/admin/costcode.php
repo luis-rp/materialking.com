@@ -503,7 +503,7 @@ class costcode extends CI_Controller {
                if(count($res) > 0)
                {
                		$costcode->codeforgraph = $costcode->code;
-               	 	$costcode->code = '<a href="#" onclick="filterdata('.$res[0]->parent.')">'. $costcode->code .'</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  id="isexpand_'.$costcode->id.'" href="#" onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
+               	 	$costcode->code = '<a href="#" onclick="filterdata('.$res[0]->parent.')">'. $costcode->code .'</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  id="isexpand_'.$costcode->id.'" href="javascript:void(0)"  onclick="getchildcostcode(this,'.$res[0]->parent.','.$costcode->id.')">Expand</a>';
                }
                else 
                {
