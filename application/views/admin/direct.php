@@ -615,9 +615,13 @@ function checkcompanyusername(id,value){
     			if(data == 1){		
     				alert("Username "+value+" already exists"); 
     				$('#'+id).val('');  				 
-    			} else if(data == 2) {
-    				alert("Username "+value+" already exists. Connection Request will be Sent");
-    				$('#'+id).val(''); 
+    			} else if(data == 0) {
+    				   				
+    			} else
+    			{   var comboid   = id.replace('addsupplyname','company');    				
+    				alert("Username "+value+" already exists. company got added to your network.");
+    				$('#'+id).val('');      				    				
+    				$('#'+comboid).append(data);
     			}
     		}); 
 }

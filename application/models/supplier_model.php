@@ -79,7 +79,7 @@ class supplier_model extends Model {
         }
         if(!$me->com_lat || !$me->com_lng)
             return $related;
-        $suppliers = $this->db->where('username !=','')->where('id !=',$id)->where('isdeleted =',0)->get('company')->result();
+        $suppliers = $this->db->where('username !=','')->where('id !=',$id)->where('isdeleted =',0)->where('username !=','')->get('company')->result();
         foreach($suppliers as $supplier)
         {
             if(count($related) == 5)

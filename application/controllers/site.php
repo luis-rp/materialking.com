@@ -374,7 +374,7 @@ class site extends CI_Controller
             }
             $this->data['suppliers'][] = $supplier;
         }
-        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') ." WHERE isdeleted = 0";
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') ." WHERE isdeleted = 0 AND username!='' ";
         $this->data['citystates'] = $this->db->query($sql)->result();
         $this->data['states'] = $this->db->get('state')->result();
         $this->data['types'] = $this->db->get('type')->result();
@@ -826,20 +826,20 @@ class site extends CI_Controller
         	
         	$query6 = "SELECT ci.ea as minea , ci.price 
         			 	FROM ".$this->db->dbprefix('companyitem')." ci,".$this->db->dbprefix('company')." c
-        			 	where c.id=ci.company AND c.isdeleted=0 AND ci.itemid='".$item->id."' and ci.ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+        			 	where c.id=ci.company AND c.isdeleted=0 AND c.username!='' AND ci.itemid='".$item->id."' and ci.ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
             $min = $this->db->query($query6)->row();
             if($min){
             	$item->callminprice = $min->price;
             }
             $query7 = "SELECT ci.ea as maxea , ci.price 
             		   FROM ".$this->db->dbprefix('companyitem')." ci,".$this->db->dbprefix('company')." c 
-            		   where  c.id=ci.company AND c.isdeleted=0 AND ci.itemid='".$item->id."' and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
+            		   where  c.id=ci.company AND c.isdeleted=0 AND c.username!='' AND ci.itemid='".$item->id."' and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
             $max = $this->db->query($query7)->row();
             if($max){           	
             	$item->callmaxprice = $max->price;
             }
         	
-            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." ci ,".$this->db->dbprefix('company')." c  where c.id=ci.company AND c.isdeleted=0 AND itemid='".$item->id."'";
+            $query = "SELECT MIN(ea) minea, MAX(ea) maxea, price FROM ".$this->db->dbprefix('companyitem')." ci ,".$this->db->dbprefix('company')." c  where c.id=ci.company AND c.isdeleted=0 AND c.username!='' AND itemid='".$item->id."'";
             $minmax = $this->db->query($query)->row();
             $item->minprice = $minmax->minea;
             $item->maxprice = $minmax->maxea;
@@ -848,7 +848,7 @@ class site extends CI_Controller
             			FROM ".$this->db->dbprefix('companyitem')." ci 
             			join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
             			join ".$this->db->dbprefix('company')." c on c.id=ci.company
-            			WHERE c.isdeleted=0 AND ci.itemid = ".$item->id." and ci.type='Supplier' 
+            			WHERE c.isdeleted=0 AND c.username!='' ci.itemid = ".$item->id." and ci.type='Supplier' 
             			group by ci.itemid";
             $countofitems = $this->db->query($cquery)->row();
             //echo "<pre>",print_r($countofitems->countitem); die;
@@ -1077,7 +1077,7 @@ class site extends CI_Controller
             }
             $this->data2['suppliers'][] = $supplier;
         }
-        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') . " WHERE isdeleted = 0";
+        $sql = "SELECT DISTINCT(CONCAT(city,', ',state)) citystate FROM " . $this->db->dbprefix('company') . " WHERE isdeleted = 0 AND username!='' ";
         $this->data2['citystates'] = $this->db->query($sql)->result();
         $this->data2['states'] = $this->db->get('state')->result();
         $this->data2['types'] = $this->db->get('type')->result();
@@ -1122,7 +1122,7 @@ class site extends CI_Controller
         {
             $query = "SELECT ci.ea as minea , ci.price 
             		  FROM ".$this->db->dbprefix('companyitem')." ci, ".$this->db->dbprefix('company')." c 
-            		  where c.id = ci.company AND c.isdeleted = 0 AND ci.itemid='".$item->id."' 
+            		  where c.id = ci.company AND c.isdeleted = 0 AND c.username!='' AND ci.itemid='".$item->id."' 
             		  and ci.ea = (SELECT MIN(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."' AND ea > '0')";
             $min = $this->db->query($query)->row();
             if($min){
@@ -1131,7 +1131,7 @@ class site extends CI_Controller
             }
             $query2 = "SELECT ci.ea as maxea , ci.price 
             		   FROM ".$this->db->dbprefix('companyitem')."  ci, ".$this->db->dbprefix('company')." c 
-            		   where c.id = ci.company AND c.isdeleted = 0 AND ci.itemid='".$item->id."' 
+            		   where c.id = ci.company AND c.isdeleted = 0 AND c.username!='' AND ci.itemid='".$item->id."' 
             		   and ci.ea = (SELECT MAX(ea) ea  FROM ".$this->db->dbprefix('companyitem')." where itemid='".$item->id."')";
             $max = $this->db->query($query2)->row();
             if($max){
@@ -1142,7 +1142,7 @@ class site extends CI_Controller
 						FROM ".$this->db->dbprefix('companyitem')." ci 
 					    join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
 					    join ".$this->db->dbprefix('company')." c on ci.company=c.id
-					    WHERE c.isdeleted = 0 AND ci.itemid = ".$item->id." and ci.type='Supplier' and ci.ea > 0 group by ci.itemid";
+					    WHERE c.isdeleted = 0 AND c.username!='' AND ci.itemid = ".$item->id." and ci.type='Supplier' and ci.ea > 0 group by ci.itemid";
         	$countofitems = $this->db->query($cquery)->row();
         	//echo "<pre>",print_r($countofitems->countitem); die;
         	if(isset($countofitems->countitem) && $countofitems->countitem!="")
@@ -1168,7 +1168,7 @@ class site extends CI_Controller
                             ->get('qtydiscount')
                             ->result();*/
                             
-             $sql="SELECT * FROM ".$this->db->dbprefix('qtydiscount')." qd JOIN ".$this->db->dbprefix('company')." c ON qd.company=c.id AND c.isdeleted='0' AND qd.itemid='".$item->id."'";
+             $sql="SELECT * FROM ".$this->db->dbprefix('qtydiscount')." qd JOIN ".$this->db->dbprefix('company')." c ON qd.company=c.id AND c.isdeleted='0' AND c.username!='' AND qd.itemid='".$item->id."'";
              $hasdiscount=$this->db->query($sql)->result();                      
             if($hasdiscount)
               $item->hasdiscount = true;
@@ -1309,7 +1309,7 @@ class site extends CI_Controller
         $this->db->where('ea >', 0);
         $inventory = $this->db->get('companyitem')->result();
         */
-        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND (ci.ea > '0' OR ci.price=1) AND c.company_type='1' AND isdeleted=0";
+        $sql="SELECT ci.* from ".$this->db->dbprefix('companyitem')." ci LEFT JOIN  ".$this->db->dbprefix('company')." c ON ci.company=c.id where ci.itemid='{$id}' AND ci.type='Supplier' AND (ci.ea > '0' OR ci.price=1) AND c.company_type='1' AND isdeleted=0 AND c.username!='' ";
         $inventory = $this->db->query($sql)->result();
         $data['amazon'] = $this->items_model->get_amazon($id);
         if($item->featuredsupplier)
@@ -2906,7 +2906,7 @@ class site extends CI_Controller
 		$data['details'] = $this->db->query($sql)->row();
 		$cid=$data['details']->company;
 	
-		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where isdeleted = 0 AND  id=".$cid."";		
+		$sql11 = "SELECT  *  FROM ".$this->db->dbprefix('company')." where isdeleted = 0 AND username!='' AND  id=".$cid."";		
 		$data['supplier']=$this->db->query($sql11)->row();
 		
 		$sql = "SELECT  d.id  FROM ".$this->db->dbprefix('designbook')." d LEFT JOIN ".$this->db->dbprefix('company')." c ON c.id = d.company  where d.id <".$id." AND c.isdeleted = 0 order by d.id desc";

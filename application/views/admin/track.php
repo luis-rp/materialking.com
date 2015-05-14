@@ -302,7 +302,7 @@ function acceptshipment(ai,si)
     	var invoicenum = $("#acceptinvoicenum"+si).html();
     	$("#received"+ai).val(quantity);
     	$("#invoicenum"+ai).val(invoicenum);
-    	//$("#receiveddate"+ai).val('<?php echo date('m/d/Y');?>');
+    	$("#receiveddate"+ai).val('<?php echo date('m/d/Y');?>');
     	$("#trackform").submit();
     });
 }
@@ -316,13 +316,13 @@ function acceptall()
 		<?php if(count($shipments2)>1) { foreach($shipments2 as $s) // if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
-		//$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
+		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
 		<?php // }
 		}else{
 		foreach($shipments as $s) if($s->accepted == 0){?>
 		$("#received"+<?php echo $s->awarditem;?>).val(<?php echo $s->quantity;?>);
 		$("#invoicenum"+<?php echo $s->awarditem;?>).val('<?php echo $s->invoicenum;?>');
-		//$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
+		$("#receiveddate"+<?php echo $s->awarditem;?>).val('<?php echo date('m/d/Y');?>');
 		<?php  } 
 		}
 		?>
@@ -813,7 +813,7 @@ function closeorder()
 										    } 
 									   	} 
                                    
-                               echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp;  <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->received)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
+                               echo (date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < $greaterreceived)? "*Late": "";?>&nbsp;  <br> <?php if (@$q->shipreceiveddate) echo "Received &nbsp;".number_format($q->shipreceivedquantity)."&nbsp;on &nbsp;".date("m/d/Y",strtotime($q->shipreceiveddate)); ?>  
  								<?php if(date('Y-m-d H:i:s', strtotime( $q->daterequested."23:59:59")) < date('Y-m-d H:i:s')) { if(($q->quantity - $q->received)!=0) { echo "*Item Past Due";} } ?></td>
  								
                                 <td><?php echo $q->costcode; ?></td>

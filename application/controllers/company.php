@@ -109,7 +109,7 @@ class Company extends CI_Controller {
         $this->db->insert('company', $_POST);
        
         $this->sendRegistrationEmail($itemid, $key);
-        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Account Created Successfully.<br/>Please check your email for activation link.</div></div><div class="errordiv">');
+        $this->session->set_flashdata('message', '<div class="errordiv"><div class="alert alert-success"><a data-dismiss="alert" class="close" href="#"></a><div class="msgBox">Please check your email for activation link to complete your registration.</div></div><div class="errordiv">');
         redirect('company/register');
     }
 

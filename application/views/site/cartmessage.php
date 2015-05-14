@@ -85,7 +85,13 @@ $(document).ready(function (e) {
             	<?php 
             	    $tax = $gtotal*$settings->taxpercent/100;
             	    
-            	    $totalwithtax = number_format($tax+$gtotal+$totalRates,2);
+            	    $subtotal = $gtotal;
+            	    for($i=0;$i<$companycount;$i++)
+						$subtotal += ($subtotal*2.9/100);
+            	    
+					$processingandhandling = ($subtotal*$comissionper/100) + ($companycount*0.25) + 0.3; 	
+						
+            	    $totalwithtax = $tax+$subtotal+$totalRates + $processingandhandling; 
             	?>
             	<tr>
             		<td colspan="5" align="right">SubTotal</td>
@@ -102,7 +108,7 @@ $(document).ready(function (e) {
             	</tr>
             	<tr>
             		<td colspan="5" align="right">Total</td>
-            		<td>$<?php echo $totalwithtax;?></td>
+            		<td>$<?php echo number_format($totalwithtax,2);?></td>
             	</tr>
             </table>
             

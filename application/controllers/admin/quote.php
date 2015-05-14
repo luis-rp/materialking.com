@@ -963,7 +963,7 @@ class quote extends CI_Controller
 			$gusttotal += $total/$totalSuppliers;
 			
 			if($data['potype'] == "Direct"){
-				 $noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0) and qc.quoteitemid = ".$items->id;           
+				 $noncomp = "SELECT qc.* FROM " . $this->db->dbprefix('quoteitem_companies') . " qc where qc.companyemail not in (select primaryemail from ".$this->db->dbprefix('company')." c  where c.isdeleted=0 AND c.username!='') and qc.quoteitemid = ".$items->id;           
         $nonnetcompanies = $this->db->query($noncomp)->result();
 			/*$this->db->where('quoteitemid',$items->id);
             $nonnetcompanies = $this->db->get('quoteitem_companies')->result();*/
@@ -2008,7 +2008,7 @@ class quote extends CI_Controller
             if($nonnetcompanies){
             	foreach($nonnetcompanies as $noncomp){
             		$companyexisits=0;
-            		$resultnoncomp = "SELECT c.id as companyid FROM " . $this->db->dbprefix('company') . " c where c.isdeleted=0 and c.primaryemail like '".$noncomp->companyemail."'";     
+            		$resultnoncomp = "SELECT c.id as companyid FROM " . $this->db->dbprefix('company') . " c where c.isdeleted=0 AND c.username!='' and c.primaryemail like '".$noncomp->companyemail."'";     
             		
             		 $nonnetcompanies = $this->db->query($resultnoncomp)->row();
 			
@@ -5775,13 +5775,15 @@ class quote extends CI_Controller
 				
 				if($awarditemid){
 					
-					$shipreceiveddateresult = $this->db->select('receiveddate')
+					$shipreceiveddateresult = $this->db->select('receiveddate,quantity')
 			                        ->from('received')
+			                        ->order_by('id','DESC')
 			                        ->where('awarditem',$awarditemid->id)
 			                        ->get()->row();	
 			         
 					if($shipreceiveddateresult){
 						$item->shipreceiveddate = $shipreceiveddateresult->receiveddate;
+						$item->shipreceivedquantity = $shipreceiveddateresult->quantity;
 					}
 			                        
 			                        
@@ -6918,6 +6920,15 @@ $loaderEmail = new My_Loader();
                 			
                 			// Shipment entry for directly accepted quantities
 
+                			$this->db->where('invoicenum',trim(@$_POST['invoicenum' . @$key]));
+                			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                			$this->db->where('company',$item->company);
+                			$this->db->where('awarditem',$item->id);
+                			$this->db->where('quote',$quoteid);
+                			$this->db->where('itemid',$item->itemid);                			
+                			$existingshipment = $this->db->get('shipment')->row();
+                			
+                			if(!$existingshipment){
                 			$shiparr = array();
                 			$shiparr['quantity'] = @$received[$item->id]['received'];
                 			$shiparr['invoicenum'] = trim(@$_POST['invoicenum' . @$key]);
@@ -6930,6 +6941,7 @@ $loaderEmail = new My_Loader();
                 			$shiparr['accepted'] = 1;
                 			//print_r($arr);
                 			$this->db->insert('shipment',$shiparr);
+                			}
                 			
                 			
                 			 // Stock Inventory Entry for items
@@ -7061,6 +7073,15 @@ $loaderEmail = new My_Loader();
                 
                 // Shipment entry for directly accepted quantities
                 
+                $this->db->where('invoicenum',trim(@$_POST['invoicenum' . @$key]));
+                			$this->db->where('purchasingadmin',$this->session->userdata('purchasingadmin'));
+                			$this->db->where('company',$item->company);
+                			$this->db->where('awarditem',$item->id);
+                			$this->db->where('quote',$quoteid);
+                			$this->db->where('itemid',$item->itemid);                			
+                			$existingshipment = $this->db->get('shipment')->row();
+                			
+                if(!$existingshipment){                
                 $shiparr = array();
 	            $shiparr['quantity'] = @$received[$item->id]['received'];
 	            $shiparr['invoicenum'] = trim(@$_POST['invoicenum' . @$key]);
@@ -7073,7 +7094,8 @@ $loaderEmail = new My_Loader();
 	            $shiparr['accepted'] = 1;
 	            //print_r($arr);
 	            $this->db->insert('shipment',$shiparr);
-                
+                }
+	            
                 // Stock Inventory Entry for items
                 
                 $stockarray = array();
@@ -8953,7 +8975,7 @@ $loaderEmail = new My_Loader();
         $id = isset($_POST['id']) ? $_POST['id'] : '';
 
         $arr = array();
-        $sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1 AND isdeleted=0";
+        $sql = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE 1=1 AND isdeleted=0 AND username!='' ";
         if ($localresult == 1) 
         {
             $lat = $this->quote_model->getcomplat($this->session->userdata('id'));
@@ -11470,13 +11492,17 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		if(!$_POST)
 		die;
 		
-		$username = $_POST['username'];
+		/*$username = $_POST['username'];
 		$username = str_replace(' ', '-', strtolower($username));  
-        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.username='".$username."'";
+        $sql = "SELECT * FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.username='".$username."'";
         $query = $this->db->query($sql);
-        $cust = $query->row();  
+        $cust = $query->row(); */
+        
+        $companyname = $_POST['username'];
+        $sql = "SELECT * FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.title='".$companyname."'";
+        $cust = $this->db->query($sql)->row();       
         $check=0; 
-        if($cust)
+        if(!empty($cust))
         { 
         $isnetwork=$this->db->get_where('network',array('company'=>$cust->id,'purchasingadmin'=>$this->session->userdata('id')))->row();
                 			
@@ -11492,12 +11518,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			}	
 			
         }
-        	
-        if($cust)
+       
+        if(!empty($cust))
         {
         	if($check==1)
         	{
-        	echo 2;
+        	echo '<option value="'.$cust->id.'" selected>'.$cust->title.'</option>';
         	}
         	else 
         	{
@@ -11520,7 +11546,7 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 		
 		$email = $_POST['email'];
 		
-        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.isdeleted=0 and c.primaryemail='".$email."'";
+        $sql = "SELECT c.id FROM ".$this->db->dbprefix('company')." c WHERE c.isdeleted=0 AND c.username!='' and c.primaryemail='".$email."'";
         $query = $this->db->query($sql);
         $cust = $query->row();
         if($cust)

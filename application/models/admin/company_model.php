@@ -15,7 +15,7 @@ class company_model extends Model {
 
         $sql = "SELECT *
 		FROM
-		" . $this->db->dbprefix('company') . " WHERE isdeleted=0 ORDER BY title";
+		" . $this->db->dbprefix('company') . " WHERE isdeleted=0 AND username!='' ORDER BY title";
 
         $query = $this->db->query($sql);
         if ($query->result()) {

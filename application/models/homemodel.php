@@ -125,7 +125,7 @@ class Homemodel extends Model {
         FROM " . $this->db->dbprefix('company') . " c, " . $this->db->dbprefix('awarditem') . " ai  WHERE c.isdeleted = 0 
 				 ";
         } else {
-            $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c  WHERE c.isdeleted = 0 ORDER BY regdate DESC LIMIT 0,3";
+            $sql = "SELECT c.* FROM " . $this->db->dbprefix('company') . " c  WHERE c.isdeleted = 0 AND c.username!='' ORDER BY regdate DESC LIMIT 0,3";
         }
         $items = $this->db->query($sql)->result();
         return $items;
@@ -208,7 +208,7 @@ class Homemodel extends Model {
                             
                 		WHERE
                             n.company=c.id AND c.isdeleted=0 AND n.status='Active' AND n.purchasingadmin='" . $user_id . "' AND 
-                            c.id=ct.companyid AND address !='' $where_2" . " ORDER BY  "
+                            c.id=ct.companyid AND address !='' AND c.username !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
         } 
@@ -221,7 +221,7 @@ class Homemodel extends Model {
                         pi()/180))))*180/pi())*60*1.1515
                     ) as distance "
                                 . " FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct ON c.id=ct.companyid
-            		WHERE 1=1  AND c.isdeleted=0 AND c.address !='' $where_2" . " ORDER BY  "
+            		WHERE 1=1  AND c.isdeleted=0 AND c.address !='' AND c.username !='' $where_2" . " ORDER BY  "
                     . (($sorting_distance) ? $sorting_distance . ", " : "")
                     . ' distance ' . " " . $_POST['orderdir'] . "  LIMIT $start, $limit";
             ;
@@ -298,7 +298,7 @@ class Homemodel extends Model {
         $this->set_type_condition($where);
 
 
-        $query = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE  isdeleted=0 ". $where;
+        $query = "SELECT * FROM " . $this->db->dbprefix('company') . " WHERE  isdeleted=0 AND username!='' ". $where;
 
         $return->totalresult = $this->db->query($query)->num_rows();
 
@@ -312,7 +312,7 @@ class Homemodel extends Model {
             pi()/180))))*180/pi())*60*1.1515
         ) as distance   FROM " . $this->db->dbprefix('company') . " c LEFT JOIN " . $this->db->dbprefix('companytype') . " ct
             
-		ON c.id=ct.companyid  $where  WHERE  isdeleted=0  GROUP BY c.id ORDER BY distance ASC  LIMIT $start, $limit";
+		ON c.id=ct.companyid  $where  WHERE  isdeleted=0  AND c.username!='' GROUP BY c.id ORDER BY distance ASC  LIMIT $start, $limit";
         //echo $query;
         $return->suppliers = $this->db->query($query)->result();
         return $return;

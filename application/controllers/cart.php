@@ -261,6 +261,10 @@ class cart extends CI_Controller
 		\EasyPost\EasyPost::setApiKey('tcOjVdKjSCcDxpn14CSkjw');
 		$dataitemshipping=0; $userinfoship = array();
 		
+		$totalprice = 0;
+		$tempcopany = "";
+		$companycount=0;
+		
 		foreach($cart as $item)
 		{
 			//echo "<pre>"; print_r($item['quantity']);
@@ -403,8 +407,20 @@ class cart extends CI_Controller
   				$cadderr['cart_address_error'] = "<div style='padding-bottom:5px; color:red;'>Please enter correct address.</div>";
 				$this->session->set_userdata($cadderr);
 				redirect('cart');
-			}			
-		}
+			}
+
+			
+			if(@$item['company']!=$tempcopany)
+			$companycount++;	
+		}	
+		
+ 		 $settings = $this->settings_model->get_current_settings();		 
+		
+ 		  // 3% materialking comission on subtotal			
+		 $comissionper = (array)$this->settings_model->get_current_comission();
+		 $data['comissionper'] = $comissionper['comission'];
+ 		 $data['companycount'] = $companycount; 		 
+		
 		$userinfoship=http_build_query($userinfoship,'',', ');
 		$data['settings'] = $this->settings_model->get_current_settings();
 		$data['name'] = $vendorShipping['shippingName'];
@@ -468,6 +484,9 @@ class cart extends CI_Controller
 		$totalprice += ($totalprice*2.9/100);
 	    $totalprice = round($totalprice,2);
 		
+	    $data['comissionper'] = $comissionper['comission'];
+ 		$data['companycount'] = $companycount; 		 
+	    
 		@session_start();
 		$_SESSION['cart_shipping_vals']=$_POST['itemshipping'];
 		
