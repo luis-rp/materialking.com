@@ -501,7 +501,7 @@ function orders_export()
         $wherecost = "";
         if ($this->session->userdata('usertype_id') > 1)
                 $wherecost = " AND purchasingadmin =".$this->session->userdata('purchasingadmin');               
-        $querycost = "SELECT c.* FROM ".$this->db->dbprefix('costcode')." c WHERE 1=1 {$wherecost} {$costcodestr}";
+        $querycost = "SELECT c.* FROM ".$this->db->dbprefix('costcode')." c WHERE 1=1 {$wherecost} {$costcodestr} ORDER BY c.code ASC";
         $data['costcode'] = $this->db->query($querycost)->result();   
 		
 		$this->load->view('admin/order/list',$data);
@@ -1284,8 +1284,8 @@ function orders_export()
 		 $comission = ($_POST['subtotal']*$comissionper['comission']/100);
  		 
 		 $totalprice = 0;
- 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee			
-		$totalprice = $_POST['amount'] + $comission + 0.25 + 0.3;
+ 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5			
+		$totalprice = $_POST['amount'] + $comission + 0.25 + 0.8;
 		
 		// Adding 2.9% constant processing fee for each suppplier transaction.			
 		$totalprice += ($totalprice*2.9/100);

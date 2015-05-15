@@ -11500,7 +11500,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
         
         $companyname = $_POST['username'];
         $sql = "SELECT * FROM ".$this->db->dbprefix('company')." c WHERE  c.isdeleted=0 and c.title='".$companyname."'";
-        $cust = $this->db->query($sql)->row();       
+        $cust = $this->db->query($sql)->row();  
+          
         $check=0; 
         if(!empty($cust))
         { 
@@ -11518,12 +11519,12 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
 			}	
 			
         }
-       
+      
         if(!empty($cust))
         {
         	if($check==1)
         	{
-        	echo '<option value="'.$cust->id.'" selected>'.$cust->title.'</option>';
+        	echo json_encode($cust);
         	}
         	else 
         	{
@@ -11606,8 +11607,8 @@ You cannot ship more than due quantity, including pending shipments.</div></div>
  		$comissionper = (array)$this->settings_model->get_current_comission();
 		$comission = ($totalprice*$comissionper['comission']/100);
 		  
- 		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee	
- 		$totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.3;		
+ 		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5	
+ 		$totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.8;		
 		
 		// Adding 2.9% constant processing fee for each suppplier transaction.		
 		for($i=0;$i<$companycount;$i++)
@@ -11861,8 +11862,8 @@ $loaderEmail = new My_Loader();
 		 $comissionper = (array)$this->settings_model->get_current_comission();
 		$comission = ($totalprice*$comissionper['comission']/100);
 
-		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
-		 $totalprice = $totalprice+$tax+ $comission + 0.25 + 0.3;
+		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5
+		 $totalprice = $totalprice+$tax+ $comission + 0.25 + 0.8;
 
 		 // Adding 2.9% constant processing fee for each suppplier transaction.		 
 		 $totalprice += ($totalprice*2.9/100);		 
@@ -12135,8 +12136,8 @@ $loaderEmail = new My_Loader();
 		 $comissionper = (array)$this->settings_model->get_current_comission();
 		 $comission = ($totalprice*$comissionper['comission']/100);
 
-		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
-		 $totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.3;
+		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5
+		 $totalprice = $totalprice+$tax+ $comission + ($companycount*0.25) + 0.8;
 
 		 // Adding 2.9% constant processing fee for each suppplier transaction.
 		 for($i=0;$i<$companycount;$i++)

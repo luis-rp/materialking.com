@@ -381,9 +381,9 @@ function upload_attachment(receivedid,invoicenum)
                     		
                     		$comission = ($paysubtotal*$comissionper/100);
 
-                    		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee
+                    		// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5
                     		
-                    		$processhandling = $item->totalprice + $comission + 0.25 + 0.3;
+                    		$processhandling = $item->totalprice + $comission + 0.25 + 0.8;
 
                     		// Adding 2.9% constant processing fee for each suppplier transaction.
 							$processhandling += ($processhandling*2.9/100);	   ?>

@@ -602,7 +602,6 @@ function checknewitem(){
 	
 }
 
-
 function checkcompanyusername(id,value){
 	
 	var usercheckurl = '<?php echo base_url()?>admin/quote/checkuserexist/';    		
@@ -612,20 +611,21 @@ function checkcompanyusername(id,value){
     			async: false,
     			data: "username="+value
     		}).done(function(data){
+    			
     			if(data == 1){		
     				alert("Username "+value+" already exists"); 
     				$('#'+id).val('');  				 
     			} else if(data == 0) {
     				   				
     			} else
-    			{   var comboid   = id.replace('addsupplyname','company');    				
-    				alert("Username "+value+" already exists. company got added to your network.");
-    				$('#'+id).val('');      				    				
-    				$('#'+comboid).append(data);
-    			}
+    			{   var obj = $.parseJSON(data);   			
+    				var comboid   = id.replace('addsupplyname','company');    				
+    				alert("The Supplier "+value+" already exists as a vendor on our network.They have been added to your vendors list and you may issue them a purchase order. Please verify with your vendor that this is the same company you are intending to do business with.\n \n Our records indicate the following \n Company Name :"+obj.title+"\n Contact Name : "+obj.contact+"\n Company Email :"+obj.primaryemail+".");
+    				$('#'+id).val('');  				    				
+    				$('#'+comboid).append('<option value="'+obj.id+'">'+obj.title+'</option>'); 
+    			}   				  			
     		}); 
 }
-
 
 function checkcompanyuseremail(id,email){
 	

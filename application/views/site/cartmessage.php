@@ -83,15 +83,19 @@ $(document).ready(function (e) {
             	</tr>
             	<?php }?>
             	<?php 
-            	    $tax = $gtotal*$settings->taxpercent/100;
-            	    
-            	    $subtotal = $gtotal;
-            	    for($i=0;$i<$companycount;$i++)
-						$subtotal += ($subtotal*2.9/100);
-            	    
-					$processingandhandling = ($subtotal*$comissionper/100) + ($companycount*0.25) + 0.3; 	
+            	    $tax = round($gtotal*$settings->taxpercent/100,2);           	    
+            	    // Adding comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5	
+					$processingandhandling = ($gtotal*$comissionper/100) + ($companycount*0.25) + 0.8; 	
 						
-            	    $totalwithtax = $tax+$subtotal+$totalRates + $processingandhandling; 
+					$totalwithtax = $tax+$gtotal+$totalRates;
+					
+            	    $finaltotal = $tax+$gtotal+$totalRates + $processingandhandling; 
+            	                	    
+            	    for($i=0;$i<$companycount;$i++)
+						$finaltotal += ($finaltotal*2.9/100);   
+
+					$processingandhandling = ($finaltotal - $totalwithtax);
+            	    
             	?>
             	<tr>
             		<td colspan="5" align="right">SubTotal</td>
@@ -107,8 +111,12 @@ $(document).ready(function (e) {
             		<td>$<?php echo number_format($totalordershipping,2);?></td>
             	</tr>
             	<tr>
+            		<td colspan="4" align="right">Handling & Processing</td>
+            		<td>$<?php echo number_format($processingandhandling,2);?></td>
+            	</tr>
+            	<tr>
             		<td colspan="5" align="right">Total</td>
-            		<td>$<?php echo number_format($totalwithtax,2);?></td>
+            		<td>$<?php echo number_format($finaltotal,2);?></td>
             	</tr>
             </table>
             

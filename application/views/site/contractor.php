@@ -119,7 +119,8 @@ $long = $contractor->user_lng;
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(location[0], location[1]),
                 map: map,
-                icon: 'http://html.realia.byaviators.com/assets/img/marker-transparent.png'
+                //icon: 'http://html.realia.byaviators.com/assets/img/marker-transparent.png'
+                icon: '<?php echo base_url(); ?>templates/site/assets/img/marker.png'
             });
 
             var myOptions = {

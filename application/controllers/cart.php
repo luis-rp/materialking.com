@@ -469,7 +469,7 @@ class cart extends CI_Controller
 		}
  		$settings = $this->settings_model->get_current_settings();
 		
-		 $tax = number_format($totalprice*$settings->taxpercent/100,2);
+		 $tax = round($totalprice*$settings->taxpercent/100,2);
  		 $gtotal = number_format($totalprice,2);
  		 $totalshipping = number_format($_POST['itemshipping'],2);
 		
@@ -477,8 +477,8 @@ class cart extends CI_Controller
 		 $comissionper = (array)$this->settings_model->get_current_comission();
 		$comission = ($totalprice*$comissionper['comission']/100);
  		 
- 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee			
-		$totalprice = $totalprice+ $totalshipping+ $tax + $comission + ($companycount*0.25) + 0.3;
+ 		 // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5			
+		$totalprice = $totalprice+ $totalshipping+ $tax + $comission + ($companycount*0.25) + 0.8;
 		// Adding 2.9% constant processing fee for each suppplier transaction.	
 		for($i=0;$i<$companycount;$i++)
 		$totalprice += ($totalprice*2.9/100);
