@@ -1871,7 +1871,7 @@ class Dashboard extends CI_Controller
             		$pinsert = array();
             		$pinsert['company'] = $lastid;
             		$pinsert['purchasingadmin'] = $id;            		
-            		$pinsert['creditonly'] = '1';
+            		$pinsert['creditonly'] = '0';
             		$this->db->insert('purchasingtier',$pinsert);
             		           		
             		$option=array('purchasingadmin'=>$id,'send'=>'1','company'=>$lastid,'sup_email'=>$_POST['email']); 	

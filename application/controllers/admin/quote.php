@@ -1105,7 +1105,7 @@ class quote extends CI_Controller
 	            	$pinsert = array();
             		$pinsert['company'] = $non;
             		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
-            		$pinsert['creditonly'] = '1';
+            		$pinsert['creditonly'] = '0';
             		$this->db->insert('purchasingtier',$pinsert);        			
             	}          		
             }
@@ -1212,7 +1212,7 @@ class quote extends CI_Controller
             		$pinsert = array();
             		$pinsert['company'] = $lastid;
             		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
-            		$pinsert['creditonly'] = '1';
+            		$pinsert['creditonly'] = '0';
             		$this->db->insert('purchasingtier',$pinsert);
             		
             		}
@@ -2061,7 +2061,7 @@ class quote extends CI_Controller
             		 		$pinsert = array();
 		            		$pinsert['company'] = $lastid;
 		            		$pinsert['purchasingadmin'] = $this->session->userdata('id');            		
-		            		$pinsert['creditonly'] = '1';
+		            		$pinsert['creditonly'] = '0';
 		            		$this->db->insert('purchasingtier',$pinsert);
             		 	}
 
