@@ -5,6 +5,7 @@ class Register extends CI_Controller
 		parent::__construct ();
 		$this->load->dbforge();
 		$this->load->model('admin/settings_model');
+		$this->load->model('admin/costcode_model');
 		$this->load->model('companymodel', '', TRUE);
 		$this->load->library ('form_validation');
 		$this->load->library ( array ('table', 'validation', 'session'));
@@ -417,7 +418,7 @@ class Register extends CI_Controller
         $this->db->insert('project',$insert);
         $lastid = $this->db->insert_id();
             		           	
-        $DefaultCostcode=$this->db->get('DefaultCostcode')->result();
+        //$DefaultCostcode=$this->db->get('DefaultCostcode')->result();
        
        /* $sqlquery="SELECT * FROM ".$this->db->dbprefix('costcode')." ORDER BY id DESC LIMIT 1";
         $tc=$this->db->query($sqlquery)->row();
@@ -440,9 +441,31 @@ class Register extends CI_Controller
         	}
         }*/
         
-        foreach ($DefaultCostcode as $DC) { 
+        /*foreach ($DefaultCostcode as $DC) { 
         		 $this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DC->code,'cost'=>'500','cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
-        	} 
+        	} */
+        	
+        $parentcombooptions = $this->costcode_model->rearrangedefaultcostcode($lastid, 0, 0);
+    	//echo "<pre>",print_r($parentcombooptions); die;    	
+    	$parent=array();
+    	foreach($parentcombooptions as $rowupper){
+    		//echo "<pre>",print_r($rowupper); die;
+    		foreach($rowupper as $key=>$row){
+    		
+    		$this->db->where('id',$row);
+    		$DefaultCostcode=$this->db->get('costcode')->row();
+    		//echo "<pre>",print_r($DefaultCostcode); die;
+    		if($key==0){
+    			
+    		$this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DefaultCostcode->code,'cost'=>'500','cdetail'=>$DefaultCostcode->cdetail,'parent'=>0,'costcode_image'=>$DefaultCostcode->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+    		$parent=array();
+    		$parent[0] = $this->db->insert_id();
+    		}else{    				
+    			$this->db->insert('costcode',array('project'=>$lastid,'purchasingadmin'=>$u->id,'code'=>$DefaultCostcode->code,'cost'=>'500','cdetail'=>$DefaultCostcode->cdetail,'parent'=>$parent[$key-1],'costcode_image'=>$DefaultCostcode->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+    		$parent[$key] = $this->db->insert_id();	
+    		}    		    		
+    	 }	
+    	}
         	
         								
 		$settings = (array)$this->settings_model->get_setting_by_id (1);

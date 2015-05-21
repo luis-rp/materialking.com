@@ -816,5 +816,72 @@ class costcode_model extends Model
 	         return false;
 	    }
 	}
+	
+	
+	
+	function rearrangedefaultcostcode($projectid='',$parent_id = 0, $level = 0, $selected = '')
+	{
+	//	echo '<pre>',print_r($this->session->userdata('managedprojectdetails'));
+		if($this->session->userdata('managedprojectdetails'))
+		{
+			$pid=$this->session->userdata('managedprojectdetails')->id;
+		}
+		static $temp = array();
+		# retrieve all children of $parent
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
+		$where = "";
+		/*if($this->session->userdata('managedprojectdetails'))
+		{
+			$where = 'and project = '.@$pid;			
+		}
+		else 
+		{
+			if($projectid=="" || $projectid=='0')
+			{ //echo "elseif-";
+				$where = "";
+			}
+			else 
+			{ //echo "elseelse-";
+				$where = 'and project = '.$projectid;
+			}
+			
+		}*/
+		//echo "<pre>session-"; print_r($pid); 
+		//echo "<pre>proid-"; print_r($projectid); die;
+		
+		/*
+		$where = "";	
+		if($projectid!="")
+		$where = 'and project = '.$projectid;*/
+		
+		$sql = "SELECT * FROM ".$this->db->dbprefix('DefaultCostcode')." WHERE parent = '{$parent_id}' ORDER BY code ASC";
+		
+		/*if($this->session->userdata('usertype_id')>1)
+		{
+			$sql ="SELECT *
+			FROM
+			".$this->db->dbprefix('costcode')." 
+			WHERE parent = '{$parent_id}' AND purchasingadmin='".$this->session->userdata('purchasingadmin')."' {$where} 
+			ORDER BY code ASC";
+		}*/
+		
+  		$result = $this->db->query($sql)->result();			
+		# display each child
+		if($result)	
+		foreach($result as $row)
+		{
+			$row = (array)$row;									
+			$temp[][$level] = $row['id'];			
+			$this->rearrangedefaultcostcode('',$row['id'], $level + 1);
+			
+			 /*$this->db->insert('costcode',array('project'=>$id,'purchasingadmin'=>$this->session->userdata('id'),'code'=>$row[code],'cost'=>'500','cdetail'=>$row[cdetail],'parent'=>$row['parent'],'costcode_image'=>$row[costcode_image],'creation_date'=>date('Y-m-d'),'estimate'=>'1'));*/
+				
+		} 
+		return $temp;
+	}
+	
+	
 }
 ?>

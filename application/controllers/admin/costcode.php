@@ -1624,10 +1624,33 @@ class costcode extends CI_Controller {
     function AddDefaultImport($id)
     {
     	$data ['message'] = '';
-    	$DefaultCostcode=$this->db->get('DefaultCostcode')->result();   		    	    		
+    	
+    	$parentcombooptions = $this->costcode_model->rearrangedefaultcostcode($id, 0, 0);
+    	//echo "<pre>",print_r($parentcombooptions); die;    	
+    	$parent=array();
+    	foreach($parentcombooptions as $rowupper){
+    		//echo "<pre>",print_r($rowupper); die;
+    		foreach($rowupper as $key=>$row){
+    		
+    		$this->db->where('id',$row);
+    		$DefaultCostcode=$this->db->get('costcode')->row();
+    		//echo "<pre>",print_r($DefaultCostcode); die;
+    		if($key==0){
+    			
+    		$this->db->insert('costcode',array('project'=>$id,'purchasingadmin'=>$this->session->userdata('id'),'code'=>$DefaultCostcode->code,'cost'=>'500','cdetail'=>$DefaultCostcode->cdetail,'parent'=>0,'costcode_image'=>$DefaultCostcode->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+    		$parent=array();
+    		$parent[0] = $this->db->insert_id();
+    		}else{    				
+    			$this->db->insert('costcode',array('project'=>$id,'purchasingadmin'=>$this->session->userdata('id'),'code'=>$DefaultCostcode->code,'cost'=>'500','cdetail'=>$DefaultCostcode->cdetail,'parent'=>$parent[$key-1],'costcode_image'=>$DefaultCostcode->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
+    		$parent[$key] = $this->db->insert_id();	
+    		}    		    		
+    	 }	
+    	}
+    	
+    	/*$DefaultCostcode=$this->db->get('DefaultCostcode')->result();   		    	    		
     	foreach ($DefaultCostcode as $DC) { 
         		 $this->db->insert('costcode',array('project'=>$id,'purchasingadmin'=>$this->session->userdata('id'),'code'=>$DC->code,'cost'=>'500','cdetail'=>$DC->cdetail,'parent'=>'0','costcode_image'=>$DC->costcode_image,'creation_date'=>date('Y-m-d'),'estimate'=>'1'));
-        	} 
+        	} */
         $data ['message']="These Default Cost Codes are set For this project."; 
         $this->db->where('id',$id);
         $this->db->update('project',array('defaultadded'=>'1'));		
