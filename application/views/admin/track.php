@@ -54,7 +54,10 @@ $per .='%';
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/jRating.jquery.css" type="text/css" />
 <script type="text/javascript" src="<?php echo base_url(); ?>templates/admin/js/jRating.jquery.js"></script>
 <link href="<?php echo base_url(); ?>templates/admin/css/jquery-ui.css" media="all" rel="stylesheet" type="text/css" id="bootstrap-css">
+
 <link href="<?php echo base_url(); ?>templates/admin/css/progressbar.css" media="all" rel="stylesheet" type="text/css" >
+<link href="<?php echo base_url(); ?>templates/admin/css/barstyle.css" media="all" rel="stylesheet" type="text/css" >
+<link href="<?php echo base_url(); ?>templates/admin/css/sbarstyle.css" media="all" rel="stylesheet" type="text/css" >
 <link rel="stylesheet" href="<?php echo base_url(); ?>templates/admin/css/flipclock.css" media="all" type="text/css">
 <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 -->
@@ -1283,7 +1286,7 @@ function closeorder()
             <?php } ?>
             
             
-            <?php
+           <!-- <?php
             if ($recsum == $qntsum) {
                 $class = "complete";
                 $closed = "active complete";
@@ -1291,15 +1294,9 @@ function closeorder()
                 $class = "active late";
                 $closed = "future";
             }
-            ?>
-            <section id="progress">
-       <!--     <ul class="breadcrumb1">
-  <li><a href="#">Created Sep <span><?php echo date('M d,Y', strtotime($quote->podate)); ?></span></a></li>
-  <li><a href="#">Issued Date Sep <span><?php echo date('M d,Y', strtotime($awarded->awardedon)); ?></span></a></li>
-  <li><a href="#">Delivery Expected Date Sep <span><?php echo date('M d,Y', strtotime(@$awarded->items[0]->daterequested)); ?></span></a></li>
-  <li><a href="#" class="current"><?php echo $per; ?> Received </a></li>
-  <li><a href="#">Closed</a></li>
-</ul>-->
+            ?>-->
+           <!-- <section id="progress">
+  
                 <ul>
                 	<li class="<?php echo (!$quote->podate) ? "active" : "complete"; ?>">
                 		Created <span><?php echo date('M d,Y', strtotime($quote->podate)); ?></span>
@@ -1315,7 +1312,67 @@ function closeorder()
                 	<li class="<?php echo $class; ?>"><?php echo $per; ?> Received <span>&nbsp;</span></li>
                 	<li class="<?php echo $closed; ?>">Closed</li>
                 </ul>
-            </section>
+            </section>-->
+           
+           
+         <!--  <div class="control-group">
+                <div class="controls">
+                         
+					<div class="checkout-wrap">
+					  <ul class="checkout-bar">			
+					    <li style="width:17%;" class="visited first"> Created <?php echo date('M d,Y', strtotime($quote->podate)); ?></li>   
+					    <li style="width:23%;" class="previous visited">Issued Date <?php echo date('M d,Y', strtotime($awarded->awardedon)); ?></li> 
+					    <?php if(@$awarded->items[0]->daterequested){?>  
+					    <li style="width:33%;" class="active">Delivery Expected Date <?php echo date('M d,Y', strtotime(@$awarded->items[0]->daterequested)); ?></li> 
+					    <?php }?>   
+					    <li style="width:20%;" class="next"><?php echo $per; ?> Received</li>   
+					    <li style="width:1%;" class="">Closed</li>			       
+					  </ul>
+					</div>
+			
+			</div>
+		</div>-->
+           
+            <?php
+            if ($recsum == $qntsum) {
+                $class1 = "active";
+                $closed1 = "active";
+            } else {
+                $class1 = "visited";
+                $closed1 = "visited";
+            }
+            ?>
+           <div class="control-group">
+                <div class="controls">
+                         
+					<div class="checkout-wrap">
+					  <ul class="checkout-bar">	
+					    
+					    <li  style="width:17%;" class="<?php echo (!$quote->podate) ? "visited first" : "active"; ?>">
+					     	Created <span><?php echo date('M d,Y', strtotime($quote->podate)); ?></span>
+					    </li> 
+					      
+					    <li  style="width:23%;" class="<?php echo (!$awarded->awardedon) ? "previous visited" : "active"; ?>">
+					    	Issued Date <span><?php echo date('M d,Y', strtotime($awarded->awardedon)); ?></span>
+					    </li> 
+					    
+					    <?php if(@$awarded->items[0]->daterequested){?>  
+					    <li  style="width:28%;" class="<?php echo (!@$awarded->items[0]->daterequested) ? "previous visited" : "active"; ?>">
+					    	Delivery Expected Date <span><?php echo date('M d,Y', strtotime(@$awarded->items[0]->daterequested)); ?></span>
+					    	</li> 
+					    <?php }?> 
+					      
+					    <li  style="width:27%;" class="<?php echo $class1; ?>"><?php echo $per; ?> Received</li>   
+					    <li  style="width:0%;"class="<?php echo $closed1; ?>">Closed</li>
+					    			       
+					  </ul>
+					</div>
+			
+			</div>
+		</div>
+
+           
+           
             <div>
                    <h3 class="box-header">Time Line</h3>
                 <div style="float:left; width:100%">
