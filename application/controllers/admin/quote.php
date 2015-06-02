@@ -3526,8 +3526,10 @@ class quote extends CI_Controller
         $data['minimum'] = $minimum;
         $data['maximum'] = $maximum;
         $data['bankaccarray'] = $bankaccarray; 
+        // 3% materialking comission on subtotal					
+ 		$data['comissionper'] = (array)$this->settings_model->get_current_comission();     
         $data['creditaccarray'] = $creditaccarray; 
-        $data['costcodes'] = $this->db->where('project',$quote->pid)->get('costcode')->result();
+        $data['costcodes'] = $this->db->where('project',$quote->pid)->order_by('code','ASC')->get('costcode')->result();
         $sqlquery = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE project='".$quote->pid."' AND forcontract=1";
  		$data['contractcostcodes'] = $this->db->query($sqlquery)->result();           
         $data['heading'] = $data['quote']->potype == 'Bid' ? "Bids Placed" : "PO Review";
@@ -4552,7 +4554,7 @@ class quote extends CI_Controller
         
         $data['aginginvoices'] = $aginginvoices;
         $settings = $this->settings_model->get_current_settings();
-        $data['taxpercent'] = $settings->taxpercent;
+        $data['taxpercent'] = @$settings->taxpercent;
         //print_r($items);die;
         $data ['addlink'] = '';
         $data ['heading'] = 'Invoices';
@@ -4588,7 +4590,7 @@ class quote extends CI_Controller
 		
 		// 3% materialking comission on subtotal					 
 		 $comissionper = (array)$this->settings_model->get_current_comission();		
-		 $data['comissionper'] = $comissionper['comission'];
+		 $data['comissionper'] = @$comissionper['comission'];
 		 
         $this->load->view('admin/invoices', $data);
     }

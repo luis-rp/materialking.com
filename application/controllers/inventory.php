@@ -130,6 +130,36 @@ class Inventory extends CI_Controller
 		}
 	}
 	
+	function deletecompanyitem()
+	{
+		$company = $this->session->userdata('company');
+		if(!$company)
+			redirect('company/login');
+		if(!@$_POST)
+		{
+			die;
+		}
+		if(!@$_POST['itemid'])
+		{
+			die;
+		}
+		
+		$this->db->where('itemid',$_POST['itemid']);
+		$this->db->where('company',$company->id);
+		$existing = $this->db->get('companyitem')->row();
+		if($existing)
+		{
+			$this->db->where('itemid',$_POST['itemid']);
+			$this->db->where('company',$company->id);
+			$this->db->delete('companyitem');
+			echo 1;
+		}
+		else {
+			echo 0;
+		}
+		
+	}
+	
 	public function updateitemname()
 	{
 		$company = $this->session->userdata('company');
@@ -1318,18 +1348,21 @@ class Inventory extends CI_Controller
 		$result = $this->db->order_by('itemid')->select('md.itemid,p.title')->from('masterdefault md')->join('type p','md.manufacturer=p.id')->where('md.manufacturer',$_POST['manufacturer'])->get()->result();		
 		if($result){
 			
-			foreach($result as $res){
+			/*foreach($result as $res){
 				
 				$this->modifyitemcode($res->itemid,'');
 				$this->modifypartnum($res->itemid,'');
 				$this->modifyitemname($res->itemid, '');
 				$this->modifymanufacturer($res->itemid, '');
 				$this->modifyitemprice($res->itemid, '');
-				$this->modifyminqty($res->itemid, '');
-				
-				/*if(@$_POST['instore']==1)
-				$this->modifyitem($res->itemid);*/
-			}
+				$this->modifyminqty($res->itemid, '');		
+			}*/
+			
+		$this->db->where('manufacturer',$_POST['manufacturer']);
+		$this->db->where('company',$company->id);
+		$this->db->where('type','Supplier');
+		$existing = $this->db->delete('companyitem');	
+			
 			
 		$apparr = array();
 		$apparr['applied_to_items'] = 0;

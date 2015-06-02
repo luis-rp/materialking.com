@@ -604,12 +604,15 @@ $( document ).tooltip();
                                         	<div id="parent">
           									<img  style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"  title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>"  />&nbsp;Call for Price</div>
 
-                                       <?php }else{?>
+                                       <?php }elseif($item->ea!=0 && $item->ea!=""){?>
                                     	$<?php echo $item->ea; ?>
                                             <!--<br/><br/>-->
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart('<?php echo $imgName;?>',<?php echo $item->itemid; ?>, <?php echo $item->company; ?>, <?php echo $item->ea; ?>,<?php echo $item->minqty;?>,'<?php echo $item->unit ? $item->unit : '';?>','<?php echo htmlspecialchars(addslashes($item->itemcode));?>', '<?php echo htmlspecialchars(addslashes($item->itemname));?>','<?php echo $item->increment; ?>')">
                                                 <i class="icon icon-plus"></i>
                                             </a>
+                                        <?php } else { ?>
+                                        <div id="parent">
+          									<img  style="height:30px;widht:30px;" src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>"  title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>"  />&nbsp;Call for Price</div>
                                         <?php } ?>
 
                                         </div>

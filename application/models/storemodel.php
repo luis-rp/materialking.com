@@ -64,8 +64,9 @@ class Storemodel extends Model
         							'.$this->db->dbprefix('item').' i, 
         							'.$this->db->dbprefix('company').' c '.$leftmasterdefault.' '.$where;
         $return->totalresult = $this->db->query($query)->num_rows();
-        $query = $query." AND (ci.ea <>'' OR ci.price=1) LIMIT $start, $limit";
-        //echo $query;//die;
+        //$query = $query." AND (ci.ea <>'' OR ci.price=1 ) LIMIT $start, $limit";
+         $query = $query." LIMIT $start, $limit";
+        //echo $query; die;
         $return->items = $this->db->query($query)->result();
         return $return;
     }

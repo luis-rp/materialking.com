@@ -97,8 +97,8 @@ function refreshtotal()
 
 	
 	var cctaxtotal = cctotal * tax / 100;
-    var ccgrandtotal = cctotal + cctaxtotal;	
-	ccgrandtotal = Math.round(ccgrandtotal*100)/100;
+    var ccgrandtotal = cctotal;	
+	//ccgrandtotal = Math.round(ccgrandtotal*100)/100;
 	
     $("#selectedsubtotal").html(total);
     $("#selectedtax").html(taxtotal);
@@ -280,11 +280,25 @@ function paycc(bankaccounarr, bankcnt)
 	    if($('#paytype').val() == "awardbidbyid"){
 	    	amount = $('#grandtotal').val();
 	    }
+	   
+	    var cctaxtotal = amount*tax / 100;	    
+        
+	    // 3% materialking comission on subtotal
+	    var comission = (amount*<?php echo @$comissionper['comission'];?>/100);
+		
+	    // Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5
+	    var processhandling = parseFloat(amount,10)+parseFloat(cctaxtotal,10)+ parseFloat(comission,10) + (parseFloat(comparr.length,10)*0.25) + 0.8;		
+	    // Adding 2.9% constant processing fee for each suppplier transaction.
+	    for(i=0;i<comparr.length;i++)
+	    processhandling += (processhandling*2.9/100);
+		
+	    //processhandling = Math.round(processhandling,2);	    
 	    
 		var invoicenumber = $('#quoteidcopy').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
 		$("#ccpayinvoiceamount").val(amount);
 		$("#ccpayamountshow").html(amount);
+		$("#ccpayamountshow").html(processhandling.toFixed(2)+"( Including Processing & Handling Fee of $"+((processhandling-(parseFloat(amount,10)+parseFloat(cctaxtotal,10)))*1).toFixed(2)+")");
 		$('#shiptocopy').val($('#shipto').val());
 		$('#awardbidcopy').val($('#awardbid').val());
 		$('#itemidscopy').val($('#itemids').val());		
@@ -704,7 +718,7 @@ $(function() {
 				    <?php if(!$isawarded){?>
 				    <div align="right">
 					    <form method="post" action="<?php echo site_url('admin/quote/awardbid')?>">
-					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $grandtotal;?>','<?php echo $bid->creditonly;?>','<?php echo $bid->company;?>')" class="btn btn-primary"/>
+					    <input type="button" value="Accept <?php echo $bid->companyname;?>" onclick="awardbidbyid('<?php echo $bid->id;?>','<?php echo $alltotal;?>','<?php echo $bid->creditonly;?>','<?php echo $bid->company;?>')" class="btn btn-primary"/>
 					    </form>
 				    </div>
 				    <?php }?>

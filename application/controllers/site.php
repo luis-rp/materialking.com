@@ -848,7 +848,7 @@ class site extends CI_Controller
             			FROM ".$this->db->dbprefix('companyitem')." ci 
             			join ".$this->db->dbprefix('item')." i on ci.itemid=i.id 
             			join ".$this->db->dbprefix('company')." c on c.id=ci.company
-            			WHERE c.isdeleted=0 AND c.username!='' ci.itemid = ".$item->id." and ci.type='Supplier' 
+            			WHERE c.isdeleted=0 AND c.username!='' AND ci.itemid = ".$item->id." and ci.type='Supplier' 
             			group by ci.itemid";
             $countofitems = $this->db->query($cquery)->row();
             //echo "<pre>",print_r($countofitems->countitem); die;

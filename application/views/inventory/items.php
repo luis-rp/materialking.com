@@ -73,6 +73,8 @@ $.noConflict();
 
 <?php echo '<script>var getpreloadoptionsurl ="' . site_url('inventory/getpreloadoptions') . '";</script>' ?> 
 
+<?php echo '<script>var deletecompanyitemurl ="' . site_url('inventory/deletecompanyitem') . '";</script>' ?>
+
 <?php echo '<script>var unsetallitemsmanufacturerurl ="' . site_url('inventory/unsetallitemsmanufacturer') . '";</script>' ?>
 
 <script type="text/javascript" charset="utf-8">
@@ -723,20 +725,37 @@ function updatedeal(id)
 function clearall(id)
 {
 	$("#name"+id).val("");
-	$("#itemcodedata"+id).val("").trigger('change');
-	$("#itemnamedata"+id).val("").trigger('change');
-	$("#selectoption"+id).val("").trigger('change');
-	$("#price1"+id).val('').trigger('change');
-	$("#price"+id).attr('checked', false).trigger('change'); 
-	$("#part"+id).val("").trigger('change');	
-	$("#tierprice"+id).attr('checked', false).trigger('change'); 
-	$("#instock"+id).attr('checked', false).trigger('change'); 
-	$("#stock"+id).val("").trigger('change');
-	$("#instore"+id).attr('checked', false).trigger('change'); 
-	$("#isfeature"+id).attr('checked', false).trigger('change'); 
-	$("#backorder"+id).attr('checked', false).trigger('change'); 
-	$("#shipfrom"+id).attr('checked', false).trigger('change'); 
-	$("#minqty"+id).val("").trigger('change');
+	$("#itemcodedata"+id).val("");
+	$("#itemnamedata"+id).val("");
+	$("#selectoption"+id).val("");
+	$("#price1"+id).val('');
+	$("#price"+id).attr('checked', false); 
+	$("#part"+id).val("");	
+	$("#tierprice"+id).attr('checked', false); 
+	$("#instock"+id).attr('checked', false); 
+	$("#stock"+id).val("");
+	$("#instore"+id).attr('checked', false); 
+	$("#isfeature"+id).attr('checked', false); 
+	$("#backorder"+id).attr('checked', false); 
+	$("#shipfrom"+id).attr('checked', false); 
+	//$("#minqty"+id).val("").trigger('change');
+	$("#minqty"+id).val("");
+	
+	var data = "itemid="+id;
+
+        $.ajax({
+		      type:"post",
+		      data: data,
+		      url: deletecompanyitemurl
+		    }).done(function(data){
+		    	if(data==1){
+		    	alert("This Item was deleted successfully From Your Company."); }
+		    	else
+		    	{
+		    		alert("item Not Found.");
+		    	}
+
+		    });
 }
 
 
@@ -1348,6 +1367,11 @@ function setitemsmanufacturer(manufacturerid){
              $hasitems = $this->db->query($cquery)->result();
              
              if($hasitems){
+             	
+             	 /*$cquery1 = "SELECT m.*
+					    FROM ".$this->db->dbprefix('companyitem')." m WHERE m.manufacturer = '".$mf->id."' 
+					     group by m.itemid";
+             	$hasitems1 = $this->db->query($cquery1)->result();*/
              	$count = count($hasitems);
              ?>
               <div class="row form-row">   

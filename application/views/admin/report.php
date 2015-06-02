@@ -1,6 +1,6 @@
 <?php
 	//echo '<pre>';print_r($reports);die;
-	$tax = $settings->taxpercent;
+	$tax = @$settings->taxpercent;
 ?>
 <script type="text/javascript">
  $(document).ready(function() {

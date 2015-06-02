@@ -69,15 +69,15 @@ function usedefaultaddresscheckchange()
 	  return true;
 	}
 
-function paycc(amount,bankaccounarr, bankcnt)
+function paycc(amount,bankaccounarr, bankcnt, processhandling)
 {			
 	   if(bankcnt>0){
 	   		alert(" You can't proceed. These Supplier/s have not set their bank account details: "+bankaccounarr);	
 	   }else{
 		var invoicenumber = $('#quoteid').val();
 		$("#ccpayinvoicenumber").val(invoicenumber);
-		$("#ccpayinvoiceamount").val(amount);
-		$("#ccpayamountshow").html(amount);
+		$("#ccpayinvoiceamount").val(amount);		
+		$("#ccpayamountshow").html(processhandling+"( Including Processing & Handling Fee of $"+((processhandling-amount)*1).toFixed(2)+")");
 		$('#shiptocopy').val($('#shipto').val());
 		$("#awardmodal").hide();	
 		$("#paymodal").modal();		
@@ -458,13 +458,28 @@ $(document).ready(function(){
         		&nbsp;<input type="button" data-dismiss="modal" class="close btn btn-primary" value="Cancel">&nbsp;
         		 <?php if(in_array("creditonly",$creditstatus)) { 
         		 		$taxtotal = $allcctotal * $config['taxpercent'] / 100;
-				    	$taxtotal = round($taxtotal,2);
-						$allcctotal = number_format(($allcctotal + $taxtotal),2);	
+				    	$taxtotal = round($taxtotal,2);						
+						
+						// 3% materialking comission on subtotal						
+						$comission = ($allcctotal*@$comissionper['comission']/100);
+
+						// Adding Tax, Shipping, comission, 0.25 transaction fees for each supplier transaction, 0.3 processing fee + shippinglabel 0.5
+						$processhandling = $allcctotal+$taxtotal+ $comission + (count($creditaccarray)*0.25) + 0.8;
+
+						// Adding 2.9% constant processing fee for each suppplier transaction.
+						for($i=0;$i<count($creditaccarray);$i++)
+						$processhandling += ($processhandling*2.9/100);
+
+						$processhandling = round($processhandling,2);
+						
+						
+						$allcctotal = round(($allcctotal + $taxtotal),2);	
+						
         		  
         		 ?>
         		 <span id="creditcardnotebycompany"></span>        		 
         	<span id="creditcardnote"><?php if(count($creditaccarray)>0){ echo "Supplier/s (".implode(",",$creditaccarray).") has set your account to credit card only. Awarding any item to this supplier/s will require upfront credit card payment to that items value.<br/>"; }?></span>
-        		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$allcctotal;?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>');"" />&nbsp;      		
+        		 <input type="button" class="btn btn-primary" value="Award&Pay" onclick="paycc('<?php echo @$allcctotal;?>','<?php if(count($bankaccarray)>0){ echo implode(",",$bankaccarray); }else echo ""; ?>','<?php echo count($bankaccarray);?>','<?php echo round($processhandling,2); ?>');" />&nbsp;      		
         		<?php } else {?>
         		<input type="submit" class="btn btn-primary" value="Award"/>&nbsp;
         		<?php }?>

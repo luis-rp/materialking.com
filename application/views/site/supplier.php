@@ -1564,12 +1564,20 @@ function changetab(tabname){
                                         	
                                         </div>
                                         	
-                                       <?php }else{?>
+                                       <?php }elseif($inv->ea!=0) {?>
                                             <span> <?php echo '$'.$inv->ea;?> <?php echo $inv->unit;?></span>
                                             <a class="btn btn-primary" href="javascript:void(0)" onclick="addtocart(<?php echo $inv->itemid; ?>, <?php echo $inv->company; ?>, <?php echo $price ? $price : 0; ?>,  <?php echo $inv->minqty ? $inv->minqty : 0; ?>,'<?php echo $inv->unit ? $inv->unit : '';?>','<?php echo htmlspecialchars(addslashes($inv->itemcode));?>', '<?php echo htmlspecialchars(addslashes($inv->itemname));?>',<?php echo $inv->increment; ?>,'<?php echo $imgName;?>');">
                                             <i class="icon icon-plus"></i> Buy
                                         </a>
-                                        <?php } ?>
+                                        <?php } else { ?>
+                                        <div id="parent">
+                                         
+                                           <img src="<?php echo site_url('templates/front/assets/img/icon/phone.png');?>" height="22" width="22"
+												  title="<?php if(isset($supplier->phone)) echo $supplier->phone; ?>" />Call for Price
+                                        	
+                                        </div>
+                                        
+                                        <?php }?>
                                         </div>
                                     </div>
                                     
