@@ -37,15 +37,15 @@ class Settings extends CI_Controller
 	{
 		$data = $this->settings_model->get_current_settings ();
 		$this->validation->id = 1;
-		$this->validation->taxrate = $data->taxrate;
-		$this->validation->comission = $data->comission;
-		$this->validation->adminemail = $data->adminemail;
-		$this->validation->pricedays = $data->pricedays;
-		$this->validation->pricepercent = $data->pricepercent;
-		$this->validation->tour = $data->tour;
-		$this->validation->pagetour = $data->pagetour;
-		$this->validation->timezone = $data->timezone;
-		$this->validation->miles = $data->miles;
+		$this->validation->taxrate = @$data->taxrate;
+		$this->validation->comission = @$data->comission;
+		$this->validation->adminemail = @$data->adminemail;
+		$this->validation->pricedays = @$data->pricedays;
+		$this->validation->pricepercent = @$data->pricepercent;
+		$this->validation->tour = @$data->tour;
+		$this->validation->pagetour = @$data->pagetour;
+		$this->validation->timezone = @$data->timezone;
+		$this->validation->miles = @$data->miles;
 		$var ['action'] = site_url ('admin/settings/update');
 		$this->load->view ('admin/settings', $var);
 	}

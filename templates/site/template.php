@@ -37,7 +37,7 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
         <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/libraries/bootstrap-fileupload/bootstrap-fileupload.css" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/libraries/jquery-ui-1.10.2.custom/css/ui-lightness/jquery-ui-1.10.2.custom.min.css" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url(); ?>templates/site/assets/css/realia-blue.css" type="text/css" id="color-variant-default">
-        <link rel="stylesheet" href="#" type="text/css" id="color-variant">
+        <!-- <link rel="stylesheet" href="#" type="text/css" id="color-variant"> -->
 		<style>
             img[src="http://www.google.com/intl/en_us/mapfiles/close.gif"] {
                  display: block;
@@ -567,8 +567,8 @@ setInterval(function(){$('.fadein :first-child').fadeOut().next('img').fadeIn().
             </div>
         </div>
         
-<link type="text/css" href="<?php echo base_url("/cometchat/cometchatcss.php");?>" rel="stylesheet" charset="utf-8">
-<script type="text/javascript" src="<?php echo base_url("/cometchat/cometchatcss.php");?>" charset="utf-8"></script>
+<!-- <link type="text/css" href="<?php echo base_url("/cometchat/cometchatcss.php");?>" rel="stylesheet" charset="utf-8">
+<script type="text/javascript" src="<?php echo base_url("/cometchat/cometchatcss.php");?>" charset="utf-8"></script> -->
     </body>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

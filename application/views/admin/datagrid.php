@@ -1,4 +1,4 @@
-<?php if(isset($jsfile)) include $this->config->config['base_dir'].'templates/admin/gridfeed/'.$jsfile;?>
+<?php if(isset($jsfile)) include $this->config->config['base_dir'].'templates/admin/gridfeed/'.@$jsfile;?>
 
 	<style type="text/css">
 		.box { padding-bottom: 0; }
@@ -13,7 +13,7 @@
 
 		.adminflare > div { margin-bottom: 20px; }
 	</style>
-	<?php if($jsfile=="costcodeitemjs.php") {?>
+	<?php if(@$jsfile=="costcodeitemjs.php") {?>
 	 <script type="text/javascript">
 	 $(document).ready(function(){
  tour7 = new Tour({
@@ -56,7 +56,7 @@
 	
  </script>
 	<?php }?>
-	<?php if($jsfile=="itemcodeitemjs.php") {?>
+	<?php if(@$jsfile=="itemcodeitemjs.php") {?>
 	 <script type="text/javascript">
 	 $(document).ready(function(){
  tour9 = new Tour({
@@ -211,8 +211,8 @@
                </tr>
               </tfoot>
             </table>
-            <?php if($jsfile=="costcodeitemjs.php" && !@$items2) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
-            <?php if($jsfile=="itemcodeitemjs.php" && !@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
+            <?php if(@$jsfile=="costcodeitemjs.php" && !@$items2) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
+            <?php if(@$jsfile=="itemcodeitemjs.php" && !@$items) echo '<div class="alert"><a data-dismiss="alert" class="close" href="#">X</a><div class="msgBox">No Record Exist.</div></div>'; ?>
            </div>
          </div>
 
@@ -460,7 +460,7 @@
          }
          ?>
 				<?php 
-				if(isset($jsfile) && ($jsfile=="costcodeitemjs.php")) {
+				if(isset($jsfile) && (@$jsfile=="costcodeitemjs.php")) {
 					
 				 ?>
 
@@ -523,7 +523,7 @@
             	
             	
             	<?php
-				if(isset($jsfile) && ($jsfile=="itemcodeitemjs.php")){
+				if(isset($jsfile) && (@$jsfile=="itemcodeitemjs.php")){
 				?>
 
                 <table id="datatable" class="table table-bordered">
