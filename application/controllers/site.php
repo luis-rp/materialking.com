@@ -29,7 +29,11 @@ class site extends CI_Controller
     {
         $this->session->set_userdata('navigator_lat', $lat);
         $this->session->set_userdata('navigator_lng', $long);
+        //echo "<pre>",print_r($_SERVER);
+        if(@$_SERVER['HTTP_REFERER'])
         redirect($_SERVER['HTTP_REFERER']);
+        else
+        redirect('site');
         //redirect(base_url('site'));
     }
     public function insertuserip(){
@@ -3556,4 +3560,4 @@ $loaderEmail = new My_Loader();
     
    
 	
-}    
+}

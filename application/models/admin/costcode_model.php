@@ -185,6 +185,7 @@ class costcode_model extends Model
 			$sql .= " AND project='{$_POST['projectfilter']}'";
 		}
 		$sql .=" ORDER BY code ASC";
+		//echo $sql; die;
 		$query = $this->db->query($sql);
 		if ($query->result ()) 
 		{
@@ -279,16 +280,12 @@ class costcode_model extends Model
 	
 	function listHeirarchicalCombo($projectid='',$parent_id = 0, $level = 0, $selected = '')
 	{
-	//	echo '<pre>',print_r($this->session->userdata('managedprojectdetails'));
 		if($this->session->userdata('managedprojectdetails'))
 		{
 			$pid=$this->session->userdata('managedprojectdetails')->id;
 		}
 		static $temp = '';
-		# retrieve all children of $parent
-		//echo "<pre>session-"; print_r($pid); 
-		//echo "<pre>proid-"; print_r($projectid); die;
-		
+	
 		$where = "";
 		if($this->session->userdata('managedprojectdetails'))
 		{
@@ -315,6 +312,8 @@ class costcode_model extends Model
 		$where = 'and project = '.$projectid;*/
 		
 		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' {$where} ORDER BY code ASC";
+			
+		//echo "<pre>"; print_r($sql); die;
 		
 		if($this->session->userdata('usertype_id')>1)
 		{
@@ -356,7 +355,8 @@ class costcode_model extends Model
 		{
 			$pid=$this->session->userdata('managedprojectdetails')->id;
 		}
-		$temp = '';
+		//static $temp = '';
+		static $dat = '';
 		# retrieve all children of $parent
 		
 		$where = "";
@@ -377,7 +377,7 @@ class costcode_model extends Model
 			
 		}
 		$sql = "SELECT * FROM ".$this->db->dbprefix('costcode')." WHERE parent = '{$parent_id}' {$where} ORDER BY code ASC";
-		
+	
 		if($this->session->userdata('usertype_id')>1)
 		{
 			$sql ="SELECT *
@@ -387,7 +387,8 @@ class costcode_model extends Model
 			ORDER BY code ASC";
 		}
 		
-  		$result = $this->db->query($sql)->result();			
+  		$result = $this->db->query($sql)->result();	
+  			//echo '<pre>',print_r($result);die;		
 		# display each child
 		if($result)	
 		foreach($result as $row)
@@ -403,14 +404,15 @@ class costcode_model extends Model
 			}else{
 				$is_selected = "";
 			}
-			$separator = str_repeat("&raquo;&nbsp;", $level);
-			$temp .= "\t<option value=\"{$row['code']}\" {$opt_style} {$is_selected}> {$separator} {$row['code']}</option>\r\n";						
+			$separator = str_repeat("", $level);
+			$dat .= "\t<option value=\"{$row['code']}\" {$opt_style} {$is_selected}> {$separator} {$row['code']}</option>\r\n";						
 			if($projectid!="")
 			$this->listHeirarchicalComboForQuote($projectid,$row['id'], $level + 1, $selected);	
 			else 
 			$this->listHeirarchicalComboForQuote('',$row['id'], $level + 1, $selected);		
 		} 
-		return $temp;
+		return $dat;
+		
 	}
 	
 	function listcategorylevel($projectid='',$parent_id = 0, $level = 0, $selected = '')
