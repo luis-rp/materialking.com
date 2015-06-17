@@ -7183,7 +7183,7 @@ $loaderEmail = new My_Loader();
             						<td>'.$item->itemname.'</td>
             						<td>'.$img_name.'</td>
             						<td>'.$item->unit.'</td>
-            						<td>'.$item->quantity.'</td>
+            						<td>'.@$item->received.'</td>
             						<td>'.$item->ea.'</td>
             						<td>'.$item->totalprice.'</td>
             						<td>'.@$paymentstatus.'</td>
@@ -7194,6 +7194,7 @@ $loaderEmail = new My_Loader();
         }
         
         	$invoiceDetailStr .= '</table>';
+        	
         //print_r($invoices);die;
         //echo '<pre>';print_r($invoiceDetailStr);die;
         $config = (array) $this->settings_model->get_current_settings();

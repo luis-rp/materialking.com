@@ -218,6 +218,7 @@
 			    			$amount = $item->ea;
 			    			else 
 			    			$amount = (($item->invoice_type != "fullpaid")?(($item->invoice_type == "alreadypay")?0:$item->quantity):$item->aiquantity) * $item->ea;
+			    			$amount = round($amount,2);
 			    			$amount = round($amount + ($amount*$tax/100),2);
 			    			
 			    			if(@$report->discount_percent){
